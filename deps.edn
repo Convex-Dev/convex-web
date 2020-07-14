@@ -1,0 +1,104 @@
+{:paths ["src/main" "resources"]
+
+ :deps
+ {org.clojure/clojure {:mvn/version "1.10.1"}
+  org.clojure/core.async {:mvn/version "1.2.603"}
+  org.clojure/tools.logging {:mvn/version "1.1.0"}
+
+  com.cognitect/transit-clj {:mvn/version "1.0.324"}
+  com.cognitect/transit-cljs {:mvn/version "0.8.264"}
+
+  world.convex/convex {:mvn/version "0.0.1-SNAPSHOT"}
+
+  com.stuartsierra/component {:mvn/version "1.0.0"}
+
+
+  ;; -- Logging
+
+  ch.qos.logback/logback-classic {:mvn/version "1.2.3"}
+
+  ;; Logback implements the SLF4J API
+  org.slf4j/slf4j-api {:mvn/version "1.7.30"}
+
+  ;; Redirect Apache Commons Logging to Logback via the SLF4J API
+  org.slf4j/jcl-over-slf4j {:mvn/version "1.7.30"}
+
+  ;; Redirect Log4j 1.x to Logback via the SLF4J API
+  org.slf4j/log4j-over-slf4j {:mvn/version "1.7.30"}
+
+  ;; Redirect Log4j 2.x to Logback via the SLF4J API
+  org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.13.3"}
+
+  ;; Redirect java.util.logging to Logback via the SLF4J API.
+  org.slf4j/jul-to-slf4j {:mvn/version "1.7.30"}
+
+  ;; Google Cloud Logging appender
+  com.google.cloud/google-cloud-logging-logback {:mvn/version "0.118.0-alpha"}
+
+  ;; IMPORTANT
+  ;; `com.google.cloud/google-cloud-logging-logback` has a transitive
+  ;; dependency with `com.google.guava/guava` version `29.0-android`.
+  ;; The issue is that version `29.0-android`
+  ;; doesn't have the class `com.google.common.collect.Streams`,
+  ;; which is required by the ClojureScript compiler,
+  ;; so Shadow CLJS release fails (npx shadow-cljs release main).
+  com.google.guava/guava {:mvn/version "29.0-jre"}
+
+  com.brunobonacci/mulog {:mvn/version "0.3.1"}
+
+  lambdaisland/glogi {:mvn/version "1.0.63"}
+
+  ;; -- End-of-Logging
+
+
+  aero {:mvn/version "1.1.6"}
+  ring/ring-core {:mvn/version "1.8.1"}
+  ring/ring-defaults {:mvn/version "0.3.2"}
+  http-kit {:mvn/version "2.3.0"}
+  compojure {:mvn/version "1.6.1"}
+  hiccup {:mvn/version "1.0.5"}
+  re-frame {:mvn/version "0.12.0"}
+  com.taoensso/sente {:mvn/version "1.15.0"}
+  metosin/reitit-frontend {:mvn/version "0.5.4"}
+  datascript {:mvn/version "1.0.0"}
+  nano-id {:mvn/version "1.0.0"}
+  expound {:mvn/version "0.8.5"}
+  fipp {:mvn/version "0.6.23"}
+  cljs-ajax {:mvn/version "0.8.0"}}
+
+ :aliases
+ {:dev
+  {:extra-paths ["dev" "src/dev"]
+
+   :extra-deps {com.stuartsierra/component.repl {:mvn/version "0.2.0"
+                                                 :exclusions [org.clojure/tools.namespace]}
+
+                org.clojure/clojurescript {:mvn/version "1.10.773"
+                                           ;; These exclusions are required because of Shadow CLJS.
+                                           :exclusions
+                                           [com.google.javascript/closure-compiler-unshaded
+                                            org.clojure/google-closure-library
+                                            org.clojure/google-closure-library-third-party]}
+
+                org.clojure/tools.namespace {:mvn/version "1.0.0"}
+
+                thheller/shadow-cljs {:mvn/version "2.10.14"}
+
+                binaryage/devtools {:mvn/version "1.0.2"}}}
+
+  :test
+  {:extra-paths ["src/test"]}
+
+  :test-runner
+  {:extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
+                                           :sha "f7ef16dc3b8332b0d77bc0274578ad5270fbfedd"}}
+
+   :main-opts ["-m" "cognitect.test-runner"
+               "-d" "src/test"]}
+
+  :main
+  {:main-opts ["-m" "convex-web.core"]}
+
+  :outdated
+  {:extra-deps {antq {:mvn/version "RELEASE"}}
+   :main-opts ["-m" "antq.core"]}}}

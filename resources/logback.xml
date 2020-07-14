@@ -1,0 +1,14 @@
+<configuration>
+
+    <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <credentialsFile>resources/logging_service_account.json</credentialsFile>
+    </appender>
+
+    <root level="ALL">
+        <appender-ref ref="CLOUD"/>
+    </root>
+
+</configuration>

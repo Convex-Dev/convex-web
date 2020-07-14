@@ -1,0 +1,14 @@
+[Unit]
+Description=Convex Web
+
+[Service]
+User=pheapdee35
+WorkingDirectory=/home/pheapdee35/convex-web
+ExecStart=/home/pheapdee35/convex-web/bin/run
+SuccessExitStatus=143
+TimeoutStopSec=10
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

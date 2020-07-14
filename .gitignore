@@ -1,0 +1,10 @@
+node_modules/
+.idea/
+.cpcache/
+.shadow-cljs/
+resources/public/js/
+.nrepl-port
+*.iml
+.DS_Store
+etch-db
+log/

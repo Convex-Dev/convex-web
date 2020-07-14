@@ -1,0 +1,31 @@
+@tailwind base;
+
+h1 {
+  @apply text-2xl my-4;
+}
+h2 {
+  @apply text-xl my-4;
+}
+h3 {
+  @apply text-lg my-4;
+}
+
+p {
+    @apply my-2;
+}
+
+pre {
+    @apply my-4;
+}
+
+ol {
+    @apply list-decimal;
+}
+
+ul {
+    @apply list-disc;
+}
+
+@tailwind components;
+
+@tailwind utilities;

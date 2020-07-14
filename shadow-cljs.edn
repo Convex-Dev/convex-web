@@ -1,0 +1,15 @@
+{:deps {:aliases [:dev]}
+
+ :nrepl {:port 9000}
+
+ :jvm-opts ["-Xmx2G"]
+
+ :dev-http {8000 "resources/public"}
+
+ :builds
+ {:main
+  {:target :browser
+   :modules {:main {:init-fn convex-web.site.app/init}}
+   :compiler-options {:cross-chunk-method-motion false}
+   :output-dir "resources/public/js"
+   :asset-path "/js"}}}

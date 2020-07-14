@@ -1,0 +1,9 @@
+{:logging
+ {:publisher-config
+  #profile {:dev
+            {:type :console
+             :pretty? true}
+
+            :prod
+            {:type :custom
+             :fqn-function "convex-web.logging/google-cloud-logging-publisher"}}}}
