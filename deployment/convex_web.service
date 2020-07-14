@@ -2,9 +2,9 @@
 Description=Convex Web
 
 [Service]
-User=pheapdee35
-WorkingDirectory=/home/pheapdee35/convex-web
-ExecStart=/home/pheapdee35/convex-web/bin/run
+User=root
+WorkingDirectory=/usr/local/convex-dev/convex-web
+ExecStart=/usr/local/convex-dev/convex-web/bin/run
 SuccessExitStatus=143
 TimeoutStopSec=10
 Restart=always
