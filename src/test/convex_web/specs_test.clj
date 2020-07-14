@@ -22,18 +22,18 @@
   (testing "Incoming Transaction"
     (let [t #:convex-web.transaction{:type :convex-web.transaction.type/invoke
                                      :source "1"
-                                     :target "ABC"}
+                                     :target "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"}
 
-          c #:convex-web.command {:address "ABC"
+          c #:convex-web.command {:address "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"
                                   :mode :convex-web.command.mode/transaction
                                   :transaction t}]
       (is (s/valid? :convex-web/command c)))
 
     (let [t #:convex-web.transaction{:type :convex-web.transaction.type/transfer
                                      :amount 1
-                                     :target "ABC"}
+                                     :target "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"}
 
-          c #:convex-web.command {:address "ABC"
+          c #:convex-web.command {:address "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"
                                   :mode :convex-web.command.mode/transaction
                                   :transaction t}]
       (is (s/valid? :convex-web/command c))))
@@ -41,10 +41,10 @@
   (testing "Running Transaction"
     (let [t #:convex-web.transaction {:type :convex-web.transaction.type/invoke
                                       :source "1"
-                                      :target "ABC"}
+                                      :target "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"}
 
           c #:convex-web.command {:id 1
-                                  :address "ABC"
+                                  :address "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"
                                   :status :convex-web.command.status/running
                                   :mode :convex-web.command.mode/transaction
                                   :transaction t}]
