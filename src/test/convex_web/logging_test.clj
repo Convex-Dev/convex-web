@@ -13,8 +13,7 @@
 
   (testing "Default"
     (is (= {"eventName" ":logging.event/faucet"
-            "namespace" "convex-web.logging-test"
-            "address" "ABC"}
+            "namespace" "convex-web.logging-test"}
            (logging/labels {:mulog/event-name :logging.event/faucet
                             :mulog/namespace "convex-web.logging-test"
                             :address "ABC"})))))
