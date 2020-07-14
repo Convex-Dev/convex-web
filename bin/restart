@@ -1,3 +1,3 @@
 #!/bin/sh -x
 
-sudo systemctl restart convex_web
+systemctl restart convex_web
