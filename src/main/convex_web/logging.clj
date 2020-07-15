@@ -105,17 +105,21 @@
                                  (when amount
                                    {"amount" amount}))))
 
-(defmethod json-payload :logging.event/repl-user [{:keys [address source] :as item}]
+(defmethod json-payload :logging.event/repl-user [{:keys [address mode source] :as item}]
   (Payload$JsonPayload/of (merge (default-payload-data item)
                                  (when address
                                    {"address" address})
+                                 (when mode
+                                   {"mode" (name mode)})
                                  (when source
                                    {"source" source}))))
 
-(defmethod json-payload :logging.event/repl-error [{:keys [address source] :as item}]
+(defmethod json-payload :logging.event/repl-error [{:keys [address mode source] :as item}]
   (Payload$JsonPayload/of (merge (default-payload-data item)
                                  (when address
                                    {"address" address})
+                                 (when mode
+                                   {"mode" (name mode)})
                                  (when source
                                    {"source" source}))))
 
