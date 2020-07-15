@@ -517,9 +517,11 @@
 
 (defn wrap-logging [handler]
   (fn [{:keys [uri request-method remote-addr] :as request}]
-    (let [context {:uri uri
+    (let [x-forwarded-for (get-in request [:headers "x-forwarded-for"])
+
+          context {:uri uri
                    :request-method request-method
-                   :remote-addr remote-addr
+                   :remote-addr (or x-forwarded-for remote-addr)
                    :ring-session (ring-session request)}
 
           {:keys [status] :as response} (u/with-context {:context context} (handler request))]
