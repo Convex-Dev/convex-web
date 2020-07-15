@@ -2,7 +2,7 @@
 Description=Convex Web
 
 [Service]
-User=root
+User=convex
 WorkingDirectory=/usr/local/convex-dev/convex-web
 ExecStart=/usr/local/convex-dev/convex-web/bin/run
 SuccessExitStatus=143
