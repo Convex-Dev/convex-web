@@ -105,13 +105,19 @@
                                  (when amount
                                    {"amount" amount}))))
 
-(defmethod json-payload :logging.event/repl-user [{:keys [source] :as item}]
-  (Payload$JsonPayload/of (merge (default-payload-data item) (when source
-                                                               {"source" source}))))
+(defmethod json-payload :logging.event/repl-user [{:keys [address source] :as item}]
+  (Payload$JsonPayload/of (merge (default-payload-data item)
+                                 (when address
+                                   {"address" address})
+                                 (when source
+                                   {"source" source}))))
 
-(defmethod json-payload :logging.event/repl-error [{:keys [source] :as item}]
-  (Payload$JsonPayload/of (merge (default-payload-data item) (when source
-                                                               {"source" source}))))
+(defmethod json-payload :logging.event/repl-error [{:keys [address source] :as item}]
+  (Payload$JsonPayload/of (merge (default-payload-data item)
+                                 (when address
+                                   {"address" address})
+                                 (when source
+                                   {"source" source}))))
 
 
 (defn mulog-item->log-entry [item]

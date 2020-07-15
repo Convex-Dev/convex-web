@@ -18,9 +18,11 @@
     {:handle-result
      (fn [^Long id object]
        (try
-         (u/log :logging.event/repl-user
-                :severity :info
-                :source (command/source (command/query-by-id @datascript-conn id)))
+         (let [{::command/keys [address] :as c} (command/query-by-id @datascript-conn id)]
+           (u/log :logging.event/repl-user
+                  :severity :info
+                  :address address
+                  :source (command/source c)))
 
          (d/transact! datascript-conn [#:convex-web.command {:id id
                                                              :status :convex-web.command.status/success
@@ -33,10 +35,12 @@
      :handle-error
      (fn [^Long id ^Message message]
        (try
-         (u/log :logging.event/repl-error
-                :severity :info
-                :source (command/source (command/query-by-id @datascript-conn id))
-                :message (str message))
+         (let [{::command/keys [address] :as c} (command/query-by-id @datascript-conn id)]
+           (u/log :logging.event/repl-error
+                  :severity :info
+                  :address address
+                  :source (command/source c)
+                  :message (str message)))
 
          (d/transact! datascript-conn [#:convex-web.command{:id id
                                                             :status :convex-web.command.status/error
