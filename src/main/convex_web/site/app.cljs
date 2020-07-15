@@ -1,7 +1,6 @@
 (ns convex-web.site.app
   (:require [convex-web.site.router :as router]
             [convex-web.site.devtools :as devtools]
-            [convex-web.site.blockchain]
             [convex-web.site.db]
             [convex-web.site.stack :as stack]
             [convex-web.site.runtime :refer [disp sub]]

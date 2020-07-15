@@ -1,6 +1,5 @@
 (ns convex-web.component
-  (:require [convex-web.comms :as comms]
-            [convex-web.system :as system]
+  (:require [convex-web.system :as system]
             [convex-web.peer :as peer]
             [convex-web.web-server :as web-server]
             [convex-web.consumer :as consumer]
@@ -11,8 +10,7 @@
             [aero.core :as aero]
             [com.brunobonacci.mulog :as u]
             [datascript.core :as d]
-            [com.stuartsierra.component :as component]
-            [taoensso.sente :as sente])
+            [com.stuartsierra.component :as component])
   (:import (convex.peer Server API)
            (convex.net Connection ResultConsumer)))
 
@@ -21,7 +19,7 @@
 
   (start [component]
     (let [config (aero/read-config "convex-web.edn" {:profile profile})]
-      (println (str "CONFIG " profile "\n" (with-out-str (pprint/pprint config))))
+      (println (str "\n;; CONFIG " profile "\n" (with-out-str (pprint/pprint config))))
 
       (assoc component :config config)))
 
@@ -155,31 +153,6 @@
       :convex nil
       :port nil
       :stop-fn nil)))
-
-(defrecord WebSocketRouter [convex stop-router-fn datascript]
-  component/Lifecycle
-
-  (start [component]
-    (let [context {:convex convex
-                   :datascript datascript}
-
-          web-socket-handler (partial comms/web-socket-handler context)
-
-          stop-router-fn (sente/start-server-chsk-router! comms/ch-recv web-socket-handler)]
-      (log/debug "Started WebSocketRouter")
-
-      (assoc component :stop-router-fn stop-router-fn)))
-
-  (stop [component]
-    (when-let [stop-router (:stop-router-fn component)]
-      (stop-router))
-
-    (log/debug "Stopped WebSocketRouter")
-
-    (assoc component
-      :convex nil
-      :stop-router-fn nil
-      :datascript nil)))
 
 (defn system
   "System Component."
