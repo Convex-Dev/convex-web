@@ -21,7 +21,7 @@
 
   (start [component]
     (let [config (aero/read-config "convex-web.edn" {:profile profile})]
-      (println "CONFIG" profile "\n" (with-out-str (pprint/pprint config)))
+      (println (str "CONFIG " profile "\n" (with-out-str (pprint/pprint config))))
 
       (assoc component :config config)))
 
@@ -128,12 +128,14 @@
       :server nil
       :consumer nil)))
 
-(defrecord WebServer [convex datascript port stop-fn]
+(defrecord WebServer [config convex datascript stop-fn]
   component/Lifecycle
 
   (start [component]
     (let [context {:convex convex
                    :datascript datascript}
+
+          port (get-in config [:config :web-server :port])
 
           stop-fn (web-server/run-server context {:port port})]
       (log/debug (str "Started WebServer on port " port))
@@ -203,4 +205,4 @@
 
     :web-server
     (component/using
-      (map->WebServer {:port 8080}) [:convex :datascript])))
+      (map->WebServer {}) [:config :convex :datascript])))

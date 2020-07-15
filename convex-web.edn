@@ -1,4 +1,7 @@
-{:logging
+{:web-server
+ {:port 8080}
+
+ :logging
  {:publisher-config
   #profile {:dev
             {:type :console
