@@ -91,6 +91,9 @@
 (defmethod json-payload :default [item]
   (Payload$JsonPayload/of (default-payload-data item)))
 
+(defmethod json-payload :logging.event/endpoint [item]
+  (Payload$JsonPayload/of {"headers" (get-in item [:context :request :headers])}))
+
 (defmethod json-payload :logging.event/confirm-account [{:keys [address] :as item}]
   (Payload$JsonPayload/of (merge (default-payload-data item) (when address
                                                                {"address" address}))))

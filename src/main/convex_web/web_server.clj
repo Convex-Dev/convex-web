@@ -519,7 +519,8 @@
   (fn [{:keys [uri request-method remote-addr] :as request}]
     (let [x-forwarded-for (get-in request [:headers "x-forwarded-for"])
 
-          context {:uri uri
+          context {:request request
+                   :uri uri
                    :request-method request-method
                    :remote-addr (or x-forwarded-for remote-addr)
                    :ring-session (ring-session request)}
