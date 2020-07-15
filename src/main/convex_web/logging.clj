@@ -22,7 +22,7 @@
    :put HttpRequest$RequestMethod/PUT
    :head HttpRequest$RequestMethod/HEAD})
 
-(defn context->http-request [{:keys [uri request-method status remote-addr]}]
+(defn http-request [{:keys [uri request-method status remote-addr]}]
   (let [builder (doto (HttpRequest/newBuilder)
                   (.setRemoteIp remote-addr)
                   (.setRequestUrl uri)
@@ -92,7 +92,7 @@
   (Payload$JsonPayload/of (default-payload-data item)))
 
 (defmethod json-payload :logging.event/endpoint [item]
-  (Payload$JsonPayload/of {"headers" (get-in item [:context :request :headers])}))
+  (Payload$JsonPayload/of {"headers" (java.util.HashMap. (get-in item [:context :request :headers]))}))
 
 (defmethod json-payload :logging.event/confirm-account [{:keys [address] :as item}]
   (Payload$JsonPayload/of (merge (default-payload-data item) (when address
@@ -119,7 +119,7 @@
     (log-entry {:resource "gce_instance"
                 :labels (labels item)
                 :payload (json-payload item)
-                :http-request (context->http-request (:context item))})
+                :http-request (http-request (:context item))})
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
