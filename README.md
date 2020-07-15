@@ -68,16 +68,19 @@ clj -A:main
 
 Google Cloud Logging is used for log storage, and there are two types of logs in Convex Web:
 - SLF4J/Logback for Convex and libraries,
-- and u/Log events for structured log.
+- and u/Log events for structured logs.
 
-u/Log Events:
-- `:logging.event/endpoint`
-- `:logging.event/system-error`;
-- `:logging.event/user-error`;
-- `:logging.event/repl-user`;
-- `:logging.event/repl-error`;
-- `:logging.event/faucet`;
-- `:logging.event/new-account`;
-- `:logging.event/confirm-account`;
+### u/Log Events
 
-There's also a Google Cloud Logging Sink to send events log to Big Query. Once our events log are in Big Query we can use SQL to query all different sort of things. (There are some saved queries in project)
+| Event | Description |
+|:--|:--|
+| `:logging.event/endpoint` | Logged for every request |
+| `:logging.event/system-error` | Whenever an unexpected Exception is raised  |
+| `:logging.event/user-error` | User errors e.g.: Faucet amount above limit  |
+| `:logging.event/repl-user` | What users type in the REPL  |
+| `:logging.event/repl-error` | Errors users make in the REPL  |
+| `:logging.event/faucet` | Faucet request  |
+| `:logging.event/new-account` | User created a new account |
+| `:logging.event/confirm-account` | User confirmed the account  |
+
+There's a Google Cloud Logging Sink set up to send events log to Big Query. Once our events log are in Big Query we can use SQL to query all different sort of things. (There are some saved queries in project)
