@@ -516,20 +516,13 @@
     (route/not-found "<h1>Page not found</h1>")))
 
 (defn wrap-logging [handler]
-  (fn [{:keys [uri request-method remote-addr] :as request}]
-    (let [x-forwarded-for (get-in request [:headers "x-forwarded-for"])
+  (fn wrap-logging-handler [request]
+    (u/with-context
+      {:logging.mdc/http-request request}
+      (let [response (handler request)]
+        (u/log :logging.event/endpoint :logging.mdc/http-response response)
 
-          context {:request request
-                   :uri uri
-                   :request-method request-method
-                   :remote-addr (or x-forwarded-for remote-addr)
-                   :ring-session (ring-session request)}
-
-          {:keys [status] :as response} (u/with-context {:context context} (handler request))]
-
-      (u/log :logging.event/endpoint :context (merge context {:status status}))
-
-      response)))
+        response))))
 
 (defn run-server
   "Start HTTP server (default port is 8090).

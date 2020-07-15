@@ -22,9 +22,14 @@
    :put HttpRequest$RequestMethod/PUT
    :head HttpRequest$RequestMethod/HEAD})
 
-(defn http-request [{:keys [uri request-method status remote-addr]}]
-  (let [builder (doto (HttpRequest/newBuilder)
-                  (.setRemoteIp remote-addr)
+(defn logging-http-request [{:logging.mdc/keys [http-request http-response]}]
+  (let [{:keys [uri request-method remote-addr]} http-request
+        {:keys [status]} http-response
+
+        x-forwarded-for (get-in http-request [:headers "x-forwarded-for"])
+
+        builder (doto (HttpRequest/newBuilder)
+                  (.setRemoteIp (or x-forwarded-for remote-addr))
                   (.setRequestUrl uri)
                   (.setRequestMethod (logging-http-method request-method)))
 
@@ -59,21 +64,23 @@
   (when (seq entries)
     (.write logging entries (into-array [(Logging$WriteOption/logName (or log-name "convex_web"))]))))
 
-(defn default-labels [item]
-  (merge {"eventName" (str (:mulog/event-name item))
-          "namespace" (:mulog/namespace item)}
+(defn default-labels [{:keys [mulog/event-name
+                              mulog/namespace
+                              logging.mdc/http-request]}]
+  (merge {"eventName" (str event-name)
+          "namespace" namespace}
 
          ;; Session is added by a Ring middleware using u/log `with-context`.
          ;; (But it might be nil and nil is not allowed.)
-         (when-let [session (get-in item [:context :ring-session])]
+         (when-let [session (get-in http-request [:cookies "ring-session" :value])]
            {"session" session})))
 
 
 ;; -- Labels can be defined by event.
 
-(defmulti labels :mulog/event-name)
+(defmulti logging-labels :mulog/event-name)
 
-(defmethod labels :default [item]
+(defmethod logging-labels :default [item]
   (default-labels item))
 
 
@@ -86,26 +93,26 @@
          (when exception
            {"exception_stack_trace" (with-out-str (.printStackTrace exception))})))
 
-(defmulti json-payload :mulog/event-name)
+(defmulti logging-json-payload :mulog/event-name)
 
-(defmethod json-payload :default [item]
+(defmethod logging-json-payload :default [item]
   (Payload$JsonPayload/of (default-payload-data item)))
 
-(defmethod json-payload :logging.event/endpoint [item]
-  (Payload$JsonPayload/of {"headers" (java.util.HashMap. (get-in item [:context :request :headers]))}))
+(defmethod logging-json-payload :logging.event/endpoint [item]
+  (Payload$JsonPayload/of {"headers" (java.util.HashMap. (get-in item [:logging.mdc/http-request :headers]))}))
 
-(defmethod json-payload :logging.event/confirm-account [{:keys [address] :as item}]
+(defmethod logging-json-payload :logging.event/confirm-account [{:keys [address] :as item}]
   (Payload$JsonPayload/of (merge (default-payload-data item) (when address
                                                                {"address" address}))))
 
-(defmethod json-payload :logging.event/faucet [{:keys [target amount] :as item}]
+(defmethod logging-json-payload :logging.event/faucet [{:keys [target amount] :as item}]
   (Payload$JsonPayload/of (merge (default-payload-data item)
                                  (when target
                                    {"target" target})
                                  (when amount
                                    {"amount" amount}))))
 
-(defmethod json-payload :logging.event/repl-user [{:keys [address mode source] :as item}]
+(defmethod logging-json-payload :logging.event/repl-user [{:keys [address mode source] :as item}]
   (Payload$JsonPayload/of (merge (default-payload-data item)
                                  (when address
                                    {"address" address})
@@ -114,7 +121,7 @@
                                  (when source
                                    {"source" source}))))
 
-(defmethod json-payload :logging.event/repl-error [{:keys [address mode source] :as item}]
+(defmethod logging-json-payload :logging.event/repl-error [{:keys [address mode source] :as item}]
   (Payload$JsonPayload/of (merge (default-payload-data item)
                                  (when address
                                    {"address" address})
@@ -127,13 +134,14 @@
 (defn mulog-item->log-entry [item]
   (try
     (log-entry {:resource "gce_instance"
-                :labels (labels item)
-                :payload (json-payload item)
-                :http-request (http-request (:context item))})
+                :labels (logging-labels item)
+                :payload (logging-json-payload item)
+                :http-request (logging-http-request item)})
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
-             :message (str "Failed to create a LogEntry from a u/log item. " (ex-message ex)))
+             :message "Failed to create a LogEntry from a u/log item."
+             :exception ex)
 
       nil)))
 
