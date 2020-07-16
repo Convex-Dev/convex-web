@@ -5,10 +5,7 @@
            (convex.core.data Address AccountStatus Symbol AList)
            (convex.core Peer State)
            (convex.core.transactions Invoke ATransaction Transfer)
-           (convex.core.crypto AKeyPair)
            (convex.core.store Stores)))
-
-;; (Stores/etCurrent Stores/CLIENT_STORE)
 
 (defn ^Connection conn [^Server server ^ResultConsumer consumer]
   (Connection/connect (.getHostAddress server) consumer Stores/CLIENT_STORE))
