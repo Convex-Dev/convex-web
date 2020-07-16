@@ -1,10 +1,14 @@
 {:concepts
  [{:name "Convex Lisp"
-   :path "concepts/convex_lisp.txt"}]
+   :path "markdown/convex_lisp.txt"}]
+
+ :getting-started
+ [{:name "Convex Lisp"
+   :path "markdown/convex_lisp.txt"}]
 
  :tutorials
  [{:name "Introduction to Convex Lisp"
-   :path "tutorials/convex_lisp.txt"}
+   :path "markdown/convex_lisp.txt"}
 
   {:name "Introduction to Smart Contracts"
-   :path "tutorials/introduction_smart_contracts.txt"}]}
+   :path "markdown/introduction_smart_contracts.txt"}]}
