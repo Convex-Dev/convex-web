@@ -1,5 +1,0 @@
-[#:convex-web.tutorial {:name "Introduction to Convex Lisp"
-                        :path "public/tutorial/convex_lisp.txt"}
-
- #:convex-web.tutorial {:name "Introduction to Smart Contracts"
-                        :path "public/tutorial/introduction_smart_contracts.txt"}]
