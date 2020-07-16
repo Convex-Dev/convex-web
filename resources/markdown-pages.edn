@@ -1,4 +1,8 @@
-{:concepts
+{:welcome
+ [{:name "Welcome"
+   :path "markdown/welcome.md"}]
+
+ :concepts
  [{:name "Decentralisation"
    :path "markdown/decentralisation.md"}]
 

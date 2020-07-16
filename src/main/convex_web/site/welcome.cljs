@@ -1,18 +1,50 @@
 (ns convex-web.site.welcome
-  (:require [reitit.frontend.easy :as rfe]))
+  (:require [reitit.frontend.easy :as rfe]
+            [convex-web.site.backend :as backend]
+            [convex-web.site.gui :as gui]))
 
-(defn WelcomePage [_ _ _]
-  [:div.flex.flex-col.items-start.mx-10
+(defn WelcomePage [_ {:keys [ajax/status contents]} _]
+  [:div.flex.flex-1
+   (case status
+     :ajax.status/pending
+     [:div.flex.flex-1.items-center.justify-center
+      [gui/Spinner]]
 
-   [:a.hover:underline.mt-6
-    {:href (rfe/href :route-name/repl)}
-    [:span "Try the REPL"]]
+     :ajax.status/error
+     [:div.py-10.px-10
+      [:span "Error"]]
 
-   [:a.hover:underline.mt-6
-    {:href (rfe/href :route-name/wallet)}
-    [:span "Go to Wallet"]]])
+     :ajax.status/success
+     [:<>
+      [:div.overflow-auto.px-10
+       {:class "w-2/4"}
+
+       (for [{:keys [name content]} contents]
+         ^{:key name}
+         [:div.mb-10
+          {:id name}
+          [gui/Markdown content]])]]
+
+     [:div])])
 
 (def welcome-page
   #:page {:id :page.id/welcome
           :title "Welcome"
-          :component #'WelcomePage})
+          :component #'WelcomePage
+          :on-push
+          (fn [_ _ set-state]
+            (set-state assoc :ajax/status :ajax.status/pending)
+
+            (backend/GET-markdown-page
+              :welcome
+              {:handler
+               (fn [contents]
+                 (set-state assoc
+                            :ajax/status :ajax.status/success
+                            :contents contents))
+
+               :error-handler
+               (fn [error]
+                 (set-state assoc
+                            :ajax/status :ajax.status/error
+                            :ajax/error error))}))})
