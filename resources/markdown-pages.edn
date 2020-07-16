@@ -1,6 +1,6 @@
 {:concepts
- [{:name "Convex Lisp"
-   :path "markdown/convex_lisp.md"}]
+ [{:name "Decentralisation"
+   :path "markdown/decentralisation.md"}]
 
  :getting-started
  [{:name "Getting Started"
