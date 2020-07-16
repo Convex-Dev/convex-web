@@ -50,5 +50,3 @@
   (let [^Address address (if (string? address) (Address/fromHex address) address)]
     (.sendQuery conn (cond-wrap-do (Reader/readAll source)) address)))
 
-(defn transact [^Connection conn ^ATransaction transaction ^AKeyPair sign-key-pair]
-  (.sendTransaction conn (.signData sign-key-pair transaction)))

@@ -112,7 +112,8 @@
                       :convex-web.transaction.type/transfer
                       (let [to (Address/fromHex (:convex-web.transaction/target transaction))]
                         (peer/transfer-transaction (inc sequence-number) to amount)))]
-    (peer/transact conn transaction key-pair)))
+    (->> (convex/sign key-pair transaction)
+         (convex/transact conn))))
 
 (defn execute [context {::keys [mode] :as command}]
   (if-not (s/valid? :convex-web/command command)
