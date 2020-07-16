@@ -140,3 +140,63 @@
   #:page {:id :page.id/documentation-getting-started
           :title "Getting Started"
           :component #'GettingStartedPage})
+
+(defn ConceptsPage [_ {:keys [ajax/status concepts]} _]
+  [:div.flex.flex-1
+   (case status
+     :ajax.status/pending
+     [:div.flex.flex-1.items-center.justify-center
+      [gui/Spinner]]
+
+     :ajax.status/error
+     [:span "Error"]
+
+     :ajax.status/success
+     [:<>
+      ;; -- Concepts
+      [:div.overflow-auto.px-10
+       {:class "w-2/4"}
+
+       (for [{:keys [name content]} concepts]
+         ^{:key name}
+         [:div.mb-10
+          {:id name}
+          [gui/Markdown content]])]
+
+      ;; -- On this page
+      [:div.py-10.px-10
+       {:class "w-1/4"}
+       [:div.flex.flex-col
+        [:span.text-xs.text-gray-500.font-bold.uppercase "On this Page"]
+
+        [:ul.list-none.text-sm.mt-4
+         (for [{:keys [name]} concepts]
+           ^{:key name}
+           [:li.mb-2
+            [:a.text-gray-600.hover:text-gray-900.cursor-pointer
+             {:on-click #(gui/scroll-into-view name)}
+             name]])]]]]
+
+     [:div])])
+
+(def concepts-page
+  #:page {:id :page.id/documentation-concepts
+          :title "Concepts"
+          :component #'ConceptsPage
+          :on-push
+          (fn [_ _ set-state]
+            (set-state assoc :ajax/status :ajax.status/pending)
+
+            (backend/GET-markdown-page
+              :concepts
+              {:handler
+               (fn [concepts]
+                 (set-state assoc
+                            :ajax/status :ajax.status/success
+                            :concepts concepts))
+
+               :error-handler
+               (fn [error]
+                 (set-state assoc
+                            :ajax/status :ajax.status/error
+                            :ajax/error error))}))})

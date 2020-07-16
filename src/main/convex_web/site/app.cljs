@@ -73,6 +73,7 @@
    documentation/reference-page
    documentation/tutorial-page
    documentation/getting-started-page
+   documentation/concepts-page
 
    ;; ---
 
@@ -130,7 +131,11 @@
         :href (rfe/href :route-name/wallet)}]
 
       ["Documentation"
-       [["Getting Started"
+       [["Concepts"
+         {:route-name :route-name/documentation-concepts
+          :href (rfe/href :route-name/documentation-concepts)}]
+
+        ["Getting Started"
          {:route-name :route-name/documentation-getting-started
           :href (rfe/href :route-name/documentation-getting-started)}]
 

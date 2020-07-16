@@ -43,6 +43,14 @@
          (map ::account/address)
          (into #{}))))
 
+(defn read-markdown-page [k]
+  (let [pages-by-k (edn/read-string (slurp (io/resource "markdown-pages.edn")))]
+    (some->> (get pages-by-k k)
+             (map
+               (fn [{:keys [name path]}]
+                 {:name name
+                  :content (slurp (io/resource path))})))))
+
 (defn stylesheet [href]
   [:link
    {:type "text/css"
@@ -491,6 +499,21 @@
 
       server-error-response)))
 
+(defn GET-markdown-page [_ request]
+  (try
+    (let [page (get-in request [:query-params "page"])
+          contents (read-markdown-page (keyword page))]
+      (cond
+        (nil? contents)
+        (not-found-response (error "Markdown page not found."))
+
+        :else
+        (successful-response contents)))
+    (catch Exception ex
+      (log/error ex (ex-message ex))
+
+      server-error-response)))
+
 (defn app [context]
   (routes
     (GET "/" _ {:status 301 :headers {"Location" "/app"}})
@@ -511,6 +534,7 @@
     (GET "/api/internal/commands/:id" [id] (GET-command-by-id context (Long/parseLong id)))
     (GET "/api/internal/reference" req (GET-reference context req))
     (GET "/api/internal/tutorials" req (GET-tutorials context req))
+    (GET "/api/internal/markdown-page" req (GET-markdown-page context req))
 
     (route/resources "/")
     (route/not-found "<h1>Page not found</h1>")))

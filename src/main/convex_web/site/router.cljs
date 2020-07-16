@@ -165,6 +165,12 @@
                  (stack/push :page.id/transactions-range-explorer {:reset? true}))}]}]]
 
    ["documentation"
+    ["/concepts"
+     {:name :route-name/documentation-concepts
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/documentation-concepts {:reset? true}))}]}]
+
     ["/reference"
      {:name :route-name/documentation-reference
       :controllers
