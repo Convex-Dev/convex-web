@@ -1,4 +1,4 @@
-# Convex Lisp
+## Convex Lisp
 
 The CVM includes a small, dynamically typed, embedded Lisp suitable for general purpose programming within the CVM environment.
 

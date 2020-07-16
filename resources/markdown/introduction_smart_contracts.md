@@ -1,6 +1,6 @@
-# Introduction to Smart Contracts
+## Introduction to Smart Contracts
 
-## Storage Example
+### Storage Example
 
 Define your contract initialization function:
 
@@ -37,7 +37,7 @@ Call your contract exported functions:
 ;; => 1
 ```
 
-## Subcurrency Example
+### Subcurrency Example
 
 ```clojure
 (defn subcurrency-example-init []
