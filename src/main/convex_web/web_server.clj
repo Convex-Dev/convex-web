@@ -503,8 +503,7 @@
 
 (defn app [context]
   (routes
-    (GET "/" _ {:status 301 :headers {"Location" "/app"}})
-    (GET "/app" req (index req))
+    (GET "/" req (index req))
 
     ;; -- Internal API
     (GET "/api/internal/session" req (GET-session context req))
