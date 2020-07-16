@@ -89,17 +89,8 @@
                                        (when error-handler
                                          {:error-handler error-handler}))))
 
-(defn GET-tutorial [{:keys [handler error-handler]}]
-  (GET "tutorial/introduction_smart_contracts.txt" (merge {:handler handler}
-                                                          (when error-handler
-                                                            {:error-handler error-handler}))))
-
-(defn GET-resource [path {:keys [handler error-handler]}]
-  (GET path (merge {:handler handler}
-                   (when error-handler
-                     {:error-handler error-handler}))))
-
-(defn GET-tutorials [{:keys [handler error-handler]}]
-  (GET "api/internal/tutorials" (merge {:handler handler}
-                                       (when error-handler
-                                         {:error-handler error-handler}))))
+(defn GET-markdown-page [k {:keys [handler error-handler]}]
+  (GET "api/internal/markdown-page" (merge {:params {"page" k}
+                                            :handler handler}
+                                           (when error-handler
+                                             {:error-handler error-handler}))))
