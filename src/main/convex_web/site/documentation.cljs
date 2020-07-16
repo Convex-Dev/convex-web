@@ -7,6 +7,26 @@
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]))
 
+(defn make-markdown-page-push-hook [k]
+  (fn [_ _ set-state]
+    (set-state assoc :ajax/status :ajax.status/pending)
+
+    (backend/GET-markdown-page
+      k
+      {:handler
+       (fn [contents]
+         (set-state assoc
+                    :ajax/status :ajax.status/success
+                    k contents))
+
+       :error-handler
+       (fn [error]
+         (set-state assoc
+                    :ajax/status :ajax.status/error
+                    :ajax/error error))})))
+
+;; ---
+
 (defn ReferencePage [_ {:keys [ajax/status reference] :as state} _]
   (case status
     :ajax.status/pending
@@ -90,7 +110,7 @@
       [:div.overflow-auto.px-10
        {:class "w-2/4"}
 
-       (for [{:convex-web.tutorial/keys [name content]} tutorials]
+       (for [{:keys [name content]} tutorials]
          ^{:key name}
          [:div.mb-10
           {:id name}
@@ -103,7 +123,7 @@
         [:span.text-xs.text-gray-500.font-bold.uppercase "On this Page"]
 
         [:ul.list-none.text-sm.mt-4
-         (for [{:convex-web.tutorial/keys [name]} tutorials]
+         (for [{:keys [name]} tutorials]
            ^{:key name}
            [:li.mb-2
             [:a.text-gray-600.hover:text-gray-900.cursor-pointer
@@ -116,22 +136,7 @@
   #:page {:id :page.id/documentation-tutorial
           :title "Tutorial"
           :component #'TutorialPage
-          :on-push
-          (fn [_ _ set-state]
-            (set-state assoc :ajax/status :ajax.status/pending)
-
-            (backend/GET-tutorials
-              {:handler
-               (fn [tutorials]
-                 (set-state assoc
-                            :ajax/status :ajax.status/success
-                            :tutorials tutorials))
-
-               :error-handler
-               (fn [error]
-                 (set-state assoc
-                            :ajax/status :ajax.status/error
-                            :ajax/error error))}))})
+          :on-push (make-markdown-page-push-hook :tutorials)})
 
 (defn GettingStartedPage [_ _ _]
   [:div])
@@ -183,20 +188,4 @@
   #:page {:id :page.id/documentation-concepts
           :title "Concepts"
           :component #'ConceptsPage
-          :on-push
-          (fn [_ _ set-state]
-            (set-state assoc :ajax/status :ajax.status/pending)
-
-            (backend/GET-markdown-page
-              :concepts
-              {:handler
-               (fn [concepts]
-                 (set-state assoc
-                            :ajax/status :ajax.status/success
-                            :concepts concepts))
-
-               :error-handler
-               (fn [error]
-                 (set-state assoc
-                            :ajax/status :ajax.status/error
-                            :ajax/error error))}))})
+          :on-push (make-markdown-page-push-hook :concepts)})

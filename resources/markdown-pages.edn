@@ -3,4 +3,8 @@
    :path "concepts/convex_lisp.txt"}]
 
  :tutorials
- []}
+ [{:name "Introduction to Convex Lisp"
+   :path "tutorials/convex_lisp.txt"}
+
+  {:name "Introduction to Smart Contracts"
+   :path "tutorials/introduction_smart_contracts.txt"}]}

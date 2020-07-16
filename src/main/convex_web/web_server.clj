@@ -486,19 +486,6 @@
 
       server-error-response)))
 
-(defn GET-tutorials [_ _]
-  (try
-    (let [tutorials (mapv
-                      (fn [{:convex-web.tutorial/keys [name path]}]
-                        {:convex-web.tutorial/name name
-                         :convex-web.tutorial/content (slurp (io/resource path))})
-                      (edn/read-string (slurp (io/resource "tutorials.edn"))))]
-      (successful-response tutorials))
-    (catch Exception ex
-      (log/error ex (ex-message ex))
-
-      server-error-response)))
-
 (defn GET-markdown-page [_ request]
   (try
     (let [page (get-in request [:query-params "page"])
@@ -533,7 +520,6 @@
     (POST "/api/internal/commands" req (POST-command context req))
     (GET "/api/internal/commands/:id" [id] (GET-command-by-id context (Long/parseLong id)))
     (GET "/api/internal/reference" req (GET-reference context req))
-    (GET "/api/internal/tutorials" req (GET-tutorials context req))
     (GET "/api/internal/markdown-page" req (GET-markdown-page context req))
 
     (route/resources "/")
