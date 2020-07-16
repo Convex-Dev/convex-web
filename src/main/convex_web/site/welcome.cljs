@@ -15,15 +15,12 @@
       [:span "Error"]]
 
      :ajax.status/success
-     [:<>
-      [:div.overflow-auto.px-10
-       {:class "w-2/4"}
-
-       (for [{:keys [name content]} contents]
-         ^{:key name}
-         [:div.mb-10
-          {:id name}
-          [gui/Markdown content]])]]
+     [:div.mt-4.mx-10
+      (for [{:keys [name content]} contents]
+        ^{:key name}
+        [:article.prose.mb-10
+         {:id name}
+         [gui/Markdown content]])]
 
      [:div])])
 

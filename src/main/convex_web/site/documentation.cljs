@@ -26,25 +26,24 @@
                     :ajax/error error))})))
 
 (defn MarkdownPage [{:keys [ajax/status contents]}]
-  [:div.flex.flex-1
+  [:div.flex.flex-1.mt-4.mx-10
    (case status
      :ajax.status/pending
      [:div.flex.flex-1.items-center.justify-center
       [gui/Spinner]]
 
      :ajax.status/error
-     [:div.py-10.px-10
-      [:span "Error"]]
+     [:span "Error"]
 
      :ajax.status/success
      [:<>
       ;; -- Markdown
-      [:div.overflow-auto.px-10
+      [:div.overflow-auto
        {:class "w-2/4"}
 
        (for [{:keys [name content]} contents]
          ^{:key name}
-         [:div.mb-10
+         [:article.prose.mb-10
           {:id name}
           [gui/Markdown content]])]
 
