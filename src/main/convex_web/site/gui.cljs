@@ -362,7 +362,6 @@
   [:pre.relative
    [:div.absolute.right-0.top-0.m-2
     [ClipboardCopy value {:color "text-white"
-                          :background-color "bg-black"
                           :hover "hover:opacity-75"}]]
 
    [:code.hljs.language-clojure.text-sm.rounded
