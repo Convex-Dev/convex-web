@@ -294,7 +294,7 @@
                      _ (backend/GET-account object {:handler
                                                     (fn [account]
                                                       (reset! account-ref account))})]
-    [:div.flex.flex-col
+    [:div.flex.flex-col.bg-white.rounded.shadow.p-2
      [:span.text-xs.text-indigo-500.uppercase "Address"]
      [:div.flex.items-center
       [:a.hover:underline.mr-2
