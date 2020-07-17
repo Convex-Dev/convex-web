@@ -1,3 +1,5 @@
+![tests](https://github.com/Convex-Dev/convex-web/workflows/tests/badge.svg)
+
 ![Screenshot](/doc/screenshot.png?raw=true)
 
 ## Development
