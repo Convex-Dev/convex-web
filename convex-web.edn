@@ -1,9 +1,16 @@
 {:web-server
- {:port 8080}
+ {:port
+  #profile {:dev 8080
+            :prod 8080
+            :test 8090}}
 
  :logging
  {:publisher-config
   #profile {:dev
+            {:type :console
+             :pretty? true}
+
+            :test
             {:type :console
              :pretty? true}
 
