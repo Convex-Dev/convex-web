@@ -81,13 +81,13 @@
         </rollingPolicy>
     </appender>
 
-    <root level="WARN">
+    <root level="ALL">
         <appender-ref ref="STDOUT"/>
 
         <appender-ref ref="ALL_LOG_FILE"/>
     </root>
 
-    <logger name="convex-web" level="WARN">
+    <logger name="convex-web" level="ALL">
         <appender-ref ref="APP_LOG_FILE"/>
     </logger>
 

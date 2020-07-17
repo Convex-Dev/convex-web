@@ -99,6 +99,22 @@
   :main
   {:main-opts ["-m" "convex-web.core"]}
 
+
+  ;; -- Logback configuration
+
+  :logback-shadow-cljs
+  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-shadow-cljs.xml"]}
+
+  :logback-dev
+  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-dev.xml"]}
+
+  :logback-test
+  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-test.xml"]}
+
+  :logback-prod
+  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-prod.xml"]}
+
+
   :outdated
   {:extra-deps {antq {:mvn/version "RELEASE"}}
    :main-opts ["-m" "antq.core"]}}}
