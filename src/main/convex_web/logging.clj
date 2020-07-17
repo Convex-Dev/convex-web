@@ -91,7 +91,7 @@
          (when message
            {"message" message})
          (when exception
-           {"exception_stack_trace" (with-out-str (.printStackTrace exception))})))
+           {"exception" (str exception)})))
 
 (defmulti logging-json-payload :mulog/event-name)
 

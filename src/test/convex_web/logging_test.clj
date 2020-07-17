@@ -5,26 +5,23 @@
 (deftest labels-test
   (testing "Default"
     (is (= {"eventName" ":logging.event/endpoint"
-            "namespace" "convex-web.logging-test"
-            "session" "Session"}
+            "namespace" "convex-web.logging-test"}
            (logging/logging-labels {:mulog/event-name :logging.event/endpoint
-                            :mulog/namespace "convex-web.logging-test"
-                            :context {:ring-session "Session"}}))))
+                                    :mulog/namespace "convex-web.logging-test"}))))
 
   (testing "Default"
     (is (= {"eventName" ":logging.event/faucet"
             "namespace" "convex-web.logging-test"}
            (logging/logging-labels {:mulog/event-name :logging.event/faucet
-                            :mulog/namespace "convex-web.logging-test"
-                            :address "ABC"})))))
+                                    :mulog/namespace "convex-web.logging-test"
+                                    :address "ABC"})))))
 
 (deftest json-payload-test
   (testing "Default"
     (is (= {} (.getDataAsMap (logging/logging-json-payload {}))))
     (is (= {"message" "Foo"} (.getDataAsMap (logging/logging-json-payload {:message "Foo"}))))
     (let [ex (ex-info "Foo" {})]
-      (is (= {"exception_stack_trace"
-              (with-out-str (.printStackTrace ex))}
+      (is (= {"exception" (str ex)}
              (.getDataAsMap (logging/logging-json-payload {:exception ex}))))))
 
   (testing "REPL Error"
