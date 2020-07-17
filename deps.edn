@@ -1,4 +1,4 @@
-{:paths ["src/main" "resources"]
+{:paths ["src/main/clojure" "src/main/resources"]
 
  :deps
  {org.clojure/clojure {:mvn/version "1.10.1"}
@@ -68,7 +68,7 @@
 
  :aliases
  {:dev
-  {:extra-paths ["dev" "src/dev"]
+  {:extra-paths ["src/dev/clojure"]
 
    :extra-deps {com.stuartsierra/component.repl {:mvn/version "0.2.0"
                                                  :exclusions [org.clojure/tools.namespace]}
@@ -87,7 +87,7 @@
                 binaryage/devtools {:mvn/version "1.0.2"}}}
 
   :test
-  {:extra-paths ["src/test"]}
+  {:extra-paths ["src/test/clojure" "src/test/resources"]}
 
   :test-runner
   {:extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"

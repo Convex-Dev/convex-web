@@ -2,7 +2,7 @@ node_modules/
 .idea/
 .cpcache/
 .shadow-cljs/
-resources/public/js/
+src/main/resources/public/js/
 .nrepl-port
 *.iml
 .DS_Store
