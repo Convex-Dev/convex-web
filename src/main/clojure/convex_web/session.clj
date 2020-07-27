@@ -3,8 +3,8 @@
             [clojure.tools.logging :as log]))
 
 (defn all [db]
-  (d/q '[:find [(pull ?e [{:convex-web.session/accounts
-                           [:convex-web.account/address]}]) ...]
+  (d/q '[:find [(pull ?e [* {:convex-web.session/accounts
+                             [:convex-web.account/address]}]) ...]
          :in $
          :where [?e :convex-web.session/id _]]
        db))

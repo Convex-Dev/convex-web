@@ -20,6 +20,7 @@
             [datascript.core :as d]
             [cognitect.transit :as t]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
+            [ring.middleware.session.memory :as memory-session]
             [org.httpkit.server :as http-kit]
             [compojure.core :refer [routes GET POST]]
             [compojure.route :as route]
@@ -33,6 +34,8 @@
            (convex.core Init Peer State)
            (java.time Instant)
            (java.util Date)))
+
+(def session-ref (atom {}))
 
 (defn ring-session [request]
   (get-in request [:cookies "ring-session" :value]))
@@ -541,8 +544,9 @@
 
    `options` are the same as org.httpkit.server/run-server."
   [context & [options]]
-  (http-kit/run-server (-> (app context)
-                           (wrap-logging)
-                           (wrap-defaults site-defaults))
-                       options))
+  (let [config {:session {:store (memory-session/memory-store session-ref)}}]
+    (http-kit/run-server (-> (app context)
+                             (wrap-logging)
+                             (wrap-defaults (merge-with merge site-defaults config)))
+                         options)))
 
