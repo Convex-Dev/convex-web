@@ -79,7 +79,8 @@
   [:div.flex.flex-1.justify-center.my-4.mx-10
    (case status
      :ajax.status/pending
-     [gui/Spinner]
+     [:div.flex.flex-1.justify-center.items-center
+      [gui/Spinner]]
 
      :ajax.status/success
      [:div]
