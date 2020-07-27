@@ -60,10 +60,9 @@
     :rel "stylesheet"
     :href href}])
 
-(defn index [{:keys [session] :as req}]
+(defn index [_]
   {:status 200
    :headers {"Content-Type" "text/html"}
-   :session (assoc session :uid (nano-id/nano-id))
    :body
    (page/html5
      (stylesheet "https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css")
@@ -544,7 +543,10 @@
 
    `options` are the same as org.httpkit.server/run-server."
   [context & [options]]
-  (let [config {:session {:store (memory-session/memory-store session-ref)}}]
+  (let [config {:session
+                {:store (memory-session/memory-store session-ref)
+                 :flash true
+                 :cookie-attrs {:http-only false :same-site :strict}}}]
     (http-kit/run-server (-> (app context)
                              (wrap-logging)
                              (wrap-defaults (merge-with merge site-defaults config)))

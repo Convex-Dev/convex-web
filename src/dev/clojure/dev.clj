@@ -121,6 +121,7 @@
   @web-server/session-ref
 
   (session/all (db))
+  (session/find-session (db) "4feac0cd-cc06-4a3b-bcad-54596771356b")
   (session/find-account (db) "0a0CB41358185ACe6A4d8242F567Bd34A98E718E")
 
   ;; --

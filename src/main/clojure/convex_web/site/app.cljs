@@ -70,6 +70,10 @@
 
    ;; ---
 
+   session/session-page
+
+   ;; ---
+
    documentation/reference-page
    documentation/tutorial-page
    documentation/getting-started-page
@@ -266,6 +270,20 @@
         [:span.font-rubik.text-lg.leading-none.uppercase page-title]
 
         [:div.flex.items-center.justify-end
+         [gui/Tooltip
+          {:title "View Session"}
+          [:button
+           {:class
+            ["text-sm"
+             "px-2 py-1"
+             "mr-6"
+             "rounded"
+             "focus:outline-none"
+             "hover:bg-gray-100 hover:shadow-md"]
+            :on-click #(stack/push :page.id/session {:modal? true})}
+           [:span.text-xs.uppercase "Session"]]]
+
+
          [gui/Tooltip
           {:title "Create a new Account"}
           [:button
