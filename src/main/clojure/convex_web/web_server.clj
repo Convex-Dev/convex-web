@@ -333,8 +333,9 @@
 (defn GET-session [context req]
   (try
     (let [db @(system/datascript-conn context)
-          id (ring-session req)]
-      (successful-response (session/find-session db id)))
+          id (ring-session req)
+          session (merge {::session/id id} (session/find-session db id))]
+      (successful-response session))
     (catch Exception ex
       (log/error ex (ex-message ex))
 

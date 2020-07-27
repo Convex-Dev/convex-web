@@ -74,8 +74,7 @@
                      (backend/GET-session
                        {:handler
                         (fn [session]
-                          (when session
-                            (session/create session)))})))))}]}
+                          (session/create session))})))))}]}
 
    [""
     {:name :route-name/welcome
