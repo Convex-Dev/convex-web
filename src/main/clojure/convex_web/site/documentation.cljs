@@ -77,7 +77,7 @@
 
 
 (defn TutorialPage [_ state _]
-  [markdown/Renderer state])
+  [markdown/Markdown state])
 
 (def tutorial-page
   #:page {:id :page.id/documentation-tutorial
@@ -87,7 +87,7 @@
 
 
 (defn GettingStartedPage [_ state _]
-  [markdown/Renderer state])
+  [markdown/Markdown state])
 
 (def getting-started-page
   #:page {:id :page.id/documentation-getting-started
@@ -97,7 +97,7 @@
 
 
 (defn ConceptsPage [_ state _]
-  [markdown/Renderer state])
+  [markdown/Markdown state])
 
 (def concepts-page
   #:page {:id :page.id/documentation-concepts
@@ -106,7 +106,7 @@
           :on-push (markdown/hook-fn :concepts)})
 
 (defn DocumentationPage [_ state _]
-  [markdown/Renderer (merge state {:toc? false})])
+  [markdown/Markdown (assoc-in state [:markdown :toc?] false)])
 
 (def documentation-page
   #:page {:id :page.id/documentation

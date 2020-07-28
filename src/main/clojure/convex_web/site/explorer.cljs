@@ -735,7 +735,7 @@
           :on-pop #'stop-polling-blocks})
 
 (defn ExplorerPage [_ state _]
-  [markdown/Renderer (merge state {:toc? false})])
+  [markdown/Markdown (assoc-in state [:markdown :toc?] false)])
 
 (def explorer-page
   #:page {:id :page.id/explorer

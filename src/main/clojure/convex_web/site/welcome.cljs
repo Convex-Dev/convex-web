@@ -2,7 +2,7 @@
   (:require [convex-web.site.markdown :as markdown]))
 
 (defn WelcomePage [_ state _]
-  [markdown/Renderer (merge state {:toc? false})])
+  [markdown/Markdown (assoc-in state [:markdown :toc?] false)])
 
 (def welcome-page
   #:page {:id :page.id/welcome
