@@ -1,70 +1,12 @@
 (ns convex-web.site.documentation
   (:require [convex-web.site.gui :as gui]
             [convex-web.site.backend :as backend]
+            [convex-web.site.markdown :as markdown]
 
             [cljs.spec.alpha :as s]
 
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]))
-
-(defn make-markdown-page-push-hook [k]
-  (fn [_ _ set-state]
-    (set-state assoc :ajax/status :ajax.status/pending)
-
-    (backend/GET-markdown-page
-      k
-      {:handler
-       (fn [contents]
-         (set-state assoc
-                    :ajax/status :ajax.status/success
-                    :contents contents))
-
-       :error-handler
-       (fn [error]
-         (set-state assoc
-                    :ajax/status :ajax.status/error
-                    :ajax/error error))})))
-
-(defn MarkdownPage [{:keys [ajax/status contents toc?] :or {toc? true}}]
-  [:div.flex.flex-1.mt-4.mx-10
-   (case status
-     :ajax.status/pending
-     [:div.flex.flex-1.items-center.justify-center
-      [gui/Spinner]]
-
-     :ajax.status/error
-     [:span "Error"]
-
-     :ajax.status/success
-     [:<>
-      ;; -- Markdown
-      [:div.overflow-auto
-       {:class "w-2/4"}
-
-       (for [{:keys [name content]} contents]
-         ^{:key name}
-         [:article.prose.mb-10
-          {:id name}
-          [gui/Markdown content]])]
-
-      ;; -- On this page
-      (when toc?
-        [:div.py-10.px-10
-         {:class "w-1/4"}
-         [:div.flex.flex-col
-          [:span.text-xs.text-gray-500.font-bold.uppercase "On this Page"]
-
-          [:ul.list-none.text-sm.mt-4
-           (for [{:keys [name]} contents]
-             ^{:key name}
-             [:li.mb-2
-              [:a.text-gray-600.hover:text-gray-900.cursor-pointer
-               {:on-click #(gui/scroll-into-view name)}
-               name]])]]])]
-
-     [:div])])
-
-;; ---
 
 (defn ReferencePage [_ {:keys [ajax/status reference] :as state} _]
   (case status
@@ -135,39 +77,39 @@
 
 
 (defn TutorialPage [_ state _]
-  [MarkdownPage state])
+  [markdown/Renderer state])
 
 (def tutorial-page
   #:page {:id :page.id/documentation-tutorial
           :title "Tutorial"
           :component #'TutorialPage
-          :on-push (make-markdown-page-push-hook :tutorials)})
+          :on-push (markdown/make-page-on-push-hook :tutorials)})
 
 
 (defn GettingStartedPage [_ state _]
-  [MarkdownPage state])
+  [markdown/Renderer state])
 
 (def getting-started-page
   #:page {:id :page.id/documentation-getting-started
           :title "Getting Started"
           :component #'GettingStartedPage
-          :on-push (make-markdown-page-push-hook :getting-started)})
+          :on-push (markdown/make-page-on-push-hook :getting-started)})
 
 
 (defn ConceptsPage [_ state _]
-  [MarkdownPage state])
+  [markdown/Renderer state])
 
 (def concepts-page
   #:page {:id :page.id/documentation-concepts
           :title "Concepts"
           :component #'ConceptsPage
-          :on-push (make-markdown-page-push-hook :concepts)})
+          :on-push (markdown/make-page-on-push-hook :concepts)})
 
 (defn DocumentationPage [_ state _]
-  [MarkdownPage (merge state {:toc? false})])
+  [markdown/Renderer (merge state {:toc? false})])
 
 (def documentation-page
   #:page {:id :page.id/documentation
           :title "Documentation"
           :component #'DocumentationPage
-          :on-push (make-markdown-page-push-hook :documentation)})
+          :on-push (markdown/make-page-on-push-hook :documentation)})
