@@ -390,7 +390,7 @@
    [:span.text-xs.text-gray-700.ml-1
     "Transaction"]])
 
-(defn REPLPage [_ {:convex-web.repl/keys [reference] :as state} set-state]
+(defn SandboxPage [_ {:convex-web.repl/keys [reference] :as state} set-state]
   [:div.flex.flex-1
 
    ;; -- REPL
@@ -456,13 +456,13 @@
         :reference
         [Reference reference])])])
 
-(def repl-page
+(def sandbox-page
   #:page {:id :page.id/repl
-          :title "REPL"
+          :title "Sandbox"
           :initial-state #:convex-web.repl {:mode :convex-web.command.mode/transaction
                                             :sidebar {:sidebar/tab :examples}}
           :state-spec (s/keys :req [:convex-web.repl/mode] :opt [:convex-web.repl/commands-by-id])
-          :component #'REPLPage
+          :component #'SandboxPage
           :on-push
           (fn [_ _ set-state]
             (backend/GET-reference

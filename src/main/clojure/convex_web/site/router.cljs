@@ -90,8 +90,8 @@
        :start (fn [_]
                 (stack/push :page.id/create-account {:reset? true}))}]}]
 
-   ["repl"
-    {:name :route-name/repl
+   ["sandbox"
+    {:name :route-name/sandbox
      :controllers
      [{:identity identity
        :start (fn [_]

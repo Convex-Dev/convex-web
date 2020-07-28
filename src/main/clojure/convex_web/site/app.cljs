@@ -54,7 +54,7 @@
 
    ;; ---
 
-   repl/repl-page
+   repl/sandbox-page
 
    ;; ---
 
@@ -126,9 +126,9 @@
                  :href (rfe/href :route-name/peers-explorer)}]]
             (sort-by first))]
 
-      ["REPL"
-       {:route-name :route-name/repl
-        :href (rfe/href :route-name/repl)}]
+      ["Sandbox"
+       {:route-name :route-name/sandbox
+        :href (rfe/href :route-name/sandbox)}]
 
       ["Wallet"
        {:route-name :route-name/wallet
