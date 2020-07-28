@@ -101,19 +101,11 @@
     (lookup-syntax 'inc))
 
 
-  (def address->status (convex/accounts (peer)))
-
-  ;; Addresses
-  (map convex/con->clj (keys address->status))
-
-
-  (convex/account-status (peer) "5bE071940D2cF4E2A68d23D29F1aC1ba50049615")
+  (convex/account-status (peer) "3333333333333333333333333333333333333333333333333333333333333333")
 
   (convex/account-status-data *1)
 
-  (dissoc *1 :convex-web.account-status/environment)
-
-  (account/find-by-address (db) "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0")
+  (account/find-by-address (db) "3333333333333333333333333333333333333333333333333333333333333333")
 
 
   ;; -- Session

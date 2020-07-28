@@ -152,13 +152,17 @@
 
 (defn account-status-data [^AccountStatus account-status]
   (when account-status
-    (merge #:convex-web.account-status {:sequence (.getSequence account-status)
-                                        :balance (.getValue (.getBalance account-status))
-                                        :actor? (.isActor account-status)
-                                        :environment (con->clj (.getEnvironment account-status))}
-
-           (when-let [actor-args (.getActorArgs account-status)]
-             #:convex-web.account-status {:actor-args (str actor-args)}))))
+    (let [env (con->clj (.getEnvironment account-status))
+          exports? (contains? env '*exports*)
+          actor? (.isActor account-status)
+          library? (and actor? (not exports?))]
+      (merge #:convex-web.account-status {:sequence (.getSequence account-status)
+                                          :balance (.getValue (.getBalance account-status))
+                                          :actor? actor?
+                                          :library? library?
+                                          :environment env}
+             (when-let [actor-args (.getActorArgs account-status)]
+               #:convex-web.account-status {:actor-args (str actor-args)})))))
 
 (defn hero-sequence [^Peer peer]
   (-> (.getConsensusState peer)

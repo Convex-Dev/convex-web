@@ -382,10 +382,7 @@
                               (map
                                 (fn [[address status]]
                                   (let [address (convex/address->checksum-hex address)
-                                        status (convex/account-status-data status)
-                                        status (select-keys status [:convex-web.account-status/balance
-                                                                    :convex-web.account-status/actor?
-                                                                    :convex-web.account-status/sequence])]
+                                        status (convex/account-status-data status)]
                                     #:convex-web.account {:address address
                                                           :status status}))
                                 (convex/accounts peer {:start start :end end}))})))
@@ -406,8 +403,7 @@
           account-status-data (convex/account-status-data account-status)]
       (if account-status
         (successful-response #:convex-web.account {:address address
-                                                   ;; TODO
-                                                   :status (dissoc account-status-data :convex-web.account-status/environment)})
+                                                   :status account-status-data})
         (let [message (str "Address " address " doesn't exist.")]
           (log/error (str "Failed to get Account; " message))
           (not-found-response {:error {:message message}}))))
