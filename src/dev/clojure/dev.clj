@@ -6,6 +6,7 @@
             [convex-web.session :as session]
             [convex-web.account :as account]
             [convex-web.logging :as logging]
+            [convex-web.web-server :as web-server]
 
             [clojure.test :refer [is]]
             [clojure.spec.alpha :as s]
@@ -113,7 +114,18 @@
   (dissoc *1 :convex-web.account-status/environment)
 
   (account/find-by-address (db) "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0")
+
+
+  ;; -- Session
+
+  @web-server/session-ref
+
+  (session/all (db))
+  (session/find-session (db) "4feac0cd-cc06-4a3b-bcad-54596771356b")
   (session/find-account (db) "0a0CB41358185ACe6A4d8242F567Bd34A98E718E")
+
+  ;; --
+
 
   @(http/get "http://localhost:8080/api/internal/blocks")
   @(http/get "http://localhost:8080/api/internal/blocks-range")

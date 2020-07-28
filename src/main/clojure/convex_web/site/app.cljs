@@ -70,6 +70,10 @@
 
    ;; ---
 
+   session/session-page
+
+   ;; ---
+
    documentation/reference-page
    documentation/tutorial-page
    documentation/getting-started-page
@@ -286,7 +290,7 @@
          (let [active-address (session/?active-address)]
            [gui/Tooltip
             {:title "Account details"}
-            [:button.focus:outline-none.text-gray-700.hover:text-black.ml-4.w-6.h-6.rounded
+            [:button.focus:outline-none.text-gray-700.hover:text-black.mx-4.w-6.h-6.rounded
              (merge {:on-click #(stack/push :page.id/my-account {:modal? true
                                                                  :state
                                                                  {:convex-web/account
@@ -294,7 +298,19 @@
                     (when-not active-address
                       {:class "text-gray-400 pointer-events-none"}))
 
-             [gui/IconUser]]])]]
+             [gui/IconUser]]])
+
+         [gui/Tooltip
+          {:title "View Session"}
+          [:button
+           {:class
+            ["text-sm"
+             "px-2 py-1"
+             "rounded"
+             "focus:outline-none"
+             "hover:bg-gray-100 hover:shadow-md"]
+            :on-click #(stack/push :page.id/session {:modal? true})}
+           [:span.text-xs.uppercase "Session"]]]]]
 
        ;; -- Page
        [:div.relative.flex.flex-1.overflow-auto

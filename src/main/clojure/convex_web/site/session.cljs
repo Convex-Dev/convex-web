@@ -1,10 +1,20 @@
 (ns convex-web.site.session
   (:require [convex-web.site.runtime :refer [disp sub]]
+            [convex-web.site.gui :as gui]
+            [convex-web.site.stack :as stack]
+
+            [clojure.string :as str]
+
             [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub :session/?session
   (fn [{:site/keys [session]} _]
     session))
+
+(re-frame/reg-sub :session/?id
+  :<- [:session/?session]
+  (fn [{:convex-web.session/keys [id]} _]
+    (or id "-")))
 
 (re-frame/reg-sub :session/?accounts
   :<- [:session/?session]
@@ -45,7 +55,6 @@
            (when active?
              {:dispatch [:session/!pick-address (get account :convex-web.account/address)]}))))
 
-
 (defn ?active-address []
   (sub :session/?active-address))
 
@@ -58,7 +67,46 @@
 (defn ?session []
   (sub :session/?session))
 
-(defn ?accounts []
-  (let [{:convex-web.session/keys [accounts]} (?session)]
-    accounts))
+(defn ?id []
+  (sub :session/?id))
 
+(defn ?accounts []
+  (sub :session/?accounts))
+
+(defn SessionPage [_ {:keys [convex-web.session/id]} set-state]
+  [:div.flex.flex-1.justify-center.my-4.mx-10
+   [:div.flex.flex-col.flex-1
+
+    [:span.text-xs.text-indigo-500.uppercase "Session"]
+    [:div.flex.items-center
+     [:code.text-sm.mr-2 (?id)]
+     [gui/ClipboardCopy (?id)]]
+
+    [:span.text-xs.text-indigo-500.uppercase.mt-10 "Restore Session"]
+    [:input.text-sm.border
+     {:style {:height "26px"}
+      :type "text"
+      :value id
+      :on-change
+      #(let [value (gui/event-target-value %)]
+         (set-state assoc :convex-web.session/id value))}]
+
+    [:div.flex.justify-center.mt-6
+     [gui/DefaultButton
+      {:on-click #(stack/pop)}
+      [:span.text-xs.uppercase "Cancel"]]
+
+     [:div.mx-2]
+
+     [gui/DefaultButton
+      {:disabled (str/blank? id)
+       :on-click
+       #(do
+          (set! (.-cookie js/document) (str "ring-session=" id))
+          (.reload (.-location js/document)))}
+      [:span.text-xs.uppercase "Restore"]]]]])
+
+(def session-page
+  #:page {:id :page.id/session
+          :title "Session"
+          :component #'SessionPage})
