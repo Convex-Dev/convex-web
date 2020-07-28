@@ -247,7 +247,8 @@
   (set-state assoc :ajax/status :ajax.status/pending)
 
   (let [index (get-in state [:convex-web/block :convex-web.block/index])]
-    (backend/GET-block index
+    (backend/GET-block
+      index
       {:handler
        (fn [block]
          (when block
@@ -283,7 +284,8 @@
 
 (defn- get-account [_ state set-state]
   (let [address (get-in state [:convex-web/account :convex-web.account/address])]
-    (backend/GET-account address
+    (backend/GET-account
+      address
       {:handler
        (fn [account]
          (set-state #(assoc % :convex-web/account account
@@ -730,3 +732,11 @@
           :state-spec :explorer.blocks/state-spec
           :on-push #'start-polling-blocks
           :on-pop #'stop-polling-blocks})
+
+(defn ExplorerPage [_ _ _]
+  [:div])
+
+(def explorer-page
+  #:page {:id :page.id/explorer
+          :title "Explorer"
+          :component #'ExplorerPage})
