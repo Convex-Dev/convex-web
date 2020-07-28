@@ -1,7 +1,7 @@
 (ns convex-web.convex-test
   (:require [clojure.test :refer :all]
             [convex-web.convex :as convex])
-  (:import (convex.core.data Keyword Symbol ListVector ListMap Address Amount)))
+  (:import (convex.core.data Keyword Symbol Address Vectors Maps)))
 
 (deftest con->clj-test
   (testing "Keyword"
@@ -12,10 +12,10 @@
     (is (symbol? (convex/con->clj (Symbol/createWithNamespace "f" "core")))))
 
   (testing "Sequence"
-    (is (sequential? (convex/con->clj (ListVector/create (into-array [1 2 3]))))))
+    (is (sequential? (convex/con->clj (Vectors/create (into-array [1 2 3]))))))
 
   (testing "HashMap"
-    (is (map? (convex/con->clj (ListMap/emptyMap))))))
+    (is (map? (convex/con->clj (Maps/empty))))))
 
 (deftest address-test
   (testing "Can't coerce nil"

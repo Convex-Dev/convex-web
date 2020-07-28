@@ -1,6 +1,6 @@
 (ns convex-web.convex
   (:require [clojure.string :as str])
-  (:import (convex.core.data Keyword Symbol AHashMap Syntax List ListVector Address Amount AccountStatus SignedData)
+  (:import (convex.core.data Keyword Symbol AHashMap Syntax Address AccountStatus SignedData AVector AList)
            (convex.core.lang Core)
            (convex.core Order Block Peer State Init)
            (convex.core.crypto AKeyPair)
@@ -36,10 +36,10 @@
     Symbol
     (symbol (some-> x (.getNamespace) (.getName)) (.getName x))
 
-    List
+    AList
     (into '() (map con->clj x))
 
-    ListVector
+    AVector
     (into [] (map con->clj x))
 
     AHashMap
