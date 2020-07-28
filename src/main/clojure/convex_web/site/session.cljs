@@ -55,10 +55,6 @@
            (when active?
              {:dispatch [:session/!pick-address (get account :convex-web.account/address)]}))))
 
-
-(defn ?id []
-  (sub :session/?id))
-
 (defn ?active-address []
   (sub :session/?active-address))
 
@@ -71,9 +67,11 @@
 (defn ?session []
   (sub :session/?session))
 
+(defn ?id []
+  (sub :session/?id))
+
 (defn ?accounts []
-  (let [{:convex-web.session/keys [accounts]} (?session)]
-    accounts))
+  (sub :session/?accounts))
 
 (defn SessionPage [_ {:keys [convex-web.session/id]} set-state]
   [:div.flex.flex-1.justify-center.my-4.mx-10
