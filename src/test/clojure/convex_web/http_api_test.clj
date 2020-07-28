@@ -30,7 +30,7 @@
   (testing "Get Session"
     (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/session"))]
       (is (= 200 status))
-      (is (= nil (transit/decode-string body))))))
+      (is (= #:convex-web.session{:id nil} (transit/decode-string body))))))
 
 (deftest reference-test
   (testing "Get Reference"
@@ -67,10 +67,7 @@
     (testing "Get Latest Accounts"
       (is (= 200 (:status latest-accounts-response)))
 
-      (is (= {:end 17
-              :start 2
-              :total 17}
-             (:meta latest-accounts-body))))
+      (is (= [:start :end :total] (keys (:meta latest-accounts-body)))))
 
     (testing "Get Account"
       (testing "Not Found"
@@ -95,10 +92,9 @@
             body (transit/decode-string body)]
         (is (= 200 status))
 
-        (is (= {:end 15
-                :start 10
-                :total 17}
-               (:meta body)))))
+        (is (= [:start :end :total] (keys (:meta body))))
+
+        (is (= {:start 10 :end 15} (select-keys (:meta body) [:start :end])))))
 
     (testing "Invalid Range"
       (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/accounts?start=100&end=150"))]
