@@ -75,52 +75,39 @@
   (let [{:convex-web.session/keys [accounts]} (?session)]
     accounts))
 
-(defn SessionPage [_ {:keys [convex-web.session/id ajax/status]} set-state]
+(defn SessionPage [_ {:keys [convex-web.session/id]} set-state]
   [:div.flex.flex-1.justify-center.my-4.mx-10
-   (case status
-     :ajax.status/pending
-     [:div.flex.flex-1.justify-center.items-center
-      [gui/Spinner]]
+   [:div.flex.flex-col.flex-1
 
-     :ajax.status/success
-     [:div]
+    [:span.text-xs.text-indigo-500.uppercase "Session"]
+    [:div.flex.items-center
+     [:code.text-sm.mr-2 (?id)]
+     [gui/ClipboardCopy (?id)]]
 
-     :ajax.status/error
-     [:div]
-
-     [:div.flex.flex-col.flex-1
-
-      [:span.text-xs.text-indigo-500.uppercase "Session"]
-      [:div.flex.items-center
-       [:code.text-sm.mr-2 (?id)]
-       [gui/ClipboardCopy (?id)]]
-
-      [:span.text-xs.text-indigo-500.uppercase.mt-10 "Restore Session"]
-      [:input.text-sm.border
-       {:style {:height "26px"}
-        :type "text"
-        :value id
-        :on-change
-        #(let [value (gui/event-target-value %)]
-           (set-state assoc :convex-web.session/id value))}]
+    [:span.text-xs.text-indigo-500.uppercase.mt-10 "Restore Session"]
+    [:input.text-sm.border
+     {:style {:height "26px"}
+      :type "text"
+      :value id
+      :on-change
+      #(let [value (gui/event-target-value %)]
+         (set-state assoc :convex-web.session/id value))}]
 
 
-      [:div.flex.justify-center.mt-6
-       [gui/DefaultButton
-        {:on-click #(stack/pop)}
-        [:span.text-xs.uppercase "Cancel"]]
+    [:div.flex.justify-center.mt-6
+     [gui/DefaultButton
+      {:on-click #(stack/pop)}
+      [:span.text-xs.uppercase "Cancel"]]
 
-       [:div.mx-2]
+     [:div.mx-2]
 
-       [gui/DefaultButton
-        {:disabled (str/blank? id)
-         :on-click
-         #(do
-            (set-state assoc :ajax/status :ajax.status/pending)
-
-            (set! (.-cookie js/document) (str "ring-session=" id))
-            (.reload (.-location js/document)))}
-        [:span.text-xs.uppercase "Restore"]]]])])
+     [gui/DefaultButton
+      {:disabled (str/blank? id)
+       :on-click
+       #(do
+          (set! (.-cookie js/document) (str "ring-session=" id))
+          (.reload (.-location js/document)))}
+      [:span.text-xs.uppercase "Restore"]]]]])
 
 (def session-page
   #:page {:id :page.id/session
