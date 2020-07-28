@@ -8,4 +8,4 @@
   #:page {:id :page.id/welcome
           :title "Welcome"
           :component #'WelcomePage
-          :on-push (markdown/make-page-on-push-hook :welcome)})
+          :on-push (markdown/hook-fn :welcome)})

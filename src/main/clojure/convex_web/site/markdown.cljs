@@ -2,12 +2,14 @@
   (:require [convex-web.site.gui :as gui]
             [convex-web.site.backend :as backend]))
 
-(defn make-page-on-push-hook [k]
+(defn hook-fn
+  "Returns a Hook function to get markdown from the server."
+  [markdown-key]
   (fn [_ _ set-state]
     (set-state assoc :ajax/status :ajax.status/pending)
 
     (backend/GET-markdown-page
-      k
+      markdown-key
       {:handler
        (fn [contents]
          (set-state assoc

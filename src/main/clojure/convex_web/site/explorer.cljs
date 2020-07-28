@@ -741,4 +741,4 @@
   #:page {:id :page.id/explorer
           :title "Explorer"
           :component #'ExplorerPage
-          :on-push (markdown/make-page-on-push-hook :explorer)})
+          :on-push (markdown/hook-fn :explorer)})
