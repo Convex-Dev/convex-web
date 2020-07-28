@@ -93,7 +93,6 @@
       #(let [value (gui/event-target-value %)]
          (set-state assoc :convex-web.session/id value))}]
 
-
     [:div.flex.justify-center.mt-6
      [gui/DefaultButton
       {:on-click #(stack/pop)}
