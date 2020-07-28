@@ -1,9 +1,21 @@
 (ns convex-web.convex-test
   (:require [clojure.test :refer :all]
             [convex-web.convex :as convex])
-  (:import (convex.core.data Keyword Symbol Address Vectors Maps)))
+  (:import (convex.core.data Keyword Symbol Address Vectors Maps Lists Sets)))
 
 (deftest con->clj-test
+  (testing "Char"
+    (is (char? (convex/con->clj \a))))
+
+  (testing "String"
+    (is (string? (convex/con->clj "String"))))
+
+  (testing "Long"
+    (is (double (convex/con->clj 1))))
+
+  (testing "Double"
+    (is (double (convex/con->clj 1.0))))
+
   (testing "Keyword"
     (is (keyword? (convex/con->clj (Keyword/create "a")))))
 
@@ -11,11 +23,17 @@
     (is (symbol? (convex/con->clj (Symbol/create "a"))))
     (is (symbol? (convex/con->clj (Symbol/createWithNamespace "f" "core")))))
 
-  (testing "Sequence"
-    (is (sequential? (convex/con->clj (Vectors/create (into-array [1 2 3]))))))
+  (testing "List"
+    (is (list? (convex/con->clj (Lists/empty)))))
+
+  (testing "Vector"
+    (is (vector? (convex/con->clj (Vectors/empty)))))
 
   (testing "HashMap"
-    (is (map? (convex/con->clj (Maps/empty))))))
+    (is (map? (convex/con->clj (Maps/empty)))))
+
+  (testing "Set"
+    (is (set? (convex/con->clj (Sets/empty))))))
 
 (deftest address-test
   (testing "Can't coerce nil"

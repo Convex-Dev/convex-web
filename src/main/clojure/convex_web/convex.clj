@@ -1,6 +1,6 @@
 (ns convex-web.convex
   (:require [clojure.string :as str])
-  (:import (convex.core.data Keyword Symbol AHashMap Syntax Address AccountStatus SignedData AVector AList)
+  (:import (convex.core.data Keyword Symbol AHashMap Syntax Address AccountStatus SignedData AVector AList ASet)
            (convex.core.lang Core)
            (convex.core Order Block Peer State Init)
            (convex.core.crypto AKeyPair)
@@ -21,6 +21,9 @@
 
 (defn con->clj [x]
   (condp instance? x
+    Character
+    x
+
     Long
     x
 
@@ -48,6 +51,9 @@
         (assoc m (con->clj k) (con->clj v)))
       {}
       x)
+
+    ASet
+    (into #{} (map con->clj x))
 
     nil))
 
