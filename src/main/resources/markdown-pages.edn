@@ -2,6 +2,10 @@
  [{:name "Welcome"
    :path "markdown/welcome.md"}]
 
+ :explorer
+ [{:name "Explorer"
+   :path "markdown/explorer.md"}]
+
  :documentation
  [{:name "Documentation"
    :path "markdown/documentation.md"}]

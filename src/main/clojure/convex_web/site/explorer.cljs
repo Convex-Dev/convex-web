@@ -6,6 +6,7 @@
             [convex-web.site.stack :as stack]
             [convex-web.site.format :as format]
             [convex-web.explorer :as explorer]
+            [convex-web.site.markdown :as markdown]
 
             [cljs.spec.alpha :as s]
 
@@ -733,10 +734,11 @@
           :on-push #'start-polling-blocks
           :on-pop #'stop-polling-blocks})
 
-(defn ExplorerPage [_ _ _]
-  [:div])
+(defn ExplorerPage [_ state _]
+  [markdown/Renderer (merge state {:toc? false})])
 
 (def explorer-page
   #:page {:id :page.id/explorer
           :title "Explorer"
-          :component #'ExplorerPage})
+          :component #'ExplorerPage
+          :on-push (markdown/make-page-on-push-hook :explorer)})
