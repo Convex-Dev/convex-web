@@ -105,6 +105,11 @@
                 (stack/push :page.id/wallet {:reset? true}))}]}]
 
    ["explorer"
+    [""
+     {:name :route-name/explorer
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/explorer {:reset? true}))}]}]
 
     ["/accounts"
      {:name :route-name/accounts-explorer
@@ -164,6 +169,12 @@
                  (stack/push :page.id/transactions-range-explorer {:reset? true}))}]}]]
 
    ["documentation"
+    [""
+     {:name :route-name/documentation
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/documentation {:reset? true}))}]}]
+
     ["/concepts"
      {:name :route-name/documentation-concepts
       :controllers

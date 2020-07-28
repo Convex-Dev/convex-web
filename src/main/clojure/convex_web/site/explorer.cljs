@@ -6,6 +6,7 @@
             [convex-web.site.stack :as stack]
             [convex-web.site.format :as format]
             [convex-web.explorer :as explorer]
+            [convex-web.site.markdown :as markdown]
 
             [cljs.spec.alpha :as s]
 
@@ -247,7 +248,8 @@
   (set-state assoc :ajax/status :ajax.status/pending)
 
   (let [index (get-in state [:convex-web/block :convex-web.block/index])]
-    (backend/GET-block index
+    (backend/GET-block
+      index
       {:handler
        (fn [block]
          (when block
@@ -283,7 +285,8 @@
 
 (defn- get-account [_ state set-state]
   (let [address (get-in state [:convex-web/account :convex-web.account/address])]
-    (backend/GET-account address
+    (backend/GET-account
+      address
       {:handler
        (fn [account]
          (set-state #(assoc % :convex-web/account account
@@ -730,3 +733,12 @@
           :state-spec :explorer.blocks/state-spec
           :on-push #'start-polling-blocks
           :on-pop #'stop-polling-blocks})
+
+(defn ExplorerPage [_ state _]
+  [markdown/Markdown (assoc-in state [:markdown :toc?] false)])
+
+(def explorer-page
+  #:page {:id :page.id/explorer
+          :title "Explorer"
+          :component #'ExplorerPage
+          :on-push (markdown/hook-fn :explorer)})

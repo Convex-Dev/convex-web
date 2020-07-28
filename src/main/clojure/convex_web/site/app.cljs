@@ -58,6 +58,7 @@
 
    ;; ---
 
+   explorer/explorer-page
    explorer/accounts-page
    explorer/accounts-range-page
    explorer/account-page
@@ -74,6 +75,7 @@
 
    ;; ---
 
+   documentation/documentation-page
    documentation/reference-page
    documentation/tutorial-page
    documentation/getting-started-page
@@ -96,93 +98,86 @@
   (let [active (fn [routes-set]
                  (comp routes-set router/route-name))]
     {:welcome
-     ["Welcome"
-      {:route-name :route-name/welcome
-       :href (rfe/href :route-name/welcome)
-       :active? (active #{:route-name/welcome
-                          :route-name/create-account})}]
+     {:text "Welcome"
+      :route-name :route-name/welcome
+      :href (rfe/href :route-name/welcome)
+      :active? (active #{:route-name/welcome
+                         :route-name/create-account})}
 
      :others
-     [["Explorer"
-       (->> [["Accounts"
-              {:route-name :route-name/accounts-explorer
-               :href (rfe/href :route-name/accounts-explorer)
-               :active? (active #{:route-name/accounts-explorer
-                                  :route-name/account-explorer})}]
+     [{:text "Explorer"
+       :route-name :route-name/explorer
+       :href (rfe/href :route-name/explorer)
+       :children
+       (->> [{:text "Accounts"
+              :route-name :route-name/accounts-explorer
+              :href (rfe/href :route-name/accounts-explorer)
+              :active? (active #{:route-name/accounts-explorer
+                                 :route-name/account-explorer})}
 
-             ["Blocks"
-              {:route-name :route-name/block-coll-explorer
-               :href (rfe/href :route-name/block-coll-explorer)
-               :active? (active #{:route-name/block-coll-explorer
-                                  :route-name/block-explorer})}]
+             {:text "Blocks"
+              :route-name :route-name/block-coll-explorer
+              :href (rfe/href :route-name/block-coll-explorer)
+              :active? (active #{:route-name/block-coll-explorer
+                                 :route-name/block-explorer})}
 
-             ["Transactions"
-              {:route-name :route-name/transactions-explorer
-               :href (rfe/href :route-name/transactions-explorer)}]
+             {:text "Transactions"
+              :route-name :route-name/transactions-explorer
+              :href (rfe/href :route-name/transactions-explorer)}]
+            (sort-by first))}
 
-             ;; After initial release
-             #_["Peers"
-                {:route-name :route-name/peers-explorer
-                 :href (rfe/href :route-name/peers-explorer)}]]
-            (sort-by first))]
+      {:text "Sandbox"
+       :route-name :route-name/sandbox
+       :href (rfe/href :route-name/sandbox)}
 
-      ["Sandbox"
-       {:route-name :route-name/sandbox
-        :href (rfe/href :route-name/sandbox)}]
+      {:text "Wallet"
+       :route-name :route-name/wallet
+       :href (rfe/href :route-name/wallet)}
 
-      ["Wallet"
-       {:route-name :route-name/wallet
-        :href (rfe/href :route-name/wallet)}]
+      {:text "Documentation"
+       :route-name :route-name/documentation
+       :href (rfe/href :route-name/documentation)
+       :children
+       [{:text "Concepts"
+         :route-name :route-name/documentation-concepts
+         :href (rfe/href :route-name/documentation-concepts)}
 
-      ["Documentation"
-       [["Concepts"
-         {:route-name :route-name/documentation-concepts
-          :href (rfe/href :route-name/documentation-concepts)}]
+        {:text "Getting Started"
+         :route-name :route-name/documentation-getting-started
+         :href (rfe/href :route-name/documentation-getting-started)}
 
-        ["Getting Started"
-         {:route-name :route-name/documentation-getting-started
-          :href (rfe/href :route-name/documentation-getting-started)}]
+        {:text "Tutorial"
+         :route-name :route-name/documentation-tutorial
+         :href (rfe/href :route-name/documentation-tutorial)}
 
-        ["Tutorial"
-         {:route-name :route-name/documentation-tutorial
-          :href (rfe/href :route-name/documentation-tutorial)}]
+        {:text "Reference"
+         :route-name :route-name/documentation-reference
+         :href (rfe/href :route-name/documentation-reference)}]}]}))
 
-        ["Reference"
-         {:route-name :route-name/documentation-reference
-          :href (rfe/href :route-name/documentation-reference)}]]]]}))
+(defn NavItem [route {:keys [text active? href target route-name children]}]
+  (let [active? (or (= route-name (router/route-name route))
+                    (when active?
+                      (active? route)))]
+    [:div.flex.flex-col
+     [:a.self-start.hover:text-black.font-medium.pl-2.border-l-2
+      (merge {:href href
+              :class (if active?
+                       "border-indigo-600 text-black"
+                       "border-transparent text-gray-600")}
+             (when target
+               {:target target}))
 
-(defn NavItem [route [label attributes-or-children]]
-  (let [attributes? (map? attributes-or-children)
-        children? (sequential? attributes-or-children)]
+      (if target
+        [:div.flex.justify-between.items-center
+         [:span.mr-2 text]
 
-    (cond
-      attributes?
-      (let [{:keys [active? href target route-name]} attributes-or-children
+         [gui/IconExternalLink {:class "w-6 h-6"}]]
+        [:span text])]
 
-            active? (or (= route-name (router/route-name route))
-                        (when active?
-                          (active? route)))]
-        [:a.self-start.hover:text-black.font-medium.mb-1.pl-2.border-l-2
-         (merge {:href href
-                 :class (if active?
-                          "border-indigo-600 text-black"
-                          "border-transparent text-gray-600")}
-                (when target
-                  {:target target}))
-
-         (if target
-           [:div.flex.justify-between.items-center
-            [:span.mr-2 label]
-
-            [gui/IconExternalLink {:class "w-6 h-6"}]]
-           [:span label])])
-
-      children?
-      [:div.flex.flex-col.mt-2
-       [:span.px-2.py-1.mb-1.text-gray-600 label]
-       [:div.flex.flex-col.ml-2.items-start
-        (for [[label _ :as child] attributes-or-children]
-          ^{:key label} [NavItem route child])]])))
+     (when (seq children)
+       [:div.flex.flex-col.ml-2
+        (for [{:keys [text] :as child} children]
+          ^{:key text} [NavItem route child])])]))
 
 (defn Nav [active-route]
   (let [{:keys [welcome others]} (nav)]
@@ -191,9 +186,10 @@
      [:div.mb-6
       [NavItem active-route welcome]]
 
-     (for [[label _ :as item] others]
-       ^{:key label}
-       [NavItem active-route item])]))
+     (for [{:keys [text] :as item} others]
+       ^{:key text}
+       [:div.mb-2
+        [NavItem active-route item]])]))
 
 (defn SelectAccount []
   [:select
