@@ -25,7 +25,7 @@
                     :ajax/status :ajax.status/error
                     :ajax/error error))})))
 
-(defn MarkdownPage [{:keys [ajax/status contents]}]
+(defn MarkdownPage [{:keys [ajax/status contents toc?] :or {toc? true}}]
   [:div.flex.flex-1.mt-4.mx-10
    (case status
      :ajax.status/pending
@@ -48,18 +48,19 @@
           [gui/Markdown content]])]
 
       ;; -- On this page
-      [:div.py-10.px-10
-       {:class "w-1/4"}
-       [:div.flex.flex-col
-        [:span.text-xs.text-gray-500.font-bold.uppercase "On this Page"]
+      (when toc?
+        [:div.py-10.px-10
+         {:class "w-1/4"}
+         [:div.flex.flex-col
+          [:span.text-xs.text-gray-500.font-bold.uppercase "On this Page"]
 
-        [:ul.list-none.text-sm.mt-4
-         (for [{:keys [name]} contents]
-           ^{:key name}
-           [:li.mb-2
-            [:a.text-gray-600.hover:text-gray-900.cursor-pointer
-             {:on-click #(gui/scroll-into-view name)}
-             name]])]]]]
+          [:ul.list-none.text-sm.mt-4
+           (for [{:keys [name]} contents]
+             ^{:key name}
+             [:li.mb-2
+              [:a.text-gray-600.hover:text-gray-900.cursor-pointer
+               {:on-click #(gui/scroll-into-view name)}
+               name]])]]])]
 
      [:div])])
 
@@ -161,3 +162,12 @@
           :title "Concepts"
           :component #'ConceptsPage
           :on-push (make-markdown-page-push-hook :concepts)})
+
+(defn DocumentationPage [_ state _]
+  [MarkdownPage (merge state {:toc? false})])
+
+(def documentation-page
+  #:page {:id :page.id/documentation
+          :title "Documentation"
+          :component #'DocumentationPage
+          :on-push (make-markdown-page-push-hook :documentation)})

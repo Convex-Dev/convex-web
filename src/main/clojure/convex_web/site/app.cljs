@@ -74,6 +74,7 @@
 
    ;; ---
 
+   documentation/documentation-page
    documentation/reference-page
    documentation/tutorial-page
    documentation/getting-started-page

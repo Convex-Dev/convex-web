@@ -2,6 +2,10 @@
  [{:name "Welcome"
    :path "markdown/welcome.md"}]
 
+ :documentation
+ [{:name "Documentation"
+   :path "markdown/documentation.md"}]
+
  :concepts
  [{:name "Decentralisation"
    :path "markdown/decentralisation.md"}]
