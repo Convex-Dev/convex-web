@@ -161,7 +161,7 @@
 
 (defn SymbolMeta [sym metadata]
   [:div.flex.flex-col
-   [:code.font-bold.text-sm.text-indigo-500.mb-2 sym]
+   [:code.font-bold.text-xs.text-indigo-500.mb-2 sym]
 
    ;; -- Signature
    (when-let [signature (get-in metadata [:doc :signature])]
@@ -326,10 +326,12 @@
       [:span.text-xs.text-gray-700.uppercase "Sequence"]
       [:code.mt-1.text-sm sequence]]
 
-     (for [[sym metadata] environment]
-       ^{:key sym}
-       [:div.w-full.mb-2.b.border-b
-        [SymbolMeta sym metadata]])]))
+     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
+      [:span.text-xs.text-gray-700.uppercase "Environment"]
+      (for [[sym metadata] environment]
+        ^{:key sym}
+        [:div.w-full.mb-2.b.border-b
+         [SymbolMeta sym metadata]])]]))
 
 (defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
   [:div.flex.p-2
