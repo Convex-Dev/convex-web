@@ -109,6 +109,20 @@
      [:hr.my-2]
 
      (let [example (make-example
+                     '(def my-library
+                        (deploy (fn []
+                                  (defn identity [x]
+                                    x)))))]
+       [:div.flex.flex-col.flex-1.py-2
+        [:div.flex.justify-between.items-center
+         [Title "Library"]
+         [gui/ClipboardCopy example]]
+
+        [gui/Highlight example]])
+
+     [:hr.my-2]
+
+     (let [example (make-example
                      '(defn storage-example-init []
                         (def stored-data nil)
 
@@ -313,8 +327,8 @@
      [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
      [:span.text-xs.uppercase (get-in @account-ref [:convex-web.account/status :convex-web.account-status/balance] "-")]
 
-     [:span.text-xs.text-indigo-500.uppercase.mt-2 "Actor?"]
-     [:span.text-xs.uppercase (str (get-in @account-ref [:convex-web.account/status :convex-web.account-status/actor?] "-"))]]))
+     [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
+     [:span.text-xs.uppercase (get-in @account-ref [:convex-web.account/status :convex-web.account-status/type])]]))
 
 (defn Commands [commands]
   [:<>

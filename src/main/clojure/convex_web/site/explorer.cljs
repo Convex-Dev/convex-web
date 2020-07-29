@@ -330,6 +330,11 @@
          "Address"]]
 
        [:th
+        {:class th-class}
+        [:div.p-2.border-b.border-gray-300
+         "Type"]]
+
+       [:th
         {:class th-class
          :colSpan "2"}
 
@@ -347,15 +352,6 @@
 
               me? (contains? my-addresses (str/upper-case address))
 
-              [label style tooltip] (cond
-                                      (get status :convex-web.account-status/actor?)
-                                      ["actor" "bg-indigo-500" "Address is an Actor"]
-
-                                      me?
-                                      ["me" "bg-green-400" "Owned by me"]
-
-                                      :else
-                                      nil)
               address-blob (format/address-blob address)]
           ^{:key address}
           [:tr.hover:bg-gray-100.cursor-default
@@ -380,13 +376,6 @@
                :target "_blank"}
               [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]]
 
-            (when label
-              [gui/Tooltip
-               {:title tooltip}
-               [:span.text-white.rounded-full.py-2.px-4.ml-4.cursor-default
-                {:class style}
-                label]])
-
             (when (and me? (not= address active-address))
               [gui/Tooltip
                {:title "Switch to this account"}
@@ -398,6 +387,22 @@
               [gui/Tooltip
                {:title "This account is active"}
                [gui/CheckIcon {:class "w-4 h-4 text-green-500 ml-4"}]])]
+
+           [:td {:class td-class}
+            (let [[label style tooltip] (cond
+                                          (get status :convex-web.account-status/library?)
+                                          ["library" "bg-purple-500" "Library's Address"]
+
+                                          (get status :convex-web.account-status/actor?)
+                                          ["actor" "bg-indigo-500" "Actor's Address"]
+
+                                          :else
+                                          ["user" "bg-green-400" "User's Address"])]
+              [gui/Tooltip
+               {:title tooltip}
+               [:span.text-white.rounded-full.py-2.px-4.ml-4.cursor-default
+                {:class style}
+                label]])]
 
            [:td {:class td-class}
             [:div.flex.justify-end
