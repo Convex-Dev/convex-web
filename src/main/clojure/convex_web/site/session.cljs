@@ -77,12 +77,14 @@
   [:div.flex.flex-1.justify-center.my-4.mx-10
    [:div.flex.flex-col.flex-1
 
-    [:span.text-xs.text-indigo-500.uppercase "Session"]
-    [:div.flex.items-center
-     [:code.text-sm.mr-2 (?id)]
-     [gui/ClipboardCopy (?id)]]
+    (when (?active-address)
+      [:<>
+       [:span.text-xs.text-indigo-500.uppercase "Session"]
+       [:div.flex.items-center
+        [:code.text-sm.mr-2 (?id)]
+        [gui/ClipboardCopy (?id)]]])
 
-    [:span.text-xs.text-indigo-500.uppercase.mt-10 "Restore Session"]
+    [:span.text-xs.text-indigo-500.uppercase.mt-10 "Session Key"]
     [:input.text-sm.border
      {:style {:height "26px"}
       :type "text"
