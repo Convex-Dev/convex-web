@@ -129,7 +129,7 @@
 
   Core/ENVIRONMENT
 
-  convex/core-metadata
+  (convex/core-metadata)
   (convex/reference)
 
   )

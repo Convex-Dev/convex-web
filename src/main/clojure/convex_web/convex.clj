@@ -10,8 +10,9 @@
 (defn ^String address->checksum-hex [^Address address]
   (.toChecksumHex address))
 
-(def core-metadata
+(defn core-metadata
   "Core metadata indexed by Symbol."
+  []
   (reduce
     (fn [m [^Symbol sym ^Syntax syn]]
       (assoc m sym (.getMeta syn)))
@@ -84,7 +85,7 @@
 
               :else
               (throw (ex-info "'sym' must be either a convex.core.data.Symbol or String." {:sym sym})))]
-    (get core-metadata sym)))
+    (get (core-metadata) sym)))
 
 (defn ^Order peer-order [^Peer peer]
   (.getPeerOrder peer))
@@ -193,7 +194,7 @@
        (transact conn)))
 
 (defn reference []
-  (->> core-metadata
+  (->> (core-metadata)
        (map
          (fn [[sym metadata]]
            (let [{:keys [doc]} (con->clj metadata)
