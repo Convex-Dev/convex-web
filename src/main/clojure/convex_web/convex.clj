@@ -158,9 +158,13 @@
           library? (and actor? (not exports?))]
       (merge #:convex-web.account-status {:sequence (.getSequence account-status)
                                           :balance (.getValue (.getBalance account-status))
+                                          :environment env
                                           :actor? actor?
                                           :library? library?
-                                          :environment env}
+                                          :type (cond
+                                                  library? :library
+                                                  actor? :actor
+                                                  :else :user)}
              (when-let [actor-args (.getActorArgs account-status)]
                #:convex-web.account-status {:actor-args (str actor-args)})))))
 
