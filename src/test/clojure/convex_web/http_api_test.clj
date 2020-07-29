@@ -77,14 +77,21 @@
       (testing "Address 2222222222222222222222222222222222222222222222222222222222222222"
         (let [[{:convex-web.account/keys [address]}] (get latest-accounts-body :convex-web/accounts)
 
-              {:keys [status body]} @(http/get (str (server-url) "/api/internal/accounts/" address))]
+              {:keys [status body]} @(http/get (str (server-url) "/api/internal/accounts/" address))
+
+              account (transit/decode-string body)
+              account-no-env (dissoc (get account :convex-web.account/status) :convex-web.account-status/environment)]
           (is (= 200 status))
 
-          (is (= #:convex-web.account {:address "2222222222222222222222222222222222222222222222222222222222222222"
-                                       :status #:convex-web.account-status{:actor? false
-                                                                           :balance 90000000000000000
-                                                                           :sequence 0}}
-                 (transit/decode-string body))))))
+          (is (= #:convex-web.account{:address "2222222222222222222222222222222222222222222222222222222222222222"}
+                 (select-keys account [:convex-web.account/address])))
+
+          (is (= #:convex-web.account-status{:actor? false
+                                             :library? false
+                                             :type :user
+                                             :balance 90000000000000000
+                                             :sequence 0}
+                 account-no-env)))))
 
     (testing "Range 10-15"
       (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/accounts?start=10&end=15"))

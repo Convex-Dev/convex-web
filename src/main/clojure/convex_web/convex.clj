@@ -150,9 +150,24 @@
   (let [address->status (accounts peer)]
     (address->status (address string-or-address))))
 
+(defn syntax-data [^Syntax syn]
+  #:convex-web.syntax {:source (.getSource syn)
+                       :meta (con->clj (.getMeta syn))})
+
+(defn environment-data
+  "Account Status' environment data.
+
+   Where keys are symbols and values are syntax data."
+  [environment]
+  (reduce
+    (fn [env [^Symbol sym ^Syntax syn]]
+      (assoc env (con->clj sym) (syntax-data syn)))
+    {}
+    environment))
+
 (defn account-status-data [^AccountStatus account-status]
   (when account-status
-    (let [env (con->clj (.getEnvironment account-status))
+    (let [env (environment-data (.getEnvironment account-status))
           exports? (contains? env '*exports*)
           actor? (.isActor account-status)
           library? (and actor? (not exports?))]

@@ -101,7 +101,9 @@
     (lookup-syntax 'inc))
 
 
-  (convex/account-status (peer) "3333333333333333333333333333333333333333333333333333333333333333")
+  (def status (convex/account-status (peer) "3333333333333333333333333333333333333333333333333333333333333333"))
+
+  (convex/environment-data status)
 
   (convex/account-status-data *1)
 
