@@ -231,7 +231,7 @@
 
         (for [{:keys [code]} examples]
           ^{:key symbol}
-          [:pre.text-xs
+          [:pre.text-xs.mb-1
            [:code.clojure.rounded
             {:ref highlight-block}
             code]])])]))
