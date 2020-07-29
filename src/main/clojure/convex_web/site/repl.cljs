@@ -109,6 +109,20 @@
      [:hr.my-2]
 
      (let [example (make-example
+                     '(def my-library
+                        (deploy (fn []
+                                  (defn identity [x]
+                                    x)))))]
+       [:div.flex.flex-col.flex-1.py-2
+        [:div.flex.justify-between.items-center
+         [Title "Library"]
+         [gui/ClipboardCopy example]]
+
+        [gui/Highlight example]])
+
+     [:hr.my-2]
+
+     (let [example (make-example
                      '(defn storage-example-init []
                         (def stored-data nil)
 
