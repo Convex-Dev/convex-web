@@ -12,3 +12,6 @@
 
 (defn format-number [n]
   (.format (goog.i18n.NumberFormat. goog.i18n.NumberFormat.Format/DECIMAL) n))
+
+(defn address-blob [address]
+  (str "0x" address))

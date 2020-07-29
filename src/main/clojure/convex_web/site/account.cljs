@@ -110,7 +110,7 @@
      :ajax.status/success
      (let [address (get account :convex-web.account/address)]
        [:div.flex.flex-col.items-center
-        [:code.text-sm.mb-2 address]
+        [:code.text-sm.mb-2 (format/address-blob address)]
 
         [gui/DefaultButton
          {:on-click
@@ -170,22 +170,22 @@
                                     (stack/set-state uuid f)))}))
 
 (re-frame/reg-sub-raw ::?transfer-from-account
-  (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
-    (get-transfer-account (merge m {:state-key :transfer-page/from}))
+                      (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
+                        (get-transfer-account (merge m {:state-key :transfer-page/from}))
 
-    (make-reaction
-      (fn []
-        (when-let [frame (stack/find-frame @app-db uuid)]
-          (get-in frame [:frame/state :transfer-page/from]))))))
+                        (make-reaction
+                          (fn []
+                            (when-let [frame (stack/find-frame @app-db uuid)]
+                              (get-in frame [:frame/state :transfer-page/from]))))))
 
 (re-frame/reg-sub-raw ::?transfer-to-account
-  (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
-    (get-transfer-account (merge m {:state-key :transfer-page/to}))
+                      (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
+                        (get-transfer-account (merge m {:state-key :transfer-page/to}))
 
-    (make-reaction
-      (fn []
-        (when-let [frame (stack/find-frame @app-db uuid)]
-          (get-in frame [:frame/state :transfer-page/to]))))))
+                        (make-reaction
+                          (fn []
+                            (when-let [frame (stack/find-frame @app-db uuid)]
+                              (get-in frame [:frame/state :transfer-page/to]))))))
 
 (defn TransferProgress [{:convex-web/keys [command transfer] :as state} _]
   [:div.flex.flex-col.flex-1.items-center.justify-center
@@ -419,11 +419,8 @@
 
      ;; -- Target
      [:span.text-xs.text-indigo-500.uppercase "Address"]
-     [:input.text-sm.border
-      {:style {:height "26px"}
-       :type "text"
-       :read-only true
-       :value target}]
+     [:span.text-sm
+      (format/address-blob target)]
 
      (let [account (get-in state [:faucet-page/target :convex-web/account])]
        [:div.flex.justify-end.mt-1

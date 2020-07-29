@@ -4,7 +4,8 @@
             [convex-web.site.command :as command]
             [convex-web.site.session :as session]
             [convex-web.site.stack :as stack]
-            [convex-web.site.runtime :as runtime]
+            [convex-web.site.backend :as backend]
+            [convex-web.site.format :as format]
 
             [clojure.string :as str]
             [cljs.spec.alpha :as s]
@@ -12,8 +13,7 @@
             [fipp.clojure :as fipp]
             [codemirror-reagent.core :as codemirror]
             [reagent.core :as reagent]
-            [reitit.frontend.easy :as rfe]
-            [convex-web.site.backend :as backend]))
+            [reitit.frontend.easy :as rfe]))
 
 (defn toggle-examples [state]
   (update state :convex-web.repl/show-examples? not))
@@ -299,9 +299,9 @@
      [:div.flex.items-center
       [:a.hover:underline.mr-2
        {:href (rfe/href :route-name/account-explorer {:address object})}
-       [:code.text-xs object]]
+       [:code.text-xs (format/address-blob object)]]
 
-      [gui/ClipboardCopy object]
+      [gui/ClipboardCopy (format/address-blob object)]
 
       [:a.ml-2
        {:href (rfe/href :route-name/account-explorer {:address object})

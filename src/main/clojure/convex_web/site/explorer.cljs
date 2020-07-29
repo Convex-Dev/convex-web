@@ -355,7 +355,8 @@
                                       ["me" "bg-green-400" "Owned by me"]
 
                                       :else
-                                      nil)]
+                                      nil)
+              address-blob (format/address-blob address)]
           ^{:key address}
           [:tr.hover:bg-gray-100.cursor-default
            [:td.flex.items-center {:class td-class}
@@ -366,12 +367,12 @@
                                                                    {:ajax/status :ajax.status/pending
                                                                     :convex-web/account {:convex-web.account/address address}}
                                                                    :modal? true})}
-                address]
+                address-blob]
                [:a.flex-1.underline.hover:text-indigo-500.mr-2
                 {:href (rfe/href :route-name/account-explorer {:address address})}
-                [:code.text-xs address]])
+                [:code.text-xs address-blob]])
 
-             [gui/ClipboardCopy address]
+             [gui/ClipboardCopy address-blob]
 
              ;; External link
              [:a.ml-2

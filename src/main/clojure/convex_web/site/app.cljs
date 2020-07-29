@@ -13,6 +13,7 @@
             [convex-web.site.session :as session]
             [convex-web.site.account :as account]
             [convex-web.site.store]
+            [convex-web.site.format :as format]
 
             [cljs.spec.test.alpha :as stest]
 
@@ -207,7 +208,7 @@
    (for [{:convex-web.account/keys [address]} (session/?accounts)]
      ^{:key address}
      [:option {:value address}
-      address])])
+      (format/address-blob address)])])
 
 (defn Modal [{:frame/keys [uuid page state] :as frame}]
   (let [set-state (stack/make-set-state uuid)
