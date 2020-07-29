@@ -10,14 +10,13 @@
 (defn ^String address->checksum-hex [^Address address]
   (.toChecksumHex address))
 
-(defn symbol->metadata
-  "Metadata indexed by Symbol."
-  []
+(def core-metadata
+  "Core metadata indexed by Symbol."
   (reduce
     (fn [m [^Symbol sym ^Syntax syn]]
       (assoc m sym (.getMeta syn)))
     {}
-    Core/ENVIRONMENT))
+    Core/CORE_NAMESPACE))
 
 (defn con->clj [x]
   (condp instance? x
@@ -85,7 +84,7 @@
 
               :else
               (throw (ex-info "'sym' must be either a convex.core.data.Symbol or String." {:sym sym})))]
-    (get (symbol->metadata) sym)))
+    (get core-metadata sym)))
 
 (defn ^Order peer-order [^Peer peer]
   (.getPeerOrder peer))
@@ -194,21 +193,17 @@
        (transact conn)))
 
 (defn reference []
-  (->> (symbol->metadata)
+  (->> core-metadata
        (map
          (fn [[sym metadata]]
            (let [{:keys [doc]} (con->clj metadata)
 
-                 {:keys [description examples signature type]} doc
-
-                 type (when type
-                        (.getName type))
-
-                 symbol (.getName sym)]
+                 {:keys [description examples signature type]} doc]
              {:doc
-              {:description description
-               :type (keyword type)
-               :signature signature
-               :symbol symbol
-               :examples examples}})))
+              (merge {:description description
+                      :signature signature
+                      :symbol (.getName sym)
+                      :examples examples}
+                     (when type
+                       {:type (keyword type)}))})))
        (sort-by (comp :symbol :doc))))

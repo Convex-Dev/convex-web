@@ -20,7 +20,7 @@
             [org.httpkit.client :as http]
             [clojure.java.io :as io])
   (:import (convex.core Init Peer)
-           (convex.core.lang Reader)
+           (convex.core.lang Core Reader)
            (org.slf4j.bridge SLF4JBridgeHandler)))
 
 (set-init
@@ -127,15 +127,9 @@
   ;; --
 
 
-  @(http/get "http://localhost:8080/api/internal/blocks")
-  @(http/get "http://localhost:8080/api/internal/blocks-range")
+  Core/ENVIRONMENT
 
-
-  (def logging (logging/cloud-logging))
-
-  (def log-entry (logging/log-entry {:severity :error
-                                     :string-payload "Bar"}))
-
-  (logging/cloud-logging-write logging [log-entry])
+  convex/core-metadata
+  (convex/reference)
 
   )
