@@ -384,7 +384,8 @@
                                   (let [address (convex/address->checksum-hex address)
                                         status (convex/account-status-data status)]
                                     #:convex-web.account {:address address
-                                                          :status status}))
+                                                          ;; Dissoc `environment` because it's too much data.
+                                                          :status (dissoc status :convex-web.account-status/environment)}))
                                 (convex/accounts peer {:start start :end end}))})))
     (catch Exception ex
       (log/error ex (ex-message ex))
