@@ -227,7 +227,7 @@
      (when (seq examples)
        [:div.flex.flex-col.items-start.my-2
 
-        [:span.text-sm.text-black.text-opacity-75.mt-2 "Examples"]
+        [:span.text-sm.text-black.text-opacity-75.mt-2.mb-1 "Examples"]
 
         (for [{:keys [code]} examples]
           ^{:key symbol}
