@@ -21,6 +21,9 @@
 
 (defn con->clj [x]
   (condp instance? x
+    Boolean
+    x
+
     Character
     x
 
