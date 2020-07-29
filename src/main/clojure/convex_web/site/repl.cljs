@@ -377,12 +377,20 @@
         (or (get query :convex-web.query/source)
             (get transaction :convex-web.transaction/source))]]
 
-      [:div.my-2]
+      [:div.my-3]
 
       ;; -- Output
       [:div.flex.flex-col
-       [:span.text-xs.uppercase.text-gray-600
-        "Result"]
+       [:div.flex.items-baseline.mb-1
+        [:span.text-xs.uppercase.text-gray-600
+         "Result"]
+
+        (when-let [type (get-in command [:convex-web.command/metadata :doc :type])]
+          (when-not (= :any type)
+            [gui/Tooltip
+             (str "Result's type")
+             [:code.text-black.text-xs.ml-2.cursor-default.underline
+              (name type)]]))]
 
        (case status
          :convex-web.command.status/running
