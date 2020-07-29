@@ -11,7 +11,7 @@
 
             [datascript.core :as d]
             [expound.alpha :as expound])
-  (:import (convex.core.data Address Symbol ABlob)
+  (:import (convex.core.data Address Symbol ABlob AMap AVector ASet)
            (convex.core.lang Reader)))
 
 (defmulti object-string type)
@@ -44,6 +44,24 @@
       (cond
         (= :nil object)
         {:doc {:type :nil}}
+
+        (instance? Boolean object)
+        {:doc {:type :boolean}}
+
+        (instance? Number object)
+        {:doc {:type :number}}
+
+        (instance? String object)
+        {:doc {:type :string}}
+
+        (instance? AMap object)
+        {:doc {:type :map}}
+
+        (instance? AVector object)
+        {:doc {:type :vector}}
+
+        (instance? ASet object)
+        {:doc {:type :set}}
 
         (instance? Address object)
         {:doc {:type :address}}

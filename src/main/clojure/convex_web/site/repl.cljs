@@ -381,16 +381,14 @@
 
       ;; -- Output
       [:div.flex.flex-col
-       [:div.flex.items-baseline.mb-1
+       [:div.flex.mb-1
         [:span.text-xs.uppercase.text-gray-600
          "Result"]
 
         (when-let [type (get-in command [:convex-web.command/metadata :doc :type])]
-          (when-not (= :any type)
-            [gui/Tooltip
-             (str "Result's type")
-             [:code.text-black.text-xs.ml-2.cursor-default.underline
-              (name type)]]))]
+          [gui/Tooltip
+           (name type)
+           [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]])]
 
        (case status
          :convex-web.command.status/running
