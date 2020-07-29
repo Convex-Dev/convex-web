@@ -5,6 +5,7 @@
 ## Development
 
 ### Prerequisites
+- [Java Development Kit 11](https://adoptopenjdk.net/)
 - [Clojure CLI](https://clojure.org/guides/getting_started#_clojure_installer_and_cli_tools)
 
 ### App
