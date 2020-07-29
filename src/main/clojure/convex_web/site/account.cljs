@@ -419,7 +419,7 @@
 
      ;; -- Target
      [:span.text-xs.text-indigo-500.uppercase "Address"]
-     [:span.text-sm
+     [:code.text-sm
       (format/address-blob target)]
 
      (let [account (get-in state [:faucet-page/target :convex-web/account])]
