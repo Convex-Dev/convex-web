@@ -5,11 +5,7 @@
 ## Development
 
 ### Prerequisites
-- [Install Maven](https://maven.apache.org/download.cgi)
-- Install Convex
-  - Clone git@github.com:nuroko/convex.git
-  - Switch to `convex` directory and run `mvn clean install -DskipTests`
-- [Install Clojure CLI](https://clojure.org/guides/getting_started#_clojure_installer_and_cli_tools)
+- [Clojure CLI](https://clojure.org/guides/getting_started#_clojure_installer_and_cli_tools)
 
 ### App
 
