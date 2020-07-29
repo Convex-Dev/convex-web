@@ -302,6 +302,23 @@
   [:div.flex.flex-1.bg-white.rounded.shadow
    [gui/SymbolMeta2 metadata]])
 
+(defmethod Output :blob [{:convex-web.command/keys [metadata]}]
+  (let [{:keys [length hex-string]} metadata]
+    [:div.flex.flex-1.bg-white.rounded.shadow
+     [:div.flex.flex-col.p-2
+      [:span.text-xs.text-indigo-500.uppercase
+       "Length"]
+      [:code.text-xs
+       length]
+
+      [:span.text-xs.text-indigo-500.uppercase.mt-2
+       "HEX"]
+      [:div.flex
+       [:code.text-xs.mr-2
+        hex-string]
+
+       [gui/ClipboardCopy (str "0x" hex-string)]]]]))
+
 (defmethod Output :address [{:convex-web.command/keys [object]}]
   (reagent/with-let [account-ref (reagent/atom nil)
 

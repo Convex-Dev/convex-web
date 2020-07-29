@@ -11,7 +11,7 @@
 
             [datascript.core :as d]
             [expound.alpha :as expound])
-  (:import (convex.core.data Address Symbol)
+  (:import (convex.core.data Address Symbol ABlob)
            (convex.core.lang Reader)))
 
 (defmulti object-string type)
@@ -47,6 +47,11 @@
 
         (instance? Address object)
         {:doc {:type :address}}
+
+        (instance? ABlob object)
+        {:doc {:type :blob}
+         :length (.length ^ABlob object)
+         :hex-string (.toHexString ^ABlob object)}
 
         (instance? Symbol sym)
         (-> (convex/con->clj (convex/metadata sym))
