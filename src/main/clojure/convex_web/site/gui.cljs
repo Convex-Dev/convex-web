@@ -307,7 +307,7 @@
           (.execCommand js/document "copy"))}]]]))
 
 (defn Account [{:convex-web.account/keys [address status]}]
-  (let [{:convex-web.account-status/keys [balance sequence environment]} status
+  (let [{:convex-web.account-status/keys [balance sequence environment type]} status
 
         address-blob (format/address-blob address)]
     [:div.flex.flex-col.justify-center
@@ -325,6 +325,10 @@
      [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
       [:span.text-xs.text-gray-700.uppercase "Sequence"]
       [:code.mt-1.text-sm sequence]]
+
+     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
+      [:span.text-xs.text-gray-700.uppercase "Type"]
+      [:code.mt-1.text-sm type]]
 
      [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
       [:span.text-xs.text-gray-700.uppercase "Environment"]

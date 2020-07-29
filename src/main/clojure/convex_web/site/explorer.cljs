@@ -352,15 +352,6 @@
 
               me? (contains? my-addresses (str/upper-case address))
 
-              [label style tooltip] (cond
-                                      (get status :convex-web.account-status/actor?)
-                                      ["actor" "bg-indigo-500" "Address is an Actor"]
-
-                                      me?
-                                      ["me" "bg-green-400" "Owned by me"]
-
-                                      :else
-                                      nil)
               address-blob (format/address-blob address)]
           ^{:key address}
           [:tr.hover:bg-gray-100.cursor-default
