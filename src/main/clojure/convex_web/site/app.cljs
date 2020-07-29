@@ -279,11 +279,12 @@
             :on-click #(stack/push :page.id/create-account {:modal? true})}
            [:span.text-xs.uppercase "Create Account"]]]
 
-         [gui/Tooltip
-          {:title "Select Account to use"}
-          [SelectAccount]]
+         (when (seq (session/?accounts))
+           [gui/Tooltip
+            {:title "Select Account to use"}
+            [SelectAccount]])
 
-         (let [active-address (session/?active-address)]
+         (when-let [active-address (session/?active-address)]
            [gui/Tooltip
             {:title "Account details"}
             [:button.focus:outline-none.text-gray-700.hover:text-black.mx-4.w-6.h-6.rounded
@@ -296,17 +297,26 @@
 
              [gui/IconUser]]])
 
-         [gui/Tooltip
-          {:title "View Session"}
-          [:button
-           {:class
-            ["text-sm"
-             "px-2 py-1"
-             "rounded"
-             "focus:outline-none"
-             "hover:bg-gray-100 hover:shadow-md"]
-            :on-click #(stack/push :page.id/session {:modal? true})}
-           [:span.text-xs.uppercase "Session"]]]]]
+         (let [signed-in? (some? (session/?active-address))
+
+               tooltip (if signed-in?
+                         "View Session"
+                         "Login")
+
+               label (if signed-in?
+                       "Session"
+                       "Login")]
+           [gui/Tooltip
+            {:title tooltip}
+            [:button
+             {:class
+              ["text-sm"
+               "px-2 py-1"
+               "rounded"
+               "focus:outline-none"
+               "hover:bg-gray-100 hover:shadow-md"]
+              :on-click #(stack/push :page.id/session {:modal? true})}
+             [:span.text-xs.uppercase label]]])]]
 
        ;; -- Page
        [:div.relative.flex.flex-1.overflow-auto
