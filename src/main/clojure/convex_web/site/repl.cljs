@@ -391,7 +391,7 @@
 
         (when-let [type (get-in command [:convex-web.command/metadata :doc :type])]
           [gui/Tooltip
-           (name type)
+           (str/capitalize (name type))
            [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]])]
 
        (case status
