@@ -298,6 +298,10 @@
   [:div.flex.flex-1.bg-white.rounded.shadow
    [gui/SymbolMeta2 metadata]])
 
+(defmethod Output :special [{:convex-web.command/keys [metadata]}]
+  [:div.flex.flex-1.bg-white.rounded.shadow
+   [gui/SymbolMeta2 metadata]])
+
 (defmethod Output :macro [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
    [gui/SymbolMeta2 metadata]])

@@ -11,8 +11,9 @@
 
             [datascript.core :as d]
             [expound.alpha :as expound])
-  (:import (convex.core.data Address Symbol ABlob AMap AVector ASet)
-           (convex.core.lang Reader)))
+  (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList)
+           (convex.core.lang Reader Symbols)
+           (convex.core.lang.impl CoreFn)))
 
 (defmulti object-string type)
 
@@ -34,8 +35,9 @@
   (or (get query :convex-web.query/source)
       (get transaction :convex-web.transaction/source)))
 
-(defn source-metadata [{:convex-web.command/keys [status object] :as command}]
-  (let [sym (first (Reader/readAll ^String (source command)))]
+(defn result-metadata [{:convex-web.command/keys [status object] :as command}]
+  (let [source-form (when-let [source (source command)]
+                      (first (Reader/readAll source)))]
     (case status
       :convex-web.command.status/running
       {}
@@ -57,6 +59,9 @@
         (instance? AMap object)
         {:doc {:type :map}}
 
+        (instance? AList object)
+        {:doc {:type :list}}
+
         (instance? AVector object)
         {:doc {:type :vector}}
 
@@ -71,20 +76,25 @@
          :length (.length ^ABlob object)
          :hex-string (.toHexString ^ABlob object)}
 
-        (instance? Symbol sym)
-        (-> (convex/con->clj (convex/metadata sym))
-            (assoc-in [:doc :symbol] (.getName ^Symbol sym)))
+        ;; Lookup metadata for a symbol (except the quote ' symbol).
+        ;; Instead of checking the result object type, we read the source and check the first form.
+        (and (instance? Symbol source-form) (not= Symbols/QUOTE source-form))
+        (let [metadata (convex/metadata source-form)
+              metadata (convex/con->clj metadata)
+              metadata (assoc-in metadata [:doc :symbol] (.getName ^Symbol source-form))]
+          metadata)
 
-        :else
-        {:doc {:type :any}})
+        ;; This must be after the special handling above because special forms (`def`, ...) returns a Symbol.
+        (instance? Symbol object)
+        {:doc {:type :symbol}})
 
       :convex-web.command.status/error
       {:doc {:type :message}})))
 
 (defn with-metadata [command]
-  (assoc command ::metadata (if (source command)
-                              (source-metadata command)
-                              {})))
+  (if-let [metadata (result-metadata command)]
+    (assoc command ::metadata metadata)
+    command))
 
 (defn sanitize [{:convex-web.command/keys [status object error] :as command}]
   (merge (select-keys command [::id
