@@ -293,9 +293,10 @@
 (defn Spinner []
   [:div.spinner.ease-linear.rounded-full.border-4.border-t-4.border-gray-200.h-10.w-10])
 
-(defn ClipboardCopy [text & [{:keys [color background-color hover]}]]
+(defn ClipboardCopy [text & [{:keys [color background-color hover margin]}]]
   (let [id (str (random-uuid))]
     [:div
+     (merge {} (when margin {:class margin}))
      [:input.absolute
       {:id id
        :type "text"

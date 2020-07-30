@@ -374,12 +374,14 @@
 
       ;; -- Input
       [:div.flex.flex-col.items-start
-       [:span.text-xs.uppercase.text-gray-600
+       [:span.text-xs.uppercase.text-gray-600.block.mb-1
         "Source"]
 
-       [gui/Highlight
-        (or (get query :convex-web.query/source)
-            (get transaction :convex-web.transaction/source))]]
+       (let [source (or (get query :convex-web.query/source)
+                        (get transaction :convex-web.transaction/source))]
+         [:div.flex.items-center
+          [gui/Highlight source]
+          [gui/ClipboardCopy source {:margin "ml-2"}]])]
 
       [:div.my-3]
 
