@@ -284,6 +284,9 @@
               "cursor-pointer"]
              :on-click execute}]]]]))))
 
+(def output-symbol-metadata-options
+  {:show-examples? false})
+
 (defmulti Output (fn [command]
                    (get-in command [:convex-web.command/metadata :doc :type])))
 
@@ -296,15 +299,15 @@
 
 (defmethod Output :function [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
-   [gui/SymbolMeta2 metadata]])
+   [gui/SymbolMeta2 (merge metadata output-symbol-metadata-options)]])
 
 (defmethod Output :special [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
-   [gui/SymbolMeta2 metadata]])
+   [gui/SymbolMeta2 (merge metadata output-symbol-metadata-options)]])
 
 (defmethod Output :macro [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
-   [gui/SymbolMeta2 metadata]])
+   [gui/SymbolMeta2 (merge metadata output-symbol-metadata-options)]])
 
 (defmethod Output :blob [{:convex-web.command/keys [metadata]}]
   (let [{:keys [length hex-string]} metadata]

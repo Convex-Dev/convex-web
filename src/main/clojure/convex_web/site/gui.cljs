@@ -196,7 +196,7 @@
         (let [code (str code)]
           ^{:key code} [:p.text-sm.mt-1 code]))])])
 
-(defn SymbolMeta2 [{:keys [doc]}]
+(defn SymbolMeta2 [{:keys [doc show-examples?] :or {show-examples? true}}]
   (let [{:keys [symbol examples type description signature]} doc]
     [:div.flex.flex-col.flex-1.text-sm.p-2
      [:div.flex.items-center
@@ -235,17 +235,18 @@
      [:span.my-2 description]
 
      ;; -- Examples
-     (when (seq examples)
-       [:div.flex.flex-col.items-start.my-2
+     (when show-examples?
+       (when (seq examples)
+         [:div.flex.flex-col.items-start.my-2
 
-        [:span.text-sm.text-black.text-opacity-75.mt-2.mb-1 "Examples"]
+          [:span.text-sm.text-black.text-opacity-75.mt-2.mb-1 "Examples"]
 
-        (for [{:keys [code]} examples]
-          ^{:key symbol}
-          [:pre.text-xs.mb-1
-           [:code.clojure.rounded
-            {:ref highlight-block}
-            code]])])]))
+          (for [{:keys [code]} examples]
+            ^{:key symbol}
+            [:pre.text-xs.mb-1
+             [:code.clojure.rounded
+              {:ref highlight-block}
+              code]])]))]))
 
 (defn DefaultButton [attrs child]
   (let [disabled? (get attrs :disabled)]
