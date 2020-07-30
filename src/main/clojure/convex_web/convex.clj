@@ -19,46 +19,50 @@
     {}
     Core/CORE_NAMESPACE))
 
-(defn con->clj [x]
-  (condp instance? x
-    Boolean
-    x
+(defn con->clj
+  ([x]
+   (con->clj x {:missing-mapping str}))
+  ([x & [{:keys [missing-mapping]}]]
+   (let [con->clj #(con->clj % {:missing-mapping missing-mapping})]
+     (condp instance? x
+       Boolean
+       x
 
-    Character
-    x
+       Character
+       x
 
-    Long
-    x
+       Long
+       x
 
-    Double
-    x
+       Double
+       x
 
-    String
-    x
+       String
+       x
 
-    Keyword
-    (keyword (.getName x))
+       Keyword
+       (keyword (.getName x))
 
-    Symbol
-    (symbol (some-> x (.getNamespace) (.getName)) (.getName x))
+       Symbol
+       (symbol (some-> x (.getNamespace) (.getName)) (.getName x))
 
-    AList
-    (into '() (map con->clj x))
+       AList
+       (into '() (map con->clj x))
 
-    AVector
-    (into [] (map con->clj x))
+       AVector
+       (into [] (map con->clj x))
 
-    AMap
-    (reduce
-      (fn [m [k v]]
-        (assoc m (con->clj k) (con->clj v)))
-      {}
-      x)
+       AMap
+       (reduce
+         (fn [m [k v]]
+           (assoc m (con->clj k) (con->clj v)))
+         {}
+         x)
 
-    ASet
-    (into #{} (map con->clj x))
+       ASet
+       (into #{} (map con->clj x))
 
-    nil))
+       (missing-mapping x)))))
 
 (defn ^Address address [x]
   (cond
