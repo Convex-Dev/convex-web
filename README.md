@@ -1,4 +1,4 @@
-![tests](https://github.com/Convex-Dev/convex-web/workflows/tests/badge.svg)
+![Tests](https://github.com/Convex-Dev/convex-web/workflows/Tests/badge.svg)
 
 ## Development
 
