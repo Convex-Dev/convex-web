@@ -341,12 +341,13 @@
       [:span.text-xs.text-gray-700.uppercase "Type"]
       [:code.mt-1.text-sm type]]
 
-     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
+     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10.overflow-auto
       [:span.text-xs.text-gray-700.uppercase "Environment"]
-      (for [[sym metadata] environment]
-        ^{:key sym}
-        [:div.w-full.mb-2.b.border-b
-         [SymbolMeta sym metadata]])]]))
+      (let [environment (sort-by (comp str first) environment)]
+        (for [[sym metadata] environment]
+          ^{:key sym}
+          [:div.w-full.mb-2.b.border-b
+           [SymbolMeta sym metadata]]))]]))
 
 (defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
   [:div.flex.p-2

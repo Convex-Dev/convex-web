@@ -280,7 +280,7 @@
      [:span (get-in error [:response :error :message])]]
 
     :ajax.status/success
-    [:div.flex.flex-1.justify-center
+    [:div.flex.flex-1.justify-center.my-4
      [gui/Account account]]))
 
 (defn- get-account [_ state set-state]
