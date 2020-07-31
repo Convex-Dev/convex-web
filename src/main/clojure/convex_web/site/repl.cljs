@@ -114,7 +114,9 @@
                           '(defn identity [x]
                              x)))
 
-                     '(import my-library-address :as my-library))]
+                     '(import my-library-address :as my-library)
+
+                     '(my-library/identity "Hello, world!"))]
        [:div.flex.flex-col.flex-1.py-2
         [:div.flex.justify-between.items-center
          [Title "Library"]
