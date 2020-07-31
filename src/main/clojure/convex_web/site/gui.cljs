@@ -170,31 +170,39 @@
      {:ref highlight-block}
      source]]])
 
-(defn SymbolMeta [sym metadata]
-  [:div.flex.flex-col
-   [:code.font-bold.text-xs.text-indigo-500.mb-2 sym]
+(defn SymbolType [type]
+  [:div.px-1.border.rounded-full
+   {:class (case type
+             :function
+             "bg-blue-100"
 
-   ;; -- Signature
-   (when-let [signature (get-in metadata [:doc :signature])]
-     [:div.flex.flex-col
-      [:span.text-xs.font-bold.mb-1 "Signature"]
+             :macro
+             "bg-purple-100"
 
-      (for [{:keys [params]} signature]
-        (let [params (str (vec params))]
-          ^{:key params} [:p.text-sm.m-0.mb-1 params]))])
+             :special
+             "bg-orange-100"
 
-   ;; -- Description
-   (when-let [description (get-in metadata [:doc :description])]
-     [:p.text-sm.mt-1 description])
+             "bg-gray-100")}
+   [:code.text-xs.text-gray-700 type]])
 
-   ;; -- Examples
-   (when-let [examples (get-in metadata [:doc :examples])]
-     [:div.flex.flex-col.mt-2
-      [:span.text-xs.font-bold "Examples"]
+(defn SymbolMetaStrip [sym metadata]
+  [:div.flex.justify-between.items-center
 
-      (for [{:keys [code]} examples]
-        (let [code (str code)]
-          ^{:key code} [:p.text-sm.mt-1 code]))])])
+   [:div
+    {:class "flex items-center justify-between w-1/5"}
+    ;; -- Symbol
+    [:code.font-bold.text-xs.text-indigo-500.mr-4 sym]
+
+    ;; -- Type
+    (when-let [type (get-in metadata [:doc :type])]
+      [SymbolType type])]
+
+   [:div
+    {:class "flex justify-between w-4/5"}
+
+    ;; -- Description
+    (when-let [description (get-in metadata [:doc :description])]
+      [:p.text-sm.text-gray-800.ml-10 description])]])
 
 (defn SymbolMeta2 [{:keys [doc show-examples?] :or {show-examples? true}}]
   (let [{:keys [symbol examples type description signature]} doc]
@@ -202,23 +210,11 @@
      [:div.flex.items-center
 
       ;; -- Symbol
-      [:code.font-bold symbol]
+      [:code.font-bold.mr-2 symbol]
 
       ;; -- Type
       (when type
-        [:div.ml-2.px-1.border.rounded-full
-         {:class (case type
-                   :function
-                   "bg-blue-100"
-
-                   :macro
-                   "bg-purple-100"
-
-                   :special
-                   "bg-orange-100"
-
-                   "bg-gray-100")}
-         [:code.text-xs.text-gray-700 type]])
+        [SymbolType type])
 
       [:a.ml-2
        {:href (rfe/href :route-name/documentation-reference {} {:symbol symbol})
@@ -343,13 +339,13 @@
       [:span.text-xs.text-gray-700.uppercase "Type"]
       [:code.mt-1.text-sm type]]
 
-     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10.overflow-auto
+     [:div.flex.flex-col.items-center.w-full.px-10.mt-10.overflow-auto
       [:span.text-xs.text-gray-700.uppercase "Environment"]
       (let [environment (sort-by (comp str first) environment)]
         (for [[sym metadata] environment]
           ^{:key sym}
-          [:div.w-full.mb-2.b.border-b
-           [SymbolMeta sym metadata]]))]]))
+          [:div.w-full.py-2.px-1.hover:bg-gray-100.rounded
+           [SymbolMetaStrip sym (:convex-web.syntax/meta metadata)]]))]]))
 
 (defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
   [:div.flex.p-2

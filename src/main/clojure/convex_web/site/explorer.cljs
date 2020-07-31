@@ -273,14 +273,14 @@
   (case status
     :ajax.status/pending
     [:div.flex.flex-col.flex-1.justify-center.items-center
-     [:span "Loading"]]
+     [gui/Spinner]]
 
     :ajax.status/error
     [:div.flex.flex-col.flex-1.justify-center.items-center
      [:span (get-in error [:response :error :message])]]
 
     :ajax.status/success
-    [:div.flex.flex-1.justify-center.my-4
+    [:div.flex.flex-1.justify-center.my-4.mx-10
      [gui/Account account]]))
 
 (defn- get-account [_ state set-state]

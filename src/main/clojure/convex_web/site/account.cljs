@@ -56,7 +56,8 @@
      [gui/Spinner]]
 
     :ajax.status/success
-    [MyAccount account]
+    [:div.flex.flex-col.my-4.mx-10
+     [MyAccount account]]
 
     :ajax.status/error
     [:div.flex.flex-col.flex-1.justify-center.items-center
