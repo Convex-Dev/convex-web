@@ -250,28 +250,51 @@
            [:span.text-xs.uppercase "Create Account"]]]]
         [:div.flex.border.rounded
 
-         [codemirror/CodeMirror
-          [:div.overflow-scroll.flex-shrink-0.flex-1
-           {:style
-            {:height "100px"}}]
-          {:configuration {:lineNumbers false
-                           :value @source-ref}
+         (let [enter-extra-key (fn []
+                                 (if-let [editor @editor-ref]
+                                   (let [^js pos (-> editor
+                                                     (codemirror/cm-get-doc)
+                                                     (codemirror/cm-get-cursor))
 
-           :on-mount (fn [_ editor]
-                       (->> (codemirror/extra-keys {:shift-enter execute})
-                            (codemirror/set-extra-keys editor))
+                                         last-line (-> editor
+                                                       (codemirror/cm-get-doc)
+                                                       (codemirror/cm-last-line))
 
-                       (reset! editor-ref editor)
+                                         line (-> editor
+                                                  (codemirror/cm-get-doc)
+                                                  (codemirror/cm-get-line last-line))
 
-                       (codemirror/cm-focus editor))
-           :on-update (fn [_ editor]
-                        (->> (codemirror/extra-keys {:shift-enter execute})
-                             (codemirror/set-extra-keys editor))
+                                         last-line? (= last-line (.-line pos))
+                                         last-ch? (= (count line) (.-ch pos))]
 
-                        (codemirror/cm-focus editor))
+                                     (if (and last-line? last-ch?)
+                                       (execute)
+                                       codemirror/pass))
+                                   codemirror/pass))]
+           [codemirror/CodeMirror
+            [:div.overflow-scroll.flex-shrink-0.flex-1
+             {:style
+              {:height "100px"}}]
+            {:configuration {:lineNumbers false
+                             :value @source-ref}
 
-           :events {:editor {"change" (fn [editor _]
-                                        (reset! source-ref (codemirror/cm-get-value editor)))}}}]
+             :on-mount (fn [_ editor]
+                         (->> (codemirror/extra-keys {:enter enter-extra-key
+                                                      :shift-enter execute})
+                              (codemirror/set-extra-keys editor))
+
+                         (reset! editor-ref editor)
+
+                         (codemirror/cm-focus editor))
+             :on-update (fn [_ editor]
+                          (->> (codemirror/extra-keys {:enter enter-extra-key
+                                                       :shift-enter execute})
+                               (codemirror/set-extra-keys editor))
+
+                          (codemirror/cm-focus editor))
+
+             :events {:editor {"change" (fn [editor _]
+                                          (reset! source-ref (codemirror/cm-get-value editor)))}}}])
 
          [:div.flex.flex-col.justify-center.p-1.bg-gray-100
           [gui/Tooltip
