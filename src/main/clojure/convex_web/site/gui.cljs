@@ -319,7 +319,7 @@
   (let [{:convex-web.account-status/keys [balance sequence environment type]} status
 
         address-blob (format/address-blob address)]
-    [:div.flex.flex-col.justify-center
+    [:div.flex.flex-col.justify-center.items-center
 
      [:div.flex.flex-col.items-center.w-full.leading-none
       [:span.text-xs.text-gray-700.uppercase "Balance"]
@@ -339,13 +339,14 @@
       [:span.text-xs.text-gray-700.uppercase "Type"]
       [:code.mt-1.text-sm type]]
 
-     [:div.flex.flex-col.items-center.w-full.px-10.mt-10.overflow-auto
-      [:span.text-xs.text-gray-700.uppercase "Environment"]
-      (let [environment (sort-by (comp str first) environment)]
-        (for [[sym metadata] environment]
-          ^{:key sym}
-          [:div.w-full.py-2.px-1.hover:bg-gray-100.rounded
-           [SymbolMetaStrip sym (:convex-web.syntax/meta metadata)]]))]]))
+     [:span.text-xs.text-gray-700.uppercase.mt-10 "Environment"]
+     [:div.flex.flex-col.items-center.w-full.px-10.overflow-auto.border.rounded.p-2.mt-1.bg-gray-100
+      [:div.flex.flex-col.w-full.divide-y
+       (let [environment (sort-by (comp str first) environment)]
+         (for [[sym metadata] environment]
+           ^{:key sym}
+           [:div.w-full.py-2.px-1.hover:bg-gray-100.rounded
+            [SymbolMetaStrip sym (:convex-web.syntax/meta metadata)]]))]]]))
 
 (defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
   [:div.flex.p-2
