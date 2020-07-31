@@ -186,9 +186,7 @@
                                           :type (cond
                                                   library? :library
                                                   actor? :actor
-                                                  :else :user)}
-             (when-let [actor-args (.getActorArgs account-status)]
-               #:convex-web.account-status {:actor-args (str actor-args)})))))
+                                                  :else :user)}))))
 
 (defn hero-sequence [^Peer peer]
   (-> (.getConsensusState peer)
