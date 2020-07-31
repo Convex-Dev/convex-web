@@ -53,7 +53,7 @@
   aero {:mvn/version "1.1.6"}
   ring/ring-core {:mvn/version "1.8.1"}
   ring/ring-defaults {:mvn/version "0.3.2"}
-  http-kit {:mvn/version "2.3.0"}
+  http-kit {:mvn/version "2.4.0"}
   compojure {:mvn/version "1.6.1"}
   hiccup {:mvn/version "1.0.5"}
   re-frame {:mvn/version "1.0.0"
