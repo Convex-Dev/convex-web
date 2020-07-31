@@ -10,7 +10,7 @@
 
 (s/def :convex-web/amount nat-int?)
 
-(s/def :convex-web/sequence pos-int?)
+(s/def :convex-web/sequence int?)
 
 ;; -- Runtime
 
@@ -65,7 +65,7 @@
 
 ;; -- Account Status
 
-(s/def :convex-web.account-status/sequence nat-int?)
+(s/def :convex-web.account-status/sequence :convex-web/sequence)
 (s/def :convex-web.account-status/balance nat-int?)
 
 (s/def :convex-web/account-status (s/keys :req [:convex-web.account-status/sequence
