@@ -109,10 +109,12 @@
      [:hr.my-2]
 
      (let [example (make-example
-                     '(def my-library
-                        (deploy (fn []
-                                  (defn identity [x]
-                                    x)))))]
+                     '(def my-library-address
+                        (deploy
+                          '(defn identity [x]
+                             x)))
+
+                     '(import my-library-address :as my-library))]
        [:div.flex.flex-col.flex-1.py-2
         [:div.flex.justify-between.items-center
          [Title "Library"]
@@ -123,19 +125,18 @@
      [:hr.my-2]
 
      (let [example (make-example
-                     '(defn storage-example-init []
-                        (def stored-data nil)
-
-                        (defn get []
-                          stored-data)
-
-                        (defn set [x]
-                          (def stored-data x))
-
-                        (export get set))
-
                      '(def storage-example-address
-                        (deploy storage-example-init)))]
+                        (deploy
+                          '(do
+                             (def stored-data nil)
+
+                             (defn get []
+                               stored-data)
+
+                             (defn set [x]
+                               (def stored-data x))
+
+                             (export get set)))))]
        [:div.flex.flex-col.flex-1.py-2
         [:div.flex.justify-between.items-center
          [Title "Simple Storage Actor"]
@@ -146,19 +147,18 @@
      [:hr.my-2]
 
      (let [example (make-example
-                     '(defn storage-example-init []
-                        (def stored-data nil)
-
-                        (defn get []
-                          stored-data)
-
-                        (defn set [x]
-                          (def stored-data x))
-
-                        (export get set))
-
                      '(def storage-example-address
-                        (deploy storage-example-init))
+                        (deploy
+                          '(do
+                             (def stored-data nil)
+
+                             (defn get []
+                               stored-data)
+
+                             (defn set [x]
+                               (def stored-data x))
+
+                             (export get set))))
 
                      '(call storage-example-address (set 1))
                      '(call storage-example-address (get)))]
@@ -172,19 +172,18 @@
      [:hr.my-2]
 
      (let [example (make-example
-                     '(defn subcurrency-example-init []
-                        (def owner *caller*)
+                     '(deploy
+                        '(do
+                           (def owner *caller*)
 
-                        (defn contract-transfer [receiver amount]
-                          (assert (= owner *caller*))
-                          (transfer receiver amount))
+                           (defn contract-transfer [receiver amount]
+                             (assert (= owner *caller*))
+                             (transfer receiver amount))
 
-                        (defn contract-balance []
-                          *balance*)
+                           (defn contract-balance []
+                             *balance*)
 
-                        (export contract-transfer contract-balance))
-
-                     '(deploy subcurrency-example-init))]
+                           (export contract-transfer contract-balance))))]
        [:div.flex.flex-col.flex-1.py-2
         [:div.flex.justify-between.items-center.mt-4
          [Title "Subcurrency Actor"]
