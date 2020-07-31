@@ -79,10 +79,10 @@
         ;; Lookup metadata for a symbol (except the quote ' symbol).
         ;; Instead of checking the result object type, we read the source and check the first form.
         (and (instance? Symbol source-form) (not= Symbols/QUOTE source-form))
-        (let [metadata (convex/metadata source-form)
-              metadata (convex/con->clj metadata)
-              metadata (assoc-in metadata [:doc :symbol] (.getName ^Symbol source-form))]
-          metadata)
+        (some-> source-form
+                (convex/metadata)
+                (convex/con->clj)
+                (assoc-in [:doc :symbol] (.getName ^Symbol source-form)))
 
         ;; This must be after the special handling above because special forms (`def`, ...) returns a Symbol.
         (instance? Symbol object)
