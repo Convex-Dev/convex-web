@@ -350,6 +350,10 @@
 
        [gui/ClipboardCopy (str "0x" hex-string)]]]]))
 
+(defmethod Output :error [{:convex-web.command/keys [error]}]
+  (let [{:keys [code message]} error]
+    [:code.text-xs.text-red-500 (str (str/capitalize (name code)) " " message)]))
+
 (defmethod Output :address [{:convex-web.command/keys [object]}]
   (reagent/with-let [account-ref (reagent/atom nil)
 
@@ -423,18 +427,16 @@
            (str/capitalize (name type))
            [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]])]
 
-       (case status
-         :convex-web.command.status/running
-         [:code.text-yellow-500 "..."]
+       [:div.flex
+        (case status
+          :convex-web.command.status/running
+          [gui/SpinnerSmall]
 
-         :convex-web.command.status/error
-         [:pre.bg-white.m-0.p-2.rounded.shadow.border.border-red-500
-          [:code.text-xs.text-red-500
-           error]]
+          :convex-web.command.status/error
+          [Output command]
 
-         :convex-web.command.status/success
-         [:div.flex
-          [Output command]])]])])
+          :convex-web.command.status/success
+          [Output command])]]])])
 
 (defn QueryRadio [state set-state]
   [:label

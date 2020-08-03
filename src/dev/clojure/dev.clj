@@ -39,7 +39,7 @@
 
 (defmacro execute-query [& form]
   `(let [^String source# ~(str/join " " form)]
-     (.getResult (.executeQuery (peer) (peer/wrap-do (Reader/readAll source#)) nil))))
+     (.getResult (.executeQuery (peer) (peer/wrap-do (Reader/readAll source#)) Init/HERO))))
 
 (defn db []
   @(system/datascript-conn system))
@@ -94,8 +94,8 @@
   (commands :convex-web.command.status/error)
 
 
-  (send-query 1 2 3)
-  (execute-query 1.1)
+  (send-query :person/name)
+  (execute-query :person/name)
 
   (execute-query
     (lookup-syntax 'inc))

@@ -1,17 +1,18 @@
 (ns convex-web.consumer
   (:require [convex-web.command :as command]
+            [convex-web.convex :as convex]
 
             [datascript.core :as d]
             [com.brunobonacci.mulog :as u])
-  (:import (convex.net ResultConsumer Message)))
+  (:import (convex.net ResultConsumer)))
 
 (defn ^ResultConsumer result-consumer [{:keys [handle-result handle-error]}]
   (proxy [ResultConsumer] []
     (handleResult [id object]
       (handle-result id object))
 
-    (handleError [id message]
-      (handle-error id message))))
+    (handleError [id code message]
+      (handle-error id code message))))
 
 (defn ^ResultConsumer persistent-consumer [datascript-conn]
   (result-consumer
@@ -35,7 +36,7 @@
                   :exception ex))))
 
      :handle-error
-     (fn [^Long id ^Message message]
+     (fn [^Long id ^Object code ^Object message]
        (try
          (let [{::command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
            (u/log :logging.event/repl-error
@@ -47,7 +48,9 @@
 
          (d/transact! datascript-conn [#:convex-web.command{:id id
                                                             :status :convex-web.command.status/error
-                                                            :error message}])
+                                                            :error
+                                                            {:code (convex/con->clj code)
+                                                             :message (convex/con->clj message)}}])
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error

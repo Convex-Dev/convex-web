@@ -6,14 +6,12 @@
 
             [clojure.tools.logging :as log]
             [clojure.spec.alpha :as s]
-            [clojure.string :as str]
             [clojure.pprint :as pprint]
 
             [datascript.core :as d]
             [expound.alpha :as expound])
   (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList)
-           (convex.core.lang Reader Symbols)
-           (convex.core.lang.impl CoreFn)))
+           (convex.core.lang Reader Symbols)))
 
 (defmulti object-string type)
 
@@ -89,7 +87,8 @@
         {:doc {:type :symbol}})
 
       :convex-web.command.status/error
-      {:doc {:type :message}})))
+      (merge {:doc {:type :error}
+              :type :error}))))
 
 (defn with-metadata [command]
   (if-let [metadata (result-metadata command)]
@@ -109,7 +108,7 @@
            {::object (object-string object)}
 
            :convex-web.command.status/error
-           {::error (object-string error)})))
+           {::error error})))
 
 (defn query-all [db]
   (let [query '[:find [(pull ?e [*]) ...]
