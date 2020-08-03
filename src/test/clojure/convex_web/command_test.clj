@@ -117,7 +117,11 @@
            (-> (c/result-metadata {::c/transaction {:convex-web.transaction/source "def"}
                                    ::c/status :convex-web.command.status/success
                                    ::c/object (convex/execute context defn)})
-               (select-keys [:type :doc]))))))
+               (select-keys [:type :doc])))))
+
+  (testing "Error"
+    (is (= {:type :error}
+           (c/result-metadata {::c/status :convex-web.command.status/error})))))
 
 (deftest prune-test
   (is (= {::c/status :convex-web.command.status/running}
