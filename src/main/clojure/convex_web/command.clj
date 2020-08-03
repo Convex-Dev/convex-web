@@ -17,13 +17,12 @@
 
 (defmethod object-string :default
   [object]
-  (let [object-clojure (or (convex/datafy object) (str object))]
-    (try
-      (with-out-str (pprint/pprint object-clojure))
-      (catch Exception ex
-        (log/error ex "Failed to pretty print object - fallback to 'str'.")
+  (try
+    (with-out-str (pprint/pprint (convex/datafy object)))
+    (catch Exception ex
+      (log/error ex "Failed to pretty print object - fallback to 'str'.")
 
-        (str object-clojure)))))
+      (str object))))
 
 (defmethod object-string Address
   [^Address object]
