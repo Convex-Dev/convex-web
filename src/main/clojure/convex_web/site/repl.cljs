@@ -15,12 +15,6 @@
             [reagent.core :as reagent]
             [reitit.frontend.easy :as rfe]))
 
-(defn toggle-examples [state]
-  (update state :convex-web.repl/show-examples? not))
-
-(defn show-examples? [state]
-  (:convex-web.repl/show-examples? state))
-
 (defn mode [state]
   (:convex-web.repl/mode state))
 
@@ -311,14 +305,27 @@
 (def output-symbol-metadata-options
   {:show-examples? false})
 
+(defmulti error-message :code)
+
+(defmethod error-message :default
+  [{:keys [code message]}]
+  (let [code (some-> code
+                     (name)
+                     (str/capitalize)
+                     (str ": "))]
+    (str code message)))
+
+(defmethod error-message :UNDECLARED
+  [{:keys [message]}]
+  (str "'" message  "' is undeclared."))
+
+(defmethod error-message :CAST
+  [{:keys [message]}]
+  (str "Cast error: " message  "."))
+
 (defn ErrorOutput [{:convex-web.command/keys [error]}]
-  (let [{:keys [code message]} error]
-    [:code.text-xs.text-red-500
-     (let [code (some-> code
-                        (name)
-                        (str/capitalize)
-                        (str ": "))]
-       (str code message))]))
+  [:code.text-xs.text-red-500
+   (error-message error)])
 
 (defmulti Output (fn [command]
                    (get-in command [:convex-web.command/metadata :type])))
