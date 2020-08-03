@@ -98,14 +98,16 @@
   (commands :convex-web.command.status/success)
   (commands :convex-web.command.status/error)
 
+  ;; -- Execute
+
   (execute nil)
   (execute 1)
   (execute \h)
   (execute "Hello")
   (execute (map inc [1 2 3]))
+  (execute x)
 
-  (execute-query
-    (lookup-syntax 'inc))
+  ;; --
 
 
   (def status (convex/account-status (peer) "3333333333333333333333333333333333333333333333333333333333333333"))

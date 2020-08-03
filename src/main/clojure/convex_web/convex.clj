@@ -8,8 +8,11 @@
            (convex.net Connection)))
 
 (defmacro execute [context form]
-  `(let [^String source# ~(pr-str form)]
-     (.getResult (.execute ~context (.getResult (.expandCompile ~context (Reader/read source#)))))))
+  `(let [^String source# ~(pr-str form)
+         context# (.execute ~context (.getResult (.expandCompile ~context (Reader/read source#))))]
+     (if (.isExceptional context#)
+       (.getExceptional context#)
+       (.getResult context#))))
 
 (defn ^String address->checksum-hex [^Address address]
   (.toChecksumHex address))
