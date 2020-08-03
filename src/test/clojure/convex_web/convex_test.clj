@@ -1,39 +1,43 @@
 (ns convex-web.convex-test
   (:require [clojure.test :refer :all]
             [convex-web.convex :as convex])
-  (:import (convex.core.data Keyword Symbol Address Vectors Maps Lists Sets)))
+  (:import (convex.core.data Keyword Symbol Address Vectors Maps Lists Sets)
+           (convex.core.lang Context)
+           (convex.core Init)))
+
+(def context (Context/createFake Init/INITIAL_STATE))
 
 (deftest con->clj-test
   (testing "Char"
-    (is (char? (convex/con->clj \a))))
+    (is (char? (convex/con->clj (convex/execute context \n)))))
 
   (testing "String"
-    (is (string? (convex/con->clj "String"))))
+    (is (string? (convex/con->clj (convex/execute context "String")))))
 
   (testing "Long"
-    (is (double (convex/con->clj 1))))
+    (is (instance? Long (convex/con->clj (convex/execute context 1)))))
 
   (testing "Double"
-    (is (double (convex/con->clj 1.0))))
+    (is (instance? Double (convex/con->clj (convex/execute context 1.0)))))
 
   (testing "Keyword"
-    (is (keyword? (convex/con->clj (Keyword/create "a")))))
+    (is (keyword? (convex/con->clj (convex/execute context :a)))))
 
   (testing "Symbol"
-    (is (symbol? (convex/con->clj (Symbol/create "a"))))
-    (is (symbol? (convex/con->clj (Symbol/createWithNamespace "f" "core")))))
+    (is (symbol? (convex/con->clj (convex/execute context 's))))
+    (is (symbol? (convex/con->clj (convex/execute context 'a/b)))))
 
   (testing "List"
-    (is (list? (convex/con->clj (Lists/empty)))))
+    (is (list? (convex/con->clj (convex/execute context '())))))
 
   (testing "Vector"
-    (is (vector? (convex/con->clj (Vectors/empty)))))
+    (is (vector? (convex/con->clj (convex/execute context [])))))
 
   (testing "HashMap"
-    (is (map? (convex/con->clj (Maps/empty)))))
+    (is (map? (convex/con->clj (convex/execute context {})))))
 
   (testing "Set"
-    (is (set? (convex/con->clj (Sets/empty)))))
+    (is (set? (convex/con->clj (convex/execute context #{})))))
 
   (testing "Custom types"
     (let [address (Address/fromHex "D0F65BB5d87316D6b7d74dbb93da3D7E416f8B0aF8FffbBD1f276A15f4907bfE")]
