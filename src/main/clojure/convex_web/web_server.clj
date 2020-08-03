@@ -180,7 +180,10 @@
         (let [command' (command/execute context command)]
           (successful-response command'))))
     (catch Throwable ex
-      (u/log :logging.event/system-error :severity :error :message (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message (ex-message ex)
+             :exception ex)
 
       server-error-response)))
 
@@ -208,7 +211,10 @@
                                                  ::account/owner
                                                  ::account/created-at])))
     (catch Exception ex
-      (u/log :logging.event/system-error :severity :error :message (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message (ex-message ex)
+             :exception ex)
 
       server-error-response)))
 
@@ -243,7 +249,10 @@
                                                      ::account/owner
                                                      ::account/created-at])))))
     (catch Exception ex
-      (u/log :logging.event/system-error :severity :error :message (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message (ex-message ex)
+             :exception ex)
 
       server-error-response)))
 
@@ -326,7 +335,8 @@
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
-             :message (ex-message ex))
+             :message (ex-message ex)
+             :exception ex)
 
       server-error-response)))
 
@@ -399,7 +409,9 @@
           account-status (try
                            (convex/account-status peer address)
                            (catch Throwable ex
-                             (u/log :logging.event/system-error :message (str "Failed to read Account Status " address ". Exception:" ex))))
+                             (u/log :logging.event/system-error
+                                    :message (str "Failed to read Account Status " address ". Exception:" ex)
+                                    :exception ex)))
 
           account-status-data (convex/account-status-data account-status)]
       (if account-status

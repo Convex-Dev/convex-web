@@ -31,7 +31,8 @@
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error
-                  :message (str "Failed to transact object " id " successful result." ex)))))
+                  :message (str "Failed to transact object " id " successful result." ex)
+                  :exception ex))))
 
      :handle-error
      (fn [^Long id ^Message message]
@@ -50,4 +51,5 @@
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error
-                  :message (str "Failed to transact object " id " error result. " ex)))))}))
+                  :message (str "Failed to transact object " id " error result. " ex)
+                  :exception ex))))}))
