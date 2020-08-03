@@ -8,6 +8,14 @@
 
 (def context (Context/createFake Init/INITIAL_STATE))
 
+(deftest object-string-test
+  (testing "Default"
+    (is (= "{:a 1}\n" (c/object-string (convex/execute context {:a 1})))))
+
+  (testing "Address"
+    (is (= (.toChecksumHex (convex/execute context *address*))
+           (c/object-string (convex/execute context *address*))))))
+
 (deftest result-metadata-test
   (testing "Nil"
     (is (= {:type :nil}
