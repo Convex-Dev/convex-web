@@ -16,6 +16,36 @@
     (is (= (.toChecksumHex (convex/execute context *address*))
            (c/object-string (convex/execute context *address*))))))
 
+(deftest result-test
+  (testing "Address"
+    (is (= (let [a (convex/execute context *address*)]
+             {::c/status :convex-web.command.status/success
+              ::c/object
+              {:checksum-hex (.toChecksumHex a)
+               :hex-string (.toHexString a)}})
+           (c/result {::c/status :convex-web.command.status/success
+                      ::c/object (convex/execute context *address*)}))))
+
+  (testing "Blob"
+    (is (= (let [a (convex/execute context *address*)]
+             {::c/status :convex-web.command.status/success
+              ::c/object
+              {:hex-string (.toHexString a)
+               :length 32}})
+           (c/result {::c/status :convex-web.command.status/success
+                      ::c/object (convex/execute context (blob *address*))}))))
+
+  (testing "Default"
+    (is (= {::c/status :convex-web.command.status/success
+            ::c/object {:a 1}}
+           (c/result {::c/status :convex-web.command.status/success
+                      ::c/object (convex/execute context {:a 1})})))
+
+    (is (= {::c/status :convex-web.command.status/success
+            ::c/object "map"}
+           (c/result {::c/status :convex-web.command.status/success
+                      ::c/object (convex/execute context map)})))))
+
 (deftest result-metadata-test
   (testing "Nil"
     (is (= {:type :nil}

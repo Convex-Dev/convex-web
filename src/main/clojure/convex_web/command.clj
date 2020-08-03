@@ -34,6 +34,28 @@
   (or (get query :convex-web.query/source)
       (get transaction :convex-web.transaction/source)))
 
+(defn result [{:convex-web.command/keys [status object error] :as command}]
+  (merge command (case status
+                   :convex-web.command.status/running
+                   {}
+
+                   :convex-web.command.status/success
+                   {::object
+                    (cond
+                      (instance? Address object)
+                      {:hex-string (.toHexString object)
+                       :checksum-hex (.toChecksumHex object)}
+
+                      (instance? ABlob object)
+                      {:length (.length ^ABlob object)
+                       :hex-string (.toHexString ^ABlob object)}
+
+                      :else
+                      (convex/datafy object))}
+
+                   :convex-web.command.status/error
+                   {})))
+
 (defn result-metadata [{:convex-web.command/keys [status object] :as command}]
   (let [source-form (when-let [source (source command)]
                       (first (Reader/readAll source)))]
