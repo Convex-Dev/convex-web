@@ -312,7 +312,7 @@
   {:show-examples? false})
 
 (defmulti Output (fn [command]
-                   (get-in command [:convex-web.command/metadata :doc :type])))
+                   (get-in command [:convex-web.command/metadata :type])))
 
 (defmethod Output :default [{:convex-web.command/keys [object]}]
   [gui/Highlight object])

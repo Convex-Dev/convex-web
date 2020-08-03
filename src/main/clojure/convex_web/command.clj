@@ -43,63 +43,52 @@
       :convex-web.command.status/success
       (cond
         (= :nil object)
-        {:type :nil
-         :doc {:type :nil}}
+        {:type :nil}
 
         (instance? Boolean object)
-        {:type :boolean
-         :doc {:type :boolean}}
+        {:type :boolean}
 
         (instance? Number object)
-        {:type :number
-         :doc {:type :number}}
+        {:type :number}
 
         (instance? String object)
-        {:type :string
-         :doc {:type :string}}
+        {:type :string}
 
         (instance? AMap object)
-        {:type :map
-         :doc {:type :map}}
+        {:type :map}
 
         (instance? AList object)
-        {:type :list
-         :doc {:type :list}}
+        {:type :list}
 
         (instance? AVector object)
-        {:type :vector
-         :doc {:type :vector}}
+        {:type :vector}
 
         (instance? ASet object)
-        {:type :set
-         :doc {:type :set}}
+        {:type :set}
 
         (instance? Address object)
-        {:type :address
-         :doc {:type :address}}
+        {:type :address}
 
         (instance? ABlob object)
-        {:doc {:type :blob}
-         :type :blob
+        {:type :blob
          :length (.length ^ABlob object)
          :hex-string (.toHexString ^ABlob object)}
 
         ;; Lookup metadata for a symbol (except the quote ' symbol).
         ;; Instead of checking the result object type, we read the source and check the first form.
         (and (instance? Symbol source-form) (not= Symbols/QUOTE source-form))
-        (some-> source-form
-                (convex/metadata)
-                (convex/datafy)
-                (assoc-in [:doc :symbol] (.getName ^Symbol source-form)))
+        (let [doc (some-> source-form
+                          (convex/metadata)
+                          (convex/datafy)
+                          (assoc-in [:doc :symbol] (.getName ^Symbol source-form)))]
+          (merge doc {:type (get-in doc [:doc :type])}))
 
         ;; This must be after the special handling above because special forms (`def`, ...) returns a Symbol.
         (instance? Symbol object)
-        {:type :symbol
-         :doc {:type :symbol}})
+        {:type :symbol})
 
       :convex-web.command.status/error
-      (merge {:doc {:type :error}
-              :type :error}))))
+      {:type :error})))
 
 (defn with-metadata [command]
   (if-let [metadata (result-metadata command)]
