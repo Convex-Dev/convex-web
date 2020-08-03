@@ -1,11 +1,15 @@
 (ns convex-web.convex
   (:require [clojure.string :as str])
   (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap)
-           (convex.core.lang Core)
+           (convex.core.lang Core Reader)
            (convex.core Order Block Peer State Init)
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke)
            (convex.net Connection)))
+
+(defmacro execute [context form]
+  `(let [^String source# ~(pr-str form)]
+     (.getResult (.execute ~context (.getResult (.expandCompile ~context (Reader/read source#)))))))
 
 (defn ^String address->checksum-hex [^Address address]
   (.toChecksumHex address))

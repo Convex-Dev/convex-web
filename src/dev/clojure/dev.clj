@@ -12,15 +12,15 @@
             [clojure.spec.alpha :as s]
             [clojure.repl :refer [doc]]
             [clojure.string :as str]
+            [clojure.java.io :as io]
 
             [com.stuartsierra.component.repl :refer [set-init reset system]]
             [aero.core :as aero]
             [datascript.core :as d]
             [nano-id.core :as nano-id]
-            [org.httpkit.client :as http]
-            [clojure.java.io :as io])
+            [org.httpkit.client :as http])
   (:import (convex.core Init Peer)
-           (convex.core.lang Core Reader)
+           (convex.core.lang Core Reader Context)
            (org.slf4j.bridge SLF4JBridgeHandler)))
 
 (set-init
@@ -30,12 +30,17 @@
 
     (component/system :dev)))
 
+(def context (Context/createFake Init/INITIAL_STATE))
+
 (defn ^Peer peer []
   (peer/peer (system/convex-server system)))
 
 (defmacro send-query [& form]
   `(let [conn# (system/convex-conn system)]
      (peer/query conn# Init/HERO ~(str/join " " form))))
+
+(defmacro execute [form]
+  `(convex/execute context ~form))
 
 (defmacro execute-query [& form]
   `(let [^String source# ~(str/join " " form)]
@@ -93,9 +98,10 @@
   (commands :convex-web.command.status/success)
   (commands :convex-web.command.status/error)
 
-
-  (send-query :person/name)
-  (execute-query :person/name)
+  (execute 1)
+  (execute \h)
+  (execute "Hello")
+  (execute (map inc [1 2 3]))
 
   (execute-query
     (lookup-syntax 'inc))
