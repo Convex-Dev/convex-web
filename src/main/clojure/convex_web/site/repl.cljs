@@ -311,6 +311,15 @@
 (def output-symbol-metadata-options
   {:show-examples? false})
 
+(defn ErrorOutput [{:convex-web.command/keys [error]}]
+  (let [{:keys [code message]} error]
+    [:code.text-xs.text-red-500
+     (let [code (some-> code
+                        (name)
+                        (str/capitalize)
+                        (str ": "))]
+       (str code message))]))
+
 (defmulti Output (fn [command]
                    (get-in command [:convex-web.command/metadata :type])))
 
@@ -349,10 +358,6 @@
         hex-string]
 
        [gui/ClipboardCopy (str "0x" hex-string)]]]]))
-
-(defmethod Output :error [{:convex-web.command/keys [error]}]
-  (let [{:keys [code message]} error]
-    [:code.text-xs.text-red-500 (str (str/capitalize (name code)) " " message)]))
 
 (defmethod Output :address [{:convex-web.command/keys [object]}]
   (reagent/with-let [account-ref (reagent/atom nil)
@@ -432,11 +437,11 @@
           :convex-web.command.status/running
           [gui/SpinnerSmall]
 
-          :convex-web.command.status/error
+          :convex-web.command.status/success
           [Output command]
 
-          :convex-web.command.status/success
-          [Output command])]]])])
+          :convex-web.command.status/error
+          [ErrorOutput command])]]])])
 
 (defn QueryRadio [state set-state]
   [:label

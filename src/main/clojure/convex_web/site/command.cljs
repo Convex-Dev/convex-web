@@ -37,7 +37,7 @@
                                                                           :error error}))}))
         timeout)
       (watch command #:convex-web.command {:status :convex-web.command.status/error
-                                           :error "Exhausted retries."}))))
+                                           :error {:message "Exhausted retries."}}))))
 
 (re-frame/reg-event-fx :command/!poll
   (fn [_ [_ m]]
