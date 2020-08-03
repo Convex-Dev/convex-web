@@ -139,7 +139,7 @@
       (if-let [command (command/query-by-id @datascript-conn id)]
         (successful-response (-> command
                                  (command/with-metadata)
-                                 (command/sanitize)))
+                                 (command/prune)))
         (not-found-response {:error {:message (str "Command " id " not found.")}})))
     (catch Exception ex
       (log/error ex (ex-message ex))

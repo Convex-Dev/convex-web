@@ -119,3 +119,24 @@
                                    ::c/object (convex/execute context defn)})
                (select-keys [:type :doc]))))))
 
+(deftest prune-test
+  (is (= {::c/status :convex-web.command.status/running}
+         (c/prune {::c/status :convex-web.command.status/running
+                   :x 1
+                   :y 2})))
+
+  (is (= {::c/status :convex-web.command.status/success
+          ::c/object "#{}\n"}
+         (c/prune {::c/status :convex-web.command.status/success
+                   ::c/object (convex/execute context #{})})))
+
+  (is (= {::c/status :convex-web.command.status/success
+          ::c/object "[1 \"Hello\" sym]\n"}
+         (c/prune {::c/status :convex-web.command.status/success
+                   ::c/object (convex/execute context [1 "Hello" 'sym])})))
+
+  (is (= {::c/status :convex-web.command.status/error
+          ::c/error {:code :UNDECLARED :message "x"}}
+         (c/prune {::c/status :convex-web.command.status/error
+                   ::c/error {:code :UNDECLARED :message "x"}}))))
+

@@ -28,6 +28,8 @@
   [^Address object]
   (.toChecksumHex object))
 
+;; --
+
 (defn source [{:convex-web.command/keys [transaction query]}]
   (or (get query :convex-web.query/source)
       (get transaction :convex-web.transaction/source)))
@@ -94,11 +96,8 @@
     (assoc command ::metadata metadata)
     command))
 
-(defn sanitize [{:convex-web.command/keys [status object error] :as command}]
-  (merge (select-keys command [::id
-                               ::mode
-                               ::status
-                               ::metadata])
+(defn prune [{:convex-web.command/keys [status object error] :as command}]
+  (merge (select-keys command [::id ::mode ::status ::metadata])
          (case status
            :convex-web.command.status/running
            {}
