@@ -9,47 +9,48 @@
 
 (deftest con->clj-test
   (testing "Char"
-    (is (char? (convex/con->clj (convex/execute context \n)))))
+    (is (char? (convex/datafy (convex/execute context \n)))))
 
   (testing "String"
-    (is (string? (convex/con->clj (convex/execute context "String")))))
+    (is (string? (convex/datafy (convex/execute context "String")))))
 
   (testing "Long"
-    (is (instance? Long (convex/con->clj (convex/execute context 1)))))
+    (is (instance? Long (convex/datafy (convex/execute context 1)))))
 
   (testing "Double"
-    (is (instance? Double (convex/con->clj (convex/execute context 1.0)))))
+    (is (instance? Double (convex/datafy (convex/execute context 1.0)))))
 
   (testing "Keyword"
-    (is (keyword? (convex/con->clj (convex/execute context :a)))))
+    (is (keyword? (convex/datafy (convex/execute context :a)))))
 
   (testing "Symbol"
-    (is (symbol? (convex/con->clj (convex/execute context 's))))
-    (is (symbol? (convex/con->clj (convex/execute context 'a/b)))))
+    (is (symbol? (convex/datafy (convex/execute context 's))))
+    (is (symbol? (convex/datafy (convex/execute context 'a/b)))))
 
   (testing "List"
-    (is (list? (convex/con->clj (convex/execute context '())))))
+    (is (list? (convex/datafy (convex/execute context '())))))
 
   (testing "Vector"
-    (is (vector? (convex/con->clj (convex/execute context [])))))
+    (is (vector? (convex/datafy (convex/execute context [])))))
 
   (testing "HashMap"
-    (is (map? (convex/con->clj (convex/execute context {})))))
+    (is (map? (convex/datafy (convex/execute context {})))))
 
   (testing "Set"
-    (is (set? (convex/con->clj (convex/execute context #{})))))
+    (is (set? (convex/datafy (convex/execute context #{})))))
 
   (testing "Custom types"
     (let [address (Address/fromHex "D0F65BB5d87316D6b7d74dbb93da3D7E416f8B0aF8FffbBD1f276A15f4907bfE")]
       (is (= {"#addr 0xd0f65bb5d87316d6b7d74dbb93da3d7e416f8b0af8fffbbd1f276a15f4907bfe" 1}
-             (convex/con->clj (Maps/create address 1))))
+             (convex/datafy (Maps/create address 1))))
 
       (is (= {"D0F65BB5d87316D6b7d74dbb93da3D7E416f8B0aF8FffbBD1f276A15f4907bfE" 1}
-             (convex/con->clj (Maps/create address 1) {:missing-mapping (fn [x]
-                                                                          (condp instance? x
-                                                                            Address (.toChecksumHex ^Address x)
+             (convex/datafy (Maps/create address 1) {:default
+                                                     (fn [x]
+                                                       (condp instance? x
+                                                         Address (.toChecksumHex ^Address x)
 
-                                                                            nil))}))))))
+                                                         nil))}))))))
 
 (deftest address-test
   (testing "Can't coerce nil"

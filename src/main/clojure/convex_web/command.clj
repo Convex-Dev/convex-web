@@ -17,7 +17,7 @@
 
 (defmethod object-string :default
   [object]
-  (let [object-clojure (or (convex/con->clj object) (str object))]
+  (let [object-clojure (or (convex/datafy object) (str object))]
     (try
       (with-out-str (pprint/pprint object-clojure))
       (catch Exception ex
@@ -79,7 +79,7 @@
         (and (instance? Symbol source-form) (not= Symbols/QUOTE source-form))
         (some-> source-form
                 (convex/metadata)
-                (convex/con->clj)
+                (convex/datafy)
                 (assoc-in [:doc :symbol] (.getName ^Symbol source-form)))
 
         ;; This must be after the special handling above because special forms (`def`, ...) returns a Symbol.

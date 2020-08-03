@@ -23,11 +23,11 @@
     {}
     Core/CORE_NAMESPACE))
 
-(defn con->clj
+(defn datafy
   ([x]
-   (con->clj x {:missing-mapping str}))
-  ([x & [{:keys [missing-mapping]}]]
-   (let [con->clj #(con->clj % {:missing-mapping missing-mapping})]
+   (datafy x {:default str}))
+  ([x & [{:keys [default]}]]
+   (let [datafy #(datafy % {:default default})]
      (condp instance? x
        Boolean
        x
@@ -51,22 +51,22 @@
        (symbol (some-> x (.getNamespace) (.getName)) (.getName x))
 
        AList
-       (into '() (map con->clj x))
+       (into '() (map datafy x))
 
        AVector
-       (into [] (map con->clj x))
+       (into [] (map datafy x))
 
        AMap
        (reduce
          (fn [m [k v]]
-           (assoc m (con->clj k) (con->clj v)))
+           (assoc m (datafy k) (datafy v)))
          {}
          x)
 
        ASet
-       (into #{} (map con->clj x))
+       (into #{} (map datafy x))
 
-       (missing-mapping x)))))
+       (default x)))))
 
 (defn ^Address address [x]
   (cond
@@ -163,7 +163,7 @@
 
 (defn syntax-data [^Syntax syn]
   #:convex-web.syntax {:source (.getSource syn)
-                       :meta (con->clj (.getMeta syn))})
+                       :meta (datafy (.getMeta syn))})
 
 (defn environment-data
   "Account Status' environment data.
@@ -172,7 +172,7 @@
   [environment]
   (reduce
     (fn [env [^Symbol sym ^Syntax syn]]
-      (assoc env (con->clj sym) (syntax-data syn)))
+      (assoc env (datafy sym) (syntax-data syn)))
     {}
     environment))
 
@@ -229,7 +229,7 @@
   (->> (core-metadata)
        (map
          (fn [[sym metadata]]
-           (let [{:keys [doc]} (con->clj metadata)
+           (let [{:keys [doc]} (datafy metadata)
 
                  {:keys [description examples signature type]} doc]
              {:doc

@@ -49,8 +49,8 @@
          (d/transact! datascript-conn [#:convex-web.command{:id id
                                                             :status :convex-web.command.status/error
                                                             :error
-                                                            {:code (convex/con->clj code)
-                                                             :message (convex/con->clj message)}}])
+                                                            {:code (convex/datafy code)
+                                                             :message (convex/datafy message)}}])
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error
