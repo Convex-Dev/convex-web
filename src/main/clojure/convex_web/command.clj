@@ -43,34 +43,44 @@
       :convex-web.command.status/success
       (cond
         (= :nil object)
-        {:doc {:type :nil}}
+        {:type :nil
+         :doc {:type :nil}}
 
         (instance? Boolean object)
-        {:doc {:type :boolean}}
+        {:type :boolean
+         :doc {:type :boolean}}
 
         (instance? Number object)
-        {:doc {:type :number}}
+        {:type :number
+         :doc {:type :number}}
 
         (instance? String object)
-        {:doc {:type :string}}
+        {:type :string
+         :doc {:type :string}}
 
         (instance? AMap object)
-        {:doc {:type :map}}
+        {:type :map
+         :doc {:type :map}}
 
         (instance? AList object)
-        {:doc {:type :list}}
+        {:type :list
+         :doc {:type :list}}
 
         (instance? AVector object)
-        {:doc {:type :vector}}
+        {:type :vector
+         :doc {:type :vector}}
 
         (instance? ASet object)
-        {:doc {:type :set}}
+        {:type :set
+         :doc {:type :set}}
 
         (instance? Address object)
-        {:doc {:type :address}}
+        {:type :address
+         :doc {:type :address}}
 
         (instance? ABlob object)
         {:doc {:type :blob}
+         :type :blob
          :length (.length ^ABlob object)
          :hex-string (.toHexString ^ABlob object)}
 
@@ -84,7 +94,8 @@
 
         ;; This must be after the special handling above because special forms (`def`, ...) returns a Symbol.
         (instance? Symbol object)
-        {:doc {:type :symbol}})
+        {:type :symbol
+         :doc {:type :symbol}})
 
       :convex-web.command.status/error
       (merge {:doc {:type :error}

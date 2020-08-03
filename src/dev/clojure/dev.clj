@@ -98,6 +98,7 @@
   (commands :convex-web.command.status/success)
   (commands :convex-web.command.status/error)
 
+  (execute nil)
   (execute 1)
   (execute \h)
   (execute "Hello")
