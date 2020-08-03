@@ -26,7 +26,7 @@
 (defn datafy
   ([x]
    (datafy x {:default str}))
-  ([x & [{:keys [default]}]]
+  ([x {:keys [default]}]
    (let [datafy #(datafy % {:default default})]
      (condp instance? x
        Boolean
