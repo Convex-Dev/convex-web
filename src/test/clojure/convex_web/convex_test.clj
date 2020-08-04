@@ -7,37 +7,37 @@
 
 (def context (Context/createFake Init/INITIAL_STATE))
 
-(deftest con->clj-test
+(deftest datafy-test
   (testing "Char"
-    (is (char? (convex/datafy (convex/execute context \n)))))
+    (is (instance? java.lang.Character (convex/datafy (convex/execute context \n)))))
 
   (testing "String"
-    (is (string? (convex/datafy (convex/execute context "String")))))
+    (is (instance? java.lang.String (convex/datafy (convex/execute context "String")))))
 
   (testing "Long"
-    (is (instance? Long (convex/datafy (convex/execute context 1)))))
+    (is (instance? java.lang.Long (convex/datafy (convex/execute context 1)))))
 
   (testing "Double"
     (is (instance? Double (convex/datafy (convex/execute context 1.0)))))
 
   (testing "Keyword"
-    (is (keyword? (convex/datafy (convex/execute context :a)))))
+    (is (instance? clojure.lang.Keyword (convex/datafy (convex/execute context :a)))))
 
   (testing "Symbol"
-    (is (symbol? (convex/datafy (convex/execute context 's))))
-    (is (symbol? (convex/datafy (convex/execute context 'a/b)))))
+    (is (instance? clojure.lang.Symbol (convex/datafy (convex/execute context 's))))
+    (is (instance? clojure.lang.Symbol (convex/datafy (convex/execute context 'a/b)))))
 
   (testing "List"
-    (is (list? (convex/datafy (convex/execute context '())))))
+    (is (instance? clojure.lang.IPersistentList (convex/datafy (convex/execute context '())))))
 
   (testing "Vector"
-    (is (vector? (convex/datafy (convex/execute context [])))))
+    (is (instance? clojure.lang.IPersistentVector (convex/datafy (convex/execute context [])))))
 
-  (testing "HashMap"
-    (is (map? (convex/datafy (convex/execute context {})))))
+  (testing "Map"
+    (is (instance? clojure.lang.IPersistentMap (convex/datafy (convex/execute context {})))))
 
   (testing "Set"
-    (is (set? (convex/datafy (convex/execute context #{})))))
+    (is (instance? clojure.lang.IPersistentSet (convex/datafy (convex/execute context #{})))))
 
   (testing "Custom types"
     (let [address (Address/fromHex "D0F65BB5d87316D6b7d74dbb93da3D7E416f8B0aF8FffbBD1f276A15f4907bfE")]
