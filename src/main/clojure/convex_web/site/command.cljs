@@ -34,7 +34,7 @@
                                      (log/error :command.fx/poll {:error error})
 
                                      (watch command #:convex-web.command {:status :convex-web.command.status/error
-                                                                          :error error}))}))
+                                                                          :error {:message "Server error."}}))}))
         timeout)
       (watch command #:convex-web.command {:status :convex-web.command.status/error
                                            :error {:message "Exhausted retries."}}))))
