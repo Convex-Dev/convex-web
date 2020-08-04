@@ -131,6 +131,10 @@
     (->> (convex/sign key-pair transaction)
          (convex/transact conn))))
 
+(s/fdef execute-transaction
+  :args (s/cat :system map? :command :convex-web/command)
+  :ret pos-int?)
+
 (defn execute [system {::keys [mode] :as command}]
   (if-not (s/valid? :convex-web/command command)
     (throw (ex-info "Invalid Command." {:message (expound/expound-str :convex-web/command command)}))

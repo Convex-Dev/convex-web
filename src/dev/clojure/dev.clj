@@ -10,6 +10,7 @@
 
             [clojure.test :refer [is]]
             [clojure.spec.alpha :as s]
+            [clojure.spec.test.alpha :as stest]
             [clojure.repl :refer [doc]]
             [clojure.string :as str]
             [clojure.java.io :as io]
@@ -22,6 +23,10 @@
   (:import (convex.core Init Peer)
            (convex.core.lang Core Reader Context)
            (org.slf4j.bridge SLF4JBridgeHandler)))
+
+;; -- Instrument *all*
+(stest/instrument)
+
 
 (set-init
   (fn [_]
