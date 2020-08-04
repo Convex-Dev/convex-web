@@ -433,14 +433,20 @@
 
       ;; -- Output
       [:div.flex.flex-col
-       [:div.flex.mb-1
-        [:span.text-xs.uppercase.text-gray-600
-         "Result"]
+       (let [type (get-in command [:convex-web.command/metadata :type])]
+         [:div.flex.mb-1
+          [:span.text-xs.uppercase.text-gray-600
+           (cond
+             (= type :error)
+             (str "Error (" (name (get-in command [:convex-web.command/error :code])) ")")
 
-        (when-let [type (get-in command [:convex-web.command/metadata :type])]
-          [gui/Tooltip
-           (str/capitalize (name type))
-           [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]])]
+             :else
+             "Result")]
+
+          (when (and type (not= :error type))
+            [gui/Tooltip
+             (str/capitalize (name type))
+             [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]])])
 
        [:div.flex
         (case status
