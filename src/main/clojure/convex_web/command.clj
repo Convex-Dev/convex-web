@@ -106,17 +106,17 @@
                 :where [?e :convex-web.command/id ?id]]]
     (d/q query db id)))
 
-(defn execute-query [context {::keys [address query]}]
+(defn execute-query [system {::keys [address query]}]
   (let [{:convex-web.query/keys [source]} query
-        conn (system/convex-conn context)]
+        conn (system/convex-conn system)]
     (peer/query conn address source)))
 
-(defn execute-transaction [context {::keys [address transaction]}]
+(defn execute-transaction [system {::keys [address transaction]}]
   (let [{:convex-web.transaction/keys [source amount type]} transaction
 
-        conn (system/convex-conn context)
-        peer (peer/peer (system/convex-server context))
-        datascript-conn (system/datascript-conn context)
+        conn (system/convex-conn system)
+        peer (peer/peer (system/convex-server system))
+        datascript-conn (system/datascript-conn system)
         sequence-number (peer/sequence-number peer (Address/fromHex address))
 
         {:convex-web.account/keys [key-pair]} (account/find-by-address @datascript-conn address)
@@ -131,17 +131,17 @@
     (->> (convex/sign key-pair transaction)
          (convex/transact conn))))
 
-(defn execute [context {::keys [mode] :as command}]
+(defn execute [system {::keys [mode] :as command}]
   (if-not (s/valid? :convex-web/command command)
     (throw (ex-info "Invalid Command." {:message (expound/expound-str :convex-web/command command)}))
-    (let [conn (system/datascript-conn context)]
+    (let [conn (system/datascript-conn system)]
       (locking conn
         (let [id (cond
                    (= :convex-web.command.mode/query mode)
-                   (execute-query context command)
+                   (execute-query system command)
 
                    (= :convex-web.command.mode/transaction mode)
-                   (execute-transaction context command))
+                   (execute-transaction system command))
 
               running-command (merge (select-keys command [:convex-web.command/mode
                                                            :convex-web.command/language
