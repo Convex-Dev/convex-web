@@ -112,7 +112,7 @@
     (peer/query conn address source)))
 
 (defn execute-transaction [system {::keys [address transaction]}]
-  (let [{:convex-web.transaction/keys [source amount type]} transaction
+  (let [{:convex-web.transaction/keys [source language amount type]} transaction
 
         conn (system/convex-conn system)
         peer (peer/peer (system/convex-server system))
@@ -123,7 +123,7 @@
 
         transaction (case type
                       :convex-web.transaction.type/invoke
-                      (peer/invoke-transaction (inc sequence-number) source)
+                      (peer/invoke-transaction (inc sequence-number) source language)
 
                       :convex-web.transaction.type/transfer
                       (let [to (Address/fromHex (:convex-web.transaction/target transaction))]

@@ -106,9 +106,11 @@
 ;; -- Query
 
 (s/def :convex-web.query/source :convex-web/non-empty-string)
+(s/def :convex-web.query/language :convex-web/language)
 
 (s/def :convex-web/query
-  (s/keys :req [:convex-web.query/source]))
+  (s/keys :req [:convex-web.query/source
+                :convex-web.query/language]))
 
 ;; -- Transaction
 
@@ -117,6 +119,7 @@
 (s/def :convex-web.transaction/target :convex-web/address)
 (s/def :convex-web.transaction/amount :convex-web/amount)
 (s/def :convex-web.transaction/source :convex-web/non-empty-string)
+(s/def :convex-web.transaction/language :convex-web/language)
 (s/def :convex-web.transaction/sequence :convex-web/sequence)
 (s/def :convex-web.transaction/index nat-int?)
 
@@ -130,7 +133,8 @@
 
 (defmethod transaction :convex-web.transaction.type/invoke [_]
   (s/keys :req [:convex-web.transaction/type
-                :convex-web.transaction/source]
+                :convex-web.transaction/source
+                :convex-web.transaction/language]
           :opt [:convex-web.transaction/sequence]))
 
 (s/def :convex-web/transaction (s/multi-spec transaction :convex-web.transaction/type))
@@ -152,8 +156,6 @@
 
 ;; -- Command
 
-(s/def :convex-web.command/language :convex-web/language)
-
 (s/def :convex-web.command/mode #{:convex-web.command.mode/query
                                   :convex-web.command.mode/transaction})
 
@@ -172,13 +174,11 @@
 
 (defmethod incoming-command :convex-web.command.mode/query [_]
   (s/keys :req [:convex-web.command/mode
-                :convex-web.command/language
                 :convex-web.command/query]
           :opt [:convex-web.command/address]))
 
 (defmethod incoming-command :convex-web.command.mode/transaction [_]
   (s/keys :req [:convex-web.command/mode
-                :convex-web.command/language
                 :convex-web.command/address
                 :convex-web.command/transaction]))
 

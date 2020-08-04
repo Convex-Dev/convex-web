@@ -213,12 +213,13 @@
                       (let [source (codemirror/cm-get-value editor)
 
                             transaction #:convex-web.transaction {:type :convex-web.transaction.type/invoke
-                                                                  :source source}
+                                                                  :source source
+                                                                  :language (language state)}
 
-                            query #:convex-web.query {:source source}
+                            query #:convex-web.query {:source source
+                                                      :language (language state)}
 
-                            command (merge #:convex-web.command {:mode (mode state)
-                                                                 :language (language state)}
+                            command (merge #:convex-web.command {:mode (mode state)}
                                            (case (mode state)
                                              :convex-web.command.mode/query
                                              (merge #:convex-web.command {:query query}

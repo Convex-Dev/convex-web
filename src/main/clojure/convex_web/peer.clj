@@ -37,8 +37,14 @@
       (account-status account)
       (account-sequence)))
 
-(defn ^ATransaction invoke-transaction [^Long nonce ^String source]
-  (Invoke/create nonce (cond-wrap-do (Reader/readAll source))))
+(defn ^ATransaction invoke-transaction [^Long nonce ^String source language]
+  (let [object (case language
+                 :convex-lisp
+                 (cond-wrap-do (Reader/readAll source))
+
+                 :convex-scrypt
+                 (cond-wrap-do (Reader/readAll source)))]
+    (Invoke/create nonce object)))
 
 (defn ^ATransaction transfer-transaction [^Long nonce ^Address address ^Long amount]
   (Transfer/create nonce address amount))
