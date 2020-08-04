@@ -7,6 +7,8 @@
             [convex-web.account :as account]
             [convex-web.logging :as logging]
             [convex-web.web-server :as web-server]
+            [convex-web.command :as command]
+            [convex-web.specs]
 
             [clojure.test :refer [is]]
             [clojure.spec.alpha :as s]
@@ -27,10 +29,13 @@
 
 ;; -- Spec
 (set! s/*explain-out* expound/printer)
+
 (s/check-asserts true)
+
 (stest/instrument)
 
 
+;; -- Logging
 (set-init
   (fn [_]
     (SLF4JBridgeHandler/removeHandlersForRootLogger)
@@ -116,6 +121,8 @@
   (execute x)
 
   ;; --
+
+  (command/wrap-result #:convex-web.command {:mode :convex-web.command.mode/query})
 
 
   (def status (convex/account-status (peer) "3333333333333333333333333333333333333333333333333333333333333333"))
