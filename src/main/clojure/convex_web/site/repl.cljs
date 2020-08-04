@@ -349,8 +349,8 @@
   [:div.flex.flex-1.bg-white.rounded.shadow
    [gui/SymbolMeta2 (merge metadata output-symbol-metadata-options)]])
 
-(defmethod Output :blob [{:convex-web.command/keys [metadata]}]
-  (let [{:keys [length hex-string]} metadata]
+(defmethod Output :blob [{:convex-web.command/keys [object]}]
+  (let [{:keys [length hex-string]} object]
     [:div.flex.flex-1.bg-white.rounded.shadow
      [:div.flex.flex-col.p-2
       [:span.text-xs.text-indigo-500.uppercase
