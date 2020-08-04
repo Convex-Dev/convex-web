@@ -7,7 +7,7 @@
 
 (def context (Context/createFake Init/INITIAL_STATE))
 
-(deftest result-test
+(deftest wrap-result-test
   (testing "Address"
     (is (= (let [a (convex/execute context *address*)]
              {::c/status :convex-web.command.status/success
@@ -37,7 +37,7 @@
            (c/wrap-result {::c/status :convex-web.command.status/success
                            ::c/object (convex/execute context map)})))))
 
-(deftest result-metadata-test
+(deftest wrap-result-metadata-test
   (testing "Nil"
     (is (= {::c/status :convex-web.command.status/success
             ::c/object :nil
