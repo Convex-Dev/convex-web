@@ -393,7 +393,7 @@
 
        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
        (if-let [balance (get-in @account-ref [:convex-web.account/status :convex-web.account-status/balance])]
-         [:span.text-xs.uppercase balance]
+         [:span.text-xs.uppercase (format/format-number balance)]
          [gui/SpinnerSmall])
 
        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
