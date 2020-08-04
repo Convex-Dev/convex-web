@@ -83,7 +83,7 @@
 
                 org.clojure/tools.namespace {:mvn/version "1.0.0"}
 
-                thheller/shadow-cljs {:mvn/version "2.10.18"}
+                thheller/shadow-cljs {:mvn/version "2.10.19"}
 
                 binaryage/devtools {:mvn/version "1.0.2"}}}
 
