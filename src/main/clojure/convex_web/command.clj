@@ -3,6 +3,7 @@
             [convex-web.account :as account]
             [convex-web.peer :as peer]
             [convex-web.convex :as convex]
+            [convex-web.specs]
 
             [clojure.spec.alpha :as s]
 

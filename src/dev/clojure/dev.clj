@@ -19,12 +19,15 @@
             [aero.core :as aero]
             [datascript.core :as d]
             [nano-id.core :as nano-id]
-            [org.httpkit.client :as http])
+            [org.httpkit.client :as http]
+            [expound.alpha :as expound])
   (:import (convex.core Init Peer)
            (convex.core.lang Core Reader Context)
            (org.slf4j.bridge SLF4JBridgeHandler)))
 
-;; -- Instrument *all*
+;; -- Spec
+(set! s/*explain-out* expound/printer)
+(s/check-asserts true)
 (stest/instrument)
 
 

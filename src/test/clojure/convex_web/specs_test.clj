@@ -6,13 +6,15 @@
 
 (deftest command-specs
   (testing "Incoming Query"
-    (let [q #:convex-web.query {:source "1"}
+    (let [q #:convex-web.query {:source "1"
+                                :language :convex-lisp}
 
           c #:convex-web.command {:mode :convex-web.command.mode/query
                                   :query q}]
       (is (s/valid? :convex-web/command c)))
 
     (let [q #:convex-web.query {:source "1"
+                                :language :convex-lisp
                                 :address "ABC"}
 
           c #:convex-web.command {:mode :convex-web.command.mode/query
@@ -22,6 +24,7 @@
   (testing "Incoming Transaction"
     (let [t #:convex-web.transaction{:type :convex-web.transaction.type/invoke
                                      :source "1"
+                                     :language :convex-lisp
                                      :target "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"}
 
           c #:convex-web.command {:address "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"
@@ -41,6 +44,7 @@
   (testing "Running Transaction"
     (let [t #:convex-web.transaction {:type :convex-web.transaction.type/invoke
                                       :source "1"
+                                      :language :convex-lisp
                                       :target "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"}
 
           c #:convex-web.command {:id 1
@@ -52,6 +56,7 @@
 
   (testing "Running Query"
     (let [q #:convex-web.query {:source "1"
+                                :language :convex-lisp
                                 :address "ABC"}
 
           c #:convex-web.command {:id 1
@@ -62,6 +67,7 @@
 
   (testing "Successful Query"
     (let [q #:convex-web.query {:source "1"
+                                :language :convex-lisp
                                 :address "ABC"}
 
           c #:convex-web.command {:id 1
@@ -73,6 +79,7 @@
 
   (testing "Error Query"
     (let [q #:convex-web.query {:source "1"
+                                :language :convex-lisp
                                 :address "ABC"}
 
           c #:convex-web.command {:id 1
