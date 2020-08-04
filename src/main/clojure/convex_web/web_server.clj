@@ -138,7 +138,8 @@
     (let [datascript-conn (system/datascript-conn context)]
       (if-let [command (command/query-by-id @datascript-conn id)]
         (successful-response (-> command
-                                 (command/with-metadata)
+                                 (command/wrap-result-metadata)
+                                 (command/wrap-result)
                                  (command/prune)))
         (not-found-response {:error {:message (str "Command " id " not found.")}})))
     (catch Exception ex

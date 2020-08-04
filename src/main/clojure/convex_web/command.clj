@@ -34,101 +34,84 @@
   (or (get query :convex-web.query/source)
       (get transaction :convex-web.transaction/source)))
 
-(defn result [{:convex-web.command/keys [status object error] :as command}]
-  (merge command (case status
+(defn wrap-result [{:convex-web.command/keys [status object] :as command}]
+  (case status
+    :convex-web.command.status/success
+    (assoc command ::object (cond
+                              (instance? Address object)
+                              {:hex-string (.toHexString object)
+                               :checksum-hex (.toChecksumHex object)}
+
+                              (instance? ABlob object)
+                              {:length (.length ^ABlob object)
+                               :hex-string (.toHexString ^ABlob object)}
+
+                              :else
+                              (convex/datafy object)))
+
+    ;; Don't need to handle error status because error is already datafy'ed.
+
+    command))
+
+(defn wrap-result-metadata [{:convex-web.command/keys [status object] :as command}]
+  (let [source-form (when-let [source (source command)]
+                      (first (Reader/readAll source)))
+
+        metadata (case status
                    :convex-web.command.status/running
                    {}
 
                    :convex-web.command.status/success
-                   {::object
-                    (cond
-                      (instance? Address object)
-                      {:hex-string (.toHexString object)
-                       :checksum-hex (.toChecksumHex object)}
+                   (cond
+                     (= :nil object)
+                     {:type :nil}
 
-                      (instance? ABlob object)
-                      {:length (.length ^ABlob object)
-                       :hex-string (.toHexString ^ABlob object)}
+                     (instance? Boolean object)
+                     {:type :boolean}
 
-                      :else
-                      (convex/datafy object))}
+                     (instance? Number object)
+                     {:type :number}
+
+                     (instance? String object)
+                     {:type :string}
+
+                     (instance? AMap object)
+                     {:type :map}
+
+                     (instance? AList object)
+                     {:type :list}
+
+                     (instance? AVector object)
+                     {:type :vector}
+
+                     (instance? ASet object)
+                     {:type :set}
+
+                     (instance? Address object)
+                     {:type :address}
+
+                     (instance? ABlob object)
+                     {:type :blob}
+
+                     ;; Lookup metadata for a symbol (except the quote ' symbol).
+                     ;; Instead of checking the result object type, we read the source and check the first form.
+                     (and (instance? Symbol source-form) (not= Symbols/QUOTE source-form))
+                     (let [doc (some-> source-form
+                                       (convex/metadata)
+                                       (convex/datafy)
+                                       (assoc-in [:doc :symbol] (.getName ^Symbol source-form)))]
+                       (merge doc {:type (get-in doc [:doc :type])}))
+
+                     ;; This must be after the special handling above because special forms (`def`, ...) returns a Symbol.
+                     (instance? Symbol object)
+                     {:type :symbol})
 
                    :convex-web.command.status/error
-                   {})))
+                   {:type :error})]
+    (assoc command ::metadata metadata)))
 
-(defn result-metadata [{:convex-web.command/keys [status object] :as command}]
-  (let [source-form (when-let [source (source command)]
-                      (first (Reader/readAll source)))]
-    (case status
-      :convex-web.command.status/running
-      {}
-
-      :convex-web.command.status/success
-      (cond
-        (= :nil object)
-        {:type :nil}
-
-        (instance? Boolean object)
-        {:type :boolean}
-
-        (instance? Number object)
-        {:type :number}
-
-        (instance? String object)
-        {:type :string}
-
-        (instance? AMap object)
-        {:type :map}
-
-        (instance? AList object)
-        {:type :list}
-
-        (instance? AVector object)
-        {:type :vector}
-
-        (instance? ASet object)
-        {:type :set}
-
-        (instance? Address object)
-        {:type :address}
-
-        (instance? ABlob object)
-        {:type :blob
-         :length (.length ^ABlob object)
-         :hex-string (.toHexString ^ABlob object)}
-
-        ;; Lookup metadata for a symbol (except the quote ' symbol).
-        ;; Instead of checking the result object type, we read the source and check the first form.
-        (and (instance? Symbol source-form) (not= Symbols/QUOTE source-form))
-        (let [doc (some-> source-form
-                          (convex/metadata)
-                          (convex/datafy)
-                          (assoc-in [:doc :symbol] (.getName ^Symbol source-form)))]
-          (merge doc {:type (get-in doc [:doc :type])}))
-
-        ;; This must be after the special handling above because special forms (`def`, ...) returns a Symbol.
-        (instance? Symbol object)
-        {:type :symbol})
-
-      :convex-web.command.status/error
-      {:type :error})))
-
-(defn with-metadata [command]
-  (if-let [metadata (result-metadata command)]
-    (assoc command ::metadata metadata)
-    command))
-
-(defn prune [{:convex-web.command/keys [status object error] :as command}]
-  (merge (select-keys command [::id ::mode ::status ::metadata])
-         (case status
-           :convex-web.command.status/running
-           {}
-
-           :convex-web.command.status/success
-           {::object (object-string object)}
-
-           :convex-web.command.status/error
-           {::error error})))
+(defn prune [command]
+  (select-keys command [::id ::mode ::status ::metadata ::object ::error]))
 
 (defn query-all [db]
   (let [query '[:find [(pull ?e [*]) ...]
