@@ -15,6 +15,12 @@
   (or (get query :convex-web.query/source)
       (get transaction :convex-web.transaction/source)))
 
+(s/fdef source
+  :args (s/cat :command :convex-web/command)
+  :ret :convex-web/non-empty-string)
+
+;; --
+
 (defn wrap-result [{:convex-web.command/keys [status object] :as command}]
   (case status
     :convex-web.command.status/success
@@ -33,6 +39,12 @@
     ;; Don't need to handle error status because error is already datafy'ed.
 
     command))
+
+(s/fdef wrap-result
+  :args (s/cat :command :convex-web/command)
+  :ret :convex-web/command)
+
+;; --
 
 (defn wrap-result-metadata [{:convex-web.command/keys [status object] :as command}]
   (let [source-form (when-let [source (source command)]
@@ -91,8 +103,16 @@
                    {:type :error})]
     (assoc command ::metadata metadata)))
 
+(s/fdef wrap-result-metadata
+  :args (s/cat :command :convex-web/command)
+  :ret :convex-web/command)
+
+;; --
+
 (defn prune [command]
   (select-keys command [::id ::mode ::status ::metadata ::object ::error]))
+
+;; --
 
 (defn query-all [db]
   (let [query '[:find [(pull ?e [*]) ...]
@@ -106,10 +126,18 @@
                 :where [?e :convex-web.command/id ?id]]]
     (d/q query db id)))
 
+;; --
+
 (defn execute-query [system {::keys [address query]}]
   (let [{:convex-web.query/keys [source]} query
         conn (system/convex-conn system)]
     (peer/query conn address source)))
+
+(s/fdef execute-query
+  :args (s/cat :system map? :command :convex-web/incoming-command)
+  :ret pos-int?)
+
+;; --
 
 (defn execute-transaction [system {::keys [address transaction]}]
   (let [{:convex-web.transaction/keys [source language amount type]} transaction
@@ -132,8 +160,10 @@
          (convex/transact conn))))
 
 (s/fdef execute-transaction
-  :args (s/cat :system map? :command :convex-web/command)
+  :args (s/cat :system map? :command :convex-web/incoming-command)
   :ret pos-int?)
+
+;; --
 
 (defn execute [system {::keys [mode] :as command}]
   (if-not (s/valid? :convex-web/command command)
@@ -162,3 +192,7 @@
 
           (select-keys running-command [:convex-web.command/id
                                         :convex-web.command/status]))))))
+
+(s/fdef execute
+  :args (s/cat :system map? :command :convex-web/incoming-command)
+  :ret :convex-web/command)
