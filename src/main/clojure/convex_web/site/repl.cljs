@@ -437,7 +437,7 @@
         [:span.text-xs.uppercase.text-gray-600
          "Result"]
 
-        (when-let [type (get-in command [:convex-web.command/metadata :doc :type])]
+        (when-let [type (get-in command [:convex-web.command/metadata :type])]
           [gui/Tooltip
            (str/capitalize (name type))
            [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]])]
