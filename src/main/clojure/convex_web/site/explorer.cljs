@@ -166,9 +166,10 @@
           {:class td-class}
           (case (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])
             :convex-web.transaction.type/invoke
-            [:div.flex
-             [gui/Highlight
-              (get-in m [:convex-web.signed-data/value :convex-web.transaction/source])]]
+            (let [source (get-in m [:convex-web.signed-data/value :convex-web.transaction/source])]
+              [:div.flex.items-center
+               [gui/Highlight source]
+               [gui/ClipboardCopy source {:margin "ml-1"}]])
 
             :convex-web.transaction.type/transfer
             [:span
