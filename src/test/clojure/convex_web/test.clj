@@ -1,7 +1,7 @@
 (ns convex-web.test)
 
-(defmacro catchy [body]
+(defmacro with-try [& body]
   `(try
-     ~body
+     ~@body
      (catch Exception ex#
        (.printStackTrace ex#))))
