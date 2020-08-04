@@ -18,6 +18,9 @@
 (defn mode [state]
   (:convex-web.repl/mode state))
 
+(defn language [state]
+  (:convex-web.repl/language state))
+
 (defn set-query-mode [state]
   (assoc state :convex-web.repl/mode :convex-web.command.mode/query))
 
@@ -214,7 +217,8 @@
 
                             query #:convex-web.query {:source source}
 
-                            command (merge #:convex-web.command {:mode (mode state)}
+                            command (merge #:convex-web.command {:mode (mode state)
+                                                                 :language (language state)}
                                            (case (mode state)
                                              :convex-web.command.mode/query
                                              (merge #:convex-web.command {:query query}
@@ -487,6 +491,35 @@
    [:span.text-xs.text-gray-700.ml-1
     "Transaction"]])
 
+
+;; -- Language
+
+(defn ConvexLispRadio [state set-state]
+  [:label
+   [:input
+    {:type "radio"
+     :name "lisp"
+     :value "lisp"
+     :checked (= :convex-lisp (language state))
+     :on-change #(set-state assoc :convex-web.repl/language :convex-lisp)}]
+
+   [:span.text-xs.text-gray-700.ml-1
+    "Convex Lisp"]])
+
+(defn ConvexScryptRadio [state set-state]
+  [:label
+   [:input
+    {:type "radio"
+     :name "scrypt"
+     :value "scrypt"
+     :checked (= :convex-scrypt (language state))
+     :on-change #(set-state assoc :convex-web.repl/language :convex-scrypt)}]
+
+   [:span.text-xs.text-gray-700.ml-1
+    "Convex Scrypt"]])
+
+;; --
+
 (defn SandboxPage [_ {:convex-web.repl/keys [reference] :as state} set-state]
   [:div.flex.flex-1
 
@@ -506,17 +539,32 @@
     [Input state set-state]
 
     ;; -- Options
-    [:div.flex.items-center.justify-between
-     [:div.flex.items-center
-      [gui/Tooltip
-       {:title "Run without changing Convex's state"}
-       [QueryRadio state set-state]]
+    [:div.flex.items-center.justify-between.mt-1
 
-      [:div.mx-1]
+     [:div.flex
+      ;; -- Mode
+      [:div.flex.items-center
+       [gui/Tooltip
+        {:title "Run without changing Convex's state"}
+        [QueryRadio state set-state]]
 
-      [gui/Tooltip
-       {:title "Run and update Convex's state"}
-       [TransactionRadio state set-state]]]
+       [:div.mx-1]
+
+       [gui/Tooltip
+        {:title "Run and update Convex's state"}
+        [TransactionRadio state set-state]]]
+
+      ;; -- Language
+      [:div.flex.items-center.ml-10
+       [gui/Tooltip
+        {:title "Set language to Convex Lisp"}
+        [ConvexLispRadio state set-state]]
+
+       [:div.mx-1]
+
+       [gui/Tooltip
+        {:title "Set language to Convex Scrypt"}
+        [ConvexScryptRadio state set-state]]]]
 
      [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]]]
 
@@ -556,7 +604,8 @@
 (def sandbox-page
   #:page {:id :page.id/repl
           :title "Sandbox"
-          :initial-state #:convex-web.repl {:mode :convex-web.command.mode/transaction
+          :initial-state #:convex-web.repl {:language :convex-lisp
+                                            :mode :convex-web.command.mode/transaction
                                             :sidebar {:sidebar/tab :examples}}
           :state-spec (s/keys :req [:convex-web.repl/mode] :opt [:convex-web.repl/commands-by-id])
           :component #'SandboxPage

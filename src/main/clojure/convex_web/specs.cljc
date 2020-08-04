@@ -12,6 +12,8 @@
 
 (s/def :convex-web/sequence int?)
 
+(s/def :convex-web/language #{:convex-lisp :convex-scrypt})
+
 ;; -- Runtime
 
 (s/def :runtime/interval-ref some?)
@@ -150,6 +152,8 @@
 
 ;; -- Command
 
+(s/def :convex-web.command/language :convex-web/language)
+
 (s/def :convex-web.command/mode #{:convex-web.command.mode/query
                                   :convex-web.command.mode/transaction})
 
@@ -168,11 +172,13 @@
 
 (defmethod incoming-command :convex-web.command.mode/query [_]
   (s/keys :req [:convex-web.command/mode
+                :convex-web.command/language
                 :convex-web.command/query]
           :opt [:convex-web.command/address]))
 
 (defmethod incoming-command :convex-web.command.mode/transaction [_]
   (s/keys :req [:convex-web.command/mode
+                :convex-web.command/language
                 :convex-web.command/address
                 :convex-web.command/transaction]))
 
@@ -210,6 +216,7 @@
 
 ;; -- REPL
 
+(s/def :convex-web.repl/language :convex-web/language)
 (s/def :convex-web.repl/mode :convex-web.command/mode)
 (s/def :convex-web.repl/commands-by-id (s/map-of :convex-web.command/id :convex-web/command))
 

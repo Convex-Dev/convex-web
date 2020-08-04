@@ -144,6 +144,7 @@
                    (execute-transaction context command))
 
               running-command (merge (select-keys command [:convex-web.command/mode
+                                                           :convex-web.command/language
                                                            :convex-web.command/address
                                                            :convex-web.command/query
                                                            :convex-web.command/transaction])
