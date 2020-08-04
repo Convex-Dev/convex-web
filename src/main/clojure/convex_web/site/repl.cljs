@@ -317,11 +317,11 @@
 
 (defmethod error-message :UNDECLARED
   [{:keys [message]}]
-  (str "'" message  "' is undeclared."))
+  (str "'" message "' is undeclared."))
 
 (defmethod error-message :CAST
   [{:keys [message]}]
-  (str "Cast error: " message  "."))
+  (str "Cast error: " message "."))
 
 (defn ErrorOutput [{:convex-web.command/keys [error]}]
   [:code.text-xs.text-red-500
@@ -369,30 +369,33 @@
 (defmethod Output :address [{:convex-web.command/keys [object]}]
   (reagent/with-let [account-ref (reagent/atom nil)
 
-                     _ (backend/GET-account object {:handler
-                                                    (fn [account]
-                                                      (reset! account-ref account))})]
-    [:div.flex.flex-col.bg-white.rounded.shadow.p-2
-     [:span.text-xs.text-indigo-500.uppercase "Address"]
-     [:div.flex.items-center
-      [:a.hover:underline.mr-2
-       {:href (rfe/href :route-name/account-explorer {:address object})}
-       [:code.text-xs (format/address-blob object)]]
+                     _ (backend/GET-account
+                         (get object :checksum-hex)
+                         {:handler
+                          (fn [account]
+                            (reset! account-ref account))})]
+    (let [{:keys [checksum-hex]} object]
+      [:div.flex.flex-col.bg-white.rounded.shadow.p-2
+       [:span.text-xs.text-indigo-500.uppercase "Address"]
+       [:div.flex.items-center
+        [:a.hover:underline.mr-2
+         {:href (rfe/href :route-name/account-explorer {:address checksum-hex})}
+         [:code.text-xs (format/address-blob checksum-hex)]]
 
-      [gui/ClipboardCopy (format/address-blob object)]
+        [gui/ClipboardCopy (format/address-blob checksum-hex)]
 
-      [:a.ml-2
-       {:href (rfe/href :route-name/account-explorer {:address object})
-        :target "_blank"}
-       [gui/Tooltip
-        "External link"
-        [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]]]
+        [:a.ml-2
+         {:href (rfe/href :route-name/account-explorer {:address checksum-hex})
+          :target "_blank"}
+         [gui/Tooltip
+          "External link"
+          [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]]]
 
-     [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
-     [:span.text-xs.uppercase (get-in @account-ref [:convex-web.account/status :convex-web.account-status/balance] "-")]
+       [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
+       [:span.text-xs.uppercase (get-in @account-ref [:convex-web.account/status :convex-web.account-status/balance] "-")]
 
-     [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
-     [:span.text-xs.uppercase (get-in @account-ref [:convex-web.account/status :convex-web.account-status/type])]]))
+       [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
+       [:span.text-xs.uppercase (get-in @account-ref [:convex-web.account/status :convex-web.account-status/type])]])))
 
 (defn Commands [commands]
   [:<>
