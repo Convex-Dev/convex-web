@@ -392,10 +392,14 @@
           [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]]]
 
        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
-       [:span.text-xs.uppercase (get-in @account-ref [:convex-web.account/status :convex-web.account-status/balance] "-")]
+       (if-let [balance (get-in @account-ref [:convex-web.account/status :convex-web.account-status/balance])]
+         [:span.text-xs.uppercase balance]
+         [gui/SpinnerSmall])
 
        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
-       [:span.text-xs.uppercase (get-in @account-ref [:convex-web.account/status :convex-web.account-status/type])]])))
+       (if-let [type (get-in @account-ref [:convex-web.account/status :convex-web.account-status/type])]
+         [:span.text-xs.uppercase type]
+         [gui/SpinnerSmall])])))
 
 (defn Commands [commands]
   [:<>
