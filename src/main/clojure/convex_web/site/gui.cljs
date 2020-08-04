@@ -168,7 +168,7 @@
    [:pre.m-0
     [:code.text-xs.rounded.language-clojure
      {:ref highlight-block}
-     source]]])
+     (str source)]]])
 
 (defn SymbolType [type]
   [:div.px-1.border.rounded-full
