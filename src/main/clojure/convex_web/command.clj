@@ -4,31 +4,12 @@
             [convex-web.peer :as peer]
             [convex-web.convex :as convex]
 
-            [clojure.tools.logging :as log]
             [clojure.spec.alpha :as s]
-            [clojure.pprint :as pprint]
 
             [datascript.core :as d]
             [expound.alpha :as expound])
   (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList)
            (convex.core.lang Reader Symbols)))
-
-(defmulti object-string type)
-
-(defmethod object-string :default
-  [object]
-  (try
-    (with-out-str (pprint/pprint (convex/datafy object)))
-    (catch Exception ex
-      (log/error ex "Failed to pretty print object - fallback to 'str'.")
-
-      (str object))))
-
-(defmethod object-string Address
-  [^Address object]
-  (.toChecksumHex object))
-
-;; --
 
 (defn source [{:convex-web.command/keys [transaction query]}]
   (or (get query :convex-web.query/source)
