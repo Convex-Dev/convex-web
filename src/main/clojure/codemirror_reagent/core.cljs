@@ -4,6 +4,7 @@
             [reagent.core :as reagent]
 
             ["codemirror" :as codemirror]
+            ["codemirror/mode/javascript/javascript"]
             ["codemirror/mode/clojure/clojure"]
             ["codemirror/addon/edit/matchbrackets"]
             ["codemirror/addon/edit/closebrackets"]))
@@ -171,9 +172,12 @@
          ;; since props might be different from the initial mount state.
          (let [[_ _ {:keys [configuration on-update]}] (reagent/argv this)
 
-               {:keys [value]} configuration
+               {:keys [value mode]} configuration
 
                scroll-info (.getScrollInfo @codemirror-ref)]
+
+           (when mode
+             (.setOption @codemirror-ref "mode" mode))
 
            (when-not (= value (cm-get-value @codemirror-ref))
              (cm-set-value @codemirror-ref value)

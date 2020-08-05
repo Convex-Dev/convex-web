@@ -275,7 +275,15 @@
              {:style
               {:height "100px"}}]
             {:configuration {:lineNumbers false
-                             :value @source-ref}
+                             :value @source-ref
+                             :mode (case (language state)
+                                     :convex-lisp
+                                     "clojure"
+
+                                     :convex-scrypt
+                                     "javascript"
+
+                                     "clojure")}
 
              :on-mount (fn [_ editor]
                          (->> (codemirror/extra-keys {:enter enter-extra-key
