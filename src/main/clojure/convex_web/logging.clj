@@ -183,3 +183,24 @@
         logging (cloud-logging)]
     (GoogleCloudLoggingPublisher. buffer logging)))
 
+(deftype DevLoggingPublisher
+  [buffer]
+  PPublisher
+  (agent-buffer [_]
+    buffer)
+
+  (publish-delay [_]
+    200)
+
+  (publish [_ buffer]
+    (doseq [{:keys [message exception]} (->> (rb/items buffer)
+                                             (map second)
+                                             (filter :exception))]
+
+      (.printStackTrace (ex-info message {} exception)))
+
+    (rb/clear buffer)))
+
+(defn dev-logging-publisher [& _]
+  (DevLoggingPublisher. (rb/agent-buffer 10000)))
+
