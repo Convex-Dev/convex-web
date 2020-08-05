@@ -12,7 +12,6 @@
             [clojure.spec.alpha :as s]
             [clojure.tools.logging :as log]
             [clojure.pprint :as pprint]
-            [clojure.string :as str]
 
             [com.brunobonacci.mulog :as u]
             [expound.alpha :as expound]
@@ -92,6 +91,9 @@
 (defn transit-decode [^InputStream x]
   (t/read (t/reader x :json)))
 
+(def handler-exception-message
+  "An unhandled exception was thrown during the handler execution.")
+
 (def server-error-response
   {:status 500
    :headers {"Content-Type" "application/transit+json"}
@@ -128,7 +130,10 @@
     (let [datascript-conn (system/datascript-conn context)]
       (successful-response (command/query-all @datascript-conn)))
     (catch Exception ex
-      (log/error ex (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
 
       server-error-response)))
 
@@ -142,7 +147,10 @@
                                  (command/prune)))
         (not-found-response {:error {:message (str "Command " id " not found.")}})))
     (catch Exception ex
-      (log/error ex (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
 
       server-error-response)))
 
@@ -166,14 +174,16 @@
         (do
           (u/log :logging.event/user-error
                  :severity :error
-                 :message (str "Invalid Command. Expound: " (expound/expound-str :convex-web/command command)))
+                 :message "Invalid Command."
+                 :exception (ex-info (str "\n" (expound/expound-str :convex-web/command command)) {}))
           (bad-request-response (error "Invalid Command.")))
 
         forbidden?
         (do
           (u/log :logging.event/user-error
                  :severity :error
-                 :message "Unauthorized.")
+                 :message "Unauthorized."
+                 :exception (ex-info "Unauthorized." {}))
           (forbidden-response (error "Unauthorized.")))
 
         :else
@@ -182,7 +192,7 @@
     (catch Throwable ex
       (u/log :logging.event/system-error
              :severity :error
-             :message (ex-message ex)
+             :message handler-exception-message
              :exception ex)
 
       server-error-response)))
@@ -213,7 +223,7 @@
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
-             :message (ex-message ex)
+             :message handler-exception-message
              :exception ex)
 
       server-error-response)))
@@ -251,7 +261,7 @@
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
-             :message (ex-message ex)
+             :message handler-exception-message
              :exception ex)
 
       server-error-response)))
@@ -335,7 +345,7 @@
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
-             :message (ex-message ex)
+             :message handler-exception-message
              :exception ex)
 
       server-error-response)))
@@ -347,7 +357,10 @@
           session (merge {::session/id id} (session/find-session db id))]
       (successful-response session))
     (catch Exception ex
-      (log/error ex (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
 
       server-error-response)))
 
@@ -398,7 +411,10 @@
                                                           :status (dissoc status :convex-web.account-status/environment)}))
                                 (convex/accounts peer {:start start :end end}))})))
     (catch Exception ex
-      (log/error ex (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
 
       server-error-response)))
 
@@ -421,7 +437,10 @@
           (log/error (str "Failed to get Account; " message))
           (not-found-response {:error {:message message}}))))
     (catch Throwable ex
-      (log/error ex (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
 
       server-error-response)))
 
@@ -435,7 +454,10 @@
           start (- end max-items)]
       (successful-response (convex/blocks peer {:start start :end end})))
     (catch Exception ex
-      (log/error ex (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
 
       server-error-response)))
 
@@ -474,7 +496,10 @@
                               :convex-web/blocks
                               (convex/blocks peer {:start start :end end})})))
     (catch Exception ex
-      (log/error ex (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
 
       server-error-response)))
 
@@ -486,7 +511,10 @@
         (successful-response block)
         (not-found-response {:error {:message (str "Block " index " doesn't exist.")}})))
     (catch Exception ex
-      (log/error ex (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
 
       server-error-response)))
 
@@ -494,7 +522,10 @@
   (try
     (successful-response (convex/reference))
     (catch Exception ex
-      (log/error ex (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
 
       server-error-response)))
 
@@ -509,7 +540,10 @@
         :else
         (successful-response contents)))
     (catch Exception ex
-      (log/error ex (ex-message ex))
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
 
       server-error-response)))
 
