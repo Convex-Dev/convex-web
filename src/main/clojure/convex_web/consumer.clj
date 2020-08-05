@@ -2,6 +2,8 @@
   (:require [convex-web.command :as command]
             [convex-web.convex :as convex]
 
+            [clojure.spec.alpha :as s]
+
             [datascript.core :as d]
             [com.brunobonacci.mulog :as u])
   (:import (convex.net ResultConsumer)))
@@ -21,7 +23,7 @@
        (try
          (let [{::command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
            (try
-             (assert :convex-web/command c)
+             (s/assert :convex-web/command c)
 
              (u/log :logging.event/repl-user
                     :severity :info

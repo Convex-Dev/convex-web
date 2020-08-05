@@ -1,6 +1,5 @@
 (ns convex-web.web-server
-  (:require [convex-web.specs]
-            [convex-web.convex :as convex]
+  (:require [convex-web.convex :as convex]
             [convex-web.peer :as peer]
             [convex-web.system :as system]
             [convex-web.account :as account]
@@ -553,13 +552,14 @@
    which you can call to stop the server.
 
    `options` are the same as org.httpkit.server/run-server."
-  [context & [options]]
+  [system & [options]]
   (let [config {:session
                 {:store (memory-session/memory-store session-ref)
                  :flash true
-                 :cookie-attrs {:http-only false :same-site :strict}}}]
-    (http-kit/run-server (-> (app context)
-                             (wrap-logging)
-                             (wrap-defaults (merge-with merge site-defaults config)))
-                         options)))
+                 :cookie-attrs {:http-only false :same-site :strict}}}
+
+        handler (-> (app system)
+                    (wrap-logging)
+                    (wrap-defaults (merge-with merge site-defaults config)))]
+    (http-kit/run-server handler options)))
 

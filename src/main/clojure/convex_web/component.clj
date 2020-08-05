@@ -3,7 +3,10 @@
             [convex-web.peer :as peer]
             [convex-web.web-server :as web-server]
             [convex-web.consumer :as consumer]
+            [convex-web.specs]
 
+            [clojure.spec.alpha :as s]
+            [clojure.spec.test.alpha :as stest]
             [clojure.pprint :as pprint]
             [clojure.tools.logging :as log]
 
@@ -20,6 +23,19 @@
   (start [component]
     (let [config (aero/read-config "convex-web.edn" {:profile profile})]
       (println (str "\n;; CONFIG " profile "\n" (with-out-str (pprint/pprint config))))
+
+      ;; Spec configuration
+
+      (when-let [spec-config (get config :spec)]
+        (require 'convex-web.specs)
+
+        (when (:check-asserts? spec-config)
+          (s/check-asserts true))
+
+        (when (:instrument? spec-config)
+          (stest/instrument)))
+
+      ;; -----------------------------------------
 
       (assoc component :config config)))
 

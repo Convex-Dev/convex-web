@@ -1,4 +1,17 @@
-{:web-server
+{:spec
+ #profile {:dev
+           {:check-asserts? true
+            :instrument? true}
+
+           :test
+           {:check-asserts? true
+            :instrument? true}
+
+           :prod
+           {:check-asserts? false
+            :instrument? false}}
+
+ :web-server
  {:port
   #profile {:dev 8080
             :prod 8080

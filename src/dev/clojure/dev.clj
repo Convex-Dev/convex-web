@@ -8,7 +8,6 @@
             [convex-web.logging :as logging]
             [convex-web.web-server :as web-server]
             [convex-web.command :as command]
-            [convex-web.specs]
 
             [clojure.test :refer [is]]
             [clojure.spec.alpha :as s]
@@ -26,14 +25,6 @@
   (:import (convex.core Init Peer)
            (convex.core.lang Core Reader Context)
            (org.slf4j.bridge SLF4JBridgeHandler)))
-
-;; -- Spec
-(set! s/*explain-out* expound/printer)
-
-(s/check-asserts true)
-
-(stest/instrument)
-
 
 ;; -- Logging
 (set-init

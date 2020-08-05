@@ -1,5 +1,6 @@
 (ns convex-web.command-test
   (:require [clojure.test :refer :all]
+            [convex-web.specs]
             [convex-web.command :as c]
             [convex-web.convex :as convex])
   (:import (convex.core Init)
