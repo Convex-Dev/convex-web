@@ -262,9 +262,11 @@
                             (let [source (str "(inc " n ")")
 
                                   transaction #:convex-web.transaction {:type :convex-web.transaction.type/invoke
-                                                                        :source source}
+                                                                        :source source
+                                                                        :language :convex-lisp}
 
-                                  query #:convex-web.query {:source source}
+                                  query #:convex-web.query {:source source
+                                                            :language :convex-lisp}
 
                                   mode (?command-mode)
 
