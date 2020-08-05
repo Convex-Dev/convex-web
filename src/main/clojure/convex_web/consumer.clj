@@ -20,11 +20,20 @@
      (fn [^Long id object]
        (try
          (let [{::command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
-           (u/log :logging.event/repl-user
-                  :severity :info
-                  :address address
-                  :mode mode
-                  :source (command/source c)))
+           (try
+             (assert :convex-web/command c)
+
+             (u/log :logging.event/repl-user
+                    :severity :info
+                    :address address
+                    :mode mode
+                    :source (command/source c))
+
+             (catch Exception ex
+               (u/log :logging.event/system-error
+                      :severity :error
+                      :message (str "Consumer received an invalid Command: " c)
+                      :exception ex))))
 
          (d/transact! datascript-conn [#:convex-web.command {:id id
                                                              :status :convex-web.command.status/success
@@ -32,7 +41,7 @@
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error
-                  :message (str "Failed to transact object " id " successful result." ex)
+                  :message (str "Failed to transact object " id " successful result.")
                   :exception ex))))
 
      :handle-error

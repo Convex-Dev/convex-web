@@ -196,7 +196,6 @@
     (doseq [{:keys [message exception]} (->> (rb/items buffer)
                                              (map second)
                                              (filter :exception))]
-
       (.printStackTrace (ex-info message {} exception)))
 
     (rb/clear buffer)))
