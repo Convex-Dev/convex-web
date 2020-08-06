@@ -3,7 +3,6 @@
             [convex-web.peer :as peer]
             [convex-web.web-server :as web-server]
             [convex-web.consumer :as consumer]
-            [convex-web.specs]
 
             [clojure.spec.alpha :as s]
             [clojure.spec.test.alpha :as stest]
