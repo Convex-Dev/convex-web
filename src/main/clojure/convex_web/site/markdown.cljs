@@ -34,8 +34,10 @@
        :ajax.status/success
        [:<>
         ;; -- Markdown
-        [:div.overflow-auto
-         {:class "w-2/4"}
+        [:div
+         (if toc?
+           {:class "w-2/4 overflow-auto"}
+           {})
 
          (for [{:keys [name content]} contents]
            ^{:key name}
