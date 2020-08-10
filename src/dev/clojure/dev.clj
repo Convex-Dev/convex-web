@@ -111,9 +111,12 @@
   (execute (map inc [1 2 3]))
   (execute x)
 
-  (convex/execute-scrypt context "def x 1")
+  (convex/execute-scrypt context "def x = 1")
   (convex/execute-scrypt context "do { inc(1) }")
-  (convex/execute-scrypt context "cond { false 1 :default 2 }")
+  (convex/execute-scrypt context "cond { false 1, :default 2 }")
+  (convex/execute-scrypt context "do { def f = fn (x, y) { map(inc, [x, y]) } f(1, 2) }")
+  (convex/execute-scrypt context "map(fn(x){ inc(x) }, [1, 2])")
+
 
   ;; --
 
