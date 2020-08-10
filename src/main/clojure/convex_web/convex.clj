@@ -1,7 +1,7 @@
 (ns convex-web.convex
   (:require [clojure.string :as str])
   (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap)
-           (convex.core.lang Core Reader)
+           (convex.core.lang Core Reader Scrypt2)
            (convex.core Order Block Peer State Init)
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke)
@@ -13,6 +13,12 @@
      (if (.isExceptional context#)
        (.getExceptional context#)
        (.getResult context#))))
+
+(defn execute-scrypt [context source]
+  (let [context (.execute context (.getResult (.expandCompile context (Scrypt2/readSyntax source))))]
+    (if (.isExceptional context)
+      (.getExceptional context)
+      (.getResult context))))
 
 (defn ^String address->checksum-hex [^Address address]
   (.toChecksumHex address))

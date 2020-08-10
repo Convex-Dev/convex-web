@@ -19,6 +19,14 @@
   :args (s/cat :command :convex-web/command)
   :ret :convex-web/non-empty-string)
 
+(defn language [{:convex-web.command/keys [transaction query]}]
+  (or (get query :convex-web.query/language)
+      (get transaction :convex-web.transaction/language)))
+
+(s/fdef language
+  :args (s/cat :command :convex-web/command)
+  :ret :convex-web/language)
+
 ;; --
 
 (defn wrap-result [{:convex-web.command/keys [status object] :as command}]
@@ -47,8 +55,9 @@
 ;; --
 
 (defn wrap-result-metadata [{:convex-web.command/keys [status object] :as command}]
-  (let [source-form (when-let [source (source command)]
-                      (first (Reader/readAll source)))
+  (let [source-form (when (= :convex-lisp (language command))
+                      (when-let [source (source command)]
+                        (first (Reader/readAll source))))
 
         metadata (case status
                    :convex-web.command.status/running

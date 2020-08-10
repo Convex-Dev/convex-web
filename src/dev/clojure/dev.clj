@@ -111,6 +111,10 @@
   (execute (map inc [1 2 3]))
   (execute x)
 
+  (convex/execute-scrypt context "def x 1")
+  (convex/execute-scrypt context "do { inc(1) }")
+  (convex/execute-scrypt context "cond { false 1 :default 2 }")
+
   ;; --
 
   (command/wrap-result #:convex-web.command {:mode :convex-web.command.mode/query})
