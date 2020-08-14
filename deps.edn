@@ -32,7 +32,7 @@
   org.slf4j/jul-to-slf4j {:mvn/version "1.7.30"}
 
   ;; Google Cloud Logging appender
-  com.google.cloud/google-cloud-logging-logback {:mvn/version "0.118.1-alpha"}
+  com.google.cloud/google-cloud-logging-logback {:mvn/version "0.118.2-alpha"}
 
   ;; IMPORTANT
   ;; `com.google.cloud/google-cloud-logging-logback` has a transitive
