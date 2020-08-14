@@ -5,7 +5,7 @@
            (convex.core.lang Context)
            (convex.core Init)))
 
-(def context (Context/createFake Init/INITIAL_STATE))
+(def context (Context/createFake Init/STATE))
 
 (deftest datafy-test
   (testing "Char"

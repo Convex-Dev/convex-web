@@ -1,7 +1,7 @@
 (ns convex-web.peer
   (:import (convex.net ResultConsumer Connection)
            (convex.peer Server)
-           (convex.core.lang Reader Scrypt3)
+           (convex.core.lang Reader ScryptNext)
            (convex.core.data Address AccountStatus Symbol AList)
            (convex.core Peer State)
            (convex.core.transactions Invoke ATransaction Transfer)
@@ -43,7 +43,7 @@
                  (cond-wrap-do (Reader/readAll source))
 
                  :convex-scrypt
-                 (Scrypt3/readSyntax source))]
+                 (ScryptNext/readSyntax source))]
     (Invoke/create nonce object)))
 
 (defn ^ATransaction transfer-transaction [^Long nonce ^Address address ^Long amount]

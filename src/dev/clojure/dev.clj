@@ -34,7 +34,7 @@
 
     (component/system :dev)))
 
-(def context (Context/createFake Init/INITIAL_STATE))
+(def context (Context/createFake Init/STATE))
 
 (defn ^Peer peer []
   (peer/peer (system/convex-server system)))
@@ -111,19 +111,18 @@
   (execute (map inc [1 2 3]))
   (execute x)
 
-  (convex/execute-scrypt context "def x = 1")
-  (convex/execute-scrypt context "do { inc(1) }")
+  (convex/execute-scrypt context "def x = 1;")
+  (convex/execute-scrypt context "do { inc(1); }")
 
-  (convex/execute-scrypt context "cond { false 1, :default 2 }")
-  (convex/execute-scrypt context "when (true) { 1 }")
-  (convex/execute-scrypt context "when (false) { 1 }")
-  (convex/execute-scrypt context "if (true) { 1 2 }")
-  (convex/execute-scrypt context "if (true) { 1 } else { }")
-  (convex/execute-scrypt context "if (true) 1 else 2")
-  (convex/execute-scrypt context "do { def x? = true if (x?) { 1 2 } }")
-
-  (convex/execute-scrypt context "do { def f = fn (x, y) { map(inc, [x, y]) } f(1, 2) }")
-  (convex/execute-scrypt context "map(fn(x){ inc(x) }, [1, 2])")
+  (convex/execute-scrypt context "when (true) {}")
+  (convex/execute-scrypt context "when (true) { 1; }")
+  (convex/execute-scrypt context "if (true) 1;")
+  (convex/execute-scrypt context "if (true) { 1; 2; }")
+  (convex/execute-scrypt context "if (true) 1; else 2;")
+  (convex/execute-scrypt context "if (false) 1; else 2;")
+  (convex/execute-scrypt context "do { def x? = true; if (x?) { 1; 2; } 1; }")
+  (convex/execute-scrypt context "{ def f = fn (x, y) { map(inc, [x, y]); }; f(1, 2); }")
+  (convex/execute-scrypt context "map(fn(x){ inc(x); }, [1, 2])")
 
 
   ;; --

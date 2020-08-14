@@ -6,7 +6,7 @@
   (:import (convex.core Init)
            (convex.core.lang Context)))
 
-(def context (Context/createFake Init/INITIAL_STATE))
+(def context (Context/createFake Init/STATE))
 
 (deftest wrap-result-test
   (testing "Address"
