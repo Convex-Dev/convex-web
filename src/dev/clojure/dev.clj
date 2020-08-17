@@ -66,6 +66,12 @@
      (commands))))
 
 (comment
+
+	(clojure.test/run-tests 
+		'convex-web.specs-test
+		'convex-web.http-api-test)
+
+
   ;; -- Sessions
   (d/q '[:find [(pull ?e [*
                           {:convex-web.session/accounts
