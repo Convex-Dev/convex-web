@@ -1,9 +1,9 @@
 (ns convex-web.site.command
   (:require [convex-web.site.backend :as backend]
             [convex-web.site.runtime :as runtime :refer [disp]]
-
-            [re-frame.core :as re-frame]
-            [lambdaisland.glogi :as log]))
+            
+            [lambdaisland.glogi :as log]
+            [re-frame.core :as re-frame]))
 
 (def default-command-timeout 100)
 (def default-command-retries 10)
@@ -33,11 +33,11 @@
                                    (fn [error]
                                      (log/error :command.fx/poll {:error error})
 
-                                     (watch command #:convex-web.command {:status :convex-web.command.status/error
-                                                                          :error {:message "Server error."}}))}))
+                                     (watch command #:convex-web.command{:status :convex-web.command.status/error
+                                                                         :error {:message "Server error."}}))}))
         timeout)
-      (watch command #:convex-web.command {:status :convex-web.command.status/error
-                                           :error {:message "Exhausted retries."}}))))
+      (watch command #:convex-web.command{:status :convex-web.command.status/error
+                                          :error {:message "Exhausted retries."}}))))
 
 (re-frame/reg-event-fx :command/!poll
   (fn [_ [_ m]]
@@ -46,28 +46,29 @@
 (re-frame/reg-fx :command.fx/execute
   (fn [{:keys [command watch]}]
     (backend/POST-command command {:handler
-                                   (fn [command']
+                                   (fn [{:convex-web.command/keys [id status] :as command'}]
                                      (watch command command')
 
-                                     ;; Makes another trip to the server to get the command.
-                                     ;; It's very likely that by the time we reach the server
-                                     ;; the command is ready - either succeeded or failed.
-                                     ;;
-                                     ;; We can also adjust the timeout knob of the request;
-                                     ;; increase the timeout and increase the chance of
-                                     ;; doing a single round-trip to the server.
-                                     (disp :command/!poll {:id (:convex-web.command/id command')
-                                                           :timeout default-command-timeout
-                                                           :retries default-command-retries
-                                                           :command (merge command command')
-                                                           :watch watch}))
+                                     (when-not (= :convex-web.command.status/error status)
+                                       ;; Makes another trip to the server to get the command.
+                                       ;; It's very likely that by the time we reach the server
+                                       ;; the command is ready - either succeeded or failed.
+                                       ;;
+                                       ;; We can also adjust the timeout knob of the request;
+                                       ;; increase the timeout and increase the chance of
+                                       ;; doing a single round-trip to the server.
+                                       (disp :command/!poll {:id id
+                                                             :timeout default-command-timeout
+                                                             :retries default-command-retries
+                                                             :command (merge command command')
+                                                             :watch watch})))
 
                                    :error-handler
                                    (fn [error]
                                      (log/error :command.fx/execute {:error error})
 
-                                     (watch command #:convex-web.command {:status :convex-web.command.status/error
-                                                                          :error error}))})))
+                                     (watch command #:convex-web.command{:status :convex-web.command.status/error
+                                                                         :error error}))})))
 
 (re-frame/reg-event-fx :command/!execute
   (fn [_ [_ command watch]]
@@ -76,5 +77,3 @@
 
 (defn execute [command & [watch]]
   (disp :command/!execute command (or watch identity)))
-
-

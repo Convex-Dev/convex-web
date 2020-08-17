@@ -195,7 +195,9 @@
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      (successful-response  #:convex-web.command {:id -1 
+                                                  :status :convex-web.command.status/error
+                                                  :error {:message "Invalid program."}}))))
 
 (defn POST-generate-account [context req]
   (try
