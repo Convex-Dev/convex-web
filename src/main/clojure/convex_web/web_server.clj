@@ -12,6 +12,7 @@
             [clojure.spec.alpha :as s]
             [clojure.tools.logging :as log]
             [clojure.pprint :as pprint]
+            [clojure.stacktrace :as stacktrace]
 
             [com.brunobonacci.mulog :as u]
             [expound.alpha :as expound]
@@ -23,7 +24,6 @@
             [compojure.core :refer [routes GET POST]]
             [compojure.route :as route]
             [hiccup.page :as page]
-            [nano-id.core :as nano-id]
             [ring.util.anti-forgery])
   (:import (java.io ByteArrayOutputStream InputStream)
            (convex.core.crypto AKeyPair)
@@ -31,7 +31,9 @@
            (convex.net Connection)
            (convex.core Init Peer State)
            (java.time Instant)
-           (java.util Date)))
+           (java.util Date)
+           (org.parboiled.errors ParserRuntimeException)
+           (convex.core.exceptions ParseException)))
 
 (def session-ref (atom {}))
 
@@ -195,9 +197,15 @@
              :message handler-exception-message
              :exception ex)
 
-      (successful-response  #:convex-web.command {:id -1 
-                                                  :status :convex-web.command.status/error
-                                                  :error {:message "Invalid program."}}))))
+      (let [message (cond
+                      (#{ParserRuntimeException ParseException} (class ex))
+                      (str "Syntax error: " (.getMessage (stacktrace/root-cause ex)))
+
+                      :else
+                      "Server error.")]
+        (successful-response #:convex-web.command {:id -1
+                                                   :status :convex-web.command.status/error
+                                                   :error {:message message}})))))
 
 (defn POST-generate-account [context req]
   (try

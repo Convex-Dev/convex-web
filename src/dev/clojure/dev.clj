@@ -15,6 +15,7 @@
             [clojure.repl :refer [doc]]
             [clojure.string :as str]
             [clojure.java.io :as io]
+            [clojure.stacktrace :as stacktrace]
 
             [com.stuartsierra.component.repl :refer [set-init reset system]]
             [aero.core :as aero]
@@ -129,6 +130,12 @@
   (convex/execute-scrypt context "do { def x? = true; if (x?) { 1; 2; } 1; }")
   (convex/execute-scrypt context "{ def f = fn (x, y) { map(inc, [x, y]); }; f(1, 2); }")
   (convex/execute-scrypt context "map(fn(x){ inc(x); }, [1, 2])")
+
+
+  (try
+    (Reader/read "(]")
+    (catch Throwable e
+      (println (.getMessage (stacktrace/root-cause e)))))
 
 
   ;; --
