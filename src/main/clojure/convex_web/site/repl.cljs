@@ -237,18 +237,23 @@
 
                                                                commands (or (commands state) [])
 
-                                                               should-update? (some
-                                                                                (fn [{this-id :convex-web.command/id}]
-                                                                                  (= id this-id))
-                                                                                commands)
+                                                               ;; Without checking for the ID a Command without an ID
+                                                               ;; would be flagged since both values are nil.
+                                                               should-update? (when id
+                                                                                (some
+                                                                                  (fn [{this-id :convex-web.command/id}]
+                                                                                    (= id this-id))
+                                                                                  commands))
 
                                                                commands' (if should-update?
+                                                                           ;; Map over the existing Commands to update the matching one.
                                                                            (mapv
                                                                              (fn [{this-id :convex-web.command/id :as command}]
                                                                                (if (= id this-id)
                                                                                  (merge command command')
                                                                                  command))
                                                                              commands)
+                                                                           ;; Don't need to update so we simply add the Command to the list.
                                                                            (conj commands command'))]
 
                                                            (assoc state :convex-web.repl/commands commands'))))))))))
