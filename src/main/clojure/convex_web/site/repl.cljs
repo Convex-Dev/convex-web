@@ -269,7 +269,6 @@
            {:on-click #(stack/push :page.id/create-account {:modal? true})}
            [:span.text-xs.uppercase "Create Account"]]]]
         [:div.flex.border.rounded
-
          (let [enter-extra-key (fn []
                                  (if-let [editor @editor-ref]
                                    (let [^js pos (-> editor
