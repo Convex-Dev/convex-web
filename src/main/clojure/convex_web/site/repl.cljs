@@ -431,66 +431,65 @@
          [gui/SpinnerSmall])])))
 
 (defn Commands [commands]
-  [:<>
-   (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
-     ^{:key id}
-     [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
-      {:ref
-       (fn [el]
-         (when el
-           (.scrollIntoView el #js {"behavior" "smooth"
-                                    "block" "center"})))
-       :class
-       (case status
-         :convex-web.command.status/running
-         "bg-yellow-100"
-         :convex-web.command.status/success
-         ""
-         :convex-web.command.status/error
-         "bg-red-100"
+  (into [:div] (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
+                 ^{:key id}
+                 [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
+                  {:ref
+                   (fn [el]
+                     (when el
+                       (.scrollIntoView el #js {"behavior" "smooth"
+                                                "block" "center"})))
+                   :class
+                   (case status
+                     :convex-web.command.status/running
+                     "bg-yellow-100"
+                     :convex-web.command.status/success
+                     ""
+                     :convex-web.command.status/error
+                     "bg-red-100"
 
-         "")}
+                     "")}
 
-      ;; -- Input
-      [:div.flex.flex-col.items-start
-       [:span.text-xs.uppercase.text-gray-600.block.mb-1
-        "Source"]
+                  ;; -- Input
+                  [:div.flex.flex-col.items-start
+                   [:span.text-xs.uppercase.text-gray-600.block.mb-1
+                    "Source"]
 
-       (let [source (or (get query :convex-web.query/source)
-                        (get transaction :convex-web.transaction/source))]
-         [:div.flex.items-center
-          [gui/Highlight source]
-          [gui/ClipboardCopy source {:margin "ml-2"}]])]
+                   (let [source (or (get query :convex-web.query/source)
+                                    (get transaction :convex-web.transaction/source))]
+                     [:div.flex.items-center
+                      [gui/Highlight source]
+                      [gui/ClipboardCopy source {:margin "ml-2"}]])]
 
-      [:div.my-3]
+                  [:div.my-3]
 
-      ;; -- Output
-      [:div.flex.flex-col
-       (let [type (get-in command [:convex-web.command/metadata :type])]
-         [:div.flex.mb-1
-          [:span.text-xs.uppercase.text-gray-600
-           (cond
-             (= type :error)
-             (str "Error (" (name (get-in command [:convex-web.command/error :code])) ")")
+                  ;; -- Output
+                  [:div.flex.flex-col
+                   (let [type (get-in command [:convex-web.command/metadata :type])]
+                     [:div.flex.mb-1
+                      [:span.text-xs.uppercase.text-gray-600
+                       (cond
+                         (= type :error)
+                         (str "Error (" (name (get-in command [:convex-web.command/error :code])) ")")
 
-             :else
-             "Result")]
+                         :else
+                         "Result")]
 
-          (when (and type (not= :error type))
-            [gui/Tooltip
-             (str/capitalize (name type))
-             [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]])])
+                      (when (and type (not= :error type))
+                        [gui/Tooltip
+                         (str/capitalize (name type))
+                         [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]])])
 
-       [:div.flex
-        (case status
-          :convex-web.command.status/running
-          [gui/SpinnerSmall]
+                   [:div.flex
+                    (case status
+                      :convex-web.command.status/running
+                      [gui/SpinnerSmall]
 
-          :convex-web.command.status/success
-          [Output command]
+                      :convex-web.command.status/success
+                      [Output command]
 
-          :convex-web.command.status/error
-          [ErrorOutput command])]]])])
+                      :convex-web.command.status/error
+                      [ErrorOutput command])]]])))
 
 (defn QueryRadio [state set-state]
   [:label
