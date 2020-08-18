@@ -218,7 +218,7 @@
 
 (s/def :convex-web.repl/language :convex-web/language)
 (s/def :convex-web.repl/mode :convex-web.command/mode)
-(s/def :convex-web.repl/commands-by-id (s/map-of :convex-web.command/id :convex-web/command))
+(s/def :convex-web.repl/commands (s/coll-of :convex-web/command))
 
 
 ;; -- Comms

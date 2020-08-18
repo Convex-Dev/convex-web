@@ -203,8 +203,7 @@
 
                       :else
                       "Server error.")]
-        (successful-response #:convex-web.command {:id -1
-                                                   :status :convex-web.command.status/error
+        (successful-response #:convex-web.command {:status :convex-web.command.status/error
                                                    :error {:message message}})))))
 
 (defn POST-generate-account [context req]

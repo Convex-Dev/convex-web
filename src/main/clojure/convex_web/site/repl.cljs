@@ -27,14 +27,10 @@
 (defn set-transaction-mode [state]
   (assoc state :convex-web.repl/mode :convex-web.command.mode/transaction))
 
-(defn update-command [state {:convex-web.command/keys [id] :as command}]
-  (assoc-in state [:convex-web.repl/commands-by-id id] command))
-
 (defn commands
   "Returns a collection of REPL Commands sorted by ID."
   [state]
-  (->> (vals (:convex-web.repl/commands-by-id state))
-       (sort-by :convex-web.command/id)))
+  (:convex-web.repl/commands state))
 
 (defn query?
   "Query Command?"
@@ -234,8 +230,28 @@
                         (when-not (str/blank? (codemirror/cm-get-value editor))
                           (codemirror/cm-set-value editor "")
 
-                          (command/execute command (fn [command command']
-                                                     (set-state #(update-command % (merge command command')))))))))
+                          (command/execute command (fn [command-previous-state command-new-state]
+                                                     (set-state
+                                                       (fn [state]
+                                                         (let [{:convex-web.command/keys [id] :as command'} (merge command-previous-state command-new-state)
+
+                                                               commands (or (commands state) [])
+
+                                                               should-update? (some
+                                                                                (fn [{this-id :convex-web.command/id}]
+                                                                                  (= id this-id))
+                                                                                commands)
+
+                                                               commands' (if should-update?
+                                                                           (mapv
+                                                                             (fn [{this-id :convex-web.command/id :as command}]
+                                                                               (if (= id this-id)
+                                                                                 (merge command command')
+                                                                                 command))
+                                                                             commands)
+                                                                           (conj commands command'))]
+
+                                                           (assoc state :convex-web.repl/commands commands'))))))))))
 
           input-disabled? (and (nil? active-address) (= :convex-web.command.mode/transaction (mode state)))]
       (if input-disabled?
@@ -416,7 +432,7 @@
 
 (defn Commands [commands]
   [:<>
-   (for [{:convex-web.command/keys [id status query transaction error] :as command} commands]
+   (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
      ^{:key id}
      [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
       {:ref
@@ -616,7 +632,7 @@
           :initial-state #:convex-web.repl {:language :convex-scrypt
                                             :mode :convex-web.command.mode/transaction
                                             :sidebar {:sidebar/tab :examples}}
-          :state-spec (s/keys :req [:convex-web.repl/mode] :opt [:convex-web.repl/commands-by-id])
+          :state-spec (s/keys :req [:convex-web.repl/mode] :opt [:convex-web.repl/commands])
           :component #'SandboxPage
           :on-push
           (fn [_ _ set-state]
