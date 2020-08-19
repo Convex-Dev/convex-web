@@ -8,6 +8,7 @@
             [clojure.spec.test.alpha :as stest]
             [clojure.pprint :as pprint]
             [clojure.tools.logging :as log]
+            [clojure.string :as str]
 
             [aero.core :as aero]
             [com.brunobonacci.mulog :as u]
@@ -21,7 +22,11 @@
 
   (start [component]
     (let [config (aero/read-config "convex-web.edn" {:profile profile})]
-      (println (str "\n;; CONFIG " profile "\n" (with-out-str (pprint/pprint config))))
+      (println (str "\n==============\n"
+                    (str/upper-case (name profile)) " SYSTEM"
+                    "\n==============\n\n"
+                    (with-out-str (pprint/pprint config))
+                    "\n--------------------------------------------------\n"))
 
       ;; Spec configuration
 
