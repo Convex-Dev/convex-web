@@ -13,6 +13,7 @@
             [clojure.tools.logging :as log]
             [clojure.pprint :as pprint]
             [clojure.stacktrace :as stacktrace]
+            [clojure.data.json :as json]
 
             [com.brunobonacci.mulog :as u]
             [expound.alpha :as expound]
@@ -27,13 +28,14 @@
             [ring.util.anti-forgery])
   (:import (java.io ByteArrayOutputStream InputStream)
            (convex.core.crypto AKeyPair)
-           (convex.core.data Address AccountStatus)
+           (convex.core.data Address AccountStatus Ref)
            (convex.net Connection)
            (convex.core Init Peer State)
            (java.time Instant)
            (java.util Date)
            (org.parboiled.errors ParserRuntimeException)
-           (convex.core.exceptions ParseException)))
+           (convex.core.exceptions ParseException)
+           (convex.core.transactions ATransaction)))
 
 (def session-ref (atom {}))
 
@@ -126,6 +128,43 @@
   {:status 404
    :headers {"Content-Type" "application/transit+json"}
    :body (transit-encode body)})
+
+;; Public APIs
+;; ==========================
+
+(defn POST-transaction-prepare [system {:keys [body]}]
+  (try
+    (let [{:keys [address source]} (json/read-str (slurp body) :key-fn keyword)
+
+          _ (u/log :logging.event/transaction-prepare
+                   :severity :info
+                   :souce source)
+
+          peer (system/convex-peer-server system)
+          sequence-number (peer/sequence-number peer (Address/fromHex address))
+          tx (peer/invoke-transaction (inc sequence-number) source :convex-lisp)]
+
+      ;; Persist the transaction in the Etch datastore.
+      (Ref/createPersisted tx)
+
+      {:status 200
+       :headers {"Content-Type" "application/json"}
+       :body (json/write-str {:source source
+                              :hash (str (.getHash tx))})})
+
+    (catch Exception ex
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
+
+      {:status 500
+       :headers {"Content-Type" "application/json"}
+       :body (json/write-str {:error {:message "Sorry. Our server failed to process your request."}})})))
+
+
+;; Internal APIs
+;; ==========================
 
 (defn GET-commands [context _]
   (try
@@ -556,25 +595,29 @@
 
       server-error-response)))
 
-(defn app [context]
+(defn app [system]
   (routes
     (GET "/" req (index req))
 
+    ;; -- Public API
+    (POST "/api/v1/transaction/prepare" req (POST-transaction-prepare system req))
+    (POST "/api/v1/transaction/submit" req (POST-transaction-prepare system req))
+
     ;; -- Internal API
-    (GET "/api/internal/session" req (GET-session context req))
-    (POST "/api/internal/generate-account" req (POST-generate-account context req))
-    (POST "/api/internal/confirm-account" req (POST-confirm-account context req))
-    (POST "/api/internal/faucet" req (POST-faucet context req))
-    (GET "/api/internal/accounts" req (GET-accounts context req))
-    (GET "/api/internal/accounts/:address" [address] (GET-account context address))
-    (GET "/api/internal/blocks" req (GET-blocks context req))
-    (GET "/api/internal/blocks-range" req (GET-blocks-range context req))
-    (GET "/api/internal/blocks/:index" [index] (GET-block context index))
-    (GET "/api/internal/commands" req (GET-commands context req))
-    (POST "/api/internal/commands" req (POST-command context req))
-    (GET "/api/internal/commands/:id" [id] (GET-command-by-id context (Long/parseLong id)))
-    (GET "/api/internal/reference" req (GET-reference context req))
-    (GET "/api/internal/markdown-page" req (GET-markdown-page context req))
+    (GET "/api/internal/session" req (GET-session system req))
+    (POST "/api/internal/generate-account" req (POST-generate-account system req))
+    (POST "/api/internal/confirm-account" req (POST-confirm-account system req))
+    (POST "/api/internal/faucet" req (POST-faucet system req))
+    (GET "/api/internal/accounts" req (GET-accounts system req))
+    (GET "/api/internal/accounts/:address" [address] (GET-account system address))
+    (GET "/api/internal/blocks" req (GET-blocks system req))
+    (GET "/api/internal/blocks-range" req (GET-blocks-range system req))
+    (GET "/api/internal/blocks/:index" [index] (GET-block system index))
+    (GET "/api/internal/commands" req (GET-commands system req))
+    (POST "/api/internal/commands" req (POST-command system req))
+    (GET "/api/internal/commands/:id" [id] (GET-command-by-id system (Long/parseLong id)))
+    (GET "/api/internal/reference" req (GET-reference system req))
+    (GET "/api/internal/markdown-page" req (GET-markdown-page system req))
 
     (route/resources "/")
     (route/not-found "<h1>Page not found</h1>")))

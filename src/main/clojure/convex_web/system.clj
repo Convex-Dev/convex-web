@@ -29,6 +29,9 @@
 (defn ^Server convex-server [system]
   (-convex-server (convex system)))
 
+(defn ^Server convex-peer-server [system]
+  (.getPeer (-convex-server (convex system))))
+
 (defn ^Connection convex-conn [system]
   (-convex-conn (convex system)))
 
