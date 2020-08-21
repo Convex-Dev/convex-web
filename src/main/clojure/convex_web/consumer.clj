@@ -14,7 +14,7 @@
     (handleError [id code message]
       (handle-error id code message))))
 
-(defn ^ResultConsumer persistent-consumer [datascript-conn]
+(defn ^ResultConsumer command-consumer [datascript-conn]
   (result-consumer
     {:handle-result
      (fn [^Long id object]

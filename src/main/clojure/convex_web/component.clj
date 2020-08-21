@@ -107,7 +107,7 @@
   component/Lifecycle
 
   (start [component]
-    (let [consumer (consumer/persistent-consumer (system/-datascript-conn datascript))]
+    (let [consumer (consumer/command-consumer (system/-datascript-conn datascript))]
       (log/debug "Started Consumer")
 
       (assoc component
