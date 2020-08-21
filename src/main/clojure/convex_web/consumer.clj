@@ -19,20 +19,22 @@
     {:handle-result
      (fn [^Long id object]
        (try
-         (let [{::command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
-           (try
-             (u/log :logging.event/repl-user
-                    :severity :info
-                    :address address
-                    :mode mode
-                    :source (command/source c))
+         ;; TODO Change design.
+         #_(let [{::command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
+             (try
+               (u/log :logging.event/repl-user
+                      :severity :info
+                      :address address
+                      :mode mode
+                      :source (command/source c))
 
-             (catch Exception ex
-               (u/log :logging.event/system-error
-                      :severity :error
-                      :message (str "Consumer received an invalid Command: " c)
-                      :exception ex))))
+               (catch Exception ex
+                 (u/log :logging.event/system-error
+                        :severity :error
+                        :message (str "Consumer received an invalid Command: " c)
+                        :exception ex))))
 
+         ;; TODO Why transact `:nil` for object? What's the problem of not transacting an object?
          (d/transact! datascript-conn [#:convex-web.command {:id id
                                                              :status :convex-web.command.status/success
                                                              :object (if (nil? object) :nil object)}])
@@ -45,13 +47,15 @@
      :handle-error
      (fn [^Long id ^Object code ^Object message]
        (try
-         (let [{::command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
-           (u/log :logging.event/repl-error
-                  :severity :info
-                  :address address
-                  :mode mode
-                  :source (command/source c)
-                  :message (str message)))
+
+         ;; TODO Change design. (Same issue as above)
+         #_(let [{::command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
+             (u/log :logging.event/repl-error
+                    :severity :info
+                    :address address
+                    :mode mode
+                    :source (command/source c)
+                    :message (str message)))
 
          (d/transact! datascript-conn [#:convex-web.command{:id id
                                                             :status :convex-web.command.status/error
