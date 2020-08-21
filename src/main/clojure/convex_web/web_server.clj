@@ -35,9 +35,7 @@
            (java.time Instant)
            (java.util Date)
            (org.parboiled.errors ParserRuntimeException)
-           (convex.core.exceptions ParseException)
-           (convex.core.transactions ATransaction)
-           (clojure.lang ExceptionInfo)))
+           (convex.core.exceptions ParseException)))
 
 (def session-ref (atom {}))
 
