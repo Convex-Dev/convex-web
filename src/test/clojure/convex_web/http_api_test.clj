@@ -40,8 +40,7 @@
 (deftest generate-account-test
   (testing "Generate Account"
     (let [{:keys [status body]} @(http/post (str (server-url) "/api/internal/generate-account"))]
-      (is (= 403 status))
-      (is (= "<h1>Invalid anti-forgery token</h1>" body)))))
+      (is (= 500 status)))))
 
 (deftest blocks-test
   (testing "Get Blocks"
