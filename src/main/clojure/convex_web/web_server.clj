@@ -154,7 +154,7 @@
       {:status 200
        :headers {"Content-Type" "application/json"}
        :body (json/write-str {:source source
-                              :hash (str (.getHash tx))})})
+                              :hash (.toHexString (.getHash tx))})})
 
     (catch Exception ex
       (u/log :logging.event/system-error
