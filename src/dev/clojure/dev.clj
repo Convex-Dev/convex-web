@@ -56,10 +56,10 @@
 
 (defn commands
   ([]
-   (d/q '[:find [(pull ?e [*]) ...]
-          :in $
-          :where [?e :convex-web.command/id _]]
-        @(system/datascript-conn system)))
+   (sort-by :convex-web.command/id (d/q '[:find [(pull ?e [*]) ...]
+                                          :in $
+                                          :where [?e :convex-web.command/id _]]
+                                        @(system/datascript-conn system))))
   ([status]
    (filter
      (fn [command]
@@ -68,9 +68,9 @@
 
 (comment
 
-	(clojure.test/run-tests 
-		'convex-web.specs-test
-		'convex-web.http-api-test)
+  (clojure.test/run-tests
+    'convex-web.specs-test
+    'convex-web.http-api-test)
 
 
   ;; -- Sessions
@@ -158,7 +158,7 @@
 
   (session/all (db))
   (session/find-session (db) "4feac0cd-cc06-4a3b-bcad-54596771356b")
-  (session/find-account (db) "0a0CB41358185ACe6A4d8242F567Bd34A98E718E")
+  (session/find-account (db) "f7d696Fc1884ed5A7294A4F765206DB32dCDbCAB35C84DF7a8348bc2bF3b8f45")
 
   ;; --
 

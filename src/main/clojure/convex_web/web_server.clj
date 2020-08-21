@@ -183,21 +183,26 @@
 
 (defn POST-transaction-submit [system {:keys [body]}]
   (try
-    (let [{:keys [hash]} (json/read-str (slurp body) :key-fn keyword)
+    (let [{:keys [address hash]} (json/read-str (slurp body) :key-fn keyword)
 
           _ (u/log :logging.event/transaction-submit
                    :severity :info
                    :hash hash)
 
+          address (s/assert :convex-web/address address)
           hash (s/assert :convex-web/non-empty-string hash)
 
+          datascript-conn (system/datascript-conn system)
+
+          {:convex-web.account/keys [key-pair]} (account/find-by-address @datascript-conn address)
+
           ;; Read the transaction from the Etch datastore.
-          tx (Ref/forHash (Hash/fromHex hash))]
+          tx (.getValue (Ref/forHash (Hash/fromHex hash)))]
 
       {:status 200
        :headers {"Content-Type" "application/json"}
-       :body (json/write-str {:tx-id (->> (.getValue tx)
-                                          (convex/sign (AKeyPair/createSeeded 585875))
+       :body (json/write-str {:tx-id (->> tx
+                                          (convex/sign key-pair)
                                           (convex/transact (system/convex-conn system)))})})
 
     (catch Exception ex

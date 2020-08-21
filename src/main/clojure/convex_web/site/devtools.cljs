@@ -365,7 +365,8 @@
              (js/console.log response)
 
              (backend/POST-transaction-submit
-               {:hash hash}
+               {:address address
+                :hash hash}
 
                {:handler
                 (fn [response']
