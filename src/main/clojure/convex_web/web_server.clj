@@ -28,8 +28,8 @@
             [hiccup.page :as page]
             [ring.util.anti-forgery])
   (:import (java.io ByteArrayOutputStream InputStream)
-           (convex.core.crypto AKeyPair)
-           (convex.core.data Address AccountStatus Ref)
+           (convex.core.crypto AKeyPair Hash)
+           (convex.core.data Address AccountStatus Ref SignedData)
            (convex.net Connection)
            (convex.core Init Peer State)
            (java.time Instant)
@@ -136,12 +136,13 @@
   (try
     (let [{:keys [address source]} (json/read-str (slurp body) :key-fn keyword)
 
-          address (s/assert :convex-web/address address)
-          source (s/assert :convex-web/non-empty-string source)
-
           _ (u/log :logging.event/transaction-prepare
                    :severity :info
+                   :address address
                    :souce source)
+
+          address (s/assert :convex-web/address address)
+          source (s/assert :convex-web/non-empty-string source)
 
           peer (system/convex-peer-server system)
           sequence-number (peer/sequence-number peer (Address/fromHex address))
@@ -154,6 +155,50 @@
        :headers {"Content-Type" "application/json"}
        :body (json/write-str {:source source
                               :hash (.toHexString (.getHash tx))})})
+
+    (catch Exception ex
+      (let [assertion-failed? (= :assertion-failed (get (ex-data ex) ::s/failure))]
+        (cond
+          assertion-failed?
+          (do
+            (u/log :logging.event/user-error
+                   :severity :error
+                   :message (ex-message ex)
+                   :exception ex)
+
+            {:status 400
+             :headers {"Content-Type" "application/json"}
+             :body (json/write-str (error (ex-message ex)))})
+
+          :else
+          (do
+            (u/log :logging.event/system-error
+                   :severity :error
+                   :message handler-exception-message
+                   :exception ex)
+
+            {:status 500
+             :headers {"Content-Type" "application/json"}
+             :body (json/write-str {:error {:message "Sorry. Our server failed to process your request."}})}))))))
+
+(defn POST-transaction-submit [system {:keys [body]}]
+  (try
+    (let [{:keys [hash]} (json/read-str (slurp body) :key-fn keyword)
+
+          _ (u/log :logging.event/transaction-submit
+                   :severity :info
+                   :hash hash)
+
+          hash (s/assert :convex-web/non-empty-string hash)
+
+          ;; Read the transaction from the Etch datastore.
+          tx (Ref/forHash (Hash/fromHex hash))]
+
+      {:status 200
+       :headers {"Content-Type" "application/json"}
+       :body (json/write-str {:tx-id (->> (.getValue tx)
+                                          (convex/sign (AKeyPair/createSeeded 585875))
+                                          (convex/transact (system/convex-conn system)))})})
 
     (catch Exception ex
       (let [assertion-failed? (= :assertion-failed (get (ex-data ex) ::s/failure))]
@@ -619,7 +664,7 @@
 
     ;; -- Public API
     (POST "/api/v1/transaction/prepare" req (POST-transaction-prepare system req))
-    (POST "/api/v1/transaction/submit" req (POST-transaction-prepare system req))
+    (POST "/api/v1/transaction/submit" req (POST-transaction-submit system req))
 
     ;; -- Internal API
     (GET "/api/internal/session" req (GET-session system req))

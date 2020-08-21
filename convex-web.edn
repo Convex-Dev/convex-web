@@ -1,7 +1,7 @@
 {:spec
  #profile {:dev
-           {:check-asserts? true
-            :instrument? true}
+           {:check-asserts? false
+            :instrument? false}
 
            :test
            {:check-asserts? true

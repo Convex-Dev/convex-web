@@ -101,3 +101,10 @@
                                              :params params}
                                             (when error-handler
                                               {:error-handler error-handler}))))
+
+(defn POST-transaction-submit [{:keys [hash] :as params} {:keys [handler error-handler]}]
+  (POST "api/v1/transaction/submit" (merge {:handler handler
+                                            :format :json
+                                            :params params}
+                                           (when error-handler
+                                             {:error-handler error-handler}))))

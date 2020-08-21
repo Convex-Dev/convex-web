@@ -355,13 +355,21 @@
         "focus:outline-none"
         "hover:shadow-md"
         "bg-blue-500"]
-       :on-click #(backend/POST-transaction-prepare
-                    {:address address
-                     :source "1"}
+       :on-click
+       #(backend/POST-transaction-prepare
+          {:address address
+           :source "(inc 1)"}
 
-                    {:handler
-                     (fn [response]
-                       (js/console.log response))})}
+          {:handler
+           (fn [{:strs [hash] :as response}]
+             (js/console.log response)
+
+             (backend/POST-transaction-submit
+               {:hash hash}
+
+               {:handler
+                (fn [response']
+                  (js/console.log response'))}))})}
       [:span.text-xs.text-white.uppercase
        "Prepare"]]]))
 

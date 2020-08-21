@@ -43,7 +43,7 @@
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error
-                  :message (str "Failed to transact object " id " successful result.")
+                  :message (str "Failed to transact object " id " successful result: " object)
                   :exception ex))))
 
      :handle-error
@@ -65,5 +65,5 @@
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error
-                  :message (str "Failed to transact object " id " error result. " ex)
+                  :message (str "Failed to transact object " id " error result: " message)
                   :exception ex))))}))
