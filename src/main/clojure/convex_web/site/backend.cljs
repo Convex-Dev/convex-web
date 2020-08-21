@@ -96,8 +96,7 @@
                                              {:error-handler error-handler}))))
 
 (defn POST-transaction-prepare [{:keys [address source] :as params} {:keys [handler error-handler]}]
-  (POST "api/v1/transaction/prepare" (merge {:headers (csrf-header)
-                                             :handler handler
+  (POST "api/v1/transaction/prepare" (merge {:handler handler
                                              :format :json
                                              :params params}
                                             (when error-handler

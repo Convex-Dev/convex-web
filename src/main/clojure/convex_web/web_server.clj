@@ -642,7 +642,10 @@
   (let [config {:session
                 {:store (memory-session/memory-store session-ref)
                  :flash true
-                 :cookie-attrs {:http-only false :same-site :strict}}}
+                 :cookie-attrs {:http-only false :same-site :strict}}
+
+                :security
+                {:anti-forgery false}}
 
         handler (-> (app system)
                     (wrap-logging)
