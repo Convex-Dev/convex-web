@@ -35,9 +35,10 @@
                         :exception ex))))
 
          ;; TODO Why transact `:nil` for object? What's the problem of not transacting an object?
-         (d/transact! datascript-conn [#:convex-web.command {:id id
-                                                             :status :convex-web.command.status/success
-                                                             :object (if (nil? object) :nil object)}])
+         (d/transact! datascript-conn [(merge {:convex-web.command/id id
+                                               :convex-web.command/status :convex-web.command.status/success}
+                                              (when (some? object)
+                                                {:convex-web.command/object object}))])
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error

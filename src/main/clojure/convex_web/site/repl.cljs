@@ -364,11 +364,10 @@
                    (get-in command [:convex-web.command/metadata :type])))
 
 (defmethod Output :default [{:convex-web.command/keys [object]}]
-  [gui/Highlight object])
-
-(defmethod Output :nil [_]
-  [:pre.bg-white.m-0.p-2.rounded.shadow
-   [:code.text-xs "nil"]])
+  (if (some? object)
+    [gui/Highlight object]
+    [:pre.bg-white.m-0.p-2.rounded.shadow
+     [:code.text-xs "nil"]]))
 
 (defmethod Output :function [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow

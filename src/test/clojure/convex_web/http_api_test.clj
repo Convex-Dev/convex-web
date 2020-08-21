@@ -39,7 +39,7 @@
 
 (deftest generate-account-test
   (testing "Generate Account"
-    (let [{:keys [status body]} @(http/post (str (server-url) "/api/internal/generate-account"))]
+    (let [{:keys [status]} @(http/post (str (server-url) "/api/internal/generate-account"))]
       (is (= 500 status)))))
 
 (deftest blocks-test
