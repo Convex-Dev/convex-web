@@ -36,7 +36,8 @@
            (java.util Date)
            (org.parboiled.errors ParserRuntimeException)
            (convex.core.exceptions ParseException)
-           (convex.core.transactions ATransaction)))
+           (convex.core.transactions ATransaction)
+           (clojure.lang ExceptionInfo)))
 
 (def session-ref (atom {}))
 
@@ -157,14 +158,29 @@
                               :hash (.toHexString (.getHash tx))})})
 
     (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
+      (let [assertion-failed? (= :assertion-failed (get (ex-data ex) ::s/failure))]
+        (cond
+          assertion-failed?
+          (do
+            (u/log :logging.event/user-error
+                   :severity :error
+                   :message (ex-message ex)
+                   :exception ex)
 
-      {:status 500
-       :headers {"Content-Type" "application/json"}
-       :body (json/write-str {:error {:message "Sorry. Our server failed to process your request."}})})))
+            {:status 400
+             :headers {"Content-Type" "application/json"}
+             :body (json/write-str (error (ex-message ex)))})
+
+          :else
+          (do
+            (u/log :logging.event/system-error
+                   :severity :error
+                   :message handler-exception-message
+                   :exception ex)
+
+            {:status 500
+             :headers {"Content-Type" "application/json"}
+             :body (json/write-str {:error {:message "Sorry. Our server failed to process your request."}})}))))))
 
 
 ;; Internal APIs
