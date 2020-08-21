@@ -28,7 +28,7 @@
             [hiccup.page :as page]
             [ring.util.anti-forgery])
   (:import (java.io ByteArrayOutputStream InputStream)
-           (convex.core.crypto AKeyPair Hash)
+           (convex.core.crypto AKeyPair Hash ASignature)
            (convex.core.data Address AccountStatus Ref SignedData)
            (convex.net Connection)
            (convex.core Init Peer State)
@@ -183,27 +183,25 @@
 
 (defn POST-transaction-submit [system {:keys [body]}]
   (try
-    (let [{:keys [address hash]} (json/read-str (slurp body) :key-fn keyword)
+    (let [{:keys [address sig hash]} (json/read-str (slurp body) :key-fn keyword)
 
           _ (u/log :logging.event/transaction-submit
                    :severity :info
+                   :address address
                    :hash hash)
 
           address (s/assert :convex-web/address address)
           hash (s/assert :convex-web/non-empty-string hash)
+          sig (s/assert :convex-web/non-empty-string sig)
 
-          datascript-conn (system/datascript-conn system)
-
-          {:convex-web.account/keys [key-pair]} (account/find-by-address @datascript-conn address)
-
-          ;; Read the transaction from the Etch datastore.
-          tx (.getValue (Ref/forHash (Hash/fromHex hash)))]
+          address (Address/fromHex address)
+          sig (ASignature/fromHex sig)
+          tx-ref (Ref/forHash (Hash/fromHex hash))
+          signed-data (SignedData/create address sig tx-ref)]
 
       {:status 200
        :headers {"Content-Type" "application/json"}
-       :body (json/write-str {:tx-id (->> tx
-                                          (convex/sign key-pair)
-                                          (convex/transact (system/convex-conn system)))})})
+       :body (json/write-str {:tx-id (convex/transact (system/convex-conn system) signed-data)})})
 
     (catch Exception ex
       (let [assertion-failed? (= :assertion-failed (get (ex-data ex) ::s/failure))]

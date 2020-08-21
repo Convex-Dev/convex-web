@@ -366,7 +366,8 @@
 
              (backend/POST-transaction-submit
                {:address address
-                :hash hash}
+                :hash hash
+                :sig ""}
 
                {:handler
                 (fn [response']
