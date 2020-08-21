@@ -1,6 +1,5 @@
 (ns convex-web.consumer
-  (:require [convex-web.command :as command]
-            [convex-web.convex :as convex]
+  (:require [convex-web.convex :as convex]
 
             [datascript.core :as d]
             [com.brunobonacci.mulog :as u])
@@ -34,7 +33,6 @@
                         :message (str "Consumer received an invalid Command: " c)
                         :exception ex))))
 
-         ;; TODO Why transact `:nil` for object? What's the problem of not transacting an object?
          (d/transact! datascript-conn [(merge {:convex-web.command/id id
                                                :convex-web.command/status :convex-web.command.status/success}
                                               (when (some? object)
