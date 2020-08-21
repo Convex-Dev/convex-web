@@ -2,8 +2,6 @@
   (:require [convex-web.command :as command]
             [convex-web.convex :as convex]
 
-            [clojure.spec.alpha :as s]
-
             [datascript.core :as d]
             [com.brunobonacci.mulog :as u])
   (:import (convex.net ResultConsumer)))
@@ -23,8 +21,6 @@
        (try
          (let [{::command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
            (try
-             (s/assert :convex-web/command c)
-
              (u/log :logging.event/repl-user
                     :severity :info
                     :address address
@@ -43,7 +39,7 @@
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error
-                  :message (str "Failed to transact object " id " successful result: " object)
+                  :message (str "Consumer failed to transact object " id " successful result: " object)
                   :exception ex))))
 
      :handle-error
@@ -65,5 +61,5 @@
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error
-                  :message (str "Failed to transact object " id " error result: " message)
+                  :message (str "Consumer failed to transact object " id " error result: " message)
                   :exception ex))))}))
