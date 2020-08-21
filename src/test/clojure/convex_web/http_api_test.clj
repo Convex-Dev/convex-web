@@ -39,12 +39,15 @@
           hero-address (.getAddress hero-key-pair)
           hero-address-str (.toHexString hero-address)
 
+          ;; Prepare
+          ;; ==========
           prepare-url (str (server-url) "/api/v1/transaction/prepare")
           prepare-body (json/write-str {:address hero-address-str :source "(inc 1)"})
           prepare-response @(http/post prepare-url {:body prepare-body})
           prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)
 
-          ;; ------------------------------------------------------------
+          ;; Submit
+          ;; ==========
 
           submit-url (str (server-url) "/api/v1/transaction/submit")
 
