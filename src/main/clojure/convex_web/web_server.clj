@@ -1,5 +1,6 @@
 (ns convex-web.web-server
-  (:require [convex-web.convex :as convex]
+  (:require [convex-web.specs]
+            [convex-web.convex :as convex]
             [convex-web.peer :as peer]
             [convex-web.system :as system]
             [convex-web.account :as account]
@@ -135,6 +136,9 @@
 (defn POST-transaction-prepare [system {:keys [body]}]
   (try
     (let [{:keys [address source]} (json/read-str (slurp body) :key-fn keyword)
+
+          address (s/assert :convex-web/address address)
+          source (s/assert :convex-web/non-empty-string source)
 
           _ (u/log :logging.event/transaction-prepare
                    :severity :info
