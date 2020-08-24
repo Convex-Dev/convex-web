@@ -197,11 +197,19 @@
           address (Address/fromHex address)
           sig (ASignature/fromHex sig)
           tx-ref (Ref/forHash (Hash/fromHex hash))
-          signed-data (SignedData/create address sig tx-ref)]
+          signed-data (SignedData/create address sig tx-ref)
+
+          client (system/convex-client system)
+
+          result @(.transact client signed-data)
+          result-response (merge {:id (.getID result)
+                                  :value (convex/datafy (.getValue result))}
+                                 (when-let [error-code (.getErrorCode result)]
+                                   {:error-code error-code}))]
 
       {:status 200
        :headers {"Content-Type" "application/json"}
-       :body (json/write-str {:tx-id (convex/transact (system/convex-conn system) signed-data)})})
+       :body (json/write-str result-response)})
 
     (catch Exception ex
       (let [assertion-failed? (= :assertion-failed (get (ex-data ex) ::s/failure))]

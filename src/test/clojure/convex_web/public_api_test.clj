@@ -54,4 +54,5 @@
       (is (= [:source :hash] (keys prepare-response-body)))
 
       (is (= 200 (get submit-response :status)))
-      (is (= [:tx-id] (keys submit-response-body))))))
+      (is (= [:id :value] (keys submit-response-body)))
+      (is (= {:value 2} (select-keys submit-response-body [:value]))))))
