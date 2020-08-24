@@ -22,7 +22,7 @@
             [expound.alpha :as expound]
             [datascript.core :as d]
             [cognitect.transit :as t]
-            [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
+            [ring.middleware.defaults :refer [wrap-defaults api-defaults site-defaults]]
             [ring.middleware.session.memory :as memory-session]
             [org.httpkit.server :as http-kit]
             [compojure.core :refer [routes GET POST]]
@@ -681,15 +681,9 @@
 
       server-error-response)))
 
-(defn app [system]
+(defn site [system]
   (routes
     (GET "/" req (index req))
-
-    ;; -- Public API
-    (POST "/api/v1/transaction/prepare" req (POST-transaction-prepare system req))
-    (POST "/api/v1/transaction/submit" req (POST-transaction-submit system req))
-
-    ;; -- Internal API
     (GET "/api/internal/session" req (GET-session system req))
     (POST "/api/internal/generate-account" req (POST-generate-account system req))
     (POST "/api/internal/confirm-account" req (POST-confirm-account system req))
@@ -708,6 +702,11 @@
     (route/resources "/")
     (route/not-found "<h1>Page not found</h1>")))
 
+(defn public-api [system]
+  (routes
+    (POST "/api/v1/transaction/prepare" req (POST-transaction-prepare system req))
+    (POST "/api/v1/transaction/submit" req (POST-transaction-submit system req))))
+
 (defn wrap-logging [handler]
   (fn wrap-logging-handler [request]
     (u/with-context
@@ -725,19 +724,20 @@
 
    `options` are the same as org.httpkit.server/run-server."
   [system & [options]]
-  (let [config {:session
-                {:store (memory-session/memory-store session-ref)
-                 :flash true
-                 :cookie-attrs {:http-only false :same-site :strict}}
+  (let [public-api-handler (-> (public-api system)
+                               (wrap-logging)
+                               (wrap-defaults api-defaults))
 
-                :security
-                {:anti-forgery true
-                 :xss-protection {:enable? true, :mode :block}
-                 :frame-options :sameorigin
-                 :content-type-options :nosniff}}
+        site-config {:session
+                     {:store (memory-session/memory-store session-ref)
+                      :flash true
+                      :cookie-attrs {:http-only false :same-site :strict}}}
 
-        handler (-> (app system)
-                    (wrap-logging)
-                    (wrap-defaults (merge-with merge site-defaults config)))]
+        site-handler (-> (site system)
+                         (wrap-logging)
+                         (wrap-defaults (merge-with merge site-defaults site-config)))
+
+        handler (routes public-api-handler site-handler)]
+
     (http-kit/run-server handler options)))
 

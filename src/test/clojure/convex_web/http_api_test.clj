@@ -34,11 +34,11 @@
     (let [{:keys [status]} @(http/get (str (server-url) "/api/internal/reference"))]
       (is (= 200 status)))))
 
-;;(deftest generate-account-test
-;;  (testing "Generate Account"
-;;    (let [{:keys [status body]} @(http/post (str (server-url) "/api/internal/generate-account"))]
-;;      (is (= 200 status))
-;;      (is (= [:convex-web.account/address :convex-web.account/created-at] (keys (transit/decode-string body)))))))
+(deftest generate-account-test
+  (testing "Generate Account"
+    (let [{:keys [status body]} @(http/post (str (server-url) "/api/internal/generate-account"))]
+      (is (= 403 status))
+      (is (= "<h1>Invalid anti-forgery token</h1>" body)))))
 
 (deftest blocks-test
   (testing "Get Blocks"
