@@ -192,7 +192,9 @@
 
 (defn POST-transaction-submit [system {:keys [body]}]
   (try
-    (let [{:keys [address sig hash]} (json/read-str (slurp body) :key-fn keyword)
+    (let [{:keys [address sig hash] :as body} (json/read-str (slurp body) :key-fn keyword)
+
+          _ (log/debug "POST Transaction Submit" body)
 
           _ (u/log :logging.event/transaction-submit
                    :severity :info
@@ -221,11 +223,15 @@
 
           client (system/convex-client system)
 
+          _ (log/debug "Transact signed data" signed-data)
+
           result @(.transact client signed-data)
           result-response (merge {:id (.getID result)
                                   :value (convex/datafy (.getValue result))}
                                  (when-let [error-code (.getErrorCode result)]
-                                   {:error-code (convex/datafy error-code)}))]
+                                   {:error-code (convex/datafy error-code)}))
+
+          _ (log/debug "Transaction result" result)]
 
       {:status 200
        :headers {"Content-Type" "application/json"}

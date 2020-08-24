@@ -8,6 +8,7 @@
             [convex-web.logging :as logging]
             [convex-web.web-server :as web-server]
             [convex-web.command :as command]
+            [convex-web.http-api-client :as client]
 
             [clojure.test :refer [is]]
             [clojure.spec.alpha :as s]
@@ -164,5 +165,20 @@
 
   (convex/core-metadata)
   (convex/reference)
+
+
+  (client/POST-public-v1-transaction-prepare'
+    "http://localhost:8080"
+    {:address "b24650e00AEd3C8f5D6FCe4D4697f75f0f8ba962d352a6Dc7d69850642CDfCc7"
+     :source "(map inc [1 2 3])"})
+
+  ;; Hash
+  ;; => 4fd279dd67a506bbd987899293d1a4d763f6da04941ccc4748f8dcf548e68bb7
+
+  (client/POST-public-v1-transaction-submit'
+    "http://localhost:8080"
+    {:address "b24650e00AEd3C8f5D6FCe4D4697f75f0f8ba962d352a6Dc7d69850642CDfCc7"
+     :hash "4fd279dd67a506bbd987899293d1a4d763f6da04941ccc4748f8dcf548e68bb7"
+     :sig (client/sig "4fd279dd67a506bbd987899293d1a4d763f6da04941ccc4748f8dcf548e68bb7")})
 
   )
