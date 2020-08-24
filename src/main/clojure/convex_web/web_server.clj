@@ -225,7 +225,7 @@
           result-response (merge {:id (.getID result)
                                   :value (convex/datafy (.getValue result))}
                                  (when-let [error-code (.getErrorCode result)]
-                                   {:error-code error-code}))]
+                                   {:error-code (convex/datafy error-code)}))]
 
       {:status 200
        :headers {"Content-Type" "application/json"}

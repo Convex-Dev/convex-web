@@ -23,4 +23,7 @@
    :path "markdown/convex_lisp.md"}
 
   {:name "Introduction to Smart Contracts"
-   :path "markdown/introduction_smart_contracts.md"}]}
+   :path "markdown/introduction_smart_contracts.md"}
+
+  {:name "HTTP API"
+   :path "markdown/public_api.md"}]}
