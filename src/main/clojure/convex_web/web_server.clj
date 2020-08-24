@@ -737,6 +737,8 @@
                          (wrap-logging)
                          (wrap-defaults (merge-with merge site-defaults site-config)))
 
+        ;; The public API handler must come first
+        ;; since the site handler matches a not found.
         handler (routes public-api-handler site-handler)]
 
     (http-kit/run-server handler options)))
