@@ -147,7 +147,7 @@
 
   (convex/account-status-data *1)
 
-  (account/find-by-address (db) "3333333333333333333333333333333333333333333333333333333333333333")
+  (account/find-by-address (db) "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f")
 
 
   ;; -- Session
@@ -169,7 +169,7 @@
 
   (client/POST-public-v1-transaction-prepare'
     "http://localhost:8080"
-    {:address "b24650e00AEd3C8f5D6FCe4D4697f75f0f8ba962d352a6Dc7d69850642CDfCc7"
+    {:address "5342Fe7586D0D37304899b5EDab963df2e8Da3BA2e8A9646940f0E8DE9C8E291"
      :source "(map inc [1 2 3])"})
 
   ;; Hash
@@ -177,7 +177,7 @@
 
   (client/POST-public-v1-transaction-submit'
     "http://localhost:8080"
-    {:address "b24650e00AEd3C8f5D6FCe4D4697f75f0f8ba962d352a6Dc7d69850642CDfCc7"
+    {:address "5342Fe7586D0D37304899b5EDab963df2e8Da3BA2e8A9646940f0E8DE9C8E291"
      :hash "4fd279dd67a506bbd987899293d1a4d763f6da04941ccc4748f8dcf548e68bb7"
      :sig (client/sig "4fd279dd67a506bbd987899293d1a4d763f6da04941ccc4748f8dcf548e68bb7")})
 

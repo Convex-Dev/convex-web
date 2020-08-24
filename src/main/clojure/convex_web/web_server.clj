@@ -148,6 +148,10 @@
                     (catch Exception _
                       (throw (ex-info "Invalid address." {::anomalies/category ::anomalies/incorrect}))))
 
+          ;; TODO
+          ;;_ (or (account/find-by-address @(system/datascript-conn system) address)
+          ;;      (throw (ex-info "Account doesn't exist." {::anomalies/category ::anomalies/incorrect})))
+
           source (try
                    (s/assert :convex-web/non-empty-string source)
                    (catch Exception _
@@ -217,6 +221,10 @@
                   (throw (ex-info "Invalid signature." {::anomalies/category ::anomalies/incorrect}))))
 
           address (Address/fromHex address)
+
+          ;;_ (or (account/find-by-address @(system/datascript-conn system) address)
+          ;;      (throw (ex-info "Account doesn't exist." {::anomalies/category ::anomalies/incorrect})))
+
           sig (ASignature/fromHex sig)
           tx-ref (Ref/forHash (Hash/fromHex hash))
           signed-data (SignedData/create address sig tx-ref)
