@@ -24,6 +24,26 @@
 (defn server-url []
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))
 
+(deftest prepare-test
+  (testing "Incorrect"
+    (testing "Invalid Address"
+      (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
+            prepare-body (json/write-str {:address ""})
+            prepare-response @(http/post prepare-url {:body prepare-body})
+            prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
+
+        (is (= 400 (get prepare-response :status)))
+        (is (= "Invalid address." (get-in prepare-response-body [:error :message])))))
+
+    (testing "Invalid Source"
+      (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
+            prepare-body (json/write-str {:address "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f" :source ""})
+            prepare-response @(http/post prepare-url {:body prepare-body})
+            prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
+
+        (is (= 400 (get prepare-response :status)))
+        (is (= "Invalid source." (get-in prepare-response-body [:error :message])))))))
+
 (deftest prepare-submit-transaction-test
   (testing "Prepare transaction"
     (let [hero-key-pair Init/HERO_KP

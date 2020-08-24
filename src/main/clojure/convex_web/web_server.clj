@@ -16,6 +16,8 @@
             [clojure.stacktrace :as stacktrace]
             [clojure.data.json :as json]
 
+            [cognitect.anomalies :as anomalies]
+
             [com.brunobonacci.mulog :as u]
             [expound.alpha :as expound]
             [datascript.core :as d]
@@ -141,8 +143,15 @@
                    :address address
                    :souce source)
 
-          address (s/assert :convex-web/address address)
-          source (s/assert :convex-web/non-empty-string source)
+          address (try
+                    (s/assert :convex-web/address address)
+                    (catch Exception _
+                      (throw (ex-info "Invalid address." {::anomalies/category ::anomalies/incorrect}))))
+
+          source (try
+                   (s/assert :convex-web/non-empty-string source)
+                   (catch Exception _
+                     (throw (ex-info "Invalid source." {::anomalies/category ::anomalies/incorrect}))))
 
           peer (system/convex-peer-server system)
           sequence-number (peer/sequence-number peer (Address/fromHex address))
@@ -157,9 +166,9 @@
                               :hash (.toHexString (.getHash tx))})})
 
     (catch Exception ex
-      (let [assertion-failed? (= :assertion-failed (get (ex-data ex) ::s/failure))]
+      (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
         (cond
-          assertion-failed?
+          incorrect?
           (do
             (u/log :logging.event/user-error
                    :severity :error
