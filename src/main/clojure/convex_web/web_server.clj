@@ -199,9 +199,20 @@
                    :address address
                    :hash hash)
 
-          address (s/assert :convex-web/address address)
-          hash (s/assert :convex-web/non-empty-string hash)
-          sig (s/assert :convex-web/non-empty-string sig)
+          address (try
+                    (s/assert :convex-web/address address)
+                    (catch Exception _
+                      (throw (ex-info "Invalid address." {::anomalies/category ::anomalies/incorrect}))))
+
+          hash (try
+                 (s/assert :convex-web/non-empty-string hash)
+                 (catch Exception _
+                   (throw (ex-info "Invalid hash." {::anomalies/category ::anomalies/incorrect}))))
+
+          sig (try
+                (s/assert :convex-web/non-empty-string sig)
+                (catch Exception _
+                  (throw (ex-info "Invalid signature." {::anomalies/category ::anomalies/incorrect}))))
 
           address (Address/fromHex address)
           sig (ASignature/fromHex sig)
@@ -221,9 +232,9 @@
        :body (json/write-str result-response)})
 
     (catch Exception ex
-      (let [assertion-failed? (= :assertion-failed (get (ex-data ex) ::s/failure))]
+      (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
         (cond
-          assertion-failed?
+          incorrect?
           (do
             (u/log :logging.event/user-error
                    :severity :error
