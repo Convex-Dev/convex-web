@@ -28,7 +28,7 @@
     (is (instance? clojure.lang.Symbol (convex/datafy (convex/execute context 'a/b)))))
 
   (testing "List"
-    (is (instance? clojure.lang.IPersistentList (convex/datafy (convex/execute context '())))))
+    (is (instance? clojure.lang.ISeq (convex/datafy (convex/execute context '())))))
 
   (testing "Vector"
     (is (instance? clojure.lang.IPersistentVector (convex/datafy (convex/execute context [])))))
