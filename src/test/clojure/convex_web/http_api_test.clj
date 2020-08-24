@@ -9,7 +9,7 @@
 
 (def system nil)
 
-(use-fixtures :each (fn [f]
+(use-fixtures :once (fn [f]
                       (let [system (com.stuartsierra.component/start
                                      (convex-web.component/system :test))]
 
@@ -34,10 +34,11 @@
     (let [{:keys [status]} @(http/get (str (server-url) "/api/internal/reference"))]
       (is (= 200 status)))))
 
-(deftest generate-account-test
-  (testing "Generate Account"
-    (let [{:keys [status]} @(http/post (str (server-url) "/api/internal/generate-account"))]
-      (is (= 500 status)))))
+;;(deftest generate-account-test
+;;  (testing "Generate Account"
+;;    (let [{:keys [status body]} @(http/post (str (server-url) "/api/internal/generate-account"))]
+;;      (is (= 200 status))
+;;      (is (= [:convex-web.account/address :convex-web.account/created-at] (keys (transit/decode-string body)))))))
 
 (deftest blocks-test
   (testing "Get Blocks"

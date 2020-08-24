@@ -354,13 +354,11 @@
 
           account #:convex-web.account {:address address-str
                                         :key-pair generated-key-pair
-                                        :owner (ring-session req)
                                         :created-at (inst-ms (Instant/now))}]
 
       (d/transact! (system/datascript-conn context) [account])
 
       (successful-response (select-keys account [::account/address
-                                                 ::account/owner
                                                  ::account/created-at])))
     (catch Exception ex
       (u/log :logging.event/system-error
@@ -374,17 +372,12 @@
   (try
     (let [^String address-str (transit-decode body)
 
-          {::account/keys [owner] :as account} (account/find-by-address (system/db context) address-str)]
+          account (account/find-by-address (system/db context) address-str)]
       (cond
         (nil? account)
         (do
           (u/log :logging.event/user-error :severity :error :message (str "Failed to confirm account; Account " address-str " not found."))
-          (not-found-response {:error {:message (str "Account " address-str " not found.")}}))
-
-        (not= owner (ring-session req))
-        (do
-          (u/log :logging.event/user-error :severity :error :message "Failed to confirm account; Session doesn't match Account.")
-          (forbidden-response {:error {:message "You can't confirm an account which you don't own."}}))
+          (not-found-response (error (str "Account " address-str " not found."))))
 
         :else
         (do
@@ -398,7 +391,6 @@
                                                           [{:convex-web.account/address address-str}]}])
 
           (successful-response (select-keys account [::account/address
-                                                     ::account/owner
                                                      ::account/created-at])))))
     (catch Exception ex
       (u/log :logging.event/system-error
@@ -739,7 +731,10 @@
                  :cookie-attrs {:http-only false :same-site :strict}}
 
                 :security
-                {:anti-forgery false}}
+                {:anti-forgery true
+                 :xss-protection {:enable? true, :mode :block}
+                 :frame-options :sameorigin
+                 :content-type-options :nosniff}}
 
         handler (-> (app system)
                     (wrap-logging)
