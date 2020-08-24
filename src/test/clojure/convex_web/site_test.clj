@@ -1,4 +1,4 @@
-(ns convex-web.http-api-test
+(ns convex-web.site-test
   (:require [convex-web.component]
             [convex-web.transit :as transit]
 
