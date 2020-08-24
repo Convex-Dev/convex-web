@@ -19,7 +19,7 @@
      (fn [^Long id object]
        (try
          ;; TODO Change design.
-         #_(let [{::command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
+         #_(let [{:convex-web.command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
              (try
                (u/log :logging.event/repl-user
                       :severity :info
@@ -48,7 +48,7 @@
        (try
 
          ;; TODO Change design. (Same issue as above)
-         #_(let [{::command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
+         #_(let [{:convex-web.command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
              (u/log :logging.event/repl-error
                     :severity :info
                     :address address

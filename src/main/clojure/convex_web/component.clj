@@ -15,7 +15,8 @@
             [datascript.core :as d]
             [com.stuartsierra.component :as component])
   (:import (convex.peer Server API)
-           (convex.net Connection ResultConsumer)))
+           (convex.net Connection ResultConsumer)
+           (org.slf4j.bridge SLF4JBridgeHandler)))
 
 (defrecord Config [profile config]
   component/Lifecycle
@@ -27,6 +28,9 @@
                     "\n==============\n\n"
                     (with-out-str (pprint/pprint config))
                     "\n--------------------------------------------------\n"))
+
+      (SLF4JBridgeHandler/removeHandlersForRootLogger)
+      (SLF4JBridgeHandler/install)
 
       ;; Spec configuration
 

@@ -30,9 +30,6 @@
 ;; -- Logging
 (set-init
   (fn [_]
-    (SLF4JBridgeHandler/removeHandlersForRootLogger)
-    (SLF4JBridgeHandler/install)
-
     (component/system :dev)))
 
 (def context (Context/createFake Init/STATE))

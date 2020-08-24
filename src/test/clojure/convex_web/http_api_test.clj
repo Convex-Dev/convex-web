@@ -5,18 +5,11 @@
             [clojure.test :refer :all]
 
             [com.stuartsierra.component]
-            [org.httpkit.client :as http]
-            [clojure.data.json :as json])
-  (:import (org.slf4j.bridge SLF4JBridgeHandler)
-           (convex.core Init)
-           (convex.core.crypto Hash)))
+            [org.httpkit.client :as http]))
 
 (def system nil)
 
 (use-fixtures :each (fn [f]
-                      (SLF4JBridgeHandler/removeHandlersForRootLogger)
-                      (SLF4JBridgeHandler/install)
-
                       (let [system (com.stuartsierra.component/start
                                      (convex-web.component/system :test))]
 
@@ -28,45 +21,6 @@
 
 (defn server-url []
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))
-
-
-;; Public API
-;; ===========================================================================================
-
-(deftest prepare-submit-transaction-test
-  (testing "Prepare transaction"
-    (let [hero-key-pair Init/HERO_KP
-          hero-address (.getAddress hero-key-pair)
-          hero-address-str (.toHexString hero-address)
-
-          ;; Prepare
-          ;; ==========
-          prepare-url (str (server-url) "/api/v1/transaction/prepare")
-          prepare-body (json/write-str {:address hero-address-str :source "(inc 1)"})
-          prepare-response @(http/post prepare-url {:body prepare-body})
-          prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)
-
-          ;; Submit
-          ;; ==========
-
-          submit-url (str (server-url) "/api/v1/transaction/submit")
-
-          submit-body (json/write-str {:address (.toHexString hero-address)
-                                       :hash (get prepare-response-body :hash)
-                                       :sig (.toHexString (.sign hero-key-pair (Hash/fromHex (get prepare-response-body :hash))))})
-
-          submit-response @(http/post submit-url {:body submit-body})
-
-          submit-response-body (json/read-str (get submit-response :body) :key-fn keyword)]
-
-      (is (= 200 (get prepare-response :status)))
-      (is (= [:source :hash] (keys prepare-response-body)))
-
-      (is (= 200 (get submit-response :status)))
-      (is (= [:tx-id] (keys submit-response-body))))))
-
-
-;; ---------------------------------------------------------------------------------------------
 
 
 (deftest session-test
