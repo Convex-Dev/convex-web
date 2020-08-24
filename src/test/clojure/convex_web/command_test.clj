@@ -77,14 +77,14 @@
             ::c/query {:convex-web.query/source "nil"
                        :convex-web.query/language :convex-lisp}
             ::c/status :convex-web.command.status/success
-            ::c/object :nil
-            ::c/metadata {:type :nil}}
+            ::c/metadata {}
+            ::c/object nil}
            (c/wrap-result-metadata {::c/id 1
                                     ::c/mode :convex-web.command.mode/query
                                     ::c/query {:convex-web.query/source "nil"
                                                :convex-web.query/language :convex-lisp}
                                     ::c/status :convex-web.command.status/success
-                                    ::c/object :nil}))))
+                                    ::c/object nil}))))
 
   (testing "Boolean"
     (is (= {::c/id 1

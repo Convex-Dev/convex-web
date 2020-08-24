@@ -15,7 +15,9 @@
             [datascript.core :as d]
             [com.stuartsierra.component :as component])
   (:import (convex.peer Server API)
-           (convex.net Connection ResultConsumer)))
+           (convex.net Connection ResultConsumer)
+           (org.slf4j.bridge SLF4JBridgeHandler)
+           (convex.core Init)))
 
 (defrecord Config [profile config]
   component/Lifecycle
@@ -27,6 +29,9 @@
                     "\n==============\n\n"
                     (with-out-str (pprint/pprint config))
                     "\n--------------------------------------------------\n"))
+
+      (SLF4JBridgeHandler/removeHandlersForRootLogger)
+      (SLF4JBridgeHandler/install)
 
       ;; Spec configuration
 
@@ -107,7 +112,7 @@
   component/Lifecycle
 
   (start [component]
-    (let [consumer (consumer/persistent-consumer (system/-datascript-conn datascript))]
+    (let [consumer (consumer/command-consumer (system/-datascript-conn datascript))]
       (log/debug "Started Consumer")
 
       (assoc component
@@ -119,20 +124,25 @@
     (assoc component
       :consumer nil)))
 
-(defrecord Convex [server conn consumer]
+(defrecord Convex [server conn consumer client]
   component/Lifecycle
 
   (start [component]
     (let [^Server server (API/launchPeer)
           ^ResultConsumer consumer (system/-consumer-consumer consumer)
-          ^Connection connection (peer/conn server consumer)]
+          ^Connection connection (peer/conn server consumer)
+          ^convex.api.Convex client (convex.api.Convex/connect (.getHostAddress server) Init/HERO_KP)]
       (log/debug "Started Convex")
 
       (assoc component
         :server server
-        :conn connection)))
+        :conn connection
+        :client client)))
 
   (stop [component]
+    (when-let [^convex.api.Convex client (:client component)]
+      (.disconnect client))
+
     (when-let [^Connection conn (:conn component)]
       (.close conn))
 
@@ -144,7 +154,8 @@
     (assoc component
       :conn nil
       :server nil
-      :consumer nil)))
+      :consumer nil
+      :client nil)))
 
 (defrecord WebServer [config convex datascript stop-fn]
   component/Lifecycle

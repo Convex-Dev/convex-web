@@ -1,5 +1,6 @@
 (ns convex-web.web-server
-  (:require [convex-web.convex :as convex]
+  (:require [convex-web.specs]
+            [convex-web.convex :as convex]
             [convex-web.peer :as peer]
             [convex-web.system :as system]
             [convex-web.account :as account]
@@ -13,6 +14,9 @@
             [clojure.tools.logging :as log]
             [clojure.pprint :as pprint]
             [clojure.stacktrace :as stacktrace]
+            [clojure.data.json :as json]
+
+            [cognitect.anomalies :as anomalies]
 
             [com.brunobonacci.mulog :as u]
             [expound.alpha :as expound]
@@ -26,8 +30,8 @@
             [hiccup.page :as page]
             [ring.util.anti-forgery])
   (:import (java.io ByteArrayOutputStream InputStream)
-           (convex.core.crypto AKeyPair)
-           (convex.core.data Address AccountStatus)
+           (convex.core.crypto AKeyPair Hash ASignature)
+           (convex.core.data Address AccountStatus Ref SignedData)
            (convex.net Connection)
            (convex.core Init Peer State)
            (java.time Instant)
@@ -126,6 +130,124 @@
   {:status 404
    :headers {"Content-Type" "application/transit+json"}
    :body (transit-encode body)})
+
+;; Public APIs
+;; ==========================
+
+(defn POST-transaction-prepare [system {:keys [body]}]
+  (try
+    (let [{:keys [address source]} (json/read-str (slurp body) :key-fn keyword)
+
+          _ (u/log :logging.event/transaction-prepare
+                   :severity :info
+                   :address address
+                   :souce source)
+
+          address (try
+                    (s/assert :convex-web/address address)
+                    (catch Exception _
+                      (throw (ex-info "Invalid address." {::anomalies/category ::anomalies/incorrect}))))
+
+          source (try
+                   (s/assert :convex-web/non-empty-string source)
+                   (catch Exception _
+                     (throw (ex-info "Invalid source." {::anomalies/category ::anomalies/incorrect}))))
+
+          peer (system/convex-peer-server system)
+          sequence-number (peer/sequence-number peer (Address/fromHex address))
+          tx (peer/invoke-transaction (inc sequence-number) source :convex-lisp)]
+
+      ;; Persist the transaction in the Etch datastore.
+      (Ref/createPersisted tx)
+
+      {:status 200
+       :headers {"Content-Type" "application/json"}
+       :body (json/write-str {:source source
+                              :hash (.toHexString (.getHash tx))})})
+
+    (catch Exception ex
+      (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
+        (cond
+          incorrect?
+          (do
+            (u/log :logging.event/user-error
+                   :severity :error
+                   :message (ex-message ex)
+                   :exception ex)
+
+            {:status 400
+             :headers {"Content-Type" "application/json"}
+             :body (json/write-str (error (ex-message ex)))})
+
+          :else
+          (do
+            (u/log :logging.event/system-error
+                   :severity :error
+                   :message handler-exception-message
+                   :exception ex)
+
+            {:status 500
+             :headers {"Content-Type" "application/json"}
+             :body (json/write-str {:error {:message "Sorry. Our server failed to process your request."}})}))))))
+
+(defn POST-transaction-submit [system {:keys [body]}]
+  (try
+    (let [{:keys [address sig hash]} (json/read-str (slurp body) :key-fn keyword)
+
+          _ (u/log :logging.event/transaction-submit
+                   :severity :info
+                   :address address
+                   :hash hash)
+
+          address (s/assert :convex-web/address address)
+          hash (s/assert :convex-web/non-empty-string hash)
+          sig (s/assert :convex-web/non-empty-string sig)
+
+          address (Address/fromHex address)
+          sig (ASignature/fromHex sig)
+          tx-ref (Ref/forHash (Hash/fromHex hash))
+          signed-data (SignedData/create address sig tx-ref)
+
+          client (system/convex-client system)
+
+          result @(.transact client signed-data)
+          result-response (merge {:id (.getID result)
+                                  :value (convex/datafy (.getValue result))}
+                                 (when-let [error-code (.getErrorCode result)]
+                                   {:error-code error-code}))]
+
+      {:status 200
+       :headers {"Content-Type" "application/json"}
+       :body (json/write-str result-response)})
+
+    (catch Exception ex
+      (let [assertion-failed? (= :assertion-failed (get (ex-data ex) ::s/failure))]
+        (cond
+          assertion-failed?
+          (do
+            (u/log :logging.event/user-error
+                   :severity :error
+                   :message (ex-message ex)
+                   :exception ex)
+
+            {:status 400
+             :headers {"Content-Type" "application/json"}
+             :body (json/write-str (error (ex-message ex)))})
+
+          :else
+          (do
+            (u/log :logging.event/system-error
+                   :severity :error
+                   :message handler-exception-message
+                   :exception ex)
+
+            {:status 500
+             :headers {"Content-Type" "application/json"}
+             :body (json/write-str {:error {:message "Sorry. Our server failed to process your request."}})}))))))
+
+
+;; Internal APIs
+;; ==========================
 
 (defn GET-commands [context _]
   (try
@@ -556,25 +678,29 @@
 
       server-error-response)))
 
-(defn app [context]
+(defn app [system]
   (routes
     (GET "/" req (index req))
 
+    ;; -- Public API
+    (POST "/api/v1/transaction/prepare" req (POST-transaction-prepare system req))
+    (POST "/api/v1/transaction/submit" req (POST-transaction-submit system req))
+
     ;; -- Internal API
-    (GET "/api/internal/session" req (GET-session context req))
-    (POST "/api/internal/generate-account" req (POST-generate-account context req))
-    (POST "/api/internal/confirm-account" req (POST-confirm-account context req))
-    (POST "/api/internal/faucet" req (POST-faucet context req))
-    (GET "/api/internal/accounts" req (GET-accounts context req))
-    (GET "/api/internal/accounts/:address" [address] (GET-account context address))
-    (GET "/api/internal/blocks" req (GET-blocks context req))
-    (GET "/api/internal/blocks-range" req (GET-blocks-range context req))
-    (GET "/api/internal/blocks/:index" [index] (GET-block context index))
-    (GET "/api/internal/commands" req (GET-commands context req))
-    (POST "/api/internal/commands" req (POST-command context req))
-    (GET "/api/internal/commands/:id" [id] (GET-command-by-id context (Long/parseLong id)))
-    (GET "/api/internal/reference" req (GET-reference context req))
-    (GET "/api/internal/markdown-page" req (GET-markdown-page context req))
+    (GET "/api/internal/session" req (GET-session system req))
+    (POST "/api/internal/generate-account" req (POST-generate-account system req))
+    (POST "/api/internal/confirm-account" req (POST-confirm-account system req))
+    (POST "/api/internal/faucet" req (POST-faucet system req))
+    (GET "/api/internal/accounts" req (GET-accounts system req))
+    (GET "/api/internal/accounts/:address" [address] (GET-account system address))
+    (GET "/api/internal/blocks" req (GET-blocks system req))
+    (GET "/api/internal/blocks-range" req (GET-blocks-range system req))
+    (GET "/api/internal/blocks/:index" [index] (GET-block system index))
+    (GET "/api/internal/commands" req (GET-commands system req))
+    (POST "/api/internal/commands" req (POST-command system req))
+    (GET "/api/internal/commands/:id" [id] (GET-command-by-id system (Long/parseLong id)))
+    (GET "/api/internal/reference" req (GET-reference system req))
+    (GET "/api/internal/markdown-page" req (GET-markdown-page system req))
 
     (route/resources "/")
     (route/not-found "<h1>Page not found</h1>")))
@@ -599,7 +725,10 @@
   (let [config {:session
                 {:store (memory-session/memory-store session-ref)
                  :flash true
-                 :cookie-attrs {:http-only false :same-site :strict}}}
+                 :cookie-attrs {:http-only false :same-site :strict}}
+
+                :security
+                {:anti-forgery false}}
 
         handler (-> (app system)
                     (wrap-logging)

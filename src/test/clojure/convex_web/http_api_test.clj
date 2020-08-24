@@ -5,15 +5,11 @@
             [clojure.test :refer :all]
 
             [com.stuartsierra.component]
-            [org.httpkit.client :as http])
-  (:import (org.slf4j.bridge SLF4JBridgeHandler)))
+            [org.httpkit.client :as http]))
 
 (def system nil)
 
-(use-fixtures :once (fn [f]
-                      (SLF4JBridgeHandler/removeHandlersForRootLogger)
-                      (SLF4JBridgeHandler/install)
-
+(use-fixtures :each (fn [f]
                       (let [system (com.stuartsierra.component/start
                                      (convex-web.component/system :test))]
 
@@ -25,6 +21,7 @@
 
 (defn server-url []
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))
+
 
 (deftest session-test
   (testing "Get Session"
@@ -39,9 +36,8 @@
 
 (deftest generate-account-test
   (testing "Generate Account"
-    (let [{:keys [status body]} @(http/post (str (server-url) "/api/internal/generate-account"))]
-      (is (= 403 status))
-      (is (= "<h1>Invalid anti-forgery token</h1>" body)))))
+    (let [{:keys [status]} @(http/post (str (server-url) "/api/internal/generate-account"))]
+      (is (= 500 status)))))
 
 (deftest blocks-test
   (testing "Get Blocks"

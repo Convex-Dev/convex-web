@@ -341,6 +341,40 @@
      [:span.block.text-xs.p-2.text-white.font-bold.uppercase
       tab-name]]))
 
+(defn TransactionPanel []
+  (let [address (session/?active-address)]
+    [:div.flex.flex-col.flex-1.items-center.p-2
+     [:span.text-xs.uppercase "Account"]
+     [:code.text-xs address]
+
+     [:button
+      {:class
+       ["text-sm"
+        "px-2 py-1 mt-2"
+        "rounded"
+        "focus:outline-none"
+        "hover:shadow-md"
+        "bg-blue-500"]
+       :on-click
+       #(backend/POST-transaction-prepare
+          {:address address
+           :source "(inc 1)"}
+
+          {:handler
+           (fn [{:strs [hash] :as response}]
+             (js/console.log response)
+
+             (backend/POST-transaction-submit
+               {:address address
+                :hash hash
+                :sig ""}
+
+               {:handler
+                (fn [response']
+                  (js/console.log response'))}))})}
+      [:span.text-xs.text-white.uppercase
+       "Prepare"]]]))
+
 (defn Inspect []
   (let [{Panel :devtools.panel/component} (or (sub :devtools/?selected-panel) default-panel)]
     [:div
@@ -358,6 +392,13 @@
        {:id :devtools.panel.id/app-db
         :name "App-DB"
         :panel #'AppDBPanel}]
+
+      [:div.mx-2]
+
+      [InspectTab
+       {:id :devtools.panel.id/transaction
+        :name "Transaction"
+        :panel #'TransactionPanel}]
 
       [:div.mx-2]
 

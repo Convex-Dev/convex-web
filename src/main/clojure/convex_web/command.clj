@@ -33,20 +33,21 @@
 (defn wrap-result [{:convex-web.command/keys [status object] :as command}]
   (case status
     :convex-web.command.status/success
-    (assoc command ::object (cond
-                              (instance? Address object)
-                              {:hex-string (.toHexString object)
-                               :checksum-hex (.toChecksumHex object)}
+    (if (some? object)
+      (assoc command ::object (cond
+                                (instance? Address object)
+                                {:hex-string (.toHexString object)
+                                 :checksum-hex (.toChecksumHex object)}
 
-                              (instance? ABlob object)
-                              {:length (.length ^ABlob object)
-                               :hex-string (.toHexString ^ABlob object)}
+                                (instance? ABlob object)
+                                {:length (.length ^ABlob object)
+                                 :hex-string (.toHexString ^ABlob object)}
 
-                              :else
-                              (convex/datafy object)))
+                                :else
+                                (convex/datafy object)))
+      command)
 
     ;; Don't need to handle error status because error is already datafy'ed.
-
     command))
 
 (s/fdef wrap-result
@@ -66,9 +67,6 @@
 
                    :convex-web.command.status/success
                    (cond
-                     (= :nil object)
-                     {:type :nil}
-
                      (instance? Boolean object)
                      {:type :boolean}
 
@@ -107,7 +105,10 @@
 
                      ;; This must be after the special handling above because special forms (`def`, ...) returns a Symbol.
                      (instance? Symbol object)
-                     {:type :symbol})
+                     {:type :symbol}
+
+                     :else
+                     {})
 
                    :convex-web.command.status/error
                    {:type :error})]

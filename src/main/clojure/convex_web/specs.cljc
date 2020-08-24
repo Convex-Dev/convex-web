@@ -197,8 +197,8 @@
 (defmethod command :convex-web.command.status/success [_]
   (s/merge :convex-web/incoming-command
            (s/keys :req [:convex-web.command/id
-                         :convex-web.command/status
-                         :convex-web.command/object])))
+                         :convex-web.command/status]
+                   :opt [:convex-web.command/object])))
 
 (defmethod command :convex-web.command.status/error [_]
   (s/merge :convex-web/incoming-command

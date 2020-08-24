@@ -1,6 +1,7 @@
 (ns convex-web.system
   (:import (convex.peer Server)
-           (convex.net Connection)))
+           (convex.net Connection)
+           (convex.api Convex)))
 
 (defn convex
   "Convex Component."
@@ -26,11 +27,20 @@
 (defn ^Connection -convex-conn [convex]
   (:conn convex))
 
+(defn ^Convex -convex-client [convex]
+  (:client convex))
+
 (defn ^Server convex-server [system]
   (-convex-server (convex system)))
 
+(defn ^Server convex-peer-server [system]
+  (.getPeer (-convex-server (convex system))))
+
 (defn ^Connection convex-conn [system]
   (-convex-conn (convex system)))
+
+(defn ^Convex convex-client [system]
+  (-convex-client (convex system)))
 
 
 ;; -- DataScript
