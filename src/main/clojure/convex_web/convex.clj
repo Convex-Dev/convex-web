@@ -60,10 +60,10 @@
        (symbol (some-> x (.getNamespace) (.getName)) (.getName x))
 
        AList
-       (into '() (map datafy x))
+       (map datafy x)
 
        AVector
-       (into [] (map datafy x))
+       (mapv datafy x)
 
        AMap
        (reduce
