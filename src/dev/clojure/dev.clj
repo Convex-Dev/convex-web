@@ -169,7 +169,7 @@
 
   (client/POST-public-v1-transaction-prepare'
     "http://localhost:8080"
-    {:address "5342Fe7586D0D37304899b5EDab963df2e8Da3BA2e8A9646940f0E8DE9C8E291"
+    {:address (.toChecksumHex Init/HERO)
      :source "(map inc [1 2 3])"})
 
   ;; Hash
@@ -177,8 +177,8 @@
 
   (client/POST-public-v1-transaction-submit'
     "http://localhost:8080"
-    {:address "5342Fe7586D0D37304899b5EDab963df2e8Da3BA2e8A9646940f0E8DE9C8E291"
-     :hash "4fd279dd67a506bbd987899293d1a4d763f6da04941ccc4748f8dcf548e68bb7"
-     :sig (client/sig "4fd279dd67a506bbd987899293d1a4d763f6da04941ccc4748f8dcf548e68bb7")})
+    {:address (.toChecksumHex Init/HERO)
+     :hash "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b"
+     :sig (client/sig "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
 
   )
