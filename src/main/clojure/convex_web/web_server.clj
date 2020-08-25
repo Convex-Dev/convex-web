@@ -166,7 +166,9 @@
 
       {:status 200
        :headers {"Content-Type" "application/json"}
-       :body (json/write-str {:source source
+       :body (json/write-str {:sequence-number sequence-number
+                              :address address
+                              :source source
                               :hash (.toHexString (.getHash tx))})})
 
     (catch Exception ex
