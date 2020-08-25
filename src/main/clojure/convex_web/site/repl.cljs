@@ -571,27 +571,33 @@
      [:div.flex
       ;; -- Mode
       [:div.flex.items-center
-       [gui/Tooltip
-        {:title "Run without changing Convex's state"}
-        [QueryRadio state set-state]]
 
-       [:div.mx-1]
+       [:span.text-xs.text-gray-700.mr-1
+        "Mode"]
 
-       [gui/Tooltip
-        {:title "Run and update Convex's state"}
-        [TransactionRadio state set-state]]]
+       [gui/Select2
+        {:selected (mode state)
+         :options
+         [{:id :convex-web.command.mode/transaction
+           :value "Transaction"}
+          {:id :convex-web.command.mode/query
+           :value "Query"}]
+         :on-change #(set-state assoc :convex-web.repl/mode %)}]]
 
       ;; -- Language
-      [:div.flex.items-center.ml-10
-       [gui/Tooltip
-        {:title "Set language to Convex Lisp"}
-        [ConvexLispRadio state set-state]]
+      [:div.flex.items-center.ml-6
 
-       [:div.mx-1]
+       [:span.text-xs.text-gray-700.mr-1
+        "Language"]
 
-       [gui/Tooltip
-        {:title "Set language to Convex Scrypt"}
-        [ConvexScryptRadio state set-state]]]]
+       [gui/Select2
+        {:selected (language state)
+         :options
+         [{:id :convex-scrypt
+           :value "Convex Scrypt"}
+          {:id :convex-lisp
+           :value "Convex Lisp"}]
+         :on-change #(set-state assoc :convex-web.repl/language %)}]]]
 
      [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]]]
 

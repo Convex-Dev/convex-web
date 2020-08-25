@@ -270,6 +270,37 @@
                 attrs)]
     [:> tippy/Tooltip attrs child]))
 
+
+;; Select
+;; ===============
+
+(defn SelectOption [{:keys [id value] :as option}]
+  (let [missing-id? (nil? id)
+        value-not-str? (not (string? value))
+        warn? (or missing-id? value-not-str?)
+        group-label "SelectOption"
+
+        value (if-not (string? value)
+                (str value)
+                value)
+
+        id (or id value)]
+
+    (when warn?
+      (js/console.group group-label)
+
+      (when missing-id?
+        (js/console.warn "`:id` is missing;"))
+
+      (when value-not-str?
+        (js/console.warn "`:value` should be an string;"))
+
+      (js/console.warn "In:" (prn-str option))
+
+      (js/console.groupEnd group-label))
+
+    [:option {:value id} value]))
+
 (defn Select [{:keys [value options on-change]}]
   [:select
    {:class
@@ -282,7 +313,44 @@
     :on-change (fn [event]
                  (on-change (.-value (.-target event))))}
    (for [option options]
-     ^{:key option} [:option {:value option} option])])
+     ^{:key option} [SelectOption {:value option}])])
+
+(defn Select2
+  "- `selected` is the `:id` value of option;
+
+   - `options` is a collection of maps with keys `:id` and `:value`;
+
+   - `on-change` will be called with the selected `:id`;"
+  [{:keys [selected options on-change]}]
+  [:select
+   {:class
+    ["text-sm"
+     "p-1"
+     "rounded"
+     "focus:outline-none"
+     "bg-gray-100 hover:shadow-md"]
+
+    ;; `:value` is the React way to select a value.
+    ;; Reference: https://reactjs.org/docs/forms.html#the-select-tag
+    :value (or selected "")
+
+    :on-change
+    (fn [event]
+      (let [id-value (.-value (.-target event))
+
+            selected-id (some
+                          (fn [{:keys [id]}]
+                            (let [id-converted (if (or (keyword? id) (symbol? id))
+                                                 (name id)
+                                                 id)]
+                              (when (= id-converted id-value)
+                                id)))
+                          options)]
+        (on-change selected-id)))}
+   (for [option options]
+     ^{:key (:id option)} [SelectOption option])])
+
+;; ----------------------------------------------------
 
 (defn SpinnerSmall []
   [:div.spinner.ease-linear.rounded-full.border-2.border-t-2.border-gray-200.h-4.w-4])
