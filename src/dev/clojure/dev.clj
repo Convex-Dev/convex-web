@@ -181,4 +181,12 @@
      :hash "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b"
      :sig (client/sig "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
 
+  @(client/POST-v1-faucet
+     "http://localhost:8080"
+     {:address "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71"
+      :amount 500})
+
+
+  "{\"address\":\"2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71\",\"amount\":500,\"id\":7,\"value\":\"\"}"
+
   )

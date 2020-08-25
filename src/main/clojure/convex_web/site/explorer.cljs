@@ -340,7 +340,7 @@
          :colSpan "2"}
 
         [:div.p-2.border-b.border-gray-300
-         "Amount"]]])]
+         "Balance"]]])]
 
    (let [active-address (session/?active-address)
 
