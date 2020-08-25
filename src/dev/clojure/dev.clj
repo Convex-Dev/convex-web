@@ -8,7 +8,7 @@
             [convex-web.logging :as logging]
             [convex-web.web-server :as web-server]
             [convex-web.command :as command]
-            [convex-web.http-api-client :as client]
+            [convex-web.client :as client]
 
             [clojure.test :refer [is]]
             [clojure.spec.alpha :as s]

@@ -1,6 +1,6 @@
 (ns convex-web.public-api-test
   (:require [convex-web.component]
-            [convex-web.http-api-client :as http-api-client]
+            [convex-web.client :as client]
             [convex-web.config :as config]
 
             [clojure.test :refer :all]
@@ -117,7 +117,7 @@
     (testing "Success"
       (let [amount 1000
 
-            response @(http-api-client/POST-v1-faucet (server-url) {:address address :amount amount})
+            response @(client/POST-v1-faucet (server-url) {:address address :amount amount})
             response-body (json/read-str (get response :body) :key-fn keyword)]
 
         (is (= 200 (get response :status)))
@@ -128,6 +128,6 @@
 
             amount (inc config/max-faucet-amount)
 
-            response @(http-api-client/POST-v1-faucet (server-url) {:address address :amount amount})]
+            response @(client/POST-v1-faucet (server-url) {:address address :amount amount})]
 
         (is (= 400 (get response :status)))))))

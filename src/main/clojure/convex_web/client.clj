@@ -1,4 +1,4 @@
-(ns convex-web.http-api-client
+(ns convex-web.client
   (:require [convex-web.component]
 
             [clojure.test :refer :all]
