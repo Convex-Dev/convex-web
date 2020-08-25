@@ -1,5 +1,31 @@
 ## Public HTTP API
 
+### Faucet
+
+POST https://convex.world/api/v1/faucet
+
+#### Payload
+- Address: ED25519 public key of your key pair.
+- Amount: The requested amount.
+
+```json
+{
+  "address": "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71",
+  "amount": 10000
+}
+```
+
+#### Response
+
+ ```json
+{
+  "id": 1,
+  "address": "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71",
+  "amount": 10000,
+  "value": ""
+}
+```
+
 ### Prepare Transaction 
 
 POST https://convex.world/api/v1/transaction/prepare
