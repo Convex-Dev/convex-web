@@ -412,15 +412,57 @@
 
 ;; -- Faucet
 
-(defn FaucetInput [{:keys [convex-web/faucet] :as state} set-state]
-  (let [{:convex-web.faucet/keys [target amount]} faucet]
+(defn faucet-get-target [address set-state]
+  (backend/GET-account address {:handler
+                                (fn [account]
+                                  (set-state assoc :faucet-page/target {:ajax/status :ajax.status/success
+                                                                        :convex-web/account account}))}))
+
+(defn FaucetInput [{:keys [convex-web/faucet faucet-page/config] :as state} set-state]
+  (let [{:convex-web.faucet/keys [target amount]} faucet
+
+        to-my-accounts? (get config :faucet-page.config/my-accounts? false)
+
+        select-placeholder "Select"
+
+        addresses (cons select-placeholder (map :convex-web.account/address (session/?accounts)))
+
+        Caption (fn [caption]
+                  [:span.text-xs.text-indigo-500.uppercase caption])]
     [:div.flex.flex-col.flex-1
 
      ;; -- Target
-     [:span.text-xs.text-indigo-500.uppercase "Address"]
-     [:code.text-sm
-      (format/address-blob target)]
+     [:div.relative.w-full.flex.flex-col.mt-6
+      [Caption "Address"]
 
+      ;; -- My Accounts checkbox
+      [:div.absolute.top-0.right-0.flex.items-center
+       [:input
+        {:type "checkbox"
+         :checked to-my-accounts?
+         :on-change #(set-state update-in [:faucet-page/config :faucet-page.config/my-accounts?] not)}]
+
+       [:span.text-xs.text-gray-600.uppercase.ml-2
+        "My Accounts"]]
+
+      ;; -- Select or Input text
+      (if to-my-accounts?
+        [gui/Select {:value target
+                     :options addresses
+                     :on-change
+                     #(do
+                        (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] %)
+
+                        (faucet-get-target % set-state))}]
+        [:input.text-sm.p-1.border
+         {:style {:height "26px"}
+          :type "text"
+          :value target
+          :on-change
+          #(let [value (gui/event-target-value %)]
+             (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] value))}])]
+
+     ;; -- Balance
      (let [account (get-in state [:faucet-page/target :convex-web/account])]
        [:div.flex.justify-end.mt-1
         [:span.text-xs.text-gray-600.uppercase
@@ -523,7 +565,4 @@
             (let [address (get-in state [:convex-web/faucet :convex-web.faucet/target])]
               (set-state assoc :faucet-page/target {:ajax/status :ajax.status/pending})
 
-              (backend/GET-account address {:handler
-                                            (fn [account]
-                                              (set-state assoc :faucet-page/target {:ajax/status :ajax.status/success
-                                                                                    :convex-web/account account}))})))})
+              (faucet-get-target address set-state)))})
