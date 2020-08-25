@@ -97,29 +97,51 @@
 (defn transit-decode [^InputStream x]
   (t/read (t/reader x :json)))
 
+(defn json-encode [x]
+  (json/write-str x))
+
+(defn json-decode [^InputStream x & [{:keys [key-fn]}]]
+  (json/read-str (slurp x) :key-fn (or key-fn keyword)))
+
 (def handler-exception-message
   "An unhandled exception was thrown during the handler execution.")
-
-(def server-error-response
-  {:status 500
-   :headers {"Content-Type" "application/transit+json"}
-   :body (transit-encode {:error {:message "Sorry. Our server failed to process your request."}})})
 
 (defn error [message & [data]]
   {:error (merge {:message message}
                  (when data
                    {:data data}))})
 
-(defn successful-response [body & more]
+(def -server-error-response
+  {:status 500
+   :headers {"Content-Type" "application/transit+json"}
+   :body (transit-encode (error "Sorry. Our server failed to process your request."))})
+
+(def server-error-response
+  {:status 500
+   :headers {"Content-Type" "application/json"}
+   :body (json-encode (error "Sorry. Our server failed to process your request."))})
+
+(defn -successful-response [body & more]
   (let [response {:status 200
                   :headers {"Content-Type" "application/transit+json"}
                   :body (transit-encode body)}]
     (apply merge response more)))
 
-(defn bad-request-response [body]
+(defn successful-response [body & more]
+  (let [response {:status 200
+                  :headers {"Content-Type" "application/json"}
+                  :body (json-encode body)}]
+    (apply merge response more)))
+
+(defn -bad-request-response [body]
   {:status 400
    :headers {"Content-Type" "application/transit+json"}
    :body (transit-encode body)})
+
+(defn bad-request-response [body]
+  {:status 400
+   :headers {"Content-Type" "application/json"}
+   :body (json-encode body)})
 
 (defn forbidden-response [body]
   {:status 403
@@ -134,7 +156,7 @@
 ;; Public APIs
 ;; ==========================
 
-(defn POST-transaction-prepare [system {:keys [body]}]
+(defn POST-v1-transaction-prepare [system {:keys [body]}]
   (try
     (let [{:keys [address source]} (json/read-str (slurp body) :key-fn keyword)
 
@@ -196,7 +218,7 @@
              :headers {"Content-Type" "application/json"}
              :body (json/write-str {:error {:message "Sorry. Our server failed to process your request."}})}))))))
 
-(defn POST-transaction-submit [system {:keys [body]}]
+(defn POST-v1-transaction-submit [system {:keys [body]}]
   (try
     (let [{:keys [address sig hash] :as body} (json/read-str (slurp body) :key-fn keyword)
 
@@ -272,6 +294,49 @@
              :headers {"Content-Type" "application/json"}
              :body (json/write-str {:error {:message "Sorry. Our server failed to process your request."}})}))))))
 
+(defn POST-v1-faucet [system {:keys [body]}]
+  (try
+    (let [{:keys [address amount]} (json-decode body)]
+      (cond
+        (> amount config/max-faucet-amount)
+        (let [message (str "You can't request more than" (pprint/cl-format nil "~:d" config/max-faucet-amount) ".")]
+          (u/log :logging.event/user-error
+                 :severity :error
+                 :message message)
+
+          (bad-request-response (error message)))
+
+        :else
+        (let [client (system/convex-client system)
+
+              nonce (inc (convex/hero-sequence (peer/peer (system/convex-server system))))
+
+              transfer (convex/transfer {:nonce nonce
+                                         :target address
+                                         :amount amount})
+
+              result @(.transact client transfer)
+              result-response (merge {:id (.getID result)
+                                      :value (convex/datafy (.getValue result))}
+                                     (when-let [error-code (.getErrorCode result)]
+                                       {:error-code (convex/datafy error-code)}))
+
+              faucet (merge {:address address :amount amount} result-response)]
+
+          (u/log :logging.event/faucet
+                 :severity :info
+                 :target address
+                 :amount amount)
+
+          (successful-response faucet))))
+    (catch Exception ex
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
+
+      server-error-response)))
+
 
 ;; Internal APIs
 ;; ==========================
@@ -279,23 +344,23 @@
 (defn GET-commands [context _]
   (try
     (let [datascript-conn (system/datascript-conn context)]
-      (successful-response (command/query-all @datascript-conn)))
+      (-successful-response (command/query-all @datascript-conn)))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn GET-command-by-id [context id]
   (try
     (let [datascript-conn (system/datascript-conn context)]
       (if-let [command (command/query-by-id @datascript-conn id)]
-        (successful-response (-> command
-                                 (command/wrap-result-metadata)
-                                 (command/wrap-result)
-                                 (command/prune)))
+        (-successful-response (-> command
+                                  (command/wrap-result-metadata)
+                                  (command/wrap-result)
+                                  (command/prune)))
         (not-found-response {:error {:message (str "Command " id " not found.")}})))
     (catch Exception ex
       (u/log :logging.event/system-error
@@ -303,7 +368,7 @@
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn POST-command [context {:keys [body] :as request}]
   (try
@@ -327,7 +392,7 @@
                  :severity :error
                  :message "Invalid Command."
                  :exception (ex-info (str "\n" (expound/expound-str :convex-web/command command)) {}))
-          (bad-request-response (error "Invalid Command.")))
+          (-bad-request-response (error "Invalid Command.")))
 
         forbidden?
         (do
@@ -339,7 +404,7 @@
 
         :else
         (let [command' (command/execute context command)]
-          (successful-response command'))))
+          (-successful-response command'))))
     (catch Throwable ex
       (u/log :logging.event/system-error
              :severity :error
@@ -352,8 +417,8 @@
 
                       :else
                       "Server error.")]
-        (successful-response #:convex-web.command {:status :convex-web.command.status/error
-                                                   :error {:message message}})))))
+        (-successful-response #:convex-web.command {:status :convex-web.command.status/error
+                                                    :error {:message message}})))))
 
 (defn POST-generate-account [context req]
   (try
@@ -374,15 +439,15 @@
 
       (d/transact! (system/datascript-conn context) [account])
 
-      (successful-response (select-keys account [::account/address
-                                                 ::account/created-at])))
+      (-successful-response (select-keys account [::account/address
+                                                  ::account/created-at])))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn POST-confirm-account [context {:keys [body] :as req}]
   (try
@@ -406,17 +471,17 @@
                                                           :convex-web.session/accounts
                                                           [{:convex-web.account/address address-str}]}])
 
-          (successful-response (select-keys account [::account/address
-                                                     ::account/created-at])))))
+          (-successful-response (select-keys account [::account/address
+                                                      ::account/created-at])))))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
-(defn POST-faucet [context {:keys [body] :as request}]
+(defn -POST-faucet [context {:keys [body] :as request}]
   (try
     (let [{:convex-web.faucet/keys [target amount] :as faucet} (transit-decode body)
 
@@ -435,7 +500,7 @@
           (u/log :logging.event/user-error
                  :severity :error
                  :message (str message " Expound: " (expound/expound-str :convex-web/faucet faucet)))
-          (bad-request-response (error message)))
+          (-bad-request-response (error message)))
 
         (not authorized?)
         (let [message "Unauthorized."]
@@ -453,14 +518,14 @@
           (u/log :logging.event/user-error
                  :severity :error
                  :message message)
-          (bad-request-response (error message)))
+          (-bad-request-response (error message)))
 
         (> amount config/max-faucet-amount)
         (let [message (str "You can't request more than" (pprint/cl-format nil "~:d" config/max-faucet-amount) ".")]
           (u/log :logging.event/user-error
                  :severity :error
                  :message message)
-          (bad-request-response (error message)))
+          (-bad-request-response (error message)))
 
         (nil? account)
         (let [message (str "Account " target " not found.")]
@@ -491,28 +556,28 @@
                  :target target
                  :amount amount)
 
-          (successful-response faucet))))
+          (-successful-response faucet))))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn GET-session [context req]
   (try
     (let [db @(system/datascript-conn context)
           id (ring-session req)
           session (merge {::session/id id} (session/find-session db id))]
-      (successful-response session))
+      (-successful-response session))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn GET-accounts [context {:keys [query-params]}]
   (try
@@ -533,40 +598,40 @@
         (not start-valid?)
         (let [message (str "Invalid start: " start ".")]
           (log/error (str "Failed to get Accounts; " message))
-          (bad-request-response (error message)))
+          (-bad-request-response (error message)))
 
         (not end-valid?)
         (let [message (str "Invalid end: " end ".")]
           (log/error (str "Failed to get Accounts; " message))
-          (bad-request-response (error message)))
+          (-bad-request-response (error message)))
 
         (not range-valid?)
         (let [message (str "Invalid range: [" start ":" end "].")]
           (log/error (str "Failed to get Accounts; " message))
-          (bad-request-response (error message)))
+          (-bad-request-response (error message)))
 
         :else
-        (successful-response {:meta
-                              {:start start
-                               :end end
-                               :total number-of-accounts}
+        (-successful-response {:meta
+                               {:start start
+                                :end end
+                                :total number-of-accounts}
 
-                              :convex-web/accounts
-                              (map
-                                (fn [[address status]]
-                                  (let [address (convex/address->checksum-hex address)
-                                        status (convex/account-status-data status)]
-                                    #:convex-web.account {:address address
-                                                          ;; Dissoc `environment` because it's too much data.
-                                                          :status (dissoc status :convex-web.account-status/environment)}))
-                                (convex/accounts peer {:start start :end end}))})))
+                               :convex-web/accounts
+                               (map
+                                 (fn [[address status]]
+                                   (let [address (convex/address->checksum-hex address)
+                                         status (convex/account-status-data status)]
+                                     #:convex-web.account {:address address
+                                                           ;; Dissoc `environment` because it's too much data.
+                                                           :status (dissoc status :convex-web.account-status/environment)}))
+                                 (convex/accounts peer {:start start :end end}))})))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn GET-account [context address]
   (try
@@ -581,8 +646,8 @@
 
           account-status-data (convex/account-status-data account-status)]
       (if account-status
-        (successful-response #:convex-web.account {:address address
-                                                   :status account-status-data})
+        (-successful-response #:convex-web.account {:address address
+                                                    :status account-status-data})
         (let [message (str "Address " address " doesn't exist.")]
           (log/error (str "Failed to get Account; " message))
           (not-found-response {:error {:message message}}))))
@@ -592,7 +657,7 @@
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn GET-blocks [context _]
   (try
@@ -602,14 +667,14 @@
           max-items (min consensus config/default-range)
           end consensus
           start (- end max-items)]
-      (successful-response (convex/blocks peer {:start start :end end})))
+      (-successful-response (convex/blocks peer {:start start :end end})))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn GET-blocks-range [context {:keys [query-params]}]
   (try
@@ -629,36 +694,36 @@
           range-valid? (<= (- end start) config/max-range)]
       (cond
         (not start-valid?)
-        (bad-request-response (error (str "Invalid start: " start ".")))
+        (-bad-request-response (error (str "Invalid start: " start ".")))
 
         (not end-valid?)
-        (bad-request-response (error (str "Invalid end: " end ".")))
+        (-bad-request-response (error (str "Invalid end: " end ".")))
 
         (not range-valid?)
-        (bad-request-response (error (str "Invalid range: [" start ":" end "].")))
+        (-bad-request-response (error (str "Invalid range: [" start ":" end "].")))
 
         :else
-        (successful-response {:meta
-                              {:start start
-                               :end end
-                               :total consensus}
+        (-successful-response {:meta
+                               {:start start
+                                :end end
+                                :total consensus}
 
-                              :convex-web/blocks
-                              (convex/blocks peer {:start start :end end})})))
+                               :convex-web/blocks
+                               (convex/blocks peer {:start start :end end})})))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn GET-block [context index]
   (try
     (let [peer (peer/peer (system/convex-server context))
           blocks-indexed (convex/blocks-indexed peer)]
       (if-let [block (get blocks-indexed (Long/parseLong index))]
-        (successful-response block)
+        (-successful-response block)
         (not-found-response {:error {:message (str "Block " index " doesn't exist.")}})))
     (catch Exception ex
       (u/log :logging.event/system-error
@@ -666,18 +731,18 @@
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn GET-reference [_ _]
   (try
-    (successful-response (convex/reference))
+    (-successful-response (convex/reference))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn GET-markdown-page [_ request]
   (try
@@ -688,14 +753,14 @@
         (not-found-response (error "Markdown page not found."))
 
         :else
-        (successful-response contents)))
+        (-successful-response contents)))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
              :message handler-exception-message
              :exception ex)
 
-      server-error-response)))
+      -server-error-response)))
 
 (defn site [system]
   (routes
@@ -703,7 +768,7 @@
     (GET "/api/internal/session" req (GET-session system req))
     (POST "/api/internal/generate-account" req (POST-generate-account system req))
     (POST "/api/internal/confirm-account" req (POST-confirm-account system req))
-    (POST "/api/internal/faucet" req (POST-faucet system req))
+    (POST "/api/internal/faucet" req (-POST-faucet system req))
     (GET "/api/internal/accounts" req (GET-accounts system req))
     (GET "/api/internal/accounts/:address" [address] (GET-account system address))
     (GET "/api/internal/blocks" req (GET-blocks system req))
@@ -720,8 +785,9 @@
 
 (defn public-api [system]
   (routes
-    (POST "/api/v1/transaction/prepare" req (POST-transaction-prepare system req))
-    (POST "/api/v1/transaction/submit" req (POST-transaction-submit system req))))
+    (POST "/api/v1/faucet" req (POST-v1-faucet system req))
+    (POST "/api/v1/transaction/prepare" req (POST-v1-transaction-prepare system req))
+    (POST "/api/v1/transaction/submit" req (POST-v1-transaction-submit system req))))
 
 (defn wrap-logging [handler]
   (fn wrap-logging-handler [request]

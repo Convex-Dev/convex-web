@@ -29,4 +29,9 @@
   (let [response @(POST-public-v1-transaction-submit server-url body)]
     (json/read-str (get response :body) :key-fn keyword)))
 
+(defn POST-v1-faucet [server-url {:keys [address amount] :as body}]
+  (let [url (str server-url "/api/v1/faucet")
+        body (json/write-str body)]
+    (http/post url {:body body})))
+
 

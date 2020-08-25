@@ -1,5 +1,7 @@
 (ns convex-web.public-api-test
   (:require [convex-web.component]
+            [convex-web.http-api-client :as http-api-client]
+            [convex-web.config :as config]
 
             [clojure.test :refer :all]
             [clojure.data.json :as json]
@@ -100,8 +102,32 @@
           submit-response-body (json/read-str (get submit-response :body) :key-fn keyword)]
 
       (is (= 200 (get prepare-response :status)))
-      (is (= [:source :hash] (keys prepare-response-body)))
+      (is (= [:sequence-number
+              :address
+              :source
+              :hash]
+             (keys prepare-response-body)))
 
       (is (= 200 (get submit-response :status)))
-      (is (= [:id :value] (keys submit-response-body)))
+      (is (= #{:id :value} (set (keys submit-response-body))))
       (is (= {:value 2} (select-keys submit-response-body [:value]))))))
+
+(deftest faucet-test
+  (let [address "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71"]
+    (testing "Success"
+      (let [amount 1000
+
+            response @(http-api-client/POST-v1-faucet (server-url) {:address address :amount amount})
+            response-body (json/read-str (get response :body) :key-fn keyword)]
+
+        (is (= 200 (get response :status)))
+        (is (= #{:id :address :amount :value} (set (keys response-body))))))
+
+    (testing "Error"
+      (let [address "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71"
+
+            amount (inc config/max-faucet-amount)
+
+            response @(http-api-client/POST-v1-faucet (server-url) {:address address :amount amount})]
+
+        (is (= 400 (get response :status)))))))
