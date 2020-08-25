@@ -341,7 +341,7 @@
 ;; Internal APIs
 ;; ==========================
 
-(defn GET-commands [context _]
+(defn -GET-commands [context _]
   (try
     (let [datascript-conn (system/datascript-conn context)]
       (-successful-response (command/query-all @datascript-conn)))
@@ -353,7 +353,7 @@
 
       -server-error-response)))
 
-(defn GET-command-by-id [context id]
+(defn -GET-command-by-id [context id]
   (try
     (let [datascript-conn (system/datascript-conn context)]
       (if-let [command (command/query-by-id @datascript-conn id)]
@@ -370,7 +370,7 @@
 
       -server-error-response)))
 
-(defn POST-command [context {:keys [body] :as request}]
+(defn -POST-command [context {:keys [body] :as request}]
   (try
     (let [{::command/keys [address mode] :as command} (transit-decode body)
 
@@ -420,7 +420,7 @@
         (-successful-response #:convex-web.command {:status :convex-web.command.status/error
                                                     :error {:message message}})))))
 
-(defn POST-generate-account [context req]
+(defn -POST-generate-account [context req]
   (try
     (u/log :logging.event/new-account :severity :info)
 
@@ -449,7 +449,7 @@
 
       -server-error-response)))
 
-(defn POST-confirm-account [context {:keys [body] :as req}]
+(defn -POST-confirm-account [context {:keys [body] :as req}]
   (try
     (let [^String address-str (transit-decode body)
 
@@ -565,7 +565,7 @@
 
       -server-error-response)))
 
-(defn GET-session [context req]
+(defn -GET-session [context req]
   (try
     (let [db @(system/datascript-conn context)
           id (ring-session req)
@@ -579,7 +579,7 @@
 
       -server-error-response)))
 
-(defn GET-accounts [context {:keys [query-params]}]
+(defn -GET-accounts [context {:keys [query-params]}]
   (try
     (let [{:strs [start end]} query-params
 
@@ -633,7 +633,7 @@
 
       -server-error-response)))
 
-(defn GET-account [context address]
+(defn -GET-account [context address]
   (try
     (let [peer (peer/peer (system/convex-server context))
 
@@ -659,7 +659,7 @@
 
       -server-error-response)))
 
-(defn GET-blocks [context _]
+(defn -GET-blocks [context _]
   (try
     (let [peer (peer/peer (system/convex-server context))
           order (convex/peer-order peer)
@@ -676,7 +676,7 @@
 
       -server-error-response)))
 
-(defn GET-blocks-range [context {:keys [query-params]}]
+(defn -GET-blocks-range [context {:keys [query-params]}]
   (try
     (let [{:strs [start end]} query-params
 
@@ -718,7 +718,7 @@
 
       -server-error-response)))
 
-(defn GET-block [context index]
+(defn -GET-block [context index]
   (try
     (let [peer (peer/peer (system/convex-server context))
           blocks-indexed (convex/blocks-indexed peer)]
@@ -733,7 +733,7 @@
 
       -server-error-response)))
 
-(defn GET-reference [_ _]
+(defn -GET-reference [_ _]
   (try
     (-successful-response (convex/reference))
     (catch Exception ex
@@ -744,7 +744,7 @@
 
       -server-error-response)))
 
-(defn GET-markdown-page [_ request]
+(defn -GET-markdown-page [_ request]
   (try
     (let [page (get-in request [:query-params "page"])
           contents (read-markdown-page (keyword page))]
@@ -765,20 +765,20 @@
 (defn site [system]
   (routes
     (GET "/" req (index req))
-    (GET "/api/internal/session" req (GET-session system req))
-    (POST "/api/internal/generate-account" req (POST-generate-account system req))
-    (POST "/api/internal/confirm-account" req (POST-confirm-account system req))
+    (GET "/api/internal/session" req (-GET-session system req))
+    (POST "/api/internal/generate-account" req (-POST-generate-account system req))
+    (POST "/api/internal/confirm-account" req (-POST-confirm-account system req))
     (POST "/api/internal/faucet" req (-POST-faucet system req))
-    (GET "/api/internal/accounts" req (GET-accounts system req))
-    (GET "/api/internal/accounts/:address" [address] (GET-account system address))
-    (GET "/api/internal/blocks" req (GET-blocks system req))
-    (GET "/api/internal/blocks-range" req (GET-blocks-range system req))
-    (GET "/api/internal/blocks/:index" [index] (GET-block system index))
-    (GET "/api/internal/commands" req (GET-commands system req))
-    (POST "/api/internal/commands" req (POST-command system req))
-    (GET "/api/internal/commands/:id" [id] (GET-command-by-id system (Long/parseLong id)))
-    (GET "/api/internal/reference" req (GET-reference system req))
-    (GET "/api/internal/markdown-page" req (GET-markdown-page system req))
+    (GET "/api/internal/accounts" req (-GET-accounts system req))
+    (GET "/api/internal/accounts/:address" [address] (-GET-account system address))
+    (GET "/api/internal/blocks" req (-GET-blocks system req))
+    (GET "/api/internal/blocks-range" req (-GET-blocks-range system req))
+    (GET "/api/internal/blocks/:index" [index] (-GET-block system index))
+    (GET "/api/internal/commands" req (-GET-commands system req))
+    (POST "/api/internal/commands" req (-POST-command system req))
+    (GET "/api/internal/commands/:id" [id] (-GET-command-by-id system (Long/parseLong id)))
+    (GET "/api/internal/reference" req (-GET-reference system req))
+    (GET "/api/internal/markdown-page" req (-GET-markdown-page system req))
 
     (route/resources "/")
     (route/not-found "<h1>Page not found</h1>")))
