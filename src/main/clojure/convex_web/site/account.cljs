@@ -261,12 +261,10 @@
      ;; -- From
      [:div.flex.flex-col
       [Caption "From"]
-      [gui/Select {:value from
-                   :options addresses
-                   :on-change
-                   #(set-state
-                      (fn [state]
-                        (assoc-in state [:convex-web/transfer :convex-web.transfer/from] %)))}]
+      [gui/Select
+       {:value from
+        :options addresses
+        :on-change #(set-state assoc-in [:convex-web/transfer :convex-web.transfer/from] %)}]
 
       ;; -- Balance
       (when (s/valid? :convex-web/address from)

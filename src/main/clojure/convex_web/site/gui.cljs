@@ -343,10 +343,12 @@
      [:div.flex.flex-col.items-center.w-full.px-10.overflow-auto.border.rounded.p-2.mt-1.bg-gray-100
       [:div.flex.flex-col.w-full.divide-y
        (let [environment (sort-by (comp str first) environment)]
-         (for [[sym metadata] environment]
-           ^{:key sym}
-           [:div.w-full.py-2.px-1.hover:bg-gray-100.rounded
-            [SymbolMetaStrip sym (:convex-web.syntax/meta metadata)]]))]]]))
+         (if (seq environment)
+           (for [[sym metadata] environment]
+             ^{:key sym}
+             [:div.w-full.py-2.px-1.hover:bg-gray-100.rounded
+              [SymbolMetaStrip sym (:convex-web.syntax/meta metadata)]])
+           [:span.text-xs.text-gray-700.text-center "Empty"]))]]]))
 
 (defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
   [:div.flex.p-2
