@@ -130,6 +130,20 @@
                                  (when source
                                    {"source" source}))))
 
+(defmethod logging-json-payload :logging.event/transaction-prepare [{:keys [address source] :as item}]
+  (Payload$JsonPayload/of (merge (default-payload-data item)
+                                 (when address
+                                   {"address" address})
+                                 (when source
+                                   {"source" source}))))
+
+(defmethod logging-json-payload :logging.event/transaction-submit [{:keys [address hash] :as item}]
+  (Payload$JsonPayload/of (merge (default-payload-data item)
+                                 (when address
+                                   {"address" address})
+                                 (when hash
+                                   {"hash" hash}))))
+
 
 (defn mulog-item->log-entry [item]
   (try
