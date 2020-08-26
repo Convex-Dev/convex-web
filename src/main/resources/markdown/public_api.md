@@ -36,7 +36,7 @@ POST https://convex.world/api/v1/transaction/prepare
 
 ```json
 {
-  "address": "0c43f0c4-8652-405d-ab5b-b08496d08621",
+  "address": "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71",
   "source": "(map inc [1 2 3])"
 }
 ```
@@ -45,6 +45,8 @@ POST https://convex.world/api/v1/transaction/prepare
 #### Response
  ```json
 {
+  "sequence-number": 1,
+  "address": "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71",
   "hash": "badb861fc51d49e0212c0304b1890da42e4a4b54228986be17de8d7dccd845e2",
   "source": "(map inc [1 2 3])"
 }
@@ -61,7 +63,7 @@ POST https://convex.world/api/v1/transaction/submit
 
 ```json
 {
-  "address": "0c43f0c4-8652-405d-ab5b-b08496d08621",
+  "address": "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71",
   "hash": "badb861fc51d49e0212c0304b1890da42e4a4b54228986be17de8d7dccd845e2",
   "sig": "ce31365976f0c5a5922f65f47999907f5fab475cce1fdad0ff53baaf800036a4ed1783b6dbb98b14a25e1bfffd140749223f6914b86533e6fa9811de0733cc0b"
 }
