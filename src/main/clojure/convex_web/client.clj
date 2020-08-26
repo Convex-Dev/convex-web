@@ -5,11 +5,10 @@
             [clojure.data.json :as json]
 
             [org.httpkit.client :as http])
-  (:import (convex.core.crypto Hash)
-           (convex.core Init)))
+  (:import (convex.core.crypto Hash AKeyPair)))
 
-(defn sig [hash]
-  (.toHexString (.sign Init/HERO_KP (Hash/fromHex hash))))
+(defn sig [^AKeyPair key-pair ^String hash]
+  (.toHexString (.sign key-pair (Hash/fromHex hash))))
 
 (defn POST-public-v1-transaction-prepare [server-url {:keys [address source] :as body}]
   (let [url (str server-url "/api/v1/transaction/prepare")
