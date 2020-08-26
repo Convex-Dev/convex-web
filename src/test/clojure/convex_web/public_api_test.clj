@@ -123,11 +123,34 @@
         (is (= 200 (get response :status)))
         (is (= #{:id :address :amount :value} (set (keys response-body))))))
 
-    (testing "Error"
-      (let [address "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71"
+    (testing "Bad request"
+      (testing "Invalid address"
+        (let [address ""
 
-            amount (inc config/max-faucet-amount)
+              amount (inc config/max-faucet-amount)
 
-            response @(client/POST-v1-faucet (server-url) {:address address :amount amount})]
+              response @(client/POST-v1-faucet (server-url) {:address address :amount amount})
+              response-body (json/read-str (get response :body) :key-fn keyword)]
 
-        (is (= 400 (get response :status)))))))
+          (is (= 400 (get response :status)))
+          (is (= "Invalid address." (get-in response-body [:error :message])))))
+
+      (testing "Invalid amount"
+        (let [address "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71"
+
+              amount -1
+
+              response @(client/POST-v1-faucet (server-url) {:address address :amount amount})
+              response-body (json/read-str (get response :body) :key-fn keyword)]
+
+          (is (= 400 (get response :status)))
+          (is (= "Invalid amount." (get-in response-body [:error :message])))))
+
+      (testing "Requested amount is greater than allowed"
+        (let [address "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71"
+
+              amount (inc config/max-faucet-amount)
+
+              response @(client/POST-v1-faucet (server-url) {:address address :amount amount})]
+
+          (is (= 400 (get response :status))))))))

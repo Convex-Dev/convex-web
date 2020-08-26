@@ -284,15 +284,23 @@
 
 (defn POST-v1-faucet [system {:keys [body]}]
   (try
-    (let [{:keys [address amount]} (json-decode body)]
-      (cond
-        (> amount config/max-faucet-amount)
-        (let [message (str "You can't request more than" (pprint/cl-format nil "~:d" config/max-faucet-amount) ".")]
-          (u/log :logging.event/user-error
-                 :severity :error
-                 :message message)
+    (let [{:keys [address amount]} (json-decode body)
 
-          (bad-request-response (error message)))
+          bad-request (fn [message]
+                        (u/log :logging.event/user-error
+                               :severity :error
+                               :message message)
+
+                        (bad-request-response (error message)))]
+      (cond
+        (not (s/valid? :convex-web/address address))
+        (bad-request "Invalid address.")
+
+        (not (s/valid? :convex-web/amount amount))
+        (bad-request "Invalid amount.")
+
+        (> amount config/max-faucet-amount)
+        (bad-request (str "You can't request more than" (pprint/cl-format nil "~:d" config/max-faucet-amount) "."))
 
         :else
         (let [client (system/convex-client system)
