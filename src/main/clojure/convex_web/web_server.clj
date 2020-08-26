@@ -95,13 +95,15 @@
     (.toString out)))
 
 (defn transit-decode [^InputStream x]
-  (t/read (t/reader x :json)))
+  (when x
+    (t/read (t/reader x :json))))
 
 (defn json-encode [x]
   (json/write-str x))
 
 (defn json-decode [^InputStream x & [{:keys [key-fn]}]]
-  (json/read-str (slurp x) :key-fn (or key-fn keyword)))
+  (when x
+    (json/read-str (slurp x) :key-fn (or key-fn keyword))))
 
 (def handler-exception-message
   "An unhandled exception was thrown during the handler execution.")
