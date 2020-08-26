@@ -158,7 +158,7 @@
 
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
   (try
-    (let [{:keys [address source]} (json/read-str (slurp body) :key-fn keyword)
+    (let [{:keys [address source]} (json-decode body)
 
           _ (u/log :logging.event/transaction-prepare
                    :severity :info
@@ -186,12 +186,10 @@
       ;; Persist the transaction in the Etch datastore.
       (Ref/createPersisted tx)
 
-      {:status 200
-       :headers {"Content-Type" "application/json"}
-       :body (json/write-str {:sequence-number sequence-number
-                              :address address
-                              :source source
-                              :hash (.toHexString (.getHash tx))})})
+      (successful-response {:sequence-number sequence-number
+                            :address address
+                            :source source
+                            :hash (.toHexString (.getHash tx))}))
 
     (catch Exception ex
       (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
@@ -203,9 +201,7 @@
                    :message (ex-message ex)
                    :exception ex)
 
-            {:status 400
-             :headers {"Content-Type" "application/json"}
-             :body (json/write-str (error (ex-message ex)))})
+            (bad-request-response (error (ex-message ex))))
 
           :else
           (do
@@ -214,13 +210,11 @@
                    :message handler-exception-message
                    :exception ex)
 
-            {:status 500
-             :headers {"Content-Type" "application/json"}
-             :body (json/write-str {:error {:message "Sorry. Our server failed to process your request."}})}))))))
+            server-error-response))))))
 
 (defn POST-v1-transaction-submit [system {:keys [body]}]
   (try
-    (let [{:keys [address sig hash] :as body} (json/read-str (slurp body) :key-fn keyword)
+    (let [{:keys [address sig hash] :as body} (json-decode body)
 
           _ (log/debug "POST Transaction Submit" body)
 
@@ -265,9 +259,7 @@
 
           _ (log/debug "Transaction result" result)]
 
-      {:status 200
-       :headers {"Content-Type" "application/json"}
-       :body (json/write-str result-response)})
+      (successful-response result-response))
 
     (catch Exception ex
       (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
@@ -279,9 +271,7 @@
                    :message (ex-message ex)
                    :exception ex)
 
-            {:status 400
-             :headers {"Content-Type" "application/json"}
-             :body (json/write-str (error (ex-message ex)))})
+            (bad-request-response (error (ex-message ex))))
 
           :else
           (do
@@ -290,9 +280,7 @@
                    :message handler-exception-message
                    :exception ex)
 
-            {:status 500
-             :headers {"Content-Type" "application/json"}
-             :body (json/write-str {:error {:message "Sorry. Our server failed to process your request."}})}))))))
+            server-error-response))))))
 
 (defn POST-v1-faucet [system {:keys [body]}]
   (try
