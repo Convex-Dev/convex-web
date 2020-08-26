@@ -384,7 +384,12 @@
           (.execCommand js/document "copy"))}]]]))
 
 (defn Account [{:convex-web.account/keys [address status]}]
-  (let [{:convex-web.account-status/keys [balance sequence environment type]} status
+  (let [{:convex-web.account-status/keys [memory-size
+                                          allowance
+                                          balance
+                                          sequence
+                                          environment
+                                          type]} status
 
         address-blob (format/address-blob address)]
     [:div.flex.flex-col.justify-center.items-center
@@ -398,6 +403,14 @@
       [:div.flex.items-center.mt-1
        [:code.text-sm.mr-2 address-blob]
        [ClipboardCopy address-blob]]]
+
+     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
+      [:span.text-xs.text-gray-700.uppercase "Memory Allowance"]
+      [:code.mt-1.text-sm allowance]]
+
+     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
+      [:span.text-xs.text-gray-700.uppercase "Memory Size"]
+      [:code.mt-1.text-sm memory-size]]
 
      [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
       [:span.text-xs.text-gray-700.uppercase "Sequence"]

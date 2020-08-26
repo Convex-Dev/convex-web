@@ -333,6 +333,16 @@
        [:th
         {:class th-class}
         [:div.p-2.border-b.border-gray-300
+         "Memory Allowance"]]
+
+       [:th
+        {:class th-class}
+        [:div.p-2.border-b.border-gray-300
+         "Memory Size"]]
+
+       [:th
+        {:class th-class}
+        [:div.p-2.border-b.border-gray-300
          "Type"]]
 
        [:th
@@ -356,6 +366,7 @@
               address-blob (format/address-blob address)]
           ^{:key address}
           [:tr.hover:bg-gray-100.cursor-default
+           ;; -- Address
            [:td.flex.items-center {:class td-class}
             [:div.flex.items-center
              (if modal?
@@ -389,6 +400,19 @@
                {:title "This account is active"}
                [gui/CheckIcon {:class "w-4 h-4 text-green-500 ml-4"}]])]
 
+           ;; -- Memory allowance
+           [:td {:class td-class}
+            [:div.flex.justify-end
+             [:span.text-xs.font-bold.text-indigo-500
+              (format/format-number (str (:convex-web.account-status/allowance status)))]]]
+
+           ;; -- Memory size
+           [:td {:class td-class}
+            [:div.flex.justify-end
+             [:span.text-xs.font-bold.text-indigo-500
+              (format/format-number (str (:convex-web.account-status/memory-size status)))]]]
+
+           ;; -- Type
            [:td {:class td-class}
             (let [[label style tooltip] (cond
                                           (get status :convex-web.account-status/library?)
@@ -405,6 +429,7 @@
                 {:class style}
                 label]])]
 
+           ;; -- Balance
            [:td {:class td-class}
             [:div.flex.justify-end
              [:span.text-xs.font-bold.text-indigo-500

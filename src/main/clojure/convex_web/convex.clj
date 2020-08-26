@@ -196,6 +196,8 @@
                                           :environment env
                                           :actor? actor?
                                           :library? library?
+                                          :memory-size (.getMemorySize account-status)
+                                          :allowance (.getAllowance account-status)
                                           :type (cond
                                                   library? :library
                                                   actor? :actor
