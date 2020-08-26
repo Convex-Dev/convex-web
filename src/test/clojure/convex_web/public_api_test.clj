@@ -28,6 +28,14 @@
 
 (deftest prepare-test
   (testing "Incorrect"
+    (testing "No payload"
+      (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
+            prepare-response @(http/post prepare-url nil)
+            prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
+
+        (is (= 400 (get prepare-response :status)))
+        (is (= "Invalid address." (get-in prepare-response-body [:error :message])))))
+
     (testing "Invalid Address"
       (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
             prepare-body (json/write-str {:address ""})
@@ -124,6 +132,13 @@
         (is (= #{:id :address :amount :value} (set (keys response-body))))))
 
     (testing "Bad request"
+      (testing "No payload"
+        (let [response @(client/POST-v1-faucet (server-url) nil)
+              response-body (json/read-str (get response :body) :key-fn keyword)]
+
+          (is (= 400 (get response :status)))
+          (is (= "Invalid address." (get-in response-body [:error :message])))))
+
       (testing "Invalid address"
         (let [address ""
 

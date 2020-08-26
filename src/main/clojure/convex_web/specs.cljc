@@ -8,6 +8,8 @@
 
 (s/def :convex-web/address (s/and :convex-web/non-empty-string #(= 64 (count %))))
 
+(s/def :convex-web/sig (s/and :convex-web/non-empty-string #(= 128 (count %))))
+
 (s/def :convex-web/amount nat-int?)
 
 (s/def :convex-web/sequence int?)

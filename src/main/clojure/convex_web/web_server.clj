@@ -236,7 +236,7 @@
                    (throw (ex-info "Invalid hash." {::anomalies/category ::anomalies/incorrect}))))
 
           sig (try
-                (s/assert :convex-web/non-empty-string sig)
+                (s/assert :convex-web/sig sig)
                 (catch Exception _
                   (throw (ex-info "Invalid signature." {::anomalies/category ::anomalies/incorrect}))))
 
