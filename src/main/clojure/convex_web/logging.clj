@@ -147,12 +147,17 @@
 
 (defn mulog-item->log-entry [item]
   (try
-    (log-entry (merge {:resource "gce_instance"
-                       :labels (logging-labels item)
-                       :payload (logging-json-payload item)
-                       :http-request (logging-http-request item)}
-                      (when-let [severity (get item :severity)]
-                        {:severity severity})))
+    (let [severity (get item :severity)
+          ;; If severity is not set, but there is an exception key,
+          ;; we should set severity to error.
+          severity (or severity (when (get item :exception)
+                                  :error))]
+      (log-entry (merge {:resource "gce_instance"
+                         :labels (logging-labels item)
+                         :payload (logging-json-payload item)
+                         :http-request (logging-http-request item)}
+                        (when severity
+                          {:severity severity}))))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
