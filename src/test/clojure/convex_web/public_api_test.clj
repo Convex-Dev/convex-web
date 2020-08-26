@@ -81,7 +81,18 @@
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= "Invalid signature." (get-in prepare-response-body [:error :message])))))))
+        (is (= "Invalid signature." (get-in prepare-response-body [:error :message])))))
+
+    (testing "Missing Data"
+      (let [response @(client/POST-public-v1-transaction-submit
+                        (server-url)
+                        {:address (.toChecksumHex Init/HERO)
+                         :hash "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b"
+                         :sig (client/sig Init/HERO_KP "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
+            response-body (json/read-str (get response :body) :key-fn keyword)]
+
+        (is (= 400 (get response :status)))
+        (is (= "You need to prepare the transaction before submitting." (get-in response-body [:error :message])))))))
 
 (deftest prepare-submit-transaction-test
   (testing "Prepare transaction"

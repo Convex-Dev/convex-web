@@ -37,7 +37,7 @@
            (java.time Instant)
            (java.util Date)
            (org.parboiled.errors ParserRuntimeException)
-           (convex.core.exceptions ParseException)))
+           (convex.core.exceptions ParseException MissingDataException)))
 
 (def session-ref (atom {}))
 
@@ -172,10 +172,6 @@
                     (catch Exception _
                       (throw (ex-info "Invalid address." {::anomalies/category ::anomalies/incorrect}))))
 
-          ;; TODO
-          ;;_ (or (account/find-by-address @(system/datascript-conn system) address)
-          ;;      (throw (ex-info "Account doesn't exist." {::anomalies/category ::anomalies/incorrect})))
-
           source (try
                    (s/assert :convex-web/non-empty-string source)
                    (catch Exception _
@@ -228,32 +224,41 @@
           address (try
                     (s/assert :convex-web/address address)
                     (catch Exception _
-                      (throw (ex-info "Invalid address." {::anomalies/category ::anomalies/incorrect}))))
+                      (throw (ex-info "Invalid address."
+                                      {::anomalies/category ::anomalies/incorrect}))))
 
           hash (try
                  (s/assert :convex-web/non-empty-string hash)
                  (catch Exception _
-                   (throw (ex-info "Invalid hash." {::anomalies/category ::anomalies/incorrect}))))
+                   (throw (ex-info "Invalid hash."
+                                   {::anomalies/category ::anomalies/incorrect}))))
 
           sig (try
                 (s/assert :convex-web/sig sig)
                 (catch Exception _
-                  (throw (ex-info "Invalid signature." {::anomalies/category ::anomalies/incorrect}))))
-
-          address (Address/fromHex address)
-
-          ;;_ (or (account/find-by-address @(system/datascript-conn system) address)
-          ;;      (throw (ex-info "Account doesn't exist." {::anomalies/category ::anomalies/incorrect})))
+                  (throw (ex-info "Invalid signature."
+                                  {::anomalies/category ::anomalies/incorrect}))))
 
           sig (ASignature/fromHex sig)
+
           tx-ref (Ref/forHash (Hash/fromHex hash))
-          signed-data (SignedData/create address sig tx-ref)
+
+          signed-data (SignedData/create (Address/fromHex address) sig tx-ref)
+
+          _ (when-not (.isValid signed-data)
+              (throw (ex-info "Invalid signature."
+                              {::anomalies/category ::anomalies/incorrect})))
 
           client (system/convex-client system)
 
           _ (log/debug "Transact signed data" signed-data)
 
-          result @(.transact client signed-data)
+          result (try
+                   @(.transact client signed-data)
+                   (catch MissingDataException _
+                     (throw (ex-info "You need to prepare the transaction before submitting."
+                                     {::anomalies/category ::anomalies/incorrect}))))
+
           result-response (merge {:id (.getID result)
                                   :value (convex/datafy (.getValue result))}
                                  (when-let [error-code (.getErrorCode result)]
