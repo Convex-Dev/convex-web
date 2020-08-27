@@ -348,6 +348,10 @@
                      (str ": "))]
     (str code message)))
 
+(defmethod error-message :STATE
+  [{:keys [message]}]
+  message)
+
 (defmethod error-message :UNDECLARED
   [{:keys [message]}]
   (str "'" message "' is undeclared."))
