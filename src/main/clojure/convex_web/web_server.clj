@@ -178,7 +178,7 @@
                      (throw (ex-info "Invalid source." {::anomalies/category ::anomalies/incorrect}))))
 
           peer (system/convex-peer-server system)
-          sequence-number (peer/sequence-number peer (Address/fromHex address))
+          sequence-number (or (peer/sequence-number peer (Address/fromHex address)) 1)
           tx (peer/invoke-transaction (inc sequence-number) source :convex-lisp)]
 
       ;; Persist the transaction in the Etch datastore.

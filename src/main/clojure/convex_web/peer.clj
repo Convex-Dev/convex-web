@@ -32,10 +32,10 @@
       (wrap-do x)
       form1)))
 
-(defn ^Long sequence-number [^Peer peer ^Address account]
-  (-> (consensus-state peer)
-      (account-status account)
-      (account-sequence)))
+(defn ^Long sequence-number [^Peer peer ^Address address]
+  (some-> (consensus-state peer)
+          (account-status address)
+          (account-sequence)))
 
 (defn ^ATransaction invoke-transaction [^Long nonce ^String source language]
   (let [object (case language

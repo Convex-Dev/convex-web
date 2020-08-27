@@ -27,6 +27,13 @@
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))
 
 (deftest prepare-test
+  (testing "Valid"
+    (testing "Address doesn't exist"
+      (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
+            prepare-body (json/write-str {:address "8d4da977c8828050c7e9f00e4800f4ab6137e3da4088d78220ffac81e85cc6e0" :source "(inc 1)"})
+            prepare-response @(http/post prepare-url {:body prepare-body})]
+        (is (= 200 (get prepare-response :status))))))
+
   (testing "Incorrect"
     (testing "No payload"
       (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
