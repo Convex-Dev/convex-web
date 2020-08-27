@@ -333,7 +333,13 @@
        [:th
         {:class th-class}
         [:div.p-2.border-b.border-gray-300
-         "Memory Allowance"]]
+         "Type"]]
+
+       [:th
+        {:class th-class}
+
+        [:div.p-2.border-b.border-gray-300
+         "Balance"]]
 
        [:th
         {:class th-class}
@@ -343,14 +349,7 @@
        [:th
         {:class th-class}
         [:div.p-2.border-b.border-gray-300
-         "Type"]]
-
-       [:th
-        {:class th-class
-         :colSpan "2"}
-
-        [:div.p-2.border-b.border-gray-300
-         "Balance"]]])]
+         "Memory Allowance"]]])]
 
    (let [active-address (session/?active-address)
 
@@ -400,18 +399,6 @@
                {:title "This account is active"}
                [gui/CheckIcon {:class "w-4 h-4 text-green-500 ml-4"}]])]
 
-           ;; -- Memory allowance
-           [:td {:class td-class}
-            [:div.flex.justify-end
-             [:span.text-xs.font-bold.text-indigo-500
-              (format/format-number (str (:convex-web.account-status/allowance status)))]]]
-
-           ;; -- Memory size
-           [:td {:class td-class}
-            [:div.flex.justify-end
-             [:span.text-xs.font-bold.text-indigo-500
-              (format/format-number (str (:convex-web.account-status/memory-size status)))]]]
-
            ;; -- Type
            [:td {:class td-class}
             (let [[label style tooltip] (cond
@@ -433,7 +420,19 @@
            [:td {:class td-class}
             [:div.flex.justify-end
              [:span.text-xs.font-bold.text-indigo-500
-              (format/format-number (str (:convex-web.account-status/balance status)))]]]]))])])
+              (format/format-number (str (:convex-web.account-status/balance status)))]]]
+
+           ;; -- Memory size
+           [:td {:class td-class}
+            [:div.flex.justify-end
+             [:span.text-xs.font-bold.text-indigo-500
+              (format/format-number (str (:convex-web.account-status/memory-size status)))]]]
+
+           ;; -- Memory allowance
+           [:td {:class td-class}
+            [:div.flex.justify-end
+             [:span.text-xs.font-bold.text-indigo-500
+              (format/format-number (str (:convex-web.account-status/allowance status)))]]]]))])])
 
 (defn- get-accounts-range [set-state & [{:keys [start end]}]]
   (backend/GET-accounts
