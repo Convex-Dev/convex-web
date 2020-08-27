@@ -2,12 +2,13 @@
 
 ### Faucet
 
-POST https://convex.world/api/v1/faucet
+*POST* https://convex.world/api/v1/faucet
 
 #### Payload
 - Address: ED25519 public key of your key pair.
 - Amount: The requested amount.
 
+Examples:
 ```json
 {
   "address": "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71",
@@ -17,6 +18,7 @@ POST https://convex.world/api/v1/faucet
 
 #### Response
 
+Examples:
  ```json
 {
   "id": 1,
@@ -26,14 +28,15 @@ POST https://convex.world/api/v1/faucet
 }
 ```
 
-### Prepare Transaction 
+### Query 
 
-POST https://convex.world/api/v1/transaction/prepare
+*POST* https://convex.world/api/v1/query
 
 #### Payload
 - Address: ED25519 public key of your key pair.
 - Source: Convex Lisp source that you want to execute.
 
+Examples:
 ```json
 {
   "address": "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71",
@@ -41,8 +44,44 @@ POST https://convex.world/api/v1/transaction/prepare
 }
 ```
 
+#### Response
+
+Examples:
+ ```json
+{
+  "value": [2, 3, 4]
+}
+```
+
+The `error-code` key is present if the response is an error:
+
+ ```json
+{
+  "id": 18,
+  "value": "Can't convert 1 to class class convex.core.data.ASequence",
+  "error-code": "CAST"
+}
+```
+
+### Prepare Transaction 
+
+*POST* https://convex.world/api/v1/transaction/prepare
+
+#### Payload
+- Address: ED25519 public key of your key pair.
+- Source: Convex Lisp source that you want to execute.
+
+Examples:
+```json
+{
+  "address": "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71",
+  "source": "(map inc [1 2 3])"
+}
+```
 
 #### Response
+
+Examples:
  ```json
 {
   "sequence-number": 1,
@@ -54,13 +93,14 @@ POST https://convex.world/api/v1/transaction/prepare
 
 ### Submit Transaction
 
-POST https://convex.world/api/v1/transaction/submit
+*POST* https://convex.world/api/v1/transaction/submit
 
 #### Payload
 - Address: ED25519 public key of your key pair.
 - Hash: Prepare Transaction response's hash.
 - Sig: ED25519 signature of the hash using your key pair.
 
+Examples:
 ```json
 {
   "address": "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71",
@@ -70,6 +110,8 @@ POST https://convex.world/api/v1/transaction/submit
 ```
 
 #### Response
+
+Examples:
 
  ```json
 {
