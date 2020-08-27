@@ -1,9 +1,10 @@
 (ns convex-web.peer
+  (:require [cognitect.anomalies :as anomalies])
   (:import (convex.net ResultConsumer Connection)
            (convex.peer Server)
            (convex.core.lang Reader ScryptNext)
            (convex.core.data Address AccountStatus Symbol AList)
-           (convex.core Peer State)
+           (convex.core Peer State Init)
            (convex.core.transactions Invoke ATransaction Transfer)
            (convex.core.store Stores)))
 
@@ -49,7 +50,18 @@
 (defn ^ATransaction transfer-transaction [^Long nonce ^Address address ^Long amount]
   (Transfer/create nonce address amount))
 
-(defn query [^Connection conn address source]
+(defn send-query [^Connection conn address source]
   (let [^Address address (if (string? address) (Address/fromHex address) address)]
     (.sendQuery conn (cond-wrap-do (Reader/readAll source)) address)))
+
+(defn query [^Peer peer ^String source ^Address address]
+  (let [forms (try
+                (Reader/readAll source)
+                (catch Throwable ex
+                  (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
+                                                   ::anomalies/category ::anomalies/incorrect}))))
+        context (.executeQuery peer (wrap-do forms) address)]
+    (if (.isExceptional context)
+      (.getExceptional context)
+      (.getResult context))))
 

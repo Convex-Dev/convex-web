@@ -37,7 +37,8 @@
            (java.time Instant)
            (java.util Date)
            (org.parboiled.errors ParserRuntimeException)
-           (convex.core.exceptions ParseException MissingDataException)))
+           (convex.core.exceptions ParseException MissingDataException)
+           (convex.core.lang.impl AExceptional)))
 
 (def session-ref (atom {}))
 
@@ -339,6 +340,56 @@
              :exception ex)
 
       server-error-response)))
+
+(defn POST-v1-query [system {:keys [body]}]
+  (try
+    (let [{:keys [address source]} (json-decode body)
+
+          _ (u/log :logging.event/query
+                   :severity :info
+                   :address address
+                   :source source)
+
+          address (try
+                    (s/assert :convex-web/address address)
+                    (catch Exception _
+                      (throw (ex-info "Invalid address."
+                                      {::anomalies/category ::anomalies/incorrect}))))
+
+          source (try
+                   (s/assert :convex-web/non-empty-string source)
+                   (catch Exception _
+                     (throw (ex-info "Source can't be empty."
+                                     {::anomalies/category ::anomalies/incorrect}))))
+
+          result (peer/query (system/convex-peer-server system) source (Address/fromHex address))
+
+          result-response (merge {:value (convex/datafy result)}
+                                 (when (instance? AExceptional result)
+                                   {:error-code (convex/datafy (.getCode result))}))]
+
+      (successful-response result-response))
+
+    (catch Exception ex
+      (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
+        (cond
+          incorrect?
+          (do
+            (u/log :logging.event/user-error
+                   :severity :error
+                   :message (ex-message ex)
+                   :exception ex)
+
+            (bad-request-response (error (ex-message ex))))
+
+          :else
+          (do
+            (u/log :logging.event/system-error
+                   :severity :error
+                   :message handler-exception-message
+                   :exception ex)
+
+            server-error-response))))))
 
 
 ;; Internal APIs
@@ -789,6 +840,7 @@
 (defn public-api [system]
   (routes
     (POST "/api/v1/faucet" req (POST-v1-faucet system req))
+    (POST "/api/v1/query" req (POST-v1-query system req))
     (POST "/api/v1/transaction/prepare" req (POST-v1-transaction-prepare system req))
     (POST "/api/v1/transaction/submit" req (POST-v1-transaction-submit system req))))
 

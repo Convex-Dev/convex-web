@@ -26,6 +26,38 @@
 (defn server-url []
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))
 
+(deftest query-test
+  (testing "Valid"
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO) :source "1"})
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+
+      (is (= 200 (get response :status)))
+      (is (= {:value 1} response-body))))
+
+  (testing "Syntax error"
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO) :source "(inc 1"})
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+
+      (is (= 400 (get response :status)))
+      (is (= {:error {:message "Syntax error."}} response-body))))
+
+  (testing "Non-existent address"
+    (let [response @(client/POST-public-v1-query (server-url) {:address "7a66429CA9c10e68eFae2dCBF1804f0F6B3369c7164a3187D6233683c258710f" :source "(map inc 1)"})
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+
+      (is (= 200 (get response :status)))
+      (is (= {:error-code "NOBODY"
+              :value "ErrorValue[:NOBODY]"} response-body))))
+
+  (testing "Type error"
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO) :source "(map inc 1)"})
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+
+      (is (= 200 (get response :status)))
+      (is (= {:error-code "CAST"
+              :value "ErrorValue[:CAST] : Can't convert 1 to class class convex.core.data.ASequence
+In function: map"} response-body)))))
+
 (deftest prepare-test
   (testing "Valid"
     (testing "Address doesn't exist"

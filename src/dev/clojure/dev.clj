@@ -40,7 +40,7 @@
 
 (defmacro send-query [& form]
   `(let [conn# (system/convex-conn system)]
-     (peer/query conn# Init/HERO ~(str/join " " form))))
+     (peer/send-query conn# Init/HERO ~(str/join " " form))))
 
 (defmacro execute [form]
   `(convex/execute context ~form))

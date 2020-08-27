@@ -10,6 +10,11 @@
 (defn sig [^AKeyPair key-pair ^String hash]
   (.toHexString (.sign key-pair (Hash/fromHex hash))))
 
+(defn POST-public-v1-query [server-url {:keys [address source] :as body}]
+  (let [url (str server-url "/api/v1/query")
+        body (json/write-str body)]
+    (http/post url {:body body})))
+
 (defn POST-public-v1-transaction-prepare [server-url {:keys [address source] :as body}]
   (let [url (str server-url "/api/v1/transaction/prepare")
         body (json/write-str body)]

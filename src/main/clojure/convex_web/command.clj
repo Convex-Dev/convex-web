@@ -142,7 +142,7 @@
 (defn execute-query [system {::keys [address query]}]
   (let [{:convex-web.query/keys [source]} query
         conn (system/convex-conn system)]
-    (peer/query conn address source)))
+    (peer/send-query conn address source)))
 
 (s/fdef execute-query
   :args (s/cat :system map? :command :convex-web/incoming-command)
