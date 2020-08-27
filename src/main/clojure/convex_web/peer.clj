@@ -61,7 +61,5 @@
                   (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
                                                    ::anomalies/category ::anomalies/incorrect}))))
         context (.executeQuery peer (wrap-do forms) address)]
-    (if (.isExceptional context)
-      (.getExceptional context)
-      (.getResult context))))
+    (.getValue context)))
 
