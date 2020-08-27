@@ -84,8 +84,10 @@
                  (select-keys account [:convex-web.account/address])))
 
           (is (= #:convex-web.account-status{:actor? false
+                                             :allowance 0
                                              :library? false
                                              :type :user
+                                             :memory-size 72
                                              :balance 900000000000
                                              :sequence 0}
                  account-no-env)))))
