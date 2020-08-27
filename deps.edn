@@ -47,7 +47,7 @@
 
   com.brunobonacci/mulog {:mvn/version "0.4.0"}
 
-  lambdaisland/glogi {:mvn/version "1.0.70"}
+  lambdaisland/glogi {:mvn/version "1.0.74"}
 
   ;; -- End-of-Logging
 
