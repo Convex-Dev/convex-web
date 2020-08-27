@@ -641,7 +641,7 @@
 (def sandbox-page
   #:page {:id :page.id/repl
           :title "Sandbox"
-          :initial-state #:convex-web.repl {:language :convex-scrypt
+          :initial-state #:convex-web.repl {:language :convex-lisp
                                             :mode :convex-web.command.mode/transaction
                                             :sidebar {:sidebar/tab :examples}}
           :state-spec (s/keys :req [:convex-web.repl/mode] :opt [:convex-web.repl/commands])
