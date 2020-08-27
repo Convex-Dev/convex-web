@@ -373,6 +373,9 @@
     [:pre.bg-white.m-0.p-2.rounded.shadow
      [:code.text-xs "nil"]]))
 
+(defmethod Output :string [{:convex-web.command/keys [object]}]
+  [gui/Highlight (prn-str object)])
+
 (defmethod Output :function [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
    [gui/SymbolMeta2 (merge metadata output-symbol-metadata-options)]])
