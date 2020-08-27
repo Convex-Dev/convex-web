@@ -130,6 +130,13 @@
                                  (when source
                                    {"source" source}))))
 
+(defmethod logging-json-payload :logging.event/query [{:keys [address source] :as item}]
+  (Payload$JsonPayload/of (merge (default-payload-data item)
+                                 (when address
+                                   {"address" address})
+                                 (when source
+                                   {"source" source}))))
+
 (defmethod logging-json-payload :logging.event/transaction-prepare [{:keys [address source] :as item}]
   (Payload$JsonPayload/of (merge (default-payload-data item)
                                  (when address
