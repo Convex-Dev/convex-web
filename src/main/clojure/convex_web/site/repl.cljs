@@ -21,9 +21,6 @@
 (defn language [state]
   (:convex-web.repl/language state))
 
-(defn set-query-mode [state]
-  (assoc state :convex-web.repl/mode :convex-web.command.mode/query))
-
 (defn commands
   "Returns a collection of REPL Commands sorted by ID."
   [state]
