@@ -24,9 +24,6 @@
 (defn set-query-mode [state]
   (assoc state :convex-web.repl/mode :convex-web.command.mode/query))
 
-(defn set-transaction-mode [state]
-  (assoc state :convex-web.repl/mode :convex-web.command.mode/transaction))
-
 (defn commands
   "Returns a collection of REPL Commands sorted by ID."
   [state]
@@ -41,11 +38,6 @@
   "Transaction Command?"
   [command]
   (= :convex-web.command.mode/transaction (:convex-web.command/mode command)))
-
-(defn running?
-  "Status is running?"
-  [command]
-  (= :convex-web.command.status/running (:convex-web.command/status command)))
 
 (defn selected-tab [state]
   (get-in state [:convex-web.repl/sidebar :sidebar/tab]))
@@ -479,57 +471,6 @@
 
                       :convex-web.command.status/error
                       [ErrorOutput command])]]])))
-
-(defn QueryRadio [state set-state]
-  [:label
-   [:input
-    {:type "radio"
-     :name "query"
-     :value "query"
-     :checked (= :convex-web.command.mode/query (mode state))
-     :on-change #(set-state set-query-mode)}]
-
-   [:span.text-xs.text-gray-700.ml-1
-    "Query"]])
-
-(defn TransactionRadio [state set-state]
-  [:label
-   [:input
-    {:type "radio"
-     :name "transaction"
-     :value "transaction"
-     :checked (= :convex-web.command.mode/transaction (mode state))
-     :on-change #(set-state set-transaction-mode)}]
-
-   [:span.text-xs.text-gray-700.ml-1
-    "Transaction"]])
-
-
-;; -- Language
-
-(defn ConvexLispRadio [state set-state]
-  [:label
-   [:input
-    {:type "radio"
-     :name "lisp"
-     :value "lisp"
-     :checked (= :convex-lisp (language state))
-     :on-change #(set-state assoc :convex-web.repl/language :convex-lisp)}]
-
-   [:span.text-xs.text-gray-700.ml-1
-    "Convex Lisp"]])
-
-(defn ConvexScryptRadio [state set-state]
-  [:label
-   [:input
-    {:type "radio"
-     :name "scrypt"
-     :value "scrypt"
-     :checked (= :convex-scrypt (language state))
-     :on-change #(set-state assoc :convex-web.repl/language :convex-scrypt)}]
-
-   [:span.text-xs.text-gray-700.ml-1
-    "Convex Scrypt"]])
 
 ;; --
 
