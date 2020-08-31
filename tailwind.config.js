@@ -2,6 +2,9 @@ module.exports = {
   corePlugins: {
     preflight: true
   },
+  future: {
+      removeDeprecatedGapUtilities: true,
+    },
   theme: {
     fontFamily: {
       sans: [
