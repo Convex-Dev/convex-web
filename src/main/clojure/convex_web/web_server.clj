@@ -65,6 +65,19 @@
     :rel "stylesheet"
     :href href}])
 
+(def landing-page
+  [:div.h-screen.flex
+
+   ;; -- Nav
+   [:nav.bg-gray-100.flex.flex-col.pt-8.px-6.border-r {:class "w-1/6"}
+
+    [:div.mb-6
+     [:div.flex.flex-col
+      [:a.self-start.hover:text-black.font-medium.pl-2.border-l-2
+       {:class "border-transparent text-gray-600"}
+
+       [:span "Welcome"]]]]]])
+
 (defn index [_]
   {:status 200
    :headers {"Content-Type" "text/html"}
@@ -84,7 +97,8 @@
      [:body
       (ring.util.anti-forgery/anti-forgery-field)
 
-      [:div#app]
+      [:div#app
+       landing-page]
 
       (page/include-js "/js/main.js")])})
 
