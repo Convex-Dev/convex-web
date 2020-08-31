@@ -11,6 +11,12 @@
            {:check-asserts? false
             :instrument? false}}
 
+ :peer
+ {:port
+  #profile {:dev :todo
+            :prod :todo
+            :test :todo}}
+
  :web-server
  {:port
   #profile {:dev 8080
