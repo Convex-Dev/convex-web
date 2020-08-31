@@ -75,7 +75,6 @@
      (stylesheet "https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap")
      (stylesheet "/css/highlight/tomorrow-night.css")
      (stylesheet "/css/codemirror.css")
-     (stylesheet "/css/solarized.css")
      (stylesheet "/css/styles.css")
      (stylesheet "/css/tippy.css")
      (stylesheet "/css/spinner.css")

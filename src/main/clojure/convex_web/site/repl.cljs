@@ -24,9 +24,6 @@
 (defn set-query-mode [state]
   (assoc state :convex-web.repl/mode :convex-web.command.mode/query))
 
-(defn set-transaction-mode [state]
-  (assoc state :convex-web.repl/mode :convex-web.command.mode/transaction))
-
 (defn commands
   "Returns a collection of REPL Commands sorted by ID."
   [state]
@@ -42,149 +39,123 @@
   [command]
   (= :convex-web.command.mode/transaction (:convex-web.command/mode command)))
 
-(defn running?
-  "Status is running?"
-  [command]
-  (= :convex-web.command.status/running (:convex-web.command/status command)))
+(defn selected-tab [state]
+  (get-in state [:convex-web.repl/sidebar :sidebar/tab]))
 
 ;; ---
 
 
-(defn Examples []
-  (let [Title (fn [title]
-                [:span.text-sm title])
+(def convex-scrypt-examples
+  [["Self Balance"
+    "_balance_"]
 
-        make-example (fn [& form]
+   ["Self Address"
+    "_address_"]
+
+   ["Check Balance"
+    "balance(\"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\")"]
+
+   ["Transfer"
+    "transfer(\"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\", 1000)"]])
+
+(def convex-lisp-examples
+  (let [make-example (fn [& form]
                        (->> form
                             (map #(with-out-str (fipp/pprint % {:width 50})))
                             (str/join "\n")))]
+    [["Self Balance"
+      (make-example '*balance*)]
+
+     ["Self Address"
+      (make-example '*address*)]
+
+     ["Check Balance"
+      (make-example
+        '(balance "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"))]
+
+     ["Transfer"
+      (make-example
+        '(transfer "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f" 1000))]
+
+     ["Library"
+      (make-example
+        '(def my-library-address
+           (deploy
+             '(defn identity [x]
+                x)))
+
+        '(import my-library-address :as my-library)
+
+        '(my-library/identity "Hello, world!"))]
+
+     ["Simple Storage Actor"
+      (make-example
+        '(def storage-example-address
+           (deploy
+             '(do
+                (def stored-data nil)
+
+                (defn get []
+                  stored-data)
+
+                (defn set [x]
+                  (def stored-data x))
+
+                (export get set)))))]
+
+     ["Call Actor"
+      (make-example
+        '(def storage-example-address
+           (deploy
+             '(do
+                (def stored-data nil)
+
+                (defn get []
+                  stored-data)
+
+                (defn set [x]
+                  (def stored-data x))
+
+                (export get set))))
+
+        '(call storage-example-address (set 1))
+        '(call storage-example-address (get)))]
+
+     ["Subcurrency Actor"
+      (make-example
+        '(deploy
+           '(do
+              (def owner *caller*)
+
+              (defn contract-transfer [receiver amount]
+                (assert (= owner *caller*))
+                (transfer receiver amount))
+
+              (defn contract-balance []
+                *balance*)
+
+              (export contract-transfer contract-balance))))]]))
+
+(defn Examples [language]
+  (let [Title (fn [title]
+                [:span.text-sm title])
+
+        convex-scrypt? (= :convex-scrypt language)]
+
     [:div.flex.flex-col.flex-1.px-1.overflow-auto
-     (let [example (make-example '*balance*)]
-       [:div.flex.flex-col.flex-1
-        [:div.flex.justify-between.items-center
-         [Title "Self Balance"]
-         [gui/ClipboardCopy example]]
+     (let [examples (if convex-scrypt?
+                      convex-scrypt-examples
+                      convex-lisp-examples)]
+       (map
+         (fn [[title source-code]]
+           ^{:key title}
+           [:div.flex.flex-col.py-2
+            [:div.flex.justify-between.items-center
+             [Title title]
+             [gui/ClipboardCopy source-code]]
 
-        [gui/Highlight example]])
-
-     [:hr.my-2]
-
-     (let [example (make-example '*address*)]
-       [:div.flex.flex-col.flex-1.py-2
-        [:div.flex.justify-between.items-center
-         [Title "Self Address"]
-         [gui/ClipboardCopy example]]
-
-        [gui/Highlight example]])
-
-     [:hr.my-2]
-
-     (let [example (make-example
-                     '(balance "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"))]
-       [:div.flex.flex-col.flex-1.py-2
-        [:div.flex.justify-between.items-center
-         [Title "Check Balance"]
-         [gui/ClipboardCopy example]]
-
-        [gui/Highlight example]])
-
-     [:hr.my-2]
-
-     (let [example (make-example
-                     '(transfer "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f" 1000))]
-       [:div.flex.flex-col.flex-1.py-2
-        [:div.flex.justify-between.items-center
-         [Title "Make a Transfer"]
-         [gui/ClipboardCopy example]]
-
-        [gui/Highlight example]])
-
-     [:hr.my-2]
-
-     (let [example (make-example
-                     '(def my-library-address
-                        (deploy
-                          '(defn identity [x]
-                             x)))
-
-                     '(import my-library-address :as my-library)
-
-                     '(my-library/identity "Hello, world!"))]
-       [:div.flex.flex-col.flex-1.py-2
-        [:div.flex.justify-between.items-center
-         [Title "Library"]
-         [gui/ClipboardCopy example]]
-
-        [gui/Highlight example]])
-
-     [:hr.my-2]
-
-     (let [example (make-example
-                     '(def storage-example-address
-                        (deploy
-                          '(do
-                             (def stored-data nil)
-
-                             (defn get []
-                               stored-data)
-
-                             (defn set [x]
-                               (def stored-data x))
-
-                             (export get set)))))]
-       [:div.flex.flex-col.flex-1.py-2
-        [:div.flex.justify-between.items-center
-         [Title "Simple Storage Actor"]
-         [gui/ClipboardCopy example]]
-
-        [gui/Highlight example]])
-
-     [:hr.my-2]
-
-     (let [example (make-example
-                     '(def storage-example-address
-                        (deploy
-                          '(do
-                             (def stored-data nil)
-
-                             (defn get []
-                               stored-data)
-
-                             (defn set [x]
-                               (def stored-data x))
-
-                             (export get set))))
-
-                     '(call storage-example-address (set 1))
-                     '(call storage-example-address (get)))]
-       [:div.flex.flex-col.flex-1.py-2
-        [:div.flex.justify-between.items-center
-         [Title "Call Actor"]
-         [gui/ClipboardCopy example]]
-
-        [gui/Highlight example]])
-
-     [:hr.my-2]
-
-     (let [example (make-example
-                     '(deploy
-                        '(do
-                           (def owner *caller*)
-
-                           (defn contract-transfer [receiver amount]
-                             (assert (= owner *caller*))
-                             (transfer receiver amount))
-
-                           (defn contract-balance []
-                             *balance*)
-
-                           (export contract-transfer contract-balance))))]
-       [:div.flex.flex-col.flex-1.py-2
-        [:div.flex.justify-between.items-center.mt-4
-         [Title "Subcurrency Actor"]
-         [gui/ClipboardCopy example]]
-
-        [gui/Highlight example]])]))
+            [gui/Highlight source-code {:language language}]])
+         examples))]))
 
 (defn Reference [reference]
   [:div.flex.flex-col.overflow-auto
@@ -501,57 +472,6 @@
                       :convex-web.command.status/error
                       [ErrorOutput command])]]])))
 
-(defn QueryRadio [state set-state]
-  [:label
-   [:input
-    {:type "radio"
-     :name "query"
-     :value "query"
-     :checked (= :convex-web.command.mode/query (mode state))
-     :on-change #(set-state set-query-mode)}]
-
-   [:span.text-xs.text-gray-700.ml-1
-    "Query"]])
-
-(defn TransactionRadio [state set-state]
-  [:label
-   [:input
-    {:type "radio"
-     :name "transaction"
-     :value "transaction"
-     :checked (= :convex-web.command.mode/transaction (mode state))
-     :on-change #(set-state set-transaction-mode)}]
-
-   [:span.text-xs.text-gray-700.ml-1
-    "Transaction"]])
-
-
-;; -- Language
-
-(defn ConvexLispRadio [state set-state]
-  [:label
-   [:input
-    {:type "radio"
-     :name "lisp"
-     :value "lisp"
-     :checked (= :convex-lisp (language state))
-     :on-change #(set-state assoc :convex-web.repl/language :convex-lisp)}]
-
-   [:span.text-xs.text-gray-700.ml-1
-    "Convex Lisp"]])
-
-(defn ConvexScryptRadio [state set-state]
-  [:label
-   [:input
-    {:type "radio"
-     :name "scrypt"
-     :value "scrypt"
-     :checked (= :convex-scrypt (language state))
-     :on-change #(set-state assoc :convex-web.repl/language :convex-scrypt)}]
-
-   [:span.text-xs.text-gray-700.ml-1
-    "Convex Scrypt"]])
-
 ;; --
 
 (defn SandboxPage [_ {:convex-web.repl/keys [reference] :as state} set-state]
@@ -609,7 +529,7 @@
      [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]]]
 
    ;; -- Sidebar
-   (let [selected-tab (get-in state [:convex-web.repl/sidebar :sidebar/tab])]
+   (let [selected-tab (selected-tab state)]
      [:div.flex.flex-col.ml-16.p-2.border-l
       {:style {:width "420px"}}
 
@@ -636,7 +556,7 @@
 
       (case selected-tab
         :examples
-        [Examples]
+        [Examples (language state)]
 
         :reference
         [Reference reference])])])
