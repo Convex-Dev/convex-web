@@ -67,7 +67,11 @@
 (defn default-labels [{:keys [mulog/event-name
                               mulog/namespace
                               logging.mdc/http-request]}]
-  (merge {"eventName" (str event-name)
+  (merge {"eventName" (try
+                        (or (some-> event-name name) "")
+                        (catch Throwable _
+                          "-"))
+
           "namespace" namespace}
 
          ;; Session is added by a Ring middleware using u/log `with-context`.
