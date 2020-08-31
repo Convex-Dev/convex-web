@@ -154,7 +154,7 @@
              [Title title]
              [gui/ClipboardCopy source-code]]
 
-            [gui/Highlight source-code]])
+            [gui/Highlight source-code {:language language}]])
          examples))]))
 
 (defn Reference [reference]

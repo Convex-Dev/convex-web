@@ -2,6 +2,9 @@
   (:require [convex-web.site.format :as format]
 
             ["highlight.js/lib/core" :as hljs]
+            ["highlight.js/lib/languages/clojure"]
+            ["highlight.js/lib/languages/javascript"]
+
             ["react-tippy" :as tippy]
             ["react-markdown" :as ReactMarkdown]
 
@@ -131,12 +134,17 @@
           attrs)
    [:path {:d "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"}]])
 
-(defn Highlight [source]
-  [:div.shadow.overflow-auto
-   [:pre.m-0
-    [:code.text-xs.rounded.language-clojure
-     {:ref highlight-block}
-     (str source)]]])
+(defn Highlight [source & [{:keys [language]}]]
+  (let [languages {:convex-lisp "language-clojure"
+                   :convex-scrypt "language-javascript"}
+
+        language (get languages language "language-clojure")]
+    [:div.shadow.overflow-auto
+     [:pre.m-0
+      [:code.text-xs.rounded
+       {:class language
+        :ref highlight-block}
+       (str source)]]]))
 
 (defn SymbolType [type]
   [:div.px-1.border.rounded-full
