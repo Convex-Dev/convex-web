@@ -159,236 +159,162 @@
 ;; ==========================
 
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
-  (try
-    (let [{:keys [address source]} (json-decode body)
+  (let [{:keys [address source]} (json-decode body)
 
-          _ (u/log :logging.event/transaction-prepare
-                   :severity :info
-                   :address address
-                   :souce source)
+        _ (u/log :logging.event/transaction-prepare
+                 :severity :info
+                 :address address
+                 :souce source)
 
-          address (try
-                    (s/assert :convex-web/address address)
-                    (catch Exception _
-                      (throw (ex-info "Invalid address." {::anomalies/category ::anomalies/incorrect}))))
+        address (try
+                  (s/assert :convex-web/address address)
+                  (catch Exception _
+                    (throw (ex-info "Invalid address." {::anomalies/category ::anomalies/incorrect}))))
 
-          source (try
-                   (s/assert :convex-web/non-empty-string source)
-                   (catch Exception _
-                     (throw (ex-info "Invalid source." {::anomalies/category ::anomalies/incorrect}))))
+        source (try
+                 (s/assert :convex-web/non-empty-string source)
+                 (catch Exception _
+                   (throw (ex-info "Invalid source." {::anomalies/category ::anomalies/incorrect}))))
 
-          peer (system/convex-peer-server system)
-          sequence-number (or (peer/sequence-number peer (Address/fromHex address)) 1)
-          tx (peer/invoke-transaction (inc sequence-number) source :convex-lisp)]
+        peer (system/convex-peer-server system)
+        sequence-number (or (peer/sequence-number peer (Address/fromHex address)) 1)
+        tx (peer/invoke-transaction (inc sequence-number) source :convex-lisp)]
 
-      ;; Persist the transaction in the Etch datastore.
-      (Ref/createPersisted tx)
+    ;; Persist the transaction in the Etch datastore.
+    (Ref/createPersisted tx)
 
-      (successful-response {:sequence-number sequence-number
-                            :address address
-                            :source source
-                            :hash (.toHexString (.getHash tx))}))
-
-    (catch Exception ex
-      (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
-        (cond
-          incorrect?
-          (do
-            (u/log :logging.event/user-error
-                   :severity :error
-                   :message (ex-message ex)
-                   :exception ex)
-
-            (bad-request-response (error (ex-message ex))))
-
-          :else
-          (do
-            (u/log :logging.event/system-error
-                   :severity :error
-                   :message handler-exception-message
-                   :exception ex)
-
-            server-error-response))))))
+    (successful-response {:sequence-number sequence-number
+                          :address address
+                          :source source
+                          :hash (.toHexString (.getHash tx))})))
 
 (defn POST-v1-transaction-submit [system {:keys [body]}]
-  (try
-    (let [{:keys [address sig hash] :as body} (json-decode body)
+  (let [{:keys [address sig hash] :as body} (json-decode body)
 
-          _ (log/debug "POST Transaction Submit" body)
+        _ (log/debug "POST Transaction Submit" body)
 
-          _ (u/log :logging.event/transaction-submit
-                   :severity :info
-                   :address address
-                   :hash hash)
+        _ (u/log :logging.event/transaction-submit
+                 :severity :info
+                 :address address
+                 :hash hash)
 
-          address (try
-                    (s/assert :convex-web/address address)
-                    (catch Exception _
-                      (throw (ex-info "Invalid address."
-                                      {::anomalies/category ::anomalies/incorrect}))))
+        address (try
+                  (s/assert :convex-web/address address)
+                  (catch Exception _
+                    (throw (ex-info "Invalid address."
+                                    {::anomalies/category ::anomalies/incorrect}))))
 
-          hash (try
-                 (s/assert :convex-web/non-empty-string hash)
-                 (catch Exception _
-                   (throw (ex-info "Invalid hash."
+        hash (try
+               (s/assert :convex-web/non-empty-string hash)
+               (catch Exception _
+                 (throw (ex-info "Invalid hash."
+                                 {::anomalies/category ::anomalies/incorrect}))))
+
+        sig (try
+              (s/assert :convex-web/sig sig)
+              (catch Exception _
+                (throw (ex-info "Invalid signature."
+                                {::anomalies/category ::anomalies/incorrect}))))
+
+        sig (ASignature/fromHex sig)
+
+        tx-ref (Ref/forHash (Hash/fromHex hash))
+
+        signed-data (SignedData/create (Address/fromHex address) sig tx-ref)
+
+        _ (when-not (.isValid signed-data)
+            (throw (ex-info "Invalid signature."
+                            {::anomalies/category ::anomalies/incorrect})))
+
+        client (system/convex-client system)
+
+        _ (log/debug "Transact signed data" signed-data)
+
+        result (try
+                 @(.transact client signed-data)
+                 (catch MissingDataException _
+                   (throw (ex-info "You need to prepare the transaction before submitting."
                                    {::anomalies/category ::anomalies/incorrect}))))
 
-          sig (try
-                (s/assert :convex-web/sig sig)
-                (catch Exception _
-                  (throw (ex-info "Invalid signature."
-                                  {::anomalies/category ::anomalies/incorrect}))))
+        result-response (merge {:id (.getID result)
+                                :value (convex/datafy (.getValue result))}
+                               (when-let [error-code (.getErrorCode result)]
+                                 {:error-code (convex/datafy error-code)}))
 
-          sig (ASignature/fromHex sig)
+        _ (log/debug "Transaction result" result)]
 
-          tx-ref (Ref/forHash (Hash/fromHex hash))
-
-          signed-data (SignedData/create (Address/fromHex address) sig tx-ref)
-
-          _ (when-not (.isValid signed-data)
-              (throw (ex-info "Invalid signature."
-                              {::anomalies/category ::anomalies/incorrect})))
-
-          client (system/convex-client system)
-
-          _ (log/debug "Transact signed data" signed-data)
-
-          result (try
-                   @(.transact client signed-data)
-                   (catch MissingDataException _
-                     (throw (ex-info "You need to prepare the transaction before submitting."
-                                     {::anomalies/category ::anomalies/incorrect}))))
-
-          result-response (merge {:id (.getID result)
-                                  :value (convex/datafy (.getValue result))}
-                                 (when-let [error-code (.getErrorCode result)]
-                                   {:error-code (convex/datafy error-code)}))
-
-          _ (log/debug "Transaction result" result)]
-
-      (successful-response result-response))
-
-    (catch Exception ex
-      (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
-        (cond
-          incorrect?
-          (do
-            (u/log :logging.event/user-error
-                   :severity :error
-                   :message (ex-message ex)
-                   :exception ex)
-
-            (bad-request-response (error (ex-message ex))))
-
-          :else
-          (do
-            (u/log :logging.event/system-error
-                   :severity :error
-                   :message handler-exception-message
-                   :exception ex)
-
-            server-error-response))))))
+    (successful-response result-response)))
 
 (defn POST-v1-faucet [system {:keys [body]}]
-  (try
-    (let [{:keys [address amount]} (json-decode body)
+  (let [{:keys [address amount]} (json-decode body)
 
-          bad-request (fn [message]
-                        (u/log :logging.event/user-error
-                               :severity :error
-                               :message message)
+        bad-request (fn [message]
+                      (u/log :logging.event/user-error
+                             :severity :error
+                             :message message)
 
-                        (bad-request-response (error message)))]
-      (cond
-        (not (s/valid? :convex-web/address address))
-        (bad-request "Invalid address.")
+                      (bad-request-response (error message)))]
+    (cond
+      (not (s/valid? :convex-web/address address))
+      (bad-request "Invalid address.")
 
-        (not (s/valid? :convex-web/amount amount))
-        (bad-request "Invalid amount.")
+      (not (s/valid? :convex-web/amount amount))
+      (bad-request "Invalid amount.")
 
-        (> amount config/max-faucet-amount)
-        (bad-request (str "You can't request more than" (pprint/cl-format nil "~:d" config/max-faucet-amount) "."))
+      (> amount config/max-faucet-amount)
+      (bad-request (str "You can't request more than" (pprint/cl-format nil "~:d" config/max-faucet-amount) "."))
 
-        :else
-        (let [client (system/convex-client system)
+      :else
+      (let [client (system/convex-client system)
 
-              nonce (inc (convex/hero-sequence (peer/peer (system/convex-server system))))
+            nonce (inc (convex/hero-sequence (peer/peer (system/convex-server system))))
 
-              transfer (convex/transfer {:nonce nonce
-                                         :target address
-                                         :amount amount})
+            transfer (convex/transfer {:nonce nonce
+                                       :target address
+                                       :amount amount})
 
-              result @(.transact client transfer)
-              result-response (merge {:id (.getID result)
-                                      :value (convex/datafy (.getValue result))}
-                                     (when-let [error-code (.getErrorCode result)]
-                                       {:error-code (convex/datafy error-code)}))
+            result @(.transact client transfer)
+            result-response (merge {:id (.getID result)
+                                    :value (convex/datafy (.getValue result))}
+                                   (when-let [error-code (.getErrorCode result)]
+                                     {:error-code (convex/datafy error-code)}))
 
-              faucet (merge {:address address :amount amount} result-response)]
+            faucet (merge {:address address :amount amount} result-response)]
 
-          (u/log :logging.event/faucet
-                 :severity :info
-                 :target address
-                 :amount amount)
+        (u/log :logging.event/faucet
+               :severity :info
+               :target address
+               :amount amount)
 
-          (successful-response faucet))))
-    (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
-      server-error-response)))
+        (successful-response faucet)))))
 
 (defn POST-v1-query [system {:keys [body]}]
-  (try
-    (let [{:keys [address source]} (json-decode body)
+  (let [{:keys [address source]} (json-decode body)
 
-          _ (u/log :logging.event/query
-                   :severity :info
-                   :address address
-                   :source source)
+        _ (u/log :logging.event/query
+                 :severity :info
+                 :address address
+                 :source source)
 
-          address (try
-                    (s/assert :convex-web/address address)
-                    (catch Exception _
-                      (throw (ex-info "Invalid address."
-                                      {::anomalies/category ::anomalies/incorrect}))))
+        address (try
+                  (s/assert :convex-web/address address)
+                  (catch Exception _
+                    (throw (ex-info "Invalid address."
+                                    {::anomalies/category ::anomalies/incorrect}))))
 
-          source (try
-                   (s/assert :convex-web/non-empty-string source)
-                   (catch Exception _
-                     (throw (ex-info "Source can't be empty."
-                                     {::anomalies/category ::anomalies/incorrect}))))
+        source (try
+                 (s/assert :convex-web/non-empty-string source)
+                 (catch Exception _
+                   (throw (ex-info "Source can't be empty."
+                                   {::anomalies/category ::anomalies/incorrect}))))
 
-          result (peer/query (system/convex-peer-server system) source (Address/fromHex address))
+        result (peer/query (system/convex-peer-server system) source (Address/fromHex address))
 
-          result-response (merge {:value (convex/datafy result)}
-                                 (when (instance? AExceptional result)
-                                   {:error-code (convex/datafy (.getCode result))}))]
+        result-response (merge {:value (convex/datafy result)}
+                               (when (instance? AExceptional result)
+                                 {:error-code (convex/datafy (.getCode result))}))]
 
-      (successful-response result-response))
-
-    (catch Exception ex
-      (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
-        (cond
-          incorrect?
-          (do
-            (u/log :logging.event/user-error
-                   :severity :error
-                   :message (ex-message ex)
-                   :exception ex)
-
-            (bad-request-response (error (ex-message ex))))
-
-          :else
-          (do
-            (u/log :logging.event/system-error
-                   :severity :error
-                   :message handler-exception-message
-                   :exception ex)
-
-            server-error-response))))))
+    (successful-response result-response)))
 
 
 ;; Internal APIs
@@ -852,6 +778,31 @@
 
         response))))
 
+(defn wrap-error [handler]
+  (fn wrap-error-handler [request]
+    (try
+      (handler request)
+      (catch Throwable ex
+        (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
+          (cond
+            incorrect?
+            (do
+              (u/log :logging.event/user-error
+                     :severity :error
+                     :message (ex-message ex)
+                     :exception ex)
+
+              (bad-request-response (error (ex-message ex))))
+
+            :else
+            (do
+              (u/log :logging.event/system-error
+                     :severity :error
+                     :message handler-exception-message
+                     :exception ex)
+
+              server-error-response)))))))
+
 (defn run-server
   "Start HTTP server (default port is 8090).
 
@@ -861,6 +812,7 @@
    `options` are the same as org.httpkit.server/run-server."
   [system & [options]]
   (let [public-api-handler (-> (public-api system)
+                               (wrap-error)
                                (wrap-logging)
                                (wrap-defaults api-defaults))
 

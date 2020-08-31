@@ -4,13 +4,13 @@
 
 (deftest labels-test
   (testing "Default"
-    (is (= {"eventName" ":logging.event/endpoint"
+    (is (= {"eventName" "endpoint"
             "namespace" "convex-web.logging-test"}
            (logging/logging-labels {:mulog/event-name :logging.event/endpoint
                                     :mulog/namespace "convex-web.logging-test"}))))
 
   (testing "Default"
-    (is (= {"eventName" ":logging.event/faucet"
+    (is (= {"eventName" "faucet"
             "namespace" "convex-web.logging-test"}
            (logging/logging-labels {:mulog/event-name :logging.event/faucet
                                     :mulog/namespace "convex-web.logging-test"
