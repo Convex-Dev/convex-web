@@ -10,6 +10,8 @@
  {:main
   {:target :browser
    :modules {:main {:init-fn convex-web.site.app/init}}
-   :compiler-options {:cross-chunk-method-motion false}
+   :compiler-options {:cross-chunk-method-motion false
+                      :language-in :es6
+                      :output-feature-set :es6}
    :output-dir "src/main/resources/public/js"
    :asset-path "/js"}}}
