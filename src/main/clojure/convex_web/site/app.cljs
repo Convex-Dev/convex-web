@@ -269,10 +269,10 @@
         {page-component :page/component} page
 
         set-state (stack/make-set-state uuid)]
-    [:div
+    [:<>
 
-     [:div.fixed.top-0.inset-x-0.z-100.h-16.flex.items-center.justify-between.border-b.bg-white
-      [:div.w-full.max-w-screen-xl.relative.flex.items-center.justify-between.mx-auto.px-6
+     [:div.fixed.top-0.inset-x-0.z-100.h-16.border-b.bg-white
+      [:div.w-full.h-full.max-w-screen-xl.flex.items-center.justify-between.mx-auto.px-6
 
        [:span.font-mono.text-xl.leading-none "Convex"]
 
