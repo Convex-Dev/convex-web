@@ -166,11 +166,11 @@
        {:style
         {:height "40px"}}
        {})
-     [:a.self-start.hover:text-black.font-medium.pl-2.border-l-2
+     [:a.self-start.text-black.font-medium.pl-2.border-l-2
       (merge {:href href
               :class (if active?
-                       "border-indigo-600 text-black"
-                       "border-transparent text-gray-600")}
+                       "border-indigo-600"
+                       "border-transparent")}
              (when target
                {:target target}))
 
