@@ -179,7 +179,7 @@
                          "text-blue-400"
                          "text-black")
                        (if active?
-                         "border-indigo-600"
+                         "border-blue-400"
                          "border-transparent")]}
               (when target
                 {:target target}))
