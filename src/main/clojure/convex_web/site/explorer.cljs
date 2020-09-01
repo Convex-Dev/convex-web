@@ -62,38 +62,38 @@
       [:tr
        [:th
         {:class th-class}
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Block"]]
 
        [:th
         {:class th-class}
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Transaction"]]
 
        [:th
         {:class th-class}
 
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Sequence"]]
 
        [:th
         {:class th-class}
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Type"]]
 
        [:th
         {:class th-class}
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Timestamp"]]
 
        [:th
         {:class th-class}
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Signer"]]
 
        [:th
         {:class th-class}
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Value"]]])]
 
    [:tbody.align-baseline
@@ -327,28 +327,28 @@
       [:tr
        [:th
         {:class th-class}
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Address"]]
 
        [:th
         {:class th-class}
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Type"]]
 
        [:th
         {:class th-class}
 
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Balance"]]
 
        [:th
         {:class th-class}
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Memory Size"]]
 
        [:th
         {:class th-class}
-        [:div.p-2.border-b.border-gray-300
+        [:div.p-2
          "Memory Allowance"]]])]
 
    (let [active-address (session/?active-address)
@@ -554,7 +554,7 @@
             blocks (sort-by keyfn comparator blocks)
 
             SortableColumn (fn [{keyfn' :keyfn label :label}]
-                             [:div.flex.p-2.border-b.border-gray-300.hover:bg-gray-300.cursor-pointer
+                             [:div.flex.p-2.hover:bg-gray-300.cursor-pointer
                               {:on-click #(reset! sorting-ref {:keyfn keyfn'
                                                                :ascending? (not ascending?)})}
                               [:span label]
