@@ -182,7 +182,7 @@
 
 (defn Nav [active-route]
   (let [{:keys [welcome others]} (nav)]
-    [:nav.bg-gray-100.flex.flex-col.pt-8.px-6.border-r {:class "w-1/6"}
+    [:nav.bg-gray-100.flex.flex-col.pt-8.px-6.border-r.font-mono {:class "w-1/6"}
 
      [:div.mb-6
       [NavItem active-route welcome]]

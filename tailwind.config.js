@@ -1,30 +1,26 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
   corePlugins: {
     preflight: true
   },
   future: {
-      removeDeprecatedGapUtilities: true,
-    },
+    removeDeprecatedGapUtilities: true,
+  },
   theme: {
-    fontFamily: {
-      sans: [
-        'Roboto',
-        'system-ui',
-        '-apple-system',
-        'BlinkMacSystemFont',
-        '"Segoe UI"',
-        '"Helvetica Neue"',
-        'Arial',
-        '"Noto Sans"',
-        'sans-serif',
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',
-        '"Noto Color Emoji"'
-      ],
-      rubik: ['Rubik']
+    extend: {
+      fontFamily: {
+        sans: [
+          'Inter',
+          ...defaultTheme.fontFamily.sans,
+        ],
+
+        mono: [
+          'Space Mono',
+          ...defaultTheme.fontFamily.mono,
+        ]
+      }
     },
-    extend: {},
   },
   variants: {},
   plugins: [

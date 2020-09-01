@@ -83,9 +83,8 @@
    :headers {"Content-Type" "text/html"}
    :body
    (page/html5
-     (stylesheet "https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css")
-     (stylesheet "https://fonts.googleapis.com/css?family=Rubik:300")
-     (stylesheet "https://fonts.googleapis.com/css2?family=Roboto:wght@300;700&display=swap")
+     (stylesheet "https://fonts.googleapis.com/css2?family=Inter&display=swap")
+     (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono&display=swap")
      (stylesheet "/css/highlight/tomorrow-night.css")
      (stylesheet "/css/codemirror.css")
      (stylesheet "/css/styles.css")
