@@ -166,21 +166,33 @@
        {:style
         {:height "40px"}}
        {})
-     [:a.self-start.text-black.font-medium.pl-2.border-l-2
-      (merge {:href href
-              :class (if active?
-                       "border-indigo-600"
-                       "border-transparent")}
-             (when target
-               {:target target}))
+     ;; -- Item
+     [:div.flex.justify-between
+      [:a.self-start.font-medium.pl-2.border-l-2
+       (merge {:href href
+               :class [(if leaf?
+                         "text-black"
+                         "text-blue-400")
+                       (if active?
+                         "border-indigo-600"
+                         "border-transparent")]}
+              (when target
+                {:target target}))
 
-      (if target
-        [:div.flex.justify-between.items-center
-         [:span.mr-2 text]
+       (if target
+         [:div.flex.justify-between.items-center
+          [:span.mr-2 text]
 
-         [gui/IconExternalLink {:class "w-6 h-6"}]]
-        [:span text])]
+          [gui/IconExternalLink {:class "w-6 h-6"}]]
+         [:span text])]
 
+      (when-not leaf?
+        [gui/IconChevronDown
+         {:class
+          ["w-6 h-6"
+           "text-blue-400"]}])]
+
+     ;; -- Children
      (when (seq children)
        [:div.flex.flex-col.ml-8
         (for [{:keys [text] :as child} children]
