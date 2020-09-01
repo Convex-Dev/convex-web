@@ -500,7 +500,7 @@
     [:div.flex.flex-1.justify-center.items-center
      [gui/Spinner]]
 
-    [:div.flex.flex-col.mt-4.mx-10
+    [:div.flex.flex-col
      [AccountsTable accounts {:modal? modal?}]
 
      [:div.my-4
@@ -625,7 +625,7 @@
     [:div.flex.flex-1.justify-center.items-center
      [gui/Spinner]]
 
-    [:div.flex.flex-col.flex-1.items-start.mt-4.mx-10
+    [:div.flex.flex-col.flex-1.items-start
      [BlocksTable blocks {:modal? modal?}]
 
      [:div.my-4
@@ -747,7 +747,7 @@
     [:div.flex.flex-1.justify-center.items-center
      [gui/Spinner]]
 
-    [:div.flex.flex-col.flex-1.mt-4.mx-10
+    [:div.flex.flex-col.flex-1
      [TransactionsTable (or blocks [])]
 
      [:div.my-4

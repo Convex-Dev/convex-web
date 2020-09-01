@@ -9,7 +9,7 @@
             [convex-web.site.stack :as stack]))
 
 (defn WalletPage [_ _ _]
-  [:div.flex.flex-col.items-start.mt-4.mx-10
+  [:div.flex.flex-col.items-start
    (doall
      (for [{:convex-web.account/keys [address]} (session/?accounts)]
        ^{:key address}

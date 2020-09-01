@@ -22,7 +22,7 @@
 
 (defn Markdown [{:keys [markdown]}]
   (let [{:keys [ajax/status contents toc?] :or {toc? true}} markdown]
-    [:div.flex.flex-1.mt-4.mx-10
+    [:div.flex.flex-1
      (case status
        :ajax.status/pending
        [:div.flex.flex-1.items-center.justify-center
@@ -34,9 +34,9 @@
        :ajax.status/success
        [:<>
         ;; -- Markdown
-        [:div
+        [:div.flex-1
          (if toc?
-           {:class "w-2/4 overflow-auto"}
+           {:class "overflow-auto"}
            {})
 
          (for [{:keys [name content]} contents]
@@ -47,17 +47,15 @@
 
         ;; -- On this page
         (when toc?
-          [:div.py-10.px-10
-           {:class "w-1/4"}
-           [:div.flex.flex-col
-            [:span.text-xs.text-gray-500.font-bold.uppercase "On this Page"]
+          [:div.flex.flex-col
+           [:span.text-xs.text-gray-500.font-bold.uppercase "On this Page"]
 
-            [:ul.list-none.text-sm.mt-4
-             (for [{:keys [name]} contents]
-               ^{:key name}
-               [:li.mb-2
-                [:a.text-gray-600.hover:text-gray-900.cursor-pointer
-                 {:on-click #(gui/scroll-into-view name)}
-                 name]])]]])]
+           [:ul.list-none.text-sm.mt-4
+            (for [{:keys [name]} contents]
+              ^{:key name}
+              [:li.mb-2
+               [:a.text-gray-600.hover:text-gray-900.cursor-pointer
+                {:on-click #(gui/scroll-into-view name)}
+                name]])]])]
 
        [:div])]))

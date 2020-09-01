@@ -205,7 +205,7 @@
 
 (defn Nav [active-route]
   (let [{:keys [welcome others]} (nav)]
-    [:nav.flex.flex-col.flex-shrink-0.pt-8.px-6.font-mono.w-64
+    [:nav.flex.flex-col.flex-shrink-0.font-mono.w-64
 
      [:div.mb-6
       [NavItem active-route welcome]]
@@ -266,114 +266,110 @@
 (defn App []
   (let [{:frame/keys [uuid page state] :as active-page-frame} (stack/?active-page-frame)
 
-        {page-title :page/title page-component :page/component} page
+        {page-component :page/component} page
 
         set-state (stack/make-set-state uuid)]
-    [:div.w-full.max-w-screen-xl.mx-auto.px-6
+    [:div
 
-     ;; -- Top nav
-     [:div.flex.items-center.justify-between.border-b.bg-white
-      {:style
-       {:height "68px"}}
+     [:div.fixed.top-0.inset-x-0.z-100.h-16.flex.items-center.justify-between.border-b.bg-white
+      [:div.w-full.max-w-screen-xl.relative.flex.items-center.justify-between.mx-auto.px-6
 
-      [:span.font-mono.text-xl.leading-none "Convex"]
+       [:span.font-mono.text-xl.leading-none "Convex"]
 
-      [:div.flex.items-center.justify-end
-       [gui/Tooltip
-        {:title "Create a new Account"}
-        [:button
-         {:class
-          ["text-sm"
-           "px-2 py-1"
-           "mr-6"
-           "rounded"
-           "focus:outline-none"
-           "hover:bg-gray-100 hover:shadow-md"]
-          :on-click #(stack/push :page.id/create-account {:modal? true})}
-         [:span.text-xs.uppercase "Create Account"]]]
+       [:div.flex.items-center.justify-end
+        [gui/Tooltip
+         {:title "Create a new Account"}
+         [:button
+          {:class
+           ["text-sm"
+            "px-2 py-1"
+            "mr-6"
+            "rounded"
+            "focus:outline-none"
+            "hover:bg-gray-100 hover:shadow-md"]
+           :on-click #(stack/push :page.id/create-account {:modal? true})}
+          [:span.text-xs.uppercase "Create Account"]]]
 
-       (when (seq (session/?accounts))
-         [gui/Tooltip
-          {:title "Select Account to use"}
-          [SelectAccount]])
+        (when (seq (session/?accounts))
+          [gui/Tooltip
+           {:title "Select Account to use"}
+           [SelectAccount]])
 
-       (when-let [active-address (session/?active-address)]
-         [gui/Tooltip
-          {:title "Account details"}
-          [:button.focus:outline-none.text-gray-700.hover:text-black.mx-4.w-6.h-6.rounded
-           (merge {:on-click #(stack/push :page.id/my-account {:modal? true
-                                                               :state
-                                                               {:convex-web/account
-                                                                {:convex-web.account/address active-address}}})}
-                  (when-not active-address
-                    {:class "text-gray-400 pointer-events-none"}))
+        (when-let [active-address (session/?active-address)]
+          [gui/Tooltip
+           {:title "Account details"}
+           [:button.focus:outline-none.text-gray-700.hover:text-black.mx-4.w-6.h-6.rounded
+            (merge {:on-click #(stack/push :page.id/my-account {:modal? true
+                                                                :state
+                                                                {:convex-web/account
+                                                                 {:convex-web.account/address active-address}}})}
+                   (when-not active-address
+                     {:class "text-gray-400 pointer-events-none"}))
 
-           [gui/IconUser]]])
+            [gui/IconUser]]])
 
-       (let [signed-in? (some? (session/?active-address))
+        (let [signed-in? (some? (session/?active-address))
 
-             tooltip (if signed-in?
-                       "View Session"
-                       "Login")
+              tooltip (if signed-in?
+                        "View Session"
+                        "Login")
 
-             label (if signed-in?
-                     "Session"
-                     "Login")]
-         [gui/Tooltip
-          {:title tooltip}
-          [:button
-           {:class
-            ["text-sm"
-             "px-2 py-1"
-             "rounded"
-             "focus:outline-none"
-             "hover:bg-gray-100 hover:shadow-md"]
-            :on-click #(stack/push :page.id/session {:modal? true})}
-           [:span.text-xs.uppercase label]]])]]
+              label (if signed-in?
+                      "Session"
+                      "Login")]
+          [gui/Tooltip
+           {:title tooltip}
+           [:button
+            {:class
+             ["text-sm"
+              "px-2 py-1"
+              "rounded"
+              "focus:outline-none"
+              "hover:bg-gray-100 hover:shadow-md"]
+             :on-click #(stack/push :page.id/session {:modal? true})}
+            [:span.text-xs.uppercase label]]])]]]
 
 
-     [:<>
-      ;; -- Modal
-      (let [{:frame/keys [modal?] :as frame} (stack/?active-frame)]
-        (when modal?
-          [Modal frame]))
+     [:div.w-full.max-w-screen-xl.mx-auto.px-6
+
+      [:<>
+       ;; -- Modal
+       (let [{:frame/keys [modal?] :as frame} (stack/?active-frame)]
+         (when modal?
+           [Modal frame]))
 
 
-      ;; Main
-      ;; ================
-      [:div.h-screen.flex
+       ;; Main
+       ;; ================
+       [:div.h-screen.flex.pt-24
 
-       ;; -- Nav
-       [Nav (:route/match (router/?route))]
+        ;; -- Nav
+        [Nav (:route/match (router/?route))]
 
-       [:div.flex.flex-col
+        [:div.flex.flex-col.flex-1.px-10
 
-        ;; -- Page
-        [:div.relative.flex.flex-col.flex-1.overflow-auto
-         (when active-page-frame
-           [:<>
-            [:div.mt-4.mx-10
-             [:span.font-mono.text-lg.leading-none.uppercase page-title]]
-
-            [page-component active-page-frame state set-state]])]]]
+         ;; -- Page
+         [:div.relative.flex.flex-col.flex-1.overflow-auto
+          (when active-page-frame
+            [page-component active-page-frame state set-state])]]]
 
 
-      ;; Devtools
-      ;; ================
-      [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-400.z-50
+       ;; Devtools
+       ;; ================
+       [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-400.z-50
 
-       [gui/IconAdjustments
-        (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
-                         "text-green-500"
-                         "text-red-500")]
-          {:class [bg-color "w-6 h-6"]})]
+        [gui/IconAdjustments
+         (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
+                          "text-green-500"
+                          "text-red-500")]
+           {:class [bg-color "w-6 h-6"]})]
 
-       [:input.ml-2 {:type "checkbox"
-                     :checked (sub :devtools/?enabled?)
-                     :on-change #(disp :devtools/!toggle)}]]
+        [:input.ml-2 {:type "checkbox"
+                      :checked (sub :devtools/?enabled?)
+                      :on-change #(disp :devtools/!toggle)}]]
 
-      (when (sub :devtools/?enabled?)
-        [devtools/Inspect])]]))
+       (when (sub :devtools/?enabled?)
+         [devtools/Inspect])]]]))
 
 
 ;; ---

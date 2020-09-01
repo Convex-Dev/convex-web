@@ -96,8 +96,7 @@
      [:body
       (ring.util.anti-forgery/anti-forgery-field)
 
-      [:div#app
-       landing-page]
+      [:div#app]
 
       (page/include-js "/js/main.js")])})
 

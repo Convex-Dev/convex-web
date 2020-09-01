@@ -20,7 +20,7 @@
 
     :ajax.status/success
     [:<>
-     [:div.flex.flex-col.mt-4.mx-10.overflow-auto
+     [:div.flex.flex-col.overflow-auto
       (for [metadata reference]
         (let [symbol (get-in metadata [:doc :symbol])]
           ^{:key symbol}
