@@ -100,6 +100,7 @@
                  (comp routes-set router/route-name))]
     {:welcome
      {:text "Welcome"
+      :top-level? true
       :route-name :route-name/welcome
       :href (rfe/href :route-name/welcome)
       :active? (active #{:route-name/welcome
@@ -107,6 +108,7 @@
 
      :others
      [{:text "Guides"
+       :top-level? true
        :route-name :route-name/documentation
        :href (rfe/href :route-name/documentation)
        :children
@@ -127,14 +129,17 @@
          :href (rfe/href :route-name/documentation-reference)}]}
 
       {:text "Sandbox"
+       :top-level? true
        :route-name :route-name/sandbox
        :href (rfe/href :route-name/sandbox)}
 
       {:text "Wallet"
+       :top-level? true
        :route-name :route-name/wallet
        :href (rfe/href :route-name/wallet)}
 
       {:text "Explorer"
+       :top-level? true
        :route-name :route-name/explorer
        :href (rfe/href :route-name/explorer)
        :children
@@ -155,7 +160,7 @@
               :href (rfe/href :route-name/transactions-explorer)}]
             (sort-by first))}]}))
 
-(defn NavItem [route {:keys [text active? href target route-name children]}]
+(defn NavItem [route {:keys [text top-level? active? href target route-name children]}]
   (let [active? (or (= route-name (router/route-name route))
                     (when active?
                       (active? route)))
@@ -170,9 +175,9 @@
      [:div.flex.justify-between
       [:a.self-start.font-medium.pl-2.border-l-2
        (merge {:href href
-               :class [(if leaf?
-                         "text-black"
-                         "text-blue-400")
+               :class [(if top-level?
+                         "text-blue-400"
+                         "text-black")
                        (if active?
                          "border-indigo-600"
                          "border-transparent")]}
