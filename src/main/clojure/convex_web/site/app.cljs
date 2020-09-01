@@ -207,7 +207,7 @@
 
      (for [{:keys [text] :as item} others]
        ^{:key text}
-       [:div.mb-2
+       [:div.mb-8
         [NavItem active-route item]])]))
 
 (defn SelectAccount []
