@@ -106,7 +106,35 @@
                          :route-name/create-account})}
 
      :others
-     [{:text "Explorer"
+     [{:text "Guides"
+       :route-name :route-name/documentation
+       :href (rfe/href :route-name/documentation)
+       :children
+       [{:text "Concepts"
+         :route-name :route-name/documentation-concepts
+         :href (rfe/href :route-name/documentation-concepts)}
+
+        {:text "Getting Started"
+         :route-name :route-name/documentation-getting-started
+         :href (rfe/href :route-name/documentation-getting-started)}
+
+        {:text "Tutorial"
+         :route-name :route-name/documentation-tutorial
+         :href (rfe/href :route-name/documentation-tutorial)}
+
+        {:text "Reference"
+         :route-name :route-name/documentation-reference
+         :href (rfe/href :route-name/documentation-reference)}]}
+
+      {:text "Sandbox"
+       :route-name :route-name/sandbox
+       :href (rfe/href :route-name/sandbox)}
+
+      {:text "Wallet"
+       :route-name :route-name/wallet
+       :href (rfe/href :route-name/wallet)}
+
+      {:text "Explorer"
        :route-name :route-name/explorer
        :href (rfe/href :route-name/explorer)
        :children
@@ -125,41 +153,19 @@
              {:text "Transactions"
               :route-name :route-name/transactions-explorer
               :href (rfe/href :route-name/transactions-explorer)}]
-            (sort-by first))}
-
-      {:text "Sandbox"
-       :route-name :route-name/sandbox
-       :href (rfe/href :route-name/sandbox)}
-
-      {:text "Wallet"
-       :route-name :route-name/wallet
-       :href (rfe/href :route-name/wallet)}
-
-      {:text "Documentation"
-       :route-name :route-name/documentation
-       :href (rfe/href :route-name/documentation)
-       :children
-       [{:text "Concepts"
-         :route-name :route-name/documentation-concepts
-         :href (rfe/href :route-name/documentation-concepts)}
-
-        {:text "Getting Started"
-         :route-name :route-name/documentation-getting-started
-         :href (rfe/href :route-name/documentation-getting-started)}
-
-        {:text "Tutorial"
-         :route-name :route-name/documentation-tutorial
-         :href (rfe/href :route-name/documentation-tutorial)}
-
-        {:text "Reference"
-         :route-name :route-name/documentation-reference
-         :href (rfe/href :route-name/documentation-reference)}]}]}))
+            (sort-by first))}]}))
 
 (defn NavItem [route {:keys [text active? href target route-name children]}]
   (let [active? (or (= route-name (router/route-name route))
                     (when active?
-                      (active? route)))]
-    [:div.flex.flex-col
+                      (active? route)))
+
+        leaf? (empty? children)]
+    [:div.flex.flex-col.justify-center
+     (if leaf?
+       {:style
+        {:height "40px"}}
+       {})
      [:a.self-start.hover:text-black.font-medium.pl-2.border-l-2
       (merge {:href href
               :class (if active?
@@ -176,13 +182,13 @@
         [:span text])]
 
      (when (seq children)
-       [:div.flex.flex-col.ml-2
+       [:div.flex.flex-col.ml-8
         (for [{:keys [text] :as child} children]
           ^{:key text} [NavItem route child])])]))
 
 (defn Nav [active-route]
   (let [{:keys [welcome others]} (nav)]
-    [:nav.bg-gray-100.flex.flex-col.pt-8.px-6.border-r.font-mono {:class "w-1/6"}
+    [:nav.flex.flex-col.pt-8.px-6.font-mono {:class "w-1/6"}
 
      [:div.mb-6
       [NavItem active-route welcome]]
