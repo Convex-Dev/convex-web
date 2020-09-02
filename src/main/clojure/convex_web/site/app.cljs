@@ -272,7 +272,7 @@
     [:<>
 
      [:div.fixed.top-0.inset-x-0.z-100.h-16.border-b.bg-white
-      [:div.w-full.h-full.max-w-screen-xl.flex.items-center.justify-between.mx-auto.px-6
+      [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
 
        [:span.font-mono.text-xl.leading-none "Convex"]
 
@@ -330,7 +330,7 @@
             [:span.text-xs.uppercase label]]])]]]
 
 
-     [:div.w-full.max-w-screen-xl.mx-auto.px-6
+     [:div.w-full.mx-auto.px-6
 
       [:<>
        ;; -- Modal
