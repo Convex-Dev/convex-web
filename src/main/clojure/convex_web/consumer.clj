@@ -19,7 +19,7 @@
     {:handle-result
      (fn [^Long id object]
        (try
-         (log/error "Consumer result" id object)
+         (log/info "Consumer result" id object)
 
          ;; TODO Change design.
          #_(let [{:convex-web.command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
