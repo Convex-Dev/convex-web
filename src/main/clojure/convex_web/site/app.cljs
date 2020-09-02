@@ -346,7 +346,7 @@
         ;; -- Nav
         [Nav (:route/match (router/?route))]
 
-        [:div.flex.flex-col.flex-1.px-10
+        [:div.flex.flex-col.flex-1.pl-24
 
          ;; -- Page
          [:div.relative.flex.flex-col.flex-1.overflow-auto
