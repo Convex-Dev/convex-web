@@ -415,7 +415,7 @@
            [:span.text-xs.text-gray-700.text-center "Empty"]))]]]))
 
 (defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
-  [:div.flex.p-2
+  [:div.flex.py-2
 
    ;; -- Previous
    [DefaultButton

@@ -455,7 +455,7 @@
 
 (defn AccountsRangePage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/accounts meta]} set-state]
   (let [{:keys [start end total] :as range} (select-keys meta [:start :end :total])]
-    [:div.flex.flex-col.flex-1.mt-4.mx-10
+    [:div.flex.flex-col.flex-1
 
      ;; -- Pagination
      [gui/RangeNavigation
@@ -682,7 +682,7 @@
                        (merge (explorer/next-range end total) {:set-state set-state})))})]))
 
 (defn BlocksRangePage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks] :as state} set-state]
-  [:div.flex.flex-col.flex-1.mt-4.mx-10
+  [:div.flex.flex-col.flex-1
 
    ;; -- Pagination
    [BlocksRangeNavigation state set-state]
@@ -721,7 +721,7 @@
 ;; -- Transactions
 
 (defn TransactionsRangePage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks] :as state} set-state]
-  [:div.flex.flex-col.flex-1.mt-4.mx-10
+  [:div.flex.flex-col.flex-1
 
    ;; -- Pagination
    [BlocksRangeNavigation state set-state]

@@ -115,8 +115,8 @@
      {:name :route-name/accounts-explorer
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/accounts-explorer {:reset? true
-                                                         :state {:ajax/status :ajax.status/pending}}))}]}]
+                 (stack/push :page.id/accounts-range-explorer {:reset? true
+                                                               :state {:ajax/status :ajax.status/pending}}))}]}]
 
     ["/accounts/:address"
      {:name :route-name/account-explorer
@@ -133,7 +133,7 @@
      {:name :route-name/block-coll-explorer
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/blocks-explorer {:reset? true}))}]}]
+                 (stack/push :page.id/blocks-range-explorer {:reset? true}))}]}]
 
     ["/blocks-all"
      {:name :route-name/blocks-all-explorer
@@ -160,7 +160,7 @@
      {:name :route-name/transactions-explorer
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/transactions-explorer {:reset? true}))}]}]
+                 (stack/push :page.id/transactions-range-explorer {:reset? true}))}]}]
 
     ["/transactions-all"
      {:name :route-name/transactions-all-explorer
