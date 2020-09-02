@@ -238,7 +238,7 @@
           [:span.text-sm.text-black.text-opacity-75.mt-2.mb-1 "Examples"]
 
           (for [{:keys [code]} examples]
-            ^{:key symbol}
+            ^{:key code}
             [:pre.text-xs.mb-1
              [:code.clojure.rounded
               {:ref highlight-block}

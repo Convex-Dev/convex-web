@@ -6,7 +6,8 @@
             [cljs.spec.alpha :as s]
 
             ["highlight.js/lib/core" :as hljs]
-            ["highlight.js/lib/languages/clojure" :as hljs-clojure]))
+            ["highlight.js/lib/languages/clojure" :as hljs-clojure]
+            [clojure.string :as str]))
 
 (defn ReferencePage [_ {:keys [ajax/status reference] :as state} _]
   (case status
@@ -20,7 +21,9 @@
 
     :ajax.status/success
     [:div.flex.flex-1.overflow-auto
-     [:div.flex.flex-col.overflow-auto
+
+     ;; Documentation
+     [:div.flex.flex-col.overflow-auto {:class "w-1/2"}
       (for [metadata reference]
         (let [symbol (get-in metadata [:doc :symbol])]
           ^{:key symbol}
@@ -33,17 +36,31 @@
 
            [:hr.my-2]]))]
 
-     [:div.right-0.ml-16.mb-16.rounded.shadow.overflow-auto
-      {:style
-       {:min-width "220px"}}
-      [:div.flex.flex-col.px-10.py-4.bg-yellow-100.rounded.shadow-md
-       (for [metadata reference]
-         (let [symbol (get-in metadata [:doc :symbol])]
-           ^{:key symbol}
-           [:a
-            {:on-click #(some-> (.getElementById js/document (str "ref-" symbol))
-                                (.scrollIntoView))}
-            [:code.text-xs.hover:underline.cursor-pointer symbol]]))]]]
+     ;; TOC
+     [:div.ml-16.mb-16.bg-yellow-100.rounded.shadow.overflow-auto
+      {:class "w-1/2"
+       :style {:min-width "220px"}}
+      [:div.flex.flex-col.leading-snug.p-4
+       (let [reference-grouped-by (->> reference
+                                       (group-by
+                                         (fn [metadata]
+                                           (let [[c] (get-in metadata [:doc :symbol])]
+                                             (if (re-matches #"^\w" c)
+                                               (str/upper-case c)
+                                               "*"))))
+                                       (sort-by first))]
+
+         (for [[k metas] reference-grouped-by]
+           ^{:key k}
+           [:div.flex.flex-wrap.items-end.mb-1
+            [:code.text-blue-400.text-xs.font-bold.mr-2 k]
+            (for [meta metas]
+              (let [symbol (get-in meta [:doc :symbol])]
+                ^{:key symbol}
+                [:a.underline.mr-2
+                 {:on-click #(some-> (.getElementById js/document (str "ref-" symbol))
+                                     (.scrollIntoView))}
+                 [:code.text-xs.hover:underline.cursor-pointer symbol]]))]))]]]
 
     [:div]))
 
