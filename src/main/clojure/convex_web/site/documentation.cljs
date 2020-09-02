@@ -19,7 +19,7 @@
      [:span "Sorry. Our servers failed to process your request."]]
 
     :ajax.status/success
-    [:<>
+    [:div.flex.flex-1.overflow-auto
      [:div.flex.flex-col.overflow-auto
       (for [metadata reference]
         (let [symbol (get-in metadata [:doc :symbol])]
@@ -33,7 +33,7 @@
 
            [:hr.my-2]]))]
 
-     [:div.inset-y-0.right-0.mr-16.my-6.overflow-auto
+     [:div.right-0.ml-16.mb-16.rounded.shadow.overflow-auto
       {:style
        {:min-width "220px"}}
       [:div.flex.flex-col.px-10.py-4.bg-yellow-100.rounded.shadow-md
