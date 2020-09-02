@@ -374,13 +374,20 @@
        [gui/ClipboardCopy (str "0x" hex-string)]]]]))
 
 (defmethod Output :address [{:convex-web.command/keys [object]}]
-  (reagent/with-let [account-ref (reagent/atom nil)
+  (reagent/with-let [account-ref (reagent/atom {:ajax/status :ajax.status/pending})
 
                      _ (backend/GET-account
                          (get object :checksum-hex)
                          {:handler
                           (fn [account]
-                            (reset! account-ref account))})]
+                            (reset! account-ref {:account account
+                                                 :ajax/status :ajax.status/success}))
+
+                          :error-handler
+                          (fn [error]
+                            (js/console.error error)
+                            (reset! account-ref {:ajax/status :ajax.status/error
+                                                 :ajax/error error}))})]
     (let [{:keys [checksum-hex]} object]
       [:div.flex.flex-col.bg-white.rounded.shadow.p-2
        [:span.text-xs.text-indigo-500.uppercase "Address"]
@@ -399,14 +406,28 @@
           [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]]]
 
        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
-       (if-let [balance (get-in @account-ref [:convex-web.account/status :convex-web.account-status/balance])]
-         [:span.text-xs.uppercase (format/format-number balance)]
-         [gui/SpinnerSmall])
+       (case (:ajax/status @account-ref)
+         :ajax.status/pending
+         [gui/SpinnerSmall]
+
+         :ajax.status/success
+         (let [balance (get-in @account-ref [:convex-web.account/status :convex-web.account-status/balance])]
+           [:span.text-xs.uppercase (format/format-number balance)])
+
+         :ajax.status/error
+         [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])])
 
        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
-       (if-let [type (get-in @account-ref [:convex-web.account/status :convex-web.account-status/type])]
-         [:span.text-xs.uppercase type]
-         [gui/SpinnerSmall])])))
+       (case (:ajax/status @account-ref)
+         :ajax.status/pending
+         [gui/SpinnerSmall]
+
+         :ajax.status/success
+         (let [type (get-in @account-ref [:convex-web.account/status :convex-web.account-status/type])]
+           [:span.text-xs.uppercase type])
+
+         :ajax.status/error
+         [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])])])))
 
 (defn Commands [commands]
   (into [:div] (for [{:convex-web.command/keys [id status query transaction] :as command} commands]

@@ -639,7 +639,7 @@
       (if account-status
         (-successful-response #:convex-web.account {:address address
                                                     :status account-status-data})
-        (let [message (str "Address " address " doesn't exist.")]
+        (let [message (str "The Account for this Address does not exist.")]
           (log/error (str "Failed to get Account; " message))
           (not-found-response {:error {:message message}}))))
     (catch Throwable ex
