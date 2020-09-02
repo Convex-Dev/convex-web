@@ -24,9 +24,15 @@
 
   (start [component]
     (let [config (aero/read-config "convex-web.edn" {:profile profile})]
+
       (println (str "\n==============\n"
                     (str/upper-case (name profile)) " SYSTEM"
                     "\n==============\n\n"
+
+                    "logback.configurationFile: "
+                    (System/getProperty "logback.configurationFile")
+                    "\n\n"
+
                     (with-out-str (pprint/pprint config))
                     "\n--------------------------------------------------\n"))
 
