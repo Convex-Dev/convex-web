@@ -346,12 +346,10 @@
         ;; -- Nav
         [Nav (:route/match (router/?route))]
 
-        [:div.flex.flex-col.flex-1.pl-24
-
-         ;; -- Page
-         [:div.relative.flex.flex-col.flex-1.overflow-auto
-          (when active-page-frame
-            [page-component active-page-frame state set-state])]]]
+        ;; -- Page
+        [:div.relative.flex.flex-col.flex-1.pl-24.overflow-auto
+         (when active-page-frame
+           [page-component active-page-frame state set-state])]]
 
 
        ;; Devtools
