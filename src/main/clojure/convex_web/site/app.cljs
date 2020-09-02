@@ -274,7 +274,10 @@
      [:div.fixed.top-0.inset-x-0.z-100.h-16.border-b.bg-white
       [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
 
-       [:span.font-mono.text-xl.leading-none "Convex"]
+
+       [:div.flex.items-center
+        [gui/ConvexLogo {:width "28px" :height "32px"}]
+        [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]
 
        [:div.flex.items-center.justify-end
         [gui/Tooltip

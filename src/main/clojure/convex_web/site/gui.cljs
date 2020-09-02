@@ -24,6 +24,23 @@
   (when el
     (.highlightBlock hljs el)))
 
+(defn ConvexLogo [& [attrs]]
+  [:svg
+   (merge {:viewBox "0 0 56 64"
+           :version "1.1"}
+          attrs)
+   [:title "Convex logo"]
+   [:desc "Created with Sketch."]
+   [:g#v0.1 {:stroke "none" :stroke-width "1" :fill "none" :fill-rule "evenodd"}
+    [:g#Home {:transform "translate(-692.000000, -139.000000)"}
+     [:g#section-hero
+      [:g#Hero-Block-Content {:transform "translate(256.000000, 139.000000)"}
+       [:g#Convex-logo {:transform "translate(436.000000, 0.000000)"}
+        [:polygon#Fill-1 {:fill "#132773" :points "28.0008 64 55.9988 48 55.9988 16.002"}]
+        [:polygon#Fill-2 {:fill "#4B74CF" :points "0 47.9998 28 63.9998 0 15.9998"}]
+        [:polygon#Fill-3 {:fill "#62A6E1" :points "28.0008 -0.0008 28.0008 63.9992 55.9988 16.0032 55.9988 15.9992"}]
+        [:polygon#Fill-4 {:fill "#C3EAFC" :points "28.0008 -0.0008 0.0008 15.9992 28.0008 63.9992"}]]]]]]])
+
 (defn InformationCircleIcon [& [attrs]]
   [:svg
    (merge {:fill "none"
