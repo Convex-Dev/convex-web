@@ -7,6 +7,10 @@ module.exports = {
   future: {
     removeDeprecatedGapUtilities: true,
   },
+  purge: [
+    './src/**/*.clj',
+    './src/**/*.cljs'
+  ],
   theme: {
     extend: {
       fontFamily: {
