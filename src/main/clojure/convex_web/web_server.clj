@@ -176,7 +176,7 @@
         _ (u/log :logging.event/transaction-prepare
                  :severity :info
                  :address address
-                 :souce source)
+                 :source source)
 
         address (try
                   (s/assert :convex-web/address address)
