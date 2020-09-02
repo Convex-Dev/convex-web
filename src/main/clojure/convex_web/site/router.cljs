@@ -135,12 +135,6 @@
       [{:start (fn [_]
                  (stack/push :page.id/blocks-range-explorer {:reset? true}))}]}]
 
-    ["/blocks-all"
-     {:name :route-name/blocks-all-explorer
-      :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/blocks-range-explorer {:reset? true}))}]}]
-
     ["/blocks/:index"
      {:name :route-name/block-explorer
       :controllers
@@ -158,12 +152,6 @@
 
     ["/transactions"
      {:name :route-name/transactions-explorer
-      :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/transactions-range-explorer {:reset? true}))}]}]
-
-    ["/transactions-all"
-     {:name :route-name/transactions-all-explorer
       :controllers
       [{:start (fn [_]
                  (stack/push :page.id/transactions-range-explorer {:reset? true}))}]}]]
