@@ -405,29 +405,22 @@
           "External link"
           [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]]]
 
-       [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
        (case (:ajax/status @account-ref)
          :ajax.status/pending
          [gui/SpinnerSmall]
 
-         :ajax.status/success
-         (let [balance (get-in @account-ref [:convex-web.account/status :convex-web.account-status/balance])]
-           [:span.text-xs.uppercase (format/format-number balance)])
-
          :ajax.status/error
-         [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])])
-
-       [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
-       (case (:ajax/status @account-ref)
-         :ajax.status/pending
-         [gui/SpinnerSmall]
+         [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])]
 
          :ajax.status/success
-         (let [type (get-in @account-ref [:convex-web.account/status :convex-web.account-status/type])]
-           [:span.text-xs.uppercase type])
+         [:<>
+          [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
+          (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
+            [:span.text-xs.uppercase (format/format-number balance)])
 
-         :ajax.status/error
-         [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])])])))
+          [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
+          (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
+            [:span.text-xs.uppercase type])])])))
 
 (defn Commands [commands]
   (into [:div] (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
