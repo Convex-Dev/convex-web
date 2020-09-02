@@ -2,7 +2,8 @@
   (:require [convex-web.convex :as convex]
 
             [datascript.core :as d]
-            [com.brunobonacci.mulog :as u])
+            [com.brunobonacci.mulog :as u]
+            [clojure.tools.logging :as log])
   (:import (convex.net ResultConsumer)))
 
 (defn ^ResultConsumer result-consumer [{:keys [handle-result handle-error]}]
@@ -18,6 +19,8 @@
     {:handle-result
      (fn [^Long id object]
        (try
+         (log/error "Consumer result" id object)
+
          ;; TODO Change design.
          #_(let [{:convex-web.command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
              (try
@@ -46,6 +49,7 @@
      :handle-error
      (fn [^Long id ^Object code ^Object message]
        (try
+         (log/error "Consumer error" code message)
 
          ;; TODO Change design. (Same issue as above)
          #_(let [{:convex-web.command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
