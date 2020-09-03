@@ -14,6 +14,11 @@ Install dependencies:
 npm install
 ```
 
+Compile CSS:
+```
+bin/compile_css
+```
+
 Run Shadow CLJS:
 ```
 npm run watch
@@ -43,13 +48,21 @@ npm install
 
 Compile & bundle app:
 ```
-npx shadow-cljs release main
+bin/compile_app
 ```
+
+Compile CSS:
+```
+NODE_ENV=production bin/compile_css
+```
+
+The `NODE_ENV` environment variable is very important because
+that's how Tailwind knows it should prune unused classes.
 
 ### Server
 
 ```
-clj -A:main
+bin/run
 ```
 
 ### Create a Linux `systemd` Service
