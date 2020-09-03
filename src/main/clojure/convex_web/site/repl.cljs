@@ -486,7 +486,7 @@
 ;; --
 
 (defn SandboxPage [_ {:convex-web.repl/keys [reference] :as state} set-state]
-  [:div.flex.flex-1
+  [:div.flex.flex-1.overflow-auto
 
    ;; -- REPL
    [:div.flex.flex-col.flex-1.my-4.mx-10
@@ -540,37 +540,37 @@
      [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]]]
 
    ;; -- Sidebar
-   #_(let [selected-tab (selected-tab state)]
-       [:div.flex.flex-col.ml-16.p-2.border-l
-        {:style {:width "420px"}}
+   (let [selected-tab (selected-tab state)]
+     [:div.flex.flex-col.ml-16.p-2.border-l
+      {:style {:width "420px"}}
 
-        ;; -- Tabs
-        [:div.flex.mb-5
+      ;; -- Tabs
+      [:div.flex.mb-5
 
-         ;; -- Examples Tab
-         [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer
-          {:class
-           (if (= :examples selected-tab)
-             "border-b border-indigo-500"
-             "text-black text-opacity-50")
-           :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :examples)}
-          "Examples"]
+       ;; -- Examples Tab
+       [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer
+        {:class
+         (if (= :examples selected-tab)
+           "border-b border-indigo-500"
+           "text-black text-opacity-50")
+         :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :examples)}
+        "Examples"]
 
-         ;; -- Reference Tab
-         [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer.ml-4
-          {:class
-           (if (= :reference selected-tab)
-             "border-b border-indigo-500"
-             "text-black text-opacity-50")
-           :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :reference)}
-          "Reference"]]
+       ;; -- Reference Tab
+       [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer.ml-4
+        {:class
+         (if (= :reference selected-tab)
+           "border-b border-indigo-500"
+           "text-black text-opacity-50")
+         :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :reference)}
+        "Reference"]]
 
-        (case selected-tab
-          :examples
-          [Examples (language state)]
+      (case selected-tab
+        :examples
+        [Examples (language state)]
 
-          :reference
-          [Reference reference])])])
+        :reference
+        [Reference reference])])])
 
 (def sandbox-page
   #:page {:id :page.id/repl
