@@ -326,54 +326,71 @@
           :on-click #(stack/push :page.id/session {:modal? true})}
          [:span.text-xs.uppercase label]]])]]])
 
-(defn App []
+(defn DeveloperApp []
   (let [{:frame/keys [uuid page state] :as active-page-frame} (stack/?active-page-frame)
 
         {page-component :page/component} page
 
         set-state (stack/make-set-state uuid)]
     [:<>
-
      [TopNav]
 
+     ;; Modal
+     ;; ================
+     (let [{:frame/keys [modal?] :as frame} (stack/?active-frame)]
+       (when modal?
+         [Modal frame]))
+
+     ;; Main
+     ;; ================
      [:div.w-full.mx-auto.px-6
+      [:div.h-screen.flex.pt-24
 
-      [:<>
-       ;; -- Modal
-       (let [{:frame/keys [modal?] :as frame} (stack/?active-frame)]
-         (when modal?
-           [Modal frame]))
+       ;; -- Nav
+       [SideNav (:route/match (router/?route))]
+
+       ;; -- Page
+       [:div.relative.flex.flex-col.flex-1.pl-24.overflow-auto
+        (when active-page-frame
+          [page-component active-page-frame state set-state])]]]]))
+
+(defn App []
+  (let [{:frame/keys [uuid page state] :as active-page-frame} (stack/?active-page-frame)
+
+        {page-id :page/id page-component :page/component} page
+
+        set-state (stack/make-set-state uuid)]
+    [:<>
+
+     (if (= :page.id/welcome page-id)
+       ;; The welcome page is somewhat special.
+       ;; It's a regular page, just like the others,
+       ;; but it's special because it's rendered on its own,
+       ;; without the common framework.
+       ;;
+       ;; This is useful because we can use the welcome page
+       ;; as a landing page - which looks different from the
+       ;; rest of the site.
+       [page-component active-page-frame state set-state]
+       [DeveloperApp])
 
 
-       ;; Main
-       ;; ================
-       [:div.h-screen.flex.pt-24
+     ;; Devtools
+     ;; ================
+     [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-400.z-50
 
-        ;; -- Nav
-        [SideNav (:route/match (router/?route))]
+      [gui/IconAdjustments
+       (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
+                        "text-green-500"
+                        "text-red-500")]
+         {:class [bg-color "w-6 h-6"]})]
 
-        ;; -- Page
-        [:div.relative.flex.flex-col.flex-1.pl-24.overflow-auto
-         (when active-page-frame
-           [page-component active-page-frame state set-state])]]
+      [:input.ml-2 {:type "checkbox"
+                    :checked (sub :devtools/?enabled?)
+                    :on-change #(disp :devtools/!toggle)}]]
 
-
-       ;; Devtools
-       ;; ================
-       [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-400.z-50
-
-        [gui/IconAdjustments
-         (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
-                          "text-green-500"
-                          "text-red-500")]
-           {:class [bg-color "w-6 h-6"]})]
-
-        [:input.ml-2 {:type "checkbox"
-                      :checked (sub :devtools/?enabled?)
-                      :on-change #(disp :devtools/!toggle)}]]
-
-       (when (sub :devtools/?enabled?)
-         [devtools/Inspect])]]]))
+     (when (sub :devtools/?enabled?)
+       [devtools/Inspect])]))
 
 
 ;; ---
