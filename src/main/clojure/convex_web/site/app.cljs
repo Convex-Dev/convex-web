@@ -368,7 +368,7 @@
 
      ;; Site
      ;; ================
-     (if (= :page.id/welcome page-id)
+     (when page-id
        ;; The welcome page is somewhat special.
        ;; It's a regular page, just like the others,
        ;; but it's special because it's rendered on its own,
@@ -377,8 +377,9 @@
        ;; This is useful because we can use the welcome page
        ;; as a landing page - which looks different from the
        ;; rest of the site.
-       [Welcome]
-       [App])
+       (if (= :page.id/welcome page-id)
+         [Welcome]
+         [App]))
 
 
      ;; Devtools
