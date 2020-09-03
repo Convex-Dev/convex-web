@@ -326,7 +326,7 @@
           :on-click #(stack/push :page.id/session {:modal? true})}
          [:span.text-xs.uppercase label]]])]]])
 
-(defn DeveloperApp []
+(defn App []
   (let [{:frame/keys [uuid page state] :as active-page-frame} (stack/?active-page-frame)
 
         {page-component :page/component} page
@@ -354,14 +354,20 @@
         (when active-page-frame
           [page-component active-page-frame state set-state])]]]]))
 
-(defn App []
+(defn Welcome []
   (let [{:frame/keys [uuid page state] :as active-page-frame} (stack/?active-page-frame)
 
-        {page-id :page/id page-component :page/component} page
+        {page-component :page/component} page
 
         set-state (stack/make-set-state uuid)]
+    [page-component active-page-frame state set-state]))
+
+(defn Root []
+  (let [page-id (get-in (stack/?active-page-frame) [:frame/page :page/id])]
     [:<>
 
+     ;; Site
+     ;; ================
      (if (= :page.id/welcome page-id)
        ;; The welcome page is somewhat special.
        ;; It's a regular page, just like the others,
@@ -371,8 +377,8 @@
        ;; This is useful because we can use the welcome page
        ;; as a landing page - which looks different from the
        ;; rest of the site.
-       [page-component active-page-frame state set-state]
-       [DeveloperApp])
+       [Welcome]
+       [App])
 
 
      ;; Devtools
@@ -392,12 +398,8 @@
      (when (sub :devtools/?enabled?)
        [devtools/Inspect])]))
 
-
-;; ---
-
-
 (defn mount []
-  (reagent.dom/render [App] (.getElementById js/document "app")))
+  (reagent.dom/render [Root] (.getElementById js/document "app")))
 
 (defn start []
   (when goog.DEBUG
