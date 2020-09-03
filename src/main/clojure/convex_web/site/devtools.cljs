@@ -395,12 +395,12 @@
 
       [:div.mx-2]
 
-      [InspectTab
-       {:id :devtools.panel.id/transaction
-        :name "Transaction"
-        :panel #'TransactionPanel}]
-
-      [:div.mx-2]
+      ;;[InspectTab
+      ;; {:id :devtools.panel.id/transaction
+      ;;  :name "Transaction"
+      ;;  :panel #'TransactionPanel}]
+      ;;
+      ;;[:div.mx-2]
 
       [InspectTab
        {:id :devtools.panel.id/stress-test
