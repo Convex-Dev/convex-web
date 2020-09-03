@@ -34,10 +34,12 @@
        :ajax.status/success
        [:<>
         ;; -- Markdown
-        [:div.flex-1
+        [:div.overflow-auto
          (if toc?
-           {:class "overflow-auto"}
-           {})
+           ;; Add right padding to have some spacing between the markdown and the TOC.
+           {:class "pr-10"}
+           ;; Without a TOC the markdown must have a full width.
+           {:class "flex-1"})
 
          (for [{:keys [name content]} contents]
            ^{:key name}
@@ -47,7 +49,7 @@
 
         ;; -- On this page
         (when toc?
-          [:div.flex.flex-col
+          [:div.flex.flex-col.ml-10
            [:span.text-xs.text-gray-500.font-bold.uppercase "On this Page"]
 
            [:ul.list-none.text-sm.mt-4
