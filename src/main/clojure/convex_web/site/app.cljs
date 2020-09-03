@@ -203,7 +203,7 @@
         (for [{:keys [text] :as child} children]
           ^{:key text} [NavItem route child])])]))
 
-(defn Nav [active-route]
+(defn SideNav [active-route]
   (let [{:keys [welcome others]} (nav)]
     [:nav.flex.flex-col.flex-shrink-0.font-mono.w-64
 
@@ -349,7 +349,7 @@
        [:div.h-screen.flex.pt-24
 
         ;; -- Nav
-        [Nav (:route/match (router/?route))]
+        [SideNav (:route/match (router/?route))]
 
         ;; -- Page
         [:div.relative.flex.flex-col.flex-1.pl-24.overflow-auto
