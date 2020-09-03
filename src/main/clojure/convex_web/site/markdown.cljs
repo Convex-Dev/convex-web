@@ -22,7 +22,7 @@
 
 (defn Markdown [{:keys [markdown]}]
   (let [{:keys [ajax/status contents toc?] :or {toc? true}} markdown]
-    [:div.flex.flex-1
+    [:div.flex.flex-1.overflow-auto
      (case status
        :ajax.status/pending
        [:div.flex.flex-1.items-center.justify-center
