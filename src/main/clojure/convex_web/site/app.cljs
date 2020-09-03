@@ -263,6 +263,68 @@
       [:div.flex.flex-1.overflow-auto
        [component frame state set-state]]]]))
 
+(defn TopNav []
+  [:div.fixed.top-0.inset-x-0.z-100.h-16.border-b.bg-white
+   [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
+
+
+    [:div.flex.items-center
+     [gui/ConvexLogo {:width "28px" :height "32px"}]
+     [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]
+
+    [:div.flex.items-center.justify-end
+     [gui/Tooltip
+      {:title "Create a new Account"}
+      [:button
+       {:class
+        ["text-sm"
+         "px-2 py-1"
+         "mr-6"
+         "rounded"
+         "focus:outline-none"
+         "hover:bg-gray-100 hover:shadow-md"]
+        :on-click #(stack/push :page.id/create-account {:modal? true})}
+       [:span.text-xs.uppercase "Create Account"]]]
+
+     (when (seq (session/?accounts))
+       [gui/Tooltip
+        {:title "Select Account to use"}
+        [SelectAccount]])
+
+     (when-let [active-address (session/?active-address)]
+       [gui/Tooltip
+        {:title "Account details"}
+        [:button.focus:outline-none.text-gray-700.hover:text-black.mx-4.w-6.h-6.rounded
+         (merge {:on-click #(stack/push :page.id/my-account {:modal? true
+                                                             :state
+                                                             {:convex-web/account
+                                                              {:convex-web.account/address active-address}}})}
+                (when-not active-address
+                  {:class "text-gray-400 pointer-events-none"}))
+
+         [gui/IconUser]]])
+
+     (let [signed-in? (some? (session/?active-address))
+
+           tooltip (if signed-in?
+                     "View Session"
+                     "Login")
+
+           label (if signed-in?
+                   "Session"
+                   "Login")]
+       [gui/Tooltip
+        {:title tooltip}
+        [:button
+         {:class
+          ["text-sm"
+           "px-2 py-1"
+           "rounded"
+           "focus:outline-none"
+           "hover:bg-gray-100 hover:shadow-md"]
+          :on-click #(stack/push :page.id/session {:modal? true})}
+         [:span.text-xs.uppercase label]]])]]])
+
 (defn App []
   (let [{:frame/keys [uuid page state] :as active-page-frame} (stack/?active-page-frame)
 
@@ -271,67 +333,7 @@
         set-state (stack/make-set-state uuid)]
     [:<>
 
-     [:div.fixed.top-0.inset-x-0.z-100.h-16.border-b.bg-white
-      [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
-
-
-       [:div.flex.items-center
-        [gui/ConvexLogo {:width "28px" :height "32px"}]
-        [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]
-
-       [:div.flex.items-center.justify-end
-        [gui/Tooltip
-         {:title "Create a new Account"}
-         [:button
-          {:class
-           ["text-sm"
-            "px-2 py-1"
-            "mr-6"
-            "rounded"
-            "focus:outline-none"
-            "hover:bg-gray-100 hover:shadow-md"]
-           :on-click #(stack/push :page.id/create-account {:modal? true})}
-          [:span.text-xs.uppercase "Create Account"]]]
-
-        (when (seq (session/?accounts))
-          [gui/Tooltip
-           {:title "Select Account to use"}
-           [SelectAccount]])
-
-        (when-let [active-address (session/?active-address)]
-          [gui/Tooltip
-           {:title "Account details"}
-           [:button.focus:outline-none.text-gray-700.hover:text-black.mx-4.w-6.h-6.rounded
-            (merge {:on-click #(stack/push :page.id/my-account {:modal? true
-                                                                :state
-                                                                {:convex-web/account
-                                                                 {:convex-web.account/address active-address}}})}
-                   (when-not active-address
-                     {:class "text-gray-400 pointer-events-none"}))
-
-            [gui/IconUser]]])
-
-        (let [signed-in? (some? (session/?active-address))
-
-              tooltip (if signed-in?
-                        "View Session"
-                        "Login")
-
-              label (if signed-in?
-                      "Session"
-                      "Login")]
-          [gui/Tooltip
-           {:title tooltip}
-           [:button
-            {:class
-             ["text-sm"
-              "px-2 py-1"
-              "rounded"
-              "focus:outline-none"
-              "hover:bg-gray-100 hover:shadow-md"]
-             :on-click #(stack/push :page.id/session {:modal? true})}
-            [:span.text-xs.uppercase label]]])]]]
-
+     [TopNav]
 
      [:div.w-full.mx-auto.px-6
 
