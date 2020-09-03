@@ -24,7 +24,8 @@
             [reitit.frontend.easy :as rfe]
 
             ["highlight.js/lib/core" :as hljs]
-            ["highlight.js/lib/languages/clojure" :as hljs-clojure]))
+            ["highlight.js/lib/languages/clojure" :as hljs-clojure]
+            ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
 
 
 (glogi-console/install!)
@@ -396,6 +397,7 @@
 
 (defn ^:export init []
   (.registerLanguage hljs "clojure" hljs-clojure)
+  (.registerLanguage hljs "javascript" hljs-javascript)
 
   (re-frame/dispatch-sync [::!init (.-value (.getElementById js/document "__anti-forgery-token"))])
 
