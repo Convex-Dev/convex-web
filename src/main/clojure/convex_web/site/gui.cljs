@@ -26,6 +26,33 @@
   (when el
     (.highlightBlock hljs el)))
 
+(defn Dismissible
+  "Dismiss child component when clicking outside."
+  [{:keys [on-dismiss]} child]
+  (let [el (reagent/atom nil)
+
+        handler (fn [e]
+                  (when-let [el @el]
+                    (when-not (.contains el (.-target e))
+                      (on-dismiss))))]
+
+    (reagent/create-class
+      {:component-did-mount
+       (fn [_]
+         (.addEventListener js/document "click" handler false))
+
+       :component-will-unmount
+       (fn [_]
+         (.removeEventListener js/document "click" handler false))
+
+       :reagent-render
+       (fn [_]
+         [:div
+          {:ref
+           #(when %
+              (reset! el %))}
+          child])})))
+
 (defn Transition
   "The Transition component lets you add enter/leave transitions to
    conditionally rendered elements, using CSS classes to control the actual
