@@ -69,6 +69,14 @@
 
    child])
 
+(def dropdown-transition
+  {:enter "transition ease-out duration-100"
+   :enter-from "transform opacity-0 scale-95"
+   :enter-to "transform opacity-100 scale-100"
+   :leave "transition ease-in duration-75"
+   :leave-from "transform opacity-100 scale-100"
+   :leave-to "transform opacity-0 scale-95"})
+
 (defn ConvexLogo [& [attrs]]
   [:svg
    (merge {:viewBox "0 0 56 64"
@@ -520,69 +528,3 @@
    {:source markdown
     :renderers
     {:code (reagent/reactify-component MarkdownCodeBlock)}}])
-
-(defn DropdownButton [{:keys [text on-click]}]
-  [:button.inline-flex
-   {:class
-    "inline-flex justify-center
-     w-full
-     px-4 py-2
-     bg-white
-     leading-5
-     font-mono font-medium text-sm text-gray-700 hover:text-gray-500
-     focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
-     active:bg-gray-50 active:text-gray-800
-     transition ease-in-out duration-150"
-    :on-click (or on-click identity)}
-
-   text
-
-   [:svg.-mr-1.ml-2.h-5.w-5
-    {:viewBox "0 0 20 20"
-     :fill "currentColor"}
-    [:path
-     {:fill-rule "evenodd"
-      :d "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-      :clip-rule "evenodd"}]]])
-
-(defn DropdownNoBorder [{:keys [text]}]
-  (let [show? (reagent/atom false)]
-    (fn []
-      [:div.relative.inline-block.text-left
-
-       [:div
-
-        [DropdownButton
-         {:text text
-          :on-click #(swap! show? not)}]
-
-        ;; Choices
-        ;; ==============
-        [Transition
-         {:show? @show?
-          :enter "transition ease-out duration-100"
-          :enter-from "transform opacity-0 scale-95"
-          :enter-to "transform opacity-100 scale-100"
-          :leave "transition ease-in duration-75"
-          :leave-from "transform opacity-100 scale-100"
-          :leave-to "transform opacity-0 scale-95"}
-         [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg
-          [:div.rounded-md.bg-white.shadow-xs
-           [:div.py-1.font-mono
-            {:role "menu"
-             :aria-orientation "vertical"
-             :aria-labelledby "options-menu"}
-
-            [:a.block.px-4.py-2.text-sm.leading-5.text-gray-700.hover:bg-gray-100.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
-             {:href (rfe/href :route-name/documentation-concepts)}
-             "Concepts"]
-
-            [:a.block.px-4.py-2.text-sm.leading-5.text-gray-700.hover:bg-gray-100.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
-             {:href (rfe/href :route-name/documentation-getting-started)}
-             "Getting Started"]
-
-            [:a.block.px-4.py-2.text-sm.leading-5.text-gray-700.hover:bg-gray-100.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
-             {:href (rfe/href :route-name/documentation-tutorial)}
-             "Tutorial"]
-
-            ]]]]]])))
