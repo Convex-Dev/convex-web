@@ -2,10 +2,10 @@
   (:require [convex-web.site.markdown :as markdown]
             [convex-web.site.gui :as gui]
 
+            [reagent.core :as reagent]
             [reitit.frontend.easy :as rfe]
 
-            ["@tailwindui/react" :refer [Transition]]
-            [reagent.core :as reagent]))
+            ["@tailwindui/react" :refer [Transition]]))
 
 (defn NavButton [text href]
   [:a.font-mono.text-sm.hover:text-gray-500.px-4.py-2
