@@ -8,7 +8,7 @@
             ["react-tippy" :as tippy]
             ["react-markdown" :as ReactMarkdown]
 
-            ["@tailwindui/react" :refer [Transition]]
+            ["@tailwindui/react" :as tailwindui-react]
 
             [reagent.core :as reagent]
             [reitit.frontend.easy :as rfe]))
@@ -25,6 +25,49 @@
 (defn highlight-block [el]
   (when el
     (.highlightBlock hljs el)))
+
+(defn Transition
+  "The Transition component lets you add enter/leave transitions to
+   conditionally rendered elements, using CSS classes to control the actual
+   transition styles in the different stages of the transition.
+
+   enter: Applied the entire time an element is entering. Usually you define
+   your duration and what properties you want to transition here, for example
+   transition-opacity duration-75.
+
+   enter-from: The starting point to enter from, for example opacity-0 if
+   something should fade in.
+
+   enter-to: The ending point to enter to, for example opacity-100 after fading in.
+
+   leave: Applied the entire time an element is leaving. Usually you define
+   your duration and what properties you want to transition here, for example
+   transition-opacity duration-75.
+
+   leave-from: The starting point to leave from, for example opacity-100 if something should fade out.
+
+   leave-to: The ending point to leave to, for example opacity-0 after fading
+   out.
+
+   https://github.com/tailwindlabs/tailwindui-react#transition"
+  [{:keys [show?
+           enter
+           enter-from
+           enter-to
+           leave
+           leave-from
+           leave-to]}
+   child]
+  [:> tailwindui-react/Transition
+   {:show show?
+    :enter enter
+    :enterFrom enter-from
+    :enterTo enter-to
+    :leave leave
+    :leaveFrom leave-from
+    :leaveTo leave-to}
+
+   child])
 
 (defn ConvexLogo [& [attrs]]
   [:svg
@@ -515,14 +558,14 @@
 
         ;; Choices
         ;; ==============
-        [:> Transition
-         {:show @show?
+        [Transition
+         {:show? @show?
           :enter "transition ease-out duration-100"
-          :enterFrom "transform opacity-0 scale-95"
-          :enterTo "transform opacity-100 scale-100"
+          :enter-from "transform opacity-0 scale-95"
+          :enter-to "transform opacity-100 scale-100"
           :leave "transition ease-in duration-75"
-          :leaveFrom "transform opacity-100 scale-100"
-          :leaveTo "transform opacity-0 scale-95"}
+          :leave-from "transform opacity-100 scale-100"
+          :leave-to "transform opacity-0 scale-95"}
          [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg
           [:div.rounded-md.bg-white.shadow-xs
            [:div.py-1.font-mono
