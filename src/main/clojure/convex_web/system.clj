@@ -73,3 +73,9 @@
 
 (defn -consumer-consumer [consumer]
   (:consumer consumer))
+
+
+;; -- Site
+
+(defn site-asset-prefix-url [system]
+  (get-in system [:config :config :site :asset-prefix-url]))

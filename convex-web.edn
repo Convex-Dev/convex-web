@@ -11,6 +11,12 @@
            {:check-asserts? false
             :instrument? false}}
 
+ :site
+ {:asset-prefix-url
+  #profile {:dev ""
+            :test ""
+            :prod "https://storage.googleapis.com/convex-world-site"}}
+
  :peer
  {:port
   #profile {:dev :todo

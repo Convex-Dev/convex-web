@@ -167,12 +167,13 @@
   component/Lifecycle
 
   (start [component]
-    (let [context {:convex convex
-                   :datascript datascript}
+    (let [system {:config config
+                  :convex convex
+                  :datascript datascript}
 
           port (get-in config [:config :web-server :port])
 
-          stop-fn (web-server/run-server context {:port port})]
+          stop-fn (web-server/run-server system {:port port})]
       (log/debug (str "Started WebServer on port " port))
 
       (assoc component

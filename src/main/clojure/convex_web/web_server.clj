@@ -78,27 +78,29 @@
 
        [:span "Welcome"]]]]]])
 
-(defn index [_]
+(defn index [system _]
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body
-   (page/html5
-     (stylesheet "https://fonts.googleapis.com/css2?family=Inter&display=swap")
-     (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono&display=swap")
-     (stylesheet "/css/highlight/tomorrow-night.css")
-     (stylesheet "/css/codemirror.css")
-     (stylesheet "/css/styles.css")
-     (stylesheet "/css/tippy.css")
-     (stylesheet "/css/spinner.css")
+   (let [asset-prefix-url (system/site-asset-prefix-url system)]
+     (page/html5
+       (stylesheet "https://fonts.googleapis.com/css2?family=Inter&display=swap")
+       (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono&display=swap")
 
-     [:title "Convex"]
+       (stylesheet (str asset-prefix-url "/css/highlight/tomorrow-night.css"))
+       (stylesheet (str asset-prefix-url "/css/codemirror.css"))
+       (stylesheet (str asset-prefix-url "/css/styles.css"))
+       (stylesheet (str asset-prefix-url "/css/tippy.css"))
+       (stylesheet (str asset-prefix-url "/css/spinner.css"))
 
-     [:body
-      (ring.util.anti-forgery/anti-forgery-field)
+       [:title "Convex"]
 
-      [:div#app]
+       [:body
+        (ring.util.anti-forgery/anti-forgery-field)
 
-      (page/include-js "/js/main.js")])})
+        [:div#app]
+
+        (page/include-js (str asset-prefix-url "/js/main.js"))]))})
 
 (defn transit-encode [x]
   (let [out (ByteArrayOutputStream. 4096)
@@ -755,7 +757,7 @@
 
 (defn site [system]
   (routes
-    (GET "/" req (index req))
+    (GET "/" req (index system req))
     (GET "/api/internal/session" req (-GET-session system req))
     (POST "/api/internal/generate-account" req (-POST-generate-account system req))
     (POST "/api/internal/confirm-account" req (-POST-confirm-account system req))
