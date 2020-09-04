@@ -85,7 +85,7 @@
         [_ inspect-key] (sub :devtools/?selected-tab)
 
         Tab (fn [[label k :as tab]]
-              [:button.border-b-2.focus:outline-none
+              [:button.border-b-2.border-yellow-300.focus:outline-none
                {:class (if (= k inspect-key) "border-white" "border-green-500")
                 :on-click #(disp :devtools/!select-tab tab)}
                [:code.block.text-xs.p-2.text-white label]])]
@@ -93,7 +93,7 @@
     [:div.flex.flex-col.flex-1.max-w-full
 
      [:div.flex.bg-green-500
-      [:button.border-b-2.focus:outline-none
+      [:button.border-b-2.border-yellow-300.focus:outline-none
        {:class (if (nil? inspect-key) "border-white" "border-green-500")
         :on-click #(disp :devtools/!select-tab nil)}
        [:code.block.text-xs.p-2.text-white.bg-green-500.border-green-500
@@ -317,7 +317,7 @@
       {:class
        ["text-sm"
         "px-2 py-1"
-        "bg-yellow-500"
+        "bg-yellow-400"
         "rounded"
         "focus:outline-none"
         "hover:shadow-md"]
@@ -334,7 +334,7 @@
                    tab-name :name
                    tab-panel :panel}]
   (let [{active-panel-id :devtools.panel/id} (or (sub :devtools/?selected-panel) default-panel)]
-    [:button.border-b-2.focus:outline-none
+    [:button.border-b-2.border-yellow-300.focus:outline-none
      {:class (if (= tab-id active-panel-id) "border-white" "border-green-600")
       :on-click #(disp :devtools/!select-panel #:devtools.panel {:id tab-id
                                                                  :component tab-panel})}
