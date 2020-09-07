@@ -145,8 +145,9 @@
     [:span.font-mono.text-6xl.pt-10
      "Building the Future"]
 
-    [:span "Convex is a global platform for trusted applications and digital assets."]
-    [:span "Write amazing code with the most powerful platform for smart contracts and test your ideas live in the web browser — no additional installations required."]]
+    [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8
+     [:p "Convex is a global platform for trusted applications and digital assets."]
+     [:p "Write amazing code with the most powerful platform for smart contracts and test your ideas live in the web browser — no additional installations required."]]]
 
    [:span.font-mono.text-4xl
     {:style
