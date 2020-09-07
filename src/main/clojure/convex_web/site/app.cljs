@@ -326,10 +326,8 @@
           :on-click #(stack/push :page.id/session {:modal? true})}
          [:span.text-xs.uppercase label]]])]]])
 
-(defn App []
-  (let [{:frame/keys [uuid page state] :as active-page-frame} (stack/?active-page-frame)
-
-        {page-component :page/component} page
+(defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]
+  (let [{Component :page/component} page
 
         set-state (stack/make-set-state uuid)]
     [:<>
@@ -352,52 +350,46 @@
        ;; -- Page
        [:div.relative.flex.flex-col.flex-1.pl-24.overflow-auto
         (when active-page-frame
-          [page-component active-page-frame state set-state])]]]]))
+          [Component active-page-frame state set-state])]]]]))
 
-(defn Welcome []
-  (let [{:frame/keys [uuid page state] :as active-page-frame} (stack/?active-page-frame)
-
-        {page-component :page/component} page
+(defn Page [{:frame/keys [uuid page state] :as active-page-frame}]
+  (let [{Component :page/component} page
 
         set-state (stack/make-set-state uuid)]
-    [page-component active-page-frame state set-state]))
+    [Component active-page-frame state set-state]))
 
 (defn Root []
-  (let [page-id (get-in (stack/?active-page-frame) [:frame/page :page/id])]
-    [:<>
+  [:<>
 
-     ;; Site
-     ;; ================
-     (when page-id
-       ;; The welcome page is somewhat special.
-       ;; It's a regular page, just like the others,
-       ;; but it's special because it's rendered on its own,
-       ;; without the common framework.
-       ;;
-       ;; This is useful because we can use the welcome page
-       ;; as a landing page - which looks different from the
-       ;; rest of the site.
-       (if (= :page.id/welcome page-id)
-         [Welcome]
-         [App]))
+   ;; Site
+   ;; ================
+   (when-let [active-page-frame (stack/?active-page-frame)]
+     ;; Scaffolding adds a top and side nav interface - it's like a wrapper for the page.
+     ;; Same pages might not want/need the scaffolding, e.g.: Welcome, in that case the page
+     ;; will be rendered on its own.
+     ;;
+     ;; Scaffolding is enabled by default, but it can be explicitly set in the page metadata.
+     (if (get-in active-page-frame [:frame/page :page/scaffolding?] true)
+       [Scaffolding active-page-frame]
+       [Page active-page-frame]))
 
 
-     ;; Devtools
-     ;; ================
-     [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-300.z-50
+   ;; Devtools
+   ;; ================
+   [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-300.z-50
 
-      [gui/IconAdjustments
-       (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
-                        "text-green-500"
-                        "text-red-500")]
-         {:class [bg-color "w-6 h-6"]})]
+    [gui/IconAdjustments
+     (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
+                      "text-green-500"
+                      "text-red-500")]
+       {:class [bg-color "w-6 h-6"]})]
 
-      [:input.ml-2 {:type "checkbox"
-                    :checked (sub :devtools/?enabled?)
-                    :on-change #(disp :devtools/!toggle)}]]
+    [:input.ml-2 {:type "checkbox"
+                  :checked (sub :devtools/?enabled?)
+                  :on-change #(disp :devtools/!toggle)}]]
 
-     (when (sub :devtools/?enabled?)
-       [devtools/Inspect])]))
+   (when (sub :devtools/?enabled?)
+     [devtools/Inspect])])
 
 (defn mount []
   (reagent.dom/render [Root] (.getElementById js/document "app")))
