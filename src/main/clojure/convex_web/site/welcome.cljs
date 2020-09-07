@@ -8,7 +8,7 @@
             ["@tailwindui/react" :refer [Transition]]))
 
 (defn NavButton [text href]
-  [:a.font-mono.text-sm.hover:text-gray-500.px-4.py-2
+  [:a.font-mono.text-base.hover:text-gray-500.px-4.py-2
    {:href href}
    text])
 
@@ -20,7 +20,7 @@
      px-4 py-2
      bg-white
      leading-5
-     font-mono font-medium text-sm text-gray-700 hover:text-gray-500
+     font-mono font-medium hover:text-gray-500
      focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
      active:bg-gray-50 active:text-gray-800
      transition ease-in-out duration-150"
@@ -39,7 +39,7 @@
 (defn Dropdown [{:keys [text items]}]
   (let [show? (reagent/atom false)]
     (fn []
-      [:div.relative.inline-block.text-left
+      [:div.relative.inline-block.text-left.text-base.text-black.ml-2
        [:div
 
         [DropdownButton
@@ -58,7 +58,7 @@
 
              (for [{:keys [text href]} items]
                ^{:key text}
-               [:a.block.px-4.py-2.text-sm.leading-5.text-gray-700.hover:bg-gray-100.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
+               [:a.block.px-4.py-2.leading-5.hover:bg-gray-100.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
                 {:href href}
                 text])]]]]]]])))
 
@@ -90,6 +90,16 @@
     ;; -- Sandbox
     [NavButton "Sandbox" (rfe/href :route-name/sandbox)]
 
+    ;; -- Tools
+    [Dropdown
+     {:text "Tools"
+      :items
+      [{:text "Wallet"
+        :href (rfe/href :route-name/wallet)}
+
+       {:text "Faucet"
+        :href (rfe/href :route-name/wallet)}]}]
+
     ;; -- Explorer
     [Dropdown
      {:text "Explorer"
@@ -101,6 +111,22 @@
         :href (rfe/href :route-name/block-coll-explorer)}
 
        {:text "Transactions"
+        :href (rfe/href :route-name/transactions-explorer)}]}]
+
+    ;; -- About
+    [Dropdown
+     {:text "About"
+      :items
+      [{:text "FAQ"
+        :href (rfe/href :route-name/accounts-explorer)}
+
+       {:text "Concepts"
+        :href (rfe/href :route-name/block-coll-explorer)}
+
+       {:text "White Paper"
+        :href (rfe/href :route-name/transactions-explorer)}
+
+       {:text "Roadmap"
         :href (rfe/href :route-name/transactions-explorer)}]}]]])
 
 (defn WelcomePage [_ state _]
