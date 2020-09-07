@@ -39,7 +39,7 @@
 (defn Dropdown [{:keys [text items]}]
   (let [show? (reagent/atom false)]
     (fn []
-      [:div.relative.inline-block.text-left.text-base.text-black.ml-2
+      [:div.relative.inline-block.text-left.text-base.text-black
        [:div
 
         [DropdownButton
@@ -71,7 +71,7 @@
      [gui/ConvexLogo {:width "28px" :height "32px"}]
      [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
 
-   [:div.flex.items-center
+   [:div.flex.items-center.space-x-4
     ;; -- Guides
     [Dropdown
      {:text "Guides"
