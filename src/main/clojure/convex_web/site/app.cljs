@@ -205,11 +205,8 @@
           ^{:key text} [NavItem route child])])]))
 
 (defn SideNav [active-route]
-  (let [{:keys [welcome others]} (nav)]
+  (let [{:keys [others]} (nav)]
     [:nav.flex.flex-col.flex-shrink-0.font-mono.w-64
-
-     [:div.mb-6
-      [NavItem active-route welcome]]
 
      (for [{:keys [text] :as item} others]
        ^{:key text}
@@ -268,10 +265,10 @@
   [:div.fixed.top-0.inset-x-0.z-100.h-16.border-b.bg-white
    [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
 
-
-    [:div.flex.items-center
-     [gui/ConvexLogo {:width "28px" :height "32px"}]
-     [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]
+    [:a {:href (rfe/href :route-name/welcome)}
+     [:div.flex.items-center
+      [gui/ConvexLogo {:width "28px" :height "32px"}]
+      [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
 
     [:div.flex.items-center.justify-end
      [gui/Tooltip

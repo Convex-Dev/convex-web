@@ -63,12 +63,13 @@
                 text])]]]]]]])))
 
 (defn Nav []
-  [:div.h-16.flex.justify-between.px-12
+  [:div.h-16.flex.items-center.justify-between.px-12
 
    ;; -- Logo
-   [:div.flex.items-center
-    [gui/ConvexLogo {:width "28px" :height "32px"}]
-    [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]
+   [:a {:href (rfe/href :route-name/welcome)}
+    [:div.flex.items-center
+     [gui/ConvexLogo {:width "28px" :height "32px"}]
+     [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
 
    [:div.flex.items-center
     ;; -- Guides
