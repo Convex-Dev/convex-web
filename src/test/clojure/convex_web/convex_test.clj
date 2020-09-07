@@ -41,7 +41,7 @@
 
   (testing "Custom types"
     (let [address (Address/fromHex "D0F65BB5d87316D6b7d74dbb93da3D7E416f8B0aF8FffbBD1f276A15f4907bfE")]
-      (is (= {"0xd0f65bb5d87316d6b7d74dbb93da3d7e416f8b0af8fffbbd1f276a15f4907bfe" 1}
+      (is (= {"0xD0F65BB5d87316D6b7d74dbb93da3D7E416f8B0aF8FffbBD1f276A15f4907bfE" 1}
              (convex/datafy (Maps/create address 1))))
 
       (is (= {"D0F65BB5d87316D6b7d74dbb93da3D7E416f8B0aF8FffbBD1f276A15f4907bfE" 1}
