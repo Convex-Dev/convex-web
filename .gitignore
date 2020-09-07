@@ -7,5 +7,6 @@ src/main/resources/public/css/styles.css
 .nrepl-port
 *.iml
 .DS_Store
+.project
 etch-db
 log/
