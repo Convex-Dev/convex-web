@@ -130,32 +130,124 @@
        {:text "Roadmap"
         :href (rfe/href :route-name/transactions-explorer)}]}]]])
 
-(defn WelcomePage [_ state _]
-  [:div.w-full.max-w-screen-xl.mx-auto
+(defn WelcomePage [_ _ _]
+  (let [marketing-vertical ["w-1/2 flex flex-col justify-center space-y-8"]
+        marketing-bullets ["flex flex-col space-y-4 text-base"]
+        marketing-copy ["text-xl text-gray-700 leading-8"]]
+    [:div.w-full.max-w-screen-xl.mx-auto
 
-   [Nav]
+     [Nav]
 
-   [:div.flex.flex-col.flex-1.items-center.justify-center.rounded
-    {:style
-     {:height "640px"
-      :background-color "#F3F9FE"}}
+     [:div.flex.flex-col.flex-1.items-center.justify-center.rounded
+      {:style
+       {:height "640px"
+        :background-color "#F3F9FE"}}
 
-    [gui/ConvexLogo {:width "56px" :height "64px"}]
+      [gui/ConvexLogo {:width "56px" :height "64px"}]
 
-    [:div.flex.flex-col.items-center.max-w-screen-md
-     [:span.font-mono.text-6xl.mt-10
-      "Building the Future"]
+      [:div.flex.flex-col.items-center.max-w-screen-md
+       [:span.font-mono.text-6xl.mt-10
+        "Building the Future"]
 
-     [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.mt-10
-      [:p "Convex is a global platform for trusted applications and digital assets."]
-      [:p "Write amazing code with the most powerful platform for smart contracts and test your ideas live in the web browser — no additional installations required."]]]]
+       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.mt-10
+        [:p "Convex is a global platform for trusted applications and digital assets."]
+        [:p "Write amazing code with the most powerful platform for smart contracts and test your ideas live in the web browser — no additional installations required."]]]]
 
-   [:div.flex.flex-1.justify-center.mt-14
-    [:span.inline-block.font-mono.text-center.text-4xl
-     {:class "w-4/5"
-      :style
-      {:color "#62A6E1"}}
-     "The tools to build the next generation of digital assets and applications are here."]]])
+     [:div.flex.flex-1.justify-center.my-14
+      [:span.inline-block.font-mono.text-center.text-4xl
+       {:class "w-4/5"
+        :style
+        {:color "#62A6E1"}}
+       "The tools to build the next generation of digital assets and applications are here."]]
+
+
+     ;; Convex is flexible
+     ;; =========================
+     [:div.w-full.flex.mb-40.space-x-8
+
+      ;; -- Image
+      [:div {:class "w-1/2"}
+       [:img {:src "images/convex_flexible.png"}]]
+
+      ;; -- Copy
+      [:div {:class marketing-vertical}
+
+       [:span.font-mono.text-4xl "Convex is Flexible"]
+
+       [:p.text-xl.leading-8
+        "Convex is well suited as a platform for applications that need to be
+         100% secure and also publicly verifiable (both in terms of data and
+         application behaviour), such as:"]
+
+       [:div {:class marketing-bullets}
+        [:span.font-mono "Public registries and databases"]
+
+        [:span.font-mono "Digital currencies"]
+
+        [:span.font-mono "Prediction markets"]
+
+        [:span.font-mono "Smart contracts for managing digital assets"]
+
+        [:span.font-mono "Immutable provenance records"]]]]
+
+     ;; Convex is fast
+     ;; =========================
+     [:div.w-full.flex.mb-40.space-x-8
+
+      ;; -- Copy
+      [:div {:class marketing-vertical}
+
+       [:span.font-mono.text-4xl "Convex is Fast"]
+
+       [:p {:class marketing-copy}
+        "With a novel consensus algorithm, Convex is able to execute
+         decentralised applications at internet scale. Using normal consumer
+         grade hardware and network bandwidth the network can achieve:"]
+
+       [:div {:class marketing-bullets}
+        [:span.font-mono
+         "Thousands of digitally signed transactions per second (more than the
+          1,700 transactions per second typically handled by the VISA network)"]
+
+        [:span.font-mono
+         "Ability to execute over a million operations per second on the CVM"]
+
+        [:span.font-mono
+         "Low latency (around 1 second for global consensus)"]]
+
+       [:p {:class marketing-copy}
+        "In the future, it will be possible to extend scalability even further
+         through proven techniques such as sharding, state channel or side
+         chains."]]
+
+      ;; -- Image
+      [:div {:class "w-1/2"}
+       [:img {:src "images/convex_fast.png"}]]]
+
+
+     ;; Convex is fun
+     ;; =========================
+     [:div.w-full.flex.mb-40
+
+      ;; -- Image
+      [:div {:class "w-1/2"}
+       [:img {:src "images/convex_fun.png"}]]
+
+      ;; -- Copy
+      [:div {:class marketing-vertical}
+
+       [:span.font-mono.text-4xl "Convex is Fun"]
+
+       [:p {:class marketing-copy}
+        "We believe in providing a powerful, interactive environment for
+         development in Convex that enables high productivity while maintaining
+         secure coding principles."]
+
+       [:p {:class marketing-copy}
+        "Convex provides an interactive REPL allowing users to code directly
+         on the Convex platform using Convex Lisp."]]]
+
+     ]))
 
 (def welcome-page
   #:page {:id :page.id/welcome
