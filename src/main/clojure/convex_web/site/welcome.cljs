@@ -142,17 +142,20 @@
 
     [gui/ConvexLogo {:width "56px" :height "64px"}]
 
-    [:span.font-mono.text-6xl.pt-10
-     "Building the Future"]
+    [:div.flex.flex-col.items-center.max-w-screen-md
+     [:span.font-mono.text-6xl.mt-10
+      "Building the Future"]
 
-    [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8
-     [:p "Convex is a global platform for trusted applications and digital assets."]
-     [:p "Write amazing code with the most powerful platform for smart contracts and test your ideas live in the web browser — no additional installations required."]]]
+     [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.mt-10
+      [:p "Convex is a global platform for trusted applications and digital assets."]
+      [:p "Write amazing code with the most powerful platform for smart contracts and test your ideas live in the web browser — no additional installations required."]]]]
 
-   [:span.font-mono.text-4xl
-    {:style
-     {:color "#62A6E1"}}
-    "The tools to build the next generation of digital assets and applications are here."]])
+   [:div.flex.flex-1.justify-center.mt-14
+    [:span.inline-block.font-mono.text-center.text-4xl
+     {:class "w-4/5"
+      :style
+      {:color "#62A6E1"}}
+     "The tools to build the next generation of digital assets and applications are here."]]])
 
 (def welcome-page
   #:page {:id :page.id/welcome
