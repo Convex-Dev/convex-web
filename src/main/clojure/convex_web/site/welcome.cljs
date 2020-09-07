@@ -63,7 +63,7 @@
                 text])]]]]]]])))
 
 (defn Nav []
-  [:div.h-16.flex.justify-between
+  [:div.h-16.flex.justify-between.px-12
 
    ;; -- Logo
    [:div.flex.items-center
