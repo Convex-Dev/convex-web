@@ -98,7 +98,7 @@
         :href (rfe/href :route-name/wallet)}
 
        {:text "Faucet"
-        :href (rfe/href :route-name/wallet)}]}]
+        :href (rfe/href :route-name/faucet)}]}]
 
     ;; -- Explorer
     [Dropdown

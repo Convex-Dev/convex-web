@@ -104,6 +104,14 @@
        :start (fn [_]
                 (stack/push :page.id/wallet {:reset? true}))}]}]
 
+   ["faucet"
+    {:name :route-name/faucet
+     :controllers
+     [{:identity identity
+       :start (fn [_]
+                (stack/push :page.id/faucet {:reset? true
+                                             :state {:convex-web/faucet {:convex-web.faucet/amount 1000000}}}))}]}]
+
    ["explorer"
     [""
      {:name :route-name/explorer
