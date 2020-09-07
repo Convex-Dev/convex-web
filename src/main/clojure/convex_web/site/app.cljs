@@ -262,7 +262,7 @@
        [component frame state set-state]]]]))
 
 (defn TopNav []
-  [:div.fixed.top-0.inset-x-0.z-100.h-16.border-b.bg-white
+  [:div.fixed.top-0.inset-x-0.z-100.h-16.border-b.border-gray-100.bg-white
    [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
 
     [:a {:href (rfe/href :route-name/welcome)}
