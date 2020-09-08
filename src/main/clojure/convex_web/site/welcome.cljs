@@ -253,5 +253,4 @@
   #:page {:id :page.id/welcome
           :title "Welcome"
           :component #'WelcomePage
-          :scaffolding? false
-          :on-push (markdown/hook-fn :welcome)})
+          :scaffolding? false})
