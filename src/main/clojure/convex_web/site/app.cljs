@@ -25,7 +25,8 @@
 
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]
-            ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
+            ["highlight.js/lib/languages/javascript" :as hljs-javascript]
+            [reagent.core :as reagent]))
 
 
 (glogi-console/install!)
@@ -213,24 +214,6 @@
        [:div.mb-8
         [NavItem active-route item]])]))
 
-(defn SelectAccount []
-  [:select
-   {:class
-    ["text-sm"
-     "p-1"
-     "rounded"
-     "focus:outline-none"
-     "hover:bg-gray-100 hover:shadow-md"]
-    :value (or (session/?active-address) "")
-    :on-change
-    (fn [event]
-      (let [value (.-value (.-target event))]
-        (session/pick-address value)))}
-   (for [{:convex-web.account/keys [address]} (session/?accounts)]
-     ^{:key address}
-     [:option {:value address}
-      (format/address-blob address)])])
-
 (defn Modal [{:frame/keys [uuid page state] :as frame}]
   (let [set-state (stack/make-set-state uuid)
 
@@ -261,8 +244,55 @@
       [:div.flex.flex-1.overflow-auto
        [component frame state set-state]]]]))
 
+(defn AccountSelect []
+  (let [*state (reagent/atom {:show? false})]
+    (fn []
+      (let [{:keys [show? selected]} @*state
+
+            selected (or selected (session/?active-address))]
+        [:div.space-y-1
+
+         [:div.relative
+
+          ;; Selected
+          [:span.inline-block.w-full.rounded-md.shadow-sm
+           {:on-click #(swap! *state update :show? not)}
+           [:button.cursor-default.relative.w-full.rounded-md.border.border-gray-300.bg-white.pl-3.pr-10.py-2.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5 {:type "button" :aria-haspopup "listbox" :aria-expanded "true" :aria-labelledby "listbox-label"}
+
+            [:span.font-mono.block.truncate (or (format/address-blob selected) "Select")]
+
+            [:span.absolute.inset-y-0.right-0.flex.items-center.pr-2.pointer-events-none
+             [:svg.h-5.w-5.text-gray-400 {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
+              [:path {:d "M7 7l3-3 3 3m0 6l-3 3-3-3" :stroke-width "1.5" :stroke-linecap "round" :stroke-linejoin "round"}]]]]]
+
+          (when show?
+            ;; Options
+            [:div.absolute.mt-1.w-full.rounded-md.bg-white.shadow-lg
+             [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
+
+              (for [{:convex-web.account/keys [address]} (session/?accounts)]
+                ^{:key address}
+                [:li.text-gray-900.cursor-default.select-none.relative.py-2.pl-3.pr-9
+                 {:class
+                  (if (= address selected)
+                    "bg-blue-100"
+                    "bg-transparent")
+                  :on-click
+                  #(do
+                     (reset! *state {:show? false :selected address})
+
+                     (session/pick-address address))}
+
+                 [:span.font-mono.block.truncate
+                  (format/address-blob address)]
+
+                 (when (= address selected)
+                   [:span.text-blue-600.absolute.inset-y-0.right-0.flex.items-center.pr-4
+                    [gui/CheckIcon {:class "h-5 w-5"}]])])]])]]))))
+
+
 (defn TopNav []
-  [:div.fixed.top-0.inset-x-0.z-100.h-16.border-b.border-gray-100.bg-white
+  [:div.fixed.top-0.inset-x-0.z-50.h-16.border-b.border-gray-100.bg-white
    [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
 
     [:a {:href (rfe/href :route-name/welcome)}
@@ -285,9 +315,7 @@
        [:span.text-xs.uppercase "Create Account"]]]
 
      (when (seq (session/?accounts))
-       [gui/Tooltip
-        {:title "Select Account to use"}
-        [SelectAccount]])
+       [AccountSelect])
 
      (when-let [active-address (session/?active-address)]
        [gui/Tooltip

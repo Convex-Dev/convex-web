@@ -38,7 +38,7 @@
 
 (defn Dropdown [{:keys [text items]}]
   (let [show? (reagent/atom false)]
-    (fn []
+    (fn [{:keys [text items]}]
       [:div.relative.inline-block.text-left.text-base.text-black
        [:div
 

@@ -84,7 +84,7 @@
    :body
    (let [asset-prefix-url (system/site-asset-prefix-url system)]
      (page/html5
-       (stylesheet "https://fonts.googleapis.com/css2?family=Inter&display=swap")
+       (stylesheet "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap")
        (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono&display=swap")
 
        (stylesheet (str asset-prefix-url "/css/highlight/tomorrow-night.css"))

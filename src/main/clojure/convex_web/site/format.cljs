@@ -1,6 +1,7 @@
 (ns convex-web.site.format
   (:require [goog.i18n.NumberFormat]
-            [goog.i18n.NumberFormat.Format])
+            [goog.i18n.NumberFormat.Format]
+            [clojure.string :as str])
   (:import (goog.i18n DateTimeParse)
            (goog.date DateTime)))
 
@@ -14,4 +15,5 @@
   (.format (goog.i18n.NumberFormat. goog.i18n.NumberFormat.Format/DECIMAL) n))
 
 (defn address-blob [address]
-  (str "0x" address))
+  (when-not (str/blank? address)
+    (str "0x" address)))
