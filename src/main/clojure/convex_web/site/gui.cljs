@@ -22,6 +22,10 @@
   (some-> (.getElementById js/document id)
           (.scrollIntoView)))
 
+(defn scroll-element-into-view [el]
+  (when el
+    (.scrollIntoView el)))
+
 (defn highlight-block [el]
   (when el
     (.highlightBlock hljs el)))

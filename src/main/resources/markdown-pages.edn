@@ -36,7 +36,8 @@
     :path "markdown/public_api.md"}]}
 
  :faq
- {:toc? false
+ {:toc? true
+  :smart-toc? true
   :contents
   [{:name "FAQ"
     :path "markdown/faq.md"}]}
@@ -47,7 +48,8 @@
     :path "markdown/decentralisation.md"}]}
 
  :white-paper
- {:toc? false
+ {:toc? true
+  :smart-toc? true
   :contents
   [{:name "White Paper"
     :path "markdown/articles/convex-whitepaper.md"}]}}
