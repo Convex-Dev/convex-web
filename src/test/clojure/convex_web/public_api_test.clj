@@ -49,7 +49,25 @@
           response-body (json/read-str (get response :body) :key-fn keyword)]
 
       (is (= 200 (get response :status)))
-      (is (= {:value 6} response-body))))
+      (is (= {:value 6} response-body)))
+
+    (let [response1 @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO)
+                                                                :source (str "balance(address(\"" (.toChecksumHex Init/HERO) "\"))")
+                                                                :lang :convex-scrypt})
+          response-body1 (json/read-str (get response1 :body) :key-fn keyword)
+
+          response2 @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO)
+                                                                :source (str "balance(\"" (.toChecksumHex Init/HERO) "\")")
+                                                                :lang :convex-scrypt})
+          response-body2 (json/read-str (get response2 :body) :key-fn keyword)]
+
+      (is (= 200 (get response1 :status)))
+      (is (= 200 (get response2 :status)))
+
+      (is (= {:value 10000000000} response-body1))
+      (is (= {:value 10000000000} response-body2))
+
+      (is (= response-body1 response-body2))))
 
   (testing "Syntax error"
     (let [response @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO) :source "(inc 1"})
