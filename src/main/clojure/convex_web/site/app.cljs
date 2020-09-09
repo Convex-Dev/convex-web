@@ -248,7 +248,7 @@
 
 (defn SideNav [active-route]
   (let [{:keys [others]} (nav)]
-    [:nav.flex.flex-col.flex-shrink-0.font-mono.w-64
+    [:nav.flex.flex-col.flex-shrink-0.font-mono.w-64.overflow-auto
 
      (for [{:keys [text] :as item} others]
        ^{:key text}
