@@ -141,7 +141,7 @@
                                  (when source
                                    {"source" source})
                                  (when lang
-                                   {"lang" lang}))))
+                                   {"lang" (name lang)}))))
 
 (defmethod logging-json-payload :logging.event/transaction-prepare [{:keys [address source] :as item}]
   (Payload$JsonPayload/of (merge (default-payload-data item)
