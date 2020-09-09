@@ -14,8 +14,6 @@
       markdown-key
       {:handler
        (fn [markdown-page]
-         (js/console.log markdown-page)
-
          (set-state update :markdown merge {:ajax/status :ajax.status/success} markdown-page))
 
        :error-handler
@@ -37,11 +35,12 @@
        [:<>
         ;; -- Markdown
         [:div.overflow-auto
-         (if toc?
-           ;; Add right padding to have some spacing between the markdown and the TOC.
-           {:class "pr-10"}
-           ;; Without a TOC the markdown must have a full width.
-           {:class "flex-1"})
+         {:class
+          (if toc?
+            ;; Add right padding to have some spacing between the markdown and the TOC.
+            "pr-10"
+            ;; Without a TOC the markdown must have a full width.
+            "flex-1")}
 
          (for [{:keys [name content]} contents]
            ^{:key name}
