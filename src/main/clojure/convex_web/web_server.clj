@@ -303,13 +303,21 @@
 
         (successful-response faucet)))))
 
-(defn POST-v1-query [system {:keys [body]}]
+(defn POST-v1-query [system {:keys [query-params body]}]
   (let [{:keys [address source]} (json-decode body)
+
+        lang (get query-params "lang")
+        lang (or (some-> lang keyword) :convex-lisp)
 
         _ (u/log :logging.event/query
                  :severity :info
                  :address address
-                 :source source)
+                 :source source
+                 :lang lang)
+
+        _ (when-not (contains? #{:convex-scrypt :convex-lisp} lang)
+            (throw (ex-info "Invalid lang."
+                            {::anomalies/category ::anomalies/incorrect})))
 
         address (try
                   (s/assert :convex-web/address address)
@@ -323,7 +331,9 @@
                    (throw (ex-info "Source can't be empty."
                                    {::anomalies/category ::anomalies/incorrect}))))
 
-        result (peer/query (system/convex-peer-server system) source (Address/fromHex address))
+        result (peer/query (system/convex-peer-server system) {:source source
+                                                               :lang lang
+                                                               :address (Address/fromHex address)})
 
         result-response (merge {:value (convex/datafy result)}
                                (when (instance? AExceptional result)

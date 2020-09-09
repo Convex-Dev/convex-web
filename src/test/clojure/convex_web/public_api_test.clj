@@ -34,6 +34,23 @@
       (is (= 200 (get response :status)))
       (is (= {:value 1} response-body))))
 
+  (testing "Scrypt"
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO)
+                                                               :source "inc(1)"
+                                                               :lang :convex-scrypt})
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+
+      (is (= 200 (get response :status)))
+      (is (= {:value 2} response-body)))
+
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO)
+                                                               :source "reduce(+, 0, [1, 2, 3])"
+                                                               :lang :convex-scrypt})
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+
+      (is (= 200 (get response :status)))
+      (is (= {:value 6} response-body))))
+
   (testing "Syntax error"
     (let [response @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO) :source "(inc 1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]

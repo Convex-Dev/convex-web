@@ -54,12 +54,17 @@
   (let [^Address address (if (string? address) (Address/fromHex address) address)]
     (.sendQuery conn (cond-wrap-do (Reader/readAll source)) address)))
 
-(defn query [^Peer peer ^String source ^Address address]
-  (let [forms (try
-                (Reader/readAll source)
-                (catch Throwable ex
-                  (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
-                                                   ::anomalies/category ::anomalies/incorrect}))))
-        context (.executeQuery peer (wrap-do forms) address)]
+(defn query [^Peer peer {:keys [^String source ^Address address lang]}]
+  (let [form (try
+               (case lang
+                 :convex-lisp
+                 (wrap-do (Reader/readAll source))
+
+                 :convex-scrypt
+                 (ScryptNext/readSyntax source))
+               (catch Throwable ex
+                 (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
+                                                  ::anomalies/category ::anomalies/incorrect}))))
+        context (.executeQuery peer form address)]
     (.getValue context)))
 
