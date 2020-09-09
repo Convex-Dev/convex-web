@@ -1,9 +1,9 @@
 ;; Key is used by a site page to request the "markdown page".
 ;;
-;; In the context of a site page, the collection of markdowns
-;; is displayed as the table of contents.
+;; Options:
+;; - `:toc?` if a table of contents, based on `:contents` items' name, should be visible.
 ;;
-;; This is how a markdown get rendered in the site:
+;; This is how a markdown gets rendered in the site:
 ;; - A page requests a markdown by it's name/key (see route '/api/internal/markdown-page');
 ;; - The markdown is rendered by the component `convex-web.site.markdown/Markdown`.
 
