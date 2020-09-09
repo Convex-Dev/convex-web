@@ -42,7 +42,8 @@
       (is (= {:error {:message "Syntax error."}} response-body))))
 
   (testing "Non-existent address"
-    (let [response @(client/POST-public-v1-query (server-url) {:address "7a66429CA9c10e68eFae2dCBF1804f0F6B3369c7164a3187D6233683c258710f" :source "(map inc 1)"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address "7a66429CA9c10e68eFae2dCBF1804f0F6B3369c7164a3187D6233683c258710f"
+                                                               :source "(map inc 1)"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
 
       (is (= 200 (get response :status)))
@@ -55,7 +56,7 @@
 
       (is (= 200 (get response :status)))
       (is (= {:error-code "CAST"
-              :value "ErrorValue[:CAST] : Can't convert 1 to class class convex.core.data.ASequence
+              :value "ErrorValue[:CAST] : Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence
 In function: map"} response-body)))))
 
 (deftest prepare-test
