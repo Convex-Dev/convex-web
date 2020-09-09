@@ -51,13 +51,14 @@
          (map ::account/address)
          (into #{}))))
 
-(defn read-markdown-page [k]
-  (let [pages-by-k (edn/read-string (slurp (io/resource "markdown-pages.edn")))]
-    (some->> (get pages-by-k k)
-             (map
-               (fn [{:keys [name path]}]
-                 {:name name
-                  :content (slurp (io/resource path))})))))
+(defn read-markdown-page [id]
+  (let [markdown-pages (edn/read-string (slurp (io/resource "markdown-pages.edn")))]
+    (when-let [{:keys [contents] :as markdown-page} (get markdown-pages id)]
+      (assoc markdown-page :contents (map
+                                       (fn [{:keys [name path]}]
+                                         {:name name
+                                          :content (slurp (io/resource path))})
+                                       contents)))))
 
 (defn stylesheet [href]
   [:link
@@ -740,13 +741,13 @@
 (defn -GET-markdown-page [_ request]
   (try
     (let [page (get-in request [:query-params "page"])
-          contents (read-markdown-page (keyword page))]
+          markdown-page (read-markdown-page (keyword page))]
       (cond
-        (nil? contents)
+        (nil? markdown-page)
         (not-found-response (error "Markdown page not found."))
 
         :else
-        (-successful-response contents)))
+        (-successful-response markdown-page)))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error

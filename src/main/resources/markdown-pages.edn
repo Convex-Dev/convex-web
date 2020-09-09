@@ -7,40 +7,47 @@
 ;; - A page requests a markdown by it's name/key (see route '/api/internal/markdown-page');
 ;; - The markdown is rendered by the component `convex-web.site.markdown/Markdown`.
 
-{:welcome
- [{:name "Welcome"
-   :path "markdown/welcome.md"}]
-
- :explorer
- [{:name "Explorer"
-   :path "markdown/explorer.md"}]
+{:explorer
+ {:toc? false
+  :contents
+  [{:name "Explorer"
+    :path "markdown/explorer.md"}]}
 
  :documentation
- [{:name "Documentation"
-   :path "markdown/documentation.md"}]
+ {:toc? false
+  :contents
+  [{:name "Documentation"
+    :path "markdown/documentation.md"}]}
 
  :getting-started
- [{:name "Getting Started"
-   :path "markdown/getting_started.md"}]
+ {:contents
+  [{:name "Getting Started"
+    :path "markdown/getting_started.md"}]}
 
  :tutorials
- [{:name "Introduction to Convex Lisp"
-   :path "markdown/convex_lisp.md"}
+ {:contents
+  [{:name "Introduction to Convex Lisp"
+    :path "markdown/convex_lisp.md"}
 
-  {:name "Introduction to Smart Contracts"
-   :path "markdown/introduction_smart_contracts.md"}
+   {:name "Introduction to Smart Contracts"
+    :path "markdown/introduction_smart_contracts.md"}
 
-  {:name "HTTP API"
-   :path "markdown/public_api.md"}]
+   {:name "HTTP API"
+    :path "markdown/public_api.md"}]}
 
  :faq
- [{:name "FAQ"
-   :path "markdown/faq.md"}]
+ {:toc? false
+  :contents
+  [{:name "FAQ"
+    :path "markdown/faq.md"}]}
 
  :concepts
- [{:name "Decentralisation"
-   :path "markdown/decentralisation.md"}]
+ {:contents
+  [{:name "Decentralisation"
+    :path "markdown/decentralisation.md"}]}
 
  :white-paper
- [{:name "White Paper"
-   :path "markdown/articles/convex-whitepaper.md"}]}
+ {:toc? false
+  :contents
+  [{:name "White Paper"
+    :path "markdown/articles/convex-whitepaper.md"}]}}

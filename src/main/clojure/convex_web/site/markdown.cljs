@@ -3,7 +3,7 @@
             [convex-web.site.backend :as backend]))
 
 (defn get-on-push
-  "Returns a Hook function to get markdown from the server.
+  "Returns a function to get markdown from the server.
 
    Markdown state will be stored under the key `:markdown`."
   [markdown-key]
@@ -13,8 +13,10 @@
     (backend/GET-markdown-page
       markdown-key
       {:handler
-       (fn [contents]
-         (set-state update :markdown assoc :ajax/status :ajax.status/success :contents contents))
+       (fn [markdown-page]
+         (js/console.log markdown-page)
+
+         (set-state update :markdown merge {:ajax/status :ajax.status/success} markdown-page))
 
        :error-handler
        (fn [error]

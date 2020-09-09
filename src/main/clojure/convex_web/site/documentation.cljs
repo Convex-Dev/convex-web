@@ -114,7 +114,7 @@
 
 
 (defn DocumentationPage [_ state _]
-  [markdown/Markdown (assoc-in state [:markdown :toc?] false)])
+  [markdown/Markdown state])
 
 (def documentation-page
   #:page {:id :page.id/documentation
@@ -124,7 +124,7 @@
 
 
 (defn FaqPage [_ state _]
-  [markdown/Markdown (assoc-in state [:markdown :toc?] false)])
+  [markdown/Markdown state])
 
 (def faq-page
   #:page {:id :page.id/faq
@@ -144,7 +144,7 @@
 
 
 (defn WhitePaperPage [_ state _]
-  [markdown/Markdown (assoc-in state [:markdown :toc?] false)])
+  [markdown/Markdown state])
 
 (def white-paper-page
   #:page {:id :page.id/white-paper
