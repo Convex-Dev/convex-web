@@ -76,6 +76,9 @@
                         (fn [session]
                           (session/create session))})))))}]}
 
+
+   ;; Welcome
+   ;; ==============
    [""
     {:name :route-name/welcome
      :controllers
@@ -83,6 +86,9 @@
        :start (fn [_]
                 (stack/push :page.id/welcome {:reset? true}))}]}]
 
+
+   ;; Create account
+   ;; ==============
    ["create-account"
     {:name :route-name/create-account
      :controllers
@@ -90,6 +96,9 @@
        :start (fn [_]
                 (stack/push :page.id/create-account {:reset? true}))}]}]
 
+
+   ;; Sandbox
+   ;; ==============
    ["sandbox"
     {:name :route-name/sandbox
      :controllers
@@ -97,6 +106,9 @@
        :start (fn [_]
                 (stack/push :page.id/repl {:reset? true}))}]}]
 
+
+   ;; Wallet
+   ;; ==============
    ["wallet"
     {:name :route-name/wallet
      :controllers
@@ -104,6 +116,9 @@
        :start (fn [_]
                 (stack/push :page.id/wallet {:reset? true}))}]}]
 
+
+   ;; Faucet
+   ;; ==============
    ["faucet"
     {:name :route-name/faucet
      :controllers
@@ -112,6 +127,8 @@
                 (stack/push :page.id/faucet {:reset? true
                                              :state {:convex-web/faucet {:convex-web.faucet/amount 1000000}}}))}]}]
 
+   ;; Explorer
+   ;; ==============
    ["explorer"
     [""
      {:name :route-name/explorer
@@ -164,6 +181,9 @@
       [{:start (fn [_]
                  (stack/push :page.id/transactions-range-explorer {:reset? true}))}]}]]
 
+
+   ;; Documentation
+   ;; ==============
    ["documentation"
     [""
      {:name :route-name/documentation
@@ -171,11 +191,6 @@
       [{:start (fn [_]
                  (stack/push :page.id/documentation {:reset? true}))}]}]
 
-    ["/concepts"
-     {:name :route-name/documentation-concepts
-      :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/documentation-concepts {:reset? true}))}]}]
 
     ["/reference"
      {:name :route-name/documentation-reference
@@ -197,7 +212,53 @@
      {:name :route-name/documentation-tutorial
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/documentation-tutorial {:reset? true}))}]}]]])
+                 (stack/push :page.id/documentation-tutorial {:reset? true}))}]}]]
+
+
+   ;; About
+   ;; ==============
+   ["about"
+    [""
+     {:name :route-name/about
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/about {:reset? true}))}]}]
+
+    ["/faq"
+     {:name :route-name/faq
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/faq {:reset? true}))}]}]
+
+    ["/concepts"
+     {:name :route-name/concepts
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/concepts {:reset? true}))}]}]
+
+    ["/white-paper"
+     {:name :route-name/white-paper
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/white-paper {:reset? true}))}]}]
+
+    ["/get-involved"
+     {:name :route-name/get-involved
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/faq {:reset? true}))}]}]
+
+    ["/roadmap"
+     {:name :route-name/roadmap
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/faq {:reset? true}))}]}]
+
+    ["/convex-foundation"
+     {:name :route-name/convex-foundation
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/faq {:reset? true}))}]}]]])
 
 (def router
   (rf/router routes))

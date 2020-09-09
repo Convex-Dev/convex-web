@@ -83,6 +83,8 @@
    documentation/tutorial-page
    documentation/getting-started-page
    documentation/concepts-page
+   documentation/faq-page
+   documentation/white-paper-page
 
    ;; ---
 
@@ -109,16 +111,14 @@
                          :route-name/create-account})}
 
      :others
-     [{:text "Guides"
+     [;; Guides
+      ;; ==============
+      {:text "Guides"
        :top-level? true
        :route-name :route-name/documentation
        :href (rfe/href :route-name/documentation)
        :children
-       [{:text "Concepts"
-         :route-name :route-name/documentation-concepts
-         :href (rfe/href :route-name/documentation-concepts)}
-
-        {:text "Getting Started"
+       [{:text "Getting Started"
          :route-name :route-name/documentation-getting-started
          :href (rfe/href :route-name/documentation-getting-started)}
 
@@ -130,16 +130,25 @@
          :route-name :route-name/documentation-reference
          :href (rfe/href :route-name/documentation-reference)}]}
 
+
+      ;; Sandbox
+      ;; ==============
       {:text "Sandbox"
        :top-level? true
        :route-name :route-name/sandbox
        :href (rfe/href :route-name/sandbox)}
 
+
+      ;; Wallet
+      ;; ==============
       {:text "Wallet"
        :top-level? true
        :route-name :route-name/wallet
        :href (rfe/href :route-name/wallet)}
 
+
+      ;; Explorer
+      ;; ==============
       {:text "Explorer"
        :top-level? true
        :route-name :route-name/explorer
@@ -160,7 +169,39 @@
              {:text "Transactions"
               :route-name :route-name/transactions-explorer
               :href (rfe/href :route-name/transactions-explorer)}]
-            (sort-by first))}]}))
+            (sort-by first))}
+
+
+      ;; About
+      ;; ==============
+      {:text "About"
+       :top-level? true
+       :route-name :route-name/about
+       :href (rfe/href :route-name/about)
+       :children
+       [{:text "FAQ"
+         :route-name :route-name/faq
+         :href (rfe/href :route-name/faq)}
+
+        {:text "Concepts"
+         :route-name :route-name/concepts
+         :href (rfe/href :route-name/concepts)}
+
+        {:text "White Paper"
+         :route-name :route-name/white-paper
+         :href (rfe/href :route-name/white-paper)}
+
+        {:text "Get Involved"
+         :route-name :route-name/get-involved
+         :href (rfe/href :route-name/get-involved)}
+
+        {:text "Roadmap"
+         :route-name :route-name/roadmap
+         :href (rfe/href :route-name/roadmap)}
+
+        {:text "Convex Foundation"
+         :route-name :route-name/convex-foundation
+         :href (rfe/href :route-name/convex-foundation)}]}]}))
 
 (defn NavItem [route {:keys [text top-level? active? href target route-name children]}]
   (let [active? (or (= route-name (router/route-name route))
@@ -193,11 +234,11 @@
           [gui/IconExternalLink {:class "w-6 h-6"}]]
          [:span text])]
 
-      (when-not leaf?
-        [gui/IconChevronDown
-         {:class
-          ["w-6 h-6"
-           "text-blue-400"]}])]
+      #_(when-not leaf?
+          [gui/IconChevronDown
+           {:class
+            ["w-6 h-6"
+             "text-blue-400"]}])]
 
      ;; -- Children
      (when (seq children)

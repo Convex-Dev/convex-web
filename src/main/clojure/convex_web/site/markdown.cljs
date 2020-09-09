@@ -2,7 +2,7 @@
   (:require [convex-web.site.gui :as gui]
             [convex-web.site.backend :as backend]))
 
-(defn hook-fn
+(defn get-on-push
   "Returns a Hook function to get markdown from the server.
 
    Markdown state will be stored under the key `:markdown`."

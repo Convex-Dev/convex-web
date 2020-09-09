@@ -1,3 +1,12 @@
+;; Key is used by a site page to request the "markdown page".
+;;
+;; In the context of a site page, the collection of markdowns
+;; is displayed as the table of contents.
+;;
+;; This is how a markdown get rendered in the site:
+;; - A page requests a markdown by it's name/key (see route '/api/internal/markdown-page');
+;; - The markdown is rendered by the component `convex-web.site.markdown/Markdown`.
+
 {:welcome
  [{:name "Welcome"
    :path "markdown/welcome.md"}]
@@ -9,10 +18,6 @@
  :documentation
  [{:name "Documentation"
    :path "markdown/documentation.md"}]
-
- :concepts
- [{:name "Decentralisation"
-   :path "markdown/decentralisation.md"}]
 
  :getting-started
  [{:name "Getting Started"
@@ -26,4 +31,16 @@
    :path "markdown/introduction_smart_contracts.md"}
 
   {:name "HTTP API"
-   :path "markdown/public_api.md"}]}
+   :path "markdown/public_api.md"}]
+
+ :faq
+ [{:name "FAQ"
+   :path "markdown/faq.md"}]
+
+ :concepts
+ [{:name "Decentralisation"
+   :path "markdown/decentralisation.md"}]
+
+ :white-paper
+ [{:name "White Paper"
+   :path "markdown/articles/convex-whitepaper.md"}]}

@@ -76,10 +76,7 @@
     [Dropdown
      {:text "Guides"
       :items
-      [{:text "Concepts"
-        :href (rfe/href :route-name/documentation-concepts)}
-
-       {:text "Getting Started"
+      [{:text "Getting Started"
         :href (rfe/href :route-name/documentation-getting-started)}
 
        {:text "Tutorial"
