@@ -22,6 +22,10 @@
   (some-> (.getElementById js/document id)
           (.scrollIntoView)))
 
+(defn scroll-element-into-view [el]
+  (when el
+    (.scrollIntoView el)))
+
 (defn highlight-block [el]
   (when el
     (.highlightBlock hljs el)))
@@ -142,6 +146,22 @@
            :stroke "currentColor"}
           attrs)
    [:path {:d "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"}] [:path {:d "M21 12a9 9 0 11-18 0 9 9 0 0118 0z"}]])
+
+(defn BulletIcon [& [attrs]]
+  [:svg
+   (merge {:width "40px"
+           :height "40px"
+           :viewBox "0 0 40 40"
+           :version "1.1"}
+          attrs)
+   [:title "Group"]
+   [:g#Symbols {:stroke "none" :stroke-width "1" :fill "none" :fill-rule "evenodd"}
+    [:g#Group
+     [:rect#Rectangle {:fill "#F3F9FE" :x "0" :y "0" :width "40" :height "40" :rx "4"}]
+     [:g#Icon {:transform "translate(4.000000, 4.000000)"}
+      [:mask#mask-2 {:fill "white"}
+       [:polygon#path-1 {:points "16.3031733 4 5.33333333 10.3333333 5.33333333 23 16.3031733 29.3333333 27.2725067 23 27.2725067 10.3333333"}]]
+      [:polygon#path-1 {:fill "#62A6E1" :points "16.3031733 4 5.33333333 10.3333333 5.33333333 23 16.3031733 29.3333333 27.2725067 23 27.2725067 10.3333333"}]]]]])
 
 (defn SortAscendingIcon [& [attrs]]
   [:svg

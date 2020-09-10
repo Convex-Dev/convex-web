@@ -51,13 +51,14 @@
          (map ::account/address)
          (into #{}))))
 
-(defn read-markdown-page [k]
-  (let [pages-by-k (edn/read-string (slurp (io/resource "markdown-pages.edn")))]
-    (some->> (get pages-by-k k)
-             (map
-               (fn [{:keys [name path]}]
-                 {:name name
-                  :content (slurp (io/resource path))})))))
+(defn read-markdown-page [id]
+  (let [markdown-pages (edn/read-string (slurp (io/resource "markdown-pages.edn")))]
+    (when-let [{:keys [contents] :as markdown-page} (get markdown-pages id)]
+      (assoc markdown-page :contents (map
+                                       (fn [{:keys [name path]}]
+                                         {:name name
+                                          :content (slurp (io/resource path))})
+                                       contents)))))
 
 (defn stylesheet [href]
   [:link
@@ -84,7 +85,7 @@
    :body
    (let [asset-prefix-url (system/site-asset-prefix-url system)]
      (page/html5
-       (stylesheet "https://fonts.googleapis.com/css2?family=Inter&display=swap")
+       (stylesheet "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap")
        (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono&display=swap")
 
        (stylesheet (str asset-prefix-url "/css/highlight/tomorrow-night.css"))
@@ -173,12 +174,19 @@
 ;; ==========================
 
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
-  (let [{:keys [address source]} (json-decode body)
+  (let [{:keys [address source lang]} (json-decode body)
+
+        lang (or (some-> lang keyword) :convex-lisp)
 
         _ (u/log :logging.event/transaction-prepare
                  :severity :info
                  :address address
-                 :source source)
+                 :source source
+                 :lang lang)
+
+        _ (when-not (contains? #{:convex-scrypt :convex-lisp} lang)
+            (throw (ex-info "Invalid lang."
+                            {::anomalies/category ::anomalies/incorrect})))
 
         address (try
                   (s/assert :convex-web/address address)
@@ -192,7 +200,8 @@
 
         peer (system/convex-peer-server system)
         sequence-number (or (peer/sequence-number peer (Address/fromHex address)) 1)
-        tx (peer/invoke-transaction (inc sequence-number) source :convex-lisp)]
+        command (peer/read source lang)
+        tx (peer/create-invoke (inc sequence-number) command)]
 
     ;; Persist the transaction in the Etch datastore.
     (Ref/createPersisted tx)
@@ -200,6 +209,7 @@
     (successful-response {:sequence-number sequence-number
                           :address address
                           :source source
+                          :lang lang
                           :hash (.toHexString (.getHash tx))})))
 
 (defn POST-v1-transaction-submit [system {:keys [body]}]
@@ -303,12 +313,19 @@
         (successful-response faucet)))))
 
 (defn POST-v1-query [system {:keys [body]}]
-  (let [{:keys [address source]} (json-decode body)
+  (let [{:keys [address source lang]} (json-decode body)
+
+        lang (or (some-> lang keyword) :convex-lisp)
 
         _ (u/log :logging.event/query
                  :severity :info
                  :address address
-                 :source source)
+                 :source source
+                 :lang lang)
+
+        _ (when-not (contains? #{:convex-scrypt :convex-lisp} lang)
+            (throw (ex-info "Invalid lang."
+                            {::anomalies/category ::anomalies/incorrect})))
 
         address (try
                   (s/assert :convex-web/address address)
@@ -322,7 +339,9 @@
                    (throw (ex-info "Source can't be empty."
                                    {::anomalies/category ::anomalies/incorrect}))))
 
-        result (peer/query (system/convex-peer-server system) source (Address/fromHex address))
+        result (peer/query (system/convex-peer-server system) {:source source
+                                                               :lang lang
+                                                               :address (Address/fromHex address)})
 
         result-response (merge {:value (convex/datafy result)}
                                (when (instance? AExceptional result)
@@ -740,13 +759,13 @@
 (defn -GET-markdown-page [_ request]
   (try
     (let [page (get-in request [:query-params "page"])
-          contents (read-markdown-page (keyword page))]
+          markdown-page (read-markdown-page (keyword page))]
       (cond
-        (nil? contents)
+        (nil? markdown-page)
         (not-found-response (error "Markdown page not found."))
 
         :else
-        (-successful-response contents)))
+        (-successful-response markdown-page)))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error

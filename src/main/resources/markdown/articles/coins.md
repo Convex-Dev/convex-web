@@ -35,5 +35,3 @@ Diamond coins are work 1,000,000,000,000 copper. These are valuable assets.
 
 Emerald coins are the highest denomination, work 1,000,000,000,000,000 copper. The entire Convex coin supply is only 1,000 emeralds. You're lucky if you can collect a few of these!
 
-
-

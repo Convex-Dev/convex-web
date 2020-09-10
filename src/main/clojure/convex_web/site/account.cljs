@@ -171,22 +171,22 @@
                                     (stack/set-state uuid f)))}))
 
 (re-frame/reg-sub-raw ::?transfer-from-account
-                      (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
-                        (get-transfer-account (merge m {:state-key :transfer-page/from}))
+  (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
+    (get-transfer-account (merge m {:state-key :transfer-page/from}))
 
-                        (make-reaction
-                          (fn []
-                            (when-let [frame (stack/find-frame @app-db uuid)]
-                              (get-in frame [:frame/state :transfer-page/from]))))))
+    (make-reaction
+      (fn []
+        (when-let [frame (stack/find-frame @app-db uuid)]
+          (get-in frame [:frame/state :transfer-page/from]))))))
 
 (re-frame/reg-sub-raw ::?transfer-to-account
-                      (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
-                        (get-transfer-account (merge m {:state-key :transfer-page/to}))
+  (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
+    (get-transfer-account (merge m {:state-key :transfer-page/to}))
 
-                        (make-reaction
-                          (fn []
-                            (when-let [frame (stack/find-frame @app-db uuid)]
-                              (get-in frame [:frame/state :transfer-page/to]))))))
+    (make-reaction
+      (fn []
+        (when-let [frame (stack/find-frame @app-db uuid)]
+          (get-in frame [:frame/state :transfer-page/to]))))))
 
 (defn TransferProgress [{:convex-web/keys [command transfer] :as state} _]
   [:div.flex.flex-col.flex-1.items-center.justify-center
@@ -418,7 +418,9 @@
                                   (set-state assoc :faucet-page/target {:ajax/status :ajax.status/success
                                                                         :convex-web/account account}))}))
 
-(defn FaucetInput [{:keys [convex-web/faucet faucet-page/config] :as state} set-state]
+(defn FaucetInput [{:keys [frame/modal?]}
+                   {:keys [convex-web/faucet faucet-page/config] :as state}
+                   set-state]
   (let [{:convex-web.faucet/keys [target amount]} faucet
 
         to-my-accounts? (get config :faucet-page.config/my-accounts? false)
@@ -463,7 +465,7 @@
              (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] value))}])]
 
      ;; -- Balance
-     (let [account (get-in state [:faucet-page/target :convex-web/account])]
+     (when-let [account (get-in state [:faucet-page/target :convex-web/account])]
        [:div.flex.justify-end.mt-1
         [:span.text-xs.text-gray-600.uppercase
          "Balance"]
@@ -484,11 +486,14 @@
           (set-state assoc-in [:convex-web/faucet :convex-web.faucet/amount] amount))}]
 
      [:div.flex.justify-center.mt-6
-      [gui/DefaultButton
-       {:on-click #(stack/pop)}
-       [:span.text-xs.uppercase "Cancel"]]
 
-      [:div.mx-2]
+      (when modal?
+        [:<>
+         [gui/DefaultButton
+          {:on-click #(stack/pop)}
+          [:span.text-xs.uppercase "Cancel"]]
+
+         [:div.mx-2]])
 
       [gui/DefaultButton
        {:disabled (not (s/valid? :convex-web/faucet faucet))
@@ -508,7 +513,7 @@
                                                                :ajax/error error))}))}
        [:span.text-xs.uppercase "Request"]]]]))
 
-(defn FaucetSuccess [{:keys [convex-web/faucet faucet-page/target]}]
+(defn FaucetSuccess [frame {:keys [convex-web/faucet faucet-page/target]} set-state]
   [:div.flex.flex-col.items-center.text-sm
    [:span.text-lg
     "Success!"]
@@ -524,10 +529,14 @@
     "."]
 
    [gui/DefaultButton
-    {:on-click #(stack/pop)}
+    {:on-click
+     (fn []
+       (if (:frame/modal? frame)
+         (stack/pop)
+         (set-state #(dissoc % :ajax/status))))}
     [:span.text-xs.uppercase "Done"]]])
 
-(defn FaucetError [{:keys [ajax/error]}]
+(defn FaucetError [frame {:keys [ajax/error]} set-state]
   [:div.flex.flex-col.items-center.text-sm
    [:span.text-lg
     "Sorry"]
@@ -536,33 +545,34 @@
     (get-in error [:response :error :message])]
 
    [gui/DefaultButton
-    {:on-click #(stack/pop)}
+    {:on-click
+     (fn []
+       (if (:frame/modal? frame)
+         (stack/pop)
+         (set-state #(dissoc % :ajax/status))))}
     [:span.text-xs.uppercase "Done"]]])
 
-(defn FaucetPage [_ {:keys [ajax/status] :as state} set-state]
+(defn FaucetPage [frame {:keys [ajax/status] :as state} set-state]
   [:div.flex.flex-1.justify-center.my-4.mx-10
    (case status
      :ajax.status/pending
      [gui/Spinner]
 
      :ajax.status/success
-     [FaucetSuccess state]
+     [FaucetSuccess frame state set-state]
 
      :ajax.status/error
-     [FaucetError state]
+     [FaucetError frame state set-state]
 
-     [FaucetInput state set-state])])
+     [FaucetInput frame state set-state])])
 
 (def faucet-page
   #:page {:id :page.id/faucet
           :title "Faucet"
           :component #'FaucetPage
-          :state-spec
-          (fn [{:keys [convex-web/faucet]}]
-            (s/valid? (s/keys :req [:convex-web.faucet/target]) faucet))
           :on-push
           (fn [_ state set-state]
-            (let [address (get-in state [:convex-web/faucet :convex-web.faucet/target])]
+            (when-let [address (get-in state [:convex-web/faucet :convex-web.faucet/target])]
               (set-state assoc :faucet-page/target {:ajax/status :ajax.status/pending})
 
               (faucet-get-target address set-state)))})

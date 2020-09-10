@@ -209,5 +209,5 @@ Although not useful, this empty Actor still exists on the Convex Network. You ca
 => 0
 ```
 
-### A 
+### A public 
 

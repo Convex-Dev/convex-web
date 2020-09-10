@@ -100,7 +100,7 @@
   #:page {:id :page.id/documentation-tutorial
           :title "Tutorial"
           :component #'TutorialPage
-          :on-push (markdown/hook-fn :tutorials)})
+          :on-push (markdown/get-on-push :tutorials)})
 
 
 (defn GettingStartedPage [_ state _]
@@ -110,23 +110,53 @@
   #:page {:id :page.id/documentation-getting-started
           :title "Getting Started"
           :component #'GettingStartedPage
-          :on-push (markdown/hook-fn :getting-started)})
+          :on-push (markdown/get-on-push :getting-started)})
+
+
+(defn DocumentationPage [_ state _]
+  [markdown/Markdown state])
+
+(def documentation-page
+  #:page {:id :page.id/documentation
+          :title "Documentation"
+          :component #'DocumentationPage
+          :on-push (markdown/get-on-push :documentation)})
+
+
+(defn AboutPage [_ state _]
+  [markdown/Markdown state])
+
+(def about-page
+  #:page {:id :page.id/about
+          :title "FAQ"
+          :component #'AboutPage
+          :on-push (markdown/get-on-push :faq)})
+
+(defn FaqPage [_ state _]
+  [markdown/Markdown state])
+
+(def faq-page
+  #:page {:id :page.id/faq
+          :title "FAQ"
+          :component #'FaqPage
+          :on-push (markdown/get-on-push :faq)})
 
 
 (defn ConceptsPage [_ state _]
   [markdown/Markdown state])
 
 (def concepts-page
-  #:page {:id :page.id/documentation-concepts
+  #:page {:id :page.id/concepts
           :title "Concepts"
           :component #'ConceptsPage
-          :on-push (markdown/hook-fn :concepts)})
+          :on-push (markdown/get-on-push :concepts)})
 
-(defn DocumentationPage [_ state _]
-  [markdown/Markdown (assoc-in state [:markdown :toc?] false)])
 
-(def documentation-page
-  #:page {:id :page.id/documentation
-          :title "Documentation"
-          :component #'DocumentationPage
-          :on-push (markdown/hook-fn :documentation)})
+(defn WhitePaperPage [_ state _]
+  [markdown/Markdown state])
+
+(def white-paper-page
+  #:page {:id :page.id/white-paper
+          :title "White Paper"
+          :component #'WhitePaperPage
+          :on-push (markdown/get-on-push :white-paper)})

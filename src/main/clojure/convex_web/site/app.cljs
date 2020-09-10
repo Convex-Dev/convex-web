@@ -25,7 +25,8 @@
 
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]
-            ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
+            ["highlight.js/lib/languages/javascript" :as hljs-javascript]
+            [reagent.core :as reagent]))
 
 
 (glogi-console/install!)
@@ -82,6 +83,9 @@
    documentation/tutorial-page
    documentation/getting-started-page
    documentation/concepts-page
+   documentation/faq-page
+   documentation/white-paper-page
+   documentation/about-page
 
    ;; ---
 
@@ -108,16 +112,14 @@
                          :route-name/create-account})}
 
      :others
-     [{:text "Guides"
+     [;; Guides
+      ;; ==============
+      {:text "Guides"
        :top-level? true
        :route-name :route-name/documentation
        :href (rfe/href :route-name/documentation)
        :children
-       [{:text "Concepts"
-         :route-name :route-name/documentation-concepts
-         :href (rfe/href :route-name/documentation-concepts)}
-
-        {:text "Getting Started"
+       [{:text "Getting Started"
          :route-name :route-name/documentation-getting-started
          :href (rfe/href :route-name/documentation-getting-started)}
 
@@ -129,16 +131,25 @@
          :route-name :route-name/documentation-reference
          :href (rfe/href :route-name/documentation-reference)}]}
 
+
+      ;; Sandbox
+      ;; ==============
       {:text "Sandbox"
        :top-level? true
        :route-name :route-name/sandbox
        :href (rfe/href :route-name/sandbox)}
 
+
+      ;; Wallet
+      ;; ==============
       {:text "Wallet"
        :top-level? true
        :route-name :route-name/wallet
        :href (rfe/href :route-name/wallet)}
 
+
+      ;; Explorer
+      ;; ==============
       {:text "Explorer"
        :top-level? true
        :route-name :route-name/explorer
@@ -159,7 +170,39 @@
              {:text "Transactions"
               :route-name :route-name/transactions-explorer
               :href (rfe/href :route-name/transactions-explorer)}]
-            (sort-by first))}]}))
+            (sort-by first))}
+
+
+      ;; About
+      ;; ==============
+      {:text "About"
+       :top-level? true
+       :route-name :route-name/about
+       :href (rfe/href :route-name/about)
+       :children
+       [{:text "FAQ"
+         :route-name :route-name/faq
+         :href (rfe/href :route-name/faq)}
+
+        {:text "Concepts"
+         :route-name :route-name/concepts
+         :href (rfe/href :route-name/concepts)}
+
+        {:text "White Paper"
+         :route-name :route-name/white-paper
+         :href (rfe/href :route-name/white-paper)}
+
+        {:text "Get Involved"
+         :route-name :route-name/get-involved
+         :href (rfe/href :route-name/get-involved)}
+
+        {:text "Roadmap"
+         :route-name :route-name/roadmap
+         :href (rfe/href :route-name/roadmap)}
+
+        {:text "Convex Foundation"
+         :route-name :route-name/convex-foundation
+         :href (rfe/href :route-name/convex-foundation)}]}]}))
 
 (defn NavItem [route {:keys [text top-level? active? href target route-name children]}]
   (let [active? (or (= route-name (router/route-name route))
@@ -192,11 +235,11 @@
           [gui/IconExternalLink {:class "w-6 h-6"}]]
          [:span text])]
 
-      (when-not leaf?
-        [gui/IconChevronDown
-         {:class
-          ["w-6 h-6"
-           "text-blue-400"]}])]
+      #_(when-not leaf?
+          [gui/IconChevronDown
+           {:class
+            ["w-6 h-6"
+             "text-blue-400"]}])]
 
      ;; -- Children
      (when (seq children)
@@ -205,34 +248,13 @@
           ^{:key text} [NavItem route child])])]))
 
 (defn SideNav [active-route]
-  (let [{:keys [welcome others]} (nav)]
-    [:nav.flex.flex-col.flex-shrink-0.font-mono.w-64
-
-     [:div.mb-6
-      [NavItem active-route welcome]]
+  (let [{:keys [others]} (nav)]
+    [:nav.flex.flex-col.flex-shrink-0.font-mono.w-64.overflow-auto
 
      (for [{:keys [text] :as item} others]
        ^{:key text}
        [:div.mb-8
         [NavItem active-route item]])]))
-
-(defn SelectAccount []
-  [:select
-   {:class
-    ["text-sm"
-     "p-1"
-     "rounded"
-     "focus:outline-none"
-     "hover:bg-gray-100 hover:shadow-md"]
-    :value (or (session/?active-address) "")
-    :on-change
-    (fn [event]
-      (let [value (.-value (.-target event))]
-        (session/pick-address value)))}
-   (for [{:convex-web.account/keys [address]} (session/?accounts)]
-     ^{:key address}
-     [:option {:value address}
-      (format/address-blob address)])])
 
 (defn Modal [{:frame/keys [uuid page state] :as frame}]
   (let [set-state (stack/make-set-state uuid)
@@ -264,14 +286,61 @@
       [:div.flex.flex-1.overflow-auto
        [component frame state set-state]]]]))
 
+(defn AccountSelect []
+  (let [*state (reagent/atom {:show? false})]
+    (fn []
+      (let [{:keys [show? selected]} @*state
+
+            selected (or selected (session/?active-address))]
+        [:div.space-y-1
+
+         [:div.relative
+
+          ;; Selected
+          [:span.inline-block.w-full.rounded-md.shadow-sm
+           {:on-click #(swap! *state update :show? not)}
+           [:button.cursor-default.relative.w-full.rounded-md.border.border-gray-300.bg-white.pl-3.pr-10.py-2.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5 {:type "button" :aria-haspopup "listbox" :aria-expanded "true" :aria-labelledby "listbox-label"}
+
+            [:span.font-mono.block.truncate (or (format/address-blob selected) "Select")]
+
+            [:span.absolute.inset-y-0.right-0.flex.items-center.pr-2.pointer-events-none
+             [:svg.h-5.w-5.text-gray-400 {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
+              [:path {:d "M7 7l3-3 3 3m0 6l-3 3-3-3" :stroke-width "1.5" :stroke-linecap "round" :stroke-linejoin "round"}]]]]]
+
+          (when show?
+            ;; Options
+            [:div.absolute.mt-1.w-full.rounded-md.bg-white.shadow-lg
+             [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
+
+              (for [{:convex-web.account/keys [address]} (session/?accounts)]
+                ^{:key address}
+                [:li.text-gray-900.cursor-default.select-none.relative.py-2.pl-3.pr-9
+                 {:class
+                  (if (= address selected)
+                    "bg-blue-100"
+                    "bg-transparent")
+                  :on-click
+                  #(do
+                     (reset! *state {:show? false :selected address})
+
+                     (session/pick-address address))}
+
+                 [:span.font-mono.block.truncate
+                  (format/address-blob address)]
+
+                 (when (= address selected)
+                   [:span.text-blue-600.absolute.inset-y-0.right-0.flex.items-center.pr-4
+                    [gui/CheckIcon {:class "h-5 w-5"}]])])]])]]))))
+
+
 (defn TopNav []
-  [:div.fixed.top-0.inset-x-0.z-100.h-16.border-b.bg-white
+  [:div.fixed.top-0.inset-x-0.z-50.h-16.border-b.border-gray-100.bg-white
    [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
 
-
-    [:div.flex.items-center
-     [gui/ConvexLogo {:width "28px" :height "32px"}]
-     [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]
+    [:a {:href (rfe/href :route-name/welcome)}
+     [:div.flex.items-center
+      [gui/ConvexLogo {:width "28px" :height "32px"}]
+      [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
 
     [:div.flex.items-center.justify-end
      [gui/Tooltip
@@ -288,9 +357,7 @@
        [:span.text-xs.uppercase "Create Account"]]]
 
      (when (seq (session/?accounts))
-       [gui/Tooltip
-        {:title "Select Account to use"}
-        [SelectAccount]])
+       [AccountSelect])
 
      (when-let [active-address (session/?active-address)]
        [gui/Tooltip
@@ -326,10 +393,8 @@
           :on-click #(stack/push :page.id/session {:modal? true})}
          [:span.text-xs.uppercase label]]])]]])
 
-(defn App []
-  (let [{:frame/keys [uuid page state] :as active-page-frame} (stack/?active-page-frame)
-
-        {page-component :page/component} page
+(defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]
+  (let [{Component :page/component} page
 
         set-state (stack/make-set-state uuid)]
     [:<>
@@ -352,52 +417,46 @@
        ;; -- Page
        [:div.relative.flex.flex-col.flex-1.pl-24.overflow-auto
         (when active-page-frame
-          [page-component active-page-frame state set-state])]]]]))
+          [Component active-page-frame state set-state])]]]]))
 
-(defn Welcome []
-  (let [{:frame/keys [uuid page state] :as active-page-frame} (stack/?active-page-frame)
-
-        {page-component :page/component} page
+(defn Page [{:frame/keys [uuid page state] :as active-page-frame}]
+  (let [{Component :page/component} page
 
         set-state (stack/make-set-state uuid)]
-    [page-component active-page-frame state set-state]))
+    [Component active-page-frame state set-state]))
 
 (defn Root []
-  (let [page-id (get-in (stack/?active-page-frame) [:frame/page :page/id])]
-    [:<>
+  [:<>
 
-     ;; Site
-     ;; ================
-     (when page-id
-       ;; The welcome page is somewhat special.
-       ;; It's a regular page, just like the others,
-       ;; but it's special because it's rendered on its own,
-       ;; without the common framework.
-       ;;
-       ;; This is useful because we can use the welcome page
-       ;; as a landing page - which looks different from the
-       ;; rest of the site.
-       (if (= :page.id/welcome page-id)
-         [Welcome]
-         [App]))
+   ;; Site
+   ;; ================
+   (when-let [active-page-frame (stack/?active-page-frame)]
+     ;; Scaffolding adds a top and side nav interface - it's like a wrapper for the page.
+     ;; Same pages might not want/need the scaffolding, e.g.: Welcome, in that case the page
+     ;; will be rendered on its own.
+     ;;
+     ;; Scaffolding is enabled by default, but it can be explicitly set in the page metadata.
+     (if (get-in active-page-frame [:frame/page :page/scaffolding?] true)
+       [Scaffolding active-page-frame]
+       [Page active-page-frame]))
 
 
-     ;; Devtools
-     ;; ================
-     [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-300.z-50
+   ;; Devtools
+   ;; ================
+   [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-300.z-50
 
-      [gui/IconAdjustments
-       (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
-                        "text-green-500"
-                        "text-red-500")]
-         {:class [bg-color "w-6 h-6"]})]
+    [gui/IconAdjustments
+     (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
+                      "text-green-500"
+                      "text-red-500")]
+       {:class [bg-color "w-6 h-6"]})]
 
-      [:input.ml-2 {:type "checkbox"
-                    :checked (sub :devtools/?enabled?)
-                    :on-change #(disp :devtools/!toggle)}]]
+    [:input.ml-2 {:type "checkbox"
+                  :checked (sub :devtools/?enabled?)
+                  :on-change #(disp :devtools/!toggle)}]]
 
-     (when (sub :devtools/?enabled?)
-       [devtools/Inspect])]))
+   (when (sub :devtools/?enabled?)
+     [devtools/Inspect])])
 
 (defn mount []
   (reagent.dom/render [Root] (.getElementById js/document "app")))
