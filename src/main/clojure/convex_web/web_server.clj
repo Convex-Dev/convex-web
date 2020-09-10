@@ -303,10 +303,9 @@
 
         (successful-response faucet)))))
 
-(defn POST-v1-query [system {:keys [query-params body]}]
-  (let [{:keys [address source]} (json-decode body)
+(defn POST-v1-query [system {:keys [body]}]
+  (let [{:keys [address source lang]} (json-decode body)
 
-        lang (get query-params "lang")
         lang (or (some-> lang keyword) :convex-lisp)
 
         _ (u/log :logging.event/query

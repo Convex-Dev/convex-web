@@ -13,9 +13,7 @@
 (defn POST-public-v1-query [server-url {:keys [address source lang] :as body}]
   (let [url (str server-url "/api/v1/query")
         body (json/write-str body)]
-    (http/post url (merge {:body body}
-                          (when lang
-                            {:query-params {:lang (name lang)}})))))
+    (http/post url {:body body})))
 
 (defn POST-public-v1-transaction-prepare [server-url {:keys [address source] :as body}]
   (let [url (str server-url "/api/v1/transaction/prepare")
