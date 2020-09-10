@@ -129,8 +129,13 @@
 
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["w-1/2 flex flex-col justify-center space-y-8"]
-        marketing-bullets ["flex flex-col space-y-4 text-base"]
-        marketing-copy ["text-xl text-gray-700 leading-8"]]
+        marketing-bullets ["flex flex-col space-y-3 text-base"]
+        marketing-copy ["text-xl text-gray-700 leading-8"]
+
+        Item (fn [s]
+               [:div.flex.items-center
+                [gui/BulletIcon {:style {:min-width "40px" :min-height "40px"}}]
+                [:span.font-mono.ml-4 s]])]
     [:div.w-full.max-w-screen-xl.mx-auto
 
      [Nav]
@@ -177,15 +182,11 @@
          application behaviour), such as:"]
 
        [:div {:class marketing-bullets}
-        [:span.font-mono "Public registries and databases"]
-
-        [:span.font-mono "Digital currencies"]
-
-        [:span.font-mono "Prediction markets"]
-
-        [:span.font-mono "Smart contracts for managing digital assets"]
-
-        [:span.font-mono "Immutable provenance records"]]]]
+        [Item "Public registries and databases"]
+        [Item "Digital currencies"]
+        [Item "Prediction markets"]
+        [Item "Smart contracts for managing digital assets"]
+        [Item "Immutable provenance records"]]]]
 
      ;; Convex is fast
      ;; =========================
@@ -202,14 +203,14 @@
          grade hardware and network bandwidth the network can achieve:"]
 
        [:div {:class marketing-bullets}
-        [:span.font-mono
+        [Item
          "Thousands of digitally signed transactions per second (more than the
           1,700 transactions per second typically handled by the VISA network)"]
 
-        [:span.font-mono
+        [Item
          "Ability to execute over a million operations per second on the CVM"]
 
-        [:span.font-mono
+        [Item
          "Low latency (around 1 second for global consensus)"]]
 
        [:p {:class marketing-copy}
