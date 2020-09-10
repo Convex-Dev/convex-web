@@ -7,7 +7,13 @@
 ;; - A page requests a markdown by it's name/key (see route '/api/internal/markdown-page');
 ;; - The markdown is rendered by the component `convex-web.site.markdown/Markdown`.
 
-{:explorer
+{:under-construction
+ {:toc? false
+  :contents
+  [{:name "Under Construction"
+    :path "markdown/under_construction.md"}]}
+
+ :explorer
  {:toc? false
   :contents
   [{:name "Explorer"

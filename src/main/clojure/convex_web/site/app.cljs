@@ -78,6 +78,7 @@
 
    ;; ---
 
+   documentation/under-construction-page
    documentation/documentation-page
    documentation/reference-page
    documentation/tutorial-page

@@ -258,19 +258,19 @@
      {:name :route-name/get-involved
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/faq {:reset? true}))}]}]
+                 (stack/push :page.id/under-construction {:reset? true}))}]}]
 
     ["/roadmap"
      {:name :route-name/roadmap
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/faq {:reset? true}))}]}]
+                 (stack/push :page.id/under-construction {:reset? true}))}]}]
 
     ["/convex-foundation"
      {:name :route-name/convex-foundation
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/faq {:reset? true}))}]}]]])
+                 (stack/push :page.id/under-construction {:reset? true}))}]}]]])
 
 (def router
   (rf/router routes))

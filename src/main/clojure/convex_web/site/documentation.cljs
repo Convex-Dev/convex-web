@@ -3,11 +3,11 @@
             [convex-web.site.backend :as backend]
             [convex-web.site.markdown :as markdown]
 
+            [clojure.string :as str]
             [cljs.spec.alpha :as s]
 
             ["highlight.js/lib/core" :as hljs]
-            ["highlight.js/lib/languages/clojure" :as hljs-clojure]
-            [clojure.string :as str]))
+            ["highlight.js/lib/languages/clojure" :as hljs-clojure]))
 
 (defn ReferencePage [_ {:keys [ajax/status reference] :as state} _]
   (case status
@@ -110,7 +110,7 @@
   #:page {:id :page.id/documentation-getting-started
           :title "Getting Started"
           :component #'GettingStartedPage
-          :on-push (markdown/get-on-push :getting-started)})
+          :on-push (markdown/get-on-push :under-construction)})
 
 
 (defn DocumentationPage [_ state _]
@@ -128,9 +128,9 @@
 
 (def about-page
   #:page {:id :page.id/about
-          :title "FAQ"
+          :title "About"
           :component #'AboutPage
-          :on-push (markdown/get-on-push :faq)})
+          :on-push (markdown/get-on-push :under-construction)})
 
 (defn FaqPage [_ state _]
   [markdown/Markdown state])
@@ -149,7 +149,7 @@
   #:page {:id :page.id/concepts
           :title "Concepts"
           :component #'ConceptsPage
-          :on-push (markdown/get-on-push :concepts)})
+          :on-push (markdown/get-on-push :under-construction)})
 
 
 (defn WhitePaperPage [_ state _]
@@ -178,3 +178,12 @@
           :title "Advanced Topics"
           :component #'AdvancedTopicsPage
           :on-push (markdown/get-on-push :advanced-topics)})
+
+(defn UnderConstructionPage [_ state _]
+  [markdown/Markdown state])
+
+(def under-construction-page
+  #:page {:id :page.id/under-construction
+          :title "Under Construction"
+          :component #'UnderConstructionPage
+          :on-push (markdown/get-on-push :under-construction)})
