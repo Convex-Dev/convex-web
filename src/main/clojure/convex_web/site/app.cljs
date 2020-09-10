@@ -86,6 +86,8 @@
    documentation/faq-page
    documentation/white-paper-page
    documentation/about-page
+   documentation/vision-page
+   documentation/advanced-topics-page
 
    ;; ---
 
@@ -123,9 +125,13 @@
          :route-name :route-name/documentation-getting-started
          :href (rfe/href :route-name/documentation-getting-started)}
 
-        {:text "Tutorial"
+        {:text "Lisp Guide"
          :route-name :route-name/documentation-tutorial
          :href (rfe/href :route-name/documentation-tutorial)}
+
+        {:text "Advanced Topics"
+         :route-name :route-name/advanced-topics
+         :href (rfe/href :route-name/advanced-topics)}
 
         {:text "Reference"
          :route-name :route-name/documentation-reference
@@ -180,7 +186,11 @@
        :route-name :route-name/about
        :href (rfe/href :route-name/about)
        :children
-       [{:text "FAQ"
+       [{:text "Vision"
+         :route-name :route-name/vision
+         :href (rfe/href :route-name/vision)}
+
+        {:text "FAQ"
          :route-name :route-name/faq
          :href (rfe/href :route-name/faq)}
 

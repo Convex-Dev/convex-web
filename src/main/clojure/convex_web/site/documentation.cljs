@@ -160,3 +160,21 @@
           :title "White Paper"
           :component #'WhitePaperPage
           :on-push (markdown/get-on-push :white-paper)})
+
+(defn VisionPage [_ state _]
+  [markdown/Markdown state])
+
+(def vision-page
+  #:page {:id :page.id/vision
+          :title "Vision"
+          :component #'VisionPage
+          :on-push (markdown/get-on-push :vision)})
+
+(defn AdvancedTopicsPage [_ state _]
+  [markdown/Markdown state])
+
+(def advanced-topics-page
+  #:page {:id :page.id/advanced-topics
+          :title "Advanced Topics"
+          :component #'AdvancedTopicsPage
+          :on-push (markdown/get-on-push :advanced-topics)})

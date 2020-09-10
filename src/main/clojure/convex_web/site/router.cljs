@@ -212,7 +212,13 @@
      {:name :route-name/documentation-tutorial
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/documentation-tutorial {:reset? true}))}]}]]
+                 (stack/push :page.id/documentation-tutorial {:reset? true}))}]}]
+
+    ["/advanced-topics"
+     {:name :route-name/advanced-topics
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/advanced-topics {:reset? true}))}]}]]
 
 
    ;; About
@@ -223,6 +229,12 @@
       :controllers
       [{:start (fn [_]
                  (stack/push :page.id/about {:reset? true}))}]}]
+
+    ["/vision"
+     {:name :route-name/vision
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/vision {:reset? true}))}]}]
 
     ["/faq"
      {:name :route-name/faq
