@@ -110,7 +110,7 @@
   #:page {:id :page.id/documentation-getting-started
           :title "Getting Started"
           :component #'GettingStartedPage
-          :on-push (markdown/get-on-push :under-construction)})
+          :on-push (markdown/get-on-push :getting-started)})
 
 
 (defn DocumentationPage [_ state _]

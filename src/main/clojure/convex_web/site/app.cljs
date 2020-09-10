@@ -224,7 +224,7 @@
     [:div.flex.flex-col.justify-center
      (if leaf?
        {:style
-        {:height "40px"}}
+        {:height "32px"}}
        {})
      ;; -- Item
      [:div.flex.justify-between
@@ -264,7 +264,7 @@
 
      (for [{:keys [text] :as item} others]
        ^{:key text}
-       [:div.mb-8
+       [:div.mb-6
         [NavItem active-route item]])]))
 
 (defn Modal [{:frame/keys [uuid page state] :as frame}]
