@@ -683,6 +683,6 @@ At the same time, it maintains a certain degree of simplicity.
 
 * Simple functional programming on the CVM based on the lambda calculus
 * Immutability for all data structures
-* A comparatively simple consensus algorithm
+* A comparatively simple consensus algorithm based on CRDTs
 
 It is our hope that the innovations in Convex and the engineering decisions made will provide a practical, high performance platform for a new generation of decentralised applications.
