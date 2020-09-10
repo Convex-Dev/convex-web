@@ -79,8 +79,11 @@
       [{:text "Getting Started"
         :href (rfe/href :route-name/documentation-getting-started)}
 
-       {:text "Tutorial"
+       {:text "Lisp Guide"
         :href (rfe/href :route-name/documentation-tutorial)}
+
+       {:text "Advanced Topics"
+        :href (rfe/href :route-name/advanced-topics)}
 
        {:text "Reference"
         :href (rfe/href :route-name/documentation-reference)}]}]
@@ -115,7 +118,10 @@
     [Dropdown
      {:text "About"
       :items
-      [{:text "FAQ"
+      [{:text "Vision"
+        :href (rfe/href :route-name/vision)}
+
+       {:text "FAQ"
         :href (rfe/href :route-name/faq)}
 
        {:text "Concepts"
@@ -124,8 +130,14 @@
        {:text "White Paper"
         :href (rfe/href :route-name/white-paper)}
 
+       {:text "Get Involved"
+        :href (rfe/href :route-name/get-involved)}
+
        {:text "Roadmap"
-        :href (rfe/href :route-name/roadmap)}]}]]])
+        :href (rfe/href :route-name/roadmap)}
+
+       {:text "Convex Foundation"
+        :href (rfe/href :route-name/convex-foundation)}]}]]])
 
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["w-1/2 flex flex-col justify-center space-y-8"]
