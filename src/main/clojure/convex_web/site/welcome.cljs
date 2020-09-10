@@ -116,16 +116,16 @@
      {:text "About"
       :items
       [{:text "FAQ"
-        :href (rfe/href :route-name/accounts-explorer)}
+        :href (rfe/href :route-name/faq)}
 
        {:text "Concepts"
-        :href (rfe/href :route-name/block-coll-explorer)}
+        :href (rfe/href :route-name/concepts)}
 
        {:text "White Paper"
-        :href (rfe/href :route-name/transactions-explorer)}
+        :href (rfe/href :route-name/white-paper)}
 
        {:text "Roadmap"
-        :href (rfe/href :route-name/transactions-explorer)}]}]]])
+        :href (rfe/href :route-name/roadmap)}]}]]])
 
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["w-1/2 flex flex-col justify-center space-y-8"]

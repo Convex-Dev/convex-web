@@ -85,6 +85,7 @@
    documentation/concepts-page
    documentation/faq-page
    documentation/white-paper-page
+   documentation/about-page
 
    ;; ---
 

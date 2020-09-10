@@ -123,6 +123,15 @@
           :on-push (markdown/get-on-push :documentation)})
 
 
+(defn AboutPage [_ state _]
+  [markdown/Markdown state])
+
+(def about-page
+  #:page {:id :page.id/about
+          :title "FAQ"
+          :component #'AboutPage
+          :on-push (markdown/get-on-push :faq)})
+
 (defn FaqPage [_ state _]
   [markdown/Markdown state])
 
