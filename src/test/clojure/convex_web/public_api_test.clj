@@ -67,7 +67,16 @@
       (is (= {:value 10000000000} response-body1))
       (is (= {:value 10000000000} response-body2))
 
-      (is (= response-body1 response-body2))))
+      (is (= response-body1 response-body2)))
+
+    (testing "Syntax error"
+      (let [response @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO)
+                                                                 :source "map(inc [1, 2, 3, 4, 5])"
+                                                                 :lang :convex-scrypt})
+            response-body (json/read-str (get response :body) :key-fn keyword)]
+
+        (is (= 400 (get response :status)))
+        (is (= {:error {:message "Syntax error."}} response-body)))))
 
   (testing "Syntax error"
     (let [response @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO) :source "(inc 1"})
@@ -102,7 +111,15 @@ In function: map"} response-body)))))
                                         :source "inc(1)"
                                         :lang :convex-scrypt})
           response @(http/post prepare-url {:body prepare-body})]
-      (is (= 200 (get response :status)))))
+      (is (= 200 (get response :status))))
+
+    (testing "Syntax error"
+      (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
+            prepare-body (json/write-str {:address "8d4da977c8828050c7e9f00e4800f4ab6137e3da4088d78220ffac81e85cc6e0"
+                                          :source "map(inc [1, 2, 3, 4, 5])"
+                                          :lang :convex-scrypt})
+            response @(http/post prepare-url {:body prepare-body})]
+        (is (= 400 (get response :status))))))
 
   (testing "Address doesn't exist"
     (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")

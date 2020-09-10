@@ -1,4 +1,5 @@
 (ns convex-web.peer
+  (:refer-clojure :exclude [read])
   (:require [cognitect.anomalies :as anomalies])
   (:import (convex.net ResultConsumer Connection)
            (convex.peer Server)
@@ -37,6 +38,21 @@
   (some-> (consensus-state peer)
           (account-status address)
           (account-sequence)))
+
+(defn read [source lang]
+  (try
+    (case lang
+      :convex-lisp
+      (cond-wrap-do (Reader/readAll source))
+
+      :convex-scrypt
+      (ScryptNext/readSyntax source))
+    (catch Throwable ex
+      (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
+                                       ::anomalies/category ::anomalies/incorrect})))))
+
+(defn ^ATransaction create-invoke [^Long nonce command]
+  (Invoke/create nonce command))
 
 (defn ^ATransaction invoke-transaction [^Long nonce ^String source lang]
   (let [object (case lang

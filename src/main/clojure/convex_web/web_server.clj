@@ -200,7 +200,8 @@
 
         peer (system/convex-peer-server system)
         sequence-number (or (peer/sequence-number peer (Address/fromHex address)) 1)
-        tx (peer/invoke-transaction (inc sequence-number) source lang)]
+        command (peer/read source lang)
+        tx (peer/create-invoke (inc sequence-number) command)]
 
     ;; Persist the transaction in the Etch datastore.
     (Ref/createPersisted tx)
