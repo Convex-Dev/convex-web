@@ -38,8 +38,8 @@
           (account-status address)
           (account-sequence)))
 
-(defn ^ATransaction invoke-transaction [^Long nonce ^String source language]
-  (let [object (case language
+(defn ^ATransaction invoke-transaction [^Long nonce ^String source lang]
+  (let [object (case lang
                  :convex-lisp
                  (cond-wrap-do (Reader/readAll source))
 

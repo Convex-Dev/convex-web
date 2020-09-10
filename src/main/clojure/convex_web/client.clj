@@ -15,7 +15,7 @@
         body (json/write-str body)]
     (http/post url {:body body})))
 
-(defn POST-public-v1-transaction-prepare [server-url {:keys [address source] :as body}]
+(defn POST-public-v1-transaction-prepare [server-url {:keys [address source lang] :as body}]
   (let [url (str server-url "/api/v1/transaction/prepare")
         body (json/write-str body)]
     (http/post url {:body body})))

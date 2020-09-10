@@ -95,12 +95,19 @@
 In function: map"} response-body)))))
 
 (deftest prepare-test
-  (testing "Valid"
-    (testing "Address doesn't exist"
-      (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
-            prepare-body (json/write-str {:address "8d4da977c8828050c7e9f00e4800f4ab6137e3da4088d78220ffac81e85cc6e0" :source "(inc 1)"})
-            prepare-response @(http/post prepare-url {:body prepare-body})]
-        (is (= 200 (get prepare-response :status))))))
+  (testing "Convex Scrypt"
+    (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
+          prepare-body (json/write-str {:address "8d4da977c8828050c7e9f00e4800f4ab6137e3da4088d78220ffac81e85cc6e0"
+                                        :source "inc(1)"
+                                        :lang :convex-scrypt})
+          response @(http/post prepare-url {:body prepare-body})]
+      (is (= 200 (get response :status)))))
+
+  (testing "Address doesn't exist"
+    (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
+          prepare-body (json/write-str {:address "8d4da977c8828050c7e9f00e4800f4ab6137e3da4088d78220ffac81e85cc6e0" :source "(inc 1)"})
+          prepare-response @(http/post prepare-url {:body prepare-body})]
+      (is (= 200 (get prepare-response :status)))))
 
   (testing "Incorrect"
     (testing "No payload"
@@ -196,11 +203,12 @@ In function: map"} response-body)))))
           submit-response-body (json/read-str (get submit-response :body) :key-fn keyword)]
 
       (is (= 200 (get prepare-response :status)))
-      (is (= [:sequence-number
-              :address
-              :source
-              :hash]
-             (keys prepare-response-body)))
+      (is (= #{:sequence-number
+               :address
+               :source
+               :lang
+               :hash}
+             (set (keys prepare-response-body))))
 
       (is (= 200 (get submit-response :status)))
       (is (= #{:id :value} (set (keys submit-response-body))))

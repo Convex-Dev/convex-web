@@ -174,12 +174,19 @@
 ;; ==========================
 
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
-  (let [{:keys [address source]} (json-decode body)
+  (let [{:keys [address source lang]} (json-decode body)
+
+        lang (or (some-> lang keyword) :convex-lisp)
 
         _ (u/log :logging.event/transaction-prepare
                  :severity :info
                  :address address
-                 :source source)
+                 :source source
+                 :lang lang)
+
+        _ (when-not (contains? #{:convex-scrypt :convex-lisp} lang)
+            (throw (ex-info "Invalid lang."
+                            {::anomalies/category ::anomalies/incorrect})))
 
         address (try
                   (s/assert :convex-web/address address)
@@ -193,7 +200,7 @@
 
         peer (system/convex-peer-server system)
         sequence-number (or (peer/sequence-number peer (Address/fromHex address)) 1)
-        tx (peer/invoke-transaction (inc sequence-number) source :convex-lisp)]
+        tx (peer/invoke-transaction (inc sequence-number) source lang)]
 
     ;; Persist the transaction in the Etch datastore.
     (Ref/createPersisted tx)
@@ -201,6 +208,7 @@
     (successful-response {:sequence-number sequence-number
                           :address address
                           :source source
+                          :lang lang
                           :hash (.toHexString (.getHash tx))})))
 
 (defn POST-v1-transaction-submit [system {:keys [body]}]
