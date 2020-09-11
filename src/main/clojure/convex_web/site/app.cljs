@@ -335,12 +335,15 @@
 
                      (session/pick-address address))}
 
-                 [:span.font-mono.block.truncate
-                  (format/address-blob address)]
+                 [:div.flex.items-center
+                  [:div.h-5.w-5.mr-2
+                   (when (= address selected)
+                     [gui/CheckIcon {:class "h-5 w-5"}])]
 
-                 (when (= address selected)
-                   [:span.text-blue-600.absolute.inset-y-0.right-0.flex.items-center.pr-4
-                    [gui/CheckIcon {:class "h-5 w-5"}]])])]])]]))))
+                  [gui/Identicon {:value address :size 28}]
+
+                  [:span.font-mono.block.truncate.ml-2
+                   (format/address-blob address)]]])]])]]))))
 
 
 (defn TopNav []
