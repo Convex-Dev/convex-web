@@ -578,6 +578,10 @@
     :renderers
     {:code (reagent/reactify-component MarkdownCodeBlock)}}])
 
+
+(def identicon-size-small 26)
+(def identicon-size-large 40)
+
 (defn Identicon
   "Reagent wrapper for Jidenticon.
 

@@ -14,7 +14,7 @@
      (for [{:convex-web.account/keys [address]} (session/?accounts)]
        ^{:key address}
        [:div.flex.items-center
-        [gui/Identicon {:value address :size 40}]
+        [gui/Identicon {:value address :size gui/identicon-size-large}]
 
         [gui/Tooltip
          {:title "Address"}

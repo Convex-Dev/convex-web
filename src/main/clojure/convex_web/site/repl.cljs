@@ -394,7 +394,14 @@
        [:div.flex.items-center
         [:a.hover:underline.mr-2
          {:href (rfe/href :route-name/account-explorer {:address checksum-hex})}
-         [:code.text-xs (format/address-blob checksum-hex)]]
+         [:div.flex.items-center
+
+          ;; *Important*
+          ;; Display identicon if and only if address is an existing Account.
+          (when (= :ajax.status/success (:ajax/status @account-ref))
+            [gui/Identicon {:value checksum-hex :size gui/identicon-size-small}])
+
+          [:code.text-xs (format/address-blob checksum-hex)]]]
 
         [gui/ClipboardCopy (format/address-blob checksum-hex)]
 
