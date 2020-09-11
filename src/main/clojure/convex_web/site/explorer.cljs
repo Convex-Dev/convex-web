@@ -368,14 +368,16 @@
            ;; -- Address
            [:td.flex.items-center {:class td-class}
             [:div.flex.items-center
+             [gui/Identicon {:value address-blob :size 28}]
+
              (if modal?
-               [:code.underline.cursor-pointer.mr-2
+               [:code.underline.cursor-pointer.mx-2
                 {:on-click #(stack/push :page.id/account-explorer {:state
                                                                    {:ajax/status :ajax.status/pending
                                                                     :convex-web/account {:convex-web.account/address address}}
                                                                    :modal? true})}
                 address-blob]
-               [:a.flex-1.underline.hover:text-indigo-500.mr-2
+               [:a.flex-1.underline.hover:text-indigo-500.mx-2
                 {:href (rfe/href :route-name/account-explorer {:address address})}
                 [:code.text-xs address-blob]])
 

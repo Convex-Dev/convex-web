@@ -10,6 +10,8 @@
 
             ["@tailwindui/react" :as tailwindui-react]
 
+            ["jdenticon" :as jdenticon]
+
             [reagent.core :as reagent]
             [reitit.frontend.easy :as rfe]))
 
@@ -575,3 +577,9 @@
    {:source markdown
     :renderers
     {:code (reagent/reactify-component MarkdownCodeBlock)}}])
+
+(defn Identicon [{:keys [value size]}]
+  [:div
+   {:ref (fn [el]
+           (when el
+             (set! (.-innerHTML el) (jdenticon/toSvg value size))))}])

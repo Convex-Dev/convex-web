@@ -26,9 +26,7 @@
 
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]
-            ["highlight.js/lib/languages/javascript" :as hljs-javascript]
-
-            ["jdenticon" :as jdenticon]))
+            ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
 
 
 (glogi-console/install!)
@@ -372,12 +370,7 @@
        [AccountSelect])
 
      (when-let [active-address (session/?active-address)]
-       [:div
-        {:ref (fn [el]
-                (when el
-                  (set! (.-innerHTML el) (jdenticon/toSvg active-address 40))))}]
-
-       #_[gui/Tooltip
+       [gui/Tooltip
         {:title "Account details"}
         [:button.focus:outline-none.text-gray-700.hover:text-black.mx-4.w-6.h-6.rounded
          (merge {:on-click #(stack/push :page.id/my-account {:modal? true
