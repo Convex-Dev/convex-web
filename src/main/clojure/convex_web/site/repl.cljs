@@ -489,9 +489,7 @@
   [:div.flex.flex-1.overflow-auto
 
    ;; -- REPL
-   [:div.flex.flex-col.flex-1.my-4.mx-10
-    {:style
-     {:width "40vw"}}
+   [:div.flex.flex-col.flex-1
 
     ;; -- Commands
     [:div.flex.bg-gray-100.border.rounded.mb-2.overflow-auto
@@ -541,8 +539,8 @@
 
    ;; -- Sidebar
    (let [selected-tab (selected-tab state)]
-     [:div.flex.flex-col.ml-16.p-2.border-l
-      {:style {:width "420px"}}
+     [:div.flex.flex-col.ml-2.xl:ml-16.p-2.border-l
+      {:style {:width "20vw"}}
 
       ;; -- Tabs
       [:div.flex.mb-5
