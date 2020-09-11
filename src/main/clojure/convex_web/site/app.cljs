@@ -425,7 +425,7 @@
        [SideNav (:route/match (router/?route))]
 
        ;; -- Page
-       [:div.relative.flex.flex-col.flex-1.pl-24.overflow-auto
+       [:div.relative.flex.flex-col.flex-1.xl:pl-24.overflow-auto
         (when active-page-frame
           [Component active-page-frame state set-state])]]]]))
 
