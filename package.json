@@ -12,6 +12,7 @@
     "@tailwindui/react": "^0.1.1",
     "codemirror": "^5.57.0",
     "highlight.js": "^10.2.0",
+    "jdenticon": "^3.0.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-markdown": "^4.3.1",

@@ -18,6 +18,7 @@
             [cljs.spec.test.alpha :as stest]
 
             [reagent.dom]
+            [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [lambdaisland.glogi :as log]
             [lambdaisland.glogi.console :as glogi-console]
@@ -26,7 +27,8 @@
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]
             ["highlight.js/lib/languages/javascript" :as hljs-javascript]
-            [reagent.core :as reagent]))
+
+            ["jdenticon" :as jdenticon]))
 
 
 (glogi-console/install!)
@@ -370,7 +372,12 @@
        [AccountSelect])
 
      (when-let [active-address (session/?active-address)]
-       [gui/Tooltip
+       [:div
+        {:ref (fn [el]
+                (when el
+                  (set! (.-innerHTML el) (jdenticon/toSvg active-address 40))))}]
+
+       #_[gui/Tooltip
         {:title "Account details"}
         [:button.focus:outline-none.text-gray-700.hover:text-black.mx-4.w-6.h-6.rounded
          (merge {:on-click #(stack/push :page.id/my-account {:modal? true
