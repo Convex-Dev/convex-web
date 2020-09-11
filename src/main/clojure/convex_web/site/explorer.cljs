@@ -399,22 +399,24 @@
                {:title "This account is active"}
                [gui/CheckIcon {:class "w-4 h-4 text-green-500 ml-4"}]])]
 
+
            ;; -- Type
-           [:td {:class td-class}
-            (let [[label style tooltip] (cond
-                                          (get status :convex-web.account-status/library?)
-                                          ["library" "bg-purple-500" "Library's Address"]
+           (let [[label style tooltip] (cond
+                                         (get status :convex-web.account-status/library?)
+                                         ["library" "bg-purple-500" "Library's Address"]
 
-                                          (get status :convex-web.account-status/actor?)
-                                          ["actor" "bg-indigo-500" "Actor's Address"]
+                                         (get status :convex-web.account-status/actor?)
+                                         ["actor" "bg-indigo-500" "Actor's Address"]
 
-                                          :else
-                                          ["user" "bg-green-400" "User's Address"])]
+                                         :else
+                                         ["user" "bg-green-400" "User's Address"])]
+             [:td {:class td-class}
               [gui/Tooltip
                {:title tooltip}
-               [:span.text-white.rounded-full.py-2.px-4.ml-4.cursor-default
+               [:div.flex-1.px-2.rounded
                 {:class style}
-                label]])]
+                [:span.text-white.capitalize
+                 label]]]])
 
            ;; -- Balance
            [:td {:class td-class}
