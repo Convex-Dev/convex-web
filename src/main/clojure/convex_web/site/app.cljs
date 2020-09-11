@@ -296,6 +296,7 @@
       [:div.flex.flex-1.overflow-auto
        [component frame state set-state]]]]))
 
+;; TODO This should be extracted into a "generic" component, so it can be used in other parts of the site.
 (defn AccountSelect []
   (let [*state (reagent/atom {:show? false})]
     (fn []
@@ -307,11 +308,11 @@
          [:div.relative
 
           ;; Selected
-          [:span.inline-block.w-full.rounded-md.shadow-sm
+          [:span.inline-block.w-full
            {:on-click #(swap! *state update :show? not)}
-           [:button.cursor-default.relative.w-full.rounded-md.border.border-gray-300.bg-white.pl-3.pr-10.py-2.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5 {:type "button" :aria-haspopup "listbox" :aria-expanded "true" :aria-labelledby "listbox-label"}
+           [:button.cursor-default.relative.w-full.rounded-md.bg-white.pl-3.pr-10.py-2.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5 {:type "button" :aria-haspopup "listbox" :aria-expanded "true" :aria-labelledby "listbox-label"}
 
-            [:span.font-mono.block.truncate (or (format/address-blob selected) "Select")]
+            [gui/Identicon {:value selected :size 40}]
 
             [:span.absolute.inset-y-0.right-0.flex.items-center.pr-2.pointer-events-none
              [:svg.h-5.w-5.text-gray-400 {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
@@ -319,30 +320,26 @@
 
           (when show?
             ;; Options
-            [:div.absolute.mt-1.w-full.rounded-md.bg-white.shadow-lg
+            [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
              [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
 
               (for [{:convex-web.account/keys [address]} (session/?accounts)]
                 ^{:key address}
-                [:li.text-gray-900.cursor-default.select-none.relative.py-2.pl-3.pr-9
-                 {:class
-                  (if (= address selected)
-                    "bg-blue-100"
-                    "bg-transparent")
-                  :on-click
+                [:li.text-gray-900.text-xs.cursor-default.select-none.relative.py-2.pl-3.pr-9.hover:bg-gray-100
+                 {:on-click
                   #(do
                      (reset! *state {:show? false :selected address})
 
                      (session/pick-address address))}
 
                  [:div.flex.items-center
-                  [:div.h-5.w-5.mr-2
+                  [:div.h-5.w-5.mr-1
                    (when (= address selected)
                      [gui/CheckIcon {:class "h-5 w-5"}])]
 
-                  [gui/Identicon {:value address :size 28}]
+                  [gui/Identicon {:value address :size 40}]
 
-                  [:span.font-mono.block.truncate.ml-2
+                  [:span.font-mono.block.ml-2
                    (format/address-blob address)]]])]])]]))))
 
 
