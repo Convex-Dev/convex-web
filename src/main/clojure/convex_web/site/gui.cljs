@@ -578,7 +578,18 @@
     :renderers
     {:code (reagent/reactify-component MarkdownCodeBlock)}}])
 
-(defn Identicon [{:keys [value size]}]
+(defn Identicon
+  "Reagent wrapper for Jidenticon.
+
+   - value is considered a hash string if the string is hexadecimal and
+   contains at least 11 characters. It is otherwise considered a value that
+   will be hashed using SHA1.
+
+   - size defines the width and height, icons are always square, of the icon
+   in pixels, including its padding.
+
+   https://jdenticon.com"
+  [{:keys [value size]}]
   [:div
    {:ref (fn [el]
            (when el
