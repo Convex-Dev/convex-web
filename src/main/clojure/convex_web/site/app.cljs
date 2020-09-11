@@ -223,8 +223,7 @@
         leaf? (empty? children)]
     [:div.flex.flex-col.justify-center
      (if leaf?
-       {:style
-        {:height "32px"}}
+       {:class "h-6 xl:h-8"}
        {})
      ;; -- Item
      [:div.flex.justify-between
@@ -254,7 +253,7 @@
 
      ;; -- Children
      (when (seq children)
-       [:div.flex.flex-col.ml-8
+       [:div.flex.flex-col.ml-4.xl:ml-8
         (for [{:keys [text] :as child} children]
           ^{:key text} [NavItem route child])])]))
 
@@ -264,7 +263,7 @@
 
      (for [{:keys [text] :as item} others]
        ^{:key text}
-       [:div.mb-6
+       [:div.mb-2.xl:mb-6
         [NavItem active-route item]])]))
 
 (defn Modal [{:frame/keys [uuid page state] :as frame}]
