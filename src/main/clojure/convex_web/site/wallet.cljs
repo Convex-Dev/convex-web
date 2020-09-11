@@ -9,14 +9,16 @@
             [convex-web.site.stack :as stack]))
 
 (defn WalletPage [_ _ _]
-  [:div.flex.flex-col.items-start
+  [:div.flex.flex-col.items-start.space-y-2
    (doall
      (for [{:convex-web.account/keys [address]} (session/?accounts)]
        ^{:key address}
        [:div.flex.items-center
+        [gui/Identicon {:value address :size 28}]
+
         [gui/Tooltip
          {:title "Address"}
-         [:a.hover:underline
+         [:a.hover:underline.ml-2
           {:href (rfe/href :route-name/account-explorer {:address address})}
           [:code.text-xs (format/address-blob address)]]]
 
