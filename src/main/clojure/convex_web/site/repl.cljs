@@ -573,9 +573,10 @@
 (def sandbox-page
   #:page {:id :page.id/repl
           :title "Sandbox"
-          :initial-state #:convex-web.repl {:language :convex-lisp
-                                            :mode :convex-web.command.mode/transaction
-                                            :sidebar {:sidebar/tab :examples}}
+          :initial-state
+          {:convex-web.repl/language :convex-lisp
+           :convex-web.repl/mode :convex-web.command.mode/transaction
+           :convex-web.repl/sidebar {:sidebar/tab :examples}}
           :state-spec (s/keys :req [:convex-web.repl/mode] :opt [:convex-web.repl/commands])
           :component #'SandboxPage
           :on-push
