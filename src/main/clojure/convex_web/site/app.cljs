@@ -345,7 +345,7 @@
 
 (defn TopNav []
   [:div.fixed.top-0.inset-x-0.z-50.h-16.border-b.border-gray-100.bg-white
-   [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
+   [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-10
 
     [:a {:href (rfe/href :route-name/welcome)}
      [:div.flex.items-center
@@ -395,7 +395,7 @@
      (when (seq (session/?accounts))
        [AccountSelect])
 
-     (let [signed-in? (some? (session/?active-address))
+     #_(let [signed-in? (some? (session/?active-address))
 
            tooltip (if signed-in?
                      "View Session"
