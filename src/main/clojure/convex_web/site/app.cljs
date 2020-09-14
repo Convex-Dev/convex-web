@@ -302,7 +302,9 @@
     (fn []
       (let [{:keys [show? selected]} @*state
 
-            selected (or selected (session/?active-address))]
+            selected (or selected (session/?active-address))
+
+            item-style "text-gray-900 text-xs cursor-default select-none relative py-2 pl-3 pr-9 hover:bg-gray-100"]
         [:div.space-y-1
 
          [:div.relative
@@ -325,17 +327,35 @@
              [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
               [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
 
+               ;; -- Create Account
+               [:li
+                {:class item-style
+                 :on-click
+                 #(do
+                    (reset! *state {:show? false})
+
+                    (stack/push :page.id/create-account {:modal? true}))}
+
+                [:div.flex.items-center
+                 [:div.h-5.w-5.mr-2
+                  [gui/PlusIcon {:class "h-5 w-5"}]]
+
+                 [:span.font-mono.text-base.block
+                  "Create Account"]]]
+
+               ;; -- Accounts
                (for [{:convex-web.account/keys [address]} (session/?accounts)]
                  ^{:key address}
-                 [:li.text-gray-900.text-xs.cursor-default.select-none.relative.py-2.pl-3.pr-9.hover:bg-gray-100
-                  {:on-click
+                 [:li
+                  {:class item-style
+                   :on-click
                    #(do
                       (reset! *state {:show? false :selected address})
 
                       (session/pick-address address))}
 
                   [:div.flex.items-center
-                   [:div.h-5.w-5.mr-1
+                   [:div.h-5.w-5.mr-2
                     (when (= address selected)
                       [gui/CheckIcon {:class "h-5 w-5"}])]
 
@@ -355,18 +375,6 @@
       [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
 
     [:div.flex.items-center.justify-end.space-x-8
-     [gui/Tooltip
-      {:title "Create a new Account"}
-      [:button
-       {:class
-        ["text-sm"
-         "px-2 py-1"
-         "mr-6"
-         "rounded"
-         "focus:outline-none"
-         "hover:bg-gray-100 hover:shadow-md"]
-        :on-click #(stack/push :page.id/create-account {:modal? true})}
-       [:span.text-xs.uppercase "Create Account"]]]
 
      ;; -- Wallet
      [:a
