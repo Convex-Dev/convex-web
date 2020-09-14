@@ -320,27 +320,29 @@
 
           (when show?
             ;; Options
-            [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
-             [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
+            [gui/Dismissible
+             {:on-dismiss #(swap! *state update :show? (constantly false))}
+             [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
+              [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
 
-              (for [{:convex-web.account/keys [address]} (session/?accounts)]
-                ^{:key address}
-                [:li.text-gray-900.text-xs.cursor-default.select-none.relative.py-2.pl-3.pr-9.hover:bg-gray-100
-                 {:on-click
-                  #(do
-                     (reset! *state {:show? false :selected address})
+               (for [{:convex-web.account/keys [address]} (session/?accounts)]
+                 ^{:key address}
+                 [:li.text-gray-900.text-xs.cursor-default.select-none.relative.py-2.pl-3.pr-9.hover:bg-gray-100
+                  {:on-click
+                   #(do
+                      (reset! *state {:show? false :selected address})
 
-                     (session/pick-address address))}
+                      (session/pick-address address))}
 
-                 [:div.flex.items-center
-                  [:div.h-5.w-5.mr-1
-                   (when (= address selected)
-                     [gui/CheckIcon {:class "h-5 w-5"}])]
+                  [:div.flex.items-center
+                   [:div.h-5.w-5.mr-1
+                    (when (= address selected)
+                      [gui/CheckIcon {:class "h-5 w-5"}])]
 
-                  [gui/Identicon {:value address :size 40}]
+                   [gui/Identicon {:value address :size 40}]
 
-                  [:span.font-mono.block.ml-2
-                   (format/address-blob address)]]])]])]]))))
+                   [:span.font-mono.block.ml-2
+                    (format/address-blob address)]]])]]])]]))))
 
 
 (defn TopNav []
@@ -397,24 +399,24 @@
 
      #_(let [signed-in? (some? (session/?active-address))
 
-           tooltip (if signed-in?
-                     "View Session"
-                     "Login")
+             tooltip (if signed-in?
+                       "View Session"
+                       "Login")
 
-           label (if signed-in?
-                   "Session"
-                   "Login")]
-       [gui/Tooltip
-        {:title tooltip}
-        [:button
-         {:class
-          ["text-sm"
-           "px-2 py-1"
-           "rounded"
-           "focus:outline-none"
-           "hover:bg-gray-100 hover:shadow-md"]
-          :on-click #(stack/push :page.id/session {:modal? true})}
-         [:span.text-xs.uppercase label]]])]]])
+             label (if signed-in?
+                     "Session"
+                     "Login")]
+         [gui/Tooltip
+          {:title tooltip}
+          [:button
+           {:class
+            ["text-sm"
+             "px-2 py-1"
+             "rounded"
+             "focus:outline-none"
+             "hover:bg-gray-100 hover:shadow-md"]
+            :on-click #(stack/push :page.id/session {:modal? true})}
+           [:span.text-xs.uppercase label]]])]]])
 
 (defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component} page
