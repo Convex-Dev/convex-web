@@ -402,8 +402,7 @@
          "Details"]])
 
      ;; -- Select account
-     (when (seq (session/?accounts))
-       [AccountSelect])
+     [AccountSelect]
 
      #_(let [signed-in? (some? (session/?active-address))
 
