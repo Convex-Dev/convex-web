@@ -492,90 +492,103 @@
 
 ;; --
 
-(defn SandboxPage [_ {:convex-web.repl/keys [reference] :as state} set-state]
-  [:div.flex.flex-1.overflow-auto
+(defn SandboxPage [_ {:convex-web.repl/keys [reference] :as state} _]
+  (let [;; It's better if we store our REPL's state somewhere in the db
+        ;; that it isn't ephemeral as the frame's state - since we want
+        ;; to keep the state between page changes.
+        ;; So, we do a simple trick: we create a new version of `state` and `set-state`.
+        ;; Since the the new version of `state` and `set-state` has the same interface,
+        ;; nothing has to change in any call-site.
+        state (merge state (get (session/?state) :page.id/repl))
+        set-state (fn [f & args]
+                    ;; Session's state is shared, so we need to be careful to
+                    ;; update only the state of the REPL.
+                    (session/set-state (fn [state]
+                                         (update state :page.id/repl (fn [repl-state]
+                                                                       (apply f repl-state args))))))]
+    [:div.flex.flex-1.overflow-auto
 
-   ;; -- REPL
-   [:div.flex.flex-col.flex-1
-
-    ;; -- Commands
-    [:div.flex.bg-gray-100.border.rounded.mb-2.overflow-auto
-     {:style
-      {:height "70vh"}}
+     ;; -- REPL
      [:div.flex.flex-col.flex-1
-      [Commands (commands state)]]]
 
-    ;; -- Input
-    [Input state set-state]
+      ;; -- Commands
+      [:div.flex.bg-gray-100.border.rounded.mb-2.overflow-auto
+       {:style
+        {:height "70vh"}}
+       [:div.flex.flex-col.flex-1
+        [Commands (commands state)]]]
 
-    ;; -- Options
-    [:div.flex.items-center.justify-between.mt-1
+      ;; -- Input
+      [Input state set-state]
 
-     [:div.flex
-      ;; -- Mode
-      [:div.flex.items-center
+      ;; -- Options
+      [:div.flex.items-center.justify-between.mt-1
 
-       [:span.text-xs.text-gray-700.mr-1
-        "Mode"]
+       [:div.flex
+        ;; -- Mode
+        [:div.flex.items-center
 
-       [gui/Select2
-        {:selected (mode state)
-         :options
-         [{:id :convex-web.command.mode/transaction
-           :value "Transaction"}
-          {:id :convex-web.command.mode/query
-           :value "Query"}]
-         :on-change #(set-state assoc :convex-web.repl/mode %)}]]
+         [:span.text-xs.text-gray-700.mr-1
+          "Mode"]
 
-      ;; -- Language
-      [:div.flex.items-center.ml-6
+         [gui/Select2
+          {:selected (mode state)
+           :options
+           [{:id :convex-web.command.mode/transaction
+             :value "Transaction"}
+            {:id :convex-web.command.mode/query
+             :value "Query"}]
+           :on-change #(set-state assoc :convex-web.repl/mode %)}]]
 
-       [:span.text-xs.text-gray-700.mr-1
-        "Language"]
+        ;; -- Language
+        [:div.flex.items-center.ml-6
 
-       [gui/Select2
-        {:selected (language state)
-         :options
-         [{:id :convex-scrypt
-           :value "Convex Scrypt"}
-          {:id :convex-lisp
-           :value "Convex Lisp"}]
-         :on-change #(set-state assoc :convex-web.repl/language %)}]]]
+         [:span.text-xs.text-gray-700.mr-1
+          "Language"]
 
-     [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]]]
+         [gui/Select2
+          {:selected (language state)
+           :options
+           [{:id :convex-scrypt
+             :value "Convex Scrypt"}
+            {:id :convex-lisp
+             :value "Convex Lisp"}]
+           :on-change #(set-state assoc :convex-web.repl/language %)}]]]
 
-   ;; -- Sidebar
-   (let [selected-tab (selected-tab state)]
-     [:div.flex.flex-col.ml-2.xl:ml-16.p-2.border-l
-      {:style {:width "20vw"}}
+       [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]]]
 
-      ;; -- Tabs
-      [:div.flex.mb-5
+     ;; -- Sidebar
+     (let [selected-tab (selected-tab state)]
+       [:div.flex.flex-col.ml-2.xl:ml-16.p-2.border-l
+        {:style {:width "20vw"}}
 
-       ;; -- Examples Tab
-       [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer
-        {:class
-         (if (= :examples selected-tab)
-           "border-b border-indigo-500"
-           "text-black text-opacity-50")
-         :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :examples)}
-        "Examples"]
+        ;; -- Tabs
+        [:div.flex.mb-5
 
-       ;; -- Reference Tab
-       [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer.ml-4
-        {:class
-         (if (= :reference selected-tab)
-           "border-b border-indigo-500"
-           "text-black text-opacity-50")
-         :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :reference)}
-        "Reference"]]
+         ;; -- Examples Tab
+         [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer
+          {:class
+           (if (= :examples selected-tab)
+             "border-b border-indigo-500"
+             "text-black text-opacity-50")
+           :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :examples)}
+          "Examples"]
 
-      (case selected-tab
-        :examples
-        [Examples (language state)]
+         ;; -- Reference Tab
+         [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer.ml-4
+          {:class
+           (if (= :reference selected-tab)
+             "border-b border-indigo-500"
+             "text-black text-opacity-50")
+           :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :reference)}
+          "Reference"]]
 
-        :reference
-        [Reference reference])])])
+        (case selected-tab
+          :examples
+          [Examples (language state)]
+
+          :reference
+          [Reference reference])])]))
 
 (def sandbox-page
   #:page {:id :page.id/repl

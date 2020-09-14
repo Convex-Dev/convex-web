@@ -16,6 +16,16 @@
   (fn [{:convex-web.session/keys [id]} _]
     (or id "-")))
 
+(re-frame/reg-sub :session/?state
+  :<- [:session/?session]
+  (fn [{:convex-web.session/keys [state]} _]
+    state))
+
+(re-frame/reg-event-db :session/!set-state
+  (fn [db [_ f args]]
+    (update-in db [:site/session :convex-web.session/state] (fn [state]
+                                                              (apply f state args)))))
+
 (re-frame/reg-sub :session/?accounts
   :<- [:session/?session]
   (fn [{:convex-web.session/keys [accounts]} _]
@@ -69,6 +79,12 @@
 
 (defn ?id []
   (sub :session/?id))
+
+(defn ?state []
+  (sub :session/?state))
+
+(defn set-state [f & args]
+  (disp :session/!set-state f args))
 
 (defn ?accounts []
   (sub :session/?accounts))
