@@ -114,11 +114,7 @@
      :controllers
      [{:identity identity
        :start (fn [_]
-                (stack/push :page.id/my-account (merge {:reset? true}
-                                                       (when-let [active-address (session/?active-address)]
-                                                         {:state
-                                                          {:convex-web/account
-                                                           {:convex-web.account/address active-address}}}))))}]}]
+                (stack/push :page.id/my-account {:reset? true}))}]}]
 
    ;; Wallet
    ;; ==============

@@ -49,21 +49,45 @@
                                        {:convex-web.transfer/from (get account :convex-web.account/address)}}})}
      [:span.text-xs.uppercase "Transfer"]]]])
 
-(defn MyAccountPage [_ {:keys [ajax/status convex-web/account]} _]
-  (case status
-    :ajax.status/pending
-    [:div.flex.flex-col.flex-1.justify-center.items-center
-     [gui/Spinner]]
+(defn MyAccountPage [_ {:keys [ajax/status convex-web/account]} set-state]
+  (if-let [active-address (session/?active-address)]
+    ;; Fetch account if:
+    ;; - it's nil - it hasn't been fetched yet;
+    ;; - active address has changed - it's different from state account's address
+    (let [fetch? (or (nil? account) (not= active-address (:convex-web.account/address account)))]
 
-    :ajax.status/success
-    [:div.flex.flex-col.flex-1.justify-center.my-4.mx-10
-     [MyAccount account]]
+      (when fetch?
+        (set-state assoc :ajax/status :ajax.status/pending)
 
-    :ajax.status/error
-    [:div.flex.flex-col.flex-1.justify-center.items-center
-     [:span "Sorry. Our servers failed to load your account."]]
+        (backend/GET-account active-address {:handler
+                                             (fn [account]
+                                               (set-state assoc
+                                                          :ajax/status :ajax.status/success
+                                                          :convex-web/account account))
 
-    ;; Fallback
+                                             :error-handler
+                                             (fn [error]
+                                               (set-state assoc
+                                                          :ajax/status :ajax.status/error
+                                                          :ajax/error error))}))
+
+      (case status
+        :ajax.status/pending
+        [:div.flex.flex-col.flex-1.justify-center.items-center
+         [gui/Spinner]]
+
+        :ajax.status/success
+        [:div.flex.flex-col.flex-1.justify-center.my-4.mx-10
+         [MyAccount account]]
+
+        :ajax.status/error
+        [:div.flex.flex-col.flex-1.justify-center.items-center
+         [:span "Sorry. Our servers failed to load your account."]]
+
+        ;; Fallback
+        [:div]))
+
+    ;; No active address
     [:div]))
 
 (def my-account-page
@@ -75,23 +99,6 @@
             (s/or :pending :ajax/pending-status
                   :success (s/merge :ajax/success-status (s/keys :req [:convex-web/account]))
                   :error :ajax/error-status))
-          :on-push
-          (fn [_ state set-state]
-            (when-let [address (get-in state [:convex-web/account :convex-web.account/address])]
-
-              (set-state assoc :ajax/status :ajax.status/pending)
-
-              (backend/GET-account address {:handler
-                                            (fn [account]
-                                              (set-state assoc
-                                                         :ajax/status :ajax.status/success
-                                                         :convex-web/account account))
-
-                                            :error-handler
-                                            (fn [error]
-                                              (set-state assoc
-                                                         :ajax/status :ajax.status/error
-                                                         :ajax/error error))})))
           :on-resume
           (fn [_ state set-state]
             ;; Don't change `ajax/status` on resume
