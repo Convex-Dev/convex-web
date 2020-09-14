@@ -493,19 +493,23 @@
 ;; --
 
 (defn SandboxPage [_ {:convex-web.repl/keys [reference] :as state} _]
-  (let [;; It's better if we store our REPL's state somewhere in the db
+  (let [active-address (session/?active-address)
+
+        ;; It's better if we store our REPL's state somewhere in the db
         ;; that it isn't ephemeral as the frame's state - since we want
         ;; to keep the state between page changes.
         ;; So, we do a simple trick: we create a new version of `state` and `set-state`.
         ;; Since the the new version of `state` and `set-state` has the same interface,
         ;; nothing has to change in any call-site.
-        state (merge state (get (session/?state) :page.id/repl))
+        ;;
+        ;; Note that REPL's state is per address.
+        state (merge state (get-in (session/?state) [:page.id/repl active-address]))
         set-state (fn [f & args]
                     ;; Session's state is shared, so we need to be careful to
-                    ;; update only the state of the REPL.
+                    ;; update only the state of the REPL (& address).
                     (session/set-state (fn [state]
-                                         (update state :page.id/repl (fn [repl-state]
-                                                                       (apply f repl-state args))))))]
+                                         (update-in state [:page.id/repl active-address] (fn [repl-state]
+                                                                                           (apply f repl-state args))))))]
     [:div.flex.flex-1.overflow-auto
 
      ;; -- REPL
