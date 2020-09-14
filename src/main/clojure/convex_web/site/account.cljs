@@ -77,29 +77,30 @@
                   :error :ajax/error-status))
           :on-push
           (fn [_ state set-state]
-            (set-state assoc :ajax/status :ajax.status/pending)
+            (when-let [address (get-in state [:convex-web/account :convex-web.account/address])]
 
-            (-> (get-in state [:convex-web/account :convex-web.account/address])
-                (backend/GET-account
-                  {:handler
-                   (fn [account]
-                     (set-state assoc
-                                :ajax/status :ajax.status/success
-                                :convex-web/account account))
+              (set-state assoc :ajax/status :ajax.status/pending)
 
-                   :error-handler
-                   (fn [error]
-                     (set-state assoc
-                                :ajax/status :ajax.status/error
-                                :ajax/error error))})))
+              (backend/GET-account address {:handler
+                                            (fn [account]
+                                              (set-state assoc
+                                                         :ajax/status :ajax.status/success
+                                                         :convex-web/account account))
+
+                                            :error-handler
+                                            (fn [error]
+                                              (set-state assoc
+                                                         :ajax/status :ajax.status/error
+                                                         :ajax/error error))})))
           :on-resume
           (fn [_ state set-state]
             ;; Don't change `ajax/status` on resume
             ;; to avoid showing the spinner - and don't bother about the error handler.
-            (-> (get-in state [:convex-web/account :convex-web.account/address])
-                (backend/GET-account {:handler
-                                      (fn [account]
-                                        (set-state assoc :convex-web/account account))})))})
+            (when-let [address (get-in state [:convex-web/account :convex-web.account/address])]
+              (backend/GET-account address {:handler
+                                            (fn [account]
+                                              (set-state assoc :convex-web/account account))})))})
+
 
 (defn CreateAccountPage [_ {:keys [convex-web/account ajax/status]} set-state]
   [:div.w-full.flex.flex-col.items-center.justify-center
