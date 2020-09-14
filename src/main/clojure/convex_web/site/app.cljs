@@ -380,7 +380,7 @@
 
      ;; -- Transfer
      [:a
-      {:href (rfe/href :route-name/faucet)}
+      {:href (rfe/href :route-name/transfer)}
       [:span.font-mono.text-gray-700.hover:text-black
        "Transfer"]]
 

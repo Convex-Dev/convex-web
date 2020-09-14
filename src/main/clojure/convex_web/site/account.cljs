@@ -196,7 +196,7 @@
         (when-let [frame (stack/find-frame @app-db uuid)]
           (get-in frame [:frame/state :transfer-page/to]))))))
 
-(defn TransferProgress [{:convex-web/keys [command transfer] :as state} _]
+(defn TransferProgress [frame {:convex-web/keys [command transfer] :as state} set-state]
   [:div.flex.flex-col.flex-1.items-center.justify-center
    (case (get command :convex-web.command/status)
      :convex-web.command.status/running
@@ -234,7 +234,11 @@
        "."]
 
       [gui/DefaultButton
-       {:on-click #(stack/pop)}
+       {:on-click
+        (fn []
+          (if (:frame/modal? frame)
+            (stack/pop)
+            (set-state #(dissoc % :convex-web/command))))}
        [:span.text-xs.uppercase "Done"]]]
 
      :convex-web.command.status/error
@@ -401,7 +405,7 @@
 (defn TransferPage [frame {:keys [convex-web/command] :as state} set-state]
   [:div.flex-1.my-4.mx-10
    (if command
-     [TransferProgress state set-state]
+     [TransferProgress frame state set-state]
      [TransferInput frame state set-state])])
 
 (s/def :transfer-page.config/my-accounts? boolean?)

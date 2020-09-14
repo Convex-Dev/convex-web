@@ -136,6 +136,17 @@
                 (stack/push :page.id/faucet {:reset? true
                                              :state {:convex-web/faucet {:convex-web.faucet/amount 1000000}}}))}]}]
 
+
+   ;; Transfer
+   ;; ==============
+   ["transfer"
+    {:name :route-name/transfer
+     :controllers
+     [{:identity identity
+       :start (fn [_]
+                (stack/push :page.id/transfer {:reset? true}))}]}]
+
+
    ;; Explorer
    ;; ==============
    ["explorer"
