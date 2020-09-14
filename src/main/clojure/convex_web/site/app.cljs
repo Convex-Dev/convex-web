@@ -310,7 +310,7 @@
           ;; Selected
           [:span.inline-block.w-full
            {:on-click #(swap! *state update :show? not)}
-           [:button.cursor-default.relative.w-full.rounded-md.bg-white.pl-3.pr-10.py-2.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5 {:type "button" :aria-haspopup "listbox" :aria-expanded "true" :aria-labelledby "listbox-label"}
+           [:button.cursor-default.relative.w-full.rounded-md.bg-white.pr-9.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5 {:type "button" :aria-haspopup "listbox" :aria-expanded "true" :aria-labelledby "listbox-label"}
 
             [gui/Identicon {:value selected :size 40}]
 
@@ -352,7 +352,7 @@
       [gui/ConvexLogo {:width "28px" :height "32px"}]
       [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
 
-    [:div.flex.items-center.justify-end
+    [:div.flex.items-center.justify-end.space-x-8
      [gui/Tooltip
       {:title "Create a new Account"}
       [:button
@@ -366,21 +366,34 @@
         :on-click #(stack/push :page.id/create-account {:modal? true})}
        [:span.text-xs.uppercase "Create Account"]]]
 
+     ;; -- Wallet
+     [:a
+      {:href (rfe/href :route-name/wallet)}
+      [:span.font-mono.text-gray-700.hover:text-black
+       "Wallet"]]
+
+     ;; -- Faucet
+     [:a
+      {:href (rfe/href :route-name/faucet)}
+      [:span.font-mono.text-gray-700.hover:text-black
+       "Faucet"]]
+
+     ;; -- Transfer
+     [:a
+      {:href (rfe/href :route-name/faucet)}
+      [:span.font-mono.text-gray-700.hover:text-black
+       "Transfer"]]
+
+     ;; -- Details
+     (when (session/?active-address)
+       [:a
+        {:href (rfe/href :route-name/my-account)}
+        [:span.font-mono.text-gray-700.hover:text-black
+         "Details"]])
+
+     ;; -- Select account
      (when (seq (session/?accounts))
        [AccountSelect])
-
-     (when-let [active-address (session/?active-address)]
-       [gui/Tooltip
-        {:title "Account details"}
-        [:button.focus:outline-none.text-gray-700.hover:text-black.mx-4.w-6.h-6.rounded
-         (merge {:on-click #(stack/push :page.id/my-account {:modal? true
-                                                             :state
-                                                             {:convex-web/account
-                                                              {:convex-web.account/address active-address}}})}
-                (when-not active-address
-                  {:class "text-gray-400 pointer-events-none"}))
-
-         [gui/IconUser]]])
 
      (let [signed-in? (some? (session/?active-address))
 

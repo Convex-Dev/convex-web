@@ -107,6 +107,18 @@
                 (stack/push :page.id/repl {:reset? true}))}]}]
 
 
+   ;; My Account (account details)
+   ;; ==============
+   ["my-account"
+    {:name :route-name/my-account
+     :controllers
+     [{:identity identity
+       :start (fn [_]
+                (stack/push :page.id/my-account {:reset? true
+                                                 :state
+                                                 {:convex-web/account
+                                                  {:convex-web.account/address (session/?active-address)}}}))}]}]
+
    ;; Wallet
    ;; ==============
    ["wallet"
