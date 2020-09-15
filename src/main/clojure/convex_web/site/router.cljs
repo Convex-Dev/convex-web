@@ -71,10 +71,16 @@
                  (fn [{:site/keys [session]}]
                    ;; Create Session - if there isn't one already
                    (when-not session
+                     (session/set-status :ajax.status/pending)
+
                      (backend/GET-session
                        {:handler
                         (fn [session]
-                          (session/create session))})))))}]}
+                          (session/create (merge {:ajax/status :ajax.status/success} session)))
+
+                        :error-handler
+                        (fn [_]
+                          (session/set-status :ajax.status/error))})))))}]}
 
 
    ;; Welcome

@@ -381,7 +381,8 @@
     ;; ===================
     [:div.flex.items-center.justify-end.space-x-8
 
-     (if (session/?active-address)
+     (cond
+       (session/?active-address)
        [:<>
         ;; -- Wallet
         [:a
@@ -410,6 +411,10 @@
         ;; -- Select account
         [AccountSelect]]
 
+       (= :ajax.status/pending (session/?status))
+       [gui/Spinner]
+
+       :else
        ;; -- Create Account
        [:span.inline-flex.rounded-md.shadow-sm
         [:button

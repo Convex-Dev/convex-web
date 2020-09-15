@@ -47,6 +47,13 @@
   (fn [[default-address selected-address] _]
     (or selected-address default-address)))
 
+(re-frame/reg-event-db :session/!set-status
+  (fn [db [_ status]]
+    (assoc-in db [:site/session :ajax/status] status)))
+
+(re-frame/reg-sub :session/?status
+  (fn [db _]
+    (get-in db [:site/session :ajax/status])))
 
 (re-frame/reg-event-db :session/!create
   (fn [db [_ session]]
@@ -65,11 +72,17 @@
            (when active?
              {:dispatch [:session/!pick-address (get account :convex-web.account/address)]}))))
 
+(defn ?status []
+  (sub :session/?status))
+
 (defn ?active-address []
   (sub :session/?active-address))
 
 (defn create [session]
   (disp :session/!create session))
+
+(defn set-status [status]
+  (disp :session/!set-status status))
 
 (defn add-account [account & [active?]]
   (disp :session/!add-account account {:active? active?}))
