@@ -192,17 +192,27 @@
                [gui/ClipboardCopy source {:margin "ml-1"}]])
 
             :convex-web.transaction.type/transfer
-            [:span
-             "Transferred "
-             [:span.font-bold.text-indigo-500
+            [:span.inline-flex.items-center
+             [:span.mr-1 "Transferred"]
+
+             [:span.font-bold.text-indigo-500.mr-1
               (format/format-number
                 (get-in m [:convex-web.signed-data/value :convex-web.transaction/amount]))]
 
-             " to "
+             [:span.mr-1 " to "]
+
              (let [address (get-in m [:convex-web.signed-data/value :convex-web.transaction/target])]
-               [:a.flex-1.underline.hover:text-indigo-500
-                {:href (rfe/href :route-name/account-explorer {:address address})}
-                [:code.text-xs address]])])]]))]])
+               [:<>
+                [gui/Identicon {:value address :size gui/identicon-size-small}]
+
+                [:a.flex-1.underline.hover:text-indigo-500
+                 {:href (rfe/href :route-name/account-explorer {:address address})}
+                 [:code.text-xs address]]
+
+                [:a.ml-1
+                 {:href (rfe/href :route-name/account-explorer {:address address})
+                  :target "_blank"}
+                 [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]])])]]))]])
 
 (s/def :explorer.blocks.state/pending
   (s/merge :ajax/pending-status (s/keys :req [:runtime/interval-ref])))
