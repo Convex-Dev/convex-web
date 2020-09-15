@@ -98,7 +98,6 @@
 
 (def tutorial-page
   #:page {:id :page.id/documentation-tutorial
-          :title "Lisp Guide"
           :component #'TutorialPage
           :on-push (markdown/get-on-push :tutorials)})
 
@@ -108,7 +107,6 @@
 
 (def getting-started-page
   #:page {:id :page.id/documentation-getting-started
-          :title "Getting Started"
           :component #'GettingStartedPage
           :on-push (markdown/get-on-push :getting-started)})
 
@@ -128,7 +126,6 @@
 
 (def about-page
   #:page {:id :page.id/about
-          :title "About"
           :component #'AboutPage
           :on-push (markdown/get-on-push :under-construction)})
 
@@ -137,7 +134,6 @@
 
 (def faq-page
   #:page {:id :page.id/faq
-          :title "FAQ"
           :component #'FaqPage
           :on-push (markdown/get-on-push :faq)})
 
@@ -147,7 +143,6 @@
 
 (def concepts-page
   #:page {:id :page.id/concepts
-          :title "Concepts"
           :component #'ConceptsPage
           :on-push (markdown/get-on-push :under-construction)})
 
@@ -157,7 +152,6 @@
 
 (def white-paper-page
   #:page {:id :page.id/white-paper
-          :title "White Paper"
           :component #'WhitePaperPage
           :on-push (markdown/get-on-push :white-paper)})
 
@@ -166,7 +160,6 @@
 
 (def vision-page
   #:page {:id :page.id/vision
-          :title "Vision"
           :component #'VisionPage
           :on-push (markdown/get-on-push :vision)})
 
@@ -175,7 +168,6 @@
 
 (def advanced-topics-page
   #:page {:id :page.id/advanced-topics
-          :title "Advanced Topics"
           :component #'AdvancedTopicsPage
           :on-push (markdown/get-on-push :advanced-topics)})
 
@@ -184,6 +176,5 @@
 
 (def under-construction-page
   #:page {:id :page.id/under-construction
-          :title "Under Construction"
           :component #'UnderConstructionPage
           :on-push (markdown/get-on-push :under-construction)})

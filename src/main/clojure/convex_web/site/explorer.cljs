@@ -78,12 +78,6 @@
         {:class th-style}
         [:div
          {:class th-div-style}
-         "Sequence"]]
-
-       [:th
-        {:class th-style}
-        [:div
-         {:class th-div-style}
          "Type"]]
 
        [:th
@@ -135,11 +129,6 @@
          [:td {:class (cons "text-right" td-class)}
           [:span.text-xs
            transaction-index]]
-
-         ;; -- Transaction Sequence
-         [:td {:class (cons "text-right" td-class)}
-          [:span.text-xs
-           (get-in m [:convex-web.signed-data/value :convex-web.transaction/sequence])]]
 
          ;; -- Transaction Type
          [:td
