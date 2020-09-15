@@ -15,6 +15,7 @@
             [convex-web.site.store]
             [convex-web.site.format :as format]
 
+            [clojure.string :as str]
             [cljs.spec.test.alpha :as stest]
 
             [reagent.dom]
@@ -425,7 +426,7 @@
          "Create Account"]])]]])
 
 (defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]
-  (let [{Component :page/component} page
+  (let [{Component :page/component title :page/title} page
 
         set-state (stack/make-set-state uuid)]
     [:<>
@@ -448,7 +449,11 @@
        ;; -- Page
        [:div.relative.flex.flex-col.flex-1.xl:pl-24.overflow-auto
         (when active-page-frame
-          [Component active-page-frame state set-state])]]]]))
+          [:<>
+           (when-not (str/blank? title)
+             [:span.font-mono.text-sm.text-gray-400.mb-2 title])
+
+           [Component active-page-frame state set-state]])]]]]))
 
 (defn Page [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component} page

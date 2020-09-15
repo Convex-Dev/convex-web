@@ -98,7 +98,7 @@
 
 (def tutorial-page
   #:page {:id :page.id/documentation-tutorial
-          :title "Tutorial"
+          :title "Lisp Guide"
           :component #'TutorialPage
           :on-push (markdown/get-on-push :tutorials)})
 
