@@ -382,11 +382,13 @@
                   state)))))}]]
 
      [:div.flex.justify-center.mt-6
-      [gui/DefaultButton
-       {:on-click #(stack/pop)}
-       [:span.text-xs.uppercase "Cancel"]]
+      (when (get frame :modal?)
+        [:<>
+         [gui/DefaultButton
+          {:on-click #(stack/pop)}
+          [:span.text-xs.uppercase "Cancel"]]
 
-      [:div.mx-2]
+         [:div.mx-2]])
 
       [gui/DefaultButton
        {:disabled invalid-transfer?
