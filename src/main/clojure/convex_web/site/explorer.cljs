@@ -398,7 +398,7 @@
            ;; -- Address
            [:td.flex.items-center {:class td-class}
             [:div.flex.items-center
-             [gui/Identicon {:value address-blob :size 28}]
+             [gui/Identicon {:value address :size 28}]
 
              (if modal?
                [:code.underline.cursor-pointer.mx-2
