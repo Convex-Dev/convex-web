@@ -49,10 +49,6 @@
   (fn [[default-address selected-address] _]
     (or selected-address default-address)))
 
-(re-frame/reg-event-db :session/!set-status
-  (fn [db [_ status]]
-    (assoc-in db [:site/session :ajax/status] status)))
-
 (re-frame/reg-sub :session/?status
   (fn [db _]
     (get-in db [:site/session :ajax/status])))
