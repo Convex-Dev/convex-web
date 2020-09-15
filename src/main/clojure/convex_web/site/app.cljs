@@ -369,61 +369,60 @@
   [:div.fixed.top-0.inset-x-0.z-50.h-16.border-b.border-gray-100.bg-white
    [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-10
 
+    ;; Logo
+    ;; ===================
     [:a {:href (rfe/href :route-name/welcome)}
      [:div.flex.items-center
       [gui/ConvexLogo {:width "28px" :height "32px"}]
       [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
 
+    ;; Items
+    ;; ===================
     [:div.flex.items-center.justify-end.space-x-8
 
-     ;; -- Wallet
-     [:a
-      {:href (rfe/href :route-name/wallet)}
-      [:span.font-mono.text-gray-700.hover:text-black
-       "Wallet"]]
+     (if (session/?active-address)
+       [:<>
+        ;; -- Wallet
+        [:a
+         {:href (rfe/href :route-name/wallet)}
+         [:span.font-mono.text-gray-700.hover:text-black
+          "Wallet"]]
 
-     ;; -- Faucet
-     [:a
-      {:href (rfe/href :route-name/faucet)}
-      [:span.font-mono.text-gray-700.hover:text-black
-       "Faucet"]]
+        ;; -- Faucet
+        [:a
+         {:href (rfe/href :route-name/faucet)}
+         [:span.font-mono.text-gray-700.hover:text-black
+          "Faucet"]]
 
-     ;; -- Transfer
-     [:a
-      {:href (rfe/href :route-name/transfer)}
-      [:span.font-mono.text-gray-700.hover:text-black
-       "Transfer"]]
+        ;; -- Transfer
+        [:a
+         {:href (rfe/href :route-name/transfer)}
+         [:span.font-mono.text-gray-700.hover:text-black
+          "Transfer"]]
 
-     ;; -- Details
-     (when (session/?active-address)
-       [:a
-        {:href (rfe/href :route-name/my-account)}
-        [:span.font-mono.text-gray-700.hover:text-black
-         "Details"]])
+        ;; -- Details
+        [:a
+         {:href (rfe/href :route-name/my-account)}
+         [:span.font-mono.text-gray-700.hover:text-black
+          "Details"]]
 
-     ;; -- Select account
-     [AccountSelect]
+        ;; -- Select account
+        [AccountSelect]]
 
-     #_(let [signed-in? (some? (session/?active-address))
-
-             tooltip (if signed-in?
-                       "View Session"
-                       "Login")
-
-             label (if signed-in?
-                     "Session"
-                     "Login")]
-         [gui/Tooltip
-          {:title tooltip}
-          [:button
-           {:class
-            ["text-sm"
-             "px-2 py-1"
-             "rounded"
-             "focus:outline-none"
-             "hover:bg-gray-100 hover:shadow-md"]
-            :on-click #(stack/push :page.id/session {:modal? true})}
-           [:span.text-xs.uppercase label]]])]]])
+       ;; -- Create Account
+       [:span.inline-flex.rounded-md.shadow-sm
+        [:button
+         {:class
+          ["inline-flex items-center justify-center rounded h-10 w-40"
+           "transition ease-in-out duration-150"
+           "focus:outline-none focus:border-blue-700 focus:shadow-outline-indigo"
+           "bg-blue-600 hover:bg-blue-500 active:bg-blue-700"
+           "border border-transparent"
+           "font-mono text-xs text-white text-sm uppercase"
+           "px-2.5 py-1.5"]
+          :type "button"
+          :on-click #(stack/push :page.id/create-account {:modal? true})}
+         "Create Account"]])]]])
 
 (defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component} page
