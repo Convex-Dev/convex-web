@@ -98,13 +98,13 @@
          {:class th-div-style}
          "Value"]]])]
 
-   [:tbody.align-baseline
+   [:tbody
     (for [m (flatten-transactions blocks)]
       (let [block-index (get m :convex-web.block/index)
             transaction-index (get-in m [:convex-web.signed-data/value :convex-web.transaction/index])
             transaction-type (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])
 
-            td-class ["align-middle p-1 whitespace-no-wrap text-xs"]]
+            td-class ["p-1 whitespace-no-wrap text-xs"]]
         ^{:key [block-index transaction-index]}
         [:tr.hover:bg-gray-100.cursor-default {:style {:height "34px"}}
          ;; -- Block Index
@@ -375,7 +375,7 @@
          my-addresses (->> (session/?accounts)
                            (map (comp str/upper-case :convex-web.account/address))
                            (into #{}))]
-     [:tbody.align-baseline
+     [:tbody
       (for [{:convex-web.account/keys [address status]} (sort-by :convex-web.account/address accounts)]
         (let [td-class "p-2 font-mono text-xs text-gray-700 whitespace-no-wrap"
 
@@ -424,19 +424,19 @@
            ;; -- Type
            (let [[label style tooltip] (cond
                                          (get status :convex-web.account-status/library?)
-                                         ["library" "bg-purple-500" "Library's Address"]
+                                         ["library" "text-purple-500" "Library's Address"]
 
                                          (get status :convex-web.account-status/actor?)
-                                         ["actor" "bg-indigo-500" "Actor's Address"]
+                                         ["actor" "text-indigo-500" "Actor's Address"]
 
                                          :else
-                                         ["user" "bg-green-400" "User's Address"])]
+                                         ["user" "text-green-400" "User's Address"])]
              [:td {:class td-class}
               [gui/Tooltip
                {:title tooltip}
                [:div.flex-1.px-2.rounded
                 {:class style}
-                [:span.text-white.capitalize
+                [:span.uppercase
                  label]]]])
 
            ;; -- Balance
