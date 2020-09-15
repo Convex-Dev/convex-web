@@ -1,5 +1,7 @@
 (ns convex-web.logging
   (:require [clojure.java.io :as io]
+            [clojure.stacktrace :as stacktrace]
+
             [com.brunobonacci.mulog.buffer :as rb]
             [com.brunobonacci.mulog :as u])
   (:import (com.google.auth.oauth2 GoogleCredentials)
@@ -95,7 +97,7 @@
          (when message
            {"message" message})
          (when exception
-           {"exception" (str exception)})))
+           {"exception" (with-out-str (stacktrace/print-stack-trace exception))})))
 
 (defmulti logging-json-payload :mulog/event-name)
 

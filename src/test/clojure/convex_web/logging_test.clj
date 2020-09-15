@@ -1,6 +1,8 @@
 (ns convex-web.logging-test
-  (:require [clojure.test :refer :all]
-            [convex-web.logging :as logging]))
+  (:require [convex-web.logging :as logging]
+
+            [clojure.test :refer :all]
+            [clojure.stacktrace :as stacktrace]))
 
 (deftest labels-test
   (testing "Default"
@@ -21,7 +23,7 @@
     (is (= {} (.getDataAsMap (logging/logging-json-payload {}))))
     (is (= {"message" "Foo"} (.getDataAsMap (logging/logging-json-payload {:message "Foo"}))))
     (let [ex (ex-info "Foo" {})]
-      (is (= {"exception" (str ex)}
+      (is (= {"exception" (with-out-str (stacktrace/print-stack-trace ex))}
              (.getDataAsMap (logging/logging-json-payload {:exception ex}))))))
 
   (testing "REPL Error"
