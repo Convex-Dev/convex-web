@@ -2,6 +2,13 @@
   (:require [convex-web.site.runtime :refer [disp sub]]
             [re-frame.core :as re-frame]))
 
+(re-frame/reg-event-db :db/!transact
+  (fn [db [_ f args]]
+    (apply f db args)))
+
+(defn transact [f & args]
+  (disp :db/!transact f args))
+
 (defn pages [db]
   (:site/pages db))
 
@@ -11,17 +18,3 @@
       (when (= id id')
         page))
     (pages db)))
-
-(re-frame/reg-event-db :db/!swap-blocks
-  (fn [db [_ blocks]]
-    (assoc-in db [:site/db :convex-web/blocks] blocks)))
-
-(defn swap-blocks [blocks]
-  (disp :db/!swap-blocks blocks))
-
-(re-frame/reg-sub :db/?latest-blocks
-  (fn [db _]
-    (get-in db [:site/db :convex-web/blocks])))
-
-(defn ?latest-blocks []
-  (sub :db/?latest-blocks))

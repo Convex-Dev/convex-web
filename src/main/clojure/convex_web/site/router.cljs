@@ -3,6 +3,7 @@
             [convex-web.site.backend :as backend]
             [convex-web.site.session :as session]
             [convex-web.site.stack :as stack]
+            [convex-web.site.db :as db]
 
             [reitit.frontend :as rf]
             [reitit.frontend.controllers :as rfc]
@@ -69,18 +70,8 @@
       :start (fn [_]
                (runtime/with-db
                  (fn [{:site/keys [session]}]
-                   ;; Create Session - if there isn't one already
                    (when-not session
-                     (session/set-status :ajax.status/pending)
-
-                     (backend/GET-session
-                       {:handler
-                        (fn [session]
-                          (session/create (merge {:ajax/status :ajax.status/success} session)))
-
-                        :error-handler
-                        (fn [_]
-                          (session/set-status :ajax.status/error))})))))}]}
+                     (session/initialize)))))}]}
 
 
    ;; Welcome

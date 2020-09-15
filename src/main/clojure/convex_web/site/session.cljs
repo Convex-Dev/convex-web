@@ -5,7 +5,9 @@
 
             [clojure.string :as str]
 
-            [re-frame.core :as re-frame]))
+            [re-frame.core :as re-frame]
+            [convex-web.site.db :as db]
+            [convex-web.site.backend :as backend]))
 
 (re-frame/reg-sub :session/?session
   (fn [{:site/keys [session]} _]
@@ -78,11 +80,18 @@
 (defn ?active-address []
   (sub :session/?active-address))
 
-(defn create [session]
-  (disp :session/!create session))
+(defn initialize []
+  (db/transact assoc-in [:site/session :ajax/status] :ajax.status/pending)
 
-(defn set-status [status]
-  (disp :session/!set-status status))
+  (backend/GET-session
+    {:handler
+     (fn [session]
+       (db/transact update :site/session merge {:ajax/status :ajax.status/success} session))
+
+     :error-handler
+     (fn [error]
+       (db/transact update :site/session merge {:ajax/status :ajax.status/error
+                                                :ajax/error error}))}))
 
 (defn add-account [account & [active?]]
   (disp :session/!add-account account {:active? active?}))
