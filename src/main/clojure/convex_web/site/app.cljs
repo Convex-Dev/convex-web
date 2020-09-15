@@ -97,10 +97,12 @@
 
 ;; ---
 
-(re-frame/reg-event-db ::!init
-  (fn [db [_ csrf-token]]
-    (merge db #:site {:pages pages
-                      :runtime {:runtime/csrf-token csrf-token}})))
+(re-frame/reg-event-fx ::!init
+  (fn [{:keys [db]} [_ csrf-token]]
+    {:db (merge db #:site {:pages pages
+                           :runtime {:runtime/csrf-token csrf-token}})
+
+     :runtime.fx/do session/initialize}))
 
 ;; ---
 

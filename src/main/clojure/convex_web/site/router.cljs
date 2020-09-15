@@ -65,14 +65,6 @@
 
 (defonce routes
   ["/"
-   {:controllers
-    [{:identity identity
-      :start (fn [_]
-               (runtime/with-db
-                 (fn [{:site/keys [session]}]
-                   (when-not session
-                     (session/initialize)))))}]}
-
 
    ;; Welcome
    ;; ==============
