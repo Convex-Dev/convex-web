@@ -7,13 +7,15 @@
             [convex-web.site.format :as format]
             [convex-web.explorer :as explorer]
             [convex-web.site.markdown :as markdown]
+            [convex-web.site.session :as session]
 
+            [clojure.string :as str]
             [cljs.spec.alpha :as s]
 
             [reitit.frontend.easy :as rfe]
-            [convex-web.site.session :as session]
-            [clojure.string :as str]
-            [reagent.core :as reagent]))
+            [reagent.core :as reagent]
+
+            ["timeago.js" :as timeago]))
 
 (def blocks-polling-interval 5000)
 
@@ -58,42 +60,48 @@
 (defn TransactionsTable [blocks & [{:keys [modal?]}]]
   [:table.text-left.table-auto
    [:thead
-    (let [th-class "text-xs uppercase text-gray-600 bg-gray-100 p-0 sticky top-0"]
+    (let [th-style "text-xs uppercase text-gray-600 bg-gray-100 sticky top-0"
+          th-div-style "py-2 mr-2"]
       [:tr
        [:th
-        {:class th-class}
-        [:div.p-2
+        {:class th-style}
+        [:div.py-2
          "Block"]]
 
        [:th
-        {:class th-class}
-        [:div.p-2
-         "Transaction"]]
+        {:class th-style}
+        [:div
+         {:class th-div-style}
+         "TR#"]]
 
        [:th
-        {:class th-class}
-
-        [:div.p-2
+        {:class th-style}
+        [:div
+         {:class th-div-style}
          "Sequence"]]
 
        [:th
-        {:class th-class}
-        [:div.p-2
+        {:class th-style}
+        [:div
+         {:class th-div-style}
          "Type"]]
 
        [:th
-        {:class th-class}
-        [:div.p-2
+        {:class th-style}
+        [:div
+         {:class th-div-style}
          "Timestamp"]]
 
        [:th
-        {:class th-class}
-        [:div.p-2
+        {:class th-style}
+        [:div
+         {:class th-div-style}
          "Signer"]]
 
        [:th
-        {:class th-class}
-        [:div.p-2
+        {:class th-style}
+        [:div
+         {:class th-div-style}
          "Value"]]])]
 
    [:tbody.align-baseline
@@ -102,7 +110,7 @@
             transaction-index (get-in m [:convex-web.signed-data/value :convex-web.transaction/index])
             transaction-type (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])
 
-            td-class ["p-1 whitespace-no-wrap text-xs"]]
+            td-class ["align-middle p-1 whitespace-no-wrap text-xs"]]
         ^{:key [block-index transaction-index]}
         [:tr.hover:bg-gray-100.cursor-default {:style {:height "34px"}}
          ;; -- Block Index
@@ -149,17 +157,29 @@
 
          ;; -- Timestamp
          [:td {:class td-class}
-          [:span
-           (-> (get m :convex-web.block/timestamp)
-               (format/date-time-from-millis)
-               (format/date-time-to-string))]]
+          (let [utc-time (-> (get m :convex-web.block/timestamp)
+                             (format/date-time-from-millis)
+                             (format/date-time-to-string))]
+            [gui/Tooltip
+             {:title utc-time}
+             [:span (timeago/format utc-time)]])]
 
          ;; -- Signer
          [:td {:class td-class}
           (let [address (get m :convex-web.signed-data/address)]
-            [:a.flex-1.underline.hover:text-indigo-500
-             {:href (rfe/href :route-name/account-explorer {:address address})}
-             [:code.text-xs address]])]
+            [:div.flex.items-center.w-40
+             [gui/Identicon {:value address :size gui/identicon-size-small}]
+
+             ;; Link
+             [:a.flex-1.underline.hover:text-indigo-500.truncate
+              {:href (rfe/href :route-name/account-explorer {:address address})}
+              [:code.text-xs address]]
+
+             ;; External link
+             [:a.ml-1
+              {:href (rfe/href :route-name/account-explorer {:address address})
+               :target "_blank"}
+              [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]])]
 
          ;; -- Value
          [:td
