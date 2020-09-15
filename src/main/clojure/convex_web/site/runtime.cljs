@@ -8,6 +8,10 @@
 (defn sub [id & args]
   @(re-frame/subscribe (into [id] args)))
 
+(re-frame/reg-fx :runtime.fx/do
+  (fn [f]
+    (f)))
+
 (re-frame/reg-fx :runtime.fx/with-db
   (fn [[f db]]
     (f db)))
