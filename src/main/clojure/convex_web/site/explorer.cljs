@@ -78,7 +78,7 @@
         {:class th-style}
         [:div
          {:class th-div-style}
-         "Type"]]
+         "Signer"]]
 
        [:th
         {:class th-style}
@@ -90,7 +90,7 @@
         {:class th-style}
         [:div
          {:class th-div-style}
-         "Signer"]]
+         "Type"]]
 
        [:th
         {:class th-style}
@@ -131,29 +131,6 @@
            transaction-index]]
 
          ;; -- Transaction Type
-         [:td
-          {:class
-           (conj td-class (case transaction-type
-                            :convex-web.transaction.type/transfer
-                            "text-indigo-500"
-
-                            :convex-web.transaction.type/invoke
-                            "text-pink-500"
-
-                            ""))}
-          [:span.text-xs.uppercase
-           transaction-type]]
-
-         ;; -- Timestamp
-         [:td {:class td-class}
-          (let [utc-time (-> (get m :convex-web.block/timestamp)
-                             (format/date-time-from-millis)
-                             (format/date-time-to-string))]
-            [gui/Tooltip
-             {:title utc-time}
-             [:span (timeago/format utc-time)]])]
-
-         ;; -- Signer
          [:td {:class td-class}
           (let [address (get m :convex-web.signed-data/address)]
             [:div.flex.items-center.w-40
@@ -169,6 +146,29 @@
               {:href (rfe/href :route-name/account-explorer {:address address})
                :target "_blank"}
               [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]])]
+
+         ;; -- Timestamp
+         [:td {:class td-class}
+          (let [utc-time (-> (get m :convex-web.block/timestamp)
+                             (format/date-time-from-millis)
+                             (format/date-time-to-string))]
+            [gui/Tooltip
+             {:title utc-time}
+             [:span (timeago/format utc-time)]])]
+
+         ;; -- Signer
+         [:td
+          {:class
+           (conj td-class (case transaction-type
+                            :convex-web.transaction.type/transfer
+                            "text-indigo-500"
+
+                            :convex-web.transaction.type/invoke
+                            "text-pink-500"
+
+                            ""))}
+          [:span.text-xs.uppercase
+           transaction-type]]
 
          ;; -- Value
          [:td
