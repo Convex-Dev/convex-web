@@ -190,7 +190,7 @@
        :route-name :route-name/about
        :href (rfe/href :route-name/about)
        :children
-       [{:text "Vision"
+       [#_{:text "Vision"
          :route-name :route-name/vision
          :href (rfe/href :route-name/vision)}
 
@@ -198,23 +198,23 @@
          :route-name :route-name/faq
          :href (rfe/href :route-name/faq)}
 
-        {:text "Concepts"
+        #_{:text "Concepts"
          :route-name :route-name/concepts
          :href (rfe/href :route-name/concepts)}
 
-        {:text "White Paper"
+        #_{:text "White Paper"
          :route-name :route-name/white-paper
          :href (rfe/href :route-name/white-paper)}
 
-        {:text "Get Involved"
+        #_{:text "Get Involved"
          :route-name :route-name/get-involved
          :href (rfe/href :route-name/get-involved)}
 
-        {:text "Roadmap"
+        #_{:text "Roadmap"
          :route-name :route-name/roadmap
          :href (rfe/href :route-name/roadmap)}
 
-        {:text "Convex Foundation"
+        #_{:text "Convex Foundation"
          :route-name :route-name/convex-foundation
          :href (rfe/href :route-name/convex-foundation)}]}]}))
 

@@ -118,25 +118,25 @@
     [Dropdown
      {:text "About"
       :items
-      [{:text "Vision"
+      [#_{:text "Vision"
         :href (rfe/href :route-name/vision)}
 
        {:text "FAQ"
         :href (rfe/href :route-name/faq)}
 
-       {:text "Concepts"
+       #_{:text "Concepts"
         :href (rfe/href :route-name/concepts)}
 
-       {:text "White Paper"
+       #_{:text "White Paper"
         :href (rfe/href :route-name/white-paper)}
 
-       {:text "Get Involved"
+       #_{:text "Get Involved"
         :href (rfe/href :route-name/get-involved)}
 
-       {:text "Roadmap"
+       #_{:text "Roadmap"
         :href (rfe/href :route-name/roadmap)}
 
-       {:text "Convex Foundation"
+       #_{:text "Convex Foundation"
         :href (rfe/href :route-name/convex-foundation)}]}]]])
 
 (defn WelcomePage [_ _ _]
