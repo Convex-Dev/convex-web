@@ -571,18 +571,19 @@
     [:span.text-xs.text-gray-600.uppercase.ml-4 "Total"]
     [:span.text-xs.font-bold.text-indigo-500.ml-1 total]]])
 
-(defn RangeNavigation2 [{:keys [start
-                                end
-                                total
+(defn RangeNavigation2 [{:keys [page-count
+                                page-num
                                 first-href
                                 last-href
                                 previous-href
                                 previous-disabled?
                                 next-href
                                 next-disabled?]}]
-  [:div.flex.py-2
+  (let [link-style "block font-mono text-xs text-gray-800 hover:text-gray-500 hover:underline active:text-gray-900 uppercase"]
+    [:div.flex.py-2.space-x-8
 
-   (let [link-style "block font-mono text-xs text-gray-800 hover:text-gray-500 hover:underline active:text-gray-900 uppercase"]
+     ;; Navigation
+     ;; =============
      [:div.flex.items-center.space-x-4.px-2.py-1.border.rounded
       ;; -- First
       [:a
@@ -604,19 +605,13 @@
       ;; -- Last
       [:a
        {:href last-href}
-       [:span {:class link-style} "Last"]]])
+       [:span {:class link-style} "Last"]]]
 
-
-   ;; -- Range
-   #_[:div.flex.ml-10.items-center.border-b
-      [:span.text-xs.text-gray-600.uppercase "Start"]
-      [:span.text-xs.font-bold.text-indigo-500.ml-1 start]
-
-      [:span.text-xs.text-gray-600.uppercase.ml-2 "End"]
-      [:span.text-xs.font-bold.text-indigo-500.ml-1 end]
-
-      [:span.text-xs.text-gray-600.uppercase.ml-4 "Total"]
-      [:span.text-xs.font-bold.text-indigo-500.ml-1 total]]])
+     ;; Index
+     ;; =============
+     [:div.flex.items-center.space-x-4.px-2.py-1
+      [:span {:class link-style}
+       (str "Page " page-num " of " page-count)]]]))
 
 (defn MarkdownCodeBlock [{:keys [value]}]
   [:pre.relative

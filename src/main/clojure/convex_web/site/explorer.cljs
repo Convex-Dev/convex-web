@@ -705,7 +705,9 @@
                       explorer/min-range
                       next-range)]
      [gui/RangeNavigation2
-      (merge range {:first-href (rfe/href :route-name/blocks)
+      (merge range {:page-count (explorer/page-count total)
+                    :page-num (explorer/page-num start total)
+                    :first-href (rfe/href :route-name/blocks)
                     :last-href (rfe/href :route-name/blocks {} explorer/min-range)
                     :previous-href (rfe/href :route-name/blocks {} previous-query)
                     :next-href (rfe/href :route-name/blocks {} next-query)})])
@@ -761,7 +763,9 @@
                       explorer/min-range
                       next-range)]
      [gui/RangeNavigation2
-      (merge range {:first-href (rfe/href :route-name/transactions)
+      (merge range {:page-count (explorer/page-count total)
+                    :page-num (explorer/page-num start total)
+                    :first-href (rfe/href :route-name/transactions)
                     :last-href (rfe/href :route-name/transactions {} explorer/min-range)
                     :previous-href (rfe/href :route-name/transactions {} previous-query)
                     :next-href (rfe/href :route-name/transactions {} next-query)})])
