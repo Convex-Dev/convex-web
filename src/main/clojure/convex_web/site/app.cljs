@@ -172,14 +172,14 @@
                                  :route-name/account-explorer})}
 
              {:text "Blocks"
-              :route-name :route-name/block-coll-explorer
-              :href (rfe/href :route-name/block-coll-explorer)
-              :active? (active #{:route-name/block-coll-explorer
+              :route-name :route-name/blocks
+              :href (rfe/href :route-name/blocks)
+              :active? (active #{:route-name/blocks
                                  :route-name/block-explorer})}
 
              {:text "Transactions"
-              :route-name :route-name/transactions-explorer
-              :href (rfe/href :route-name/transactions-explorer)}]
+              :route-name :route-name/transactions
+              :href (rfe/href :route-name/transactions)}]
             (sort-by first))}
 
 

@@ -61,6 +61,16 @@
 (defn ?route []
   (sub :router/?route))
 
+(defn query-range [match]
+  (let [start (get-in match [:parameters :query :start])
+        start (when start
+                {:start start})
+
+        end (get-in match [:parameters :query :end])
+        end (when end
+              {:end end})]
+    (merge start end)))
+
 ;; ----
 
 (defonce routes
@@ -164,10 +174,13 @@
                                                            :convex-web/account {:convex-web.account/address address}}})))}]}]
 
     ["/blocks"
-     {:name :route-name/block-coll-explorer
+     {:name :route-name/blocks
       :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/blocks-range-explorer {:reset? true}))}]}]
+      [{:identity identity
+        :start (fn [match]
+                 (stack/push :page.id/blocks-range-explorer (merge {:reset? true}
+                                                                   (when-let [range (query-range match)]
+                                                                     {:state range}))))}]}]
 
     ["/blocks/:index"
      {:name :route-name/block-explorer
@@ -185,10 +198,13 @@
                  (stack/push :page.id/peers-explorer {:reset? true}))}]}]
 
     ["/transactions"
-     {:name :route-name/transactions-explorer
+     {:name :route-name/transactions
       :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/transactions-range-explorer {:reset? true}))}]}]]
+      [{:identity identity
+        :start (fn [match]
+                 (stack/push :page.id/transactions-range-explorer (merge {:reset? true}
+                                                                         (when-let [range (query-range match)]
+                                                                           {:state range}))))}]}]]
 
 
    ;; Documentation

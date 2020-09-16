@@ -687,28 +687,14 @@
            (when end
              {:end end}))))
 
-(defn BlocksRangeNavigation [state set-state]
-  (let [{:keys [start end total] :as range} (get state :meta)]
-    [gui/RangeNavigation
-     (merge range {:on-previous-click
-                   (fn []
-                     (set-state #(assoc % :ajax/status :ajax.status/pending))
-
-                     (get-blocks-range
-                       (merge (explorer/previous-range start) {:set-state set-state})))
-
-                   :on-next-click
-                   (fn []
-                     (set-state #(assoc % :ajax/status :ajax.status/pending))
-
-                     (get-blocks-range
-                       (merge (explorer/next-range end total) {:set-state set-state})))})]))
-
-(defn BlocksRangePage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks] :as state} set-state]
+(defn BlocksRangePage [_ {:keys [ajax/status convex-web/blocks meta]} _]
   [:div.flex.flex-col.flex-1
 
    ;; -- Pagination
-   [BlocksRangeNavigation state set-state]
+   (let [{:keys [start end total] :as range} meta]
+     [gui/RangeNavigation2
+      (merge range {:previous-href (rfe/href :route-name/blocks {} (explorer/previous-range start))
+                    :next-href (rfe/href :route-name/blocks {} (explorer/next-range end total))})])
 
    ;; -- Body
    (case status
@@ -716,10 +702,10 @@
      [:div.flex.flex-1.justify-center.items-center
       [gui/Spinner]]
 
-     [BlocksTable blocks {:modal? modal?}])])
+     [BlocksTable blocks {:modal? true}])])
 
-(defn get-blocks-on-push [_ _ set-state]
-  (get-blocks-range {:set-state set-state}))
+(defn get-blocks-on-push [_ state set-state]
+  (get-blocks-range (merge state {:set-state set-state})))
 
 (def blocks-range-page
   #:page {:id :page.id/blocks-range-explorer
@@ -743,11 +729,14 @@
 
 ;; -- Transactions
 
-(defn TransactionsRangePage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks] :as state} set-state]
+(defn TransactionsRangePage [_ {:keys [ajax/status convex-web/blocks meta]} _]
   [:div.flex.flex-col.flex-1
 
    ;; -- Pagination
-   [BlocksRangeNavigation state set-state]
+   (let [{:keys [start end total] :as range} meta]
+     [gui/RangeNavigation2
+      (merge range {:previous-href (rfe/href :route-name/transactions {} (explorer/previous-range start))
+                    :next-href (rfe/href :route-name/transactions {} (explorer/next-range end total))})])
 
    ;; -- Body
    (case status

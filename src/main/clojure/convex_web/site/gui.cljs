@@ -571,6 +571,33 @@
     [:span.text-xs.text-gray-600.uppercase.ml-4 "Total"]
     [:span.text-xs.font-bold.text-indigo-500.ml-1 total]]])
 
+(defn RangeNavigation2 [{:keys [start end total previous-href next-href]}]
+  [:div.flex.py-2
+
+   ;; -- Previous
+   [:a
+    {:href previous-href}
+    [:span.text-xs "Previous"]]
+
+   [:div.mx-1]
+
+   ;; -- Next
+   [:a
+    {:href next-href}
+    [:span.text-xs.select-none "Next"]]
+
+
+   ;; -- Range
+   [:div.flex.ml-10.items-center.border-b
+    [:span.text-xs.text-gray-600.uppercase "Start"]
+    [:span.text-xs.font-bold.text-indigo-500.ml-1 start]
+
+    [:span.text-xs.text-gray-600.uppercase.ml-2 "End"]
+    [:span.text-xs.font-bold.text-indigo-500.ml-1 end]
+
+    [:span.text-xs.text-gray-600.uppercase.ml-4 "Total"]
+    [:span.text-xs.font-bold.text-indigo-500.ml-1 total]]])
+
 (defn MarkdownCodeBlock [{:keys [value]}]
   [:pre.relative
    [:div.absolute.right-0.top-0.m-2

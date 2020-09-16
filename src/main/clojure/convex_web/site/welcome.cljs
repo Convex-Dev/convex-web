@@ -109,10 +109,10 @@
         :href (rfe/href :route-name/accounts-explorer)}
 
        {:text "Blocks"
-        :href (rfe/href :route-name/block-coll-explorer)}
+        :href (rfe/href :route-name/blocks)}
 
        {:text "Transactions"
-        :href (rfe/href :route-name/transactions-explorer)}]}]
+        :href (rfe/href :route-name/transactions)}]}]
 
     ;; -- About
     [Dropdown
