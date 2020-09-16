@@ -2,6 +2,7 @@
 
 We've collated some answers to common questions here. 
 
+
 ## Is Convex Free?
 
 Yes! Convex is free for anyone to use and build applications upon, and always will be. We are building Convex for everyone to support the Internet of Value.
@@ -13,6 +14,7 @@ To make use of the resources of the network, small transaction fees are charged 
 - We want to create an economic incentive to use the network as efficiently as possible (both for users and developers of smart contracts)
 
 Our constant goal is to keep transaction fees small, so that it is never a significant issue for legitimate network users.
+
 
 ## How fast is Convex?
 
@@ -39,6 +41,7 @@ For most decentralised apps, it is easy to build a client side application which
 Advanced applications can use the **Binary API** and construct messages directly to communicate with Peers. This is currently only possible for JVM-based languages (Java, Clojure, Scala etc.), but more may be supported in the future.
 
 Integrators can also use **Direct Peer Integration** where they run a fully operational Convex Peer alongside their server-side applications. This approach is complex and recommended only if you want maximum performance and/or want to interact with the CVM state directly (e.g. for search or indexing purposes). The convex.world server itself uses this technique.
+
 
 ## What should go on-chain?
 
@@ -80,6 +83,7 @@ It's complex! But here are some of the most important points:
 - We exploit a lot of advanced features of the JVM, which is a very powerful platform backed by thousand man years of engineering effort. We especially appreciate the JIT compiler, concurrency, asynchronous IO and advanced memory management features. It probably wouldn't be feasible to build something as fast as Convex without these.
 - Some of our team have been performance-oriented hackers for many years, with experience in game coding, embedded systems, distributed computing etc. We enjoy and take pride in writing fast, efficient code!
 
+
 ## Why does Convex use Lisp?
 
 A variant of Lisp was chosen as the initial language for the CVM for a few reasons:
@@ -89,6 +93,7 @@ A variant of Lisp was chosen as the initial language for the CVM for a few reaso
 - Lisp is ideal as an expressive language for interactive development, with a long history of REPL-based usage. We felt this was ideal for a platform where we want developers to be instantly productive and able to interact directly with the system in real time.
 
 Paul Graham's essay [Beating the Averages](http://www.paulgraham.com/avg.html) is an interesting perspective on the advantages of Lisp for building a business. Despite dating from 2001, we feel many of these points still stand today and are very relevant for people wanting to build applications using Convex.
+
 
 ## What is Memory Accounting?
 
@@ -122,8 +127,6 @@ People will depend on Convex to be a secure, reliable platform for decentralised
 Not yet, but soon!
 
 We are establishing the Convex Foundation a non-profit organisation which will facilitate the initial sale of Convex native coins in the near future. Initially, this will be only to institutional investors. Funds raised will be invested in building Convex and the ecosystem.
-
-
 
 
 ## Who is building Convex?
