@@ -30,14 +30,19 @@
   (+ (quot total config/default-range) (min (rem total config/default-range) 1)))
 
 (defn page-index [total]
-  (reduce
-    (fn [{:keys [n] :as acc} p]
-      (merge acc {;; Mapping of [start end] to page-num
-                  [(max 0 (- n config/default-range)) n] (inc p)
+  (let [index (reduce
+                (fn [{:keys [n] :as acc} p]
+                  (merge acc {;; Mapping of [start end] to page-num
+                              [(max 0 (- n config/default-range)) n] (inc p)
 
-                  :n (- n config/default-range)}))
-    {:n total}
-    (range (page-count total))))
+                              :n (- n config/default-range)}))
+                {:n total}
+                (range (page-count total)))
+        ;; Remove no longer needed key
+        index (dissoc index :n)
+        ;; It must me sorted for consistency
+        index (into (sorted-map) index)]
+    index))
 
 (defn page-num [start total]
   (let [index (page-index total)]
@@ -45,4 +50,4 @@
       (fn [[[start' _] page-num]]
         (when (>= start start')
           page-num))
-      (dissoc index :n))))
+      (reverse index))))
