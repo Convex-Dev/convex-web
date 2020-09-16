@@ -29,7 +29,7 @@
 (defn page-count [total]
   (+ (quot total config/default-range) (min (rem total config/default-range) 1)))
 
-(defn -page-index [total]
+(defn page-index [total]
   (reduce
     (fn [{:keys [n] :as acc} p]
       (merge acc {;; Mapping of [start end] to page-num
@@ -38,8 +38,6 @@
                   :n (- n config/default-range)}))
     {:n total}
     (range (page-count total))))
-
-(def page-index (memoize -page-index))
 
 (defn page-num [start total]
   (let [index (page-index total)]
