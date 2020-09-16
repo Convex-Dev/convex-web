@@ -695,14 +695,20 @@
 
          {start-previous-range :start end-previous-range :end :as previous-range} (explorer/increase-range end total)
 
-         {start-next-range :start end-next-range :end :as next-range} (explorer/decrease-range start)]
+         previous-query (if (= start-previous-range end-previous-range)
+                          {}
+                          previous-range)
+
+         {start-next-range :start end-next-range :end :as next-range} (explorer/decrease-range start)
+
+         next-query (if (= start-next-range end-next-range)
+                      explorer/min-range
+                      next-range)]
      [gui/RangeNavigation2
       (merge range {:first-href (rfe/href :route-name/blocks)
                     :last-href (rfe/href :route-name/blocks {} explorer/min-range)
-                    :previous-href (rfe/href :route-name/blocks {} previous-range)
-                    :previous-disabled? (= start-previous-range end-previous-range)
-                    :next-href (rfe/href :route-name/blocks {} next-range)
-                    :next-disabled? (= start-next-range end-next-range)})])
+                    :previous-href (rfe/href :route-name/blocks {} previous-query)
+                    :next-href (rfe/href :route-name/blocks {} next-query)})])
 
    ;; -- Body
    (case status
@@ -745,14 +751,20 @@
 
          {start-previous-range :start end-previous-range :end :as previous-range} (explorer/increase-range end total)
 
-         {start-next-range :start end-next-range :end :as next-range} (explorer/decrease-range start)]
+         previous-query (if (= start-previous-range end-previous-range)
+                          {}
+                          previous-range)
+
+         {start-next-range :start end-next-range :end :as next-range} (explorer/decrease-range start)
+
+         next-query (if (= start-next-range end-next-range)
+                      explorer/min-range
+                      next-range)]
      [gui/RangeNavigation2
       (merge range {:first-href (rfe/href :route-name/transactions)
                     :last-href (rfe/href :route-name/transactions {} explorer/min-range)
-                    :previous-href (rfe/href :route-name/transactions {} previous-range)
-                    :previous-disabled? (= start-previous-range end-previous-range)
-                    :next-href (rfe/href :route-name/transactions {} next-range)
-                    :next-disabled? (= start-next-range end-next-range)})])
+                    :previous-href (rfe/href :route-name/transactions {} previous-query)
+                    :next-href (rfe/href :route-name/transactions {} next-query)})])
 
    ;; -- Body
    (case status
