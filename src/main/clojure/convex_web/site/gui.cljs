@@ -571,42 +571,52 @@
     [:span.text-xs.text-gray-600.uppercase.ml-4 "Total"]
     [:span.text-xs.font-bold.text-indigo-500.ml-1 total]]])
 
-(defn RangeNavigation2 [{:keys [start end total previous-href next-href]}]
+(defn RangeNavigation2 [{:keys [start
+                                end
+                                total
+                                first-href
+                                last-href
+                                previous-href
+                                previous-disabled?
+                                next-href
+                                next-disabled?]}]
   [:div.flex.py-2
 
    (let [link-style "font-mono text-xs text-gray-800 hover:text-gray-500 active:text-gray-900 uppercase"]
      [:div.flex.items-center.space-x-4
       ;; -- First
-      #_[:a
-       {:href previous-href}
+      [:a
+       {:href first-href}
        [:span {:class link-style} "First"]]
 
       ;; -- Previous
       [:a
-       {:href next-href}
+       (merge {:href previous-href} (when previous-disabled?
+                                      {:class "pointer-events-none"}))
        [:span {:class link-style} "Previous"]]
 
       ;; -- Next
       [:a
-       {:href previous-href}
+       (merge {:href next-href} (when next-disabled?
+                                  {:class "pointer-events-none"}))
        [:span {:class link-style} "Next"]]
 
       ;; -- Last
-      #_[:a
-       {:href previous-href}
+      [:a
+       {:href last-href}
        [:span {:class link-style} "Last"]]])
 
 
    ;; -- Range
-   [:div.flex.ml-10.items-center.border-b
-    [:span.text-xs.text-gray-600.uppercase "Start"]
-    [:span.text-xs.font-bold.text-indigo-500.ml-1 start]
+   #_[:div.flex.ml-10.items-center.border-b
+      [:span.text-xs.text-gray-600.uppercase "Start"]
+      [:span.text-xs.font-bold.text-indigo-500.ml-1 start]
 
-    [:span.text-xs.text-gray-600.uppercase.ml-2 "End"]
-    [:span.text-xs.font-bold.text-indigo-500.ml-1 end]
+      [:span.text-xs.text-gray-600.uppercase.ml-2 "End"]
+      [:span.text-xs.font-bold.text-indigo-500.ml-1 end]
 
-    [:span.text-xs.text-gray-600.uppercase.ml-4 "Total"]
-    [:span.text-xs.font-bold.text-indigo-500.ml-1 total]]])
+      [:span.text-xs.text-gray-600.uppercase.ml-4 "Total"]
+      [:span.text-xs.font-bold.text-indigo-500.ml-1 total]]])
 
 (defn MarkdownCodeBlock [{:keys [value]}]
   [:pre.relative

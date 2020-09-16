@@ -487,13 +487,13 @@
               (fn []
                 (set-state #(assoc % :ajax/status :ajax.status/pending))
 
-                (get-accounts-range set-state (explorer/next-range start)))
+                (get-accounts-range set-state (explorer/decrease-range start)))
 
               :on-next-click
               (fn []
                 (set-state #(assoc % :ajax/status :ajax.status/pending))
 
-                (get-accounts-range set-state (explorer/previous-range end total)))})]
+                (get-accounts-range set-state (explorer/increase-range end total)))})]
 
      ;; -- Body
      (case status
@@ -691,10 +691,18 @@
   [:div.flex.flex-col.flex-1
 
    ;; -- Pagination
-   (let [{:keys [start end total] :as range} meta]
+   (let [{:keys [start end total] :as range} meta
+
+         {start-previous-range :start end-previous-range :end :as previous-range} (explorer/increase-range end total)
+
+         {start-next-range :start end-next-range :end :as next-range} (explorer/decrease-range start)]
      [gui/RangeNavigation2
-      (merge range {:previous-href (rfe/href :route-name/blocks {} (explorer/next-range start))
-                    :next-href (rfe/href :route-name/blocks {} (explorer/previous-range end total))})])
+      (merge range {:first-href (rfe/href :route-name/blocks)
+                    :last-href (rfe/href :route-name/blocks {} explorer/min-range)
+                    :previous-href (rfe/href :route-name/blocks {} previous-range)
+                    :previous-disabled? (= start-previous-range end-previous-range)
+                    :next-href (rfe/href :route-name/blocks {} next-range)
+                    :next-disabled? (= start-next-range end-next-range)})])
 
    ;; -- Body
    (case status
@@ -733,10 +741,18 @@
   [:div.flex.flex-col.flex-1
 
    ;; -- Pagination
-   (let [{:keys [start end total] :as range} meta]
+   (let [{:keys [start end total] :as range} meta
+
+         {start-previous-range :start end-previous-range :end :as previous-range} (explorer/increase-range end total)
+
+         {start-next-range :start end-next-range :end :as next-range} (explorer/decrease-range start)]
      [gui/RangeNavigation2
-      (merge range {:previous-href (rfe/href :route-name/transactions {} (explorer/next-range start))
-                    :next-href (rfe/href :route-name/transactions {} (explorer/previous-range end total))})])
+      (merge range {:first-href (rfe/href :route-name/transactions)
+                    :last-href (rfe/href :route-name/transactions {} explorer/min-range)
+                    :previous-href (rfe/href :route-name/transactions {} previous-range)
+                    :previous-disabled? (= start-previous-range end-previous-range)
+                    :next-href (rfe/href :route-name/transactions {} next-range)
+                    :next-disabled? (= start-next-range end-next-range)})])
 
    ;; -- Body
    (case status
