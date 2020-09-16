@@ -704,13 +704,15 @@
          next-query (if (= start-next-range end-next-range)
                       explorer/min-range
                       next-range)]
+
      [gui/RangeNavigation2
       (merge range {:page-count (explorer/page-count total)
                     :page-num (explorer/page-num start total)
                     :first-href (rfe/href :route-name/blocks)
                     :last-href (rfe/href :route-name/blocks {} explorer/min-range)
                     :previous-href (rfe/href :route-name/blocks {} previous-query)
-                    :next-href (rfe/href :route-name/blocks {} next-query)})])
+                    :next-href (rfe/href :route-name/blocks {} next-query)
+                    :ajax/status status})])
 
    ;; -- Body
    (case status
@@ -768,7 +770,8 @@
                     :first-href (rfe/href :route-name/transactions)
                     :last-href (rfe/href :route-name/transactions {} explorer/min-range)
                     :previous-href (rfe/href :route-name/transactions {} previous-query)
-                    :next-href (rfe/href :route-name/transactions {} next-query)})])
+                    :next-href (rfe/href :route-name/transactions {} next-query)
+                    :ajax/status status})])
 
    ;; -- Body
    (case status

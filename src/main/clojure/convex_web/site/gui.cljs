@@ -578,8 +578,10 @@
                                 previous-href
                                 previous-disabled?
                                 next-href
-                                next-disabled?]}]
-  (let [link-style "block font-mono text-xs text-gray-800 hover:text-gray-500 hover:underline active:text-gray-900 uppercase"]
+                                next-disabled?
+                                ajax/status]}]
+  (let [action-style "block font-mono text-xs text-gray-800 hover:text-gray-500 hover:underline active:text-gray-900 uppercase"
+        index-style "block font-mono text-xs text-gray-600 uppercase"]
     [:div.flex.py-2.space-x-8
 
      ;; Navigation
@@ -588,30 +590,37 @@
       ;; -- First
       [:a
        {:href first-href}
-       [:span {:class link-style} "First"]]
+       [:span {:class action-style} "First"]]
 
       ;; -- Previous
       [:a
        (merge {:href previous-href} (when previous-disabled?
                                       {:class "pointer-events-none"}))
-       [:span {:class link-style} "Previous"]]
+       [:span {:class action-style} "Previous"]]
 
       ;; -- Next
       [:a
        (merge {:href next-href} (when next-disabled?
                                   {:class "pointer-events-none"}))
-       [:span {:class link-style} "Next"]]
+       [:span {:class action-style} "Next"]]
 
       ;; -- Last
       [:a
        {:href last-href}
-       [:span {:class link-style} "Last"]]]
+       [:span {:class action-style} "Last"]]]
 
      ;; Index
      ;; =============
      [:div.flex.items-center.space-x-4.px-2.py-1
-      [:span {:class link-style}
-       (str "Page " page-num " of " page-count)]]]))
+      (case status
+        :ajax.status/pending
+        [SpinnerSmall]
+
+        :ajax.status/success
+        [:span {:class index-style}
+         (str "Page " page-num " of " page-count)]
+
+        "")]]))
 
 (defn MarkdownCodeBlock [{:keys [value]}]
   [:pre.relative
