@@ -582,8 +582,8 @@
                                 next-disabled?]}]
   [:div.flex.py-2
 
-   (let [link-style "font-mono text-xs text-gray-800 hover:text-gray-500 active:text-gray-900 uppercase"]
-     [:div.flex.items-center.space-x-4
+   (let [link-style "block font-mono text-xs text-gray-800 hover:text-gray-500 hover:underline active:text-gray-900 uppercase"]
+     [:div.flex.items-center.space-x-4.px-2.py-1.border.rounded
       ;; -- First
       [:a
        {:href first-href}
