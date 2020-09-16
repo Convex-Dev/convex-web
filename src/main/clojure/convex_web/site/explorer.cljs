@@ -487,13 +487,13 @@
               (fn []
                 (set-state #(assoc % :ajax/status :ajax.status/pending))
 
-                (get-accounts-range set-state (explorer/previous-range start)))
+                (get-accounts-range set-state (explorer/next-range start)))
 
               :on-next-click
               (fn []
                 (set-state #(assoc % :ajax/status :ajax.status/pending))
 
-                (get-accounts-range set-state (explorer/next-range end total)))})]
+                (get-accounts-range set-state (explorer/previous-range end total)))})]
 
      ;; -- Body
      (case status
@@ -693,8 +693,8 @@
    ;; -- Pagination
    (let [{:keys [start end total] :as range} meta]
      [gui/RangeNavigation2
-      (merge range {:previous-href (rfe/href :route-name/blocks {} (explorer/previous-range start))
-                    :next-href (rfe/href :route-name/blocks {} (explorer/next-range end total))})])
+      (merge range {:previous-href (rfe/href :route-name/blocks {} (explorer/next-range start))
+                    :next-href (rfe/href :route-name/blocks {} (explorer/previous-range end total))})])
 
    ;; -- Body
    (case status
@@ -735,8 +735,8 @@
    ;; -- Pagination
    (let [{:keys [start end total] :as range} meta]
      [gui/RangeNavigation2
-      (merge range {:previous-href (rfe/href :route-name/transactions {} (explorer/previous-range start))
-                    :next-href (rfe/href :route-name/transactions {} (explorer/next-range end total))})])
+      (merge range {:previous-href (rfe/href :route-name/transactions {} (explorer/next-range start))
+                    :next-href (rfe/href :route-name/transactions {} (explorer/previous-range end total))})])
 
    ;; -- Body
    (case status

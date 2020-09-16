@@ -574,17 +574,27 @@
 (defn RangeNavigation2 [{:keys [start end total previous-href next-href]}]
   [:div.flex.py-2
 
-   ;; -- Previous
-   [:a
-    {:href previous-href}
-    [:span.text-xs "Previous"]]
+   (let [link-style "font-mono text-xs text-gray-800 hover:text-gray-500 active:text-gray-900 uppercase"]
+     [:div.flex.items-center.space-x-4
+      ;; -- First
+      #_[:a
+       {:href previous-href}
+       [:span {:class link-style} "First"]]
 
-   [:div.mx-1]
+      ;; -- Previous
+      [:a
+       {:href next-href}
+       [:span {:class link-style} "Previous"]]
 
-   ;; -- Next
-   [:a
-    {:href next-href}
-    [:span.text-xs.select-none "Next"]]
+      ;; -- Next
+      [:a
+       {:href previous-href}
+       [:span {:class link-style} "Next"]]
+
+      ;; -- Last
+      #_[:a
+       {:href previous-href}
+       [:span {:class link-style} "Last"]]])
 
 
    ;; -- Range
