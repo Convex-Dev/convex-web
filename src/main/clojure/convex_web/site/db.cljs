@@ -6,7 +6,7 @@
   (fn [{:keys [db]} [_ f args]]
     {:db (apply f db args)}))
 
-(defn transact [f & args]
+(defn transact! [f & args]
   (disp :db/!transact f args))
 
 (defn pages [db]

@@ -77,17 +77,17 @@
   (sub :session/?active-address))
 
 (defn initialize []
-  (db/transact assoc-in [:site/session :ajax/status] :ajax.status/pending)
+  (db/transact! assoc-in [:site/session :ajax/status] :ajax.status/pending)
 
   (backend/GET-session
     {:handler
      (fn [session]
-       (db/transact update :site/session merge {:ajax/status :ajax.status/success} session))
+       (db/transact! update :site/session merge {:ajax/status :ajax.status/success} session))
 
      :error-handler
      (fn [error]
-       (db/transact update :site/session merge {:ajax/status :ajax.status/error
-                                                :ajax/error error}))}))
+       (db/transact! update :site/session merge {:ajax/status :ajax.status/error
+                                                 :ajax/error error}))}))
 
 (defn add-account [account & [active?]]
   (disp :session/!add-account account {:active? active?}))
