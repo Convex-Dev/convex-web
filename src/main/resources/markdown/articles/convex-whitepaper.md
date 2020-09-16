@@ -1,22 +1,30 @@
 # Convex White Paper
 
-## Executive Summary
+## Abstract
+
+Decentralised networks offer the opportunity to provide a true peer-to-peer system for the management and exchange of digital assets and services. However, existing implementations have notable weaknesses including poor performance, high energy consumption, long transactions confirmation times, vulnerability to "front-running" attacks and/or lack of truly decentralised security.
+
+We propose a novel solution based upon merging beliefs shared by peers using a function that is idempotent, commutative and associative, and thus creates a system that provably converges to consensus by forming a conflict-free replicated data type (CRDT). By augmenting this with a system of staking (DPoS), it is possible to guarantee convergence to consensus even in the presence of some proportion of malicious / byzantine peers.
+
+We augment this system with a execution engine, building on the lambda calculate, immutable persistent data structures and content addressable storage. Coupled with the consensus algorithm, this provides a fully decentralised, global computer capable of executing arbitrary smart contracts with decentralised ownership (the "Convex Virtual Machine").
+
+## Introduction
 
 Convex is a programmable environment that is globally shared on a decentralised network: a "public computer" that everyone can access but where nobody has absolute control.
 
-A system of this nature is suitable for the development and deployment of a wide variety of applications. In particular, the "sweet spot" might be regarded as scenarios where there is a need for globally consistent shared state, but where a centralised solution is not desirable. Some examples might include:
+The motivation for the development of a system of this nature is because it can support a wide variety of decentralised applications. In particular, the "sweet spot" might be regarded as scenarios where there is a need for globally consistent shared state, but where a centralised solution is not desirable. Some examples might include:
 
-* Educational environments for collaborative and interactive programming
-* Games and entertainment
-* Implementation of cryptocurrencies, tokens, and other forms of decentralised assets
+* Games and entertainment where rules include ownership of digital assets
+* Implementation of cryptocurrencies, utility tokens, and other forms of decentralised assets
 * Economic transactions where terms and conditions are automatically guaranteed by Smart Contracts
+* Educational environments for collaborative and interactive programming
 * Immutable records of document / data provenance
 * Publicly accessible databases and registries
 
 Some highlights of the Convex design that may be of interest include:
 
 * **Actors**: Programs that execute autonomously in the Convex environment with deterministic and verifiable behaviour, suitable for managing assets and enforcing Smart Contracts
-* **Convex Virtual Machine (CVM)** - a fully turning complete programming and execution environment, with a novel combination of language features to facilitate writing decentralised applications. We even manage to implement a working Lisp compiler "on-chain".
+* **Convex Virtual Machine (CVM)** - a fully Turing complete programming and execution environment, with a novel combination of language features to facilitate writing decentralised applications. We even manage to implement a working Lisp compiler "on-chain".
 * **Decentralised Data Object Model** - A data model supporting powerful features such as orthogonal persistence, memory accounting, incremental data sharing and cryptographic verification
 * **Performance**: High throughput, low latency execution (many thousands of transactions per second, ~1 second or below latency)
 * **Security**: Cryptographic security for control over all user accounts and assets, byzantine fault tolerance at the level of the decentralised network.
@@ -60,11 +68,11 @@ These innovations paved the way for significant experimentation in the space of 
 
 ### Technical Challenges
 
-However, Blockchain technologies suffer from a range of issues which proved hard to resolve. On the technical side, Ethereum founder Vitalik Buterin observed the “Scalability Trilemma” which is that is extremely hard to achieve the combination of:
+However, Blockchain technologies suffer from a range of issues which proved hard to resolve. On the technical side, Ethereum founder Vitalik Buterin observed the â€œScalability Trilemmaâ€� which is that is extremely hard to achieve the combination of:
 
-* **Scalability** – Ability to offer performance comparable to traditional payment systems such as VISA
-* **Security** – Resistance to attacks on assets and information integrity (such as double spending of digital currency)
-* **Decentralisation** – Ability to operate free from centralised control by a single entity or group of powerful entities
+* **Scalability** â€“ Ability to offer performance comparable to traditional payment systems such as VISA
+* **Security** â€“ Resistance to attacks on assets and information integrity (such as double spending of digital currency)
+* **Decentralisation** â€“ Ability to operate free from centralised control by a single entity or group of powerful entities
 
 Other technical challenges became apparent over time. Some notable issues:
 
@@ -85,8 +93,8 @@ Other technical challenges became apparent over time. Some notable issues:
 Convex has been designed to solve many of the technical challenges of Blockchains. With reference to the Scalability Trilemma, Convex offers:
 
 * **Thousands of transactions per second** - Convex will offer the capability to operate at VISA-like transaction levels and sub-second block times even *before* scalability solutions such as Layer 2 solutions, state sharding or optimistic lookahead approaches are applied.
-* **Byzantine Fault Tolerance** – Convex meets the strongest possible threshold for security under the model of Byzantine threats. Consensus formation is guaranteed (and stable) as long as at least 2/3 of the effective voting power of the network follows the protocol.
-* **Fully Decentralised** – The network operates under a trustless Peer-to-Peer model: Anyone can operate a Peer in the network, anyone can submit a transaction for execution, and transactions cannot be censored (subject to usual security assumptions). 
+* **Byzantine Fault Tolerance** â€“ Convex meets the strongest possible threshold for security under the model of Byzantine threats. Consensus formation is guaranteed (and stable) as long as at least 2/3 of the effective voting power of the network follows the protocol.
+* **Fully Decentralised** â€“ The network operates under a trustless Peer-to-Peer model: Anyone can operate a Peer in the network, anyone can submit a transaction for execution, and transactions cannot be censored (subject to usual security assumptions). 
 
 But Convex is more than just a faster Blockchain - it is a platform for building digital economic systems. As such, it combines a number of capabilities that together enable construction of new classes of applications.
 
@@ -109,10 +117,10 @@ The algorithm operates using a variant of **Conflict-free Replicated Data Type**
 
 Convex implements a full virtual machine for smart contracts, the **Convex Virtual Machine (CVM)**. The CVM is designed to facilitate digital economic transactions, and offers some additional innovations to facilitate the development of decentralised applications:
 
-* **Decentralised Data Objects** (DOs) – A system of data structures enabling efficient and secure replication of data across the Convex network, and supporting the implementation of the CVM. 
-* **Convex Lisp** – A powerful language where CVM code is itself expressed as Decentralised Data Objects. The compiler itself executes on-chain – giving developers and Actors the power to construct, compile and deploy new actors on-chain without external tools. This enables systems of on-chain MetaActors – actors which can autonomously create and manage other actors.
-* **Scheduled Execution** – The protocol allows for deterministic execution of Actor code at any future point in time. This allows for more advanced, time-based processes to be implemented on chain (without such a feature, smart contracts would need external systems and events to trigger execution at specific times, such as the Ethereum Alarm Clock )
-* **Execution Worlds** – Each account on the network (external user or Actor) is granted a secure, scriptable CVM code execution environment with its own database. This enables highly interactive use of the CVM by advanced users.
+* **Decentralised Data Objects** (DOs) â€“ A system of data structures enabling efficient and secure replication of data across the Convex network, and supporting the implementation of the CVM. 
+* **Convex Lisp** â€“ A powerful language where CVM code is itself expressed as Decentralised Data Objects. The compiler itself executes on-chain â€“ giving developers and Actors the power to construct, compile and deploy new actors on-chain without external tools. This enables systems of on-chain MetaActors â€“ actors which can autonomously create and manage other actors.
+* **Scheduled Execution** â€“ The protocol allows for deterministic execution of Actor code at any future point in time. This allows for more advanced, time-based processes to be implemented on chain (without such a feature, smart contracts would need external systems and events to trigger execution at specific times, such as the Ethereum Alarm Clock )
+* **Execution Worlds** â€“ Each account on the network (external user or Actor) is granted a secure, scriptable CVM code execution environment with its own database. This enables highly interactive use of the CVM by advanced users.
 
 ### Storage System
 
@@ -120,7 +128,7 @@ Convex implemented a novel storage scheme, specifically designed to support the 
 
 * **Hash keys** - The key for every value in the database is its cryptographic hash
 * **Smart References** - references to data that can be lazily loaded and verified, allowing just a small required subset of data to be accessed on demand.
-* **Orthogonal Persistence** – Decentralised Data Objects used in Convex (such as the CVM state) are stored in a virtual database which may be much larger than main memory. This opens up interesting opportunities for future scalability and sophisticated Actors capable of working with large databases.
+* **Orthogonal Persistence** â€“ Decentralised Data Objects used in Convex (such as the CVM state) are stored in a virtual database which may be much larger than main memory. This opens up interesting opportunities for future scalability and sophisticated Actors capable of working with large databases.
 * **Novelty Detection** - The design of the storage system enables Convex to detect *novel* information when it is written to storage. This is important to reduce bandwidth requirements: only novel information will typically need to be broadcast to the Peer network.
 * **Proofed Persistence** - Certain proofs relating the the validation of data are persisted along with the data itself. This is an important optimisation: Entire large data structures can be verified in O(1) time by checking the cached proof.
 
@@ -165,23 +173,23 @@ We define the **consensus point** to be the number of Blocks confirmed by the co
 
 #### Block proposals
 
-Traditional Blockchain solutions have focused on mechanisms to determine which participant gains the right to propose the next block, which includes a hash of the previous block in order to extend a linked “chain” of blocks. This was the basis for the original Bitcoin Proof of Work algorithm (which used the ability to mine cryptographic hashes as the basis for allowing a miner to publish a block and claim the corresponding block reward).
+Traditional Blockchain solutions have focused on mechanisms to determine which participant gains the right to propose the next block, which includes a hash of the previous block in order to extend a linked â€œchainâ€� of blocks. This was the basis for the original Bitcoin Proof of Work algorithm (which used the ability to mine cryptographic hashes as the basis for allowing a miner to publish a block and claim the corresponding block reward).
 
-This approach of selecting a “leader” to publish a new block creates a couple of problems:
+This approach of selecting a â€œleaderâ€� to publish a new block creates a couple of problems:
 
 * It is difficult to determine which participant should be the next leader, in a way that is both efficient, provides security in the presence of potential byzantine actors, and is guaranteed to make progress in cases such as leaders becoming unavailable.
-* Including the hash of the previous block in a chain creates an inherent data dependency that limits the ability to propose blocks in parallel and increases latency – each leader must build upon the work of the previous leader sequentially, which implies a minimum lower bound on the block time (given fundamental physical constraints).
+* Including the hash of the previous block in a chain creates an inherent data dependency that limits the ability to propose blocks in parallel and increases latency â€“ each leader must build upon the work of the previous leader sequentially, which implies a minimum lower bound on the block time (given fundamental physical constraints).
 
 Convex therefore eschews the idea of selecting a leader. **Any Peer may propose a new Block at any time**, and the new Block is independent of all previous Blocks, i.e. it does not form a "chain". A consequence of this is that is is possible for multiple Peers to propose valid blocks for inclusion in consensus at the same time.
 
 
 #### Convergence
 
-Convex uses a variant of Convergent Replicated Data Types (CRDTs)  to provide part of this solution. CRDTs have the provable property of Eventual Consistency – which might be informally defined as a situation where all peers eventually reach the same state given no novel transactions in the network.
+Convex uses a variant of Convergent Replicated Data Types (CRDTs)  to provide part of this solution. CRDTs have the provable property of Eventual Consistency â€“ which might be informally defined as a situation where all peers eventually reach the same state given no novel transactions in the network.
 
 This is achieved through:
 
-* A data structure called a **Belief**, which represents a Peer’s view of consensus across the whole network, including the most recent proposed Block orderings from other Peers
+* A data structure called a **Belief**, which represents a Peerâ€™s view of consensus across the whole network, including the most recent proposed Block orderings from other Peers
 * A **Belief Merge function** for each Peer, which:
   * Combines any two (or more) Beliefs to create an updated Belief
   * Is idempotent, commutative and associative with respect to the merging of other Beliefs
@@ -675,6 +683,6 @@ At the same time, it maintains a certain degree of simplicity.
 
 * Simple functional programming on the CVM based on the lambda calculus
 * Immutability for all data structures
-* A comparatively simple consensus algorithm
+* A comparatively simple consensus algorithm based on CRDTs
 
 It is our hope that the innovations in Convex and the engineering decisions made will provide a practical, high performance platform for a new generation of decentralised applications.
