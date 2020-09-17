@@ -323,27 +323,29 @@
     [:div.flex.justify-between.items-center
 
      [:div
-      {:class "flex items-center space-x-2 w-3/6"}
-      ;; -- Symbol
-      [:code.font-bold.text-xs.text-indigo-500
-       {:class
-        (if on-click
-          "cursor-pointer"
-          "cursor-default")
-        :on-click (or on-click identity)}
-       symbol]
+      {:class "flex flex-col w-1/2"}
+
+      [:div.flex.items-center.space-x-2.py-1
+       ;; -- Symbol
+       [:code.font-bold.text-xs.text-indigo-500
+        {:class
+         (if on-click
+           "cursor-pointer"
+           "cursor-default")
+         :on-click (or on-click identity)}
+        symbol]
+
+       ;; -- Type
+       (when-let [type (get-in meta [:doc :type])]
+         [SymbolType type])]
 
       ;; -- Value
       (when-not (str/blank? value)
-        [Highlight value])
-
-      ;; -- Type
-      (when-let [type (get-in meta [:doc :type])]
-        [SymbolType type])]
+        [:div.w-full [Highlight value]])]
 
      ;; -- Description
      [:div
-      {:class "flex justify-between w-3/6"}
+      {:class "flex justify-between w-1/2"}
       (when-let [description (get-in meta [:doc :description])]
         [:p.text-sm.text-gray-800.ml-10 description])]]))
 
