@@ -586,7 +586,7 @@
 
      ;; Navigation
      ;; =============
-     [:div.flex.items-center.space-x-4.px-2.py-1.border.rounded
+     [:div.flex.items-center.space-x-4.px-2.py-1.border.border-gray-600.rounded
       ;; -- First
       [:a
        {:href first-href}
