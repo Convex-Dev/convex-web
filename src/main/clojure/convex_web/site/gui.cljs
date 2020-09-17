@@ -590,7 +590,7 @@
       ;; -- First
       [:a
        {:href first-href}
-       [:span {:class action-style} "First"]]
+       [:span {:class action-style} "Latest"]]
 
       ;; -- Previous
       [:a
@@ -607,7 +607,7 @@
       ;; -- Last
       [:a
        {:href last-href}
-       [:span {:class action-style} "Last"]]]
+       [:span {:class action-style} "Earliest"]]]
 
      ;; Index
      ;; =============
