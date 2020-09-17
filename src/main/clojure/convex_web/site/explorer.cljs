@@ -605,7 +605,7 @@
                {:label "Peer"
                 :keyfn :convex-web.block/peer}]]])]
 
-         [:tbody.align-baseline
+         [:tbody
           (for [{:convex-web.block/keys [index peer timestamp] :as block} blocks]
             (let [td-class ["text-xs text-gray-700 whitespace-no-wrap px-2"]]
               ^{:key index}
@@ -638,9 +638,11 @@
 
                ;; -- Peer
                [:td {:class td-class}
-                [:a
-                 {:href (rfe/href :route-name/account-explorer {:address peer})}
-                 [:code.underline peer]]]]))]]))))
+                [:div.flex.items-center
+                 [gui/Identicon {:value peer :size gui/identicon-size-small}]
+                 [:a
+                  {:href (rfe/href :route-name/account-explorer {:address peer})}
+                  [:code.underline peer]]]]]))]]))))
 
 (defn BlocksPage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks]} _]
   (case status
