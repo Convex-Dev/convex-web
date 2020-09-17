@@ -699,6 +699,8 @@
           max-items (min consensus config/default-range)
 
           end (or (some-> end Long/parseLong) consensus)
+          end (min end consensus)
+
           start (or (some-> start Long/parseLong) (- end max-items))
 
           start-valid? (<= 0 start end)

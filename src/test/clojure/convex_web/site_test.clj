@@ -54,7 +54,7 @@
     (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/blocks-range?start=10&end=15"))]
       (is (= 400 status))
 
-      (is (= {:error {:message "Invalid end: 15."}}
+      (is (= {:error {:message "Invalid start: 10."}}
              (transit/decode-string body))))))
 
 (deftest accounts-test
