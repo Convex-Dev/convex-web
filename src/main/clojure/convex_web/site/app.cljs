@@ -459,11 +459,11 @@
        [SideNav (:route/match (router/?route))]
 
        ;; -- Page
-       [:div.relative.flex.flex-col.flex-1.xl:pl-24.overflow-auto
+       [:div.relative.flex.flex-col.flex-1.space-y-2.xl:pl-24.overflow-auto
         (when active-page-frame
           [:<>
            (when-not (str/blank? title)
-             [:span.font-mono.text-base.text-gray-500.mb-2 title])
+             [:span.font-mono.text-base.text-gray-500 title])
 
            [Component active-page-frame state set-state]])]]]]))
 
