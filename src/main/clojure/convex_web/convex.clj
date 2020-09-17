@@ -172,7 +172,8 @@
 
 (defn syntax-data [^Syntax syn]
   #:convex-web.syntax {:source (.getSource syn)
-                       :meta (datafy (.getMeta syn))})
+                       :meta (datafy (.getMeta syn))
+                       :value (datafy (.getValue syn))})
 
 (defn environment-data
   "Account Status' environment data.

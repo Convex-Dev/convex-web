@@ -316,24 +316,33 @@
              "bg-gray-100")}
    [:code.text-xs.text-gray-700 type]])
 
-(defn SymbolMetaStrip [sym metadata]
-  [:div.flex.justify-between.items-center
+(defn SymbolStrip [{:keys [symbol syntax on-click]}]
+  (let [{:convex-web.syntax/keys [meta value]} syntax]
+    [:div.flex.justify-between.items-center
 
-   [:div
-    {:class "flex items-center justify-between w-1/5"}
-    ;; -- Symbol
-    [:code.font-bold.text-xs.text-indigo-500.mr-4 sym]
+     [:div
+      {:class "flex items-center justify-between w-1/5"}
+      ;; -- Symbol
+      [:code.font-bold.text-xs.text-indigo-500.mr-4
+       {:class
+        (if on-click
+          "cursor-pointer"
+          "cursor-default")
+        :on-click (or on-click identity)}
+       symbol]
 
-    ;; -- Type
-    (when-let [type (get-in metadata [:doc :type])]
-      [SymbolType type])]
+      ;; -- Value
+      [:code.text-xs.mr-4 value]
 
-   [:div
-    {:class "flex justify-between w-4/5"}
+      ;; -- Type
+      (when-let [type (get-in meta [:doc :type])]
+        [SymbolType type])]
 
-    ;; -- Description
-    (when-let [description (get-in metadata [:doc :description])]
-      [:p.text-sm.text-gray-800.ml-10 description])]])
+     ;; -- Description
+     [:div
+      {:class "flex justify-between w-4/5"}
+      (when-let [description (get-in meta [:doc :description])]
+        [:p.text-sm.text-gray-800.ml-10 description])]]))
 
 (defn SymbolMeta2 [{:keys [doc show-examples?] :or {show-examples? true}}]
   (let [{:keys [symbol examples type description signature]} doc]
@@ -579,10 +588,12 @@
        [:div.flex.flex-col.w-full.divide-y
         (let [environment (sort-by (comp str first) environment)]
           (if (seq environment)
-            (for [[sym metadata] environment]
-              ^{:key sym}
+            (for [[symbol syntax] environment]
+              ^{:key symbol}
               [:div.w-full.py-2.px-1
-               [SymbolMetaStrip sym (:convex-web.syntax/meta metadata)]])
+               [SymbolStrip
+                {:symbol symbol
+                 :syntax syntax}]])
             [:span.text-xs.text-gray-700.text-center "Empty"]))]]]]))
 
 (defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
