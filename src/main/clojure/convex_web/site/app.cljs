@@ -14,6 +14,7 @@
             [convex-web.site.account :as account]
             [convex-web.site.store]
             [convex-web.site.format :as format]
+            [convex-web.site.environment :as environment]
 
             [clojure.string :as str]
             [cljs.spec.test.alpha :as stest]
@@ -91,6 +92,10 @@
    documentation/vision-page
    documentation/advanced-topics-page
    documentation/client-api-page
+
+   ;; ---
+
+   environment/symbol-introspection-page
 
    ;; ---
 
@@ -278,7 +283,7 @@
   (let [set-state (stack/make-set-state uuid)
 
         {:page/keys [title component]} page]
-    [:div.flex.justify-center.items-stretch.fixed.top-0.left-0.w-screen.h-screen.py-32.z-10
+    [:div.flex.justify-center.items-stretch.fixed.top-0.left-0.w-screen.h-screen.py-32.z-50
      {:style {:background-color "rgba(0,0,0,0.1"}}
 
      [:div.flex.flex-col.w-full.max-w-screen-md.rounded-lg.shadow-2xl.bg-white.border
@@ -444,12 +449,6 @@
     [:<>
      [TopNav]
 
-     ;; Modal
-     ;; ================
-     (let [{:frame/keys [modal?] :as frame} (stack/?active-frame)]
-       (when modal?
-         [Modal frame]))
-
      ;; Main
      ;; ================
      [:div.w-full.mx-auto.px-6
@@ -465,7 +464,16 @@
            (when-not (str/blank? title)
              [:span.font-mono.text-base.text-gray-500 title])
 
-           [Component active-page-frame state set-state]])]]]]))
+           [Component active-page-frame state set-state]])]]]
+
+
+     ;; Modal
+     ;; ================
+     (let [{:frame/keys [modal?] :as frame} (stack/?active-frame)]
+       (when modal?
+         [Modal frame]))
+
+     ]))
 
 (defn Page [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component} page

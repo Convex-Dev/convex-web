@@ -13,7 +13,9 @@
             ["jdenticon" :as jdenticon]
 
             [reagent.core :as reagent]
-            [reitit.frontend.easy :as rfe]))
+            [reitit.frontend.easy :as rfe]
+            [convex-web.site.stack :as stack]
+            [clojure.string :as str]))
 
 (defn event-target-value [event]
   (some-> event
@@ -332,7 +334,8 @@
        symbol]
 
       ;; -- Value
-      [:code.text-xs.mr-4 value]
+      (when-not (str/blank? value)
+        [Highlight value])
 
       ;; -- Type
       (when-let [type (get-in meta [:doc :type])]
@@ -593,7 +596,11 @@
               [:div.w-full.py-2.px-1
                [SymbolStrip
                 {:symbol symbol
-                 :syntax syntax}]])
+                 :syntax syntax
+                 :on-click #(stack/push :page.id/symbol-introspection {:modal? true
+                                                                       :state
+                                                                       {:symbol symbol
+                                                                        :syntax syntax}})}]])
             [:span.text-xs.text-gray-700.text-center "Empty"]))]]]]))
 
 (defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
