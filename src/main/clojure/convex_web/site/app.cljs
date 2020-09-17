@@ -458,7 +458,7 @@
         (when active-page-frame
           [:<>
            (when-not (str/blank? title)
-             [:span.font-mono.text-sm.text-gray-400.mb-2 title])
+             [:span.font-mono.text-base.text-gray-500.mb-2 title])
 
            [Component active-page-frame state set-state]])]]]]))
 
