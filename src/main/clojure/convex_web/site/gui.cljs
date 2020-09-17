@@ -614,7 +614,8 @@
      [:div.flex.items-center.space-x-4.px-2.py-1
       (case status
         :ajax.status/pending
-        [SpinnerSmall]
+        [:span {:class index-style}
+         "Page _"]
 
         :ajax.status/success
         [:span {:class index-style}
