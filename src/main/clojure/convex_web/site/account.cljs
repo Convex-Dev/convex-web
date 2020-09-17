@@ -92,7 +92,7 @@
 
 (def my-account-page
   #:page {:id :page.id/my-account
-          :title "My Account"
+          :title "Account Details"
           :component #'MyAccountPage
           :state-spec
           (s/nonconforming
