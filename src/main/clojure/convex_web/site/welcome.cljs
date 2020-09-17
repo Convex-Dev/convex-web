@@ -86,7 +86,10 @@
         :href (rfe/href :route-name/advanced-topics)}
 
        {:text "Reference"
-        :href (rfe/href :route-name/documentation-reference)}]}]
+        :href (rfe/href :route-name/documentation-reference)}
+
+       {:text "Client API"
+        :href (rfe/href :route-name/client-api)}]}]
 
     ;; -- Sandbox
     [NavButton "Sandbox" (rfe/href :route-name/sandbox)]
