@@ -108,7 +108,7 @@
 
    ;; My Account (account details)
    ;; ==============
-   ["my-account"
+   ["account-details"
     {:name :route-name/my-account
      :controllers
      [{:identity identity

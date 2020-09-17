@@ -20,35 +20,6 @@
 
 ;; --
 
-(defn MyAccount [account]
-  [:div.flex.flex-col.flex-1.justify-center.items-center
-   ;; -- Account details
-   [gui/Account account]
-
-   ;; -- Actions
-   [:div.flex.mt-6
-
-    ;; -- Faucet
-    [gui/DefaultButton
-     {:on-click
-      #(stack/push :page.id/faucet {:modal? true
-                                    :state
-                                    {:convex-web/faucet
-                                     {:convex-web.faucet/amount 1000000
-                                      :convex-web.faucet/target (get account :convex-web.account/address)}}})}
-     [:span.text-xs.uppercase "Faucet"]]
-
-    [:div.mx-1]
-
-    ;; -- Transfer
-    [gui/DefaultButton
-     {:on-click
-      #(stack/push :page.id/transfer {:modal? true
-                                      :state
-                                      {:convex-web/transfer
-                                       {:convex-web.transfer/from (get account :convex-web.account/address)}}})}
-     [:span.text-xs.uppercase "Transfer"]]]])
-
 (defn MyAccountPage [_ {:keys [ajax/status convex-web/account]} set-state]
   (if-let [active-address (session/?active-address)]
     ;; Fetch account if:
@@ -77,8 +48,7 @@
          [gui/Spinner]]
 
         :ajax.status/success
-        [:div.flex.flex-col.flex-1.justify-center.my-4.mx-10
-         [MyAccount account]]
+        [gui/Account account]
 
         :ajax.status/error
         [:div.flex.flex-col.flex-1.justify-center.items-center

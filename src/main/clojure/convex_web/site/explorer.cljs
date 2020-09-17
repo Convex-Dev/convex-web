@@ -302,8 +302,7 @@
      [:span (get-in error [:response :error :message])]]
 
     :ajax.status/success
-    [:div.flex.flex-1.justify-center.my-4.mx-10
-     [gui/Account account]]))
+    [gui/Account account]))
 
 (defn- get-account [_ state set-state]
   (let [address (get-in state [:convex-web/account :convex-web.account/address])]

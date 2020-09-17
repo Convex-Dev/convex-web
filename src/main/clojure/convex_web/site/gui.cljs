@@ -32,6 +32,26 @@
   (when el
     (.highlightBlock hljs el)))
 
+(def identicon-size-small 26)
+(def identicon-size-large 40)
+
+(defn Identicon
+  "Reagent wrapper for Jidenticon.
+
+   - value is considered a hash string if the string is hexadecimal and
+   contains at least 11 characters. It is otherwise considered a value that
+   will be hashed using SHA1.
+
+   - size defines the width and height, icons are always square, of the icon
+   in pixels, including its padding.
+
+   https://jdenticon.com"
+  [{:keys [value size]}]
+  [:div
+   {:ref (fn [el]
+           (when el
+             (set! (.-innerHTML el) (jdenticon/toSvg value size))))}])
+
 (defn Dismissible
   "Dismiss child component when clicking outside."
   [{:keys [on-dismiss]} child]
@@ -502,45 +522,68 @@
                                           environment
                                           type]} status
 
-        address-blob (format/address-blob address)]
-    [:div.flex.flex-col.justify-center.items-center
+        address-blob (format/address-blob address)
 
-     [:div.flex.flex-col.items-center.w-full.leading-none
-      [:span.text-xs.text-gray-700.uppercase "Balance"]
-      [:span.mt-1.text-4xl (format/format-number (str (or balance "")))]]
+        caption-style "text-gray-600 text-base leading-none"
+        caption-container-style "flex flex-col space-y-1"]
+    [:div.flex.flex-col.space-y-8
 
-     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
-      [:span.text-xs.text-gray-700.uppercase "Address"]
-      [:div.flex.items-center.mt-1
-       [:code.text-sm.mr-2 address-blob]
-       [ClipboardCopy address-blob]]]
+     ;; Address
+     ;; ==============
+     [:div.flex.flex-col
+      [:div.flex.items-center
+       ;; -- Identicon
+       [Identicon {:value address :size 88}]
 
-     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
-      [:span.text-xs.text-gray-700.uppercase "Memory Allowance"]
-      [:code.mt-1.text-sm allowance]]
+       ;; -- Address
+       [:div {:class [caption-container-style "ml-4"]}
+        [:span {:class caption-style} "Address"]
+        [:span.inline-flex.items-center
+         [:span.font-mono.text-base.mr-2 address-blob]
+         [ClipboardCopy address-blob]]]]
 
-     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
-      [:span.text-xs.text-gray-700.uppercase "Memory Size"]
-      [:code.mt-1.text-sm memory-size]]
+      ;; -- Type
+      [:span.inline-flex.justify-center.items-center.font-mono.text-xs.text-white.uppercase.bg-blue-700.mt-2.rounded
+       {:style {:width "88px" :height "32px"}}
+       type]]
 
-     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
-      [:span.text-xs.text-gray-700.uppercase "Sequence"]
-      [:code.mt-1.text-sm sequence]]
 
-     [:div.flex.flex-col.items-center.w-full.leading-none.mt-10
-      [:span.text-xs.text-gray-700.uppercase "Type"]
-      [:code.mt-1.text-sm type]]
+     ;; Balance
+     ;; ==============
+     [:div {:class caption-container-style}
+      [:span {:class caption-style} "Balance"]
+      [:code.text-2xl (format/format-number balance)]]
 
-     [:span.text-xs.text-gray-700.uppercase.mt-10 "Environment"]
-     [:div.flex.flex-col.items-center.w-full.px-10.overflow-auto.border.rounded.p-2.mt-1.bg-gray-100
-      [:div.flex.flex-col.w-full.divide-y
-       (let [environment (sort-by (comp str first) environment)]
-         (if (seq environment)
-           (for [[sym metadata] environment]
-             ^{:key sym}
-             [:div.w-full.py-2.px-1.hover:bg-gray-100.rounded
-              [SymbolMetaStrip sym (:convex-web.syntax/meta metadata)]])
-           [:span.text-xs.text-gray-700.text-center "Empty"]))]]]))
+
+     ;; Memory
+     ;; ==============
+     [:div.flex {:class "space-x-1/6"}
+      [:div {:class caption-container-style}
+       [:span {:class caption-style} "Memory Allowance"]
+       [:code.text-sm allowance]]
+
+      [:div {:class caption-container-style}
+       [:span {:class caption-style} "Memory Size"]
+       [:code.text-sm memory-size]]
+
+      [:div {:class caption-container-style}
+       [:span {:class caption-style} "Sequence"]
+       [:code.text-sm sequence]]]
+
+
+     ;; Environment
+     ;; ==============
+     [:div {:class caption-container-style}
+      [:span {:class caption-style} "Environment"]
+      [:div.flex.flex-col.items-center.w-full.px-10.overflow-auto.border.rounded.p-2
+       [:div.flex.flex-col.w-full.divide-y
+        (let [environment (sort-by (comp str first) environment)]
+          (if (seq environment)
+            (for [[sym metadata] environment]
+              ^{:key sym}
+              [:div.w-full.py-2.px-1
+               [SymbolMetaStrip sym (:convex-web.syntax/meta metadata)]])
+            [:span.text-xs.text-gray-700.text-center "Empty"]))]]]]))
 
 (defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
   [:div.flex.py-2
@@ -638,24 +681,3 @@
    {:source markdown
     :renderers
     {:code (reagent/reactify-component MarkdownCodeBlock)}}])
-
-
-(def identicon-size-small 26)
-(def identicon-size-large 40)
-
-(defn Identicon
-  "Reagent wrapper for Jidenticon.
-
-   - value is considered a hash string if the string is hexadecimal and
-   contains at least 11 characters. It is otherwise considered a value that
-   will be hashed using SHA1.
-
-   - size defines the width and height, icons are always square, of the icon
-   in pixels, including its padding.
-
-   https://jdenticon.com"
-  [{:keys [value size]}]
-  [:div
-   {:ref (fn [el]
-           (when el
-             (set! (.-innerHTML el) (jdenticon/toSvg value size))))}])
