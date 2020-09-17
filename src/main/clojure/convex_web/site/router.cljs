@@ -243,7 +243,13 @@
      {:name :route-name/advanced-topics
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/advanced-topics {:reset? true}))}]}]]
+                 (stack/push :page.id/advanced-topics {:reset? true}))}]}]
+
+    ["/client-api"
+     {:name :route-name/client-api
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/client-api {:reset? true}))}]}]]
 
 
    ;; About

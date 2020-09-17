@@ -90,6 +90,7 @@
    documentation/about-page
    documentation/vision-page
    documentation/advanced-topics-page
+   documentation/client-api-page
 
    ;; ---
 
@@ -139,7 +140,11 @@
 
         {:text "Reference"
          :route-name :route-name/documentation-reference
-         :href (rfe/href :route-name/documentation-reference)}]}
+         :href (rfe/href :route-name/documentation-reference)}
+
+        {:text "Client API"
+         :route-name :route-name/client-api
+         :href (rfe/href :route-name/client-api)}]}
 
 
       ;; Sandbox

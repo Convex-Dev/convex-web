@@ -178,3 +178,11 @@
   #:page {:id :page.id/under-construction
           :component #'UnderConstructionPage
           :on-push (markdown/get-on-push :under-construction)})
+
+(defn ClientAPIPage [_ state _]
+  [markdown/Markdown state])
+
+(def client-api-page
+  #:page {:id :page.id/client-api
+          :component #'ClientAPIPage
+          :on-push (markdown/get-on-push :client-api)})

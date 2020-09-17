@@ -67,4 +67,11 @@
   :smart-toc? true
   :contents
   [{:name "White Paper"
-    :path "markdown/articles/convex-whitepaper.md"}]}}
+    :path "markdown/articles/convex-whitepaper.md"}]}
+
+ :client-api
+ {:toc? true
+  :smart-toc? true
+  :contents
+  [{:name "Client API"
+    :path "markdown/client_api.md"}]}}

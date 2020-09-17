@@ -1,10 +1,10 @@
-## Public HTTP API
+# Client API
 
-### Faucet
+## Faucet
 
 *POST* https://convex.world/api/v1/faucet
 
-#### Payload
+### Payload
 - Address: ED25519 public key of your key pair.
 - Amount: The requested amount.
 
@@ -16,7 +16,7 @@ Examples:
 }
 ```
 
-#### Response
+### Response
 
 Examples:
  ```json
@@ -28,11 +28,11 @@ Examples:
 }
 ```
 
-### Query 
+## Query 
 
 *POST* https://convex.world/api/v1/query
 
-#### Payload
+### Payload
 - Address: ED25519 public key of your key pair.
 - Source: Convex Lisp source that you want to execute.
 
@@ -44,7 +44,7 @@ Examples:
 }
 ```
 
-#### Response
+### Response
 
 Examples:
  ```json
@@ -63,11 +63,11 @@ The `error-code` key is present if the response is an error:
 }
 ```
 
-### Prepare Transaction 
+## Prepare Transaction 
 
 *POST* https://convex.world/api/v1/transaction/prepare
 
-#### Payload
+### Payload
 - Address: ED25519 public key of your key pair.
 - Source: Convex Lisp source that you want to execute.
 
@@ -79,7 +79,7 @@ Examples:
 }
 ```
 
-#### Response
+### Response
 
 Examples:
  ```json
@@ -91,11 +91,11 @@ Examples:
 }
 ```
 
-### Submit Transaction
+## Submit Transaction
 
 *POST* https://convex.world/api/v1/transaction/submit
 
-#### Payload
+### Payload
 - Address: ED25519 public key of your key pair.
 - Hash: Prepare Transaction response's hash.
 - Sig: ED25519 signature of the hash using your key pair.
@@ -109,7 +109,7 @@ Examples:
 }
 ```
 
-#### Response
+### Response
 
 Examples:
 
