@@ -10,11 +10,9 @@
             [clojure.string :as str]
             [cljs.spec.alpha :as s]
 
-            [fipp.clojure :as fipp]
             [codemirror-reagent.core :as codemirror]
             [reagent.core :as reagent]
-            [reitit.frontend.easy :as rfe]
-            [zprint.core :as zprint]))
+            [reitit.frontend.easy :as rfe]))
 
 (defn mode [state]
   (:convex-web.repl/mode state))
@@ -58,9 +56,7 @@
 
 (def convex-lisp-examples
   (let [make-example (fn [& form]
-                       (->> form
-                            (map #(with-out-str (fipp/pprint % {:width 50})))
-                            (str/join "\n")))]
+                       (str/join "\n" form))]
     [["Self Balance"
       (make-example '*balance*)]
 
@@ -152,7 +148,8 @@
              [Title title]
              [gui/ClipboardCopy source-code]]
 
-            [gui/Highlight source-code {:language language}]])
+            [gui/Highlight source-code {:language language
+                                        :pretty? true}]])
          examples))]))
 
 (defn Reference [reference]
@@ -292,14 +289,17 @@
              :events {:editor {"change" (fn [editor _]
                                           (reset! source-ref (codemirror/cm-get-value editor)))
 
-                               "paste" (fn [editor event]
-                                         ;; Convex Lisp source if formated on paste.
-                                         (when (= :convex-lisp (language state))
-                                           (let [source (.getData (.-clipboardData event) "Text")
-                                                 source-pretty (zprint/zprint-str source {:parse-string? true})]
-                                             (codemirror/cm-set-value editor source-pretty)
+                               ;; -- Example of format on paste.
+                               ;;"paste" (fn [editor event]
+                               ;;          ;; Convex Lisp source if formated on paste.
+                               ;;          (when (= :convex-lisp (language state))
+                               ;;            (let [source (.getData (.-clipboardData event) "Text")
+                               ;;                  source-pretty (zprint/zprint-str source {:parse-string? true})]
+                               ;;              (codemirror/cm-set-value editor source-pretty)
+                               ;;
+                               ;;              (.preventDefault event))))
 
-                                             (.preventDefault event))))}}}])
+                               }}}])
 
          [:div.flex.flex-col.justify-center.p-1.bg-gray-100
           [gui/Tooltip
@@ -467,7 +467,7 @@
                    (let [source (or (get query :convex-web.query/source)
                                     (get transaction :convex-web.transaction/source))]
                      [:div.flex.items-center
-                      [gui/Highlight source]
+                      [gui/Highlight source {:pretty? true} ]
                       [gui/ClipboardCopy source {:margin "ml-2"}]])]
 
                   [:div.my-3]

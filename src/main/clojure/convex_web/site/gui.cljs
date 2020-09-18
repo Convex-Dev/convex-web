@@ -292,19 +292,26 @@
           attrs)
    [:path {:fill-rule "evenodd" :d "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" :clip-rule "evenodd"}]])
 
-(defn Highlight [source & [{:keys [language]}]]
+(defn Highlight [source & [{:keys [language pretty?]}]]
   (let [languages {:convex-lisp "language-clojure"
                    :convex-scrypt "language-javascript"}
 
-        language (get languages language "language-clojure")]
+        language (get languages language "language-clojure")
+
+        source (str source)]
     [:div.shadow.overflow-auto
      [:pre.m-0
       [:code.text-xs.rounded
        {:class language
         :ref highlight-block}
-       (if (= language "language-clojure")
-         (zprint/zprint-str source {:parse-string? true})
-         (str source))]]]))
+       (cond
+         (= language "language-clojure")
+         (if pretty?
+           (zprint/zprint-str source {:parse-string? true})
+           source)
+
+         :else
+         source)]]]))
 
 (defn SymbolType [type]
   [:div.px-1.border.rounded-full
