@@ -416,6 +416,12 @@
     [:> tippy/Tooltip attrs child]))
 
 
+(defn InfoTooltip [tooltip]
+  [Tooltip
+   {:title tooltip}
+   [InformationCircleIcon {:class "w-4 h-4 hover:text-gray-500"}]])
+
+
 ;; Select
 ;; ===============
 
@@ -538,9 +544,15 @@
 
         address-blob (format/address-blob address)
 
-        caption-style "text-gray-600 text-base leading-none"
-        caption-container-style "flex flex-col space-y-1"]
-    [:div.flex.flex-col.space-y-8
+        caption-style "text-gray-600 text-base leading-none cursor-default"
+        caption-container-style "flex flex-col space-y-1"
+        value-style "text-sm cursor-default"
+
+        Caption (fn [{:keys [label tooltip]}]
+                  [:div.flex.space-x-1
+                   [:span {:class caption-style} label]
+                   [InfoTooltip tooltip]])]
+    [:div.flex.flex-col.items-start.space-y-8
 
      ;; Address
      ;; ==============
@@ -564,39 +576,53 @@
 
      ;; Balance
      ;; ==============
-     [Tooltip
-      "TODO"
-      [:div {:class caption-container-style}
-       [:span {:class caption-style} "Balance"]
-       [:code.text-2xl (format/format-number balance)]]]
+     [:div {:class caption-container-style}
+      [Caption
+       {:label "Balance"
+        :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
+      [:code.text-2xl.cursor-default (format/format-number balance)]]
 
 
      ;; Memory
      ;; ==============
-     [:div.flex {:class "space-x-1/6"}
-      [Tooltip
-       "TODO"
-       [:div {:class caption-container-style}
-        [:span {:class caption-style} "Memory Allowance"]
-        [:code.text-sm allowance]]]
+     [:div.flex.w-full {:class "space-x-1/6"}
+      ;; -- Memory Allowance
+      [:div {:class caption-container-style}
+       [Caption
+        {:label "Memory Allowance"
+         :tooltip
+         "Reserved Memory Allowance in bytes. If you create on-chain data
+        beyond this amount, you will be charged extra transaction fees to
+        aquire memory at the current memory pool price."}]
+       [:code {:class value-style} allowance]]
 
-      [Tooltip
-       "TODO"
-       [:div {:class caption-container-style}
-        [:span {:class caption-style} "Memory Size"]
-        [:code.text-sm memory-size]]]
+      ;; -- Memory Size
+      [:div {:class caption-container-style}
+       [Caption
+        {:label "Memory Size"
+         :tooltip
+         "Size in bytes of this Account, which includes any definitions you
+          have created in your Enviornment."}]
+       [:code {:class value-style} memory-size]]
 
-      [Tooltip
-       "TODO"
-       [:div {:class caption-container-style}
-        [:span {:class caption-style} "Sequence"]
-        [:code.text-sm (if (neg? sequence) "n/a" sequence)]]]]
+      ;; -- Sequence
+      [:div {:class caption-container-style}
+       [Caption
+        {:label "Sequence"
+         :tooltip "Sequence number for this Account, which is equal to the
+                    number of transactions that have been executed."}]
+       [:code {:class value-style} (if (neg? sequence) "n/a" sequence)]]]
 
 
      ;; Environment
      ;; ==============
-     [:div {:class caption-container-style}
-      [:span {:class caption-style} "Environment"]
+     [:div.w-full {:class caption-container-style}
+      [Caption
+       {:label "Environment"
+        :tooltip
+        "Environment, a space where reserved for each Account that can freely
+         store on-chain data and definitions (e.g. code that you write in
+         Convex Lisp)"}]
       [:div.flex.flex-col.items-center.w-full.px-10.overflow-auto.border.rounded.p-2
        [:div.flex.flex-col.w-full.divide-y
         (let [environment (sort-by (comp str first) environment)]
