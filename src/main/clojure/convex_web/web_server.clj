@@ -661,7 +661,7 @@
         (-successful-response #:convex-web.account {:address address
                                                     :status account-status-data})
         (let [message (str "The Account for this Address does not exist.")]
-          (log/error (str "Failed to get Account; " message))
+          (log/error message address)
           (not-found-response {:error {:message message}}))))
     (catch Throwable ex
       (u/log :logging.event/system-error
