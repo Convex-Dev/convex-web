@@ -467,7 +467,7 @@
                    (let [source (or (get query :convex-web.query/source)
                                     (get transaction :convex-web.transaction/source))]
                      [:div.flex.items-center
-                      [gui/Highlight source {:pretty? true} ]
+                      [gui/Highlight source {:pretty? true}]
                       [gui/ClipboardCopy source {:margin "ml-2"}]])]
 
                   [:div.my-3]
@@ -520,10 +520,10 @@
                     (session/set-state (fn [state]
                                          (update-in state [:page.id/repl active-address] (fn [repl-state]
                                                                                            (apply f repl-state args))))))]
-    [:div.flex.flex-1.overflow-auto
+    [:div.flex.flex-1.space-x-8.overflow-auto
 
      ;; -- REPL
-     [:div.flex.flex-col.flex-1
+     [:div.flex.flex-col {:class "w-3/5"}
 
       ;; -- Commands
       [:div.flex.bg-gray-100.border.rounded.mb-2.overflow-auto
@@ -580,7 +580,7 @@
      ;; -- Sidebar
      (let [selected-tab (selected-tab state)]
        [:div.flex.flex-col.ml-2.xl:ml-16.p-2.border-l
-        {:style {:width "20vw"}}
+        {:class "w-2/5"}
 
         ;; -- Tabs
         [:div.flex.mb-5
