@@ -12,7 +12,8 @@
 
             [codemirror-reagent.core :as codemirror]
             [reagent.core :as reagent]
-            [reitit.frontend.easy :as rfe]))
+            [reitit.frontend.easy :as rfe]
+            [zprint.core :as zprint]))
 
 (defn mode [state]
   (:convex-web.repl/mode state))
@@ -257,9 +258,19 @@
                                        codemirror/pass))
                                    codemirror/pass))]
            [codemirror/CodeMirror
-            [:div.overflow-scroll.flex-shrink-0.flex-1.resize-y
+            [:div.relative.flex-shrink-0.flex-1.resize-y.overflow-scroll
              {:style
-              {:height "200px"}}]
+              {:height "200px"}}
+
+             ;; -- Reformat Code
+             [:div.absolute.right-0.top-0.m-2.z-10
+              [gui/DefaultButton
+               {:on-click
+                (fn []
+                  (when-let [editor @editor-ref]
+                    (let [pretty (zprint/zprint-str (codemirror/cm-get-value editor) {:parse-string? true})]
+                      (codemirror/cm-set-value editor pretty))))}
+               [:span.font-mono.text-xs.text-gray-700.uppercase "Reformat Code"]]]]
             {:configuration {:lineNumbers false
                              :value @source-ref
                              :mode (case (language state)
@@ -523,7 +534,7 @@
     [:div.flex.flex-1.space-x-8.overflow-auto
 
      ;; -- REPL
-     [:div.flex.flex-col {:class "w-3/5"}
+     [:div.flex.flex-col.mb-6 {:class "w-3/5"}
 
       ;; -- Commands
       [:div.flex.bg-gray-100.border.rounded.mb-2.overflow-auto
