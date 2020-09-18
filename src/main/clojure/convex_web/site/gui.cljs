@@ -564,25 +564,33 @@
 
      ;; Balance
      ;; ==============
-     [:div {:class caption-container-style}
-      [:span {:class caption-style} "Balance"]
-      [:code.text-2xl (format/format-number balance)]]
+     [Tooltip
+      "TODO"
+      [:div {:class caption-container-style}
+       [:span {:class caption-style} "Balance"]
+       [:code.text-2xl (format/format-number balance)]]]
 
 
      ;; Memory
      ;; ==============
      [:div.flex {:class "space-x-1/6"}
-      [:div {:class caption-container-style}
-       [:span {:class caption-style} "Memory Allowance"]
-       [:code.text-sm allowance]]
+      [Tooltip
+       "TODO"
+       [:div {:class caption-container-style}
+        [:span {:class caption-style} "Memory Allowance"]
+        [:code.text-sm allowance]]]
 
-      [:div {:class caption-container-style}
-       [:span {:class caption-style} "Memory Size"]
-       [:code.text-sm memory-size]]
+      [Tooltip
+       "TODO"
+       [:div {:class caption-container-style}
+        [:span {:class caption-style} "Memory Size"]
+        [:code.text-sm memory-size]]]
 
-      [:div {:class caption-container-style}
-       [:span {:class caption-style} "Sequence"]
-       [:code.text-sm sequence]]]
+      [Tooltip
+       "TODO"
+       [:div {:class caption-container-style}
+        [:span {:class caption-style} "Sequence"]
+        [:code.text-sm (if (neg? sequence) "n/a" sequence)]]]]
 
 
      ;; Environment
