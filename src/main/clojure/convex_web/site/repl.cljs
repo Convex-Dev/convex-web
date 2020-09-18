@@ -535,14 +535,17 @@
          [:span.text-xs.text-gray-700.mr-1
           "Mode"]
 
-         [gui/Select2
-          {:selected (mode state)
-           :options
-           [{:id :convex-web.command.mode/transaction
-             :value "Transaction"}
-            {:id :convex-web.command.mode/query
-             :value "Query"}]
-           :on-change #(set-state assoc :convex-web.repl/mode %)}]]
+         [:div.flex.items-center.space-x-1
+          [gui/Select2
+           {:selected (mode state)
+            :options
+            [{:id :convex-web.command.mode/transaction
+              :value "Transaction"}
+             {:id :convex-web.command.mode/query
+              :value "Query"}]
+            :on-change #(set-state assoc :convex-web.repl/mode %)}]
+
+          [gui/InfoTooltip "Select \"Transaction\" to execute code as a transaction on the Convex Network. Select \"Query\" to execute code just to compute the result (No on-chain effects will be applied)."]]]
 
         ;; -- Language
         [:div.flex.items-center.ml-6
@@ -550,14 +553,17 @@
          [:span.text-xs.text-gray-700.mr-1
           "Language"]
 
-         [gui/Select2
-          {:selected (language state)
-           :options
-           [{:id :convex-scrypt
-             :value "Convex Scrypt"}
-            {:id :convex-lisp
-             :value "Convex Lisp"}]
-           :on-change #(set-state assoc :convex-web.repl/language %)}]]]
+         [:div.flex.items-center.space-x-1
+          [gui/Select2
+           {:selected (language state)
+            :options
+            [{:id :convex-scrypt
+              :value "Convex Scrypt"}
+             {:id :convex-lisp
+              :value "Convex Lisp"}]
+            :on-change #(set-state assoc :convex-web.repl/language %)}]
+
+          [gui/InfoTooltip "Select the programming language to use."]]]]
 
        [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]]]
 
