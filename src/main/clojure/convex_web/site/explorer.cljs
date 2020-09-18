@@ -119,7 +119,7 @@
 
              td-class ["p-1 whitespace-no-wrap text-xs"]]
          ^{:key [block-index transaction-index]}
-         [:tr.hover:bg-gray-100.cursor-default {:style {:height "34px"}}
+         [:tr.cursor-default {:style {:height "34px"}}
           ;; -- Block Index
           [:td {:class td-class}
            [:div.flex.flex-1.justify-end
@@ -143,7 +143,7 @@
            [:span.text-xs
             transaction-index]]
 
-          ;; -- Transaction Type
+          ;; -- Signer
           [:td {:class td-class}
            (let [address (get m :convex-web.signed-data/address)]
              [:div.flex.items-center.w-40
@@ -169,7 +169,7 @@
               {:title utc-time}
               [:span (timeago/format utc-time)]])]
 
-          ;; -- Signer
+          ;; -- Tyoe
           [:td
            {:class
             (conj td-class (case transaction-type
@@ -189,7 +189,8 @@
            (case (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])
              :convex-web.transaction.type/invoke
              (let [source (get-in m [:convex-web.signed-data/value :convex-web.transaction/source])]
-               [:div.flex.items-center
+               [:div.flex.items-center.justify-between
+                {:style {:width "470px"}}
                 [gui/Highlight source]
                 [gui/ClipboardCopy source {:margin "ml-1"}]])
 
@@ -209,7 +210,7 @@
 
                  [:a.flex-1.underline.hover:text-indigo-500
                   {:href (rfe/href :route-name/account-explorer {:address address})}
-                  [:code.text-xs address]]
+                  [:code.block.w-64.text-xs.truncate address]]
 
                  [:a.ml-1
                   {:href (rfe/href :route-name/account-explorer {:address address})
@@ -396,7 +397,7 @@
 
                address-blob (format/address-blob address)]
            ^{:key address}
-           [:tr.hover:bg-gray-100.cursor-default
+           [:tr.cursor-default
             ;; -- Address
             [:td.flex.items-center {:class td-class}
              [:div.flex.items-center
@@ -628,7 +629,7 @@
            (for [{:convex-web.block/keys [index peer timestamp] :as block} blocks]
              (let [td-class ["text-xs text-gray-700 whitespace-no-wrap px-2"]]
                ^{:key index}
-               [:tr.hover:bg-gray-100.cursor-default
+               [:tr.cursor-default
                 ;; -- Index
                 [:td {:class td-class}
                  [:div.flex.flex-1.justify-end
