@@ -61,44 +61,55 @@
   [:div
    [:table.text-left.table-auto
     [:thead
-     (let [th-style "text-xs uppercase text-gray-600 sticky top-0"
+     (let [th-style "text-xs uppercase text-gray-600 sticky top-0 cursor-default"
            th-div-style "py-2 mr-8"]
        [:tr
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "Block"]]
+          [:span "Block"]
+          [gui/InfoTooltip "Block number in which the transaction was included."]]]
 
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "TR#"]]
+          [:span "TR#"]
+          [gui/InfoTooltip "Index position of the transaction within the block. Lower indexed transactions were executed first."]]]
 
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "Signer"]]
+          [:span "Signer"]
+          [gui/InfoTooltip "Address of the Account that digitally signed the transaction. This Signature has been verified by all Peers in Consensus."]]]
 
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "Timestamp"]]
+          [:span "Timestamp"]
+          [gui/InfoTooltip "UTC Timestamp of the block containing the transaction"]]]
 
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "Type"]]
+          [:span "Type"]
+          [gui/InfoTooltip
+           "Transfer: Direct transfer of Convex Coins from the Signer's
+            Account to a destination Account; Invoke: Execution of code by
+            Signer Account"]]]
 
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "Value"]]])]
+          [:span "Value"]
+          [gui/InfoTooltip
+           "Transfer: Amount and destination Address; Invoke: Convex Lisp or
+            Scrypt code executed on the CVM for the transaction."]]]])]
 
     [:tbody
      (for [m (flatten-transactions blocks)]
@@ -578,11 +589,13 @@
 
             blocks (sort-by keyfn comparator blocks)
 
-            SortableColumn (fn [{keyfn' :keyfn label :label}]
-                             [:div.flex.p-2.hover:bg-gray-200.cursor-pointer
+            SortableColumn (fn [{keyfn' :keyfn label :label tooltip :tooltip}]
+                             [:div.flex.space-x-4.p-2.hover:bg-gray-200.cursor-default
                               {:on-click #(reset! sorting-ref {:keyfn keyfn'
                                                                :ascending? (not ascending?)})}
-                              [:span label]
+                              [:div.flex.space-x-1
+                               [:span label]
+                               [gui/InfoTooltip tooltip]]
 
                               [SortIcon {:class ["w-4 h-4 ml-1" (when-not (= keyfn' keyfn)
                                                                   "invisible")]}]])]
@@ -594,18 +607,21 @@
               [:th {:class th-class}
                [SortableColumn
                 {:label "Index"
+                 :tooltip "Block number, indicating the position of the block in the consensus ordering."
                  :keyfn :convex-web.block/index}]]
 
               [:th
                {:class th-class}
                [SortableColumn
                 {:label "Timestamp"
+                 :tooltip "UTC Timestamp of the block, as declared by the publishing Peer"
                  :keyfn :convex-web.block/timestamp}]]
 
               [:th
                {:class th-class}
                [SortableColumn
                 {:label "Peer"
+                 :tooltip "Address of the Peer on the Convex network that published the block (e.g. the convex.world Server)"
                  :keyfn :convex-web.block/peer}]]])]
 
           [:tbody
