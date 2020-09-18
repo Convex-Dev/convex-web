@@ -13,7 +13,8 @@
             [fipp.clojure :as fipp]
             [codemirror-reagent.core :as codemirror]
             [reagent.core :as reagent]
-            [reitit.frontend.easy :as rfe]))
+            [reitit.frontend.easy :as rfe]
+            [zprint.core :as zprint]))
 
 (defn mode [state]
   (:convex-web.repl/mode state))
@@ -289,7 +290,16 @@
                           (codemirror/cm-focus editor))
 
              :events {:editor {"change" (fn [editor _]
-                                          (reset! source-ref (codemirror/cm-get-value editor)))}}}])
+                                          (reset! source-ref (codemirror/cm-get-value editor)))
+
+                               "paste" (fn [editor event]
+                                         ;; Convex Lisp source if formated on paste.
+                                         (when (= :convex-lisp (language state))
+                                           (let [source (.getData (.-clipboardData event) "Text")
+                                                 source-pretty (zprint/zprint-str source {:parse-string? true})]
+                                             (codemirror/cm-set-value editor source-pretty)
+
+                                             (.preventDefault event))))}}}])
 
          [:div.flex.flex-col.justify-center.p-1.bg-gray-100
           [gui/Tooltip

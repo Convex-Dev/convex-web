@@ -14,6 +14,7 @@
 
             [reagent.core :as reagent]
             [reitit.frontend.easy :as rfe]
+            [zprint.core :as zprint]
             [convex-web.site.stack :as stack]
             [clojure.string :as str]))
 
@@ -301,7 +302,9 @@
       [:code.text-xs.rounded
        {:class language
         :ref highlight-block}
-       (str source)]]]))
+       (if (= language "language-clojure")
+         (zprint/zprint-str source {:parse-string? true})
+         (str source))]]]))
 
 (defn SymbolType [type]
   [:div.px-1.border.rounded-full
