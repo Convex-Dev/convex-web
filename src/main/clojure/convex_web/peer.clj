@@ -1,6 +1,7 @@
 (ns convex-web.peer
   (:refer-clojure :exclude [read])
-  (:require [cognitect.anomalies :as anomalies])
+  (:require [cognitect.anomalies :as anomalies]
+            [convex-web.convex :as convex])
   (:import (convex.net ResultConsumer Connection)
            (convex.peer Server)
            (convex.core.lang Reader ScryptNext)
@@ -78,11 +79,11 @@
                  (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
                                                   ::anomalies/category ::anomalies/incorrect}))))
 
-        ^Address address (if (string? address) (Address/fromHex address) address)]
+        ^Address address (convex/address address)]
 
     (.sendQuery conn form address)))
 
-(defn query [^Peer peer {:keys [^String source ^Address address lang]}]
+(defn query [^Peer peer {:keys [^String source address lang]}]
   (let [form (try
                (case lang
                  :convex-lisp
@@ -93,6 +94,6 @@
                (catch Throwable ex
                  (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
                                                   ::anomalies/category ::anomalies/incorrect}))))
-        context (.executeQuery peer form address)]
+        context (.executeQuery peer form (convex/address address))]
     (.getValue context)))
 

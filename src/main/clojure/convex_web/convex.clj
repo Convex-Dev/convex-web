@@ -95,10 +95,10 @@
     (throw (ex-info (str "Can't coerce empty string to " (.getName Address) ".") {}))
 
     (string? x)
-    (let [hex-text (if (str/starts-with? "0x" x)
-                     (subs x 2)
-                     x)]
-      (Address/fromHex hex-text))
+    (let [s (if (str/starts-with? x "0x")
+              (subs x 2)
+              x)]
+      (Address/fromHex s))
 
     :else
     (throw (ex-info (str "Can't coerce " (.getName (type x)) " to " (.getName Address) ".") {:address x

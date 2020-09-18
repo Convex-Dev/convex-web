@@ -199,7 +199,7 @@
                    (throw (ex-info "Invalid source." {::anomalies/category ::anomalies/incorrect}))))
 
         peer (system/convex-peer-server system)
-        sequence-number (or (peer/sequence-number peer (Address/fromHex address)) 1)
+        sequence-number (or (peer/sequence-number peer (convex/address address)) 1)
         command (peer/read source lang)
         tx (peer/create-invoke (inc sequence-number) command)]
 
@@ -244,7 +244,7 @@
 
         tx-ref (Ref/forHash (Hash/fromHex hash))
 
-        signed-data (SignedData/create (Address/fromHex address) sig tx-ref)
+        signed-data (SignedData/create (convex/address address) sig tx-ref)
 
         _ (when-not (.isValid signed-data)
             (throw (ex-info "Invalid signature."
@@ -341,7 +341,7 @@
 
         result (peer/query (system/convex-peer-server system) {:source source
                                                                :lang lang
-                                                               :address (Address/fromHex address)})
+                                                               :address address})
 
         result-response (merge {:value (convex/datafy result)}
                                (when (instance? AExceptional result)
