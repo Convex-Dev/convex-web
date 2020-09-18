@@ -88,7 +88,7 @@
        (stylesheet "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap")
        (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono&display=swap")
 
-       (stylesheet (str asset-prefix-url "/css/highlight/tomorrow-night.css"))
+       (stylesheet (str asset-prefix-url "/css/highlight/idea.css"))
        (stylesheet (str asset-prefix-url "/css/codemirror.css"))
        (stylesheet (str asset-prefix-url "/css/styles.css"))
        (stylesheet (str asset-prefix-url "/css/tippy.css"))
