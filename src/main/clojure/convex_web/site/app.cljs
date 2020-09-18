@@ -286,7 +286,7 @@
     [:div.flex.justify-center.items-stretch.fixed.top-0.left-0.w-screen.h-screen.py-32.z-50
      {:style {:background-color "rgba(0,0,0,0.1"}}
 
-     [:div.flex.flex-col.w-full.max-w-screen-md.rounded-lg.shadow-2xl.bg-white.border
+     [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
 
       ;; -- Header
       [:div.border-b.border-gray-400.bg-gray-100.rounded-t-lg
