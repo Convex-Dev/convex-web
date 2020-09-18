@@ -259,9 +259,9 @@
                                        codemirror/pass))
                                    codemirror/pass))]
            [codemirror/CodeMirror
-            [:div.overflow-scroll.flex-shrink-0.flex-1
+            [:div.overflow-scroll.flex-shrink-0.flex-1.resize-y
              {:style
-              {:height "100px"}}]
+              {:height "200px"}}]
             {:configuration {:lineNumbers false
                              :value @source-ref
                              :mode (case (language state)
