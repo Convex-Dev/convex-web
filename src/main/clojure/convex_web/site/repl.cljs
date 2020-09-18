@@ -140,7 +140,7 @@
 
         convex-scrypt? (= :convex-scrypt language)]
 
-    [:div.flex.flex-col.flex-1.px-1.overflow-auto
+    [:div.flex.flex-col.flex-1.pl-1.pr-4.overflow-auto
      (let [examples (if convex-scrypt?
                       convex-scrypt-examples
                       convex-lisp-examples)]
