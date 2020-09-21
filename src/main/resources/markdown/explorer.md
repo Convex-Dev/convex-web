@@ -1,6 +1,4 @@
-# Convex Explorer 
-
-The [convex.world explorer](https://convex.world/#/explorer) contains utilities to help you examine and analyse the state of the Convex network. We need utilities to help us do this because Convex is has at it's heart a large decentralised database which supports complex data structures that would be extremely hard to inspect manually!
+ The [convex.world explorer](https://convex.world/#/explorer) contains utilities to help you examine and analyse the state of the Convex network. We need utilities to help us do this because Convex is has at it's heart a large decentralised database which supports complex data structures that would be extremely hard to inspect manually!
 
 The key utilities implemented so far are listed below:
 
