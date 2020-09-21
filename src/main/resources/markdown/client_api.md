@@ -1,5 +1,3 @@
-# Client API
-
 ## Faucet
 
 *POST* https://convex.world/api/v1/faucet

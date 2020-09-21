@@ -157,7 +157,7 @@
         conn (system/convex-conn system)
         peer (peer/peer (system/convex-server system))
         datascript-conn (system/datascript-conn system)
-        sequence-number (peer/sequence-number peer (Address/fromHex address))
+        sequence-number (peer/sequence-number peer (convex/address address))
 
         {:convex-web.account/keys [key-pair]} (account/find-by-address @datascript-conn address)
 
@@ -166,7 +166,7 @@
                       (peer/invoke-transaction (inc sequence-number) source language)
 
                       :convex-web.transaction.type/transfer
-                      (let [to (Address/fromHex (:convex-web.transaction/target transaction))]
+                      (let [to (convex/address (:convex-web.transaction/target transaction))]
                         (peer/transfer-transaction (inc sequence-number) to amount)))]
     (->> (convex/sign key-pair transaction)
          (convex/transact conn))))

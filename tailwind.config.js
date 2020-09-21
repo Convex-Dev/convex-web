@@ -26,6 +26,16 @@ module.exports = {
         ]
       }
     },
+    typography: {
+      default: {
+        css: {
+          pre: {
+            color: false,
+            backgroundColor: false
+          }
+        },
+      },
+    }
   },
   variants: {},
   plugins: [

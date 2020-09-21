@@ -10,10 +10,10 @@
             [clojure.string :as str]
             [cljs.spec.alpha :as s]
 
-            [fipp.clojure :as fipp]
             [codemirror-reagent.core :as codemirror]
             [reagent.core :as reagent]
-            [reitit.frontend.easy :as rfe]))
+            [reitit.frontend.easy :as rfe]
+            [zprint.core :as zprint]))
 
 (defn mode [state]
   (:convex-web.repl/mode state))
@@ -57,9 +57,7 @@
 
 (def convex-lisp-examples
   (let [make-example (fn [& form]
-                       (->> form
-                            (map #(with-out-str (fipp/pprint % {:width 50})))
-                            (str/join "\n")))]
+                       (str/join "\n" form))]
     [["Self Balance"
       (make-example '*balance*)]
 
@@ -139,7 +137,7 @@
 
         convex-scrypt? (= :convex-scrypt language)]
 
-    [:div.flex.flex-col.flex-1.px-1.overflow-auto
+    [:div.flex.flex-col.flex-1.pl-1.pr-4.overflow-auto
      (let [examples (if convex-scrypt?
                       convex-scrypt-examples
                       convex-lisp-examples)]
@@ -151,7 +149,8 @@
              [Title title]
              [gui/ClipboardCopy source-code]]
 
-            [gui/Highlight source-code {:language language}]])
+            [gui/Highlight source-code {:language language
+                                        :pretty? true}]])
          examples))]))
 
 (defn Reference [reference]
@@ -259,9 +258,19 @@
                                        codemirror/pass))
                                    codemirror/pass))]
            [codemirror/CodeMirror
-            [:div.overflow-scroll.flex-shrink-0.flex-1
+            [:div.relative.flex-shrink-0.flex-1.resize-y.overflow-scroll
              {:style
-              {:height "100px"}}]
+              {:height "200px"}}
+
+             ;; -- Reformat Code
+             [:div.absolute.right-0.top-0.m-2.z-10
+              [gui/DefaultButton
+               {:on-click
+                (fn []
+                  (when-let [editor @editor-ref]
+                    (let [pretty (zprint/zprint-str (codemirror/cm-get-value editor) {:parse-string? true})]
+                      (codemirror/cm-set-value editor pretty))))}
+               [:span.font-mono.text-xs.text-gray-700.uppercase "Reformat Code"]]]]
             {:configuration {:lineNumbers false
                              :value @source-ref
                              :mode (case (language state)
@@ -289,7 +298,19 @@
                           (codemirror/cm-focus editor))
 
              :events {:editor {"change" (fn [editor _]
-                                          (reset! source-ref (codemirror/cm-get-value editor)))}}}])
+                                          (reset! source-ref (codemirror/cm-get-value editor)))
+
+                               ;; -- Example of format on paste.
+                               ;;"paste" (fn [editor event]
+                               ;;          ;; Convex Lisp source if formated on paste.
+                               ;;          (when (= :convex-lisp (language state))
+                               ;;            (let [source (.getData (.-clipboardData event) "Text")
+                               ;;                  source-pretty (zprint/zprint-str source {:parse-string? true})]
+                               ;;              (codemirror/cm-set-value editor source-pretty)
+                               ;;
+                               ;;              (.preventDefault event))))
+
+                               }}}])
 
          [:div.flex.flex-col.justify-center.p-1.bg-gray-100
           [gui/Tooltip
@@ -457,7 +478,7 @@
                    (let [source (or (get query :convex-web.query/source)
                                     (get transaction :convex-web.transaction/source))]
                      [:div.flex.items-center
-                      [gui/Highlight source]
+                      [gui/Highlight source {:pretty? true}]
                       [gui/ClipboardCopy source {:margin "ml-2"}]])]
 
                   [:div.my-3]
@@ -510,10 +531,10 @@
                     (session/set-state (fn [state]
                                          (update-in state [:page.id/repl active-address] (fn [repl-state]
                                                                                            (apply f repl-state args))))))]
-    [:div.flex.flex-1.overflow-auto
+    [:div.flex.flex-1.space-x-8.overflow-auto
 
      ;; -- REPL
-     [:div.flex.flex-col.flex-1
+     [:div.flex.flex-col.mb-6 {:class "w-3/5"}
 
       ;; -- Commands
       [:div.flex.bg-gray-100.border.rounded.mb-2.overflow-auto
@@ -535,14 +556,17 @@
          [:span.text-xs.text-gray-700.mr-1
           "Mode"]
 
-         [gui/Select2
-          {:selected (mode state)
-           :options
-           [{:id :convex-web.command.mode/transaction
-             :value "Transaction"}
-            {:id :convex-web.command.mode/query
-             :value "Query"}]
-           :on-change #(set-state assoc :convex-web.repl/mode %)}]]
+         [:div.flex.items-center.space-x-1
+          [gui/Select2
+           {:selected (mode state)
+            :options
+            [{:id :convex-web.command.mode/transaction
+              :value "Transaction"}
+             {:id :convex-web.command.mode/query
+              :value "Query"}]
+            :on-change #(set-state assoc :convex-web.repl/mode %)}]
+
+          [gui/InfoTooltip "Select \"Transaction\" to execute code as a transaction on the Convex Network. Select \"Query\" to execute code just to compute the result (No on-chain effects will be applied)."]]]
 
         ;; -- Language
         [:div.flex.items-center.ml-6
@@ -550,21 +574,24 @@
          [:span.text-xs.text-gray-700.mr-1
           "Language"]
 
-         [gui/Select2
-          {:selected (language state)
-           :options
-           [{:id :convex-scrypt
-             :value "Convex Scrypt"}
-            {:id :convex-lisp
-             :value "Convex Lisp"}]
-           :on-change #(set-state assoc :convex-web.repl/language %)}]]]
+         [:div.flex.items-center.space-x-1
+          [gui/Select2
+           {:selected (language state)
+            :options
+            [{:id :convex-scrypt
+              :value "Convex Scrypt"}
+             {:id :convex-lisp
+              :value "Convex Lisp"}]
+            :on-change #(set-state assoc :convex-web.repl/language %)}]
+
+          [gui/InfoTooltip "Select the programming language to use."]]]]
 
        [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]]]
 
      ;; -- Sidebar
      (let [selected-tab (selected-tab state)]
        [:div.flex.flex-col.ml-2.xl:ml-16.p-2.border-l
-        {:style {:width "20vw"}}
+        {:class "w-2/5"}
 
         ;; -- Tabs
         [:div.flex.mb-5

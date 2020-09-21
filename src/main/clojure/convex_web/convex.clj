@@ -1,7 +1,7 @@
 (ns convex-web.convex
   (:require [clojure.string :as str])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap)
-           (convex.core.lang Core Reader ScryptNext)
+  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob)
+           (convex.core.lang Core Reader ScryptNext RT)
            (convex.core Order Block Peer State Init)
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke)
@@ -75,6 +75,9 @@
        ASet
        (into #{} (map datafy x))
 
+       Syntax
+       (datafy (.getValue ^Syntax x))
+
        (default x)))))
 
 (defn ^Address address [x]
@@ -85,11 +88,17 @@
     (instance? Address x)
     x
 
+    (instance? ABlob x)
+    (or (RT/address x) (throw (ex-info "Blob cannot be converted to Address." {:blob x})))
+
     (and (string? x) (str/blank? x))
     (throw (ex-info (str "Can't coerce empty string to " (.getName Address) ".") {}))
 
     (string? x)
-    (Address/fromHex x)
+    (let [s (if (str/starts-with? x "0x")
+              (subs x 2)
+              x)]
+      (Address/fromHex s))
 
     :else
     (throw (ex-info (str "Can't coerce " (.getName (type x)) " to " (.getName Address) ".") {:address x

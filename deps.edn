@@ -59,7 +59,7 @@
   aero {:mvn/version "1.1.6"}
   ring/ring-core {:mvn/version "1.8.1"}
   ring/ring-defaults {:mvn/version "0.3.2"}
-  http-kit {:mvn/version "2.4.0"}
+  http-kit {:mvn/version "2.5.0"}
   compojure {:mvn/version "1.6.2"}
   hiccup {:mvn/version "1.0.5"}
   re-frame {:mvn/version "1.1.1"
@@ -71,6 +71,7 @@
   nano-id {:mvn/version "1.0.0"}
   expound {:mvn/version "0.8.5"}
   fipp {:mvn/version "0.6.23"}
+  zprint/zprint {:mvn/version "1.0.0"}
   cljs-ajax {:mvn/version "0.8.1"}}
 
  :aliases

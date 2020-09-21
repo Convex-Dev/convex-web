@@ -63,6 +63,7 @@
 
    ;; ---
 
+   explorer/code-page
    explorer/explorer-page
    explorer/accounts-page
    explorer/accounts-range-page
@@ -95,7 +96,7 @@
 
    ;; ---
 
-   environment/symbol-introspection-page
+   environment/entry-page
 
    ;; ---
 
@@ -201,32 +202,32 @@
        :href (rfe/href :route-name/about)
        :children
        [#_{:text "Vision"
-         :route-name :route-name/vision
-         :href (rfe/href :route-name/vision)}
+           :route-name :route-name/vision
+           :href (rfe/href :route-name/vision)}
 
         {:text "FAQ"
          :route-name :route-name/faq
          :href (rfe/href :route-name/faq)}
 
         #_{:text "Concepts"
-         :route-name :route-name/concepts
-         :href (rfe/href :route-name/concepts)}
+           :route-name :route-name/concepts
+           :href (rfe/href :route-name/concepts)}
 
         #_{:text "White Paper"
-         :route-name :route-name/white-paper
-         :href (rfe/href :route-name/white-paper)}
+           :route-name :route-name/white-paper
+           :href (rfe/href :route-name/white-paper)}
 
         #_{:text "Get Involved"
-         :route-name :route-name/get-involved
-         :href (rfe/href :route-name/get-involved)}
+           :route-name :route-name/get-involved
+           :href (rfe/href :route-name/get-involved)}
 
         #_{:text "Roadmap"
-         :route-name :route-name/roadmap
-         :href (rfe/href :route-name/roadmap)}
+           :route-name :route-name/roadmap
+           :href (rfe/href :route-name/roadmap)}
 
         #_{:text "Convex Foundation"
-         :route-name :route-name/convex-foundation
-         :href (rfe/href :route-name/convex-foundation)}]}]}))
+           :route-name :route-name/convex-foundation
+           :href (rfe/href :route-name/convex-foundation)}]}]}))
 
 (defn NavItem [route {:keys [text top-level? active? href target route-name children]}]
   (let [active? (or (= route-name (router/route-name route))
@@ -286,13 +287,13 @@
     [:div.flex.justify-center.items-stretch.fixed.top-0.left-0.w-screen.h-screen.py-32.z-50
      {:style {:background-color "rgba(0,0,0,0.1"}}
 
-     [:div.flex.flex-col.w-full.max-w-screen-md.rounded-lg.shadow-2xl.bg-white.border
+     [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
 
       ;; -- Header
       [:div.border-b.border-gray-400.bg-gray-100.rounded-t-lg
        [:div.relative.flex.justify-between.p-4
 
-        [:span.font-rubik.text-lg.leading-none.uppercase title]
+        [:span.font-mono.text-lg.leading-none title]
 
         [gui/Tooltip
          {:title "Close"}
@@ -379,71 +380,74 @@
 
 
 (defn TopNav []
-  [:div.fixed.top-0.inset-x-0.z-50.h-16.border-b.border-gray-100.bg-white
-   [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-10
+  (let [link-style "font-mono text-gray-800 hover:text-gray-500 active:text-black"]
+    [:div.fixed.top-0.inset-x-0.z-50.h-16.border-b.border-gray-100.bg-white
+     [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-10
 
-    ;; Logo
-    ;; ===================
-    [:a {:href (rfe/href :route-name/welcome)}
-     [:div.flex.items-center
-      [gui/ConvexLogo {:width "28px" :height "32px"}]
-      [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
+      ;; Logo
+      ;; ===================
+      [:a {:href (rfe/href :route-name/welcome)}
+       [:div.flex.items-center
+        [gui/ConvexLogo {:width "28px" :height "32px"}]
+        [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
 
-    ;; Items
-    ;; ===================
-    [:div.flex.items-center.justify-end.space-x-8
+      ;; Items
+      ;; ===================
+      [:div.flex.items-center.justify-end.space-x-8
 
-     (cond
-       (session/?active-address)
-       [:<>
-        ;; -- Wallet
-        [:a
-         {:href (rfe/href :route-name/wallet)}
-         [:span.font-mono.text-gray-700.hover:text-black
-          "Wallet"]]
+       (cond
+         (session/?active-address)
+         [:<>
+          ;; -- Wallet
+          [:a
+           {:href (rfe/href :route-name/wallet)}
+           [:span {:class link-style}
+            "Wallet"]]
 
-        ;; -- Faucet
-        [:a
-         {:href (rfe/href :route-name/faucet)}
-         [:span.font-mono.text-gray-700.hover:text-black
-          "Faucet"]]
+          ;; -- Faucet
+          [:a
+           {:href (rfe/href :route-name/faucet)}
+           [:span {:class link-style}
+            "Faucet"]]
 
-        ;; -- Transfer
-        [:a
-         {:href (rfe/href :route-name/transfer)}
-         [:span.font-mono.text-gray-700.hover:text-black
-          "Transfer"]]
+          ;; -- Transfer
+          [:a
+           {:href (rfe/href :route-name/transfer)}
+           [:span {:class link-style}
+            "Transfer"]]
 
-        ;; -- Details
-        [:a
-         {:href (rfe/href :route-name/my-account)}
-         [:span.font-mono.text-gray-700.hover:text-black
-          "Details"]]
+          ;; -- Details
+          [:a
+           {:href (rfe/href :route-name/my-account)}
+           [:span {:class link-style}
+            "Details"]]
 
-        ;; -- Select account
-        [AccountSelect]]
+          ;; -- Select account
+          [AccountSelect]]
 
-       (= :ajax.status/pending (session/?status))
-       [gui/Spinner]
+         (= :ajax.status/pending (session/?status))
+         [gui/Spinner]
 
-       :else
-       ;; -- Create Account
-       [:span.inline-flex.rounded-md.shadow-sm
-        [:button
-         {:class
-          ["inline-flex items-center justify-center rounded h-10 w-40"
-           "transition ease-in-out duration-150"
-           "focus:outline-none focus:border-blue-700 focus:shadow-outline-indigo"
-           "bg-blue-600 hover:bg-blue-500 active:bg-blue-700"
-           "border border-transparent"
-           "font-mono text-xs text-white text-sm uppercase"
-           "px-2.5 py-1.5"]
-          :type "button"
-          :on-click #(stack/push :page.id/create-account {:modal? true})}
-         "Create Account"]])]]])
+         :else
+         ;; -- Create Account
+         [:span.inline-flex.rounded-md.shadow-sm
+          [:button
+           {:class
+            ["inline-flex items-center justify-center rounded h-10 w-40"
+             "transition ease-in-out duration-150"
+             "focus:outline-none focus:border-blue-700 focus:shadow-outline-indigo"
+             "bg-blue-600 hover:bg-blue-500 active:bg-blue-700"
+             "border border-transparent"
+             "font-mono text-xs text-white text-sm uppercase"
+             "px-2.5 py-1.5"]
+            :type "button"
+            :on-click #(stack/push :page.id/create-account {:modal? true})}
+           "Create Account"]])]]]))
 
 (defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]
-  (let [{Component :page/component title :page/title} page
+  (let [{Component :page/component
+         title :page/title
+         style :page/style} page
 
         set-state (stack/make-set-state uuid)]
     [:<>
@@ -458,11 +462,24 @@
        [SideNav (:route/match (router/?route))]
 
        ;; -- Page
-       [:div.relative.flex.flex-col.flex-1.space-y-2.xl:pl-24.overflow-auto
+       [:div.relative.flex.flex-col.flex-1.xl:pl-24.overflow-auto
         (when active-page-frame
           [:<>
+
+           ;; -- Title (optional)
            (when-not (str/blank? title)
-             [:span.font-mono.text-base.text-gray-500 title])
+             (let [title-size (case (get style :page-style/title-size)
+                                :large "text-3xl"
+                                :small "text-base"
+                                ;; Default
+                                "text-3xl")]
+
+               [:<>
+                [:span.font-mono.text-gray-900
+                 {:class title-size}
+                 title]
+
+                [:div.w-32.h-2.bg-blue-400.mt-4.mb-8]]))
 
            [Component active-page-frame state set-state]])]]]
 

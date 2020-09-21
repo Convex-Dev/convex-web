@@ -57,48 +57,68 @@
   :args (s/cat :blocks :convex-web/blocks)
   :ret (s/merge :convex-web/block :convex-web/signed-data))
 
-(defn TransactionsTable [blocks & [{:keys [modal?]}]]
+
+(defn CodePage [_ {:keys [source]} _]
+  [:div.p-4
+   [gui/Highlight source {:pretty? true}]])
+
+(def code-page
+  #:page {:id :page.id/code
+          :component #'CodePage})
+
+(defn TransactionsTable [blocks]
   [:div
    [:table.text-left.table-auto
     [:thead
-     (let [th-style "text-xs uppercase text-gray-600 sticky top-0"
+     (let [th-style "text-xs uppercase text-gray-600 sticky top-0 cursor-default"
            th-div-style "py-2 mr-8"]
        [:tr
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "Block"]]
+          [:span "Block"]
+          [gui/InfoTooltip "Block number in which the transaction was included."]]]
 
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "TR#"]]
+          [:span "TR#"]
+          [gui/InfoTooltip "Index position of the transaction within the block. Lower indexed transactions were executed first."]]]
 
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "Signer"]]
+          [:span "Signer"]
+          [gui/InfoTooltip "Address of the Account that digitally signed the transaction. This Signature has been verified by all Peers in Consensus."]]]
 
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "Timestamp"]]
+          [:span "Timestamp"]
+          [gui/InfoTooltip "UTC Timestamp of the block containing the transaction"]]]
 
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "Type"]]
+          [:span "Type"]
+          [gui/InfoTooltip
+           "Transfer: Direct transfer of Convex Coins from the Signer's
+            Account to a destination Account; Invoke: Execution of code by
+            Signer Account"]]]
 
         [:th
          {:class th-style}
-         [:div
+         [:div.flex.space-x-1
           {:class th-div-style}
-          "Value"]]])]
+          [:span "Value"]
+          [gui/InfoTooltip
+           "Transfer: Amount and destination Address; Invoke: Convex Lisp or
+            Scrypt code executed on the CVM for the transaction."]]]])]
 
     [:tbody
      (for [m (flatten-transactions blocks)]
@@ -108,46 +128,28 @@
 
              td-class ["p-1 whitespace-no-wrap text-xs"]]
          ^{:key [block-index transaction-index]}
-         [:tr.hover:bg-gray-100.cursor-default {:style {:height "34px"}}
+         [:tr.cursor-default {:style {:height "34px"}}
           ;; -- Block Index
           [:td {:class td-class}
            [:div.flex.flex-1.justify-end
-            (if modal?
-              [:code.underline.cursor-pointer
-               {:on-click #(stack/push :page.id/block-explorer {:modal? true
-                                                                :state {:convex-web/block {:convex-web.block/index block-index}}})}
-               block-index]
-              [:a
-               {:href (rfe/href :route-name/block-explorer {:index block-index})}
-               [:code.underline block-index]])
-
-            ;; External link
-            [:a.ml-2
-             {:href (rfe/href :route-name/block-explorer {:index block-index})
-              :target "_blank"}
-             [gui/IconExternalLink {:class "w-4 h4 text-gray-600 hover:text-gray-800"}]]]]
+            [:a
+             {:href (rfe/href :route-name/block-explorer {:index block-index})}
+             [:code.underline block-index]]]]
 
           ;; -- Transaction Index
           [:td {:class (cons "text-right" td-class)}
            [:span.text-xs
             transaction-index]]
 
-          ;; -- Transaction Type
+          ;; -- Signer
           [:td {:class td-class}
            (let [address (get m :convex-web.signed-data/address)]
              [:div.flex.items-center.w-40
               [gui/Identicon {:value address :size gui/identicon-size-small}]
 
-              ;; Link
               [:a.flex-1.underline.hover:text-indigo-500.truncate
                {:href (rfe/href :route-name/account-explorer {:address address})}
-               [:code.text-xs address]]
-
-              ;; External link
-              [:a.ml-1
-               {:href (rfe/href :route-name/account-explorer {:address address})
-                :target "_blank"}
-               [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]])]
+               [:code.text-xs (format/address-blob address)]]])]
 
           ;; -- Timestamp
           [:td {:class td-class}
@@ -158,7 +160,7 @@
               {:title utc-time}
               [:span (timeago/format utc-time)]])]
 
-          ;; -- Signer
+          ;; -- Type
           [:td
            {:class
             (conj td-class (case transaction-type
@@ -169,8 +171,17 @@
                              "text-pink-500"
 
                              ""))}
-           [:span.text-xs.uppercase
-            transaction-type]]
+           [gui/Tooltip
+            (case transaction-type
+              :convex-web.transaction.type/transfer
+              "Direct transfer of Convex Coins from the Signer's Account to a destination Account"
+
+              :convex-web.transaction.type/invoke
+              "Execution of code by Signer Account"
+
+              "")
+            [:span.text-xs.uppercase
+             transaction-type]]]
 
           ;; -- Value
           [:td
@@ -178,9 +189,11 @@
            (case (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])
              :convex-web.transaction.type/invoke
              (let [source (get-in m [:convex-web.signed-data/value :convex-web.transaction/source])]
-               [:div.flex.items-center
-                [gui/Highlight source]
-                [gui/ClipboardCopy source {:margin "ml-1"}]])
+               [gui/DefaultButton
+                {:on-click #(stack/push :page.id/code {:title "Source"
+                                                       :state {:source source}
+                                                       :modal? true})}
+                [:span.font-mono.text-xs.text-black "View Source"]])
 
              :convex-web.transaction.type/transfer
              [:span.inline-flex.items-center
@@ -193,17 +206,12 @@
               [:span.mr-1 " to "]
 
               (let [address (get-in m [:convex-web.signed-data/value :convex-web.transaction/target])]
-                [:<>
+                [:div.flex.items-center.w-40
                  [gui/Identicon {:value address :size gui/identicon-size-small}]
 
-                 [:a.flex-1.underline.hover:text-indigo-500
+                 [:a.flex-1.underline.hover:text-indigo-500.truncate
                   {:href (rfe/href :route-name/account-explorer {:address address})}
-                  [:code.text-xs address]]
-
-                 [:a.ml-1
-                  {:href (rfe/href :route-name/account-explorer {:address address})
-                   :target "_blank"}
-                  [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]])])]]))]]])
+                  [:code.text-xs (format/address-blob address)]]])])]]))]]])
 
 (s/def :explorer.blocks.state/pending
   (s/merge :ajax/pending-status (s/keys :req [:runtime/interval-ref])))
@@ -385,7 +393,7 @@
 
                address-blob (format/address-blob address)]
            ^{:key address}
-           [:tr.hover:bg-gray-100.cursor-default
+           [:tr.cursor-default
             ;; -- Address
             [:td.flex.items-center {:class td-class}
              [:div.flex.items-center
@@ -507,7 +515,7 @@
 
 (def accounts-range-page
   #:page {:id :page.id/accounts-range-explorer
-          :title "All Accounts"
+          :title "Accounts"
           :component #'AccountsRangePage
           :state-spec :accounts-page/state-spec
           :on-push
@@ -564,10 +572,10 @@
 
 ;; -- Blocks
 
-(defn BlocksTable [blocks & [{:keys [modal?]}]]
+(defn BlocksTable [blocks]
   (let [sorting-ref (reagent/atom {:keyfn :convex-web.block/index
                                    :ascending? false})]
-    (fn [blocks & [{:keys [modal?]}]]
+    (fn [blocks]
       (let [{:keys [keyfn ascending?]} @sorting-ref
 
             {:keys [SortIcon comparator]} (if ascending?
@@ -578,11 +586,13 @@
 
             blocks (sort-by keyfn comparator blocks)
 
-            SortableColumn (fn [{keyfn' :keyfn label :label}]
-                             [:div.flex.p-2.hover:bg-gray-200.cursor-pointer
+            SortableColumn (fn [{keyfn' :keyfn label :label tooltip :tooltip}]
+                             [:div.flex.space-x-4.p-2.hover:bg-gray-200.cursor-default
                               {:on-click #(reset! sorting-ref {:keyfn keyfn'
                                                                :ascending? (not ascending?)})}
-                              [:span label]
+                              [:div.flex.space-x-1
+                               [:span label]
+                               [gui/InfoTooltip tooltip]]
 
                               [SortIcon {:class ["w-4 h-4 ml-1" (when-not (= keyfn' keyfn)
                                                                   "invisible")]}]])]
@@ -594,42 +604,34 @@
               [:th {:class th-class}
                [SortableColumn
                 {:label "Index"
+                 :tooltip "Block number, indicating the position of the block in the consensus ordering."
                  :keyfn :convex-web.block/index}]]
 
               [:th
                {:class th-class}
                [SortableColumn
                 {:label "Timestamp"
+                 :tooltip "UTC Timestamp of the block, as declared by the publishing Peer"
                  :keyfn :convex-web.block/timestamp}]]
 
               [:th
                {:class th-class}
                [SortableColumn
                 {:label "Peer"
+                 :tooltip "Address of the Peer on the Convex network that published the block (e.g. the convex.world Server)"
                  :keyfn :convex-web.block/peer}]]])]
 
           [:tbody
            (for [{:convex-web.block/keys [index peer timestamp] :as block} blocks]
              (let [td-class ["text-xs text-gray-700 whitespace-no-wrap px-2"]]
                ^{:key index}
-               [:tr.hover:bg-gray-100.cursor-default
+               [:tr.cursor-default
                 ;; -- Index
                 [:td {:class td-class}
                  [:div.flex.flex-1.justify-end
-                  (if modal?
-                    [:code.underline.cursor-pointer
-                     {:on-click #(stack/push :page.id/block-explorer {:modal? true
-                                                                      :state {:convex-web/block {:convex-web.block/index index}}})}
-                     index]
-                    [:a
-                     {:href (rfe/href :route-name/block-explorer {:index index})}
-                     [:code.underline index]])
-
-                  ;; External link
-                  [:a.ml-2
-                   {:href (rfe/href :route-name/block-explorer {:index index})
-                    :target "_blank"}
-                   [gui/IconExternalLink {:class "w-4 h4 text-gray-600 hover:text-gray-800"}]]]]
+                  [:a
+                   {:href (rfe/href :route-name/block-explorer {:index index})}
+                   [:code.underline index]]]]
 
                 ;; -- Timestamp
                 [:td {:class td-class}
@@ -733,7 +735,7 @@
 
 (def blocks-range-page
   #:page {:id :page.id/blocks-range-explorer
-          :title "All Blocks"
+          :title "Blocks"
           :component #'BlocksRangePage
           :state-spec :explorer.blocks-range/state-spec
           :on-push #'get-blocks-on-push})
@@ -785,11 +787,11 @@
      [:div.flex.flex-1.justify-center.items-center
       [gui/Spinner]]
 
-     [TransactionsTable (or blocks []) {:modal? true}])])
+     [TransactionsTable (or blocks [])])])
 
 (def transactions-range-page
   #:page {:id :page.id/transactions-range-explorer
-          :title "All Transactions"
+          :title "Transactions"
           :component #'TransactionsRangePage
           :state-spec :explorer.blocks-range/state-spec
           :on-push #'get-blocks-on-push})

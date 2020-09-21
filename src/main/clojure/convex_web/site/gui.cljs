@@ -14,6 +14,7 @@
 
             [reagent.core :as reagent]
             [reitit.frontend.easy :as rfe]
+            [zprint.core :as zprint]
             [convex-web.site.stack :as stack]
             [clojure.string :as str]))
 
@@ -291,17 +292,26 @@
           attrs)
    [:path {:fill-rule "evenodd" :d "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" :clip-rule "evenodd"}]])
 
-(defn Highlight [source & [{:keys [language]}]]
+(defn Highlight [source & [{:keys [language pretty?]}]]
   (let [languages {:convex-lisp "language-clojure"
                    :convex-scrypt "language-javascript"}
 
-        language (get languages language "language-clojure")]
+        language (get languages language "language-clojure")
+
+        source (str source)]
     [:div.shadow.overflow-auto
      [:pre.m-0
       [:code.text-xs.rounded
        {:class language
         :ref highlight-block}
-       (str source)]]]))
+       (cond
+         (= language "language-clojure")
+         (if pretty?
+           (zprint/zprint-str source {:parse-string? true})
+           source)
+
+         :else
+         source)]]]))
 
 (defn SymbolType [type]
   [:div.px-1.border.rounded-full
@@ -323,27 +333,29 @@
     [:div.flex.justify-between.items-center
 
      [:div
-      {:class "flex items-center space-x-2 w-3/6"}
-      ;; -- Symbol
-      [:code.font-bold.text-xs.text-indigo-500
-       {:class
-        (if on-click
-          "cursor-pointer"
-          "cursor-default")
-        :on-click (or on-click identity)}
-       symbol]
+      {:class "flex flex-col w-1/2"}
+
+      [:div.flex.items-center.space-x-2.py-1
+       ;; -- Symbol
+       [:code.font-bold.text-xs.text-indigo-500
+        {:class
+         (if on-click
+           "cursor-pointer"
+           "cursor-default")
+         :on-click (or on-click identity)}
+        symbol]
+
+       ;; -- Type
+       (when-let [type (get-in meta [:doc :type])]
+         [SymbolType type])]
 
       ;; -- Value
       (when-not (str/blank? value)
-        [Highlight value])
-
-      ;; -- Type
-      (when-let [type (get-in meta [:doc :type])]
-        [SymbolType type])]
+        [:div.w-full [Highlight value]])]
 
      ;; -- Description
      [:div
-      {:class "flex justify-between w-3/6"}
+      {:class "flex justify-between w-1/2"}
       (when-let [description (get-in meta [:doc :description])]
         [:p.text-sm.text-gray-800.ml-10 description])]]))
 
@@ -392,13 +404,32 @@
     [:button
      (merge {:class
              ["text-sm"
-              "px-4 py-2"
+              "px-2.5 py-1.5"
               "bg-gray-100"
               "rounded"
+              "shadow-md"
               "focus:outline-none"
-              "hover:shadow-md"
+              "hover:opacity-75"
+              "active:bg-gray-200"
               (if disabled?
                 "text-gray-500 pointer-events-none")]
+             :on-click identity}
+            attrs)
+     child]))
+
+(defn BlackButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge {:class
+             ["px-4 py-3"
+              "bg-gray-900"
+              "rounded"
+              "shadow-md"
+              "focus:outline-none"
+              "hover:opacity-75"
+              "active:bg-black"
+              (if disabled?
+                "pointer-events-none")]
              :on-click identity}
             attrs)
      child]))
@@ -412,6 +443,12 @@
                 {:title attrs}
                 attrs)]
     [:> tippy/Tooltip attrs child]))
+
+
+(defn InfoTooltip [tooltip]
+  [Tooltip
+   {:title tooltip}
+   [InformationCircleIcon {:class "w-4 h-4 hover:text-gray-500"}]])
 
 
 ;; Select
@@ -451,7 +488,7 @@
      "p-1"
      "rounded"
      "focus:outline-none"
-     "bg-gray-100 hover:shadow-md"]
+     "bg-gray-100"]
     :value (or value "")
     :on-change (fn [event]
                  (on-change (.-value (.-target event))))}
@@ -536,9 +573,15 @@
 
         address-blob (format/address-blob address)
 
-        caption-style "text-gray-600 text-base leading-none"
-        caption-container-style "flex flex-col space-y-1"]
-    [:div.flex.flex-col.space-y-8
+        caption-style "text-gray-600 text-base leading-none cursor-default"
+        caption-container-style "flex flex-col space-y-1"
+        value-style "text-sm cursor-default"
+
+        Caption (fn [{:keys [label tooltip]}]
+                  [:div.flex.space-x-1
+                   [:span {:class caption-style} label]
+                   [InfoTooltip tooltip]])]
+    [:div.flex.flex-col.items-start.space-y-8
 
      ;; Address
      ;; ==============
@@ -563,30 +606,52 @@
      ;; Balance
      ;; ==============
      [:div {:class caption-container-style}
-      [:span {:class caption-style} "Balance"]
-      [:code.text-2xl (format/format-number balance)]]
+      [Caption
+       {:label "Balance"
+        :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
+      [:code.text-2xl.cursor-default (format/format-number balance)]]
 
 
      ;; Memory
      ;; ==============
-     [:div.flex {:class "space-x-1/6"}
+     [:div.flex.w-full {:class "space-x-1/6"}
+      ;; -- Memory Allowance
       [:div {:class caption-container-style}
-       [:span {:class caption-style} "Memory Allowance"]
-       [:code.text-sm allowance]]
+       [Caption
+        {:label "Memory Allowance"
+         :tooltip
+         "Reserved Memory Allowance in bytes. If you create on-chain data
+        beyond this amount, you will be charged extra transaction fees to
+        aquire memory at the current memory pool price."}]
+       [:code {:class value-style} allowance]]
 
+      ;; -- Memory Size
       [:div {:class caption-container-style}
-       [:span {:class caption-style} "Memory Size"]
-       [:code.text-sm memory-size]]
+       [Caption
+        {:label "Memory Size"
+         :tooltip
+         "Size in bytes of this Account, which includes any definitions you
+          have created in your Enviornment."}]
+       [:code {:class value-style} memory-size]]
 
+      ;; -- Sequence
       [:div {:class caption-container-style}
-       [:span {:class caption-style} "Sequence"]
-       [:code.text-sm sequence]]]
+       [Caption
+        {:label "Sequence"
+         :tooltip "Sequence number for this Account, which is equal to the
+                    number of transactions that have been executed."}]
+       [:code {:class value-style} (if (neg? sequence) "n/a" sequence)]]]
 
 
      ;; Environment
      ;; ==============
-     [:div {:class caption-container-style}
-      [:span {:class caption-style} "Environment"]
+     [:div.w-full {:class caption-container-style}
+      [Caption
+       {:label "Environment"
+        :tooltip
+        "Environment, a space where reserved for each Account that can freely
+         store on-chain data and definitions (e.g. code that you write in
+         Convex Lisp)"}]
       [:div.flex.flex-col.items-center.w-full.px-10.overflow-auto.border.rounded.p-2
        [:div.flex.flex-col.w-full.divide-y
         (let [environment (sort-by (comp str first) environment)]
@@ -597,10 +662,10 @@
                [SymbolStrip
                 {:symbol symbol
                  :syntax syntax
-                 :on-click #(stack/push :page.id/symbol-introspection {:modal? true
-                                                                       :state
-                                                                       {:symbol symbol
-                                                                        :syntax syntax}})}]])
+                 :on-click #(stack/push :page.id/environment-entry {:modal? true
+                                                                    :state
+                                                                    {:symbol symbol
+                                                                     :syntax syntax}})}]])
             [:span.text-xs.text-gray-700.text-center "Empty"]))]]]]))
 
 (defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
@@ -687,8 +752,8 @@
 (defn MarkdownCodeBlock [{:keys [value]}]
   [:pre.relative
    [:div.absolute.right-0.top-0.m-2
-    [ClipboardCopy value {:color "text-white"
-                          :hover "hover:opacity-75"}]]
+    [ClipboardCopy value {:color "text-black"
+                          :hover "hover:opacity-50"}]]
 
    [:code.hljs.language-clojure.text-sm.rounded
     {:ref highlight-block}

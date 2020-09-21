@@ -16,4 +16,6 @@
 
 (defn address-blob [address]
   (when-not (str/blank? address)
-    (str "0x" address)))
+    (if (str/starts-with? address "0x")
+      address
+      (str "0x" address))))

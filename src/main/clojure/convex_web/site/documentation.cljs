@@ -98,6 +98,7 @@
 
 (def tutorial-page
   #:page {:id :page.id/documentation-tutorial
+          :title "Lisp Guide"
           :component #'TutorialPage
           :on-push (markdown/get-on-push :tutorials)})
 
@@ -107,6 +108,7 @@
 
 (def getting-started-page
   #:page {:id :page.id/documentation-getting-started
+          :title "Getting Started"
           :component #'GettingStartedPage
           :on-push (markdown/get-on-push :getting-started)})
 
@@ -134,6 +136,7 @@
 
 (def faq-page
   #:page {:id :page.id/faq
+          :title "FAQ"
           :component #'FaqPage
           :on-push (markdown/get-on-push :faq)})
 
@@ -168,6 +171,7 @@
 
 (def advanced-topics-page
   #:page {:id :page.id/advanced-topics
+          :title "Advanced Topics"
           :component #'AdvancedTopicsPage
           :on-push (markdown/get-on-push :advanced-topics)})
 
@@ -184,5 +188,6 @@
 
 (def client-api-page
   #:page {:id :page.id/client-api
+          :title "Client API"
           :component #'ClientAPIPage
           :on-push (markdown/get-on-push :client-api)})

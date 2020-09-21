@@ -6,7 +6,12 @@
 
 (s/def :convex-web/non-empty-string (s/and string? (complement str/blank?)))
 
-(s/def :convex-web/address (s/and :convex-web/non-empty-string #(= 64 (count %))))
+(s/def :convex-web/blob-string (s/and :convex-web/non-empty-string #(str/starts-with? % "0x")))
+
+(s/def :convex-web/address-string (s/and :convex-web/non-empty-string #(= 64 (count %))))
+
+(s/def :convex-web/address (s/or :address-string :convex-web/address-string
+                                 :blob-string :convex-web/blob-string))
 
 (s/def :convex-web/sig (s/and :convex-web/non-empty-string #(= 128 (count %))))
 
@@ -240,8 +245,12 @@
 
 ;; -- Page
 
+(s/def :page-style/title-size #{:large :small})
+
 (s/def :page/id keyword?)
 (s/def :page/title string?)
+(s/def :page/description string?)
+(s/def :page/style (s/keys :opt [:page-style/title-size]))
 (s/def :page/component var?)
 (s/def :page/initial-state any?)
 (s/def :page/state-spec (fn [x]
@@ -255,6 +264,8 @@
 (s/def :site/page (s/keys :req [:page/id
                                 :page/component]
                           :opt [:page/title
+                                :page/description
+                                :page/style
                                 :page/initial-state
                                 :page/state-spec
                                 :page/on-push

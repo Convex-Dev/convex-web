@@ -1,5 +1,3 @@
-# Getting Started
-
 This document gives you a quick guided tour of Convex. We'll take you through everything from creating your first Account to launching your very own digital token!
 
 You don't need any particular programming langauge experience to follow this guide, but if you want to follow using the Sandbox you will need to *precisely* enter some commands in Convex Lisp. If you want to know more about Convex Lisp as a programming language, check out the [Convex Lisp Tutorial](https://convex.world/#/documentation/convex-lisp).

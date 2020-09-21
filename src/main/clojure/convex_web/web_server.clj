@@ -88,7 +88,7 @@
        (stylesheet "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap")
        (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono&display=swap")
 
-       (stylesheet (str asset-prefix-url "/css/highlight/tomorrow-night.css"))
+       (stylesheet (str asset-prefix-url "/css/highlight/idea.css"))
        (stylesheet (str asset-prefix-url "/css/codemirror.css"))
        (stylesheet (str asset-prefix-url "/css/styles.css"))
        (stylesheet (str asset-prefix-url "/css/tippy.css"))
@@ -199,7 +199,7 @@
                    (throw (ex-info "Invalid source." {::anomalies/category ::anomalies/incorrect}))))
 
         peer (system/convex-peer-server system)
-        sequence-number (or (peer/sequence-number peer (Address/fromHex address)) 1)
+        sequence-number (or (peer/sequence-number peer (convex/address address)) 1)
         command (peer/read source lang)
         tx (peer/create-invoke (inc sequence-number) command)]
 
@@ -244,7 +244,7 @@
 
         tx-ref (Ref/forHash (Hash/fromHex hash))
 
-        signed-data (SignedData/create (Address/fromHex address) sig tx-ref)
+        signed-data (SignedData/create (convex/address address) sig tx-ref)
 
         _ (when-not (.isValid signed-data)
             (throw (ex-info "Invalid signature."
@@ -341,7 +341,7 @@
 
         result (peer/query (system/convex-peer-server system) {:source source
                                                                :lang lang
-                                                               :address (Address/fromHex address)})
+                                                               :address address})
 
         result-response (merge {:value (convex/datafy result)}
                                (when (instance? AExceptional result)
@@ -661,7 +661,7 @@
         (-successful-response #:convex-web.account {:address address
                                                     :status account-status-data})
         (let [message (str "The Account for this Address does not exist.")]
-          (log/error (str "Failed to get Account; " message))
+          (log/error message address)
           (not-found-response {:error {:message message}}))))
     (catch Throwable ex
       (u/log :logging.event/system-error
