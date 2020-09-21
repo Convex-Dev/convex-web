@@ -57,7 +57,7 @@
   :args (s/cat :blocks :convex-web/blocks)
   :ret (s/merge :convex-web/block :convex-web/signed-data))
 
-(defn TransactionsTable [blocks & [{:keys [modal?]}]]
+(defn TransactionsTable [blocks]
   [:div
    [:table.text-left.table-auto
     [:thead
@@ -123,20 +123,9 @@
           ;; -- Block Index
           [:td {:class td-class}
            [:div.flex.flex-1.justify-end
-            (if modal?
-              [:code.underline.cursor-pointer
-               {:on-click #(stack/push :page.id/block-explorer {:modal? true
-                                                                :state {:convex-web/block {:convex-web.block/index block-index}}})}
-               block-index]
-              [:a
-               {:href (rfe/href :route-name/block-explorer {:index block-index})}
-               [:code.underline block-index]])
-
-            ;; External link
-            [:a.ml-2
-             {:href (rfe/href :route-name/block-explorer {:index block-index})
-              :target "_blank"}
-             [gui/IconExternalLink {:class "w-4 h4 text-gray-600 hover:text-gray-800"}]]]]
+            [:a
+             {:href (rfe/href :route-name/block-explorer {:index block-index})}
+             [:code.underline block-index]]]]
 
           ;; -- Transaction Index
           [:td {:class (cons "text-right" td-class)}
@@ -149,16 +138,9 @@
              [:div.flex.items-center.w-40
               [gui/Identicon {:value address :size gui/identicon-size-small}]
 
-              ;; Link
               [:a.flex-1.underline.hover:text-indigo-500.truncate
                {:href (rfe/href :route-name/account-explorer {:address address})}
-               [:code.text-xs address]]
-
-              ;; External link
-              [:a.ml-1
-               {:href (rfe/href :route-name/account-explorer {:address address})
-                :target "_blank"}
-               [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]])]
+               [:code.text-xs address]]])]
 
           ;; -- Timestamp
           [:td {:class td-class}
@@ -169,7 +151,7 @@
               {:title utc-time}
               [:span (timeago/format utc-time)]])]
 
-          ;; -- Tyoe
+          ;; -- Type
           [:td
            {:class
             (conj td-class (case transaction-type
@@ -191,8 +173,7 @@
              (let [source (get-in m [:convex-web.signed-data/value :convex-web.transaction/source])]
                [:div.flex.items-center.justify-between
                 {:style {:width "470px"}}
-                [gui/Highlight source]
-                [gui/ClipboardCopy source {:margin "ml-1"}]])
+                [gui/Highlight source]])
 
              :convex-web.transaction.type/transfer
              [:span.inline-flex.items-center
@@ -205,17 +186,12 @@
               [:span.mr-1 " to "]
 
               (let [address (get-in m [:convex-web.signed-data/value :convex-web.transaction/target])]
-                [:<>
+                [:div.flex.items-center.w-40
                  [gui/Identicon {:value address :size gui/identicon-size-small}]
 
-                 [:a.flex-1.underline.hover:text-indigo-500
+                 [:a.flex-1.underline.hover:text-indigo-500.truncate
                   {:href (rfe/href :route-name/account-explorer {:address address})}
-                  [:code.block.w-64.text-xs.truncate address]]
-
-                 [:a.ml-1
-                  {:href (rfe/href :route-name/account-explorer {:address address})
-                   :target "_blank"}
-                  [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]])])]]))]]])
+                  [:code.text-xs address]]])])]]))]]])
 
 (s/def :explorer.blocks.state/pending
   (s/merge :ajax/pending-status (s/keys :req [:runtime/interval-ref])))
@@ -802,7 +778,7 @@
      [:div.flex.flex-1.justify-center.items-center
       [gui/Spinner]]
 
-     [TransactionsTable (or blocks []) {:modal? true}])])
+     [TransactionsTable (or blocks [])])])
 
 (def transactions-range-page
   #:page {:id :page.id/transactions-range-explorer
