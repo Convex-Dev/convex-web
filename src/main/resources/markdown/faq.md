@@ -1,5 +1,3 @@
-# FAQ
-
 We've collated some answers to common questions here. 
 
 
