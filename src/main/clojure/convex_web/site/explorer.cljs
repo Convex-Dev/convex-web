@@ -552,10 +552,10 @@
 
 ;; -- Blocks
 
-(defn BlocksTable [blocks & [{:keys [modal?]}]]
+(defn BlocksTable [blocks]
   (let [sorting-ref (reagent/atom {:keyfn :convex-web.block/index
                                    :ascending? false})]
-    (fn [blocks & [{:keys [modal?]}]]
+    (fn [blocks]
       (let [{:keys [keyfn ascending?]} @sorting-ref
 
             {:keys [SortIcon comparator]} (if ascending?
@@ -609,20 +609,9 @@
                 ;; -- Index
                 [:td {:class td-class}
                  [:div.flex.flex-1.justify-end
-                  (if modal?
-                    [:code.underline.cursor-pointer
-                     {:on-click #(stack/push :page.id/block-explorer {:modal? true
-                                                                      :state {:convex-web/block {:convex-web.block/index index}}})}
-                     index]
-                    [:a
-                     {:href (rfe/href :route-name/block-explorer {:index index})}
-                     [:code.underline index]])
-
-                  ;; External link
-                  [:a.ml-2
-                   {:href (rfe/href :route-name/block-explorer {:index index})
-                    :target "_blank"}
-                   [gui/IconExternalLink {:class "w-4 h4 text-gray-600 hover:text-gray-800"}]]]]
+                  [:a
+                   {:href (rfe/href :route-name/block-explorer {:index index})}
+                   [:code.underline index]]]]
 
                 ;; -- Timestamp
                 [:td {:class td-class}
