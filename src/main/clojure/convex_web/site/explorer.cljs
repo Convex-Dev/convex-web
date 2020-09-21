@@ -648,7 +648,7 @@
                   [gui/Identicon {:value peer :size gui/identicon-size-small}]
                   [:a
                    {:href (rfe/href :route-name/account-explorer {:address peer})}
-                   [:code.underline peer]]]]]))]]]))))
+                   [:span.font-mono.underline (format/address-blob peer)]]]]]))]]]))))
 
 (defn BlocksPage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks]} _]
   (case status
