@@ -733,8 +733,8 @@
 (defn MarkdownCodeBlock [{:keys [value]}]
   [:pre.relative
    [:div.absolute.right-0.top-0.m-2
-    [ClipboardCopy value {:color "text-white"
-                          :hover "hover:opacity-75"}]]
+    [ClipboardCopy value {:color "text-black"
+                          :hover "hover:opacity-50"}]]
 
    [:code.hljs.language-clojure.text-sm.rounded
     {:ref highlight-block}
