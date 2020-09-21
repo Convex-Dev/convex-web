@@ -417,6 +417,23 @@
             attrs)
      child]))
 
+(defn BlackButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge {:class
+             ["px-4 py-3"
+              "bg-gray-900"
+              "rounded"
+              "shadow-md"
+              "focus:outline-none"
+              "hover:opacity-75"
+              "active:bg-black"
+              (if disabled?
+                "pointer-events-none")]
+             :on-click identity}
+            attrs)
+     child]))
+
 (defn Tooltip
   "Reagent wrapper for React Tippy.
 

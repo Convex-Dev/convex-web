@@ -106,10 +106,10 @@
           so please consider as a temporary Account keep a backup of anything
           of value."]
 
-        [:span.font-mono.text-sm (format/address-blob address)]
+        [:span.font-mono.text-base.text-black (format/address-blob address)]
 
         [:div.self-center
-         [gui/DefaultButton
+         [gui/BlackButton
           {:on-click
            #(do
               (set-state
@@ -120,7 +120,8 @@
                                                      (fn [account]
                                                        (session/add-account account true)
                                                        (stack/pop))}))}
-          [:span.text-xs.uppercase "Confirm"]]]])
+          [:span.font-mono.text-base.text-white.uppercase
+           "Confirm"]]]])
 
      :ajax.status/error
      [:span "Sorry. Our server failed to create your account. Please try again?"])])
