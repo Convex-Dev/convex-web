@@ -415,18 +415,29 @@
 
 ;; -- Faucet
 
-(defn faucet-get-target [address set-state]
+(defn- faucet-get-target [address set-state]
   (backend/GET-account address {:handler
                                 (fn [account]
                                   (set-state assoc :faucet-page/target {:ajax/status :ajax.status/success
                                                                         :convex-web/account account}))}))
 
-(defn FaucetInput [{:keys [frame/modal?]}
-                   {:keys [convex-web/faucet faucet-page/config] :as state}
-                   set-state]
-  (let [{:convex-web.faucet/keys [target amount]} faucet
+(defn FaucetInput [frame state set-state]
+  (let [{:keys [frame/modal?]} frame
 
-        to-my-accounts? (get config :faucet-page.config/my-accounts? false)
+        {:keys [convex-web/faucet faucet-page/config]} state
+
+        active-address (session/?active-address)
+
+        target-unselected? (nil? (get faucet :convex-web.faucet/target))
+
+        ;; Target defaults to active account
+        {:convex-web.faucet/keys [target amount] :as faucet} (if (and active-address target-unselected?)
+                                                               (do
+                                                                 (faucet-get-target active-address set-state)
+                                                                 (assoc faucet :convex-web.faucet/target active-address))
+                                                               faucet)
+
+        to-my-account? (get config :faucet-page.config/my-accounts? false)
 
         select-placeholder "Select"
 
@@ -447,20 +458,21 @@
       [:div.absolute.top-0.right-0.flex.items-center
        [:input
         {:type "checkbox"
-         :checked to-my-accounts?
+         :checked to-my-account?
          :on-change #(set-state update-in [:faucet-page/config :faucet-page.config/my-accounts?] not)}]
 
        [:span.text-xs.text-gray-600.uppercase.ml-2
         "Show My Accounts"]]
 
       ;; -- Select or Input text
-      (if to-my-accounts?
+      (if to-my-account?
         [gui/Select
          {:value target
           :options addresses
           :on-change
           (fn [address]
             (if (= select-placeholder address)
+              ;; Selecting the placeholder 'resets' the (target) state
               (set-state (fn [state]
                            (-> state
                                (update :convex-web/faucet dissoc :convex-web.faucet/target)
