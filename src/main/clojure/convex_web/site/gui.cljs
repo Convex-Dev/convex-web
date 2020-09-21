@@ -488,7 +488,7 @@
      "p-1"
      "rounded"
      "focus:outline-none"
-     "bg-gray-100 hover:shadow-md"]
+     "bg-gray-100"]
     :value (or value "")
     :on-change (fn [event]
                  (on-change (.-value (.-target event))))}

@@ -432,13 +432,16 @@
 
         addresses (cons select-placeholder (map :convex-web.account/address (session/?accounts)))
 
+        invalid? (not (s/valid? :convex-web/faucet faucet))
+
         Caption (fn [caption]
-                  [:span.text-xs.text-indigo-500.uppercase caption])]
-    [:div.flex.flex-col.flex-1
+                  [:span.text-base.text-gray-700
+                   caption])]
+    [:div.flex.flex-col.flex-1.max-w-screen-md.space-y-8
 
      ;; -- Target
-     [:div.relative.w-full.flex.flex-col.mt-6
-      [Caption "Address"]
+     [:div.relative.w-full.flex.flex-col
+      [Caption "Account"]
 
       ;; -- My Accounts checkbox
       [:div.absolute.top-0.right-0.flex.items-center
@@ -448,17 +451,23 @@
          :on-change #(set-state update-in [:faucet-page/config :faucet-page.config/my-accounts?] not)}]
 
        [:span.text-xs.text-gray-600.uppercase.ml-2
-        "My Accounts"]]
+        "Show My Accounts"]]
 
       ;; -- Select or Input text
       (if to-my-accounts?
-        [gui/Select {:value target
-                     :options addresses
-                     :on-change
-                     #(do
-                        (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] %)
-
-                        (faucet-get-target % set-state))}]
+        [gui/Select
+         {:value target
+          :options addresses
+          :on-change
+          (fn [address]
+            (if (= select-placeholder address)
+              (set-state (fn [state]
+                           (-> state
+                               (update :convex-web/faucet dissoc :convex-web.faucet/target)
+                               (dissoc :faucet-page/target))))
+              (do
+                (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] address)
+                (faucet-get-target address set-state))))}]
         [:input.text-sm.p-1.border
          {:style {:height "26px"}
           :type "text"
@@ -467,28 +476,33 @@
           #(let [value (gui/event-target-value %)]
              (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] value))}])]
 
+
      ;; -- Balance
-     (when-let [account (get-in state [:faucet-page/target :convex-web/account])]
-       [:div.flex.justify-end.mt-1
-        [:span.text-xs.text-gray-600.uppercase
-         "Balance"]
-        [:span.text-xs.font-bold.ml-1
+     [:div.flex.flex-col
+      [Caption "Balance"]
+
+      (if-let [account (get-in state [:faucet-page/target :convex-web/account])]
+        [:span.text-xs.font-bold
          (if-let [balance (balance account)]
            (format/format-number balance)
-           [gui/SpinnerSmall])]])
+           [gui/SpinnerSmall])]
+        [:span.text-xs.font-bold
+         "-"])]
+
 
      ;; -- Amount
-     [:span.text-xs.text-indigo-500.uppercase.mt-6 "Amount"]
-     [:input.text-sm.text-right.border
-      {:style {:height "26px"}
-       :type "number"
-       :value amount
-       :on-change
-       #(let [value (gui/event-target-value %)
-              amount (js/parseInt value)]
-          (set-state assoc-in [:convex-web/faucet :convex-web.faucet/amount] amount))}]
+     [:div.flex.flex-col
+      [Caption "Amount"]
+      [:input.text-sm.text-right.border
+       {:style {:height "26px"}
+        :type "number"
+        :value amount
+        :on-change
+        #(let [value (gui/event-target-value %)
+               amount (js/parseInt value)]
+           (set-state assoc-in [:convex-web/faucet :convex-web.faucet/amount] amount))}]]
 
-     [:div.flex.justify-center.mt-6
+     [:div.flex.mt-6
 
       (when modal?
         [:<>
@@ -499,7 +513,7 @@
          [:div.mx-2]])
 
       [gui/DefaultButton
-       {:disabled (not (s/valid? :convex-web/faucet faucet))
+       {:disabled invalid?
         :on-click #(do
                      (set-state assoc :ajax/status :ajax.status/pending)
 
@@ -514,15 +528,19 @@
                                                     (set-state assoc
                                                                :ajax/status :ajax.status/error
                                                                :ajax/error error))}))}
-       [:span.text-xs.uppercase "Request"]]]]))
+       [:span.text-xs.uppercase
+        {:class (if invalid?
+                  "text-gray-300"
+                  "text-gray-800")}
+        "Request"]]]]))
 
 (defn FaucetSuccess [frame {:keys [convex-web/faucet faucet-page/target]} set-state]
-  [:div.flex.flex-col.items-center.text-sm
+  [:div.flex.flex-col.flex-1.items-center.space-y-4
    [:span.text-lg
     "Success!"]
 
    ;; -- Your current balance is x.
-   [:span.mb-4
+   [:span.text-sm
     "Your current balance is "
 
     [:span.font-bold.text-indigo-500
@@ -540,11 +558,11 @@
     [:span.text-xs.uppercase "Done"]]])
 
 (defn FaucetError [frame {:keys [ajax/error]} set-state]
-  [:div.flex.flex-col.items-center.text-sm
+  [:div.flex.flex-col.flex-1.items-center.space-y-4
    [:span.text-lg
     "Sorry"]
 
-   [:span.mb-4
+   [:span.text-sm
     (get-in error [:response :error :message])]
 
    [gui/DefaultButton
@@ -556,7 +574,7 @@
     [:span.text-xs.uppercase "Done"]]])
 
 (defn FaucetPage [frame {:keys [ajax/status] :as state} set-state]
-  [:div.flex.flex-1.justify-center.my-4.mx-10
+  [:div.flex.flex-1
    (case status
      :ajax.status/pending
      [gui/Spinner]

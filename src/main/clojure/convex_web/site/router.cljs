@@ -133,7 +133,8 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/faucet {:reset? true
-                                             :state {:convex-web/faucet {:convex-web.faucet/amount 1000000}}}))}]}]
+                                             :state {:convex-web/faucet {:convex-web.faucet/amount 1000000}
+                                                     :faucet-page/config {:faucet-page.config/my-accounts? true}}}))}]}]
 
 
    ;; Transfer
