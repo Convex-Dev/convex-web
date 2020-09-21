@@ -80,7 +80,7 @@
 
 
 (defn CreateAccountPage [_ {:keys [convex-web/account ajax/status]} set-state]
-  [:div.w-full.flex.flex-col.items-center.justify-center
+  [:div.w-full.flex.flex-col.items-center
 
    (case status
      :ajax.status/pending
@@ -88,21 +88,39 @@
 
      :ajax.status/success
      (let [address (get account :convex-web.account/address)]
-       [:div.flex.flex-col.items-center
-        [:code.text-sm.mb-2 (format/address-blob address)]
+       [:div.flex.flex-col.items-start.max-w-screen-md.space-y-8.my-10.mx-10.text-gray-600
+        [:p
+         "This is your new Convex Account."]
 
-        [gui/DefaultButton
-         {:on-click
-          #(do
-             (set-state
-               (fn [state]
-                 (assoc state :status :pending)))
+        [:p
+         "Accounts give you a psuedonymous identity on the Convex network, a
+          personal environment where you can store code and data, a memory
+          allowance, and a balance of Convex coins. Only you can execute
+          transactions using your Account, although all information is public
+          and you can see information stored in the Accounts of others."]
 
-             (backend/POST-confirm-account address {:handler
-                                                    (fn [account]
-                                                      (session/add-account account true)
-                                                      (stack/pop))}))}
-         [:span.text-xs.uppercase "Confirm"]]])
+        [:p
+         "For convenience this Account is managed on your behalf by the
+          convex.world server, so you don't need to manage your own private
+          keys. Accounts will be periodically refreshed on the Testnet server,
+          so please consider as a temporary Account keep a backup of anything
+          of value."]
+
+        [:span.font-mono.text-sm (format/address-blob address)]
+
+        [:div.self-center
+         [gui/DefaultButton
+          {:on-click
+           #(do
+              (set-state
+                (fn [state]
+                  (assoc state :status :pending)))
+
+              (backend/POST-confirm-account address {:handler
+                                                     (fn [account]
+                                                       (session/add-account account true)
+                                                       (stack/pop))}))}
+          [:span.text-xs.uppercase "Confirm"]]]])
 
      :ajax.status/error
      [:span "Sorry. Our server failed to create your account. Please try again?"])])
