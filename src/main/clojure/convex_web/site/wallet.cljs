@@ -26,17 +26,7 @@
          {:title "Balance"}
          [:code.text-xs.font-bold.text-indigo-500.ml-4
           (let [account (store/?account address)]
-            (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance])))]]]))
-
-   [:div.my-2]
-
-   [gui/DefaultButton
-    {:on-click #(stack/push :page.id/transfer (merge {:modal? true}
-                                                     (when-let [from (session/?active-address)]
-                                                       {:state
-                                                        {:convex-web/transfer
-                                                         {:convex-web.transfer/from from}}})))}
-    [:span.text-xs.uppercase "Transfer"]]])
+            (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance])))]]]))])
 
 (def wallet-page
   #:page {:id :page.id/wallet
