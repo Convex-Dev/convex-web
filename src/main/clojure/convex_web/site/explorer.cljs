@@ -162,8 +162,17 @@
                              "text-pink-500"
 
                              ""))}
-           [:span.text-xs.uppercase
-            transaction-type]]
+           [gui/Tooltip
+            (case transaction-type
+              :convex-web.transaction.type/transfer
+              "Direct transfer of Convex Coins from the Signer's Account to a destination Account"
+
+              :convex-web.transaction.type/invoke
+              "Execution of code by Signer Account"
+
+              "")
+            [:span.text-xs.uppercase
+             transaction-type]]]
 
           ;; -- Value
           [:td
