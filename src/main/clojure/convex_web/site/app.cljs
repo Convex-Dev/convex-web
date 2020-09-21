@@ -202,32 +202,32 @@
        :href (rfe/href :route-name/about)
        :children
        [#_{:text "Vision"
-         :route-name :route-name/vision
-         :href (rfe/href :route-name/vision)}
+           :route-name :route-name/vision
+           :href (rfe/href :route-name/vision)}
 
         {:text "FAQ"
          :route-name :route-name/faq
          :href (rfe/href :route-name/faq)}
 
         #_{:text "Concepts"
-         :route-name :route-name/concepts
-         :href (rfe/href :route-name/concepts)}
+           :route-name :route-name/concepts
+           :href (rfe/href :route-name/concepts)}
 
         #_{:text "White Paper"
-         :route-name :route-name/white-paper
-         :href (rfe/href :route-name/white-paper)}
+           :route-name :route-name/white-paper
+           :href (rfe/href :route-name/white-paper)}
 
         #_{:text "Get Involved"
-         :route-name :route-name/get-involved
-         :href (rfe/href :route-name/get-involved)}
+           :route-name :route-name/get-involved
+           :href (rfe/href :route-name/get-involved)}
 
         #_{:text "Roadmap"
-         :route-name :route-name/roadmap
-         :href (rfe/href :route-name/roadmap)}
+           :route-name :route-name/roadmap
+           :href (rfe/href :route-name/roadmap)}
 
         #_{:text "Convex Foundation"
-         :route-name :route-name/convex-foundation
-         :href (rfe/href :route-name/convex-foundation)}]}]}))
+           :route-name :route-name/convex-foundation
+           :href (rfe/href :route-name/convex-foundation)}]}]}))
 
 (defn NavItem [route {:keys [text top-level? active? href target route-name children]}]
   (let [active? (or (= route-name (router/route-name route))
@@ -444,7 +444,9 @@
          "Create Account"]])]]])
 
 (defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]
-  (let [{Component :page/component title :page/title} page
+  (let [{Component :page/component
+         title :page/title
+         style :page/style} page
 
         set-state (stack/make-set-state uuid)]
     [:<>
@@ -459,11 +461,24 @@
        [SideNav (:route/match (router/?route))]
 
        ;; -- Page
-       [:div.relative.flex.flex-col.flex-1.space-y-2.xl:pl-24.overflow-auto
+       [:div.relative.flex.flex-col.flex-1.xl:pl-24.overflow-auto
         (when active-page-frame
           [:<>
+
+           ;; -- Title (optional)
            (when-not (str/blank? title)
-             [:span.font-mono.text-base.text-gray-500 title])
+             (let [title-size (case (get style :page-style/title-size)
+                                :large "text-3xl"
+                                :small "text-base"
+                                ;; Default
+                                "text-3xl")]
+
+               [:<>
+                [:span.font-mono.text-gray-900
+                 {:class title-size}
+                 title]
+
+                [:div.w-32.h-2.bg-blue-400.mt-4.mb-8]]))
 
            [Component active-page-frame state set-state]])]]]
 

@@ -245,8 +245,12 @@
 
 ;; -- Page
 
+(s/def :page-style/title-size #{:large :small})
+
 (s/def :page/id keyword?)
 (s/def :page/title string?)
+(s/def :page/description string?)
+(s/def :page/style (s/keys :opt [:page-style/title-size]))
 (s/def :page/component var?)
 (s/def :page/initial-state any?)
 (s/def :page/state-spec (fn [x]
@@ -260,6 +264,8 @@
 (s/def :site/page (s/keys :req [:page/id
                                 :page/component]
                           :opt [:page/title
+                                :page/description
+                                :page/style
                                 :page/initial-state
                                 :page/state-spec
                                 :page/on-push
