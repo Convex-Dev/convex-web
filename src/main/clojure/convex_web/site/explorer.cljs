@@ -149,7 +149,7 @@
 
               [:a.flex-1.underline.hover:text-indigo-500.truncate
                {:href (rfe/href :route-name/account-explorer {:address address})}
-               [:code.text-xs address]]])]
+               [:code.text-xs (format/address-blob address)]]])]
 
           ;; -- Timestamp
           [:td {:class td-class}
@@ -211,7 +211,7 @@
 
                  [:a.flex-1.underline.hover:text-indigo-500.truncate
                   {:href (rfe/href :route-name/account-explorer {:address address})}
-                  [:code.text-xs address]]])])]]))]]])
+                  [:code.text-xs (format/address-blob address)]]])])]]))]]])
 
 (s/def :explorer.blocks.state/pending
   (s/merge :ajax/pending-status (s/keys :req [:runtime/interval-ref])))
