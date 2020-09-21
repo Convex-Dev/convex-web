@@ -515,7 +515,7 @@
 
 (def accounts-range-page
   #:page {:id :page.id/accounts-range-explorer
-          :title "All Accounts"
+          :title "Accounts"
           :component #'AccountsRangePage
           :state-spec :accounts-page/state-spec
           :on-push
@@ -735,7 +735,7 @@
 
 (def blocks-range-page
   #:page {:id :page.id/blocks-range-explorer
-          :title "All Blocks"
+          :title "Blocks"
           :component #'BlocksRangePage
           :state-spec :explorer.blocks-range/state-spec
           :on-push #'get-blocks-on-push})
@@ -791,7 +791,7 @@
 
 (def transactions-range-page
   #:page {:id :page.id/transactions-range-explorer
-          :title "All Transactions"
+          :title "Transactions"
           :component #'TransactionsRangePage
           :state-spec :explorer.blocks-range/state-spec
           :on-push #'get-blocks-on-push})
