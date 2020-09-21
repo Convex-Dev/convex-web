@@ -404,11 +404,13 @@
     [:button
      (merge {:class
              ["text-sm"
-              "px-4 py-2"
+              "px-2.5 py-1.5"
               "bg-gray-100"
               "rounded"
+              "shadow-md"
               "focus:outline-none"
-              "hover:shadow-md"
+              "hover:opacity-75"
+              "active:bg-gray-200"
               (if disabled?
                 "text-gray-500 pointer-events-none")]
              :on-click identity}

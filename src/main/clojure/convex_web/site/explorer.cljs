@@ -57,6 +57,15 @@
   :args (s/cat :blocks :convex-web/blocks)
   :ret (s/merge :convex-web/block :convex-web/signed-data))
 
+
+(defn CodePage [_ {:keys [source]} _]
+  [:div.p-4
+   [gui/Highlight source {:pretty? true}]])
+
+(def code-page
+  #:page {:id :page.id/code
+          :component #'CodePage})
+
 (defn TransactionsTable [blocks]
   [:div
    [:table.text-left.table-auto
@@ -180,9 +189,11 @@
            (case (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])
              :convex-web.transaction.type/invoke
              (let [source (get-in m [:convex-web.signed-data/value :convex-web.transaction/source])]
-               [:div.flex.items-center.justify-between
-                {:style {:width "470px"}}
-                [gui/Highlight source]])
+               [gui/DefaultButton
+                {:on-click #(stack/push :page.id/code {:title "Source"
+                                                       :state {:source source}
+                                                       :modal? true})}
+                [:span.font-mono.text-xs.text-black "View Source"]])
 
              :convex-web.transaction.type/transfer
              [:span.inline-flex.items-center

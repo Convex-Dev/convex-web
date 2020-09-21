@@ -99,10 +99,15 @@
                {:dispatch-n pops})))))
 
 (re-frame/reg-event-fx :stack/!push
-  (fn [{:keys [db]} [_ page-or-id {:keys [reset?] :as options}]]
+  (fn [{:keys [db]} [_ page-or-id {:keys [reset? title] :as options}]]
     (let [page (if (keyword? page-or-id)
                  (db/find-page db page-or-id)
                  page-or-id)
+
+          ;; Title is contextual so it can be set programmatically on push.
+          page (if title
+                 (merge page {:page/title title})
+                 page)
 
           frame (frame page options)]
       {:dispatch [:stack/!push* frame options]})))
@@ -174,7 +179,7 @@
    At the end, is always about pushing a Frame to the Stack.
 
    See `push*` for the low level API."
-  [page-or-id & [{:keys [state modal? reset?] :as options}]]
+  [page-or-id & [{:keys [state title modal? reset?] :as options}]]
   (disp :stack/!push page-or-id options))
 
 (defn pop
