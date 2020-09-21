@@ -239,25 +239,28 @@
      "...")])
 
 (defn TransferInput [frame {:keys [convex-web/transfer transfer-page/config] :as state} set-state]
-  (let [{:convex-web.transfer/keys [from to amount]} transfer
+  (let [active-address (session/?active-address)
 
-        invalid-transfer? (cond
-                            (not (s/valid? :convex-web/transfer transfer))
-                            true
+        from-unselected? (nil? (get transfer :convex-web.transfer/from))
 
-                            (= :ajax.status/error (get-in state [:transfer-page/from :ajax/status]))
-                            true
+        ;; 'From' defaults to active account
+        {:convex-web.transfer/keys [from to amount] :as transfer} (if (and active-address from-unselected?)
+                                                                    (assoc transfer :convex-web.transfer/from active-address)
+                                                                    transfer)
 
-                            (= :ajax.status/error (get-in state [:transfer-page/to :ajax/status]))
-                            true)
+        invalid-transfer? (or (not (s/valid? :convex-web/transfer transfer))
+
+                              (= :ajax.status/error (get-in state [:transfer-page/from :ajax/status]))
+
+                              (= :ajax.status/error (get-in state [:transfer-page/to :ajax/status])))
 
         select-placeholder "Select"
 
         addresses (cons select-placeholder (map :convex-web.account/address (session/?accounts)))
 
         Caption (fn [caption]
-                  [:span.text-xs.text-indigo-500.uppercase caption])]
-    [:div.flex.flex-col.flex-1
+                  [:span.text-base.text-gray-700 caption])]
+    [:div.flex.flex-col.flex-1.max-w-screen-md.space-y-8
 
      ;; -- From
      [:div.flex.flex-col
@@ -306,7 +309,7 @@
            :on-change #(set-state update-in [:transfer-page/config :transfer-page.config/my-accounts?] not)}]
 
          [:span.text-xs.text-gray-600.uppercase.ml-2
-          "My Accounts"]]
+          "Show My Accounts"]]
 
         ;; -- Select or Input text
         (if to-my-accounts?
@@ -370,7 +373,7 @@
                   :else
                   state)))))}]]
 
-     [:div.flex.justify-center.mt-6
+     [:div.flex.mt-6
       (when (get frame :modal?)
         [:<>
          [gui/DefaultButton
@@ -394,7 +397,7 @@
        [:span.text-xs.uppercase "Transfer"]]]]))
 
 (defn TransferPage [frame {:keys [convex-web/command] :as state} set-state]
-  [:div.flex-1.my-4.mx-10
+  [:div.flex-1
    (if command
      [TransferProgress frame state set-state]
      [TransferInput frame state set-state])])
