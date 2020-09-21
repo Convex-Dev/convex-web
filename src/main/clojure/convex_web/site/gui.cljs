@@ -645,10 +645,10 @@
                [SymbolStrip
                 {:symbol symbol
                  :syntax syntax
-                 :on-click #(stack/push :page.id/symbol-introspection {:modal? true
-                                                                       :state
-                                                                       {:symbol symbol
-                                                                        :syntax syntax}})}]])
+                 :on-click #(stack/push :page.id/environment-entry {:modal? true
+                                                                    :state
+                                                                    {:symbol symbol
+                                                                     :syntax syntax}})}]])
             [:span.text-xs.text-gray-700.text-center "Empty"]))]]]]))
 
 (defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]

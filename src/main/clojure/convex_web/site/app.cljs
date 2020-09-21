@@ -96,7 +96,7 @@
 
    ;; ---
 
-   environment/symbol-introspection-page
+   environment/entry-page
 
    ;; ---
 
@@ -293,7 +293,7 @@
       [:div.border-b.border-gray-400.bg-gray-100.rounded-t-lg
        [:div.relative.flex.justify-between.p-4
 
-        [:span.font-rubik.text-lg.leading-none.uppercase title]
+        [:span.font-mono.text-lg.leading-none title]
 
         [gui/Tooltip
          {:title "Close"}

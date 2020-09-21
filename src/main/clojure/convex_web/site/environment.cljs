@@ -1,7 +1,7 @@
 (ns convex-web.site.environment
   (:require [convex-web.site.gui :as gui]))
 
-(defn SymbolIntrospectionPage [_ {:keys [symbol syntax]} _]
+(defn EntryPage [_ {:keys [symbol syntax]} _]
   (let [{:convex-web.syntax/keys [meta value]} syntax
 
         caption-style "text-gray-600 text-base"
@@ -21,7 +21,7 @@
        [gui/Highlight value]
        [gui/ClipboardCopy value]]]]))
 
-(def symbol-introspection-page
-  #:page {:id :page.id/symbol-introspection
-          :title "Symbol Introspection"
-          :component #'SymbolIntrospectionPage})
+(def entry-page
+  #:page {:id :page.id/environment-entry
+          :title "Environment Entry"
+          :component #'EntryPage})
