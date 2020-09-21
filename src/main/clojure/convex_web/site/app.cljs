@@ -380,68 +380,69 @@
 
 
 (defn TopNav []
-  [:div.fixed.top-0.inset-x-0.z-50.h-16.border-b.border-gray-100.bg-white
-   [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-10
+  (let [link-style "font-mono text-gray-800 hover:text-gray-500 active:text-black"]
+    [:div.fixed.top-0.inset-x-0.z-50.h-16.border-b.border-gray-100.bg-white
+     [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-10
 
-    ;; Logo
-    ;; ===================
-    [:a {:href (rfe/href :route-name/welcome)}
-     [:div.flex.items-center
-      [gui/ConvexLogo {:width "28px" :height "32px"}]
-      [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
+      ;; Logo
+      ;; ===================
+      [:a {:href (rfe/href :route-name/welcome)}
+       [:div.flex.items-center
+        [gui/ConvexLogo {:width "28px" :height "32px"}]
+        [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
 
-    ;; Items
-    ;; ===================
-    [:div.flex.items-center.justify-end.space-x-8
+      ;; Items
+      ;; ===================
+      [:div.flex.items-center.justify-end.space-x-8
 
-     (cond
-       (session/?active-address)
-       [:<>
-        ;; -- Wallet
-        [:a
-         {:href (rfe/href :route-name/wallet)}
-         [:span.font-mono.text-gray-700.hover:text-black
-          "Wallet"]]
+       (cond
+         (session/?active-address)
+         [:<>
+          ;; -- Wallet
+          [:a
+           {:href (rfe/href :route-name/wallet)}
+           [:span {:class link-style}
+            "Wallet"]]
 
-        ;; -- Faucet
-        [:a
-         {:href (rfe/href :route-name/faucet)}
-         [:span.font-mono.text-gray-700.hover:text-black
-          "Faucet"]]
+          ;; -- Faucet
+          [:a
+           {:href (rfe/href :route-name/faucet)}
+           [:span {:class link-style}
+            "Faucet"]]
 
-        ;; -- Transfer
-        [:a
-         {:href (rfe/href :route-name/transfer)}
-         [:span.font-mono.text-gray-700.hover:text-black
-          "Transfer"]]
+          ;; -- Transfer
+          [:a
+           {:href (rfe/href :route-name/transfer)}
+           [:span {:class link-style}
+            "Transfer"]]
 
-        ;; -- Details
-        [:a
-         {:href (rfe/href :route-name/my-account)}
-         [:span.font-mono.text-gray-700.hover:text-black
-          "Details"]]
+          ;; -- Details
+          [:a
+           {:href (rfe/href :route-name/my-account)}
+           [:span {:class link-style}
+            "Details"]]
 
-        ;; -- Select account
-        [AccountSelect]]
+          ;; -- Select account
+          [AccountSelect]]
 
-       (= :ajax.status/pending (session/?status))
-       [gui/Spinner]
+         (= :ajax.status/pending (session/?status))
+         [gui/Spinner]
 
-       :else
-       ;; -- Create Account
-       [:span.inline-flex.rounded-md.shadow-sm
-        [:button
-         {:class
-          ["inline-flex items-center justify-center rounded h-10 w-40"
-           "transition ease-in-out duration-150"
-           "focus:outline-none focus:border-blue-700 focus:shadow-outline-indigo"
-           "bg-blue-600 hover:bg-blue-500 active:bg-blue-700"
-           "border border-transparent"
-           "font-mono text-xs text-white text-sm uppercase"
-           "px-2.5 py-1.5"]
-          :type "button"
-          :on-click #(stack/push :page.id/create-account {:modal? true})}
-         "Create Account"]])]]])
+         :else
+         ;; -- Create Account
+         [:span.inline-flex.rounded-md.shadow-sm
+          [:button
+           {:class
+            ["inline-flex items-center justify-center rounded h-10 w-40"
+             "transition ease-in-out duration-150"
+             "focus:outline-none focus:border-blue-700 focus:shadow-outline-indigo"
+             "bg-blue-600 hover:bg-blue-500 active:bg-blue-700"
+             "border border-transparent"
+             "font-mono text-xs text-white text-sm uppercase"
+             "px-2.5 py-1.5"]
+            :type "button"
+            :on-click #(stack/push :page.id/create-account {:modal? true})}
+           "Create Account"]])]]]))
 
 (defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component
