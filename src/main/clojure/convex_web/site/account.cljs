@@ -418,18 +418,30 @@
 
 ;; -- Faucet
 
-(defn- faucet-get-target [address set-state]
-  (set-state assoc-in [:faucet-page/target :ajax/status] :ajax.status/pending)
+(re-frame/reg-sub-raw ::?faucet-target
+  (fn [app-db [_ frame-uuid address]]
+    (let [{:frame/keys [state]} (stack/find-frame @app-db frame-uuid)
+          state' (select-keys state [:convex-web/faucet :faucet-page/config])]
+      (if (s/valid? :convex-web/address address)
+        (do
+          (stack/set-state frame-uuid (constantly (merge state' {:faucet-page/target {:ajax/status :ajax.status/pending}})))
 
-  (backend/GET-account address {:handler
-                                (fn [account]
-                                  (set-state update :faucet-page/target merge {:ajax/status :ajax.status/success
-                                                                               :convex-web/account account}))
+          (backend/GET-account address {:handler
+                                        (fn [account]
+                                          (stack/set-state frame-uuid update :faucet-page/target merge {:ajax/status :ajax.status/success
+                                                                                                        :convex-web/account account}))
 
-                                :error
-                                (fn [error]
-                                  (set-state update :faucet-page/target merge {:ajax/status :ajax.status/error
-                                                                               :ajax/error error}))}))
+                                        :error-handler
+                                        (fn [error]
+                                          (stack/set-state frame-uuid update :faucet-page/target merge {:ajax/status :ajax.status/error
+                                                                                                        :ajax/error error}))}))
+        (stack/set-state frame-uuid (constantly state'))))
+
+    (make-reaction
+      (fn []
+        (let [frame (stack/find-frame @app-db frame-uuid)]
+          (get-in frame [:frame/state :faucet-page/target]))))))
+
 
 (defn FaucetPage [frame state set-state]
   (let [{:keys [frame/modal?]} frame
@@ -439,15 +451,20 @@
         active-address (session/?active-address)
 
         target-unselected? (nil? (get faucet :convex-web.faucet/target))
-
-        ;; Target defaults to active account
-        {:convex-web.faucet/keys [target amount] :as faucet} (if (and active-address target-unselected?)
-                                                               (do
-                                                                 (faucet-get-target active-address set-state)
-                                                                 (assoc faucet :convex-web.faucet/target active-address))
-                                                               faucet)
+        target-invalid? (not (s/valid? :convex-web/address (get faucet :convex-web.faucet/target)))
 
         to-my-account? (get config :faucet-page.config/my-accounts? false)
+
+        ;; Target address must be overridden if:
+        ;; - 'Show my accounts' is checked
+        ;; - there's an active address
+        ;; - and the current target is either missing or invalid.
+        override-target? (and to-my-account? active-address (or target-unselected? target-invalid?))
+
+        ;; Target defaults to active account.
+        {:convex-web.faucet/keys [target amount] :as faucet} (if override-target?
+                                                               (assoc faucet :convex-web.faucet/target active-address)
+                                                               faucet)
 
         addresses (map :convex-web.account/address (session/?accounts))
 
@@ -483,14 +500,7 @@
           :options addresses
           :on-change
           (fn [address]
-            ;; Sets the selected address and clean up previous (address) state.
-            (set-state (fn [state]
-                         (-> state
-                             (assoc-in [:convex-web/faucet :convex-web.faucet/target] address)
-                             (dissoc :faucet-page/target)
-                             (dissoc :ajax/status))))
-
-            (faucet-get-target address set-state))}]
+            (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] address))}]
         [:input.text-sm.p-1.border
          {:style {:height "26px"}
           :type "text"
@@ -501,25 +511,28 @@
 
 
       ;; -- Balance
-      [:div.flex.justify-end.items-baseline.space-x-2
-       (case (get-in state [:faucet-page/target :ajax/status])
-         :ajax.status/pending
-         [:span.text-sm
-          "Checking balance..."]
+      (let [frame-uuid (get frame :frame/uuid)
+            faucet-target (sub ::?faucet-target frame-uuid target)]
+        [:div.flex.justify-end.items-baseline.space-x-2
+         (case (get faucet-target :ajax/status)
+           :ajax.status/pending
+           [:span.text-sm
+            "Checking balance..."]
 
-         :ajax.status/success
-         (let [account (get-in state [:faucet-page/target :convex-web/account])
-               balance (balance account)]
-           [:<>
-            [SmallCaption "Balance"]
-            [:span.text-xs.font-bold
-             (format/format-number balance)]])
+           :ajax.status/success
+           (let [account (get faucet-target :convex-web/account)
+                 balance (balance account)]
+             [:<>
+              [SmallCaption "Balance"]
+              [:span.text-xs.font-bold
+               (format/format-number balance)]])
 
-         :ajax.status/error
-         [:span.text-sm
-          "Balance unavailable"]
+           :ajax.status/error
+           [:span.text-sm
+            "Balance unavailable"]
 
-         "")]]
+           [:span.text-sm
+            "Balance unavailable"])])]
 
 
      ;; -- Amount
@@ -594,10 +607,4 @@
 (def faucet-page
   #:page {:id :page.id/faucet
           :title "Faucet"
-          :component #'FaucetPage
-          :on-push
-          (fn [_ state set-state]
-            (when-let [address (get-in state [:convex-web/faucet :convex-web.faucet/target])]
-              (set-state assoc :faucet-page/target {:ajax/status :ajax.status/pending})
-
-              (faucet-get-target address set-state)))})
+          :component #'FaucetPage})
