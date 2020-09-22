@@ -533,7 +533,7 @@
           (-bad-request-response (error message)))
 
         (> amount config/max-faucet-amount)
-        (let [message (str "You can't request more than" (pprint/cl-format nil "~:d" config/max-faucet-amount) ".")]
+        (let [message (str "You can't request more than " (pprint/cl-format nil "~:d" config/max-faucet-amount) ".")]
           (u/log :logging.event/user-error
                  :severity :error
                  :message message)

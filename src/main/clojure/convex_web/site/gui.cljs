@@ -434,6 +434,23 @@
             attrs)
      child]))
 
+(defn BlueButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge {:class
+             ["px-4 py-3"
+              "bg-blue-400"
+              "rounded"
+              "shadow-md"
+              "focus:outline-none"
+              "hover:bg-opacity-75"
+              "active:bg-blue-500"
+              (if disabled?
+                "pointer-events-none")]
+             :on-click identity}
+            attrs)
+     child]))
+
 (defn Tooltip
   "Reagent wrapper for React Tippy.
 

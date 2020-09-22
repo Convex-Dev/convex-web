@@ -476,7 +476,9 @@
 
         SmallCaption (fn [caption]
                        [:span.text-sm.text-gray-700
-                        caption])]
+                        caption])
+
+        input-style "h-10 text-sm text-gray-600 px-2 border rounded bg-blue-100 bg-opacity-50"]
     [:div.flex.flex-col.max-w-screen-md.space-y-12
 
      ;; -- Target
@@ -500,8 +502,8 @@
           :addresses addresses
           :on-change (fn [address]
                        (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] address))}]
-        [:input.text-sm.p-1.border
-         {:style {:height "26px"}
+        [:input
+         {:class input-style
           :type "text"
           :value target
           :on-change
@@ -538,8 +540,8 @@
      ;; -- Amount
      [:div.flex.flex-col
       [Caption "Amount"]
-      [:input.text-sm.text-right.border
-       {:style {:height "26px"}
+      [:input.text-right
+       {:class input-style
         :type "number"
         :value amount
         :on-change
@@ -557,7 +559,7 @@
 
          [:div.mx-2]])
 
-      [gui/DefaultButton
+      [gui/BlueButton
        {:disabled invalid?
         :on-click #(do
                      (set-state assoc :ajax/status :ajax.status/pending)
@@ -573,10 +575,10 @@
                                                     (set-state assoc
                                                                :ajax/status :ajax.status/error
                                                                :ajax/error error))}))}
-       [:span.text-xs.uppercase
+       [:span.text-sm.uppercase
         {:class (if invalid?
-                  "text-gray-300"
-                  "text-gray-800")}
+                  "text-gray-200"
+                  "text-white")}
         "Request"]]]
 
 
