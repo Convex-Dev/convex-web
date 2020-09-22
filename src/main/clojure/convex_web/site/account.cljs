@@ -424,10 +424,10 @@
                                   (set-state assoc :faucet-page/target {:ajax/status :ajax.status/success
                                                                         :convex-web/account account}))}))
 
-(defn FaucetInput [frame state set-state]
+(defn FaucetPage [frame state set-state]
   (let [{:keys [frame/modal?]} frame
 
-        {:keys [convex-web/faucet faucet-page/config]} state
+        {:keys [convex-web/faucet ajax/status faucet-page/config]} state
 
         active-address (session/?active-address)
 
@@ -455,7 +455,7 @@
         SmallCaption (fn [caption]
                        [:span.text-sm.text-gray-700
                         caption])]
-    [:div.flex.flex-col.flex-1.max-w-screen-md.space-y-8
+    [:div.flex.flex-col.max-w-screen-md.space-y-8
 
      ;; -- Target
      [:div.relative.w-full.flex.flex-col
@@ -483,9 +483,14 @@
               (set-state (fn [state]
                            (-> state
                                (update :convex-web/faucet dissoc :convex-web.faucet/target)
-                               (dissoc :faucet-page/target))))
+                               (dissoc :faucet-page/target)
+                               (dissoc :ajax/status))))
               (do
-                (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] address)
+                (set-state (fn [state]
+                             (-> state
+                                 (assoc-in [:convex-web/faucet :convex-web.faucet/target] address)
+                                 (dissoc :ajax/status))))
+
                 (faucet-get-target address set-state))))}]
         [:input.text-sm.p-1.border
          {:style {:height "26px"}
@@ -552,60 +557,28 @@
         {:class (if invalid?
                   "text-gray-300"
                   "text-gray-800")}
-        "Request"]]]]))
+        "Request"]]]
 
-(defn FaucetSuccess [frame {:keys [convex-web/faucet faucet-page/target]} set-state]
-  [:div.flex.flex-col.flex-1.items-center.space-y-4
-   [:span.text-lg
-    "Success!"]
 
-   ;; -- Your current balance is x.
-   [:span.text-sm
-    "Your current balance is "
+     ;; -- Status
+     (cond
+       (= :ajax.status/pending status)
+       [:span.text-sm
+        "Processing..."]
 
-    [:span.font-bold.text-indigo-500
-     (format/format-number (+ (balance (get target :convex-web/account))
-                              (get faucet :convex-web.faucet/amount)))]
+       (= :ajax.status/error status)
+       [:span.text-sm
+        (get-in state [:ajax/error :response :error :message])]
 
-    "."]
+       (= :ajax.status/success status)
+       [:span.text-sm
+        "Your updated balance is "
 
-   [gui/DefaultButton
-    {:on-click
-     (fn []
-       (if (:frame/modal? frame)
-         (stack/pop)
-         (set-state #(dissoc % :ajax/status))))}
-    [:span.text-xs.uppercase "Done"]]])
+        [:span.font-bold
+         (format/format-number (+ (balance (get-in state [:faucet-page/target :convex-web/account]))
+                                  (get faucet :convex-web.faucet/amount)))]
 
-(defn FaucetError [frame {:keys [ajax/error]} set-state]
-  [:div.flex.flex-col.flex-1.items-center.space-y-4
-   [:span.text-lg
-    "Sorry"]
-
-   [:span.text-sm
-    (get-in error [:response :error :message])]
-
-   [gui/DefaultButton
-    {:on-click
-     (fn []
-       (if (:frame/modal? frame)
-         (stack/pop)
-         (set-state #(dissoc % :ajax/status))))}
-    [:span.text-xs.uppercase "Done"]]])
-
-(defn FaucetPage [frame {:keys [ajax/status] :as state} set-state]
-  [:div.flex.flex-1
-   (case status
-     :ajax.status/pending
-     [gui/Spinner]
-
-     :ajax.status/success
-     [FaucetSuccess frame state set-state]
-
-     :ajax.status/error
-     [FaucetError frame state set-state]
-
-     [FaucetInput frame state set-state])])
+        "."])]))
 
 (def faucet-page
   #:page {:id :page.id/faucet
