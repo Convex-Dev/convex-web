@@ -516,17 +516,18 @@
 
    ;; Devtools
    ;; ================
-   [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-300.z-50
+   (when goog.DEBUG
+     [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-300.z-50
 
-    [gui/IconAdjustments
-     (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
-                      "text-green-500"
-                      "text-red-500")]
-       {:class [bg-color "w-6 h-6"]})]
+      [gui/IconAdjustments
+       (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
+                        "text-green-500"
+                        "text-red-500")]
+         {:class [bg-color "w-6 h-6"]})]
 
-    [:input.ml-2 {:type "checkbox"
-                  :checked (sub :devtools/?enabled?)
-                  :on-change #(disp :devtools/!toggle)}]]
+      [:input.ml-2 {:type "checkbox"
+                    :checked (sub :devtools/?enabled?)
+                    :on-change #(disp :devtools/!toggle)}]])
 
    (when (sub :devtools/?enabled?)
      [devtools/Inspect])])
