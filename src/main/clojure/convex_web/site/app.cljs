@@ -318,7 +318,10 @@
 
             selected (or selected (session/?active-address))
 
-            item-style "text-gray-900 text-xs cursor-default select-none relative py-2 pl-3 pr-9 hover:bg-gray-100"]
+            item-style ["inline-flex w-full h-16 relative py-2 pl-3 pr-9"
+                        "cursor-default select-none"
+                        "text-gray-900 text-xs"
+                        "hover:bg-blue-100 hover:bg-opacity-50 active:bg-blue-200"]]
         [:div.space-y-1
 
          [:div.relative
