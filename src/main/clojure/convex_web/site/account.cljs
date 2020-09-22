@@ -477,7 +477,7 @@
         SmallCaption (fn [caption]
                        [:span.text-sm.text-gray-700
                         caption])]
-    [:div.flex.flex-col.max-w-screen-md.space-y-8
+    [:div.flex.flex-col.max-w-screen-md.space-y-12
 
      ;; -- Target
      [:div.relative.w-full.flex.flex-col
@@ -495,12 +495,11 @@
 
       ;; -- Select or Input text
       (if to-my-account?
-        [gui/Select
-         {:value target
-          :options addresses
-          :on-change
-          (fn [address]
-            (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] address))}]
+        [gui/AccountSelect
+         {:active-address target
+          :addresses addresses
+          :on-change (fn [address]
+                       (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] address))}]
         [:input.text-sm.p-1.border
          {:style {:height "26px"}
           :type "text"
