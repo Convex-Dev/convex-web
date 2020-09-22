@@ -419,10 +419,17 @@
 ;; -- Faucet
 
 (defn- faucet-get-target [address set-state]
+  (set-state assoc-in [:faucet-page/target :ajax/status] :ajax.status/pending)
+
   (backend/GET-account address {:handler
                                 (fn [account]
-                                  (set-state assoc :faucet-page/target {:ajax/status :ajax.status/success
-                                                                        :convex-web/account account}))}))
+                                  (set-state update :faucet-page/target merge {:ajax/status :ajax.status/success
+                                                                               :convex-web/account account}))
+
+                                :error
+                                (fn [error]
+                                  (set-state update :faucet-page/target merge {:ajax/status :ajax.status/error
+                                                                               :ajax/error error}))}))
 
 (defn FaucetPage [frame state set-state]
   (let [{:keys [frame/modal?]} frame
@@ -442,9 +449,7 @@
 
         to-my-account? (get config :faucet-page.config/my-accounts? false)
 
-        select-placeholder "Select"
-
-        addresses (cons select-placeholder (map :convex-web.account/address (session/?accounts)))
+        addresses (map :convex-web.account/address (session/?accounts))
 
         invalid? (not (s/valid? :convex-web/faucet faucet))
 
@@ -478,20 +483,14 @@
           :options addresses
           :on-change
           (fn [address]
-            (if (= select-placeholder address)
-              ;; Selecting the placeholder 'resets' the (target) state
-              (set-state (fn [state]
-                           (-> state
-                               (update :convex-web/faucet dissoc :convex-web.faucet/target)
-                               (dissoc :faucet-page/target)
-                               (dissoc :ajax/status))))
-              (do
-                (set-state (fn [state]
-                             (-> state
-                                 (assoc-in [:convex-web/faucet :convex-web.faucet/target] address)
-                                 (dissoc :ajax/status))))
+            ;; Sets the selected address and clean up previous (address) state.
+            (set-state (fn [state]
+                         (-> state
+                             (assoc-in [:convex-web/faucet :convex-web.faucet/target] address)
+                             (dissoc :faucet-page/target)
+                             (dissoc :ajax/status))))
 
-                (faucet-get-target address set-state))))}]
+            (faucet-get-target address set-state))}]
         [:input.text-sm.p-1.border
          {:style {:height "26px"}
           :type "text"
@@ -501,18 +500,26 @@
              (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] value))}])
 
 
-
       ;; -- Balance
       [:div.flex.justify-end.items-baseline.space-x-2
-       [SmallCaption "Balance"]
+       (case (get-in state [:faucet-page/target :ajax/status])
+         :ajax.status/pending
+         [:span.text-sm
+          "Checking balance..."]
 
-       (if-let [account (get-in state [:faucet-page/target :convex-web/account])]
-         [:span.text-xs.font-bold
-          (if-let [balance (balance account)]
-            (format/format-number balance)
-            [gui/SpinnerSmall])]
-         [:span.text-xs.font-bold
-          "-"])]]
+         :ajax.status/success
+         (let [account (get-in state [:faucet-page/target :convex-web/account])
+               balance (balance account)]
+           [:<>
+            [SmallCaption "Balance"]
+            [:span.text-xs.font-bold
+             (format/format-number balance)]])
+
+         :ajax.status/error
+         [:span.text-sm
+          "Balance unavailable"]
+
+         "")]]
 
 
      ;; -- Amount
@@ -561,24 +568,28 @@
 
 
      ;; -- Status
-     (cond
-       (= :ajax.status/pending status)
-       [:span.text-sm
-        "Processing..."]
+     (let [copy-style "text-base text-gray-700"]
+       (case status
+         :ajax.status/pending
+         [:span {:class copy-style}
+          "Processing..."]
 
-       (= :ajax.status/error status)
-       [:span.text-sm
-        (get-in state [:ajax/error :response :error :message])]
+         :ajax.status/error
+         [:span {:class copy-style}
+          (get-in state [:ajax/error :response :error :message])]
 
-       (= :ajax.status/success status)
-       [:span.text-sm
-        "Your updated balance is "
+         :ajax.status/success
+         [:span {:class copy-style}
+          "Your updated balance is "
 
-        [:span.font-bold
-         (format/format-number (+ (balance (get-in state [:faucet-page/target :convex-web/account]))
-                                  (get faucet :convex-web.faucet/amount)))]
+          [:span.font-bold
+           (format/format-number (+ (balance (get-in state [:faucet-page/target :convex-web/account]))
+                                    (get faucet :convex-web.faucet/amount)))]
 
-        "."])]))
+          "."]
+
+         ;; Unknown status
+         [:div]))]))
 
 (def faucet-page
   #:page {:id :page.id/faucet
