@@ -531,8 +531,9 @@
            [:span.text-sm
             "Balance unavailable"]
 
+           ;; No status; don't show anything.
            [:span.text-sm
-            "Balance unavailable"])])]
+            ""])])]
 
 
      ;; -- Amount
