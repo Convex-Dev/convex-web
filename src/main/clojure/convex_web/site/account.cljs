@@ -450,7 +450,11 @@
 
         Caption (fn [caption]
                   [:span.text-base.text-gray-700
-                   caption])]
+                   caption])
+
+        SmallCaption (fn [caption]
+                       [:span.text-sm.text-gray-700
+                        caption])]
     [:div.flex.flex-col.flex-1.max-w-screen-md.space-y-8
 
      ;; -- Target
@@ -489,20 +493,21 @@
           :value target
           :on-change
           #(let [value (gui/event-target-value %)]
-             (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] value))}])]
+             (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] value))}])
 
 
-     ;; -- Balance
-     [:div.flex.flex-col
-      [Caption "Balance"]
 
-      (if-let [account (get-in state [:faucet-page/target :convex-web/account])]
-        [:span.text-xs.font-bold
-         (if-let [balance (balance account)]
-           (format/format-number balance)
-           [gui/SpinnerSmall])]
-        [:span.text-xs.font-bold
-         "-"])]
+      ;; -- Balance
+      [:div.flex.justify-end.items-baseline.space-x-2
+       [SmallCaption "Balance"]
+
+       (if-let [account (get-in state [:faucet-page/target :convex-web/account])]
+         [:span.text-xs.font-bold
+          (if-let [balance (balance account)]
+            (format/format-number balance)
+            [gui/SpinnerSmall])]
+         [:span.text-xs.font-bold
+          "-"])]]
 
 
      ;; -- Amount
