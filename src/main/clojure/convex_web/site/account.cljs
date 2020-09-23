@@ -20,9 +20,7 @@
 
 
 (def input-classes
-  "text-sm text-gray-600 px-2 border rounded-md bg-blue-100 bg-opacity-50")
-
-(def input-height "47px")
+  "h-10 mb-1 text-sm text-gray-600 px-2 border rounded-md bg-blue-100 bg-opacity-50")
 
 
 (defn ShowBalance [{:keys [ajax/status convex-web/account]}]
@@ -283,7 +281,7 @@
             :on-change #(set-state assoc-in [:convex-web/transfer :convex-web.transfer/to] %)}]
           [:input
            {:class input-classes
-            :style {:height input-height}
+
             :type "text"
             :value to
             :on-change
@@ -303,7 +301,6 @@
       [Caption "Amount"]
       [:input
        {:class input-classes
-        :style {:height input-height}
         :type "number"
         :value amount
         :on-change
@@ -475,7 +472,6 @@
                        (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] address))}]
         [:input
          {:class input-classes
-          :style {:height input-height}
           :type "text"
           :value target
           :on-change
@@ -493,7 +489,6 @@
       [Caption "Amount"]
       [:input.text-right
        {:class input-classes
-        :style {:height input-height}
         :type "number"
         :value amount
         :on-change

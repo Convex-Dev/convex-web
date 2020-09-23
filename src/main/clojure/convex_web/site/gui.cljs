@@ -794,18 +794,18 @@
         [:div.relative
 
          ;; -- Selected
-         [:span.inline-block.w-full
+         [:button.h-10.inline-flex.items-center.cursor-default.relative.w-full.border.border-gray-200.rounded-md.bg-white.pr-9.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5
           {:on-click #(swap! state-ref update :show? not)}
-          [:button.inline-flex.items-center.cursor-default.relative.w-full.border.border-gray-200.rounded-md.bg-white.pr-9.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5
 
-           [Identicon {:value active-address :size 40}]
+          (when-not (str/blank? active-address)
+            [Identicon {:value active-address :size 40}])
 
-           [:span.font-mono.block.ml-2
-            (format/address-blob active-address)]
+          [:span.font-mono.block.ml-2
+           (format/address-blob active-address)]
 
-           [:span.absolute.inset-y-0.right-0.flex.items-center.pr-2.pointer-events-none
-            [:svg.h-5.w-5.text-gray-400 {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
-             [:path {:d "M7 7l3-3 3 3m0 6l-3 3-3-3" :stroke-width "1.5" :stroke-linecap "round" :stroke-linejoin "round"}]]]]]
+          [:span.absolute.inset-y-0.right-0.flex.items-center.pr-2.pointer-events-none
+           [:svg.h-5.w-5.text-gray-400 {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
+            [:path {:d "M7 7l3-3 3 3m0 6l-3 3-3-3" :stroke-width "1.5" :stroke-linecap "round" :stroke-linejoin "round"}]]]]
 
          ;; -- Dropdown
          [Transition
