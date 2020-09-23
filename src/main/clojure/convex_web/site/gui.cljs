@@ -791,47 +791,51 @@
                         "cursor-default select-none"
                         "text-gray-900 text-xs"
                         "hover:bg-blue-100 hover:bg-opacity-50 active:bg-blue-200"]]
-        [:div.relative
+        [:div
 
          ;; -- Selected
-         [:button.h-10.inline-flex.items-center.cursor-default.relative.w-full.border.border-gray-200.rounded-md.bg-white.pr-9.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5
+         [:button.h-10.inline-flex.items-center.justify-between.cursor-default.w-full.border.border-gray-200.rounded-md.bg-white.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5
           {:on-click #(swap! state-ref update :show? not)}
 
-          (when-not (str/blank? active-address)
-            [Identicon {:value active-address :size 40}])
+          (if (str/blank? active-address)
+            ;; Empty, but fill the space.
+            [:div.flex-1]
+            [:div.flex.flex-1.items-center.px-2
+             [Identicon {:value active-address :size 40}]
 
-          [:span.font-mono.block.ml-2
-           (format/address-blob active-address)]
+             [:span.font-mono.block.ml-2
+              (format/address-blob active-address)]])
 
-          [:span.absolute.inset-y-0.right-0.flex.items-center.pr-2.pointer-events-none
-           [:svg.h-5.w-5.text-gray-400 {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
-            [:path {:d "M7 7l3-3 3 3m0 6l-3 3-3-3" :stroke-width "1.5" :stroke-linecap "round" :stroke-linejoin "round"}]]]]
+          [:svg.h-5.w-5.text-gray-400.pr-2.pointer-events-none
+           {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
+           [:path {:d "M7 7l3-3 3 3m0 6l-3 3-3-3" :stroke-width "1.5" :stroke-linecap "round" :stroke-linejoin "round"}]]]
 
          ;; -- Dropdown
-         [Transition
-          (merge dropdown-transition {:show? show?})
-          [Dismissible
-           {:on-dismiss #(swap! state-ref update :show? (constantly false))}
-           [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
-            [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
+         [:div.relative
+          [Transition
+           (merge dropdown-transition {:show? show?})
+           [Dismissible
+            {:on-dismiss #(swap! state-ref update :show? (constantly false))}
+            [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
+             [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
 
-             (for [address addresses]
-               ^{:key address}
-               [:li
-                {:class item-style
-                 :on-click
-                 (fn []
-                   (reset! state-ref {:show? false})
+              (for [address addresses]
+                ^{:key address}
+                [:li
+                 {:class item-style
+                  :on-click
+                  (fn []
+                    (reset! state-ref {:show? false})
 
-                   (when on-change
-                     (on-change address)))}
+                    (when on-change
+                      (on-change address)))}
 
-                [:div.flex.items-center
-                 [:div.h-5.w-5.mr-2
-                  (when (= address active-address)
-                    [CheckIcon {:class "h-5 w-5"}])]
+                 [:div.flex.items-center
+                  [:div.h-5.w-5.mr-2
+                   (when (= address active-address)
+                     [CheckIcon {:class "h-5 w-5"}])]
 
-                 [Identicon {:value address :size 40}]
+                  [Identicon {:value address :size 40}]
 
-                 [:span.font-mono.block.ml-2
-                  (format/address-blob address)]]])]]]]]))))
+                  [:span.font-mono.block.ml-2
+                   (format/address-blob address)]]])]]]]]]))))
