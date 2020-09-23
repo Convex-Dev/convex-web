@@ -109,16 +109,34 @@
 
 (defn SessionPage [_ {:keys [convex-web.session/id]} set-state]
   [:div.flex.flex-1.justify-center.my-4.mx-10
-   [:div.flex.flex-col.flex-1
 
-    (when (?active-address)
-      [:<>
-       [:span.text-xs.text-indigo-500.uppercase "Session"]
-       [:div.flex.items-center
-        [:code.text-sm.mr-2 (?id)]
-        [gui/ClipboardCopy (?id)]]])
+   [:div.flex.flex-col.flex-1.space-y-10.max-w-screen-sm
 
-    [:span.text-xs.text-indigo-500.uppercase.mt-10 "Session Key"]
+    [:div.flex.flex-col
+     [:span.text-base.text-gray-500
+      "Current Wallet Key"]
+
+     [:div.flex.items-center
+      [:code.text-sm.mr-2 (?id)]
+      [gui/ClipboardCopy (?id)]]]
+
+
+    [:p
+     "This is your current Wallet Key. Your Wallet gives you control over a
+      group of Accounts on convex.world, which you can easily switch between."]
+
+
+    [:p
+     "You can copy the Walley Key if you want to access the same Wallet from
+      another device, or come back later to the same Wallet. Wallets will be
+      periodically refreshed as we develop the convex.world testnet. But don't
+      worry, you can always create another for free!"]
+
+
+    [:p
+     "Enter a valid Wallet Key below to switch to a different Wallet."]
+
+
     [:input.text-sm.border
      {:style {:height "26px"}
       :type "text"
@@ -144,5 +162,4 @@
 
 (def session-page
   #:page {:id :page.id/session
-          :title "Session"
           :component #'SessionPage})

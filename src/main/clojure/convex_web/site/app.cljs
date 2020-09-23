@@ -290,8 +290,8 @@
      [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
 
       ;; -- Header
-      [:div.border-b.border-gray-400.bg-gray-100.rounded-t-lg
-       [:div.relative.flex.justify-between.p-4
+      [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
+       [:div.h-16.relative.flex.justify-between.items-center.px-4
 
         [:span.font-mono.text-lg.leading-none title]
 
@@ -300,8 +300,6 @@
          [gui/IconXCircle
           {:class
            ["w-6 h-6"
-            "absolute top-0 right-0"
-            "mt-2 mr-2"
             "text-gray-600 hover:text-gray-700"
             "cursor-pointer"]
            :on-click #(stack/pop)}]]]]
