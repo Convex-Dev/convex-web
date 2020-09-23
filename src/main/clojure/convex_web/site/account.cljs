@@ -92,6 +92,7 @@
 (def my-account-page
   #:page {:id :page.id/my-account
           :title "Account Details"
+          :description "These are the details for an Account on the convex.world test network."
           :component #'MyAccountPage
           :state-spec
           (s/nonconforming
@@ -394,6 +395,7 @@
 (def transfer-page
   #:page {:id :page.id/transfer
           :title "Transfer"
+          :description "Use this tool to make transfers from your Accounts to any other Accounts."
           :component #'TransferPage
           :state-spec :transfer-page/state})
 
@@ -568,4 +570,5 @@
 (def faucet-page
   #:page {:id :page.id/faucet
           :title "Faucet"
+          :description "The Faucet lets you request free Convex coins for your Accounts. You can make a request once every 5 minutes."
           :component #'FaucetPage})

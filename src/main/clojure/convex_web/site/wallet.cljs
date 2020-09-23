@@ -38,4 +38,5 @@
 (def wallet-page
   #:page {:id :page.id/wallet
           :title "Wallet"
+          :description "This is your Convex Wallet, mananged for your convenience on the test network at convex.world."
           :component #'WalletPage})

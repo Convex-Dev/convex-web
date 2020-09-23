@@ -755,6 +755,9 @@
 (def blocks-range-page
   #:page {:id :page.id/blocks-range-explorer
           :title "Blocks"
+          :description "These are the Blocks that have been published in the
+                        Convex Network Consensus, numbered in consensus order
+                        (higher index numbers are more recent)."
           :component #'BlocksRangePage
           :state-spec :explorer.blocks-range/state-spec
           :on-push #'get-blocks-on-push})

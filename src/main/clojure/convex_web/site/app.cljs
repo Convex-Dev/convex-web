@@ -448,6 +448,7 @@
 (defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component
          title :page/title
+         description :page/description
          style :page/style} page
 
         set-state (stack/make-set-state uuid)]
@@ -463,7 +464,7 @@
        [SideNav (:route/match (router/?route))]
 
        ;; -- Page
-       [:div.relative.flex.flex-col.flex-1.xl:pl-24.overflow-auto
+       [:div.relative.flex.flex-col.flex-1.xl:pl-24.space-y-8.overflow-auto
         (when active-page-frame
           [:<>
 
@@ -475,12 +476,15 @@
                                 ;; Default
                                 "text-3xl")]
 
-               [:<>
+               [:div.flex.flex-col.space-y-4
                 [:span.font-mono.text-gray-900
-                 {:class title-size}
+                 {:class [title-size "leading-none"]}
                  title]
 
-                [:div.w-32.h-2.bg-blue-400.mt-4.mb-8]]))
+                (when description
+                  [:p.text-gray-500.text-base.max-w-screen-sm description])
+
+                [:div.w-32.h-2.bg-blue-400.mb-8]]))
 
            [Component active-page-frame state set-state]])]]]
 
