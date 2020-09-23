@@ -246,7 +246,10 @@
        {:active-address from
         :addresses addresses
         :on-change (fn [address]
-                     (set-state assoc-in [:convex-web/transfer :convex-web.transfer/from] address))}]
+                     (set-state (fn [state]
+                                  (-> state
+                                      (dissoc :convex-web/command)
+                                      (assoc-in [:convex-web/transfer :convex-web.transfer/from] address)))))}]
 
       ;; -- Balance
       (when (s/valid? :convex-web/address from)
@@ -278,7 +281,11 @@
           [gui/AccountSelect
            {:active-address to
             :addresses addresses
-            :on-change #(set-state assoc-in [:convex-web/transfer :convex-web.transfer/to] %)}]
+            :on-change (fn [address]
+                         (set-state (fn [state]
+                                      (-> state
+                                          (dissoc :convex-web/command)
+                                          (assoc-in [:convex-web/transfer :convex-web.transfer/to] address)))))}]
           [:input
            {:class input-classes
 
@@ -286,7 +293,10 @@
             :value to
             :on-change
             #(let [value (gui/event-target-value %)]
-               (set-state assoc-in [:convex-web/transfer :convex-web.transfer/to] value))}])
+               (set-state (fn [state]
+                            (-> state
+                                (dissoc :convex-web/command)
+                                (assoc-in [:convex-web/transfer :convex-web.transfer/to] value)))))}])
 
         ;; -- Balance
         (when (s/valid? :convex-web/address to)
