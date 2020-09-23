@@ -122,25 +122,25 @@
      {:text "About"
       :items
       [#_{:text "Vision"
-        :href (rfe/href :route-name/vision)}
+          :href (rfe/href :route-name/vision)}
 
        {:text "FAQ"
         :href (rfe/href :route-name/faq)}
 
        #_{:text "Concepts"
-        :href (rfe/href :route-name/concepts)}
+          :href (rfe/href :route-name/concepts)}
 
        #_{:text "White Paper"
-        :href (rfe/href :route-name/white-paper)}
+          :href (rfe/href :route-name/white-paper)}
 
        #_{:text "Get Involved"
-        :href (rfe/href :route-name/get-involved)}
+          :href (rfe/href :route-name/get-involved)}
 
        #_{:text "Roadmap"
-        :href (rfe/href :route-name/roadmap)}
+          :href (rfe/href :route-name/roadmap)}
 
        #_{:text "Convex Foundation"
-        :href (rfe/href :route-name/convex-foundation)}]}]]])
+          :href (rfe/href :route-name/convex-foundation)}]}]]])
 
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["w-1/2 flex flex-col justify-center space-y-8"]
@@ -155,22 +155,41 @@
 
      [Nav]
 
-     [:div.flex.flex-col.flex-1.items-center.justify-center.rounded
+     [:div.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12
       {:style
        {:height "640px"
         :background-color "#F3F9FE"}}
 
       [gui/ConvexLogo {:width "56px" :height "64px"}]
 
-      [:div.flex.flex-col.items-center.max-w-screen-md
-       [:span.font-mono.text-6xl.mt-10
-        "Building the Future"]
+      [:span.font-mono.text-6xl
+       "Building the Future"]
 
-       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.mt-10
-        [:p "Convex is a global platform for trusted applications and digital assets."]
-        [:p "Write amazing code with the most powerful platform for smart contracts and test your ideas live in the web browser — no additional installations required."]]]]
+      [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
+       [:p "Convex is a global platform for trusted applications and digital assets."]
+       [:p "Write amazing code with the most powerful platform for smart contracts and test your ideas live in the web browser — no additional installations required."]]
 
-     [:div.flex.flex-1.justify-center.my-14
+
+      [:div.flex.space-x-8
+       [:a
+        {:href (rfe/href :route-name/documentation-getting-started)}
+        [gui/BlackButton
+         {}
+         [:div.flex.space-x-4.mx-2
+          [:span.font-mono.text-sm.text-white.uppercase
+           "Start Building"]
+
+          [gui/ArrowCircleRightIcon {:class "h-4 w-4 text-white"}]]]]
+
+       [gui/LightBlueButton
+        {:on-click #(gui/scroll-into-view "how" {:behavior "smooth"})}
+        [:div.flex.space-x-4.mx-2
+         [:span.font-mono.text-sm.text-black.uppercase
+          "How Can I Use Convex?"]
+
+         [gui/ArrowCircleDownIcon {:class "h-4 w-4 text-black"}]]]]]
+
+     [:div#how.flex.flex-1.justify-center.my-14
       [:span.inline-block.font-mono.text-center.text-4xl
        {:class "w-4/5"
         :style
@@ -258,12 +277,18 @@
 
        [:p {:class marketing-copy}
         "Convex provides an interactive REPL allowing users to code directly
-         on the Convex platform using Convex Lisp."]]]
+         on the Convex platform using Convex Lisp."]
+
+       [:a
+        {:href (rfe/href :route-name/documentation-getting-started)}
+        [gui/DarkBlueButton
+         {}
+         [:span.font-mono.text-sm.text-white.uppercase
+          "Try It For Yourself"]]]]]
 
      ]))
 
 (def welcome-page
   #:page {:id :page.id/welcome
-          :title "Welcome"
           :component #'WelcomePage
           :scaffolding? false})

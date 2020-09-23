@@ -23,11 +23,15 @@
           (.-target)
           (.-value)))
 
-(defn scroll-into-view [id]
+(defn scroll-into-view
+  "https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView"
+  [id & [options]]
   (some-> (.getElementById js/document id)
-          (.scrollIntoView)))
+          (.scrollIntoView (or (clj->js options) #js {}))))
 
-(defn scroll-element-into-view [el]
+(defn scroll-element-into-view
+  "https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView"
+  [el]
   (when el
     (.scrollIntoView el)))
 
@@ -149,6 +153,24 @@
         [:polygon#Fill-2 {:fill "#4B74CF" :points "0 47.9998 28 63.9998 0 15.9998"}]
         [:polygon#Fill-3 {:fill "#62A6E1" :points "28.0008 -0.0008 28.0008 63.9992 55.9988 16.0032 55.9988 15.9992"}]
         [:polygon#Fill-4 {:fill "#C3EAFC" :points "28.0008 -0.0008 0.0008 15.9992 28.0008 63.9992"}]]]]]]])
+
+(defn ArrowCircleRightIcon [& [attrs]]
+  [:svg.w-6.h-6
+   (merge {:fill "none"
+           :stroke "currentColor"
+           :viewBox "0 0 24 24"
+           :xmlns "http://www.w3.org/2000/svg"}
+          attrs)
+   [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"}]])
+
+(defn ArrowCircleDownIcon [& [attrs]]
+  [:svg.w-6.h-6
+   (merge {:fill "none"
+           :stroke "currentColor"
+           :viewBox "0 0 24 24"
+           :xmlns "http://www.w3.org/2000/svg"}
+          attrs)
+   [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"}]])
 
 (defn InformationCircleIcon [& [attrs]]
   [:svg
@@ -445,6 +467,41 @@
               "focus:outline-none"
               "hover:bg-opacity-75"
               "active:bg-blue-500"
+              (if disabled?
+                "pointer-events-none")]
+             :on-click identity}
+            attrs)
+     child]))
+
+(defn DarkBlueButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge {:class
+             ["px-4 py-3"
+              "bg-blue-700"
+              "rounded"
+              "shadow-md"
+              "focus:outline-none"
+              "hover:bg-opacity-75"
+              "active:bg-blue-800"
+              (if disabled?
+                "pointer-events-none")]
+             :on-click identity}
+            attrs)
+     child]))
+
+(defn LightBlueButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge {:style
+             {:background-color "#E5EEF9"}
+             :class
+             ["px-4 py-3"
+              "rounded"
+              "shadow-md"
+              "focus:outline-none"
+              "hover:bg-gray-200"
+              "active:bg-gray-300"
               (if disabled?
                 "pointer-events-none")]
              :on-click identity}
