@@ -352,33 +352,43 @@
   [:div
    [:table.text-left.table-auto
     [:thead
-     (let [th-class "text-xs uppercase text-gray-600 sticky top-0"]
+     (let [th-class "text-xs uppercase text-gray-600 sticky top-0 pr-2"]
        [:tr
         [:th
-         {:class th-class}
-         [:div.p-2
-          "Address"]]
+         [:div.flex.space-x-1
+          {:class th-class}
+          [:span "Address"]]]
 
         [:th
-         {:class th-class}
-         [:div.p-2
-          "Type"]]
+         [:div.flex.space-x-1
+          {:class th-class}
+          [:span "Type"]
+          [gui/InfoTooltip
+           "The Type of Account, may be User, Actor or Library"]]]
 
         [:th
-         {:class th-class}
-
-         [:div.p-2
-          "Balance"]]
-
-        [:th
-         {:class th-class}
-         [:div.p-2
-          "Memory Size"]]
+         [:div.flex.space-x-1
+          {:class th-class}
+          [:span "Balance"]
+          [gui/InfoTooltip
+           "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"]]]
 
         [:th
-         {:class th-class}
-         [:div.p-2
-          "Memory Allowance"]]])]
+         [:div.flex.space-x-1
+          {:class th-class}
+          [:span "Memory Size"]
+          [gui/InfoTooltip
+           "Size in bytes of this Account, which includes any definitions you
+            have created in your Enviornment."]]]
+
+        [:th
+         [:div.flex.space-x-1
+          {:class th-class}
+          [:span "Memory Allowance"]
+          [gui/InfoTooltip
+           "Reserved Memory Allowance in bytes. If you create on-chain data
+            beyond this amount, you will be charged extra transaction fees to
+            aquire memory at the current memory pool price."]]]])]
 
     (let [active-address (session/?active-address)
 
@@ -434,13 +444,22 @@
             ;; -- Type
             (let [[label style tooltip] (cond
                                           (get status :convex-web.account-status/library?)
-                                          ["library" "text-purple-500" "Library's Address"]
+                                          ["library"
+                                           "text-purple-500"
+                                           "An immutable Account containing
+                                            code and other static information.
+                                            A Library is essentially an Actor
+                                            with no exported functionality."]
 
                                           (get status :convex-web.account-status/actor?)
-                                          ["actor" "text-indigo-500" "Actor's Address"]
+                                          ["actor"
+                                           "text-indigo-500"
+                                           "An Autonomous Actor on the Convex network, which can be used to implement smart contracts."]
 
                                           :else
-                                          ["user" "text-green-400" "User's Address"])]
+                                          ["user"
+                                           "text-green-400"
+                                           "An external user of Convex."])]
               [:td {:class td-class}
                [gui/Tooltip
                 {:title tooltip}
