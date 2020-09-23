@@ -796,7 +796,7 @@
          ;; -- Selected
          [:span.inline-block.w-full
           {:on-click #(swap! state-ref update :show? not)}
-          [:button.inline-flex.items-center.cursor-default.relative.w-full.rounded-md.bg-white.pr-9.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5
+          [:button.inline-flex.items-center.cursor-default.relative.w-full.border.border-gray-200.rounded-md.bg-white.pr-9.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5
 
            [Identicon {:value active-address :size 40}]
 

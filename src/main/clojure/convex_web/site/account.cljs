@@ -18,6 +18,12 @@
   [account]
   (get-in account [:convex-web.account/status :convex-web.account-status/balance]))
 
+
+(def input-classes
+  "text-sm text-gray-600 px-2 border rounded-md bg-blue-100 bg-opacity-50")
+
+(def input-height "47px")
+
 ;; --
 
 (defn MyAccountPage [_ {:keys [ajax/status convex-web/account]} set-state]
@@ -254,21 +260,20 @@
 
                               (= :ajax.status/error (get-in state [:transfer-page/to :ajax/status])))
 
-        select-placeholder "Select"
-
-        addresses (cons select-placeholder (map :convex-web.account/address (session/?accounts)))
+        addresses (map :convex-web.account/address (session/?accounts))
 
         Caption (fn [caption]
                   [:span.text-base.text-gray-700 caption])]
-    [:div.flex.flex-col.flex-1.max-w-screen-md.space-y-8
+    [:div.flex.flex-col.flex-1.max-w-screen-md.space-y-12
 
      ;; -- From
-     [:div.flex.flex-col
+     [:div.relative.w-full.flex.flex-col
       [Caption "From"]
-      [gui/Select
-       {:value from
-        :options addresses
-        :on-change #(set-state assoc-in [:convex-web/transfer :convex-web.transfer/from] %)}]
+      [gui/AccountSelect
+       {:active-address from
+        :addresses addresses
+        :on-change (fn [address]
+                     (set-state assoc-in [:convex-web/transfer :convex-web.transfer/from] address))}]
 
       ;; -- Balance
       (when (s/valid? :convex-web/address from)
@@ -298,27 +303,30 @@
 
      ;; -- To
      (let [to-my-accounts? (get config :transfer-page.config/my-accounts? false)]
-       [:div.relative.w-full.flex.flex-col.mt-6
-        [Caption "To"]
+       [:div.w-full.flex.flex-col
+        [:div.flex.justify-between
+         [Caption "To"]
 
-        ;; -- My Accounts checkbox
-        [:div.absolute.top-0.right-0.flex.items-center
-         [:input
-          {:type "checkbox"
-           :checked to-my-accounts?
-           :on-change #(set-state update-in [:transfer-page/config :transfer-page.config/my-accounts?] not)}]
+         ;; -- Show My Accounts
+         [:div.flex.items-center
+          [:input
+           {:type "checkbox"
+            :checked to-my-accounts?
+            :on-change #(set-state update-in [:transfer-page/config :transfer-page.config/my-accounts?] not)}]
 
-         [:span.text-xs.text-gray-600.uppercase.ml-2
-          "Show My Accounts"]]
+          [:span.text-xs.text-gray-600.uppercase.ml-2
+           "Show My Accounts"]]]
+
 
         ;; -- Select or Input text
         (if to-my-accounts?
-          [gui/Select {:value to
-                       :options addresses
-                       :on-change
-                       #(set-state assoc-in [:convex-web/transfer :convex-web.transfer/to] %)}]
-          [:input.text-sm.text-right.border
-           {:style {:height "26px"}
+          [gui/AccountSelect
+           {:active-address to
+            :addresses addresses
+            :on-change #(set-state assoc-in [:convex-web/transfer :convex-web.transfer/to] %)}]
+          [:input
+           {:class input-classes
+            :style {:height input-height}
             :type "text"
             :value to
             :on-change
@@ -351,11 +359,13 @@
 
               "")))])
 
-     ;; -- Transfer
-     [:div.flex.flex-col.mt-6.mb-4
+     ;; -- Amount
+     [:div.flex.flex-col
       [Caption "Amount"]
-      [:input.border.px-1.mt-1.text-right
-       {:type "number"
+      [:input
+       {:class input-classes
+        :style {:height input-height}
+        :type "number"
         :value amount
         :on-change
         (fn [event]
@@ -373,7 +383,9 @@
                   :else
                   state)))))}]]
 
-     [:div.flex.mt-6
+
+     ;; -- Transfer & Cancel
+     [:div.flex
       (when (get frame :modal?)
         [:<>
          [gui/DefaultButton
@@ -382,7 +394,7 @@
 
          [:div.mx-2]])
 
-      [gui/DefaultButton
+      [gui/BlueButton
        {:disabled invalid-transfer?
         :on-click #(let [transaction #:convex-web.transaction {:type :convex-web.transaction.type/transfer
                                                                :target to
@@ -394,7 +406,11 @@
 
                      (command/execute command (fn [command command']
                                                 (set-state assoc :convex-web/command (merge command command')))))}
-       [:span.text-xs.uppercase "Transfer"]]]]))
+       [:span.text-sm.uppercase
+        {:class (if invalid-transfer?
+                  "text-gray-200"
+                  "text-white")}
+        "Transfer"]]]]))
 
 (defn TransferPage [frame {:keys [convex-web/command] :as state} set-state]
   [:div.flex-1
@@ -476,9 +492,7 @@
 
         SmallCaption (fn [caption]
                        [:span.text-sm.text-gray-700
-                        caption])
-
-        input-style "h-10 text-sm text-gray-600 px-2 border rounded bg-blue-100 bg-opacity-50"]
+                        caption])]
     [:div.flex.flex-col.max-w-screen-md.space-y-12
 
      ;; -- Target
@@ -503,7 +517,8 @@
           :on-change (fn [address]
                        (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] address))}]
         [:input
-         {:class input-style
+         {:class input-classes
+          :style {:height input-height}
           :type "text"
           :value target
           :on-change
@@ -541,7 +556,8 @@
      [:div.flex.flex-col
       [Caption "Amount"]
       [:input.text-right
-       {:class input-style
+       {:class input-classes
+        :style {:height input-height}
         :type "number"
         :value amount
         :on-change
