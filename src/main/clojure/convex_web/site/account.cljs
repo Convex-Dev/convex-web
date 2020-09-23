@@ -24,6 +24,31 @@
 
 (def input-height "47px")
 
+
+(defn ShowBalance [{:keys [ajax/status convex-web/account]}]
+  [:div.flex.justify-end.items-baseline.space-x-2
+   (case status
+     :ajax.status/pending
+     [:span.text-sm
+      "Checking balance..."]
+
+     :ajax.status/success
+     (let [balance (balance account)]
+       [:<>
+        [:span.text-sm.text-gray-700
+         "Balance"]
+
+        [:span.text-xs.font-bold
+         (format/format-number balance)]])
+
+     :ajax.status/error
+     [:span.text-sm
+      "Balance unavailable"]
+
+     ;; No status; don't show anything.
+     [:span.text-sm
+      "-"])])
+
 ;; --
 
 (defn MyAccountPage [_ {:keys [ajax/status convex-web/account]} set-state]
@@ -277,29 +302,8 @@
 
       ;; -- Balance
       (when (s/valid? :convex-web/address from)
-        (let [params (merge (select-keys frame [:frame/uuid]) {:address from})
-
-              {:keys [convex-web/account ajax/status ajax/error]} (sub ::?transfer-from-account params)]
-          (case status
-            :ajax.status/pending
-            [:div.flex.justify-end.mt-1
-             [:span.text-xs.text-gray-600.uppercase.mr-1
-              "Balance"]
-             [gui/SpinnerSmall]]
-
-            :ajax.status/success
-            [:div.flex.justify-end.mt-1
-             [:span.text-xs.text-gray-600.uppercase
-              "Balance"]
-             [:span.text-xs.font-bold.ml-1
-              (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance]))]]
-
-            :ajax.status/error
-            [:div.flex.justify-end.mt-1
-             [:span.text-xs.text-red-500
-              (get-in error [:response :error :message])]]
-
-            "")))]
+        (let [params (merge (select-keys frame [:frame/uuid]) {:address from})]
+          [ShowBalance (sub ::?transfer-from-account params)]))]
 
      ;; -- To
      (let [to-my-accounts? (get config :transfer-page.config/my-accounts? false)]
@@ -335,29 +339,8 @@
 
         ;; -- Balance
         (when (s/valid? :convex-web/address to)
-          (let [params (merge (select-keys frame [:frame/uuid]) {:address to})
-
-                {:keys [convex-web/account ajax/status ajax/error]} (sub ::?transfer-to-account params)]
-            (case status
-              :ajax.status/pending
-              [:div.flex.justify-end.mt-1
-               [:span.text-xs.text-gray-600.uppercase.mr-1
-                "Balance"]
-               [gui/SpinnerSmall]]
-
-              :ajax.status/success
-              [:div.flex.justify-end.mt-1
-               [:span.text-xs.text-gray-600.uppercase
-                "Balance"]
-               [:span.text-xs.font-bold.ml-1
-                (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance]))]]
-
-              :ajax.status/error
-              [:div.flex.justify-end.mt-1
-               [:span.text-xs.text-red-500
-                (get-in error [:response :error :message])]]
-
-              "")))])
+          (let [params (merge (select-keys frame [:frame/uuid]) {:address to})]
+            [ShowBalance (sub ::?transfer-to-account params)]))])
 
      ;; -- Amount
      [:div.flex.flex-col
@@ -527,29 +510,8 @@
 
 
       ;; -- Balance
-      (let [frame-uuid (get frame :frame/uuid)
-            faucet-target (sub ::?faucet-target frame-uuid target)]
-        [:div.flex.justify-end.items-baseline.space-x-2
-         (case (get faucet-target :ajax/status)
-           :ajax.status/pending
-           [:span.text-sm
-            "Checking balance..."]
-
-           :ajax.status/success
-           (let [account (get faucet-target :convex-web/account)
-                 balance (balance account)]
-             [:<>
-              [SmallCaption "Balance"]
-              [:span.text-xs.font-bold
-               (format/format-number balance)]])
-
-           :ajax.status/error
-           [:span.text-sm
-            "Balance unavailable"]
-
-           ;; No status; don't show anything.
-           [:span.text-sm
-            ""])])]
+      (let [frame-uuid (get frame :frame/uuid)]
+        [ShowBalance (sub ::?faucet-target frame-uuid target)])]
 
 
      ;; -- Amount
