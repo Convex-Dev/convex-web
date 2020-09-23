@@ -216,61 +216,10 @@
         (when-let [frame (stack/find-frame @app-db uuid)]
           (get-in frame [:frame/state :transfer-page/to]))))))
 
-(defn TransferProgress [frame {:convex-web/keys [command transfer] :as state} set-state]
-  [:div.flex.flex-col.flex-1.items-center.justify-center
-   (case (get command :convex-web.command/status)
-     :convex-web.command.status/running
-     [gui/Spinner]
+(defn TransferPage [frame state set-state]
+  (let [{:keys [convex-web/transfer convex-web/command transfer-page/config] :as state} state
 
-     :convex-web.command.status/success
-     [:div.flex.flex-col.items-center.text-sm
-      [:span.text-lg
-       "Success!"]
-
-      ;; -- Transferred x to address y.
-      [:span.my-4
-       "Transferred "
-
-       [:span.font-bold.text-indigo-500
-        (format/format-number (get transfer :convex-web.transfer/amount))]
-
-       " to "
-
-       [:a.flex-1.underline.hover:text-indigo-500
-        {:href (rfe/href :route-name/account-explorer {:address (get transfer :convex-web.transfer/to)})}
-        [:code.text-xs (get transfer :convex-web.transfer/to)]]
-
-       "."]
-
-      ;; -- Your current balance is z.
-      [:span.mb-4
-       "Your current balance is "
-
-       [:span.font-bold.text-indigo-500
-        (let [from-account (get-in state [:transfer-page/from :convex-web/account])]
-          (format/format-number
-            (- (balance from-account) (get transfer :convex-web.transfer/amount))))]
-
-       "."]
-
-      [gui/DefaultButton
-       {:on-click
-        (fn []
-          (if (:frame/modal? frame)
-            (stack/pop)
-            (set-state #(dissoc % :convex-web/command))))}
-       [:span.text-xs.uppercase "Done"]]]
-
-     :convex-web.command.status/error
-     [:span.text-sm.text-black
-      (if (s/valid? :ajax/error (get command :convex-web.command/error))
-        (get-in command [:convex-web.command/error :response :error :message])
-        "Sorry. Your transfer couldn't be completed. Please try again?")]
-
-     "...")])
-
-(defn TransferInput [frame {:keys [convex-web/transfer transfer-page/config] :as state} set-state]
-  (let [active-address (session/?active-address)
+        active-address (session/?active-address)
 
         from-unselected? (nil? (get transfer :convex-web.transfer/from))
 
@@ -291,7 +240,8 @@
                   [:span.text-base.text-gray-700 caption])]
     [:div.flex.flex-col.flex-1.max-w-screen-md.space-y-12
 
-     ;; -- From
+     ;; From
+     ;; ===========
      [:div.relative.w-full.flex.flex-col
       [Caption "From"]
       [gui/AccountSelect
@@ -302,10 +252,13 @@
 
       ;; -- Balance
       (when (s/valid? :convex-web/address from)
-        (let [params (merge (select-keys frame [:frame/uuid]) {:address from})]
+        (let [params {:frame/uuid (get frame :frame/uuid)
+                      :address from}]
           [ShowBalance (sub ::?transfer-from-account params)]))]
 
-     ;; -- To
+
+     ;; To
+     ;; ===========
      (let [to-my-accounts? (get config :transfer-page.config/my-accounts? false)]
        [:div.w-full.flex.flex-col
         [:div.flex.justify-between
@@ -339,10 +292,13 @@
 
         ;; -- Balance
         (when (s/valid? :convex-web/address to)
-          (let [params (merge (select-keys frame [:frame/uuid]) {:address to})]
+          (let [params {:frame/uuid (get frame :frame/uuid)
+                        :address to}]
             [ShowBalance (sub ::?transfer-to-account params)]))])
 
-     ;; -- Amount
+
+     ;; Amount
+     ;; ===========
      [:div.flex.flex-col
       [Caption "Amount"]
       [:input
@@ -367,16 +323,9 @@
                   state)))))}]]
 
 
-     ;; -- Transfer & Cancel
+     ;; Transfer
+     ;; ===========
      [:div.flex
-      (when (get frame :modal?)
-        [:<>
-         [gui/DefaultButton
-          {:on-click #(stack/pop)}
-          [:span.text-xs.uppercase "Cancel"]]
-
-         [:div.mx-2]])
-
       [gui/BlueButton
        {:disabled invalid-transfer?
         :on-click #(let [transaction #:convex-web.transaction {:type :convex-web.transaction.type/transfer
@@ -393,13 +342,38 @@
         {:class (if invalid-transfer?
                   "text-gray-200"
                   "text-white")}
-        "Transfer"]]]]))
+        "Transfer"]]]
 
-(defn TransferPage [frame {:keys [convex-web/command] :as state} set-state]
-  [:div.flex-1
-   (if command
-     [TransferProgress frame state set-state]
-     [TransferInput frame state set-state])])
+
+     ;; Status
+     ;; ===========
+     (case (:convex-web.command/status command)
+       :convex-web.command.status/running
+       [:span.text-base.text-gray-700
+        "Processing..."]
+
+       :convex-web.command.status/success
+       [:span.inline-flex.items-center.space-x-2
+        [:span "Transferred "]
+
+        [:span.font-bold.text-black
+         (format/format-number (get transfer :convex-web.transfer/amount))]
+
+        [:span " to "]
+
+        [:a.inline-flex.items-center.space-x-1.underline.hover:text-indigo-500
+         {:href (rfe/href :route-name/account-explorer {:address (get transfer :convex-web.transfer/to)})}
+         [gui/Identicon {:value (get transfer :convex-web.transfer/to) :size gui/identicon-size-small}]
+
+         [:span.font-mono.text-xs (format/address-blob (get transfer :convex-web.transfer/to))]]
+
+        "."]
+
+       :convex-web.command.status/error
+       [:span.text-sm.text-black
+        "Sorry. Your transfer couldn't be completed. Please try again?"]
+
+       [:div])]))
 
 (s/def :transfer-page.config/my-accounts? boolean?)
 (s/def :transfer-page/config (s/keys :opt [:transfer-page.config/my-accounts?]))
