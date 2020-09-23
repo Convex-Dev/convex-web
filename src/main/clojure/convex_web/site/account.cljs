@@ -279,7 +279,7 @@
         ;; -- Select or Input text
         (if to-my-accounts?
           [gui/AccountSelect
-           {:active-address to
+           {:active-address (format/address-trim-blob to)
             :addresses addresses
             :on-change (fn [address]
                          (set-state (fn [state]
@@ -368,11 +368,13 @@
 
         [:span " to "]
 
-        [:a.inline-flex.items-center.space-x-1.underline.hover:text-indigo-500
-         {:href (rfe/href :route-name/account-explorer {:address (get transfer :convex-web.transfer/to)})}
-         [gui/Identicon {:value (get transfer :convex-web.transfer/to) :size gui/identicon-size-small}]
+        (let [to-address-or-blob (get transfer :convex-web.transfer/to)
+              to-address (format/address-trim-blob to-address-or-blob)]
+          [:a.inline-flex.items-center.space-x-1.underline.hover:text-indigo-500
+           {:href (rfe/href :route-name/account-explorer {:address to-address})}
+           [gui/Identicon {:value to-address :size gui/identicon-size-small}]
 
-         [:span.font-mono.text-xs (format/address-blob (get transfer :convex-web.transfer/to))]]
+           [:span.font-mono.text-xs (format/address-blob (get transfer :convex-web.transfer/to))]])
 
         "."]
 
