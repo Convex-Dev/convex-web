@@ -118,18 +118,18 @@
 
      :ajax.status/success
      (let [address (get account :convex-web.account/address)]
-       [:div.flex.flex-col.items-start.max-w-screen-md.space-y-8.my-10.mx-10.text-gray-600
-        [:p
+       [:div.flex.flex-col.max-w-screen-md.space-y-8.my-10.mx-10.text-gray-600
+        [:p.text-left
          "This is your new Convex Account."]
 
-        [:p
+        [:p.text-left
          "Accounts give you a psuedonymous identity on the Convex network, a
           personal environment where you can store code and data, a memory
           allowance, and a balance of Convex coins. Only you can execute
           transactions using your Account, although all information is public
           and you can see information stored in the Accounts of others."]
 
-        [:p
+        [:p.text-left
          "For convenience this Account is managed on your behalf by the
           convex.world server, so you don't need to manage your own private
           keys. Accounts will be periodically refreshed on the Testnet server,

@@ -284,29 +284,69 @@
   (let [set-state (stack/make-set-state uuid)
 
         {:page/keys [title component]} page]
-    [:div.flex.justify-center.items-stretch.fixed.top-0.left-0.w-screen.h-screen.py-32.z-50
-     {:style {:background-color "rgba(0,0,0,0.1"}}
 
-     [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
+    [:div {:class "fixed z-10 inset-0 overflow-y-auto"}
+     [:div {:class "flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"}
 
-      ;; -- Header
-      [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
-       [:div.h-16.relative.flex.justify-between.items-center.px-4
 
-        [:span.font-mono.text-lg.leading-none title]
+      [:div.fixed.inset-0.transition-opacity
+       [:div.absolute.inset-0.bg-gray-500.opacity-75]]
 
-        [gui/Tooltip
-         {:title "Close"}
-         [gui/IconXCircle
-          {:class
-           ["w-6 h-6"
-            "text-gray-600 hover:text-gray-700"
-            "cursor-pointer"]
-           :on-click #(stack/pop)}]]]]
 
-      ;; -- Body
-      [:div.flex.flex-1.overflow-auto
-       [component frame state set-state]]]]))
+
+      [:div
+       {:class "inline-block px-4 pt-20 pb-4 transform transition-all"}
+
+
+       [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
+
+        ;; -- Header
+        [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
+         [:div.h-16.relative.flex.justify-between.items-center.px-4
+
+          [:span.font-mono.text-lg.leading-none title]
+
+          [gui/Tooltip
+           {:title "Close"}
+           [gui/IconXCircle
+            {:class
+             ["w-6 h-6"
+              "text-gray-600 hover:text-gray-700"
+              "cursor-pointer"]
+             :on-click #(stack/pop)}]]]]
+
+        ;; -- Body
+        [:div.flex.flex-1.overflow-auto
+         [component frame state set-state]]]
+
+       ]
+
+
+      ]]
+
+    #_[:div.flex.justify-center.items-stretch.fixed.top-0.left-0.w-screen.h-screen.py-32.z-50
+       {:style {:background-color "rgba(0,0,0,0.1"}}
+
+       [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
+
+        ;; -- Header
+        [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
+         [:div.h-16.relative.flex.justify-between.items-center.px-4
+
+          [:span.font-mono.text-lg.leading-none title]
+
+          [gui/Tooltip
+           {:title "Close"}
+           [gui/IconXCircle
+            {:class
+             ["w-6 h-6"
+              "text-gray-600 hover:text-gray-700"
+              "cursor-pointer"]
+             :on-click #(stack/pop)}]]]]
+
+        ;; -- Body
+        [:div.flex.flex-1.overflow-auto
+         [component frame state set-state]]]]))
 
 ;; TODO This should be extracted into a "generic" component, so it can be used in other parts of the site.
 (defn AccountSelect []
@@ -382,7 +422,7 @@
 
 (defn TopNav []
   (let [link-style "font-mono text-gray-800 hover:text-gray-500 active:text-black"]
-    [:div.fixed.top-0.inset-x-0.z-50.h-16.border-b.border-gray-100.bg-white
+    [:div.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
      [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-10
 
       ;; Logo
