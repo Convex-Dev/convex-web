@@ -13,10 +13,6 @@ module.exports = {
     './src/**/*.cljs'
   ],
   theme: {
-    colors: {
-      primary: '#62A6E1',
-      secondary: '#4B74CF'
-    },
     extend: {
       fontFamily: {
         sans: [
