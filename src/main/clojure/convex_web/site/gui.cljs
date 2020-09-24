@@ -444,12 +444,10 @@
     [:button
      (merge {:class
              ["px-4 py-3"
-              "bg-gray-900"
+              "bg-gray-900 hover:bg-gray-700 active:bg-black"
               "rounded"
               "shadow-md"
               "focus:outline-none"
-              "hover:opacity-75"
-              "active:bg-black"
               (if disabled?
                 "pointer-events-none")]
              :on-click identity}
