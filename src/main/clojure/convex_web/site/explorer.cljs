@@ -147,8 +147,9 @@
              [:div.flex.items-center.w-40
               [gui/Identicon {:value address :size gui/identicon-size-small}]
 
-              [:a.flex-1.underline.hover:text-indigo-500.truncate
-               {:href (rfe/href :route-name/account-explorer {:address address})}
+              [:a.flex-1.truncate
+               {:class gui/address-hover-class
+                :href (rfe/href :route-name/account-explorer {:address address})}
                [:code.text-xs (format/address-blob address)]]])]
 
           ;; -- Timestamp
@@ -209,8 +210,9 @@
                 [:div.flex.items-center.w-40
                  [gui/Identicon {:value address :size gui/identicon-size-small}]
 
-                 [:a.flex-1.underline.hover:text-indigo-500.truncate
-                  {:href (rfe/href :route-name/account-explorer {:address address})}
+                 [:a.flex-1.truncate
+                  {:class gui/address-hover-class
+                   :href (rfe/href :route-name/account-explorer {:address address})}
                   [:code.text-xs (format/address-blob address)]]])])]]))]]])
 
 (s/def :explorer.blocks.state/pending
@@ -416,8 +418,9 @@
                                                                      :convex-web/account {:convex-web.account/address address}}
                                                                     :modal? true})}
                  address-blob]
-                [:a.flex-1.underline.hover:text-indigo-500.mx-2
-                 {:href (rfe/href :route-name/account-explorer {:address address})}
+                [:a.flex-1.mx-2
+                 {:class gui/address-hover-class
+                  :href (rfe/href :route-name/account-explorer {:address address})}
                  [:code.text-xs address-blob]])
 
               [gui/ClipboardCopy address-blob]]
@@ -649,8 +652,9 @@
                  [:div.flex.items-center
                   [gui/Identicon {:value peer :size gui/identicon-size-small}]
                   [:a
-                   {:href (rfe/href :route-name/account-explorer {:address peer})}
-                   [:span.font-mono.underline (format/address-blob peer)]]]]]))]]]))))
+                   {:class gui/address-hover-class
+                    :href (rfe/href :route-name/account-explorer {:address peer})}
+                   [:span (format/address-blob peer)]]]]]))]]]))))
 
 (defn BlocksPage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks]} _]
   (case status
