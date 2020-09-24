@@ -304,7 +304,7 @@
      ;; ===========
      [:div.flex.flex-col
       [Caption "Amount"]
-      [:input
+      [:input.text-right
        {:class gui/input-style
         :type "number"
         :value amount
