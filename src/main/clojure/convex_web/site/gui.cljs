@@ -473,17 +473,15 @@
             attrs)
      child]))
 
-(defn DarkBlueButton [attrs child]
+(defn PrimaryButton [attrs child]
   (let [disabled? (get attrs :disabled)]
     [:button
      (merge {:class
              ["px-4 py-3"
-              "bg-blue-700"
+              "bg-blue-500 hover:bg-blue-400 active:bg-blue-600"
               "rounded"
               "shadow-md"
               "focus:outline-none"
-              "hover:bg-opacity-75"
-              "active:bg-blue-800"
               (if disabled?
                 "pointer-events-none")]
              :on-click identity}

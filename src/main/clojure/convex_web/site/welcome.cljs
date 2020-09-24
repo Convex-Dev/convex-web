@@ -281,12 +281,10 @@
 
        [:a
         {:href (rfe/href :route-name/documentation-getting-started)}
-        [gui/DarkBlueButton
+        [gui/PrimaryButton
          {}
          [:span.font-mono.text-sm.text-white.uppercase
-          "Try It For Yourself"]]]]]
-
-     ]))
+          "Try It For Yourself"]]]]]]))
 
 (def welcome-page
   #:page {:id :page.id/welcome
