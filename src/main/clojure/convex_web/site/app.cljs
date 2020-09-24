@@ -470,7 +470,7 @@
        [SideNav (:route/match (router/?route))]
 
        ;; -- Page
-       [:div.relative.flex.flex-col.flex-1.xl:pl-24.space-y-8.overflow-auto
+       [:div.relative.flex.flex-col.flex-1.xl:pl-24.space-y-4.overflow-auto
         (when active-page-frame
           [:<>
 
