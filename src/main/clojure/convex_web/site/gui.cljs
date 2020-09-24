@@ -845,7 +845,7 @@
         "")]]))
 
 (defn MarkdownCodeBlock [{:keys [value]}]
-  [:pre.relative
+  [:pre.relative.bg-blue-100
    [:div.absolute.right-0.top-0.m-2
     [ClipboardCopy value {:color "text-black"
                           :hover "hover:opacity-50"}]]
