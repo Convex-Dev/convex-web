@@ -285,68 +285,36 @@
 
         {:page/keys [title component]} page]
 
-    [:div {:class "fixed z-10 inset-0 overflow-y-auto"}
-     [:div {:class "flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"}
+    [:div {:class "fixed flex justify-center z-10 inset-0 overflow-y-auto"}
 
+     ;; -- Background
+     [:div.fixed.inset-0.transition-opacity
+      [:div.absolute.inset-0.bg-gray-500.opacity-75]]
 
-      [:div.fixed.inset-0.transition-opacity
-       [:div.absolute.inset-0.bg-gray-500.opacity-75]]
+     ;; -- Content
+     [:div
+      {:class "inline-block px-4 pt-20 pb-4 transform transition-all"}
 
+      [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
 
+       ;; -- Header
+       [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
+        [:div.h-16.relative.flex.justify-between.items-center.px-4
 
-      [:div
-       {:class "inline-block px-4 pt-20 pb-4 transform transition-all"}
+         [:span.font-mono.text-lg.leading-none title]
 
+         [gui/Tooltip
+          {:title "Close"}
+          [gui/IconXCircle
+           {:class
+            ["w-6 h-6"
+             "text-gray-600 hover:text-gray-700"
+             "cursor-pointer"]
+            :on-click #(stack/pop)}]]]]
 
-       [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
-
-        ;; -- Header
-        [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
-         [:div.h-16.relative.flex.justify-between.items-center.px-4
-
-          [:span.font-mono.text-lg.leading-none title]
-
-          [gui/Tooltip
-           {:title "Close"}
-           [gui/IconXCircle
-            {:class
-             ["w-6 h-6"
-              "text-gray-600 hover:text-gray-700"
-              "cursor-pointer"]
-             :on-click #(stack/pop)}]]]]
-
-        ;; -- Body
-        [:div.flex.flex-1.overflow-auto
-         [component frame state set-state]]]
-
-       ]
-
-
-      ]]
-
-    #_[:div.flex.justify-center.items-stretch.fixed.top-0.left-0.w-screen.h-screen.py-32.z-50
-       {:style {:background-color "rgba(0,0,0,0.1"}}
-
-       [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
-
-        ;; -- Header
-        [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
-         [:div.h-16.relative.flex.justify-between.items-center.px-4
-
-          [:span.font-mono.text-lg.leading-none title]
-
-          [gui/Tooltip
-           {:title "Close"}
-           [gui/IconXCircle
-            {:class
-             ["w-6 h-6"
-              "text-gray-600 hover:text-gray-700"
-              "cursor-pointer"]
-             :on-click #(stack/pop)}]]]]
-
-        ;; -- Body
-        [:div.flex.flex-1.overflow-auto
-         [component frame state set-state]]]]))
+       ;; -- Body
+       [:div.flex.flex-1.overflow-auto
+        [component frame state set-state]]]]]))
 
 ;; TODO This should be extracted into a "generic" component, so it can be used in other parts of the site.
 (defn AccountSelect []
