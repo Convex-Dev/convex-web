@@ -832,7 +832,7 @@
                                 ajax/status]}]
   (let [action-style "block font-mono text-xs text-gray-800 hover:text-gray-500 hover:underline active:text-gray-900 uppercase"
         index-style "block font-mono text-xs text-gray-600 uppercase"]
-    [:div.flex.py-2.space-x-8
+    [:div.flex.space-x-8
 
      ;; Navigation
      ;; =============

@@ -691,7 +691,7 @@
              {:end end}))))
 
 (defn BlocksRangePage [_ {:keys [ajax/status convex-web/blocks meta]} _]
-  [:div.flex.flex-col.flex-1
+  [:div.flex.flex-col.flex-1.space-y-2
 
    ;; -- Pagination
    (let [{:keys [start end total] :as range} meta
@@ -754,7 +754,7 @@
 ;; -- Transactions
 
 (defn TransactionsRangePage [_ {:keys [ajax/status convex-web/blocks meta]} _]
-  [:div.flex.flex-col.flex-1
+  [:div.flex.flex-col.flex-1.space-y-2
 
    ;; -- Pagination
    (let [{:keys [start end total] :as range} meta
