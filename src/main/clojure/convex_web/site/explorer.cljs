@@ -462,7 +462,7 @@
               [:span.text-xs.font-bold.text-indigo-500
                (format/format-number (str (:convex-web.account-status/allowance status)))]]]]))])]])
 
-(defn- get-accounts-range [set-state & [{:keys [start end]}]]
+(defn- get-accounts-range [{:keys [start end]} set-state]
   (backend/GET-accounts
     (merge {:handler
             (fn [{:keys [meta convex-web/accounts]}]
@@ -482,23 +482,30 @@
 ;; -- Accounts Range
 
 (defn AccountsRangePage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/accounts meta]} set-state]
-  (let [{:keys [start end total] :as range} (select-keys meta [:start :end :total])]
-    [:div.flex.flex-col.flex-1
+  (let [{:keys [start end total] :as range} meta
+
+        {start-previous-range :start end-previous-range :end :as previous-range} (pagination/increase-range end total)
+
+        previous-query (if (= start-previous-range end-previous-range)
+                         {}
+                         previous-range)
+
+        {start-next-range :start end-next-range :end :as next-range} (pagination/decrease-range start)
+
+        next-query (if (= start-next-range end-next-range)
+                     pagination/min-range
+                     next-range)]
+    [:div.flex.flex-col.flex-1.space-y-2
 
      ;; -- Pagination
-     [gui/RangeNavigation
-      (merge range
-             {:on-previous-click
-              (fn []
-                (set-state #(assoc % :ajax/status :ajax.status/pending))
-
-                (get-accounts-range set-state (pagination/decrease-range start)))
-
-              :on-next-click
-              (fn []
-                (set-state #(assoc % :ajax/status :ajax.status/pending))
-
-                (get-accounts-range set-state (pagination/increase-range end total)))})]
+     [gui/RangeNavigation2
+      (merge range {:page-count (pagination/page-count total)
+                    :page-num (pagination/page-num start total)
+                    :first-href (rfe/href :route-name/accounts-explorer)
+                    :last-href (rfe/href :route-name/accounts-explorer {} pagination/min-range)
+                    :previous-href (rfe/href :route-name/accounts-explorer {} previous-query)
+                    :next-href (rfe/href :route-name/accounts-explorer {} next-query)
+                    :ajax/status status})]
 
      ;; -- Body
      (case status
@@ -514,10 +521,10 @@
           :component #'AccountsRangePage
           :state-spec :accounts-page/state-spec
           :on-push
-          (fn [_ _ set-state]
+          (fn [_ state set-state]
             (set-state assoc :ajax/status :ajax.status/pending)
 
-            (get-accounts-range set-state))})
+            (get-accounts-range state set-state))})
 
 
 ;; -- Accounts
@@ -557,13 +564,13 @@
           :state-spec :accounts-page/state-spec
           :component #'AccountsPage
           :on-push
-          (fn [_ _ set-state]
+          (fn [_ state set-state]
             (set-state assoc :ajax/status :ajax.status/pending)
 
-            (get-accounts-range set-state))
+            (get-accounts-range state set-state))
           :on-resume
-          (fn [_ _ set-state]
-            (get-accounts-range set-state))})
+          (fn [_ state set-state]
+            (get-accounts-range state set-state))})
 
 ;; -- Blocks
 

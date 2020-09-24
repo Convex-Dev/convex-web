@@ -159,9 +159,11 @@
     ["/accounts"
      {:name :route-name/accounts-explorer
       :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/accounts-range-explorer {:reset? true
-                                                               :state {:ajax/status :ajax.status/pending}}))}]}]
+      [{:identity identity
+        :start (fn [match]
+                 (stack/push :page.id/accounts-range-explorer (merge {:reset? true}
+                                                                     (when-let [range (query-range match)]
+                                                                       {:state range}))))}]}]
 
     ["/accounts/:address"
      {:name :route-name/account-explorer
