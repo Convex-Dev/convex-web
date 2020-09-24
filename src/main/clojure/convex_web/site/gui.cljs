@@ -423,7 +423,7 @@
 
 
 (def button-child-small-padding "px-6 py-2")
-(def button-child-large-padding "px-8 py-4")
+(def button-child-large-padding "px-8 py-3")
 
 (defn DefaultButton [attrs child]
   (let [disabled? (get attrs :disabled)]
@@ -452,23 +452,6 @@
               "rounded"
               "shadow-md"
               "focus:outline-none"
-              (if disabled?
-                "pointer-events-none")]
-             :on-click identity}
-            attrs)
-     child]))
-
-(defn BlueButton [attrs child]
-  (let [disabled? (get attrs :disabled)]
-    [:button
-     (merge {:class
-             ["px-4 py-3"
-              "bg-blue-400"
-              "rounded"
-              "shadow-md"
-              "focus:outline-none"
-              "hover:bg-opacity-75"
-              "active:bg-blue-500"
               (if disabled?
                 "pointer-events-none")]
              :on-click identity}

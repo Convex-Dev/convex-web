@@ -244,8 +244,8 @@
       [:a.self-start.font-medium.pl-2.border-l-2
        (merge {:href href
                :class [(if top-level?
-                         "text-blue-400"
-                         "text-black")
+                         "text-blue-500"
+                         "text-gray-black")
                        (if active?
                          "border-blue-400"
                          "border-transparent")]}
@@ -476,7 +476,7 @@
                 (when description
                   [:p.text-gray-500.text-base.max-w-screen-sm description])
 
-                [:div.w-32.h-2.bg-blue-400.mb-8]]))
+                [:div.w-32.h-2.bg-blue-500.mb-8]]))
 
            [Component active-page-frame state set-state]])]]]
 

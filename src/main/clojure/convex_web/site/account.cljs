@@ -334,7 +334,7 @@
      ;; Transfer
      ;; ===========
      [:div.flex
-      [gui/BlueButton
+      [gui/PrimaryButton
        {:disabled invalid-transfer?
         :on-click #(let [transaction #:convex-web.transaction {:type :convex-web.transaction.type/transfer
                                                                :target to
@@ -346,10 +346,11 @@
 
                      (command/execute command (fn [command command']
                                                 (set-state assoc :convex-web/command (merge command command')))))}
-       [:span.text-sm.uppercase
-        {:class (if invalid-transfer?
-                  "text-gray-200"
-                  "text-white")}
+       [:span.block.text-sm.uppercase
+        {:class [gui/button-child-large-padding
+                 (if invalid-transfer?
+                   "text-gray-200"
+                   "text-white")]}
         "Transfer"]]]
 
 
@@ -520,7 +521,7 @@
 
          [:div.mx-2]])
 
-      [gui/BlueButton
+      [gui/PrimaryButton
        {:disabled invalid?
         :on-click #(do
                      (set-state assoc :ajax/status :ajax.status/pending)
@@ -536,10 +537,11 @@
                                                     (set-state assoc
                                                                :ajax/status :ajax.status/error
                                                                :ajax/error error))}))}
-       [:span.text-sm.uppercase
-        {:class (if invalid?
-                  "text-gray-200"
-                  "text-white")}
+       [:span.block.text-sm.uppercase
+        {:class [gui/button-child-large-padding
+                 (if invalid?
+                   "text-gray-200"
+                   "text-white")]}
         "Request"]]]
 
 

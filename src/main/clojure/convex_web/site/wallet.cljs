@@ -29,10 +29,11 @@
            (let [account (store/?account address)]
              (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance])))]]]))]
 
-   [gui/BlueButton
+   [gui/PrimaryButton
     {:on-click #(stack/push :page.id/session {:modal? true
                                               :title "Restore Wallet Key"})}
-    [:span.text-sm.uppercase.text-white
+    [:span.block.text-sm.uppercase.text-white
+     {:class gui/button-child-large-padding}
      "Restore Wallet Key"]]])
 
 (def wallet-page
