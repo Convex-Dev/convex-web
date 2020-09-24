@@ -161,12 +161,18 @@
        :href (rfe/href :route-name/sandbox)}
 
 
-      ;; Wallet
+      ;; Tools
       ;; ==============
-      {:text "Wallet"
+      {:text "Tools"
        :top-level? true
-       :route-name :route-name/wallet
-       :href (rfe/href :route-name/wallet)}
+       :children
+       [{:text "Wallet"
+         :route-name :route-name/wallet
+         :href (rfe/href :route-name/wallet)}
+
+        {:text "Faucet"
+         :route-name :route-name/faucet
+         :href (rfe/href :route-name/faucet)}]}
 
 
       ;; Explorer
