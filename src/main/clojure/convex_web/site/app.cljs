@@ -305,7 +305,7 @@
 
        ;; -- Header
        [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
-        [:div.h-16.relative.flex.justify-between.items-center.px-4
+        [:div.h-20.relative.flex.justify-between.items-center.px-6
 
          [:span.font-mono.text-lg.leading-none title]
 
