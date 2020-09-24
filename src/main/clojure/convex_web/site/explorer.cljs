@@ -498,7 +498,7 @@
     [:div.flex.flex-col.flex-1.space-y-2
 
      ;; -- Pagination
-     [gui/RangeNavigation2
+     [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
                     :page-num (pagination/page-num start total)
                     :first-href (rfe/href :route-name/accounts-explorer)
@@ -715,7 +715,7 @@
                       pagination/min-range
                       next-range)]
 
-     [gui/RangeNavigation2
+     [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
                     :page-num (pagination/page-num start total)
                     :first-href (rfe/href :route-name/blocks)
@@ -777,7 +777,7 @@
          next-query (if (= start-next-range end-next-range)
                       pagination/min-range
                       next-range)]
-     [gui/RangeNavigation2
+     [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
                     :page-num (pagination/page-num start total)
                     :first-href (rfe/href :route-name/transactions)

@@ -792,44 +792,15 @@
                                                                      :syntax syntax}})}]])
             [:span.text-xs.text-gray-700.text-center "Empty"]))]]]]))
 
-(defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
-  [:div.flex.py-2
-
-   ;; -- Previous
-   [DefaultButton
-    {:disabled (= start 0)
-     :on-click on-previous-click}
-    [:span.text-xs "Previous"]]
-
-   [:div.mx-1]
-
-   ;; -- Next
-   [DefaultButton
-    {:disabled (= end total)
-     :on-click on-next-click}
-    [:span.text-xs.select-none "Next"]]
-
-
-   ;; -- Range
-   [:div.flex.ml-10.items-center.border-b
-    [:span.text-xs.text-gray-600.uppercase "Start"]
-    [:span.text-xs.font-bold.text-indigo-500.ml-1 start]
-
-    [:span.text-xs.text-gray-600.uppercase.ml-2 "End"]
-    [:span.text-xs.font-bold.text-indigo-500.ml-1 end]
-
-    [:span.text-xs.text-gray-600.uppercase.ml-4 "Total"]
-    [:span.text-xs.font-bold.text-indigo-500.ml-1 total]]])
-
-(defn RangeNavigation2 [{:keys [page-count
-                                page-num
-                                first-href
-                                last-href
-                                previous-href
-                                previous-disabled?
-                                next-href
-                                next-disabled?
-                                ajax/status]}]
+(defn RangeNavigation [{:keys [page-count
+                               page-num
+                               first-href
+                               last-href
+                               previous-href
+                               previous-disabled?
+                               next-href
+                               next-disabled?
+                               ajax/status]}]
   (let [action-style "block font-mono text-xs text-gray-800 hover:text-gray-500 hover:underline active:text-gray-900 uppercase"
         index-style "block font-mono text-xs text-gray-600 uppercase"]
     [:div.flex.space-x-8
