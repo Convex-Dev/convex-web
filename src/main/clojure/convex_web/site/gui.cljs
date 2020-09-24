@@ -430,6 +430,8 @@
    {:class (or class button-child-large-padding)}
    text])
 
+(def input-style "h-10 rounded-md px-4 bg-blue-100 bg-opacity-25")
+
 (defn DefaultButton [attrs child]
   (let [disabled? (get attrs :disabled)]
     [:button

@@ -112,7 +112,7 @@
 
    [:div.flex.flex-col.flex-1.space-y-10.max-w-screen-sm
 
-    [:div.flex.flex-col
+    [:div.flex.flex-col.items-center
      [:span.text-base.text-gray-500
       "Current Wallet Key"]
 
@@ -138,9 +138,10 @@
 
 
     [:input.text-sm.border
-     {:style {:height "26px"}
+     {:class gui/input-style
       :type "text"
       :value id
+      :placeholder "Wallet Key"
       :on-change
       #(let [value (gui/event-target-value %)]
          (set-state assoc :convex-web.session/id value))}]
