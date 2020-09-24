@@ -61,6 +61,30 @@
     :else
     "bg-green-500"))
 
+(defn account-type-label [account-status]
+  (cond
+    (get account-status :convex-web.account-status/library?)
+    "library"
+
+    (get account-status :convex-web.account-status/actor?)
+    "actor"
+
+    :else
+    "user"))
+
+(defn account-type-description [account-status]
+  (cond
+    (get account-status :convex-web.account-status/library?)
+    "An immutable Account containing code and other static information. A
+     Library is essentially an Actor with no exported functionality."
+
+    (get account-status :convex-web.account-status/actor?)
+    "An Autonomous Actor on the Convex network, which can be used to implement
+     smart contracts."
+
+    :else
+    "An external user of Convex."))
+
 (def identicon-size-small 26)
 (def identicon-size-large 40)
 

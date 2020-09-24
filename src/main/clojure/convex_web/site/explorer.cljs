@@ -442,28 +442,13 @@
 
 
             ;; -- Type
-            (let [[label tooltip] (cond
-                                    (get status :convex-web.account-status/library?)
-                                    ["library"
-                                     "An immutable Account containing
-                                      code and other static information.
-                                      A Library is essentially an Actor
-                                      with no exported functionality."]
-
-                                    (get status :convex-web.account-status/actor?)
-                                    ["actor"
-                                     "An Autonomous Actor on the Convex network, which can be used to implement smart contracts."]
-
-                                    :else
-                                    ["user"
-                                     "An external user of Convex."])]
-              [:td {:class td-class}
-               [gui/Tooltip
-                {:title tooltip}
-                [:div.flex-1.px-2.rounded
-                 {:class (gui/account-type-text-color status)}
-                 [:span.uppercase
-                  label]]]])
+            [:td {:class td-class}
+             [gui/Tooltip
+              {:title (gui/account-type-description status)}
+              [:div.flex-1.px-2.rounded
+               {:class (gui/account-type-text-color status)}
+               [:span.uppercase
+                (gui/account-type-label status)]]]]
 
             ;; -- Balance
             [:td {:class td-class}
