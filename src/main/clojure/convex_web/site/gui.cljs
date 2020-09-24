@@ -39,6 +39,28 @@
   (when el
     (.highlightBlock hljs el)))
 
+(defn account-type-text-color [account-status]
+  (cond
+    (get account-status :convex-web.account-status/library?)
+    "text-purple-500"
+
+    (get account-status :convex-web.account-status/actor?)
+    "text-indigo-500"
+
+    :else
+    "text-green-500"))
+
+(defn account-type-bg-color [account-status]
+  (cond
+    (get account-status :convex-web.account-status/library?)
+    "bg-purple-500"
+
+    (get account-status :convex-web.account-status/actor?)
+    "bg-indigo-500"
+
+    :else
+    "bg-green-500"))
+
 (def identicon-size-small 26)
 (def identicon-size-large 40)
 
@@ -675,8 +697,9 @@
          [ClipboardCopy address-blob]]]]
 
       ;; -- Type
-      [:span.inline-flex.justify-center.items-center.font-mono.text-xs.text-white.uppercase.bg-blue-700.mt-2.rounded
-       {:style {:width "88px" :height "32px"}}
+      [:span.inline-flex.justify-center.items-center.font-mono.text-xs.text-white.uppercase.mt-2.rounded
+       {:style {:width "88px" :height "32px"}
+        :class (account-type-bg-color status)}
        type]]
 
 

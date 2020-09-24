@@ -442,29 +442,26 @@
 
 
             ;; -- Type
-            (let [[label style tooltip] (cond
-                                          (get status :convex-web.account-status/library?)
-                                          ["library"
-                                           "text-purple-500"
-                                           "An immutable Account containing
-                                            code and other static information.
-                                            A Library is essentially an Actor
-                                            with no exported functionality."]
+            (let [[label tooltip] (cond
+                                    (get status :convex-web.account-status/library?)
+                                    ["library"
+                                     "An immutable Account containing
+                                      code and other static information.
+                                      A Library is essentially an Actor
+                                      with no exported functionality."]
 
-                                          (get status :convex-web.account-status/actor?)
-                                          ["actor"
-                                           "text-indigo-500"
-                                           "An Autonomous Actor on the Convex network, which can be used to implement smart contracts."]
+                                    (get status :convex-web.account-status/actor?)
+                                    ["actor"
+                                     "An Autonomous Actor on the Convex network, which can be used to implement smart contracts."]
 
-                                          :else
-                                          ["user"
-                                           "text-green-400"
-                                           "An external user of Convex."])]
+                                    :else
+                                    ["user"
+                                     "An external user of Convex."])]
               [:td {:class td-class}
                [gui/Tooltip
                 {:title tooltip}
                 [:div.flex-1.px-2.rounded
-                 {:class style}
+                 {:class (gui/account-type-text-color status)}
                  [:span.uppercase
                   label]]]])
 
