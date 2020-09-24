@@ -431,18 +431,10 @@
 
          :else
          ;; -- Create Account
-         [:span.inline-flex.rounded-md.shadow-sm
-          [:button
-           {:class
-            ["inline-flex items-center justify-center rounded h-10 w-40"
-             "transition ease-in-out duration-150"
-             "focus:outline-none focus:border-blue-700 focus:shadow-outline-indigo"
-             "bg-blue-600 hover:bg-blue-500 active:bg-blue-700"
-             "border border-transparent"
-             "font-mono text-xs text-white text-sm uppercase"
-             "px-2.5 py-1.5"]
-            :type "button"
-            :on-click #(stack/push :page.id/create-account {:modal? true})}
+         [gui/PrimaryButton
+          {:on-click #(stack/push :page.id/create-account {:modal? true})}
+          [:span.block.font-mono.text-sm.text-white.uppercase
+           {:class gui/button-child-small-padding}
            "Create Account"]])]]]))
 
 (defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]

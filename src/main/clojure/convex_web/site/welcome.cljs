@@ -281,9 +281,10 @@
 
        [:a
         {:href (rfe/href :route-name/documentation-getting-started)}
-        [gui/PrimaryButton
+        [gui/SecondaryButton
          {}
-         [:span.font-mono.text-sm.text-white.uppercase
+         [:span.block.font-mono.text-sm.text-white.uppercase
+          {:class gui/button-child-large-padding}
           "Try It For Yourself"]]]]]]))
 
 (def welcome-page

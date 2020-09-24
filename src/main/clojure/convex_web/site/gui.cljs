@@ -421,6 +421,10 @@
               {:ref highlight-block}
               code]])]))]))
 
+
+(def button-child-small-padding "px-6 py-2")
+(def button-child-large-padding "px-8 py-4")
+
 (defn DefaultButton [attrs child]
   (let [disabled? (get attrs :disabled)]
     [:button
@@ -475,8 +479,21 @@
   (let [disabled? (get attrs :disabled)]
     [:button
      (merge {:class
-             ["px-4 py-3"
-              "bg-blue-500 hover:bg-blue-400 active:bg-blue-600"
+             ["bg-blue-500 hover:bg-blue-400 active:bg-blue-600"
+              "rounded"
+              "shadow-md"
+              "focus:outline-none"
+              (if disabled?
+                "pointer-events-none")]
+             :on-click identity}
+            attrs)
+     child]))
+
+(defn SecondaryButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge {:class
+             ["bg-indigo-500 hover:bg-indigo-400 active:bg-indigo-600"
               "rounded"
               "shadow-md"
               "focus:outline-none"
