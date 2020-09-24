@@ -420,13 +420,7 @@
                  {:href (rfe/href :route-name/account-explorer {:address address})}
                  [:code.text-xs address-blob]])
 
-              [gui/ClipboardCopy address-blob]
-
-              ;; External link
-              [:a.ml-2
-               {:href (rfe/href :route-name/account-explorer {:address address})
-                :target "_blank"}
-               [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]]
+              [gui/ClipboardCopy address-blob]]
 
              (when (and me? (not= address active-address))
                [gui/Tooltip
