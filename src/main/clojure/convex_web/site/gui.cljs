@@ -425,6 +425,11 @@
 (def button-child-small-padding "px-6 py-2")
 (def button-child-large-padding "px-8 py-3")
 
+(defn ButtonText [{:keys [class]} text]
+  [:span.block.font-mono.text-sm.text-white.uppercase
+   {:class (or class button-child-large-padding)}
+   text])
+
 (defn DefaultButton [attrs child]
   (let [disabled? (get attrs :disabled)]
     [:button

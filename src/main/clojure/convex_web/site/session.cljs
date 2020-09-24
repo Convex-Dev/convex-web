@@ -146,19 +146,23 @@
          (set-state assoc :convex-web.session/id value))}]
 
     [:div.flex.justify-center.mt-6
-     [gui/DefaultButton
+     [gui/PrimaryButton
       {:on-click #(stack/pop)}
-      [:span.text-xs.uppercase "Cancel"]]
+      [gui/ButtonText
+       {}
+       "Cancel"]]
 
      [:div.mx-2]
 
-     [gui/DefaultButton
+     [gui/SecondaryButton
       {:disabled (str/blank? id)
        :on-click
        #(do
           (set! (.-cookie js/document) (str "ring-session=" id))
           (.reload (.-location js/document)))}
-      [:span.text-xs.uppercase "Restore"]]]]])
+      [gui/ButtonText
+       {}
+       "Restore"]]]]])
 
 (def session-page
   #:page {:id :page.id/session
