@@ -137,7 +137,7 @@
      "Enter a valid Wallet Key below to switch to a different Wallet."]
 
 
-    [:input.text-sm.border
+    [:input
      {:class gui/input-style
       :type "text"
       :value id

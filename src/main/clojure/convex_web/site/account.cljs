@@ -18,11 +18,6 @@
   [account]
   (get-in account [:convex-web.account/status :convex-web.account-status/balance]))
 
-
-(def input-classes
-  "h-10 mb-1 text-sm text-gray-600 px-2 border rounded-md bg-blue-100 bg-opacity-50")
-
-
 (defn ShowBalance [{:keys [ajax/status convex-web/account]}]
   [:div.flex.justify-end.items-baseline.space-x-2
    (case status
@@ -288,8 +283,7 @@
                                           (dissoc :convex-web/command)
                                           (assoc-in [:convex-web/transfer :convex-web.transfer/to] address)))))}]
           [:input
-           {:class input-classes
-
+           {:class gui/input-style
             :type "text"
             :value to
             :on-change
@@ -311,7 +305,7 @@
      [:div.flex.flex-col
       [Caption "Amount"]
       [:input
-       {:class input-classes
+       {:class gui/input-style
         :type "number"
         :value amount
         :on-change
@@ -486,7 +480,7 @@
           :on-change (fn [address]
                        (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] address))}]
         [:input
-         {:class input-classes
+         {:class gui/input-style
           :type "text"
           :value target
           :on-change
@@ -503,7 +497,7 @@
      [:div.flex.flex-col
       [Caption "Amount"]
       [:input.text-right
-       {:class input-classes
+       {:class gui/input-style
         :type "number"
         :value amount
         :on-change
