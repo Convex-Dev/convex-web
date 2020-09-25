@@ -232,7 +232,7 @@
     ;; Persist the transaction in the Etch datastore.
     (Ref/createPersisted tx)
 
-    (successful-response {:sequence-number sequence-number
+    (successful-response {:sequence_number sequence-number
                           :address address
                           :source source
                           :lang lang

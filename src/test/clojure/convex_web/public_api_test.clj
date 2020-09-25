@@ -236,7 +236,7 @@ In function: map"} response-body)))))
           submit-response-body (json/read-str (get submit-response :body) :key-fn keyword)]
 
       (is (= 200 (get prepare-response :status)))
-      (is (= #{:sequence-number
+      (is (= #{:sequence_number
                :address
                :source
                :lang
