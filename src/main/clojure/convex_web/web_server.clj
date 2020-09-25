@@ -8,6 +8,7 @@
             [convex-web.command :as command]
             [convex-web.config :as config]
 
+            [clojure.set :refer [rename-keys]]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.spec.alpha :as s]
@@ -172,6 +173,31 @@
 
 ;; Public APIs
 ;; ==========================
+
+(defn GET-v1-account [context address]
+  (try
+    (let [peer (peer/peer (system/convex-server context))
+
+          account-status (try
+                           (convex/account-status peer address)
+                           (catch Throwable ex
+                             (u/log :logging.event/system-error
+                                    :message (str "Failed to read Account Status " address ". Exception:" ex)
+                                    :exception ex)))]
+      (if-let [account-status-data (convex/account-status-data account-status)]
+        (successful-response (merge {:address address} (rename-keys account-status-data {:convex-web.account-status/actor? :is_actor
+                                                                                         :convex-web.account-status/library? :is_library
+                                                                                         :convex-web.account-status/memory-size :memory_size})))
+        (let [message (str "The Account for this Address does not exist.")]
+          (log/error message address)
+          (not-found-response {:error {:message message}}))))
+    (catch Throwable ex
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
+
+      server-error-response)))
 
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
   (let [{:keys [address source lang sequence_number]} (json-decode body)
@@ -799,6 +825,7 @@
 
 (defn public-api [system]
   (routes
+    (GET "/api/v1/accounts/:address" [address] (GET-v1-account system address))
     (POST "/api/v1/faucet" req (POST-v1-faucet system req))
     (POST "/api/v1/query" req (POST-v1-query system req))
     (POST "/api/v1/transaction/prepare" req (POST-v1-transaction-prepare system req))
