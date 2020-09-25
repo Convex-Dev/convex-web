@@ -272,7 +272,15 @@
           [:input
            {:type "checkbox"
             :checked to-my-accounts?
-            :on-change #(set-state update-in [:transfer-page/config :transfer-page.config/my-accounts?] not)}]
+            :on-change
+            (fn []
+              (set-state
+                (fn [state]
+                  (let [;; Toogle my account
+                        state (update-in state [:transfer-page/config :transfer-page.config/my-accounts?] not)
+                        ;; Always remove to
+                        state (update state :convex-web/transfer dissoc :convex-web.transfer/to)]
+                    state))))}]
 
           [:span.text-xs.text-gray-600.uppercase.ml-2
            "Show My Accounts"]]]
@@ -506,7 +514,15 @@
        [:input
         {:type "checkbox"
          :checked to-my-account?
-         :on-change #(set-state update-in [:faucet-page/config :faucet-page.config/my-accounts?] not)}]
+         :on-change
+         (fn []
+           (set-state
+             (fn [state]
+               (let [;; Toogle my account
+                     state (update-in state [:faucet-page/config :faucet-page.config/my-accounts?] not)
+                     ;; Always remove target
+                     state (update state :convex-web/faucet dissoc :convex-web.faucet/target)]
+                 state))))}]
 
        [:span.text-xs.text-gray-600.uppercase.ml-2
         "Show My Accounts"]]
