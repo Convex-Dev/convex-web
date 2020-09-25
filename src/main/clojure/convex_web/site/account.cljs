@@ -18,30 +18,6 @@
   [account]
   (get-in account [:convex-web.account/status :convex-web.account-status/balance]))
 
-(defn ShowBalance [{:keys [ajax/status convex-web/account]}]
-  [:div.flex.justify-end.items-baseline.space-x-2
-   (case status
-     :ajax.status/pending
-     [:span.text-sm
-      "Checking balance..."]
-
-     :ajax.status/success
-     (let [balance (balance account)]
-       [:<>
-        [:span.text-sm.text-gray-700
-         "Balance"]
-
-        [:span.text-xs.font-bold
-         (format/format-number balance)]])
-
-     :ajax.status/error
-     [:span.text-sm
-      "Balance unavailable"]
-
-     ;; No status; don't show anything.
-     [:span.text-sm
-      "-"])])
-
 (defn CheckingBalance []
   [:span.text-gray-700.text-base "Checking balance..."])
 
@@ -277,7 +253,11 @@
       (when (s/valid? :convex-web/address from)
         (let [params {:frame/uuid (get frame :frame/uuid)
                       :address from}]
-          [ShowBalance (sub ::?transfer-from-account params)]))]
+          [:div.flex.justify-end
+           [ShowBalance2 (sub ::?transfer-from-account params)
+            {:Pending CheckingBalance
+             :Error BalanceUnavailable
+             :Success BalanceIs}]]))]
 
 
      ;; To
@@ -323,7 +303,11 @@
         (when (s/valid? :convex-web/address to)
           (let [params {:frame/uuid (get frame :frame/uuid)
                         :address to}]
-            [ShowBalance (sub ::?transfer-to-account params)]))])
+            [:div.flex.justify-end
+             [ShowBalance2 (sub ::?transfer-to-account params)
+              {:Pending CheckingBalance
+               :Error BalanceUnavailable
+               :Success BalanceIs}]]))])
 
 
      ;; Amount
@@ -365,7 +349,29 @@
                                                        :transaction transaction}]
 
                      (command/execute command (fn [command command']
-                                                (set-state assoc :convex-web/command (merge command command')))))}
+                                                (cond
+                                                  (= :convex-web.command.status/success (:convex-web.command/status command'))
+                                                  (do
+                                                    (set-state
+                                                      (fn [state]
+                                                        (let [state' (assoc state :convex-web/command (merge command command'))
+
+                                                              ;; Set status to pending because we need to check the updated balance.
+                                                              state' (assoc-in state' [:transfer-page/from :ajax/status] :ajax.status/pending)
+                                                              state' (assoc-in state' [:transfer-page/to :ajax/status] :ajax.status/pending)]
+                                                          state')))
+
+
+                                                    (get-transfer-account {:frame/uuid (get frame :frame/uuid)
+                                                                           :address from
+                                                                           :state-key :transfer-page/from})
+
+                                                    (get-transfer-account {:frame/uuid (get frame :frame/uuid)
+                                                                           :address to
+                                                                           :state-key :transfer-page/to}))
+
+                                                  :else
+                                                  (set-state assoc :convex-web/command (merge command command'))))))}
        [:span.block.text-sm.uppercase
         {:class [gui/button-child-large-padding
                  (if invalid-transfer?
@@ -479,11 +485,7 @@
 
         Caption (fn [caption]
                   [:span.text-base.text-gray-700
-                   caption])
-
-        SmallCaption (fn [caption]
-                       [:span.text-sm.text-gray-700
-                        caption])]
+                   caption])]
     [:div.flex.flex-col.max-w-screen-md.space-y-12
 
      ;; -- Target
