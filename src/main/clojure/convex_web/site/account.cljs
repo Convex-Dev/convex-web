@@ -568,8 +568,12 @@
                                                               state' (assoc-in state' [:faucet-page/target :ajax/status] :ajax.status/pending)]
                                                           state')))
 
-                                                    ;; Get updated target Account.
-                                                    (get-faucet-target-account (get frame :frame/uuid) target))
+                                                    ;; Get updated target Account - timeout is important to "give some time" to Convex
+                                                    ;; to process the transaction, otherwise we might get the account without the updated balance.
+                                                    (js/setTimeout
+                                                      (fn []
+                                                        (get-faucet-target-account (get frame :frame/uuid) target))
+                                                      500))
 
                                                   :error-handler
                                                   (fn [error]
