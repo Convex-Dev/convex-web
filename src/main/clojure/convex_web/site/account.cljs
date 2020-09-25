@@ -391,20 +391,32 @@
         [:span.font-bold.text-black
          (format/format-number (get transfer :convex-web.transfer/amount))]
 
+        [:span " from "]
+
+        (let [address-or-blob (get transfer :convex-web.transfer/from)
+              address (format/address-trim-blob address-or-blob)]
+          [:a.inline-flex.items-center.space-x-1.w-40
+           {:href (rfe/href :route-name/account-explorer {:address address})}
+           [gui/Identicon {:value address :size gui/identicon-size-small}]
+
+           [:span.font-mono.text-sm.truncate
+            {:class gui/address-hover-class}
+            (format/address-blob (get transfer :convex-web.transfer/to))]])
+
         [:span " to "]
 
-        (let [to-address-or-blob (get transfer :convex-web.transfer/to)
-              to-address (format/address-trim-blob to-address-or-blob)]
-          [:a.inline-flex.items-center.space-x-1.underline.hover:text-indigo-500
-           {:href (rfe/href :route-name/account-explorer {:address to-address})}
-           [gui/Identicon {:value to-address :size gui/identicon-size-small}]
+        (let [address-or-blob (get transfer :convex-web.transfer/to)
+              address (format/address-trim-blob address-or-blob)]
+          [:a.inline-flex.items-center.space-x-1.w-40
+           {:href (rfe/href :route-name/account-explorer {:address address})}
+           [gui/Identicon {:value address :size gui/identicon-size-small}]
 
-           [:span.font-mono.text-xs (format/address-blob (get transfer :convex-web.transfer/to))]])
-
-        "."]
+           [:span.font-mono.text-sm.truncate
+            {:class gui/address-hover-class}
+            (format/address-blob (get transfer :convex-web.transfer/to))]])]
 
        :convex-web.command.status/error
-       [:span.text-sm.text-black
+       [:span.text-base.text-black
         "Sorry. Your transfer couldn't be completed. Please try again?"]
 
        [:div])]))
