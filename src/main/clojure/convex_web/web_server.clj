@@ -174,7 +174,7 @@
 ;; ==========================
 
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
-  (let [{:keys [address source lang]} (json-decode body)
+  (let [{:keys [address source lang sequence_number]} (json-decode body)
 
         lang (or (some-> lang keyword) :convex-lisp)
 
@@ -199,7 +199,7 @@
                    (throw (ex-info "Invalid source." {::anomalies/category ::anomalies/incorrect}))))
 
         peer (system/convex-peer-server system)
-        sequence-number (or (peer/sequence-number peer (convex/address address)) 1)
+        sequence-number (or sequence_number (peer/sequence-number peer (convex/address address)) 1)
         command (peer/read source lang)
         tx (peer/create-invoke (inc sequence-number) command)]
 
