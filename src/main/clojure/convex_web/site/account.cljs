@@ -320,19 +320,16 @@
         :value amount
         :on-change
         (fn [event]
-          (let [value (gui/event-target-value event)
-                amount (js/parseInt value)]
+          (let [value (gui/event-target-value event)]
             (set-state
               (fn [state]
-                (cond
-                  (str/blank? value)
-                  (update state :convex-web/transfer dissoc :convex-web.transfer/amount)
+                (let [state (dissoc state :convex-web/command)]
+                  (cond
+                    (or (str/blank? value) (= (js/parseInt value) js/NaN))
+                    (update state :convex-web/transfer dissoc :convex-web.transfer/amount)
 
-                  (int? amount)
-                  (assoc-in state [:convex-web/transfer :convex-web.transfer/amount] amount)
-
-                  :else
-                  state)))))}]]
+                    :else
+                    (assoc-in state [:convex-web/transfer :convex-web.transfer/amount] (js/parseInt value))))))))}]]
 
 
      ;; Transfer
@@ -534,9 +531,15 @@
         :type "number"
         :value amount
         :on-change
-        #(let [value (gui/event-target-value %)
-               amount (js/parseInt value)]
-           (set-state assoc-in [:convex-web/faucet :convex-web.faucet/amount] amount))}]]
+        #(let [value (gui/event-target-value %)]
+           (set-state
+             (fn [state]
+               (cond
+                 (or (str/blank? value) (= (js/parseInt value) js/NaN))
+                 (update state :convex-web/faucet dissoc :convex-web.faucet/amount)
+
+                 :else
+                 (assoc-in state [:convex-web/faucet :convex-web.faucet/amount] (js/parseInt value))))))}]]
 
      [:div.flex.mt-6
 
