@@ -42,6 +42,32 @@
      [:span.text-sm
       "-"])])
 
+(defn CheckingBalance []
+  [:span.text-gray-700.text-base "Checking balance..."])
+
+(defn BalanceUnavailable [_]
+  [:span.text-gray-700.text-base "Balance unavailable"])
+
+(defn BalanceIs [balance]
+  [:span.text-gray-700.text-base "Balance " [:span.font-bold balance]])
+
+(defn YourUpdatedBalanceIs [balance]
+  [:span.text-gray-700.text-base "Your updated balance is " [:span.font-bold balance] "."])
+
+(defn ShowBalance2 [{:keys [convex-web/account ajax/status ajax/error]} {:keys [Pending Error Success]}]
+  (case status
+    :ajax.status/pending
+    [Pending]
+
+    :ajax.status/error
+    [Error error]
+
+    :ajax.status/success
+    [Success (format/format-number (balance account))]
+
+    ;; Fallback
+    [:span]))
+
 ;; --
 
 (defn MyAccountPage [_ {:keys [ajax/status convex-web/account]} set-state]
@@ -397,30 +423,32 @@
 
 ;; -- Faucet
 
+(defn get-faucet-target-account [frame-uuid address]
+  (backend/GET-account address {:handler
+                                (fn [account]
+                                  (stack/set-state frame-uuid update :faucet-page/target merge {:ajax/status :ajax.status/success
+                                                                                                :convex-web/account account}))
+
+                                :error-handler
+                                (fn [error]
+                                  (stack/set-state frame-uuid update :faucet-page/target merge {:ajax/status :ajax.status/error
+                                                                                                :ajax/error error}))}))
+
 (re-frame/reg-sub-raw ::?faucet-target
   (fn [app-db [_ frame-uuid address]]
+    ;; On subscription creation - whenever frame-uuid or address change.
     (let [{:frame/keys [state]} (stack/find-frame @app-db frame-uuid)
           state' (select-keys state [:convex-web/faucet :faucet-page/config])]
       (if (s/valid? :convex-web/address address)
         (do
           (stack/set-state frame-uuid (constantly (merge state' {:faucet-page/target {:ajax/status :ajax.status/pending}})))
-
-          (backend/GET-account address {:handler
-                                        (fn [account]
-                                          (stack/set-state frame-uuid update :faucet-page/target merge {:ajax/status :ajax.status/success
-                                                                                                        :convex-web/account account}))
-
-                                        :error-handler
-                                        (fn [error]
-                                          (stack/set-state frame-uuid update :faucet-page/target merge {:ajax/status :ajax.status/error
-                                                                                                        :ajax/error error}))}))
+          (get-faucet-target-account frame-uuid address))
         (stack/set-state frame-uuid (constantly state'))))
 
     (make-reaction
       (fn []
         (let [frame (stack/find-frame @app-db frame-uuid)]
           (get-in frame [:frame/state :faucet-page/target]))))))
-
 
 (defn FaucetPage [frame state set-state]
   (let [{:keys [frame/modal?]} frame
@@ -489,8 +517,11 @@
 
 
       ;; -- Balance
-      (let [frame-uuid (get frame :frame/uuid)]
-        [ShowBalance (sub ::?faucet-target frame-uuid target)])]
+      [:div.flex.justify-end
+       [ShowBalance2 (sub ::?faucet-target (get frame :frame/uuid) target)
+        {:Pending CheckingBalance
+         :Error BalanceUnavailable
+         :Success BalanceIs}]]]
 
 
      ;; -- Amount
@@ -522,9 +553,18 @@
 
                      (backend/POST-faucet faucet {:handler
                                                   (fn [faucet]
-                                                    (set-state assoc
-                                                               :ajax/status :ajax.status/success
-                                                               :convex-web/faucet faucet))
+                                                    (set-state
+                                                      (fn [state]
+                                                        (let [state' (assoc state
+                                                                       :ajax/status :ajax.status/success
+                                                                       :convex-web/faucet faucet)
+
+                                                              ;; Set status to pending because we need to check the updated balance.
+                                                              state' (assoc-in state' [:faucet-page/target :ajax/status] :ajax.status/pending)]
+                                                          state')))
+
+                                                    ;; Get updated target Account.
+                                                    (get-faucet-target-account (get frame :frame/uuid) target))
 
                                                   :error-handler
                                                   (fn [error]
@@ -551,14 +591,10 @@
           (get-in state [:ajax/error :response :error :message])]
 
          :ajax.status/success
-         [:span {:class copy-style}
-          "Your updated balance is "
-
-          [:span.font-bold
-           (format/format-number (+ (balance (get-in state [:faucet-page/target :convex-web/account]))
-                                    (get faucet :convex-web.faucet/amount)))]
-
-          "."]
+         [ShowBalance2 (sub ::?faucet-target (get frame :frame/uuid) target)
+          {:Pending CheckingBalance
+           :Error BalanceUnavailable
+           :Success YourUpdatedBalanceIs}]
 
          ;; Unknown status
          [:div]))]))
