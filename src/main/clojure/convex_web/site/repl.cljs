@@ -56,80 +56,47 @@
     "transfer(\"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\", 1000)"]])
 
 (def convex-lisp-examples
-  (let [make-example (fn [& form]
-                       (str/join "\n" form))]
+  (let [make-example (fn [& examples]
+                       ;; Format & add a blank line to separate examples.
+                       (->> examples
+                            (map #(zprint/zprint-str % {:parse-string-all? true}))
+                            (str/join "\n\n")))]
     [["Self Balance"
-      (make-example '*balance*)]
+      (make-example "*balance*")]
 
      ["Self Address"
-      (make-example '*address*)]
+      (make-example "*address*")]
 
      ["Check Balance"
       (make-example
-        '(balance "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"))]
+        "(balance \"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\")")]
 
      ["Transfer"
       (make-example
-        '(transfer "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f" 1000))]
+        "(transfer \"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\" 1000)")]
 
      ["Library"
       (make-example
-        '(def my-library-address
-           (deploy
-             '(defn identity [x]
-                x)))
+        "(def my-library-address (deploy '(defn identity [x] x)))"
 
-        '(import my-library-address :as my-library)
+        "(import my-library-address :as my-library)"
 
-        '(my-library/identity "Hello, world!"))]
+        "(my-library/identity \"Hello, world!\")")]
 
      ["Simple Storage Actor"
       (make-example
-        '(def storage-example-address
-           (deploy
-             '(do
-                (def stored-data nil)
-
-                (defn get []
-                  stored-data)
-
-                (defn set [x]
-                  (def stored-data x))
-
-                (export get set)))))]
+        "(def storage-example-address (deploy '(do (def stored-data nil) (defn get [] stored-data) (defn set [x] (def stored-data x)) (export get set))))")]
 
      ["Call Actor"
       (make-example
-        '(def storage-example-address
-           (deploy
-             '(do
-                (def stored-data nil)
+        "(def storage-example-address (deploy '(do (def stored-data nil) (defn get [] stored-data) (defn set [x] (def stored-data x)) (export get set))))"
 
-                (defn get []
-                  stored-data)
-
-                (defn set [x]
-                  (def stored-data x))
-
-                (export get set))))
-
-        '(call storage-example-address (set 1))
-        '(call storage-example-address (get)))]
+        "(call storage-example-address (set 1))"
+        "(call storage-example-address (get))")]
 
      ["Subcurrency Actor"
       (make-example
-        '(deploy
-           '(do
-              (def owner *caller*)
-
-              (defn contract-transfer [receiver amount]
-                (assert (= owner *caller*))
-                (transfer receiver amount))
-
-              (defn contract-balance []
-                *balance*)
-
-              (export contract-transfer contract-balance))))]]))
+        "(deploy '(do (def owner *caller*) (defn contract-transfer [receiver amount] (assert (= owner *caller*)) (transfer receiver amount)) (defn contract-balance [] *balance*) (export contract-transfer contract-balance)))")]]))
 
 (defn Examples [language]
   (let [Title (fn [title]
@@ -149,8 +116,7 @@
              [Title title]
              [gui/ClipboardCopy source-code]]
 
-            [gui/Highlight source-code {:language language
-                                        :pretty? true}]])
+            [gui/Highlight source-code {:language language}]])
          examples))]))
 
 (defn Reference [reference]
@@ -268,7 +234,7 @@
                {:on-click
                 (fn []
                   (when-let [editor @editor-ref]
-                    (let [pretty (zprint/zprint-str (codemirror/cm-get-value editor) {:parse-string? true})]
+                    (let [pretty (zprint/zprint-str (codemirror/cm-get-value editor) {:parse-string-all? true})]
                       (codemirror/cm-set-value editor pretty))))}
                [:span.font-mono.text-xs.text-gray-700.uppercase "Reformat Code"]]]]
             {:configuration {:lineNumbers false

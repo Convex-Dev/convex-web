@@ -381,7 +381,7 @@
        (cond
          (= language "language-clojure")
          (if pretty?
-           (zprint/zprint-str source {:parse-string? true})
+           (zprint/zprint-str source {:parse-string-all? true})
            source)
 
          :else
