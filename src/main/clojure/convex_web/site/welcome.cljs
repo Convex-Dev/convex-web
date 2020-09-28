@@ -102,7 +102,10 @@
         :href (rfe/href :route-name/wallet)}
 
        {:text "Faucet"
-        :href (rfe/href :route-name/faucet)}]}]
+        :href (rfe/href :route-name/faucet)}
+
+       {:text "Transfer"
+        :href (rfe/href :route-name/transfer)}]}]
 
     ;; -- Explorer
     [Dropdown

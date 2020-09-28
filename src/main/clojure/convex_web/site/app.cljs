@@ -172,7 +172,11 @@
 
         {:text "Faucet"
          :route-name :route-name/faucet
-         :href (rfe/href :route-name/faucet)}]}
+         :href (rfe/href :route-name/faucet)}
+
+        {:text "Transfer"
+         :route-name :route-name/transfer
+         :href (rfe/href :route-name/transfer)}]}
 
 
       ;; Explorer
