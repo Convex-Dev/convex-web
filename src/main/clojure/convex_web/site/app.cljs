@@ -497,16 +497,7 @@
             (when title
               [:div.w-32.h-2.bg-blue-500.mb-8])]
 
-           [Component active-page-frame state set-state]])]]]
-
-
-     ;; Modal
-     ;; ================
-     (let [{:frame/keys [modal?] :as frame} (stack/?active-frame)]
-       (when modal?
-         [Modal frame]))
-
-     ]))
+           [Component active-page-frame state set-state]])]]]]))
 
 (defn Page [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component} page
@@ -528,6 +519,13 @@
      (if (get-in active-page-frame [:frame/page :page/scaffolding?] true)
        [Scaffolding active-page-frame]
        [Page active-page-frame]))
+
+
+   ;; Modal
+   ;; ================
+   (let [{:frame/keys [modal?] :as frame} (stack/?active-frame)]
+     (when modal?
+       [Modal frame]))
 
 
    ;; Devtools
