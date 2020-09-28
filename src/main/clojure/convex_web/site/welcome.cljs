@@ -58,7 +58,7 @@
 
              (for [{:keys [text href]} items]
                ^{:key text}
-               [:a.block.px-4.py-2.leading-5.hover:bg-gray-100.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
+               [:a.block.px-4.py-2.leading-5.hover:bg-blue-100.hover:bg-opacity-50.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
                 {:href href}
                 text])]]]]]]])))
 
