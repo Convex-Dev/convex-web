@@ -56,23 +56,23 @@
   ;; -- End-of-Logging
 
 
-  aero {:mvn/version "1.1.6"}
+  aero/aero {:mvn/version "1.1.6"}
   ring/ring-core {:mvn/version "1.8.1"}
   ring/ring-defaults {:mvn/version "0.3.2"}
-  http-kit {:mvn/version "2.5.0"}
-  compojure {:mvn/version "1.6.2"}
-  hiccup {:mvn/version "1.0.5"}
-  re-frame {:mvn/version "1.1.1"
-            :exclusions [cljsjs/react
-                         cljsjs/react-dom
-                         cljsjs/react-dom-server]}
+  http-kit/http-kit {:mvn/version "2.5.0"}
+  compojure/compojure {:mvn/version "1.6.2"}
+  hiccup/hiccup {:mvn/version "1.0.5"}
+  re-frame/re-frame {:mvn/version "1.1.1"
+                     :exclusions [cljsjs/react
+                                  cljsjs/react-dom
+                                  cljsjs/react-dom-server]}
   metosin/reitit-frontend {:mvn/version "0.5.5"}
-  datascript {:mvn/version "1.0.1"}
-  nano-id {:mvn/version "1.0.0"}
-  expound {:mvn/version "0.8.5"}
-  fipp {:mvn/version "0.6.23"}
+  datascript/datascript {:mvn/version "1.0.1"}
+  nano-id/nano-id {:mvn/version "1.0.0"}
+  expound/expound {:mvn/version "0.8.5"}
+  fipp/fipp {:mvn/version "0.6.23"}
   zprint/zprint {:mvn/version "1.0.1"}
-  cljs-ajax {:mvn/version "0.8.1"}}
+  cljs-ajax/cljs-ajax {:mvn/version "0.8.1"}}
 
  :aliases
  {:dev
@@ -124,5 +124,5 @@
 
 
   :outdated
-  {:extra-deps {antq {:mvn/version "RELEASE"}}
+  {:extra-deps {antq/antq {:mvn/version "RELEASE"}}
    :main-opts ["-m" "antq.core"]}}}
