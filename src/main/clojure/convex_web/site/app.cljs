@@ -480,23 +480,22 @@
         (when active-page-frame
           [:<>
 
-           ;; -- Title (optional)
-           (when-not (str/blank? title)
-             (let [title-size (case (get style :page-style/title-size)
-                                :large "text-3xl"
-                                :small "text-base"
-                                ;; Default
-                                "text-3xl")]
-
-               [:div.flex.flex-col.space-y-4
+           [:div.flex.flex-col.space-y-4
+            (when title
+              (let [title-size (case (get style :page-style/title-size)
+                                 :large "text-3xl"
+                                 :small "text-base"
+                                 ;; Default
+                                 "text-3xl")]
                 [:span.font-mono.text-gray-900
                  {:class [title-size "leading-none"]}
-                 title]
+                 title]))
 
-                (when description
-                  [:p.text-gray-500.text-base.max-w-screen-sm description])
+            (when description
+              [:p.text-gray-500.text-base.max-w-screen-sm description])
 
-                [:div.w-32.h-2.bg-blue-500.mb-8]]))
+            (when title
+              [:div.w-32.h-2.bg-blue-500.mb-8])]
 
            [Component active-page-frame state set-state]])]]]
 
