@@ -26,6 +26,21 @@
 (defn server-url []
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))
 
+(deftest address-test
+  (let [response @(client/GET-public-v1-account (server-url) (.toChecksumHex Init/HERO))
+        response-body (json/read-str (get response :body) :key-fn keyword)]
+    (is (= 200 (get response :status)))
+    (is (= #{:address
+             :allowance
+             :balance
+             :environment
+             :is_actor
+             :is_library
+             :memory_size
+             :sequence
+             :type}
+           (set (keys response-body))))))
+
 (deftest query-test
   (testing "Valid"
     (let [response @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO) :source "1"})
@@ -221,7 +236,7 @@ In function: map"} response-body)))))
           submit-response-body (json/read-str (get submit-response :body) :key-fn keyword)]
 
       (is (= 200 (get prepare-response :status)))
-      (is (= #{:sequence-number
+      (is (= #{:sequence_number
                :address
                :source
                :lang

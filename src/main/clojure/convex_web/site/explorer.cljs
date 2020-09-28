@@ -147,8 +147,9 @@
              [:div.flex.items-center.w-40
               [gui/Identicon {:value address :size gui/identicon-size-small}]
 
-              [:a.flex-1.underline.hover:text-indigo-500.truncate
-               {:href (rfe/href :route-name/account-explorer {:address address})}
+              [:a.flex-1.truncate
+               {:class gui/address-hover-class
+                :href (rfe/href :route-name/account-explorer {:address address})}
                [:code.text-xs (format/address-blob address)]]])]
 
           ;; -- Timestamp
@@ -209,8 +210,9 @@
                 [:div.flex.items-center.w-40
                  [gui/Identicon {:value address :size gui/identicon-size-small}]
 
-                 [:a.flex-1.underline.hover:text-indigo-500.truncate
-                  {:href (rfe/href :route-name/account-explorer {:address address})}
+                 [:a.flex-1.truncate
+                  {:class gui/address-hover-class
+                   :href (rfe/href :route-name/account-explorer {:address address})}
                   [:code.text-xs (format/address-blob address)]]])])]]))]]])
 
 (s/def :explorer.blocks.state/pending
@@ -352,33 +354,43 @@
   [:div
    [:table.text-left.table-auto
     [:thead
-     (let [th-class "text-xs uppercase text-gray-600 sticky top-0"]
+     (let [th-class "text-xs uppercase text-gray-600 sticky top-0 pr-2"]
        [:tr
         [:th
-         {:class th-class}
-         [:div.p-2
-          "Address"]]
+         [:div.flex.space-x-1
+          {:class th-class}
+          [:span "Address"]]]
 
         [:th
-         {:class th-class}
-         [:div.p-2
-          "Type"]]
+         [:div.flex.space-x-1
+          {:class th-class}
+          [:span "Type"]
+          [gui/InfoTooltip
+           "The Type of Account, may be User, Actor or Library"]]]
 
         [:th
-         {:class th-class}
-
-         [:div.p-2
-          "Balance"]]
-
-        [:th
-         {:class th-class}
-         [:div.p-2
-          "Memory Size"]]
+         [:div.flex.space-x-1
+          {:class th-class}
+          [:span "Balance"]
+          [gui/InfoTooltip
+           "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"]]]
 
         [:th
-         {:class th-class}
-         [:div.p-2
-          "Memory Allowance"]]])]
+         [:div.flex.space-x-1
+          {:class th-class}
+          [:span "Memory Size"]
+          [gui/InfoTooltip
+           "Size in bytes of this Account, which includes any definitions you
+            have created in your Enviornment."]]]
+
+        [:th
+         [:div.flex.space-x-1
+          {:class th-class}
+          [:span "Memory Allowance"]
+          [gui/InfoTooltip
+           "Reserved Memory Allowance in bytes. If you create on-chain data
+            beyond this amount, you will be charged extra transaction fees to
+            aquire memory at the current memory pool price."]]]])]
 
     (let [active-address (session/?active-address)
 
@@ -386,7 +398,7 @@
                             (map (comp str/upper-case :convex-web.account/address))
                             (into #{}))]
       [:tbody
-       (for [{:convex-web.account/keys [address status]} (sort-by :convex-web.account/address accounts)]
+       (for [{:convex-web.account/keys [address status]} (sort-by (comp str/lower-case :convex-web.account/address) accounts)]
          (let [td-class "p-2 font-mono text-xs text-gray-700 whitespace-no-wrap"
 
                me? (contains? my-addresses (str/upper-case address))
@@ -406,17 +418,12 @@
                                                                      :convex-web/account {:convex-web.account/address address}}
                                                                     :modal? true})}
                  address-blob]
-                [:a.flex-1.underline.hover:text-indigo-500.mx-2
-                 {:href (rfe/href :route-name/account-explorer {:address address})}
+                [:a.flex-1.mx-2
+                 {:class gui/address-hover-class
+                  :href (rfe/href :route-name/account-explorer {:address address})}
                  [:code.text-xs address-blob]])
 
-              [gui/ClipboardCopy address-blob]
-
-              ;; External link
-              [:a.ml-2
-               {:href (rfe/href :route-name/account-explorer {:address address})
-                :target "_blank"}
-               [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]]
+              [gui/ClipboardCopy address-blob]]
 
              (when (and me? (not= address active-address))
                [gui/Tooltip
@@ -432,22 +439,13 @@
 
 
             ;; -- Type
-            (let [[label style tooltip] (cond
-                                          (get status :convex-web.account-status/library?)
-                                          ["library" "text-purple-500" "Library's Address"]
-
-                                          (get status :convex-web.account-status/actor?)
-                                          ["actor" "text-indigo-500" "Actor's Address"]
-
-                                          :else
-                                          ["user" "text-green-400" "User's Address"])]
-              [:td {:class td-class}
-               [gui/Tooltip
-                {:title tooltip}
-                [:div.flex-1.px-2.rounded
-                 {:class style}
-                 [:span.uppercase
-                  label]]]])
+            [:td {:class td-class}
+             [gui/Tooltip
+              {:title (gui/account-type-description status)}
+              [:div.flex-1.px-2.rounded
+               {:class (gui/account-type-text-color status)}
+               [:span.uppercase
+                (gui/account-type-label status)]]]]
 
             ;; -- Balance
             [:td {:class td-class}
@@ -467,7 +465,7 @@
               [:span.text-xs.font-bold.text-indigo-500
                (format/format-number (str (:convex-web.account-status/allowance status)))]]]]))])]])
 
-(defn- get-accounts-range [set-state & [{:keys [start end]}]]
+(defn- get-accounts-range [{:keys [start end]} set-state]
   (backend/GET-accounts
     (merge {:handler
             (fn [{:keys [meta convex-web/accounts]}]
@@ -487,23 +485,30 @@
 ;; -- Accounts Range
 
 (defn AccountsRangePage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/accounts meta]} set-state]
-  (let [{:keys [start end total] :as range} (select-keys meta [:start :end :total])]
-    [:div.flex.flex-col.flex-1
+  (let [{:keys [start end total] :as range} meta
+
+        {start-previous-range :start end-previous-range :end :as previous-range} (pagination/increase-range end total)
+
+        previous-query (if (= start-previous-range end-previous-range)
+                         {}
+                         previous-range)
+
+        {start-next-range :start end-next-range :end :as next-range} (pagination/decrease-range start)
+
+        next-query (if (= start-next-range end-next-range)
+                     pagination/min-range
+                     next-range)]
+    [:div.flex.flex-col.flex-1.space-y-2
 
      ;; -- Pagination
      [gui/RangeNavigation
-      (merge range
-             {:on-previous-click
-              (fn []
-                (set-state #(assoc % :ajax/status :ajax.status/pending))
-
-                (get-accounts-range set-state (pagination/decrease-range start)))
-
-              :on-next-click
-              (fn []
-                (set-state #(assoc % :ajax/status :ajax.status/pending))
-
-                (get-accounts-range set-state (pagination/increase-range end total)))})]
+      (merge range {:page-count (pagination/page-count total)
+                    :page-num (pagination/page-num start total)
+                    :first-href (rfe/href :route-name/accounts-explorer)
+                    :last-href (rfe/href :route-name/accounts-explorer {} pagination/min-range)
+                    :previous-href (rfe/href :route-name/accounts-explorer {} previous-query)
+                    :next-href (rfe/href :route-name/accounts-explorer {} next-query)
+                    :ajax/status status})]
 
      ;; -- Body
      (case status
@@ -519,10 +524,10 @@
           :component #'AccountsRangePage
           :state-spec :accounts-page/state-spec
           :on-push
-          (fn [_ _ set-state]
+          (fn [_ state set-state]
             (set-state assoc :ajax/status :ajax.status/pending)
 
-            (get-accounts-range set-state))})
+            (get-accounts-range state set-state))})
 
 
 ;; -- Accounts
@@ -562,13 +567,13 @@
           :state-spec :accounts-page/state-spec
           :component #'AccountsPage
           :on-push
-          (fn [_ _ set-state]
+          (fn [_ state set-state]
             (set-state assoc :ajax/status :ajax.status/pending)
 
-            (get-accounts-range set-state))
+            (get-accounts-range state set-state))
           :on-resume
-          (fn [_ _ set-state]
-            (get-accounts-range set-state))})
+          (fn [_ state set-state]
+            (get-accounts-range state set-state))})
 
 ;; -- Blocks
 
@@ -647,8 +652,9 @@
                  [:div.flex.items-center
                   [gui/Identicon {:value peer :size gui/identicon-size-small}]
                   [:a
-                   {:href (rfe/href :route-name/account-explorer {:address peer})}
-                   [:code.underline peer]]]]]))]]]))))
+                   {:class gui/address-hover-class
+                    :href (rfe/href :route-name/account-explorer {:address peer})}
+                   [:span (format/address-blob peer)]]]]]))]]]))))
 
 (defn BlocksPage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks]} _]
   (case status
@@ -696,7 +702,7 @@
              {:end end}))))
 
 (defn BlocksRangePage [_ {:keys [ajax/status convex-web/blocks meta]} _]
-  [:div.flex.flex-col.flex-1
+  [:div.flex.flex-col.flex-1.space-y-2
 
    ;; -- Pagination
    (let [{:keys [start end total] :as range} meta
@@ -713,7 +719,7 @@
                       pagination/min-range
                       next-range)]
 
-     [gui/RangeNavigation2
+     [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
                     :page-num (pagination/page-num start total)
                     :first-href (rfe/href :route-name/blocks)
@@ -736,6 +742,9 @@
 (def blocks-range-page
   #:page {:id :page.id/blocks-range-explorer
           :title "Blocks"
+          :description "These are the Blocks that have been published in the
+                        Convex Network Consensus, numbered in consensus order
+                        (higher index numbers are more recent)."
           :component #'BlocksRangePage
           :state-spec :explorer.blocks-range/state-spec
           :on-push #'get-blocks-on-push})
@@ -756,7 +765,7 @@
 ;; -- Transactions
 
 (defn TransactionsRangePage [_ {:keys [ajax/status convex-web/blocks meta]} _]
-  [:div.flex.flex-col.flex-1
+  [:div.flex.flex-col.flex-1.space-y-2
 
    ;; -- Pagination
    (let [{:keys [start end total] :as range} meta
@@ -772,7 +781,7 @@
          next-query (if (= start-next-range end-next-range)
                       pagination/min-range
                       next-range)]
-     [gui/RangeNavigation2
+     [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
                     :page-num (pagination/page-num start total)
                     :first-href (rfe/href :route-name/transactions)

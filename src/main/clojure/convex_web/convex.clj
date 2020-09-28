@@ -4,7 +4,7 @@
            (convex.core.lang Core Reader ScryptNext RT)
            (convex.core Order Block Peer State Init)
            (convex.core.crypto AKeyPair)
-           (convex.core.transactions Transfer ATransaction Invoke)
+           (convex.core.transactions Transfer ATransaction Invoke Call)
            (convex.net Connection)))
 
 (defmacro execute [context form]
@@ -133,7 +133,10 @@
     (instance? Invoke atransaction)
     #:convex-web.transaction {:type :convex-web.transaction.type/invoke
                               :source (str (.getCommand ^Invoke atransaction))
-                              :sequence (.getSequence ^ATransaction atransaction)}))
+                              :sequence (.getSequence ^ATransaction atransaction)}
+
+    (instance? Call atransaction)
+    #:convex-web.transaction {:type :convex-web.transaction.type/call}))
 
 (defn signed-data-transaction [^SignedData signed-data]
   #:convex-web.signed-data {:address (.toChecksumHex (.getAddress signed-data))

@@ -19,3 +19,7 @@
     (if (str/starts-with? address "0x")
       address
       (str "0x" address))))
+
+(defn address-trim-blob [blob]
+  (when-not (str/blank? blob)
+    (str/replace blob #"^0x" "")))

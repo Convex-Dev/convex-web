@@ -18,6 +18,32 @@
   [account]
   (get-in account [:convex-web.account/status :convex-web.account-status/balance]))
 
+(defn CheckingBalance []
+  [:span.text-gray-700.text-base "Checking balance..."])
+
+(defn BalanceUnavailable [_]
+  [:span.text-gray-700.text-base "Balance unavailable"])
+
+(defn BalanceIs [balance]
+  [:span.text-gray-700.text-base "Balance " [:span.font-bold balance]])
+
+(defn YourUpdatedBalanceIs [balance]
+  [:span.text-gray-700.text-base "Your updated balance is " [:span.font-bold balance] "."])
+
+(defn ShowBalance2 [{:keys [convex-web/account ajax/status ajax/error]} {:keys [Pending Error Success]}]
+  (case status
+    :ajax.status/pending
+    [Pending]
+
+    :ajax.status/error
+    [Error error]
+
+    :ajax.status/success
+    [Success (format/format-number (balance account))]
+
+    ;; Fallback
+    [:span]))
+
 ;; --
 
 (defn MyAccountPage [_ {:keys [ajax/status convex-web/account]} set-state]
@@ -63,6 +89,7 @@
 (def my-account-page
   #:page {:id :page.id/my-account
           :title "Account Details"
+          :description "These are the details for an Account on the convex.world test network."
           :component #'MyAccountPage
           :state-spec
           (s/nonconforming
@@ -88,8 +115,8 @@
 
      :ajax.status/success
      (let [address (get account :convex-web.account/address)]
-       [:div.flex.flex-col.items-start.max-w-screen-md.space-y-8.my-10.mx-10.text-gray-600
-        [:p
+       [:div.flex.flex-col.max-w-screen-md.space-y-8.my-10.mx-10.text-gray-600
+        [:p.text-left
          "This is your new Convex Account."]
 
         [:p
@@ -185,201 +212,138 @@
         (when-let [frame (stack/find-frame @app-db uuid)]
           (get-in frame [:frame/state :transfer-page/to]))))))
 
-(defn TransferProgress [frame {:convex-web/keys [command transfer] :as state} set-state]
-  [:div.flex.flex-col.flex-1.items-center.justify-center
-   (case (get command :convex-web.command/status)
-     :convex-web.command.status/running
-     [gui/Spinner]
+(defn TransferPage [frame state set-state]
+  (let [{:keys [convex-web/transfer convex-web/command transfer-page/config] :as state} state
 
-     :convex-web.command.status/success
-     [:div.flex.flex-col.items-center.text-sm
-      [:span.text-lg
-       "Success!"]
+        active-address (session/?active-address)
 
-      ;; -- Transferred x to address y.
-      [:span.my-4
-       "Transferred "
+        from-unselected? (nil? (get transfer :convex-web.transfer/from))
 
-       [:span.font-bold.text-indigo-500
-        (format/format-number (get transfer :convex-web.transfer/amount))]
+        ;; 'From' defaults to active account
+        {:convex-web.transfer/keys [from to amount] :as transfer} (if (and active-address from-unselected?)
+                                                                    (assoc transfer :convex-web.transfer/from active-address)
+                                                                    transfer)
 
-       " to "
+        invalid-transfer? (or (not (s/valid? :convex-web/transfer transfer))
 
-       [:a.flex-1.underline.hover:text-indigo-500
-        {:href (rfe/href :route-name/account-explorer {:address (get transfer :convex-web.transfer/to)})}
-        [:code.text-xs (get transfer :convex-web.transfer/to)]]
+                              (= :ajax.status/error (get-in state [:transfer-page/from :ajax/status]))
 
-       "."]
+                              (= :ajax.status/error (get-in state [:transfer-page/to :ajax/status])))
 
-      ;; -- Your current balance is z.
-      [:span.mb-4
-       "Your current balance is "
-
-       [:span.font-bold.text-indigo-500
-        (let [from-account (get-in state [:transfer-page/from :convex-web/account])]
-          (format/format-number
-            (- (balance from-account) (get transfer :convex-web.transfer/amount))))]
-
-       "."]
-
-      [gui/DefaultButton
-       {:on-click
-        (fn []
-          (if (:frame/modal? frame)
-            (stack/pop)
-            (set-state #(dissoc % :convex-web/command))))}
-       [:span.text-xs.uppercase "Done"]]]
-
-     :convex-web.command.status/error
-     [:span.text-sm.text-black
-      (if (s/valid? :ajax/error (get command :convex-web.command/error))
-        (get-in command [:convex-web.command/error :response :error :message])
-        "Sorry. Your transfer couldn't be completed. Please try again?")]
-
-     "...")])
-
-(defn TransferInput [frame {:keys [convex-web/transfer transfer-page/config] :as state} set-state]
-  (let [{:convex-web.transfer/keys [from to amount]} transfer
-
-        invalid-transfer? (cond
-                            (not (s/valid? :convex-web/transfer transfer))
-                            true
-
-                            (= :ajax.status/error (get-in state [:transfer-page/from :ajax/status]))
-                            true
-
-                            (= :ajax.status/error (get-in state [:transfer-page/to :ajax/status]))
-                            true)
-
-        select-placeholder "Select"
-
-        addresses (cons select-placeholder (map :convex-web.account/address (session/?accounts)))
+        addresses (map :convex-web.account/address (session/?accounts))
 
         Caption (fn [caption]
-                  [:span.text-xs.text-indigo-500.uppercase caption])]
-    [:div.flex.flex-col.flex-1
+                  [:span.text-base.text-gray-700 caption])]
+    [:div.flex.flex-col.flex-1.max-w-screen-md.space-y-12
 
-     ;; -- From
-     [:div.flex.flex-col
+     ;; From
+     ;; ===========
+     [:div.relative.w-full.flex.flex-col
       [Caption "From"]
-      [gui/Select
-       {:value from
-        :options addresses
-        :on-change #(set-state assoc-in [:convex-web/transfer :convex-web.transfer/from] %)}]
+      [gui/AccountSelect
+       {:active-address from
+        :addresses addresses
+        :on-change (fn [address]
+                     (set-state (fn [state]
+                                  (-> state
+                                      (dissoc :convex-web/command)
+                                      (assoc-in [:convex-web/transfer :convex-web.transfer/from] address)))))}]
 
       ;; -- Balance
       (when (s/valid? :convex-web/address from)
-        (let [params (merge (select-keys frame [:frame/uuid]) {:address from})
+        (let [params {:frame/uuid (get frame :frame/uuid)
+                      :address from}]
+          [:div.flex.justify-end
+           [ShowBalance2 (sub ::?transfer-from-account params)
+            {:Pending CheckingBalance
+             :Error BalanceUnavailable
+             :Success BalanceIs}]]))]
 
-              {:keys [convex-web/account ajax/status ajax/error]} (sub ::?transfer-from-account params)]
-          (case status
-            :ajax.status/pending
-            [:div.flex.justify-end.mt-1
-             [:span.text-xs.text-gray-600.uppercase.mr-1
-              "Balance"]
-             [gui/SpinnerSmall]]
 
-            :ajax.status/success
-            [:div.flex.justify-end.mt-1
-             [:span.text-xs.text-gray-600.uppercase
-              "Balance"]
-             [:span.text-xs.font-bold.ml-1
-              (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance]))]]
-
-            :ajax.status/error
-            [:div.flex.justify-end.mt-1
-             [:span.text-xs.text-red-500
-              (get-in error [:response :error :message])]]
-
-            "")))]
-
-     ;; -- To
+     ;; To
+     ;; ===========
      (let [to-my-accounts? (get config :transfer-page.config/my-accounts? false)]
-       [:div.relative.w-full.flex.flex-col.mt-6
-        [Caption "To"]
+       [:div.w-full.flex.flex-col
+        [:div.flex.justify-between
+         [Caption "To"]
 
-        ;; -- My Accounts checkbox
-        [:div.absolute.top-0.right-0.flex.items-center
-         [:input
-          {:type "checkbox"
-           :checked to-my-accounts?
-           :on-change #(set-state update-in [:transfer-page/config :transfer-page.config/my-accounts?] not)}]
+         ;; -- Show My Accounts
+         [:div.flex.items-center
+          [:input
+           {:type "checkbox"
+            :checked to-my-accounts?
+            :on-change
+            (fn []
+              (set-state
+                (fn [state]
+                  (let [;; Toogle my account
+                        state (update-in state [:transfer-page/config :transfer-page.config/my-accounts?] not)
+                        ;; Always remove to
+                        state (update state :convex-web/transfer dissoc :convex-web.transfer/to)]
+                    state))))}]
 
-         [:span.text-xs.text-gray-600.uppercase.ml-2
-          "My Accounts"]]
+          [:span.text-xs.text-gray-600.uppercase.ml-2
+           "Show My Accounts"]]]
+
 
         ;; -- Select or Input text
         (if to-my-accounts?
-          [gui/Select {:value to
-                       :options addresses
-                       :on-change
-                       #(set-state assoc-in [:convex-web/transfer :convex-web.transfer/to] %)}]
-          [:input.text-sm.text-right.border
-           {:style {:height "26px"}
+          [gui/AccountSelect
+           {:active-address (format/address-trim-blob to)
+            :addresses addresses
+            :on-change (fn [address]
+                         (set-state (fn [state]
+                                      (-> state
+                                          (dissoc :convex-web/command)
+                                          (assoc-in [:convex-web/transfer :convex-web.transfer/to] address)))))}]
+          [:input
+           {:class gui/input-style
             :type "text"
             :value to
             :on-change
             #(let [value (gui/event-target-value %)]
-               (set-state assoc-in [:convex-web/transfer :convex-web.transfer/to] value))}])
+               (set-state (fn [state]
+                            (-> state
+                                (dissoc :convex-web/command)
+                                (assoc-in [:convex-web/transfer :convex-web.transfer/to] value)))))}])
 
         ;; -- Balance
         (when (s/valid? :convex-web/address to)
-          (let [params (merge (select-keys frame [:frame/uuid]) {:address to})
+          (let [params {:frame/uuid (get frame :frame/uuid)
+                        :address to}]
+            [:div.flex.justify-end
+             [ShowBalance2 (sub ::?transfer-to-account params)
+              {:Pending CheckingBalance
+               :Error BalanceUnavailable
+               :Success BalanceIs}]]))])
 
-                {:keys [convex-web/account ajax/status ajax/error]} (sub ::?transfer-to-account params)]
-            (case status
-              :ajax.status/pending
-              [:div.flex.justify-end.mt-1
-               [:span.text-xs.text-gray-600.uppercase.mr-1
-                "Balance"]
-               [gui/SpinnerSmall]]
 
-              :ajax.status/success
-              [:div.flex.justify-end.mt-1
-               [:span.text-xs.text-gray-600.uppercase
-                "Balance"]
-               [:span.text-xs.font-bold.ml-1
-                (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance]))]]
-
-              :ajax.status/error
-              [:div.flex.justify-end.mt-1
-               [:span.text-xs.text-red-500
-                (get-in error [:response :error :message])]]
-
-              "")))])
-
-     ;; -- Transfer
-     [:div.flex.flex-col.mt-6.mb-4
+     ;; Amount
+     ;; ===========
+     [:div.flex.flex-col
       [Caption "Amount"]
-      [:input.border.px-1.mt-1.text-right
-       {:type "number"
+      [:input.text-right
+       {:class gui/input-style
+        :type "number"
         :value amount
         :on-change
         (fn [event]
-          (let [value (gui/event-target-value event)
-                amount (js/parseInt value)]
+          (let [value (gui/event-target-value event)]
             (set-state
               (fn [state]
-                (cond
-                  (str/blank? value)
-                  (update state :convex-web/transfer dissoc :convex-web.transfer/amount)
+                (let [state (dissoc state :convex-web/command)]
+                  (cond
+                    (or (str/blank? value) (= (js/parseInt value) js/NaN))
+                    (update state :convex-web/transfer dissoc :convex-web.transfer/amount)
 
-                  (int? amount)
-                  (assoc-in state [:convex-web/transfer :convex-web.transfer/amount] amount)
+                    :else
+                    (assoc-in state [:convex-web/transfer :convex-web.transfer/amount] (js/parseInt value))))))))}]]
 
-                  :else
-                  state)))))}]]
 
-     [:div.flex.justify-center.mt-6
-      (when (get frame :modal?)
-        [:<>
-         [gui/DefaultButton
-          {:on-click #(stack/pop)}
-          [:span.text-xs.uppercase "Cancel"]]
-
-         [:div.mx-2]])
-
-      [gui/DefaultButton
+     ;; Transfer
+     ;; ===========
+     [:div.flex
+      [gui/PrimaryButton
        {:disabled invalid-transfer?
         :on-click #(let [transaction #:convex-web.transaction {:type :convex-web.transaction.type/transfer
                                                                :target to
@@ -390,14 +354,80 @@
                                                        :transaction transaction}]
 
                      (command/execute command (fn [command command']
-                                                (set-state assoc :convex-web/command (merge command command')))))}
-       [:span.text-xs.uppercase "Transfer"]]]]))
+                                                (cond
+                                                  (= :convex-web.command.status/success (:convex-web.command/status command'))
+                                                  (do
+                                                    (set-state
+                                                      (fn [state]
+                                                        (let [state' (assoc state :convex-web/command (merge command command'))
 
-(defn TransferPage [frame {:keys [convex-web/command] :as state} set-state]
-  [:div.flex-1.my-4.mx-10
-   (if command
-     [TransferProgress frame state set-state]
-     [TransferInput frame state set-state])])
+                                                              ;; Set status to pending because we need to check the updated balance.
+                                                              state' (assoc-in state' [:transfer-page/from :ajax/status] :ajax.status/pending)
+                                                              state' (assoc-in state' [:transfer-page/to :ajax/status] :ajax.status/pending)]
+                                                          state')))
+
+
+                                                    (get-transfer-account {:frame/uuid (get frame :frame/uuid)
+                                                                           :address from
+                                                                           :state-key :transfer-page/from})
+
+                                                    (get-transfer-account {:frame/uuid (get frame :frame/uuid)
+                                                                           :address to
+                                                                           :state-key :transfer-page/to}))
+
+                                                  :else
+                                                  (set-state assoc :convex-web/command (merge command command'))))))}
+       [:span.block.text-sm.uppercase
+        {:class [gui/button-child-large-padding
+                 (if invalid-transfer?
+                   "text-gray-200"
+                   "text-white")]}
+        "Transfer"]]]
+
+
+     ;; Status
+     ;; ===========
+     (case (:convex-web.command/status command)
+       :convex-web.command.status/running
+       [:span.text-base.text-gray-700
+        "Processing..."]
+
+       :convex-web.command.status/success
+       [:span.inline-flex.items-center.space-x-2
+        [:span "Transferred "]
+
+        [:span.font-bold.text-black
+         (format/format-number (get transfer :convex-web.transfer/amount))]
+
+        [:span " from "]
+
+        (let [address-or-blob (get transfer :convex-web.transfer/from)
+              address (format/address-trim-blob address-or-blob)]
+          [:a.inline-flex.items-center.space-x-1.w-40
+           {:href (rfe/href :route-name/account-explorer {:address address})}
+           [gui/Identicon {:value address :size gui/identicon-size-small}]
+
+           [:span.font-mono.text-sm.truncate
+            {:class gui/address-hover-class}
+            (format/address-blob (get transfer :convex-web.transfer/to))]])
+
+        [:span " to "]
+
+        (let [address-or-blob (get transfer :convex-web.transfer/to)
+              address (format/address-trim-blob address-or-blob)]
+          [:a.inline-flex.items-center.space-x-1.w-40
+           {:href (rfe/href :route-name/account-explorer {:address address})}
+           [gui/Identicon {:value address :size gui/identicon-size-small}]
+
+           [:span.font-mono.text-sm.truncate
+            {:class gui/address-hover-class}
+            (format/address-blob (get transfer :convex-web.transfer/to))]])]
+
+       :convex-web.command.status/error
+       [:span.text-base.text-black
+        "Sorry. Your transfer couldn't be completed. Please try again?"]
+
+       [:div])]))
 
 (s/def :transfer-page.config/my-accounts? boolean?)
 (s/def :transfer-page/config (s/keys :opt [:transfer-page.config/my-accounts?]))
@@ -409,46 +439,71 @@
 (def transfer-page
   #:page {:id :page.id/transfer
           :title "Transfer"
+          :description "Use this tool to make transfers from your Accounts to any other Accounts."
           :component #'TransferPage
           :state-spec :transfer-page/state})
 
 
 ;; -- Faucet
 
-(defn- faucet-get-target [address set-state]
+(defn get-faucet-target-account [frame-uuid address]
   (backend/GET-account address {:handler
                                 (fn [account]
-                                  (set-state assoc :faucet-page/target {:ajax/status :ajax.status/success
-                                                                        :convex-web/account account}))}))
+                                  (stack/set-state frame-uuid update :faucet-page/target merge {:ajax/status :ajax.status/success
+                                                                                                :convex-web/account account}))
 
-(defn FaucetInput [frame state set-state]
+                                :error-handler
+                                (fn [error]
+                                  (stack/set-state frame-uuid update :faucet-page/target merge {:ajax/status :ajax.status/error
+                                                                                                :ajax/error error}))}))
+
+(re-frame/reg-sub-raw ::?faucet-target
+  (fn [app-db [_ frame-uuid address]]
+    ;; On subscription creation - whenever frame-uuid or address change.
+    (let [{:frame/keys [state]} (stack/find-frame @app-db frame-uuid)
+          state' (select-keys state [:convex-web/faucet :faucet-page/config])]
+      (if (s/valid? :convex-web/address address)
+        (do
+          (stack/set-state frame-uuid (constantly (merge state' {:faucet-page/target {:ajax/status :ajax.status/pending}})))
+          (get-faucet-target-account frame-uuid address))
+        (stack/set-state frame-uuid (constantly state'))))
+
+    (make-reaction
+      (fn []
+        (let [frame (stack/find-frame @app-db frame-uuid)]
+          (get-in frame [:frame/state :faucet-page/target]))))))
+
+(defn FaucetPage [frame state set-state]
   (let [{:keys [frame/modal?]} frame
 
-        {:keys [convex-web/faucet faucet-page/config]} state
+        {:keys [convex-web/faucet ajax/status faucet-page/config]} state
 
         active-address (session/?active-address)
 
         target-unselected? (nil? (get faucet :convex-web.faucet/target))
-
-        ;; Target defaults to active account
-        {:convex-web.faucet/keys [target amount] :as faucet} (if (and active-address target-unselected?)
-                                                               (do
-                                                                 (faucet-get-target active-address set-state)
-                                                                 (assoc faucet :convex-web.faucet/target active-address))
-                                                               faucet)
+        target-invalid? (not (s/valid? :convex-web/address (get faucet :convex-web.faucet/target)))
 
         to-my-account? (get config :faucet-page.config/my-accounts? false)
 
-        select-placeholder "Select"
+        ;; Target address must be overridden if:
+        ;; - 'Show my accounts' is checked
+        ;; - there's an active address
+        ;; - and the current target is either missing or invalid.
+        override-target? (and to-my-account? active-address (or target-unselected? target-invalid?))
 
-        addresses (cons select-placeholder (map :convex-web.account/address (session/?accounts)))
+        ;; Target defaults to active account.
+        {:convex-web.faucet/keys [target amount] :as faucet} (if override-target?
+                                                               (assoc faucet :convex-web.faucet/target active-address)
+                                                               faucet)
+
+        addresses (map :convex-web.account/address (session/?accounts))
 
         invalid? (not (s/valid? :convex-web/faucet faucet))
 
         Caption (fn [caption]
                   [:span.text-base.text-gray-700
                    caption])]
-    [:div.flex.flex-col.flex-1.max-w-screen-md.space-y-8
+    [:div.flex.flex-col.max-w-screen-md.space-y-12
 
      ;; -- Target
      [:div.relative.w-full.flex.flex-col
@@ -459,60 +514,60 @@
        [:input
         {:type "checkbox"
          :checked to-my-account?
-         :on-change #(set-state update-in [:faucet-page/config :faucet-page.config/my-accounts?] not)}]
+         :on-change
+         (fn []
+           (set-state
+             (fn [state]
+               (let [;; Toogle my account
+                     state (update-in state [:faucet-page/config :faucet-page.config/my-accounts?] not)
+                     ;; Always remove target
+                     state (update state :convex-web/faucet dissoc :convex-web.faucet/target)]
+                 state))))}]
 
        [:span.text-xs.text-gray-600.uppercase.ml-2
         "Show My Accounts"]]
 
       ;; -- Select or Input text
       (if to-my-account?
-        [gui/Select
-         {:value target
-          :options addresses
-          :on-change
-          (fn [address]
-            (if (= select-placeholder address)
-              ;; Selecting the placeholder 'resets' the (target) state
-              (set-state (fn [state]
-                           (-> state
-                               (update :convex-web/faucet dissoc :convex-web.faucet/target)
-                               (dissoc :faucet-page/target))))
-              (do
-                (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] address)
-                (faucet-get-target address set-state))))}]
-        [:input.text-sm.p-1.border
-         {:style {:height "26px"}
+        [gui/AccountSelect
+         {:active-address target
+          :addresses addresses
+          :on-change (fn [address]
+                       (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] address))}]
+        [:input
+         {:class gui/input-style
           :type "text"
           :value target
           :on-change
           #(let [value (gui/event-target-value %)]
-             (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] value))}])]
+             (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] value))}])
 
 
-     ;; -- Balance
-     [:div.flex.flex-col
-      [Caption "Balance"]
-
-      (if-let [account (get-in state [:faucet-page/target :convex-web/account])]
-        [:span.text-xs.font-bold
-         (if-let [balance (balance account)]
-           (format/format-number balance)
-           [gui/SpinnerSmall])]
-        [:span.text-xs.font-bold
-         "-"])]
+      ;; -- Balance
+      [:div.flex.justify-end
+       [ShowBalance2 (sub ::?faucet-target (get frame :frame/uuid) target)
+        {:Pending CheckingBalance
+         :Error BalanceUnavailable
+         :Success BalanceIs}]]]
 
 
      ;; -- Amount
      [:div.flex.flex-col
       [Caption "Amount"]
-      [:input.text-sm.text-right.border
-       {:style {:height "26px"}
+      [:input.text-right
+       {:class gui/input-style
         :type "number"
         :value amount
         :on-change
-        #(let [value (gui/event-target-value %)
-               amount (js/parseInt value)]
-           (set-state assoc-in [:convex-web/faucet :convex-web.faucet/amount] amount))}]]
+        #(let [value (gui/event-target-value %)]
+           (set-state
+             (fn [state]
+               (cond
+                 (or (str/blank? value) (= (js/parseInt value) js/NaN))
+                 (update state :convex-web/faucet dissoc :convex-web.faucet/amount)
+
+                 :else
+                 (assoc-in state [:convex-web/faucet :convex-web.faucet/amount] (js/parseInt value))))))}]]
 
      [:div.flex.mt-6
 
@@ -524,88 +579,65 @@
 
          [:div.mx-2]])
 
-      [gui/DefaultButton
+      [gui/PrimaryButton
        {:disabled invalid?
         :on-click #(do
                      (set-state assoc :ajax/status :ajax.status/pending)
 
                      (backend/POST-faucet faucet {:handler
                                                   (fn [faucet]
-                                                    (set-state assoc
-                                                               :ajax/status :ajax.status/success
-                                                               :convex-web/faucet faucet))
+                                                    (set-state
+                                                      (fn [state]
+                                                        (let [state' (assoc state
+                                                                       :ajax/status :ajax.status/success
+                                                                       :convex-web/faucet faucet)
+
+                                                              ;; Set status to pending because we need to check the updated balance.
+                                                              state' (assoc-in state' [:faucet-page/target :ajax/status] :ajax.status/pending)]
+                                                          state')))
+
+                                                    ;; Get updated target Account - timeout is important to "give some time" to Convex
+                                                    ;; to process the transaction, otherwise we might get the account without the updated balance.
+                                                    (js/setTimeout
+                                                      (fn []
+                                                        (get-faucet-target-account (get frame :frame/uuid) target))
+                                                      500))
 
                                                   :error-handler
                                                   (fn [error]
                                                     (set-state assoc
                                                                :ajax/status :ajax.status/error
                                                                :ajax/error error))}))}
-       [:span.text-xs.uppercase
-        {:class (if invalid?
-                  "text-gray-300"
-                  "text-gray-800")}
-        "Request"]]]]))
+       [:span.block.text-sm.uppercase
+        {:class [gui/button-child-large-padding
+                 (if invalid?
+                   "text-gray-200"
+                   "text-white")]}
+        "Request"]]]
 
-(defn FaucetSuccess [frame {:keys [convex-web/faucet faucet-page/target]} set-state]
-  [:div.flex.flex-col.flex-1.items-center.space-y-4
-   [:span.text-lg
-    "Success!"]
 
-   ;; -- Your current balance is x.
-   [:span.text-sm
-    "Your current balance is "
+     ;; -- Status
+     (let [copy-style "text-base text-gray-700"]
+       (case status
+         :ajax.status/pending
+         [:span {:class copy-style}
+          "Processing..."]
 
-    [:span.font-bold.text-indigo-500
-     (format/format-number (+ (balance (get target :convex-web/account))
-                              (get faucet :convex-web.faucet/amount)))]
+         :ajax.status/error
+         [:span {:class copy-style}
+          (get-in state [:ajax/error :response :error :message])]
 
-    "."]
+         :ajax.status/success
+         [ShowBalance2 (sub ::?faucet-target (get frame :frame/uuid) target)
+          {:Pending CheckingBalance
+           :Error BalanceUnavailable
+           :Success YourUpdatedBalanceIs}]
 
-   [gui/DefaultButton
-    {:on-click
-     (fn []
-       (if (:frame/modal? frame)
-         (stack/pop)
-         (set-state #(dissoc % :ajax/status))))}
-    [:span.text-xs.uppercase "Done"]]])
-
-(defn FaucetError [frame {:keys [ajax/error]} set-state]
-  [:div.flex.flex-col.flex-1.items-center.space-y-4
-   [:span.text-lg
-    "Sorry"]
-
-   [:span.text-sm
-    (get-in error [:response :error :message])]
-
-   [gui/DefaultButton
-    {:on-click
-     (fn []
-       (if (:frame/modal? frame)
-         (stack/pop)
-         (set-state #(dissoc % :ajax/status))))}
-    [:span.text-xs.uppercase "Done"]]])
-
-(defn FaucetPage [frame {:keys [ajax/status] :as state} set-state]
-  [:div.flex.flex-1
-   (case status
-     :ajax.status/pending
-     [gui/Spinner]
-
-     :ajax.status/success
-     [FaucetSuccess frame state set-state]
-
-     :ajax.status/error
-     [FaucetError frame state set-state]
-
-     [FaucetInput frame state set-state])])
+         ;; Unknown status
+         [:div]))]))
 
 (def faucet-page
   #:page {:id :page.id/faucet
           :title "Faucet"
-          :component #'FaucetPage
-          :on-push
-          (fn [_ state set-state]
-            (when-let [address (get-in state [:convex-web/faucet :convex-web.faucet/target])]
-              (set-state assoc :faucet-page/target {:ajax/status :ajax.status/pending})
-
-              (faucet-get-target address set-state)))})
+          :description "The Faucet lets you request free Convex coins for your Accounts. You can make a request once every 5 minutes."
+          :component #'FaucetPage})

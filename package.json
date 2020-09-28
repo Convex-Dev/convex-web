@@ -10,7 +10,7 @@
     "@tailwindcss/typography": "^0.2.0",
     "@tailwindcss/ui": "^0.6.2",
     "@tailwindui/react": "^0.1.1",
-    "codemirror": "^5.57.0",
+    "codemirror": "^5.58.1",
     "highlight.js": "^10.2.0",
     "jdenticon": "^3.0.1",
     "react": "^16.12.0",

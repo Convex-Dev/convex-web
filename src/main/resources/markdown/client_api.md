@@ -1,10 +1,31 @@
+## Account
+
+*GET* https://convex.world/api/v1/accounts/<address>
+
+### Response
+
+Examples:
+ ```json
+{
+  "address": "7E66429CA9c10e68eFae2dCBF1804f0F6B3369c7164a3187D6233683c258710f",
+  "is_library": false,
+  "is_actor": false,
+  "memory_size": 75,
+  "allowance": 10000000,
+  "type": "user",
+  "balance": 10000000000,
+  "sequence": 0,
+  "environment": {}
+}
+```
+
 ## Faucet
 
 *POST* https://convex.world/api/v1/faucet
 
 ### Payload
-- Address: ED25519 public key of your key pair.
-- Amount: The requested amount.
+- `address`: ED25519 public key of your key pair.
+- `amount`: The requested amount.
 
 Examples:
 ```json
@@ -31,8 +52,8 @@ Examples:
 *POST* https://convex.world/api/v1/query
 
 ### Payload
-- Address: ED25519 public key of your key pair.
-- Source: Convex Lisp source that you want to execute.
+- `address`: ED25519 public key of your key pair.
+- `source`: Convex Lisp source that you want to execute.
 
 Examples:
 ```json
@@ -66,8 +87,9 @@ The `error-code` key is present if the response is an error:
 *POST* https://convex.world/api/v1/transaction/prepare
 
 ### Payload
-- Address: ED25519 public key of your key pair.
-- Source: Convex Lisp source that you want to execute.
+- `address`: ED25519 public key of your key pair.
+- `source`: Convex Lisp source that you want to execute.
+- (Optional) `sequence_number`: The sequence number used to create the transaction. 
 
 Examples:
 ```json
@@ -82,7 +104,7 @@ Examples:
 Examples:
  ```json
 {
-  "sequence-number": 1,
+  "sequence_number": 1,
   "address": "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71",
   "hash": "badb861fc51d49e0212c0304b1890da42e4a4b54228986be17de8d7dccd845e2",
   "source": "(map inc [1 2 3])"
@@ -94,9 +116,9 @@ Examples:
 *POST* https://convex.world/api/v1/transaction/submit
 
 ### Payload
-- Address: ED25519 public key of your key pair.
-- Hash: Prepare Transaction response's hash.
-- Sig: ED25519 signature of the hash using your key pair.
+- `address`: ED25519 public key of your key pair.
+- `hash`: Prepare Transaction response's hash.
+- `sig`: ED25519 signature of the hash using your key pair.
 
 Examples:
 ```json

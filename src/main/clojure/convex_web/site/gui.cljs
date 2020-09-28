@@ -23,17 +23,67 @@
           (.-target)
           (.-value)))
 
-(defn scroll-into-view [id]
+(defn scroll-into-view
+  "https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView"
+  [id & [options]]
   (some-> (.getElementById js/document id)
-          (.scrollIntoView)))
+          (.scrollIntoView (or (clj->js options) #js {}))))
 
-(defn scroll-element-into-view [el]
+(defn scroll-element-into-view
+  "https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView"
+  [el]
   (when el
     (.scrollIntoView el)))
 
 (defn highlight-block [el]
   (when el
     (.highlightBlock hljs el)))
+
+(defn account-type-text-color [account-status]
+  (cond
+    (get account-status :convex-web.account-status/library?)
+    "text-purple-500"
+
+    (get account-status :convex-web.account-status/actor?)
+    "text-indigo-500"
+
+    :else
+    "text-green-500"))
+
+(defn account-type-bg-color [account-status]
+  (cond
+    (get account-status :convex-web.account-status/library?)
+    "bg-purple-500"
+
+    (get account-status :convex-web.account-status/actor?)
+    "bg-indigo-500"
+
+    :else
+    "bg-green-500"))
+
+(defn account-type-label [account-status]
+  (cond
+    (get account-status :convex-web.account-status/library?)
+    "library"
+
+    (get account-status :convex-web.account-status/actor?)
+    "actor"
+
+    :else
+    "user"))
+
+(defn account-type-description [account-status]
+  (cond
+    (get account-status :convex-web.account-status/library?)
+    "An immutable Account containing code and other static information. A
+     Library is essentially an Actor with no exported functionality."
+
+    (get account-status :convex-web.account-status/actor?)
+    "An Autonomous Actor on the Convex network, which can be used to implement
+     smart contracts."
+
+    :else
+    "An external user of Convex."))
 
 (def identicon-size-small 26)
 (def identicon-size-large 40)
@@ -149,6 +199,24 @@
         [:polygon#Fill-2 {:fill "#4B74CF" :points "0 47.9998 28 63.9998 0 15.9998"}]
         [:polygon#Fill-3 {:fill "#62A6E1" :points "28.0008 -0.0008 28.0008 63.9992 55.9988 16.0032 55.9988 15.9992"}]
         [:polygon#Fill-4 {:fill "#C3EAFC" :points "28.0008 -0.0008 0.0008 15.9992 28.0008 63.9992"}]]]]]]])
+
+(defn ArrowCircleRightIcon [& [attrs]]
+  [:svg.w-6.h-6
+   (merge {:fill "none"
+           :stroke "currentColor"
+           :viewBox "0 0 24 24"
+           :xmlns "http://www.w3.org/2000/svg"}
+          attrs)
+   [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"}]])
+
+(defn ArrowCircleDownIcon [& [attrs]]
+  [:svg.w-6.h-6
+   (merge {:fill "none"
+           :stroke "currentColor"
+           :viewBox "0 0 24 24"
+           :xmlns "http://www.w3.org/2000/svg"}
+          attrs)
+   [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"}]])
 
 (defn InformationCircleIcon [& [attrs]]
   [:svg
@@ -399,6 +467,19 @@
               {:ref highlight-block}
               code]])]))]))
 
+
+(def address-hover-class "hover:underline hover:text-blue-500")
+
+(def button-child-small-padding "px-6 py-2")
+(def button-child-large-padding "px-8 py-3")
+
+(defn ButtonText [{:keys [class]} text]
+  [:span.block.font-mono.text-sm.text-white.uppercase
+   {:class (or class button-child-large-padding)}
+   text])
+
+(def input-style "h-10 text-sm border rounded-md px-4 bg-blue-100 bg-opacity-25")
+
 (defn DefaultButton [attrs child]
   (let [disabled? (get attrs :disabled)]
     [:button
@@ -422,12 +503,56 @@
     [:button
      (merge {:class
              ["px-4 py-3"
-              "bg-gray-900"
+              "bg-gray-900 hover:bg-gray-700 active:bg-black"
               "rounded"
               "shadow-md"
               "focus:outline-none"
-              "hover:opacity-75"
-              "active:bg-black"
+              (if disabled?
+                "pointer-events-none")]
+             :on-click identity}
+            attrs)
+     child]))
+
+(defn PrimaryButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge {:class
+             ["bg-blue-500 hover:bg-blue-400 active:bg-blue-600"
+              "rounded"
+              "shadow-md"
+              "focus:outline-none"
+              (if disabled?
+                "pointer-events-none")]
+             :on-click identity}
+            attrs)
+     child]))
+
+(defn SecondaryButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge {:class
+             ["bg-indigo-500 hover:bg-indigo-400 active:bg-indigo-600"
+              "rounded"
+              "shadow-md"
+              "focus:outline-none"
+              (if disabled?
+                "pointer-events-none")]
+             :on-click identity}
+            attrs)
+     child]))
+
+(defn LightBlueButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge {:style
+             {:background-color "#E5EEF9"}
+             :class
+             ["px-4 py-3"
+              "rounded"
+              "shadow-md"
+              "focus:outline-none"
+              "hover:bg-gray-200"
+              "active:bg-gray-300"
               (if disabled?
                 "pointer-events-none")]
              :on-click identity}
@@ -598,8 +723,9 @@
          [ClipboardCopy address-blob]]]]
 
       ;; -- Type
-      [:span.inline-flex.justify-center.items-center.font-mono.text-xs.text-white.uppercase.bg-blue-700.mt-2.rounded
-       {:style {:width "88px" :height "32px"}}
+      [:span.inline-flex.justify-center.items-center.font-mono.text-xs.text-white.uppercase.mt-2.rounded
+       {:style {:width "88px" :height "32px"}
+        :class (account-type-bg-color status)}
        type]]
 
 
@@ -668,47 +794,18 @@
                                                                      :syntax syntax}})}]])
             [:span.text-xs.text-gray-700.text-center "Empty"]))]]]]))
 
-(defn RangeNavigation [{:keys [start end total on-previous-click on-next-click]}]
-  [:div.flex.py-2
-
-   ;; -- Previous
-   [DefaultButton
-    {:disabled (= start 0)
-     :on-click on-previous-click}
-    [:span.text-xs "Previous"]]
-
-   [:div.mx-1]
-
-   ;; -- Next
-   [DefaultButton
-    {:disabled (= end total)
-     :on-click on-next-click}
-    [:span.text-xs.select-none "Next"]]
-
-
-   ;; -- Range
-   [:div.flex.ml-10.items-center.border-b
-    [:span.text-xs.text-gray-600.uppercase "Start"]
-    [:span.text-xs.font-bold.text-indigo-500.ml-1 start]
-
-    [:span.text-xs.text-gray-600.uppercase.ml-2 "End"]
-    [:span.text-xs.font-bold.text-indigo-500.ml-1 end]
-
-    [:span.text-xs.text-gray-600.uppercase.ml-4 "Total"]
-    [:span.text-xs.font-bold.text-indigo-500.ml-1 total]]])
-
-(defn RangeNavigation2 [{:keys [page-count
-                                page-num
-                                first-href
-                                last-href
-                                previous-href
-                                previous-disabled?
-                                next-href
-                                next-disabled?
-                                ajax/status]}]
+(defn RangeNavigation [{:keys [page-count
+                               page-num
+                               first-href
+                               last-href
+                               previous-href
+                               previous-disabled?
+                               next-href
+                               next-disabled?
+                               ajax/status]}]
   (let [action-style "block font-mono text-xs text-gray-800 hover:text-gray-500 hover:underline active:text-gray-900 uppercase"
         index-style "block font-mono text-xs text-gray-600 uppercase"]
-    [:div.flex.py-2.space-x-8
+    [:div.flex.space-x-8
 
      ;; Navigation
      ;; =============
@@ -750,7 +847,7 @@
         "")]]))
 
 (defn MarkdownCodeBlock [{:keys [value]}]
-  [:pre.relative
+  [:pre.relative.bg-blue-100.bg-opacity-25
    [:div.absolute.right-0.top-0.m-2
     [ClipboardCopy value {:color "text-black"
                           :hover "hover:opacity-50"}]]
@@ -764,3 +861,61 @@
    {:source markdown
     :renderers
     {:code (reagent/reactify-component MarkdownCodeBlock)}}])
+
+(defn AccountSelect [{:keys [active-address addresses on-change]}]
+  (let [state-ref (reagent/atom {:show? false})]
+    (fn [{:keys [active-address addresses on-change]}]
+      (let [{:keys [show?]} @state-ref
+
+            item-style ["inline-flex w-full h-16 relative py-2 pl-3 pr-9"
+                        "cursor-default select-none"
+                        "text-gray-900 text-xs"
+                        "hover:bg-blue-100 hover:bg-opacity-50 active:bg-blue-200"]]
+        [:div
+
+         ;; -- Selected
+         [:button.h-10.inline-flex.items-center.justify-between.cursor-default.w-full.border.border-gray-200.rounded-md.bg-white.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5
+          {:on-click #(swap! state-ref update :show? not)}
+
+          (if (str/blank? active-address)
+            ;; Empty, but fill the space.
+            [:div.flex-1]
+            [:div.flex.flex-1.items-center.px-2
+             [Identicon {:value active-address :size 40}]
+
+             [:span.font-mono.block.ml-2
+              (format/address-blob active-address)]])
+
+          [:svg.h-5.w-5.text-gray-400.pr-2.pointer-events-none
+           {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
+           [:path {:d "M7 7l3-3 3 3m0 6l-3 3-3-3" :stroke-width "1.5" :stroke-linecap "round" :stroke-linejoin "round"}]]]
+
+         ;; -- Dropdown
+         [:div.relative
+          [Transition
+           (merge dropdown-transition {:show? show?})
+           [Dismissible
+            {:on-dismiss #(swap! state-ref update :show? (constantly false))}
+            [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
+             [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
+
+              (for [address addresses]
+                ^{:key address}
+                [:li
+                 {:class item-style
+                  :on-click
+                  (fn []
+                    (reset! state-ref {:show? false})
+
+                    (when on-change
+                      (on-change address)))}
+
+                 [:div.flex.items-center
+                  [:div.h-5.w-5.mr-2
+                   (when (= address active-address)
+                     [CheckIcon {:class "h-5 w-5"}])]
+
+                  [Identicon {:value address :size 40}]
+
+                  [:span.font-mono.block.ml-2
+                   (format/address-blob address)]]])]]]]]]))))

@@ -49,7 +49,7 @@
   ;; so Shadow CLJS release fails (npx shadow-cljs release main).
   com.google.guava/guava {:mvn/version "29.0-jre"}
 
-  com.brunobonacci/mulog {:mvn/version "0.4.0"}
+  com.brunobonacci/mulog {:mvn/version "0.5.0"}
 
   lambdaisland/glogi {:mvn/version "1.0.74"}
 
@@ -71,7 +71,7 @@
   nano-id {:mvn/version "1.0.0"}
   expound {:mvn/version "0.8.5"}
   fipp {:mvn/version "0.6.23"}
-  zprint/zprint {:mvn/version "1.0.0"}
+  zprint/zprint {:mvn/version "1.0.1"}
   cljs-ajax {:mvn/version "0.8.1"}}
 
  :aliases

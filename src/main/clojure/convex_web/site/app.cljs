@@ -161,12 +161,18 @@
        :href (rfe/href :route-name/sandbox)}
 
 
-      ;; Wallet
+      ;; Tools
       ;; ==============
-      {:text "Wallet"
+      {:text "Tools"
        :top-level? true
-       :route-name :route-name/wallet
-       :href (rfe/href :route-name/wallet)}
+       :children
+       [{:text "Wallet"
+         :route-name :route-name/wallet
+         :href (rfe/href :route-name/wallet)}
+
+        {:text "Faucet"
+         :route-name :route-name/faucet
+         :href (rfe/href :route-name/faucet)}]}
 
 
       ;; Explorer
@@ -244,8 +250,8 @@
       [:a.self-start.font-medium.pl-2.border-l-2
        (merge {:href href
                :class [(if top-level?
-                         "text-blue-400"
-                         "text-black")
+                         "text-blue-500"
+                         "text-gray-black")
                        (if active?
                          "border-blue-400"
                          "border-transparent")]}
@@ -284,31 +290,37 @@
   (let [set-state (stack/make-set-state uuid)
 
         {:page/keys [title component]} page]
-    [:div.flex.justify-center.items-stretch.fixed.top-0.left-0.w-screen.h-screen.py-32.z-50
-     {:style {:background-color "rgba(0,0,0,0.1"}}
 
-     [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
+    [:div {:class "fixed flex justify-center z-10 inset-0 overflow-y-auto"}
 
-      ;; -- Header
-      [:div.border-b.border-gray-400.bg-gray-100.rounded-t-lg
-       [:div.relative.flex.justify-between.p-4
+     ;; -- Background
+     [:div.fixed.inset-0.transition-opacity
+      [:div.absolute.inset-0.bg-gray-500.opacity-75]]
 
-        [:span.font-mono.text-lg.leading-none title]
+     ;; -- Content
+     [:div
+      {:class "inline-block px-4 pt-20 pb-4 transform transition-all"}
 
-        [gui/Tooltip
-         {:title "Close"}
-         [gui/IconXCircle
-          {:class
-           ["w-6 h-6"
-            "absolute top-0 right-0"
-            "mt-2 mr-2"
-            "text-gray-600 hover:text-gray-700"
-            "cursor-pointer"]
-           :on-click #(stack/pop)}]]]]
+      [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
 
-      ;; -- Body
-      [:div.flex.flex-1.overflow-auto
-       [component frame state set-state]]]]))
+       ;; -- Header
+       [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
+        [:div.h-20.relative.flex.justify-between.items-center.px-6
+
+         [:span.font-mono.text-lg.leading-none title]
+
+         [gui/Tooltip
+          {:title "Close"}
+          [gui/IconXCircle
+           {:class
+            ["w-6 h-6"
+             "text-gray-600 hover:text-gray-700"
+             "cursor-pointer"]
+            :on-click #(stack/pop)}]]]]
+
+       ;; -- Body
+       [:div.flex.flex-1.overflow-auto
+        [component frame state set-state]]]]]))
 
 ;; TODO This should be extracted into a "generic" component, so it can be used in other parts of the site.
 (defn AccountSelect []
@@ -318,7 +330,10 @@
 
             selected (or selected (session/?active-address))
 
-            item-style "text-gray-900 text-xs cursor-default select-none relative py-2 pl-3 pr-9 hover:bg-gray-100"]
+            item-style ["inline-flex w-full h-16 relative py-2 pl-3 pr-9"
+                        "cursor-default select-none"
+                        "text-gray-900 text-xs"
+                        "hover:bg-blue-100 hover:bg-opacity-50 active:bg-blue-200"]]
         [:div.space-y-1
 
          [:div.relative
@@ -334,54 +349,54 @@
              [:svg.h-5.w-5.text-gray-400 {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
               [:path {:d "M7 7l3-3 3 3m0 6l-3 3-3-3" :stroke-width "1.5" :stroke-linecap "round" :stroke-linejoin "round"}]]]]]
 
-          (when show?
-            ;; Options
-            [gui/Dismissible
-             {:on-dismiss #(swap! *state update :show? (constantly false))}
-             [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
-              [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
+          [gui/Transition
+           (merge gui/dropdown-transition {:show? show?})
+           [gui/Dismissible
+            {:on-dismiss #(swap! *state update :show? (constantly false))}
+            [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
+             [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
 
-               ;; -- Create Account
-               [:li
-                {:class item-style
-                 :on-click
-                 #(do
-                    (reset! *state {:show? false})
+              ;; -- Create Account
+              [:li
+               {:class item-style
+                :on-click
+                #(do
+                   (reset! *state {:show? false})
 
-                    (stack/push :page.id/create-account {:modal? true}))}
+                   (stack/push :page.id/create-account {:modal? true}))}
 
-                [:div.flex.items-center
-                 [:div.h-5.w-5.mr-2
-                  [gui/PlusIcon {:class "h-5 w-5"}]]
+               [:div.flex.items-center
+                [:div.h-5.w-5.mr-2
+                 [gui/PlusIcon {:class "h-5 w-5"}]]
 
-                 [:span.font-mono.text-base.block
-                  "Create Account"]]]
+                [:span.font-mono.text-base.block
+                 "Create Account"]]]
 
-               ;; -- Accounts
-               (for [{:convex-web.account/keys [address]} (session/?accounts)]
-                 ^{:key address}
-                 [:li
-                  {:class item-style
-                   :on-click
-                   #(do
-                      (reset! *state {:show? false :selected address})
+              ;; -- Accounts
+              (for [{:convex-web.account/keys [address]} (session/?accounts)]
+                ^{:key address}
+                [:li
+                 {:class item-style
+                  :on-click
+                  #(do
+                     (reset! *state {:show? false :selected address})
 
-                      (session/pick-address address))}
+                     (session/pick-address address))}
 
-                  [:div.flex.items-center
-                   [:div.h-5.w-5.mr-2
-                    (when (= address selected)
-                      [gui/CheckIcon {:class "h-5 w-5"}])]
+                 [:div.flex.items-center
+                  [:div.h-5.w-5.mr-2
+                   (when (= address selected)
+                     [gui/CheckIcon {:class "h-5 w-5"}])]
 
-                   [gui/Identicon {:value address :size 40}]
+                  [gui/Identicon {:value address :size 40}]
 
-                   [:span.font-mono.block.ml-2
-                    (format/address-blob address)]]])]]])]]))))
+                  [:span.font-mono.block.ml-2
+                   (format/address-blob address)]]])]]]]]]))))
 
 
 (defn TopNav []
   (let [link-style "font-mono text-gray-800 hover:text-gray-500 active:text-black"]
-    [:div.fixed.top-0.inset-x-0.z-50.h-16.border-b.border-gray-100.bg-white
+    [:div.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
      [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-10
 
       ;; Logo
@@ -430,23 +445,16 @@
 
          :else
          ;; -- Create Account
-         [:span.inline-flex.rounded-md.shadow-sm
-          [:button
-           {:class
-            ["inline-flex items-center justify-center rounded h-10 w-40"
-             "transition ease-in-out duration-150"
-             "focus:outline-none focus:border-blue-700 focus:shadow-outline-indigo"
-             "bg-blue-600 hover:bg-blue-500 active:bg-blue-700"
-             "border border-transparent"
-             "font-mono text-xs text-white text-sm uppercase"
-             "px-2.5 py-1.5"]
-            :type "button"
-            :on-click #(stack/push :page.id/create-account {:modal? true})}
+         [gui/PrimaryButton
+          {:on-click #(stack/push :page.id/create-account {:modal? true})}
+          [:span.block.font-mono.text-sm.text-white.uppercase
+           {:class gui/button-child-small-padding}
            "Create Account"]])]]]))
 
 (defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component
          title :page/title
+         description :page/description
          style :page/style} page
 
         set-state (stack/make-set-state uuid)]
@@ -462,7 +470,7 @@
        [SideNav (:route/match (router/?route))]
 
        ;; -- Page
-       [:div.relative.flex.flex-col.flex-1.xl:pl-24.overflow-auto
+       [:div.relative.flex.flex-col.flex-1.xl:pl-24.space-y-4.overflow-auto
         (when active-page-frame
           [:<>
 
@@ -474,12 +482,15 @@
                                 ;; Default
                                 "text-3xl")]
 
-               [:<>
+               [:div.flex.flex-col.space-y-4
                 [:span.font-mono.text-gray-900
-                 {:class title-size}
+                 {:class [title-size "leading-none"]}
                  title]
 
-                [:div.w-32.h-2.bg-blue-400.mt-4.mb-8]]))
+                (when description
+                  [:p.text-gray-500.text-base.max-w-screen-sm description])
+
+                [:div.w-32.h-2.bg-blue-500.mb-8]]))
 
            [Component active-page-frame state set-state]])]]]
 
@@ -516,17 +527,18 @@
 
    ;; Devtools
    ;; ================
-   [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-300.z-50
+   (when goog.DEBUG
+     [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-300.z-50
 
-    [gui/IconAdjustments
-     (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
-                      "text-green-500"
-                      "text-red-500")]
-       {:class [bg-color "w-6 h-6"]})]
+      [gui/IconAdjustments
+       (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
+                        "text-green-500"
+                        "text-red-500")]
+         {:class [bg-color "w-6 h-6"]})]
 
-    [:input.ml-2 {:type "checkbox"
-                  :checked (sub :devtools/?enabled?)
-                  :on-change #(disp :devtools/!toggle)}]]
+      [:input.ml-2 {:type "checkbox"
+                    :checked (sub :devtools/?enabled?)
+                    :on-change #(disp :devtools/!toggle)}]])
 
    (when (sub :devtools/?enabled?)
      [devtools/Inspect])])
