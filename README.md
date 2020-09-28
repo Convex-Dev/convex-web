@@ -16,7 +16,7 @@ npm install
 
 Compile CSS:
 ```
-bin/compile_css
+bin/compile-css
 ```
 
 Run Shadow CLJS:
@@ -48,12 +48,12 @@ npm install
 
 Compile & bundle app:
 ```
-bin/compile_app
+bin/release-app
 ```
 
 Compile CSS:
 ```
-NODE_ENV=production bin/compile_css
+NODE_ENV=production bin/compile-css
 ```
 
 The `NODE_ENV` environment variable is very important because
