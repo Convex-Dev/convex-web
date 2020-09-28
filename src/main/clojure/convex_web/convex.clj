@@ -20,6 +20,11 @@
       (.getExceptional context)
       (.getResult context))))
 
+(defn ^String trim-0x [^String s]
+  (if (str/starts-with? s "0x")
+    (subs s 2)
+    s))
+
 (defn ^String address->checksum-hex [^Address address]
   (.toChecksumHex address))
 

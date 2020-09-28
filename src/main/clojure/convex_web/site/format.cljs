@@ -14,12 +14,12 @@
 (defn format-number [n]
   (.format (goog.i18n.NumberFormat. goog.i18n.NumberFormat.Format/DECIMAL) n))
 
-(defn address-blob [address]
-  (when-not (str/blank? address)
-    (if (str/starts-with? address "0x")
-      address
-      (str "0x" address))))
+(defn prefix-0x [s]
+  (when-not (str/blank? s)
+    (if (str/starts-with? s "0x")
+      s
+      (str "0x" s))))
 
-(defn address-trim-blob [blob]
-  (when-not (str/blank? blob)
-    (str/replace blob #"^0x" "")))
+(defn trim-0x [s]
+  (when-not (str/blank? s)
+    (str/replace s #"^0x" "")))

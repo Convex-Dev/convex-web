@@ -127,7 +127,7 @@
      :others
      [;; Guides
       ;; ==============
-      {:text "Guides"
+      {:text "Documentation"
        :top-level? true
        :route-name :route-name/documentation
        :href (rfe/href :route-name/documentation)
@@ -165,6 +165,8 @@
       ;; ==============
       {:text "Tools"
        :top-level? true
+       :route-name :route-name/tools
+       :href (rfe/href :route-name/tools)
        :children
        [{:text "Wallet"
          :route-name :route-name/wallet
@@ -172,7 +174,11 @@
 
         {:text "Faucet"
          :route-name :route-name/faucet
-         :href (rfe/href :route-name/faucet)}]}
+         :href (rfe/href :route-name/faucet)}
+
+        {:text "Transfer"
+         :route-name :route-name/transfer
+         :href (rfe/href :route-name/transfer)}]}
 
 
       ;; Explorer
@@ -391,7 +397,7 @@
                   [gui/Identicon {:value address :size 40}]
 
                   [:span.font-mono.block.ml-2
-                   (format/address-blob address)]]])]]]]]]))))
+                   (format/prefix-0x address)]]])]]]]]]))))
 
 
 (defn TopNav []
@@ -474,34 +480,24 @@
         (when active-page-frame
           [:<>
 
-           ;; -- Title (optional)
-           (when-not (str/blank? title)
-             (let [title-size (case (get style :page-style/title-size)
-                                :large "text-3xl"
-                                :small "text-base"
-                                ;; Default
-                                "text-3xl")]
-
-               [:div.flex.flex-col.space-y-4
+           [:div.flex.flex-col.space-y-4
+            (when title
+              (let [title-size (case (get style :page-style/title-size)
+                                 :large "text-3xl"
+                                 :small "text-base"
+                                 ;; Default
+                                 "text-3xl")]
                 [:span.font-mono.text-gray-900
                  {:class [title-size "leading-none"]}
-                 title]
+                 title]))
 
-                (when description
-                  [:p.text-gray-500.text-base.max-w-screen-sm description])
+            (when description
+              [:p.text-gray-500.text-base.max-w-screen-sm description])
 
-                [:div.w-32.h-2.bg-blue-500.mb-8]]))
+            (when title
+              [:div.w-32.h-2.bg-blue-500.mb-8])]
 
-           [Component active-page-frame state set-state]])]]]
-
-
-     ;; Modal
-     ;; ================
-     (let [{:frame/keys [modal?] :as frame} (stack/?active-frame)]
-       (when modal?
-         [Modal frame]))
-
-     ]))
+           [Component active-page-frame state set-state]])]]]]))
 
 (defn Page [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component} page
@@ -523,6 +519,13 @@
      (if (get-in active-page-frame [:frame/page :page/scaffolding?] true)
        [Scaffolding active-page-frame]
        [Page active-page-frame]))
+
+
+   ;; Modal
+   ;; ================
+   (let [{:frame/keys [modal?] :as frame} (stack/?active-frame)]
+     (when modal?
+       [Modal frame]))
 
 
    ;; Devtools

@@ -115,6 +115,16 @@
        :start (fn [_]
                 (stack/push :page.id/my-account {:reset? true}))}]}]
 
+
+   ;; Tools
+   ;; ==============
+   ["tools"
+    {:name :route-name/tools
+     :controllers
+     [{:identity identity
+       :start (fn [_]
+                (stack/push :page.id/under-construction {:reset? true}))}]}]
+
    ;; Wallet
    ;; ==============
    ["wallet"
