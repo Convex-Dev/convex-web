@@ -288,7 +288,13 @@
          {}
          [:span.block.font-mono.text-sm.text-white.uppercase
           {:class gui/button-child-large-padding}
-          "Try It For Yourself"]]]]]]))
+          "Try It For Yourself"]]]]]
+
+     [:hr.border-gray-200.mb-14]
+
+     [:div.flex.flex-col.items-center.space-y-4
+      [:span.block.text-gray-500.text-sm.mb-14
+       "© Copyright 2020 The Convex Foundation."]]]))
 
 (def welcome-page
   #:page {:id :page.id/welcome
