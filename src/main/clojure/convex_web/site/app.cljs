@@ -165,6 +165,8 @@
       ;; ==============
       {:text "Tools"
        :top-level? true
+       :route-name :route-name/tools
+       :href (rfe/href :route-name/tools)
        :children
        [{:text "Wallet"
          :route-name :route-name/wallet
