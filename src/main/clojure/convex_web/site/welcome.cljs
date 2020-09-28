@@ -1,11 +1,78 @@
 (ns convex-web.site.welcome
-  (:require [convex-web.site.markdown :as markdown]
-            [convex-web.site.gui :as gui]
+  (:require [convex-web.site.gui :as gui]
 
             [reagent.core :as reagent]
             [reitit.frontend.easy :as rfe]
 
             ["@tailwindui/react" :refer [Transition]]))
+
+(defn nav []
+  {:documentation
+   {:text "Documentation"
+    :items
+    [{:text "Getting Started"
+      :href (rfe/href :route-name/documentation-getting-started)}
+
+     {:text "Lisp Guide"
+      :href (rfe/href :route-name/documentation-tutorial)}
+
+     {:text "Advanced Topics"
+      :href (rfe/href :route-name/advanced-topics)}
+
+     {:text "Reference"
+      :href (rfe/href :route-name/documentation-reference)}
+
+     {:text "Client API"
+      :href (rfe/href :route-name/client-api)}]}
+
+   :tools
+   {:text "Tools"
+    :items
+    [{:text "Wallet"
+      :href (rfe/href :route-name/wallet)}
+
+     {:text "Faucet"
+      :href (rfe/href :route-name/faucet)}
+
+     {:text "Transfer"
+      :href (rfe/href :route-name/transfer)}]}
+
+   :explorer
+   {:text "Explorer"
+    :items
+    [{:text "Accounts"
+      :href (rfe/href :route-name/accounts-explorer)}
+
+     {:text "Blocks"
+      :href (rfe/href :route-name/blocks)}
+
+     {:text "Transactions"
+      :href (rfe/href :route-name/transactions)}]}
+
+   :about
+   {:text "About"
+    :items
+    [#_{:text "Vision"
+        :href (rfe/href :route-name/vision)}
+
+     {:text "FAQ"
+      :href (rfe/href :route-name/faq)}
+
+     #_{:text "Concepts"
+        :href (rfe/href :route-name/concepts)}
+
+     #_{:text "White Paper"
+        :href (rfe/href :route-name/white-paper)}
+
+     #_{:text "Get Involved"
+        :href (rfe/href :route-name/get-involved)}
+
+     #_{:text "Roadmap"
+        :href (rfe/href :route-name/roadmap)}
+
+     #_{:text "Convex Foundation"
+        :href (rfe/href :route-name/convex-foundation)}]}})
+
 
 (defn NavButton [text href]
   [:a.font-mono.text-base.hover:text-gray-500.px-4.py-2
@@ -74,76 +141,42 @@
    [:div.flex.items-center.space-x-4
     ;; -- Guides
     [Dropdown
-     {:text "Documentation"
-      :items
-      [{:text "Getting Started"
-        :href (rfe/href :route-name/documentation-getting-started)}
-
-       {:text "Lisp Guide"
-        :href (rfe/href :route-name/documentation-tutorial)}
-
-       {:text "Advanced Topics"
-        :href (rfe/href :route-name/advanced-topics)}
-
-       {:text "Reference"
-        :href (rfe/href :route-name/documentation-reference)}
-
-       {:text "Client API"
-        :href (rfe/href :route-name/client-api)}]}]
+     (:documentation (nav))]
 
     ;; -- Sandbox
     [NavButton "Sandbox" (rfe/href :route-name/sandbox)]
 
     ;; -- Tools
     [Dropdown
-     {:text "Tools"
-      :items
-      [{:text "Wallet"
-        :href (rfe/href :route-name/wallet)}
-
-       {:text "Faucet"
-        :href (rfe/href :route-name/faucet)}
-
-       {:text "Transfer"
-        :href (rfe/href :route-name/transfer)}]}]
+     (:tools (nav))]
 
     ;; -- Explorer
     [Dropdown
-     {:text "Explorer"
-      :items
-      [{:text "Accounts"
-        :href (rfe/href :route-name/accounts-explorer)}
-
-       {:text "Blocks"
-        :href (rfe/href :route-name/blocks)}
-
-       {:text "Transactions"
-        :href (rfe/href :route-name/transactions)}]}]
+     (:explorer (nav))]
 
     ;; -- About
     [Dropdown
-     {:text "About"
-      :items
-      [#_{:text "Vision"
-          :href (rfe/href :route-name/vision)}
+     (:about (nav))]]])
 
-       {:text "FAQ"
-        :href (rfe/href :route-name/faq)}
+(defn BottomNavMenu [{:keys [text items]}]
+  [:div.flex.flex-col.space-y-6
 
-       #_{:text "Concepts"
-          :href (rfe/href :route-name/concepts)}
+   [:span.font-mono.text-base.text-black text]
 
-       #_{:text "White Paper"
-          :href (rfe/href :route-name/white-paper)}
+   (for [{:keys [text href]} items]
+     ^{:key text}
+     [:a {:href href}
+      [:span.text-sm.text-gray-600.hover:text-gray-400.active:text-gray-800 text]])])
 
-       #_{:text "Get Involved"
-          :href (rfe/href :route-name/get-involved)}
+(defn BottomNav []
+  [:div.flex.space-x-32
 
-       #_{:text "Roadmap"
-          :href (rfe/href :route-name/roadmap)}
-
-       #_{:text "Convex Foundation"
-          :href (rfe/href :route-name/convex-foundation)}]}]]])
+   (let [{:keys [documentation tools explorer about]} (nav)]
+     [:<>
+      [BottomNavMenu documentation]
+      [BottomNavMenu tools]
+      [BottomNavMenu explorer]
+      [BottomNavMenu about]])])
 
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["w-1/2 flex flex-col justify-center space-y-8"]
@@ -290,8 +323,14 @@
           {:class gui/button-child-large-padding}
           "Try It For Yourself"]]]]]
 
-     [:hr.border-gray-200.mb-8]
 
+     ;; Bottom nav
+     ;; =========================
+     [:div.mb-20
+      [BottomNav]]
+
+
+     [:hr.border-gray-200.mb-8]
 
      ;; Copyright
      ;; =========================
