@@ -290,10 +290,20 @@
           {:class gui/button-child-large-padding}
           "Try It For Yourself"]]]]]
 
-     [:hr.border-gray-200.mb-14]
+     [:hr.border-gray-200.mb-8]
 
-     [:div.flex.flex-col.items-center.space-y-4
-      [:span.block.text-gray-500.text-sm.mb-14
+
+     ;; Copyright
+     ;; =========================
+     [:div.flex.flex-col.items-center.space-y-4.mb-8
+
+      [:a
+       {:href "https://github.com/Convex-Dev"
+        :target "_blank"}
+       [:div.p-2.bg-gray-100.hover:bg-opacity-50.active:bg-gray-200.rounded-md
+        [gui/GitHubIcon]]]
+
+      [:span.block.text-gray-500.text-sm
        "© Copyright 2020 The Convex Foundation."]]]))
 
 (def welcome-page
