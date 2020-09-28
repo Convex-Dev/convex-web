@@ -74,7 +74,7 @@
    [:div.flex.items-center.space-x-4
     ;; -- Guides
     [Dropdown
-     {:text "Guides"
+     {:text "Documentation"
       :items
       [{:text "Getting Started"
         :href (rfe/href :route-name/documentation-getting-started)}

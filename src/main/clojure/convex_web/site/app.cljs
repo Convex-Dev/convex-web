@@ -127,7 +127,7 @@
      :others
      [;; Guides
       ;; ==============
-      {:text "Guides"
+      {:text "Documentation"
        :top-level? true
        :route-name :route-name/documentation
        :href (rfe/href :route-name/documentation)
