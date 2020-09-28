@@ -391,7 +391,7 @@
                   [gui/Identicon {:value address :size 40}]
 
                   [:span.font-mono.block.ml-2
-                   (format/address-blob address)]]])]]]]]]))))
+                   (format/prefix-0x address)]]])]]]]]]))))
 
 
 (defn TopNav []

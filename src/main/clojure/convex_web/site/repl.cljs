@@ -422,9 +422,9 @@
           (when (= :ajax.status/success (:ajax/status @account-ref))
             [gui/Identicon {:value checksum-hex :size gui/identicon-size-small}])
 
-          [:code.text-xs (format/address-blob checksum-hex)]]]
+          [:code.text-xs (format/prefix-0x checksum-hex)]]]
 
-        [gui/ClipboardCopy (format/address-blob checksum-hex)]
+        [gui/ClipboardCopy (format/prefix-0x checksum-hex)]
 
         [:a.ml-2
          {:href (rfe/href :route-name/account-explorer {:address checksum-hex})

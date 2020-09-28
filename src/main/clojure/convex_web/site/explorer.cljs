@@ -150,7 +150,7 @@
               [:a.flex-1.truncate
                {:class gui/address-hover-class
                 :href (rfe/href :route-name/account-explorer {:address address})}
-               [:code.text-xs (format/address-blob address)]]])]
+               [:code.text-xs (format/prefix-0x address)]]])]
 
           ;; -- Timestamp
           [:td {:class td-class}
@@ -213,7 +213,7 @@
                  [:a.flex-1.truncate
                   {:class gui/address-hover-class
                    :href (rfe/href :route-name/account-explorer {:address address})}
-                  [:code.text-xs (format/address-blob address)]]])])]]))]]])
+                  [:code.text-xs (format/prefix-0x address)]]])])]]))]]])
 
 (s/def :explorer.blocks.state/pending
   (s/merge :ajax/pending-status (s/keys :req [:runtime/interval-ref])))
@@ -403,7 +403,7 @@
 
                me? (contains? my-addresses (str/upper-case address))
 
-               address-blob (format/address-blob address)]
+               address-blob (format/prefix-0x address)]
            ^{:key address}
            [:tr.cursor-default
             ;; -- Address
@@ -654,7 +654,7 @@
                   [:a
                    {:class gui/address-hover-class
                     :href (rfe/href :route-name/account-explorer {:address peer})}
-                   [:span (format/address-blob peer)]]]]]))]]]))))
+                   [:span (format/prefix-0x peer)]]]]]))]]]))))
 
 (defn BlocksPage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks]} _]
   (case status

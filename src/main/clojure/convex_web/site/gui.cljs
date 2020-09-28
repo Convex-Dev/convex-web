@@ -696,7 +696,7 @@
                                           environment
                                           type]} status
 
-        address-blob (format/address-blob address)
+        address-blob (format/prefix-0x address)
 
         caption-style "text-gray-600 text-base leading-none cursor-default"
         caption-container-style "flex flex-col space-y-1"
@@ -881,10 +881,10 @@
             ;; Empty, but fill the space.
             [:div.flex-1]
             [:div.flex.flex-1.items-center.px-2
-             [Identicon {:value active-address :size 40}]
+             [Identicon {:value (format/trim-0x active-address) :size 40}]
 
              [:span.font-mono.block.ml-2
-              (format/address-blob active-address)]])
+              (format/prefix-0x active-address)]])
 
           [:svg.h-5.w-5.text-gray-400.pr-2.pointer-events-none
            {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
@@ -918,4 +918,4 @@
                   [Identicon {:value address :size 40}]
 
                   [:span.font-mono.block.ml-2
-                   (format/address-blob address)]]])]]]]]]))))
+                   (format/prefix-0x address)]]])]]]]]]))))

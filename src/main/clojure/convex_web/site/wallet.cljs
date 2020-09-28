@@ -21,7 +21,7 @@
           {:title "Address"}
           [:a.hover:underline.ml-2
            {:href (rfe/href :route-name/account-explorer {:address address})}
-           [:code.text-xs (format/address-blob address)]]]
+           [:code.text-xs (format/prefix-0x address)]]]
 
          [gui/Tooltip
           {:title "Balance"}

@@ -133,7 +133,7 @@
           so please consider as a temporary Account keep a backup of anything
           of value."]
 
-        [:span.font-mono.text-base.text-black (format/address-blob address)]
+        [:span.font-mono.text-base.text-black (format/prefix-0x address)]
 
         [:div.self-center
          [gui/BlackButton
@@ -289,7 +289,7 @@
         ;; -- Select or Input text
         (if to-my-accounts?
           [gui/AccountSelect
-           {:active-address (format/address-trim-blob to)
+           {:active-address (format/trim-0x to)
             :addresses addresses
             :on-change (fn [address]
                          (set-state (fn [state]
@@ -402,26 +402,26 @@
         [:span " from "]
 
         (let [address-or-blob (get transfer :convex-web.transfer/from)
-              address (format/address-trim-blob address-or-blob)]
+              address (format/trim-0x address-or-blob)]
           [:a.inline-flex.items-center.space-x-1.w-40
            {:href (rfe/href :route-name/account-explorer {:address address})}
            [gui/Identicon {:value address :size gui/identicon-size-small}]
 
            [:span.font-mono.text-sm.truncate
             {:class gui/address-hover-class}
-            (format/address-blob (get transfer :convex-web.transfer/to))]])
+            (format/prefix-0x (get transfer :convex-web.transfer/to))]])
 
         [:span " to "]
 
         (let [address-or-blob (get transfer :convex-web.transfer/to)
-              address (format/address-trim-blob address-or-blob)]
+              address (format/trim-0x address-or-blob)]
           [:a.inline-flex.items-center.space-x-1.w-40
            {:href (rfe/href :route-name/account-explorer {:address address})}
            [gui/Identicon {:value address :size gui/identicon-size-small}]
 
            [:span.font-mono.text-sm.truncate
             {:class gui/address-hover-class}
-            (format/address-blob (get transfer :convex-web.transfer/to))]])]
+            (format/prefix-0x (get transfer :convex-web.transfer/to))]])]
 
        :convex-web.command.status/error
        [:span.text-base.text-black
