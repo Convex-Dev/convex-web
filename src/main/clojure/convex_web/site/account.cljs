@@ -24,11 +24,21 @@
 (defn BalanceUnavailable [_]
   [:span.text-gray-700.text-base "Balance unavailable"])
 
-(defn BalanceIs [balance]
+(defn BalanceIs [_ balance]
   [:span.text-gray-700.text-base "Balance " [:span.font-bold balance]])
 
-(defn YourUpdatedBalanceIs [balance]
-  [:span.text-gray-700.text-base "Your updated balance is " [:span.font-bold balance] "."])
+(defn AddressUpdatedBalanceIs [address balance]
+  [:span.inline-flex.text-gray-700.text-base.space-x-1
+   [:a.inline-flex.items-center.space-x-1.w-40
+    {:href (rfe/href :route-name/account-explorer {:address address})}
+    [gui/Identicon {:value address :size gui/identicon-size-small}]
+
+    [:span.font-mono.text-sm.truncate
+     {:class gui/hyperlink-hover-class}
+     (format/prefix-0x address)]]
+
+   [:span " updated balance is "]
+   [:span.font-bold balance] "."])
 
 (defn ShowBalance2 [{:keys [convex-web/account ajax/status ajax/error]} {:keys [Pending Error Success]}]
   (case status
@@ -39,7 +49,7 @@
     [Error error]
 
     :ajax.status/success
-    [Success (format/format-number (balance account))]
+    [Success (:convex-web.account/address account) (format/format-number (balance account))]
 
     ;; Fallback
     [:span]))
@@ -633,7 +643,7 @@
          [ShowBalance2 (sub ::?faucet-target (get frame :frame/uuid) target)
           {:Pending CheckingBalance
            :Error BalanceUnavailable
-           :Success YourUpdatedBalanceIs}]
+           :Success AddressUpdatedBalanceIs}]
 
          ;; Unknown status
          [:div]))]))
