@@ -78,11 +78,11 @@
 
      ;; Header
      ;; ======================
-     [:div.flex.space-x-10.bg-gray-100.p-6.rounded
+     [:div.flex.space-x-10.bg-gray-100.p-6.rounded.shadow
 
       ;; -- Block
       [:div.flex.flex-col.space-y-2
-       [gui/Caption "Block"]
+       [gui/CaptionMono "Block"]
        [gui/Tooltip
         {:title glossary/block-number}
         [:a
@@ -93,7 +93,7 @@
 
       ;; -- TR#
       [:div.flex.flex-col.space-y-2
-       [gui/Caption "TR#"]
+       [gui/CaptionMono "TR#"]
        [gui/Tooltip
         {:title glossary/transaction-index}
         [:span.text-sm.cursor-default
@@ -101,7 +101,7 @@
 
       ;; -- Signer
       [:div.flex.flex-col.space-y-2
-       [gui/Caption "Signer"]
+       [gui/CaptionMono "Signer"]
 
        [:div.flex.items-center.w-40
         [gui/Identicon {:value address :size gui/identicon-size-small}]
@@ -115,7 +115,7 @@
 
       ;; -- Timestamp
       [:div.flex.flex-col.space-y-2
-       [gui/Caption "Timestamp"]
+       [gui/CaptionMono "Timestamp"]
        (let [timestamp (-> timestamp
                            (format/date-time-from-millis)
                            (format/date-time-to-string))]
@@ -126,7 +126,7 @@
 
       ;; -- Type
       [:div.flex.flex-col.space-y-2
-       [gui/Caption "Type"]
+       [gui/CaptionMono "Type"]
        [gui/Tooltip
         {:title (gui/transaction-type-description type)}
         [:span.text-sm.uppercase.cursor-default
@@ -138,7 +138,7 @@
      (case type
        :convex-web.transaction.type/invoke
        [:div.flex.flex-col.space-y-2
-        [gui/Caption "Code"]
+        [gui/CaptionMono "Code"]
         [gui/Highlight source {:pretty? true}]]
 
        :convex-web.transaction.type/transfer
