@@ -19,7 +19,7 @@
   (get-in account [:convex-web.account/status :convex-web.account-status/balance]))
 
 (defn CheckingBalance []
-  [:span.text-gray-700.text-base "Checking balance..."])
+  [:span.text-gray-700.text-base.animate-pulse "Checking balance..."])
 
 (defn BalanceUnavailable [_]
   [:span.text-gray-700.text-base "Balance unavailable"])
@@ -389,7 +389,7 @@
      ;; ===========
      (case (:convex-web.command/status command)
        :convex-web.command.status/running
-       [:span.text-base.text-gray-700
+       [:span.text-base.text-gray-700.animate-pulse
         "Processing..."]
 
        :convex-web.command.status/success
@@ -620,7 +620,7 @@
      (let [copy-style "text-base text-gray-700"]
        (case status
          :ajax.status/pending
-         [:span {:class copy-style}
+         [:span.animate-pulse {:class copy-style}
           "Processing..."]
 
          :ajax.status/error
