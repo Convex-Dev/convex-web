@@ -13,9 +13,7 @@
             [cljs.spec.alpha :as s]
 
             [reitit.frontend.easy :as rfe]
-            [reagent.core :as reagent]
-
-            ["timeago.js" :as timeago]))
+            [reagent.core :as reagent]))
 
 (def blocks-polling-interval 5000)
 
@@ -642,7 +640,7 @@
                                     (format/date-time-to-string))]
                    [gui/Tooltip
                     {:title utc-time}
-                    [:span (timeago/format utc-time)]])]
+                    [:span (format/time-ago utc-time)]])]
 
                 ;; -- Peer
                 [:td {:class td-class}
