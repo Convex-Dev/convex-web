@@ -217,8 +217,9 @@
           [:td {:class td-class}
            [:div.flex.flex-1.justify-end
             [:a
-             {:href (rfe/href :route-name/block-explorer {:index block-index})}
-             [:code.underline block-index]]]]
+             {:class gui/hyperlink-hover-class
+              :href (rfe/href :route-name/block-explorer {:index block-index})}
+             [:span.font-mono block-index]]]]
 
           ;; -- Transaction Index
           [:td {:class (cons "text-right" td-class)}
@@ -718,8 +719,9 @@
                 [:td {:class td-class}
                  [:div.flex.flex-1.justify-end
                   [:a
-                   {:href (rfe/href :route-name/block-explorer {:index index})}
-                   [:code.underline index]]]]
+                   {:href (rfe/href :route-name/block-explorer {:index index})
+                    :class gui/hyperlink-hover-class}
+                   [:span.font-mono index]]]]
 
                 ;; -- Timestamp
                 [:td {:class td-class}
