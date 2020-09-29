@@ -542,7 +542,7 @@
           :value target
           :on-change
           #(let [value (gui/event-target-value %)]
-             (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] value))}])
+             (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] (format/trim-0x value)))}])
 
 
       ;; -- Balance
