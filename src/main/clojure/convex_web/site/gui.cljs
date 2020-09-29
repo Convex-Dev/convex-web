@@ -401,7 +401,7 @@
        (cond
          (= language "language-clojure")
          (if pretty?
-           (zprint/zprint-str source {:parse-string-all? true})
+           (try (zprint/zprint-str source {:parse-string-all? true}) (catch js/Error _ source))
            source)
 
          :else
@@ -431,7 +431,7 @@
 
       [:div.flex.items-center.space-x-2.py-1
        ;; -- Symbol
-       [:code.font-bold.text-xs.text-indigo-500
+       [:code.font-bold.text-sm.text-indigo-500.hover:text-indigo-400.active:text-indigo-600
         {:class
          (if on-click
            "cursor-pointer"
