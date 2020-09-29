@@ -484,6 +484,9 @@
    {:class (or class button-child-large-padding)}
    text])
 
+(defn Caption [text]
+  [:span.text-gray-600.text-base.leading-none.cursor-default text])
+
 (def input-style "h-10 text-sm border rounded-md px-4 bg-blue-100 bg-opacity-25")
 
 (defn DefaultButton [attrs child]

@@ -154,12 +154,12 @@
 
           ;; -- Timestamp
           [:td {:class td-class}
-           (let [utc-time (-> (get m :convex-web.block/timestamp)
-                              (format/date-time-from-millis)
-                              (format/date-time-to-string))]
+           (let [timestamp (-> (get m :convex-web.block/timestamp)
+                               (format/date-time-from-millis)
+                               (format/date-time-to-string))]
              [gui/Tooltip
-              {:title utc-time}
-              [:span (timeago/format utc-time)]])]
+              {:title timestamp}
+              [:span (format/time-ago timestamp)]])]
 
           ;; -- Type
           [:td
@@ -237,20 +237,18 @@
 
 ;; ---
 
-(defn Block [{:convex-web.block/keys [index timestamp] :as block}]
-  [:div.flex.flex-col
+(defn Block [{:convex-web.block/keys [index] :as block}]
+  [:div.flex.flex-col.space-y-8
 
-   ;; -- Block
-   [:div.flex.mb-4
-    [:div.flex.items-center.justify-center.px-2.py-4
-     [:span.text-4xl.text-center.text-gray-700.leading-none index]]
-
-    [:div.flex.flex-col.ml-2
-     [:code.text-xs.text-gray-700 timestamp]
-     [:span.text-xs (.toISOString (js/Date. timestamp))]]]
+   ;; -- Index
+   [:div.flex.flex-col.items-start.space-y-2
+    [gui/Caption "Index"]
+    [:span.text-4xl.text-center.text-gray-700.leading-none index]]
 
    ;; -- Transactions
-   [TransactionsTable (vector block)]])
+   [:div.flex.flex-col.space-y-2
+    [gui/Caption "Transactions"]
+    [TransactionsTable (vector block)]]])
 
 (defn BlockPage [_ {:keys [ajax/status ajax/error convex-web/block]} _]
   (case status
@@ -259,8 +257,7 @@
      [gui/Spinner]]
 
     :ajax.status/success
-    [:div.flex.mt-4.mx-10
-     [Block block]]
+    [Block block]
 
     :ajax.status/error
     [:span (get-in error [:response :error :message])]
