@@ -408,7 +408,7 @@
            [gui/Identicon {:value address :size gui/identicon-size-small}]
 
            [:span.font-mono.text-sm.truncate
-            {:class gui/address-hover-class}
+            {:class gui/hyperlink-hover-class}
             (format/prefix-0x (get transfer :convex-web.transfer/to))]])
 
         [:span " to "]
@@ -420,7 +420,7 @@
            [gui/Identicon {:value address :size gui/identicon-size-small}]
 
            [:span.font-mono.text-sm.truncate
-            {:class gui/address-hover-class}
+            {:class gui/hyperlink-hover-class}
             (format/prefix-0x (get transfer :convex-web.transfer/to))]])]
 
        :convex-web.command.status/error

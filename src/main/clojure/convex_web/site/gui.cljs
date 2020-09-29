@@ -494,7 +494,7 @@
               code]])]))]))
 
 
-(def address-hover-class "hover:underline hover:text-blue-500")
+(def hyperlink-hover-class "hover:underline hover:text-blue-500")
 
 (def button-child-small-padding "px-6 py-2")
 (def button-child-large-padding "px-8 py-3")

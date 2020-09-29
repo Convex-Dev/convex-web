@@ -85,8 +85,11 @@
        [gui/Caption "Block"]
        [gui/Tooltip
         {:title glossary/block-number}
-        [:span.text-sm.cursor-default
-         index]]]
+        [:a
+         {:class gui/hyperlink-hover-class
+          :href (rfe/href :route-name/block-explorer {:index index})}
+         [:span.text-sm
+          index]]]]
 
       ;; -- TR#
       [:div.flex.flex-col.space-y-2
@@ -104,7 +107,7 @@
         [gui/Identicon {:value address :size gui/identicon-size-small}]
 
         [:a.flex-1.truncate
-         {:class gui/address-hover-class
+         {:class gui/hyperlink-hover-class
           :href (rfe/href :route-name/account-explorer {:address address})}
          [gui/Tooltip
           {:title address}
@@ -229,7 +232,7 @@
               [gui/Identicon {:value address :size gui/identicon-size-small}]
 
               [:a.flex-1.truncate
-               {:class gui/address-hover-class
+               {:class gui/hyperlink-hover-class
                 :href (rfe/href :route-name/account-explorer {:address address})}
                [gui/Tooltip
                 {:title address}
@@ -292,7 +295,7 @@
                  [gui/Identicon {:value address :size gui/identicon-size-small}]
 
                  [:a.flex-1.truncate
-                  {:class gui/address-hover-class
+                  {:class gui/hyperlink-hover-class
                    :href (rfe/href :route-name/account-explorer {:address address})}
                   [gui/Tooltip
                    {:title address}
@@ -499,7 +502,7 @@
                                                                     :modal? true})}
                  address-blob]
                 [:a.flex-1.mx-2
-                 {:class gui/address-hover-class
+                 {:class gui/hyperlink-hover-class
                   :href (rfe/href :route-name/account-explorer {:address address})}
                  [:code.text-xs address-blob]])
 
@@ -732,7 +735,7 @@
                  [:div.flex.items-center
                   [gui/Identicon {:value peer :size gui/identicon-size-small}]
                   [:a
-                   {:class gui/address-hover-class
+                   {:class gui/hyperlink-hover-class
                     :href (rfe/href :route-name/account-explorer {:address peer})}
                    [:span (format/prefix-0x peer)]]]]]))]]]))))
 
