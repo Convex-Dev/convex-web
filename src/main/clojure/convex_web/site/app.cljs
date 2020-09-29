@@ -250,11 +250,11 @@
         leaf? (empty? children)]
     [:div.flex.flex-col.justify-center
      (if leaf?
-       {:class "h-6 xl:h-8"}
+       {:class "h-6 xl:h-8 hover:bg-gray-100 rounded"}
        {})
      ;; -- Item
      [:div.flex.justify-between
-      [:a.self-start.font-medium.pl-2.border-l-2
+      [:a.self-start.font-medium.px-2.border-l-2
        (merge {:href href
                :class [(if top-level?
                          "text-blue-500"
