@@ -8,6 +8,7 @@
             [convex-web.pagination :as pagination]
             [convex-web.site.markdown :as markdown]
             [convex-web.site.session :as session]
+            [convex-web.glossary :as glossary]
 
             [clojure.string :as str]
             [cljs.spec.alpha :as s]
@@ -64,6 +65,88 @@
   #:page {:id :page.id/code
           :component #'CodePage})
 
+
+(defn TransactionPage [_ state _]
+  (let [{:keys [convex-web.block/index
+                convex-web.block/timestamp
+                convex-web.signed-data/address
+                convex-web.signed-data/value]} state
+
+
+        {:convex-web.transaction/keys [type source]} value]
+    [:div.flex.flex-col.space-y-8.p-6
+
+     ;; Header
+     ;; ======================
+     [:div.flex.space-x-10.bg-gray-100.p-6.rounded
+
+      ;; -- Block
+      [:div.flex.flex-col.space-y-2
+       [gui/Caption "Block"]
+       [gui/Tooltip
+        {:title glossary/block-number}
+        [:span.text-sm.cursor-default
+         index]]]
+
+      ;; -- TR#
+      [:div.flex.flex-col.space-y-2
+       [gui/Caption "TR#"]
+       [gui/Tooltip
+        {:title glossary/transaction-index}
+        [:span.text-sm.cursor-default
+         (:convex-web.transaction/index value)]]]
+
+      ;; -- Signer
+      [:div.flex.flex-col.space-y-2
+       [gui/Caption "Signer"]
+
+       [:div.flex.items-center.w-40
+        [gui/Identicon {:value address :size gui/identicon-size-small}]
+
+        [:a.flex-1.truncate
+         {:class gui/address-hover-class
+          :href (rfe/href :route-name/account-explorer {:address address})}
+         [gui/Tooltip
+          {:title address}
+          [:span.font-mono.text-xs (format/prefix-0x address)]]]]]
+
+      ;; -- Timestamp
+      [:div.flex.flex-col.space-y-2
+       [gui/Caption "Timestamp"]
+       (let [timestamp (-> timestamp
+                           (format/date-time-from-millis)
+                           (format/date-time-to-string))]
+         [gui/Tooltip
+          {:title timestamp}
+          [:span.text-sm.cursor-default
+           (format/time-ago timestamp)]])]
+
+      ;; -- Type
+      [:div.flex.flex-col.space-y-2
+       [gui/Caption "Type"]
+       [gui/Tooltip
+        {:title (gui/transaction-type-description type)}
+        [:span.text-sm.uppercase.cursor-default
+         {:class (gui/transaction-type-text-color type)}
+         type]]]]
+
+     ;; Value
+     ;; ======================
+     (case type
+       :convex-web.transaction.type/invoke
+       [:div.flex.flex-col.space-y-2
+        [gui/Caption "Code"]
+        [gui/Highlight source {:pretty? true}]]
+
+       :convex-web.transaction.type/transfer
+       [:div])]))
+
+(def transaction-page
+  #:page {:id :page.id/transaction
+          :component #'TransactionPage
+          :title "Transaction"
+          :state-spec (s/merge :convex-web/block :convex-web/signed-data)})
+
 (defn TransactionsTable [blocks]
   [:div
    [:table.text-left.table-auto
@@ -76,14 +159,14 @@
          [:div.flex.space-x-1
           {:class th-div-style}
           [:span "Block"]
-          [gui/InfoTooltip "Block number in which the transaction was included."]]]
+          [gui/InfoTooltip glossary/block-number]]]
 
         [:th
          {:class th-style}
          [:div.flex.space-x-1
           {:class th-div-style}
           [:span "TR#"]
-          [gui/InfoTooltip "Index position of the transaction within the block. Lower indexed transactions were executed first."]]]
+          [gui/InfoTooltip glossary/transaction-index]]]
 
         [:th
          {:class th-style}
@@ -148,7 +231,9 @@
               [:a.flex-1.truncate
                {:class gui/address-hover-class
                 :href (rfe/href :route-name/account-explorer {:address address})}
-               [:code.text-xs (format/prefix-0x address)]]])]
+               [gui/Tooltip
+                {:title address}
+                [:span.font-mono.text-xs (format/prefix-0x address)]]]])]
 
           ;; -- Timestamp
           [:td {:class td-class}
@@ -187,12 +272,10 @@
            {:class td-class}
            (case (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])
              :convex-web.transaction.type/invoke
-             (let [source (get-in m [:convex-web.signed-data/value :convex-web.transaction/source])]
-               [gui/DefaultButton
-                {:on-click #(stack/push :page.id/code {:title "Source"
-                                                       :state {:source source}
-                                                       :modal? true})}
-                [:span.font-mono.text-xs.text-black "View Source"]])
+             [gui/DefaultButton
+              {:on-click #(stack/push :page.id/transaction {:state m
+                                                            :modal? true})}
+              [:span.font-mono.text-xs.text-black "View details"]]
 
              :convex-web.transaction.type/transfer
              [:span.inline-flex.items-center
@@ -211,7 +294,9 @@
                  [:a.flex-1.truncate
                   {:class gui/address-hover-class
                    :href (rfe/href :route-name/account-explorer {:address address})}
-                  [:code.text-xs (format/prefix-0x address)]]])])]]))]]])
+                  [gui/Tooltip
+                   {:title address}
+                   [:span.font-mono.text-xs (format/prefix-0x address)]]]])])]]))]]])
 
 (s/def :explorer.blocks.state/pending
   (s/merge :ajax/pending-status (s/keys :req [:runtime/interval-ref])))

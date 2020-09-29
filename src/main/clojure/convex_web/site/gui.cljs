@@ -39,6 +39,26 @@
   (when el
     (.highlightBlock hljs el)))
 
+(defn transaction-type-text-color [transaction-type]
+  (case transaction-type
+    :convex-web.transaction.type/transfer
+    "text-indigo-500"
+
+    :convex-web.transaction.type/invoke
+    "text-pink-500"
+
+    ""))
+
+(defn transaction-type-description [transaction-type]
+  (case transaction-type
+    :convex-web.transaction.type/transfer
+    "Direct transfer of Convex Coins from the Signer's Account to a destination Account"
+
+    :convex-web.transaction.type/invoke
+    "Execution of code by Signer Account"
+
+    ""))
+
 (defn account-type-text-color [account-status]
   (cond
     (get account-status :convex-web.account-status/library?)

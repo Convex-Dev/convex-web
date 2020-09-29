@@ -74,6 +74,7 @@
    explorer/peers-page
    explorer/transactions-page
    explorer/transactions-range-page
+   explorer/transaction-page
 
    ;; ---
 
