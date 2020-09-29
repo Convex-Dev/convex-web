@@ -353,6 +353,8 @@
                                                        :address from
                                                        :transaction transaction}]
 
+                     (set-state assoc :convex-web/command {:convex-web.command/status :convex-web.command.status/running})
+
                      (command/execute command (fn [command command']
                                                 (cond
                                                   (= :convex-web.command.status/success (:convex-web.command/status command'))
