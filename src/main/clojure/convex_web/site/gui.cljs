@@ -499,9 +499,13 @@
 (def button-child-small-padding "px-6 py-2")
 (def button-child-large-padding "px-8 py-3")
 
-(defn ButtonText [{:keys [class]} text]
-  [:span.block.font-mono.text-sm.text-white.uppercase
-   {:class (or class button-child-large-padding)}
+(defn ButtonText [{:keys [padding text-size text-color text-transform font-family]} text]
+  [:span.block
+   {:class [(or padding button-child-large-padding)
+            (or text-size "text-sm")
+            (or text-color "text-white")
+            (or text-transform "uppercase")
+            (or font-family "font-mono")]}
    text])
 
 (defn Caption [text]

@@ -212,7 +212,7 @@
 
              td-class ["p-1 whitespace-no-wrap text-xs"]]
          ^{:key [block-index transaction-index]}
-         [:tr.cursor-default {:style {:height "34px"}}
+         [:tr.cursor-default
           ;; -- Block Index
           [:td {:class td-class}
            [:div.flex.flex-1.justify-end
@@ -276,10 +276,14 @@
            {:class td-class}
            (case (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])
              :convex-web.transaction.type/invoke
-             [gui/DefaultButton
+             [gui/SecondaryButton
               {:on-click #(stack/push :page.id/transaction {:state m
                                                             :modal? true})}
-              [:span.font-mono.text-xs.text-black "View details"]]
+              [gui/ButtonText
+               {:padding gui/button-child-small-padding
+                :text-size "text-xs"
+                :text-transform "normal-case"}
+               "View details"]]
 
              :convex-web.transaction.type/transfer
              [:span.inline-flex.items-center
