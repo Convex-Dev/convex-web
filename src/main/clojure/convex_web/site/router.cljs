@@ -340,7 +340,8 @@
      {:name :route-name/get-involved
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/markdown {:state {:id :get-involved}
+                 (stack/push :page.id/markdown {:title "Get Involved"
+                                                :state {:id :get-involved}
                                                 :reset? true}))}]}]
 
     ["/roadmap"
