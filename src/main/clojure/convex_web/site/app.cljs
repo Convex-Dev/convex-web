@@ -69,7 +69,6 @@
    ;; ---
 
    explorer/code-page
-   explorer/explorer-page
    explorer/accounts-page
    explorer/accounts-range-page
    explorer/account-page

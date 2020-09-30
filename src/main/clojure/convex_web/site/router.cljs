@@ -204,7 +204,9 @@
      {:name :route-name/explorer
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/explorer {:reset? true}))}]}]
+                 (stack/push :page.id/markdown {:title "Explorer"
+                                                :state {:id :explorer}
+                                                :reset? true}))}]}]
 
     ["/accounts"
      {:name :route-name/accounts-explorer

@@ -917,12 +917,3 @@
           :state-spec :explorer.blocks/state-spec
           :on-push #'start-polling-blocks
           :on-pop #'stop-polling-blocks})
-
-(defn ExplorerPage [_ state _]
-  [markdown/Markdown state])
-
-(def explorer-page
-  #:page {:id :page.id/explorer
-          :title "Explorer"
-          :component #'ExplorerPage
-          :on-push (markdown/get-on-push :explorer)})
