@@ -2,8 +2,8 @@
 
 An Account is a record of identification and ownership within Convex. Accounts may be either:
 
-* User Accounts: Accounts that are controlled by external users, where access is controlled by digital signatures on transactions.
-* Actor Accounts: Accounts that are managed by an autonomous Actor, where behaviour is 100% deterministic according the the associated CVM code. 
+* **User Accounts**: Accounts that are controlled by external users, where access is controlled by digital signatures on transactions.
+* **Actor Accounts**: Accounts that are managed by an autonomous Actor, where behaviour is 100% deterministic according the the associated CVM code. 
 
 ## Actor
 
@@ -13,8 +13,9 @@ An Actor is defined with exactly one Account, but may send messages to and contr
 
 ## Address
 
-An Address is a 20-byte value used to refer to Accounts. An Address is valid if it refers to an existing Account (User or Actor) in the CVM State.
+An Address is a 32-byte value used to refer to Accounts. An Address is valid if it refers to an existing Account (User or Actor) in the CVM State.
 
+Technically, the Address of a User Account is an `Ed25519` Public Key. You must be in possession of the corresponding private key in order to digitally sign transactions for that Account. Actor Accounts have Addresses that are generated via SHA3-256 hash functions (and therefore do not have a corresponding private key, and no transactions can be submitted for them).
 
 
 ## Belief
