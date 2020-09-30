@@ -1,6 +1,6 @@
-This document gives you a quick guided tour of Convex. We'll take you through everything from creating your first Account to launching your very own digital token!
+This page provides a quick guided tour of Convex. We'll take you through everything from creating your first Account to launching your very own digital token!
 
-You don't need any particular programming langauge experience to follow this guide, but if you want to follow using the Sandbox you will need to *precisely* enter some commands in Convex Lisp. If you want to know more about Convex Lisp as a programming language, check out the [Convex Lisp Tutorial](https://convex.world/#/documentation/convex-lisp).
+You don't need any particular programming langauge experience to follow this guide, but if you want to follow using the Sandbox you will need to *precisely* enter some commands in Convex Lisp. If you want to learn more about Convex Lisp as a programming language, check out the [Convex Lisp Tutorial](https://convex.world/#/documentation/convex-lisp).
 
 ## Making an Account
 
@@ -16,9 +16,9 @@ Accounts are free and disposable on the test system. Make as many as you like. J
 
 Every Account has a **Balance** denominated in Convex Coins. Coins can be used in various ways:
 
+- As a virtual currency to exchange for digital assets and services
 - To pay a small transaction fee when actions are performed on the Convex Network
 - To participate in running the network, e.g. staking on a Peer
-- As a virtual currency to exchange for digital assets and services
 
 Your coin balance *cannot be spent* by anyone who doesn't have access to your Account. The Convex system keeps it safe through extremely strong cryptographic protections that make it impossible to access the account without a Ed25519 digital signature, signed using your private key. 
 
@@ -61,7 +61,7 @@ You can also currently choose two different languages for entering commands:
 - **Convex Lisp (default)** : A variant of the Lisp language
 - **Convex Scrypt** : a simple scripting language based on JavaScript syntax
 
-For this guide, we will use Convex Lisp. For more details on how to use Scrypt, see **TODO Add Link**. In the future, Convex is likely to support a wide range of languages.
+For this guide, we will use Convex Lisp. For more details on how to use Scrypt, see **TODO Add Link**. In the future, Convex may support a wider range of languages on the CVM.
 
 
 ## Moving Funds
@@ -207,5 +207,41 @@ Although not useful, this empty Actor still exists on the Convex Network. You ca
 => 0
 ```
 
-### A public 
+### Exported functions
 
+To interact with an Actor, users can `call` special functions which are exported by the Actor. Exported functions are like regular functions, except that the execute in the security context of the Actor itself rather than the user that called them.
+
+A simple example is an Actor that simply counts how many times an `increment` function is called:
+
+```clojure
+(def actor (deploy '(do
+   ;; A counter in the Actor's environment
+   (def counter 0) 
+   
+   ;; A callable function that increments the counter
+   (defn increment []
+     (def counter (inc counter)))
+     
+   ;; A callable function to get the current value of the counter
+   (defn get []
+     counter)  
+
+   (export increment get))))
+```
+
+You can now `call` the actor to get and increment the counter freely:
+
+```clojure
+;; check the initial counter value
+(call actor (get))
+;;=> 0
+
+;; increment the counter
+(call actor (increment))
+
+;; check the new counter value
+(call actor (get))
+;;=> 1
+```
+
+**Important security point:** exported functions can be called by any Account. This particular Actor can therefore be called by any other user (or Actor, for that matter) and have the effect of incrementing the counter. Sometimes this is perfectly safe (e.g. for read-only functions like `get`) and sometimes it is what you want (anyone can access) but if the function provides any control over valuable assets you will definitely want to enforce controls on who can execute certain code.
