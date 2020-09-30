@@ -158,14 +158,6 @@
           :component #'WhitePaperPage
           :on-push (markdown/get-on-push :white-paper)})
 
-(defn VisionPage [_ state _]
-  [markdown/Markdown state])
-
-(def vision-page
-  #:page {:id :page.id/vision
-          :component #'VisionPage
-          :on-push (markdown/get-on-push :vision)})
-
 (defn AdvancedTopicsPage [_ state _]
   [markdown/Markdown state])
 

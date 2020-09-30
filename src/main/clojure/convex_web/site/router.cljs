@@ -290,7 +290,9 @@
      {:name :route-name/vision
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/vision {:reset? true}))}]}]
+                 (stack/push :page.id/markdown {:title "Vision"
+                                                :state {:id :vision}
+                                                :reset? true}))}]}]
 
     ["/faq"
      {:name :route-name/faq

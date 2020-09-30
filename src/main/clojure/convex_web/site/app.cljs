@@ -97,7 +97,6 @@
    documentation/faq-page
    documentation/white-paper-page
    documentation/about-page
-   documentation/vision-page
    documentation/advanced-topics-page
    documentation/client-api-page
 
