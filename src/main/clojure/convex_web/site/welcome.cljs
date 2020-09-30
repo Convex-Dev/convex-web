@@ -7,7 +7,19 @@
             ["@tailwindui/react" :refer [Transition]]))
 
 (defn nav []
-  {:documentation
+  {:concepts
+   {:text "Concepts"
+    :items
+    [{:text "Vision"
+        :href (rfe/href :route-name/vision)}
+
+     {:text "Glossary"
+      :href (rfe/href :route-name/glossary)}
+
+     {:text "FAQ"
+      :href (rfe/href :route-name/faq)}]}
+
+   :documentation
    {:text "Documentation"
     :items
     [{:text "Getting Started"
@@ -139,7 +151,11 @@
      [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
 
    [:div.flex.items-center.space-x-4
-    ;; -- Guides
+    ;; -- Concepts
+    [Dropdown
+     (:concepts (nav))]
+
+    ;; -- Documentation
     [Dropdown
      (:documentation (nav))]
 
@@ -171,8 +187,9 @@
 (defn BottomNav []
   [:div.flex.space-x-32
 
-   (let [{:keys [documentation tools explorer about]} (nav)]
+   (let [{:keys [concepts documentation tools explorer about]} (nav)]
      [:<>
+      [BottomNavMenu concepts]
       [BottomNavMenu documentation]
       [BottomNavMenu tools]
       [BottomNavMenu explorer]

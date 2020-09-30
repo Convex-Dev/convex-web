@@ -86,6 +86,18 @@
                 (stack/push :page.id/welcome {:reset? true}))}]}]
 
 
+   ;; Glossary
+   ;; ==============
+   ["glossary"
+    {:name :route-name/glossary
+     :controllers
+     [{:identity identity
+       :start (fn [_]
+                (stack/push :page.id/markdown {:title "Glossary"
+                                               :reset? true
+                                               :state {:id :glossary}}))}]}]
+
+
    ;; Create account
    ;; ==============
    ["create-account"

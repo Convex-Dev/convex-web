@@ -15,6 +15,7 @@
             [convex-web.site.store]
             [convex-web.site.format :as format]
             [convex-web.site.environment :as environment]
+            [convex-web.site.markdown :as markdown]
 
             [clojure.string :as str]
             [cljs.spec.test.alpha :as stest]
@@ -46,6 +47,11 @@
 
 (def pages
   [blank-page
+
+   ;; ---
+
+   markdown/markdown-page
+
    ;; ---
 
    welcome/welcome-page
@@ -126,7 +132,26 @@
                          :route-name/create-account})}
 
      :others
-     [;; Guides
+     [;; Concepts
+      ;; ==============
+      {:text "Concepts"
+       :top-level? true
+       :route-name :route-name/concepts
+       :href (rfe/href :route-name/concepts)
+       :children
+       [{:text "Vision"
+         :route-name :route-name/vision
+         :href (rfe/href :route-name/vision)}
+
+        {:text "Glossary"
+         :route-name :route-name/glossary
+         :href (rfe/href :route-name/glossary)}
+
+        {:text "FAQ"
+         :route-name :route-name/faq
+         :href (rfe/href :route-name/faq)}]}
+
+      ;; Documentation
       ;; ==============
       {:text "Documentation"
        :top-level? true

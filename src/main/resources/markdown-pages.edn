@@ -74,4 +74,11 @@
   :smart-toc? true
   :contents
   [{:name "Client API"
-    :path "markdown/client_api.md"}]}}
+    :path "markdown/client_api.md"}]}
+
+ :glossary
+ {:toc? true
+  :smart-toc? true
+  :contents
+  [{:name "Glossary"
+    :path "markdown/glossary.md"}]}}
