@@ -244,4 +244,97 @@ You can now `call` the actor to get and increment the counter freely:
 ;;=> 1
 ```
 
-**Important security point:** exported functions can be called by any Account. This particular Actor can therefore be called by any other user (or Actor, for that matter) and have the effect of incrementing the counter. Sometimes this is perfectly safe (e.g. for read-only functions like `get`) and sometimes it is what you want (anyone can access) but if the function provides any control over valuable assets you will definitely want to enforce controls on who can execute certain code.
+### Actor security
+
+**Important security point:** it is critical to remember that exported functions can be called by any Account at any time after the Actor is deployed. The simple Actor above can therefore be called by any other user (or another Actor, for that matter) and have the effect of incrementing the counter. Sometimes this is perfectly safe (e.g. for read-only functions like `get`) and sometimes it is what you want (anyone can access) but if the function provides any control over valuable assets you will definitely want to enforce controls on who can execute certain code.
+
+There are many ways to add sophisticated access controls to Actor functionality in Convex. You might want to consider:
+
+- An "owner" who can perform special administrative actions (e.g. upgrading the Actor with new code)
+- A trusted "whitelist" of Users who are allowed to call certain functionality
+- Controls over how much a specific user can do (e.g. a digital token asset should not normally allow a User to transfer tokens that they do not own)
+
+Advanced trust issues are beyond the scope of this guide, but if you are interested in the details check out the advanced topics in the documentation.
+
+## Creating a Token
+
+Convex is all about enabling the Internet of Value, and empowering people to create their own digital assets. So we will finish up this tutorial with a quick guide on how to create your very own token!
+
+### Importing the Fungible library
+
+It's possible to build your own Actor to implement a Token from scratch. However - unless you are very experienced this can be a complex task and there are significant security risks involved. That's why we've created the `convex.fungible` library that makes it easy to create secure tokens without any complex coding.
+
+To use the Fungible library, you just need to import it in your Account REPL:
+
+```clojure
+(import convex.fungible :as fungible)
+```
+
+The name after the `:as` is an *alias*. This can be any name you like, but we recommend using `fungible` so that it is very clear what library code you are using.
+
+### Deploying a Token
+
+You can deploy a new Fungible token in one line!
+
+```clojure
+(def my-token (deploy (fungible/build-token {:supply 1000})))
+```
+
+This will create and deploy a new Actor which represents your token, and `my-token` is set to hold the Address of the new Actor.
+
+The `:supply` configuration parameter determines how may tokens will exist. Initially, the Aoount that deployed the token (i.e. your User Account) will control all the tokens.
+
+### Using tokens
+
+You can check your token balance easily using another function in the Fungible library:
+
+```clojure
+(fungible/balance my-token *address*)
+=> 1000
+```
+
+As expected, we are initially in possession of all 1000 tokens. Instead of using your current Address (`*address*`) you can equivalently check the token balance of any other Address, which by default will be 0.
+
+```clojure
+(fungible/balance my-token 0xb18a010f0DbA07091A2F521f9593F232115013082c48b43AF5CFB5AE8f26b72e)
+=> 0
+```
+
+If you want to transfer 100 Tokens to another Account:
+
+```clojure
+(fungible/transfer my-token 0xb18a010f0DbA07091A2F521f9593F232115013082c48b43AF5CFB5AE8f26b72e 100)
+```
+
+Now you should be able to observe that your own token balance has been reduced:
+
+```clojure
+(fungible/balance my-token *address*)
+=> 1000
+```
+
+And you can also see that the recipint is not the proud owner of 100 tokens:
+
+```clojure
+(fungible/balance my-token 0xb18a010f0DbA07091A2F521f9593F232115013082c48b43AF5CFB5AE8f26b72e)
+=> 100
+```
+
+## Summary and next steps
+
+If you made it this far, congratulations! You've covered the basic of the Convex system and launched your very own digital asset!
+
+Where you go from here is up to you. Some ideas:
+
+- Learn more about Conex from the other documentation and guides here at `convex.world`
+- Build a mobile dApp that talks to your Convex Actors with the Client API
+
+We're excited to see what people are able to build using Convex! But most importantly, please let us know your feedback and what you think of Convex so far. You can join the [Convex Discord Server](https://discord.gg/fsnCxEM) to get involved with the discussions:
+
+- [Convex Discord](https://discord.gg/fsnCxEM) 
+
+And also please check out the Convex-Dev discord if you would like to get involved with the open source development and bounty programme!
+
+- [Convex-Dev GitHub](https://github.com/orgs/Convex-Dev)
+
+Happy Building!
