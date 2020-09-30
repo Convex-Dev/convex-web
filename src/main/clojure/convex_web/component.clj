@@ -3,6 +3,7 @@
             [convex-web.peer :as peer]
             [convex-web.web-server :as web-server]
             [convex-web.consumer :as consumer]
+            [convex-web.db :as db]
 
             [clojure.spec.alpha :as s]
             [clojure.spec.test.alpha :as stest]
@@ -75,34 +76,7 @@
   component/Lifecycle
 
   (start [component]
-    (let [schema {;; -- Command
-
-                  :convex-web.command/id
-                  {:db/unique :db.unique/identity
-                   :db/index true}
-
-
-                  ;; -- Account
-
-                  :convex-web.account/address
-                  {:db/unique :db.unique/identity
-                   :db/index true}
-
-                  :convex-web.account/faucets
-                  {:db/valueType :db.type/ref
-                   :db/cardinality :db.cardinality/many}
-
-
-                  ;; -- Session
-
-                  :convex-web.session/id
-                  {:db/unique :db.unique/identity
-                   :db/index true}
-
-                  :convex-web.session/accounts
-                  {:db/valueType :db.type/ref
-                   :db/cardinality :db.cardinality/many}}
-          conn (d/create-conn schema)]
+    (let [conn (d/create-conn db/schema)]
       (log/debug "Started DataScript")
 
       (assoc component
