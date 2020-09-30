@@ -15,6 +15,10 @@ An Actor is defined with exactly one Account, but may send messages to and contr
 
 An Address is a 32-byte value used to refer to Accounts. An Address is valid if it refers to an existing Account (User or Actor) in the CVM State.
 
+An Address is usually presented as a 64-character hexadecimal string, looking something like:
+
+`0x8506cc53f9b7dD152C9BB5386d50C360ff85EFD043049aea55B44362D92C0E1C`
+
 Technically, the Address of a User Account is an `Ed25519` Public Key. You must be in possession of the corresponding private key in order to digitally sign transactions for that Account. Actor Accounts have Addresses that are generated via SHA3-256 hash functions (and therefore do not have a corresponding private key, and no transactions can be submitted for them).
 
 
@@ -160,6 +164,10 @@ Functions may be passed as arguments to other functions, and invoked with arbitr
 
 Functions can support multiple arities on the CVM (e.g. `+`, although many functions only support a specific arity.
 
+## Identicon
+
+An Icon generated in a pre-defined way that can be used to visually confirm if a value is identical to another value. Identicons are used in Convex to provide additional security for similar Addresses that might be hard to distinguish by the hexadecimal strings alone.
+
 ## Memory
 
 Memory in Convex is the amount of on-chain storage allocated as part of the Global State. At any point in time, it is possible to efficiently calculate the total Memory usage of any Convex Data Object (including the Global State itself).
@@ -192,6 +200,12 @@ In normal use of the Convex system, the Ordering will be confirmed up to a certa
 A Peer is a system that participates in the operation of the decentralised Convex Network.
 
 Peers are required to use a private key (corresponding to the Peer's Account) to sign certain messages. Because of this, a Peer's Stake may be at risk if the system is not adequately secured.
+
+## Private Key
+
+A cryptographic key that can be used to digitally sign transactions. 
+
+Private Keys must be kept secure in order to prevent unauthorised access to Accounts and Digital Assets controlled by that Account.
 
 ## Schedule
 
@@ -249,7 +263,7 @@ where:
 
 ## Transaction
 
-An Transaction is an indivisible operation that can be executed on the Convex Network. A Transaction must be linked to a User Account.
+An Transaction is an indivisible operation that can be executed on the Convex Network. A Transaction must be linked to a User Account, and must be signed by the corresponding Private Key in order to be valid.
 
 Transactions must be digitally signed by the owner of the Account in order to be valid. 
 
