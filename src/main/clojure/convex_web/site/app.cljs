@@ -223,8 +223,6 @@
       ;; ==============
       {:text "About"
        :top-level? true
-       :route-name :route-name/about
-       :href (rfe/href :route-name/about)
        :children
        [#_{:text "White Paper"
            :route-name :route-name/white-paper
