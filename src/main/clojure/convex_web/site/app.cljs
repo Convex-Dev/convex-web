@@ -226,25 +226,13 @@
        :route-name :route-name/about
        :href (rfe/href :route-name/about)
        :children
-       [#_{:text "Vision"
-           :route-name :route-name/vision
-           :href (rfe/href :route-name/vision)}
-
-        {:text "FAQ"
-         :route-name :route-name/faq
-         :href (rfe/href :route-name/faq)}
-
-        #_{:text "Concepts"
-           :route-name :route-name/concepts
-           :href (rfe/href :route-name/concepts)}
-
-        #_{:text "White Paper"
+       [#_{:text "White Paper"
            :route-name :route-name/white-paper
            :href (rfe/href :route-name/white-paper)}
 
-        #_{:text "Get Involved"
-           :route-name :route-name/get-involved
-           :href (rfe/href :route-name/get-involved)}
+        {:text "Get Involved"
+         :route-name :route-name/get-involved
+         :href (rfe/href :route-name/get-involved)}
 
         #_{:text "Roadmap"
            :route-name :route-name/roadmap

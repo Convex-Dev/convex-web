@@ -69,6 +69,12 @@
   [{:name "Tools"
     :path "markdown/tools.md"}]}
 
+ :get-involved
+ {:toc? false
+  :contents
+  [{:name "Get Involved"
+    :path "markdown/get-involved.md"}]}
+
  :white-paper
  {:toc? true
   :smart-toc? true

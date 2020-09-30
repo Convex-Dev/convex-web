@@ -11,7 +11,7 @@
    {:text "Concepts"
     :items
     [{:text "Vision"
-        :href (rfe/href :route-name/vision)}
+      :href (rfe/href :route-name/vision)}
 
      {:text "Glossary"
       :href (rfe/href :route-name/glossary)}
@@ -64,20 +64,14 @@
    :about
    {:text "About"
     :items
-    [#_{:text "Vision"
-        :href (rfe/href :route-name/vision)}
-
-     {:text "FAQ"
-      :href (rfe/href :route-name/faq)}
-
-     #_{:text "Concepts"
+    [#_{:text "Concepts"
         :href (rfe/href :route-name/concepts)}
 
      #_{:text "White Paper"
         :href (rfe/href :route-name/white-paper)}
 
-     #_{:text "Get Involved"
-        :href (rfe/href :route-name/get-involved)}
+     {:text "Get Involved"
+      :href (rfe/href :route-name/get-involved)}
 
      #_{:text "Roadmap"
         :href (rfe/href :route-name/roadmap)}
