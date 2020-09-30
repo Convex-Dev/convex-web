@@ -86,6 +86,16 @@
                 (stack/push :page.id/welcome {:reset? true}))}]}]
 
 
+   ;; Vision
+   ;; ==============
+   ["vision"
+    {:name :route-name/vision
+     :controllers
+     [{:start (fn [_]
+                (stack/push :page.id/markdown {:title "Vision"
+                                               :state {:id :vision}
+                                               :reset? true}))}]}]
+
    ;; Glossary
    ;; ==============
    ["glossary"
@@ -96,6 +106,14 @@
                 (stack/push :page.id/markdown {:title "Glossary"
                                                :reset? true
                                                :state {:id :glossary}}))}]}]
+
+   ;; FAQ
+   ;; ==============
+   ["faq"
+    {:name :route-name/faq
+     :controllers
+     [{:start (fn [_]
+                (stack/push :page.id/faq {:reset? true}))}]}]
 
 
    ;; Create account
@@ -285,20 +303,6 @@
       :controllers
       [{:start (fn [_]
                  (stack/push :page.id/about {:reset? true}))}]}]
-
-    ["/vision"
-     {:name :route-name/vision
-      :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/markdown {:title "Vision"
-                                                :state {:id :vision}
-                                                :reset? true}))}]}]
-
-    ["/faq"
-     {:name :route-name/faq
-      :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/faq {:reset? true}))}]}]
 
     ["/concepts"
      {:name :route-name/concepts
