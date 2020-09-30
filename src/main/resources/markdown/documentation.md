@@ -6,6 +6,6 @@ If you are a more experienced developer and want to learn more about Convex Lisp
 
 The [Advanced Topics](https://convex.world/#/documentation/advanced-topics) section covers more sophisticated capabilities of Convex such as security, macros and the on-chain compiler. We'll be updating this over time to cover all the advanced features.
 
-There are also reference sections for the Convex Core Library and the Client API - essential tools for anyone building applications and smart contracts with Convex.
+There are also reference sections for the Convex Core Library and the Client API - essential tools for anyone building applications and smart contracts.
 
-We hope you enjoy learning about Convex!
+We hope you enjoy learning about Convex! If you have questions or feedback, please join us on the [Convex Discord Server](https://discord.gg/fsnCxEM).

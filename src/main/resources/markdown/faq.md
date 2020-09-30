@@ -7,7 +7,7 @@ Yes! Convex is free for anyone to use and build applications upon, and always wi
 
 To make use of the resources of the network, small transaction fees are charged using Convex Coins. This is necessary for a few reasons:
 
-- We need to compensate those who provide important secure infrastructure to the network (Peer operators)
+- We need to compensate those who provide important secure infrastructure to the network (e.g. Peer operators)
 - We must prevent denial of service attacks by people flooding the network with wasteful transactions. This makes it very expensive to launch such attacks.
 - We want to create an economic incentive to use the network as efficiently as possible (both for users and developers of smart contracts)
 
@@ -16,9 +16,9 @@ Our constant goal is to keep transaction fees small, so that it is never a signi
 
 ## How fast is Convex?
 
-Convex can comfortably process many thousands of transactions per second (e.g. transfers and smart contract calls). The CVM itself has been benchmarked at over 60,000 transactions per second on a normal laptop. But it's not just about transaction speed.
+Convex can comfortably process many thousands of transactions per second (e.g. transfers and smart contract calls). The CVM itself has been benchmarked at over 60,000 transactions per second on a regular laptop. And as we continue making performance improvements it is getting faster by the day.
 
-Convex is designed to offer a good overall combination of:
+But it's important to note that performance and scalability is not just about raw throughput of transactions. Convex is designed to offer a good overall combination of:
 
 - Low latency to stable consensus (~1-2 seconds on a global network)
 - High execution throughput (e.g. 10,000+ token-based smart contract transactions per second)
@@ -34,7 +34,7 @@ We achieve all this *without* resorting to over-complicated scaling solutions th
 
 Convex provides a number of mechanisms for integration.
 
-For most decentralised apps, it is easy to build a client side application which makes use of the **REST API**. This is a convenient API using JSON that is ideal for web and mobile applications developers.
+For most decentralised apps, it is easy to build a client side application which makes use of the **Client API**. This is a convenient REST API using JSON that is ideal for web and mobile applications developers.
 
 Advanced applications can use the **Binary API** and construct messages directly to communicate with Peers. This is currently only possible for JVM-based languages (Java, Clojure, Scala etc.), but more may be supported in the future.
 
@@ -88,7 +88,7 @@ A variant of Lisp was chosen as the initial language for the CVM for a few reaso
 
 - Lisp expressions are essentially a direct encoding of the [Lambda Calculus](https://en.wikipedia.org/wiki/Lambda_calculus). This means that we are based on fundamentally sound computation theory.
 - Lisp macros are a powerful tool for generating code, which is an ideal solution for building sophisticated smart contract capabilities with an on-chain compiler. 
-- Lisp is ideal as an expressive language for interactive development, with a long history of REPL-based usage. We felt this was ideal for a platform where we want developers to be instantly productive and able to interact directly with the system in real time.
+- Lisp is a highly expressive language for interactive development, with a long history of REPL-based usage. We feel this is ideal for a platform where we want developers to be instantly productive and able to interact directly with the system in real time.
 
 Paul Graham's essay [Beating the Averages](http://www.paulgraham.com/avg.html) is an interesting perspective on the advantages of Lisp for building a business. Despite dating from 2001, we feel many of these points still stand today and are very relevant for people wanting to build applications using Convex.
 
