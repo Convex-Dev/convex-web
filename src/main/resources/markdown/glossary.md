@@ -1,5 +1,3 @@
-# Convex Glossary
-
 ## Account
 
 An Account is a record of identification and ownership within Convex. Accounts may be either:
