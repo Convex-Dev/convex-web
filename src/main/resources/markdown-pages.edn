@@ -58,9 +58,10 @@
     :path "markdown/vision.md"}]}
 
  :concepts
- {:contents
-  [{:name "Decentralisation"
-    :path "markdown/decentralisation.md"}]}
+ {:toc? false
+  :contents
+  [{:name "Concepts"
+    :path "markdown/concepts.md"}]}
 
  :white-paper
  {:toc? true
