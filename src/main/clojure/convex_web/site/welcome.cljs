@@ -219,8 +219,8 @@
        "Building the Future"]
 
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
-       [:p "Convex is a global platform for trusted applications and digital assets."]
-       [:p "Write amazing code with the most powerful platform for smart contracts and test your ideas live in the web browser — no additional installations required."]]
+       [:p "Convex is an open technology platoforn for the Internet of Value."]
+       [:p "Create your own digital assets and powerful apps for the Digital Economy of tomorrow."]]
 
 
       [:div.flex.space-x-8
@@ -250,7 +250,7 @@
         {:class "w-4/5"
          :style
          {:color "#62A6E1"}}
-        "The tools to build the next generation of digital assets and applications are here."]]
+        "The tools to build the Digital Economy are here."]]
 
 
       ;; Convex is flexible
@@ -267,8 +267,8 @@
         [:span.font-mono.text-4xl "Convex is Flexible"]
 
         [:p.text-xl.leading-8
-         "Convex is well suited as a platform for applications that need to be
-          100% secure and also publicly verifiable (both in terms of data and
+         "Convex supports decentralised applications that allow ownership and excange of Ditial Assets that need to be
+          100% secure and publicly verifiable (both in terms of data and
           application behaviour), such as:"]
 
         [:div {:class marketing-bullets}
@@ -289,9 +289,9 @@
         [:span.font-mono.text-4xl "Convex is Fast"]
 
         [:p {:class marketing-copy}
-         "With a novel consensus algorithm, Convex is able to execute
+         "Using Convergent Proof of Stake, a completely new consensus algorithm, Convex is able to execute
           decentralised applications at internet scale. Using normal consumer
-          grade hardware and network bandwidth the network can achieve:"]
+          grade hardware and network bandwidth the Convex Virtual Machine can achieve:"]
 
         [:div {:class marketing-bullets}
          [Item
@@ -299,10 +299,10 @@
            1,700 transactions per second typically handled by the VISA network)"]
 
          [Item
-          "Ability to execute over a million operations per second on the CVM"]
+          "Over a million smart contract operations per second"]
 
          [Item
-          "Low latency (around 1 second for global consensus)"]]
+          "Low latency (2-3 seconds for global consensus)"]]
 
         [:p {:class marketing-copy}
          "In the future, it will be possible to extend scalability even further
@@ -327,13 +327,13 @@
         [:span.font-mono.text-4xl "Convex is Fun"]
 
         [:p {:class marketing-copy}
-         "We believe in providing a powerful, interactive environment for
+         "We provide a powerful, interactive environment for
           development in Convex that enables high productivity while maintaining
           secure coding principles."]
 
         [:p {:class marketing-copy}
-         "Convex provides an interactive REPL allowing users to code directly
-          on the Convex platform using Convex Lisp."]
+         "convex.world provides an interactive REPL allowing users to code directly
+          on the Convex platform using Convex Lisp or Scrypt."]
 
         [:a
          {:href (rfe/href :route-name/documentation-getting-started)}
