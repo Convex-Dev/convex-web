@@ -21,7 +21,7 @@
 
             [com.brunobonacci.mulog :as u]
             [expound.alpha :as expound]
-            [datascript.core :as d]
+            [datalevin.core :as d]
             [cognitect.transit :as t]
             [ring.middleware.defaults :refer [wrap-defaults api-defaults site-defaults]]
             [ring.middleware.session.memory :as memory-session]
@@ -396,7 +396,7 @@
 
 (defn -GET-commands [context _]
   (try
-    (let [datascript-conn (system/datascript-conn context)]
+    (let [datascript-conn (system/db-conn context)]
       (-successful-response (command/query-all @datascript-conn)))
     (catch Exception ex
       (u/log :logging.event/system-error
@@ -408,7 +408,7 @@
 
 (defn -GET-command-by-id [context id]
   (try
-    (let [datascript-conn (system/datascript-conn context)]
+    (let [datascript-conn (system/db-conn context)]
       (if-let [command (command/query-by-id @datascript-conn id)]
         (-successful-response (-> command
                                   (command/wrap-result-metadata)
@@ -490,7 +490,7 @@
                                         :key-pair generated-key-pair
                                         :created-at (inst-ms (Instant/now))}]
 
-      (d/transact! (system/datascript-conn context) [account])
+      (d/transact! (system/db-conn context) [account])
 
       (-successful-response (select-keys account [::account/address
                                                   ::account/created-at])))
@@ -520,7 +520,7 @@
                  :address address-str
                  :message (str "Confirmed Address " address-str "."))
 
-          (d/transact! (system/datascript-conn context) [{:convex-web.session/id (ring-session req)
+          (d/transact! (system/db-conn context) [{:convex-web.session/id (ring-session req)
                                                           :convex-web.session/accounts
                                                           [{:convex-web.account/address address-str}]}])
 
@@ -583,7 +583,7 @@
                       :convex-web.faucet/amount amount
                       :convex-web.faucet/timestamp (.getTime (Date.))}]
 
-          (d/transact! (system/datascript-conn context) [{::account/address target
+          (d/transact! (system/db-conn context) [{::account/address target
                                                           ::account/faucets faucet}])
 
           (u/log :logging.event/faucet
@@ -602,7 +602,7 @@
 
 (defn -GET-session [context req]
   (try
-    (let [db @(system/datascript-conn context)
+    (let [db @(system/db-conn context)
           id (ring-session req)
           session (merge {::session/id id} (session/find-session db id))]
       (-successful-response session))

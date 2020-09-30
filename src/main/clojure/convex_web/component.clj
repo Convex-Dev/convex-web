@@ -14,6 +14,7 @@
             [aero.core :as aero]
             [com.brunobonacci.mulog :as u]
             [datascript.core :as d]
+            [datalevin.core :as datalevin]
             [com.stuartsierra.component :as component])
   (:import (convex.peer Server API)
            (convex.net Connection ResultConsumer)
@@ -88,11 +89,29 @@
     (assoc component
       :conn nil)))
 
+(defrecord Datalevin [conn]
+  component/Lifecycle
+
+  (start [component]
+    (let [conn (datalevin/get-conn "db" db/schema)]
+      (log/debug "Started Datalevin")
+
+      (assoc component
+        :conn conn)))
+
+  (stop [component]
+    (log/debug "Stopped Datalevin")
+
+    (datalevin/close conn)
+
+    (assoc component
+      :conn nil)))
+
 (defrecord Consumer [datascript consumer]
   component/Lifecycle
 
   (start [component]
-    (let [consumer (consumer/command-consumer (system/-datascript-conn datascript))]
+    (let [consumer (consumer/command-consumer (system/-db-conn datascript))]
       (log/debug "Started Consumer")
 
       (assoc component
@@ -137,13 +156,14 @@
       :consumer nil
       :client nil)))
 
-(defrecord WebServer [config convex datascript stop-fn]
+(defrecord WebServer [config convex datascript datalevin stop-fn]
   component/Lifecycle
 
   (start [component]
     (let [system {:config config
                   :convex convex
-                  :datascript datascript}
+                  :datascript datascript
+                  :datalevin datalevin}
 
           port (get-in config [:config :web-server :port])
 
@@ -180,6 +200,9 @@
     :datascript
     (map->DataScript {})
 
+    :datalevin
+    (map->Datalevin {})
+
     :consumer
     (component/using
       (map->Consumer {}) [:datascript])
@@ -190,4 +213,4 @@
 
     :web-server
     (component/using
-      (map->WebServer {}) [:config :convex :datascript])))
+      (map->WebServer {}) [:config :convex :datascript :datalevin])))

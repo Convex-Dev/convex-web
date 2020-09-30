@@ -11,3 +11,4 @@ src/main/resources/public/css/styles.css
 etch-db
 log/
 /.settings/
+db/

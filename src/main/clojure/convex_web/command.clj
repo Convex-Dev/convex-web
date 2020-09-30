@@ -156,7 +156,7 @@
 
         conn (system/convex-conn system)
         peer (peer/peer (system/convex-server system))
-        datascript-conn (system/datascript-conn system)
+        datascript-conn (system/db-conn system)
         sequence-number (peer/sequence-number peer (convex/address address))
 
         {:convex-web.account/keys [key-pair]} (account/find-by-address @datascript-conn address)
@@ -180,7 +180,7 @@
 (defn execute [system {::keys [mode] :as command}]
   (if-not (s/valid? :convex-web/command command)
     (throw (ex-info "Invalid Command." {:message (expound/expound-str :convex-web/command command)}))
-    (let [conn (system/datascript-conn system)]
+    (let [conn (system/db-conn system)]
       (locking conn
         (let [id (cond
                    (= :convex-web.command.mode/query mode)

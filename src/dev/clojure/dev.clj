@@ -46,14 +46,14 @@
      (.getResult (.executeQuery (peer) (peer/wrap-do (Reader/readAll source#)) Init/HERO))))
 
 (defn db []
-  @(system/datascript-conn system))
+  @(system/db-conn system))
 
 (defn commands
   ([]
    (sort-by :convex-web.command/id (d/q '[:find [(pull ?e [*]) ...]
                                           :in $
                                           :where [?e :convex-web.command/id _]]
-                                        @(system/datascript-conn system))))
+                                        @(system/db-conn system))))
   ([status]
    (filter
      (fn [command]
@@ -73,16 +73,16 @@
                            [:convex-web.account/address]}]) ...]
          :in $
          :where [?e :convex-web.session/id _]]
-       @(system/datascript-conn system))
+       @(system/db-conn system))
 
 
   (d/q '[:find (pull ?e [{:convex-web.session/accounts
                           [:convex-web.account/address]}]) .
          :in $ ?id
          :where [?e :convex-web.session/id ?id]]
-       @(system/datascript-conn system) "mydbOh9wCdTcF_vLvUVHR")
+       @(system/db-conn system) "mydbOh9wCdTcF_vLvUVHR")
 
-  (session/find-session @(system/datascript-conn system) "iGlF3AZWw0eGuGfL_ib4-")
+  (session/find-session @(system/db-conn system) "iGlF3AZWw0eGuGfL_ib4-")
 
 
   (let [a (.getAccounts (.getConsensusState (peer/peer (system/convex-server system))))]

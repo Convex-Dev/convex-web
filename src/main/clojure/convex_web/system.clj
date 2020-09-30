@@ -18,6 +18,11 @@
   [system]
   (:datascript system))
 
+(defn datalevin
+  "Datalevin Component."
+  [system]
+  (:datalevin system))
+
 
 ;; -- Convex
 
@@ -45,28 +50,23 @@
 
 ;; -- DataScript
 
-(defn -datascript-conn
-  "Connections are lightweight in-memory structures (~atoms) with direct
-   support of transaction listeners ([[listen!]], [[unlisten!]]) and other
-   handy DataScript APIs ([[transact!]], [[reset-conn!]], [[db]]).
+(defn -db-conn
+  [db]
+  (:conn db))
 
-   To access underlying immutable DB value, deref: `@conn`."
-  [datascript]
-  (:conn datascript))
-
-(defn datascript-conn
+(defn db-conn
   "Connections are lightweight in-memory structures (~atoms) with direct
    support of transaction listeners ([[listen!]], [[unlisten!]]) and other
    handy DataScript APIs ([[transact!]], [[reset-conn!]], [[db]]).
 
    To access underlying immutable DB value, deref: `@conn`."
   [system]
-  (-datascript-conn (datascript system)))
+  (-db-conn (datalevin system)))
 
 (defn db
   "Returns the underlying immutable DataScript database value from a connection."
   [system]
-  @(-datascript-conn (datascript system)))
+  @(-db-conn (datalevin system)))
 
 
 ;; -- Consumer
