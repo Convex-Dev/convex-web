@@ -88,17 +88,7 @@
 
    ;; ---
 
-   documentation/under-construction-page
-   documentation/documentation-page
    documentation/reference-page
-   documentation/tutorial-page
-   documentation/getting-started-page
-   documentation/concepts-page
-   documentation/faq-page
-   documentation/white-paper-page
-   documentation/about-page
-   documentation/advanced-topics-page
-   documentation/client-api-page
 
    ;; ---
 

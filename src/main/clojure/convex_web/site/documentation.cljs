@@ -1,8 +1,7 @@
 (ns convex-web.site.documentation
   (:require [convex-web.site.gui :as gui]
             [convex-web.site.backend :as backend]
-            [convex-web.site.markdown :as markdown]
-
+            
             [clojure.string :as str]
             [cljs.spec.alpha :as s]
 
@@ -92,94 +91,3 @@
                             :ajax/status :ajax.status/error
                             :ajax/error error))}))})
 
-
-(defn TutorialPage [_ state _]
-  [markdown/Markdown state])
-
-(def tutorial-page
-  #:page {:id :page.id/documentation-tutorial
-          :title "Lisp Guide"
-          :component #'TutorialPage
-          :on-push (markdown/get-on-push :tutorials)})
-
-
-(defn GettingStartedPage [_ state _]
-  [markdown/Markdown state])
-
-(def getting-started-page
-  #:page {:id :page.id/documentation-getting-started
-          :title "Getting Started"
-          :component #'GettingStartedPage
-          :on-push (markdown/get-on-push :getting-started)})
-
-
-(defn DocumentationPage [_ state _]
-  [markdown/Markdown state])
-
-(def documentation-page
-  #:page {:id :page.id/documentation
-          :title "Documentation"
-          :component #'DocumentationPage
-          :on-push (markdown/get-on-push :documentation)})
-
-
-(defn AboutPage [_ state _]
-  [markdown/Markdown state])
-
-(def about-page
-  #:page {:id :page.id/about
-          :component #'AboutPage
-          :on-push (markdown/get-on-push :under-construction)})
-
-(defn FaqPage [_ state _]
-  [markdown/Markdown state])
-
-(def faq-page
-  #:page {:id :page.id/faq
-          :title "FAQ"
-          :component #'FaqPage
-          :on-push (markdown/get-on-push :faq)})
-
-
-(defn ConceptsPage [_ state _]
-  [markdown/Markdown state])
-
-(def concepts-page
-  #:page {:id :page.id/concepts
-          :component #'ConceptsPage
-          :on-push (markdown/get-on-push :under-construction)})
-
-
-(defn WhitePaperPage [_ state _]
-  [markdown/Markdown state])
-
-(def white-paper-page
-  #:page {:id :page.id/white-paper
-          :component #'WhitePaperPage
-          :on-push (markdown/get-on-push :white-paper)})
-
-(defn AdvancedTopicsPage [_ state _]
-  [markdown/Markdown state])
-
-(def advanced-topics-page
-  #:page {:id :page.id/advanced-topics
-          :title "Advanced Topics"
-          :component #'AdvancedTopicsPage
-          :on-push (markdown/get-on-push :advanced-topics)})
-
-(defn UnderConstructionPage [_ state _]
-  [markdown/Markdown state])
-
-(def under-construction-page
-  #:page {:id :page.id/under-construction
-          :component #'UnderConstructionPage
-          :on-push (markdown/get-on-push :under-construction)})
-
-(defn ClientAPIPage [_ state _]
-  [markdown/Markdown state])
-
-(def client-api-page
-  #:page {:id :page.id/client-api
-          :title "Client API"
-          :component #'ClientAPIPage
-          :on-push (markdown/get-on-push :client-api)})

@@ -86,6 +86,16 @@
                 (stack/push :page.id/welcome {:reset? true}))}]}]
 
 
+   ;; Concepts
+   ;; ==============
+   ["concepts"
+    {:name :route-name/concepts
+     :controllers
+     [{:start (fn [_]
+                (stack/push :page.id/markdown {:state {:id :under-construction}
+                                               :reset? true}))}]}]
+
+
    ;; Vision
    ;; ==============
    ["vision"
@@ -104,8 +114,8 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/markdown {:title "Glossary"
-                                               :reset? true
-                                               :state {:id :glossary}}))}]}]
+                                               :state {:id :glossary}
+                                               :reset? true}))}]}]
 
    ;; FAQ
    ;; ==============
@@ -113,7 +123,9 @@
     {:name :route-name/faq
      :controllers
      [{:start (fn [_]
-                (stack/push :page.id/faq {:reset? true}))}]}]
+                (stack/push :page.id/markdown {:title "FAQ"
+                                               :state {:id :glossary}
+                                               :reset? true}))}]}]
 
 
    ;; Create account
@@ -153,7 +165,8 @@
      :controllers
      [{:identity identity
        :start (fn [_]
-                (stack/push :page.id/under-construction {:reset? true}))}]}]
+                (stack/push :page.id/markdown {:state {:id :under-construction}
+                                               :reset? true}))}]}]
 
    ;; Wallet
    ;; ==============
@@ -257,7 +270,9 @@
      {:name :route-name/documentation
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/documentation {:reset? true}))}]}]
+                 (stack/push :page.id/markdown {:title "Documentation"
+                                                :state {:id :documentation}
+                                                :reset? true}))}]}]
 
 
     ["/reference"
@@ -274,25 +289,33 @@
      {:name :route-name/documentation-getting-started
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/documentation-getting-started {:reset? true}))}]}]
+                 (stack/push :page.id/markdown {:title "Getting Started"
+                                                :state {:id :getting-started}
+                                                :reset? true}))}]}]
 
     ["/tutorial"
      {:name :route-name/documentation-tutorial
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/documentation-tutorial {:reset? true}))}]}]
+                 (stack/push :page.id/markdown {:title "Lisp Guide"
+                                                :state {:id :tutorials}
+                                                :reset? true}))}]}]
 
     ["/advanced-topics"
      {:name :route-name/advanced-topics
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/advanced-topics {:reset? true}))}]}]
+                 (stack/push :page.id/markdown {:title "Advanced Topics"
+                                                :state {:id :advanced-topics}
+                                                :reset? true}))}]}]
 
     ["/client-api"
      {:name :route-name/client-api
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/client-api {:reset? true}))}]}]]
+                 (stack/push :page.id/markdown {:title "Client API"
+                                                :state {:id :client-api}
+                                                :reset? true}))}]}]]
 
 
    ;; About
@@ -302,37 +325,36 @@
      {:name :route-name/about
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/about {:reset? true}))}]}]
-
-    ["/concepts"
-     {:name :route-name/concepts
-      :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/concepts {:reset? true}))}]}]
+                 (stack/push :page.id/markdown {:state {:id :under-construction}
+                                                :reset? true}))}]}]
 
     ["/white-paper"
      {:name :route-name/white-paper
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/white-paper {:reset? true}))}]}]
+                 (stack/push :page.id/markdown {:state {:id :white-paper}
+                                                :reset? true}))}]}]
 
     ["/get-involved"
      {:name :route-name/get-involved
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/under-construction {:reset? true}))}]}]
+                 (stack/push :page.id/markdown {:state {:id :under-construction}
+                                                :reset? true}))}]}]
 
     ["/roadmap"
      {:name :route-name/roadmap
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/under-construction {:reset? true}))}]}]
+                 (stack/push :page.id/markdown {:state {:id :under-construction}
+                                                :reset? true}))}]}]
 
     ["/convex-foundation"
      {:name :route-name/convex-foundation
       :controllers
       [{:start (fn [_]
-                 (stack/push :page.id/under-construction {:reset? true}))}]}]]])
+                 (stack/push :page.id/markdown {:state {:id :under-construction}
+                                                :reset? true}))}]}]]])
 
 (def router
   (rf/router routes))
