@@ -39,6 +39,26 @@
   (when el
     (.highlightBlock hljs el)))
 
+(defn transaction-type-text-color [transaction-type]
+  (case transaction-type
+    :convex-web.transaction.type/transfer
+    "text-indigo-500"
+
+    :convex-web.transaction.type/invoke
+    "text-pink-500"
+
+    ""))
+
+(defn transaction-type-description [transaction-type]
+  (case transaction-type
+    :convex-web.transaction.type/transfer
+    "Direct transfer of Convex Coins from the Signer's Account to a destination Account"
+
+    :convex-web.transaction.type/invoke
+    "Execution of code by Signer Account"
+
+    ""))
+
 (defn account-type-text-color [account-status]
   (cond
     (get account-status :convex-web.account-status/library?)
@@ -381,7 +401,7 @@
        (cond
          (= language "language-clojure")
          (if pretty?
-           (zprint/zprint-str source {:parse-string-all? true})
+           (try (zprint/zprint-str source {:parse-string-all? true}) (catch js/Error _ source))
            source)
 
          :else
@@ -411,7 +431,7 @@
 
       [:div.flex.items-center.space-x-2.py-1
        ;; -- Symbol
-       [:code.font-bold.text-xs.text-indigo-500
+       [:code.font-bold.text-sm.text-indigo-500.hover:text-indigo-400.active:text-indigo-600
         {:class
          (if on-click
            "cursor-pointer"
@@ -474,15 +494,25 @@
               code]])]))]))
 
 
-(def address-hover-class "hover:underline hover:text-blue-500")
+(def hyperlink-hover-class "hover:underline hover:text-blue-500")
 
 (def button-child-small-padding "px-6 py-2")
 (def button-child-large-padding "px-8 py-3")
 
-(defn ButtonText [{:keys [class]} text]
-  [:span.block.font-mono.text-sm.text-white.uppercase
-   {:class (or class button-child-large-padding)}
+(defn ButtonText [{:keys [padding text-size text-color text-transform font-family]} text]
+  [:span.block
+   {:class [(or padding button-child-large-padding)
+            (or text-size "text-sm")
+            (or text-color "text-white")
+            (or text-transform "uppercase")
+            (or font-family "font-mono")]}
    text])
+
+(defn Caption [text]
+  [:span.text-gray-600.text-base.leading-none.cursor-default text])
+
+(defn CaptionMono [text]
+  [:span.font-mono.text-gray-600.text-base.leading-none.cursor-default text])
 
 (def input-style "h-10 text-sm border rounded-md px-4 bg-blue-100 bg-opacity-25")
 

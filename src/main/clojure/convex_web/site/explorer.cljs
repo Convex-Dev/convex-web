@@ -8,14 +8,13 @@
             [convex-web.pagination :as pagination]
             [convex-web.site.markdown :as markdown]
             [convex-web.site.session :as session]
+            [convex-web.glossary :as glossary]
 
             [clojure.string :as str]
             [cljs.spec.alpha :as s]
 
             [reitit.frontend.easy :as rfe]
-            [reagent.core :as reagent]
-
-            ["timeago.js" :as timeago]))
+            [reagent.core :as reagent]))
 
 (def blocks-polling-interval 5000)
 
@@ -66,6 +65,91 @@
   #:page {:id :page.id/code
           :component #'CodePage})
 
+
+(defn TransactionPage [_ state _]
+  (let [{:keys [convex-web.block/index
+                convex-web.block/timestamp
+                convex-web.signed-data/address
+                convex-web.signed-data/value]} state
+
+
+        {:convex-web.transaction/keys [type source]} value]
+    [:div.flex.flex-col.space-y-8.p-6
+
+     ;; Header
+     ;; ======================
+     [:div.flex.space-x-10.bg-gray-100.p-6.rounded.shadow
+
+      ;; -- Block
+      [:div.flex.flex-col.space-y-2
+       [gui/CaptionMono "Block"]
+       [gui/Tooltip
+        {:title glossary/block-number}
+        [:a
+         {:class gui/hyperlink-hover-class
+          :href (rfe/href :route-name/block-explorer {:index index})}
+         [:span.text-sm
+          index]]]]
+
+      ;; -- TR#
+      [:div.flex.flex-col.space-y-2
+       [gui/CaptionMono "TR#"]
+       [gui/Tooltip
+        {:title glossary/transaction-index}
+        [:span.text-sm.cursor-default
+         (:convex-web.transaction/index value)]]]
+
+      ;; -- Signer
+      [:div.flex.flex-col.space-y-2
+       [gui/CaptionMono "Signer"]
+
+       [:div.flex.items-center.w-40
+        [gui/Identicon {:value address :size gui/identicon-size-small}]
+
+        [:a.flex-1.truncate
+         {:class gui/hyperlink-hover-class
+          :href (rfe/href :route-name/account-explorer {:address address})}
+         [gui/Tooltip
+          {:title address}
+          [:span.font-mono.text-xs (format/prefix-0x address)]]]]]
+
+      ;; -- Timestamp
+      [:div.flex.flex-col.space-y-2
+       [gui/CaptionMono "Timestamp"]
+       (let [timestamp (-> timestamp
+                           (format/date-time-from-millis)
+                           (format/date-time-to-string))]
+         [gui/Tooltip
+          {:title timestamp}
+          [:span.text-sm.cursor-default
+           (format/time-ago timestamp)]])]
+
+      ;; -- Type
+      [:div.flex.flex-col.space-y-2
+       [gui/CaptionMono "Type"]
+       [gui/Tooltip
+        {:title (gui/transaction-type-description type)}
+        [:span.text-sm.uppercase.cursor-default
+         {:class (gui/transaction-type-text-color type)}
+         type]]]]
+
+     ;; Value
+     ;; ======================
+     (case type
+       :convex-web.transaction.type/invoke
+       [:div.flex.flex-col.space-y-2
+        [gui/CaptionMono "Code"]
+        [gui/Highlight source {:pretty? true}]]
+
+       :convex-web.transaction.type/transfer
+       [:div])]))
+
+(def transaction-page
+  #:page {:id :page.id/transaction
+          :component #'TransactionPage
+          :title "Transaction"
+          :state-spec (s/merge :convex-web/block :convex-web/signed-data)})
+
 (defn TransactionsTable [blocks]
   [:div
    [:table.text-left.table-auto
@@ -78,14 +162,14 @@
          [:div.flex.space-x-1
           {:class th-div-style}
           [:span "Block"]
-          [gui/InfoTooltip "Block number in which the transaction was included."]]]
+          [gui/InfoTooltip glossary/block-number]]]
 
         [:th
          {:class th-style}
          [:div.flex.space-x-1
           {:class th-div-style}
           [:span "TR#"]
-          [gui/InfoTooltip "Index position of the transaction within the block. Lower indexed transactions were executed first."]]]
+          [gui/InfoTooltip glossary/transaction-index]]]
 
         [:th
          {:class th-style}
@@ -128,13 +212,14 @@
 
              td-class ["p-1 whitespace-no-wrap text-xs"]]
          ^{:key [block-index transaction-index]}
-         [:tr.cursor-default {:style {:height "34px"}}
+         [:tr.cursor-default
           ;; -- Block Index
           [:td {:class td-class}
            [:div.flex.flex-1.justify-end
             [:a
-             {:href (rfe/href :route-name/block-explorer {:index block-index})}
-             [:code.underline block-index]]]]
+             {:class gui/hyperlink-hover-class
+              :href (rfe/href :route-name/block-explorer {:index block-index})}
+             [:span.font-mono block-index]]]]
 
           ;; -- Transaction Index
           [:td {:class (cons "text-right" td-class)}
@@ -148,18 +233,20 @@
               [gui/Identicon {:value address :size gui/identicon-size-small}]
 
               [:a.flex-1.truncate
-               {:class gui/address-hover-class
+               {:class gui/hyperlink-hover-class
                 :href (rfe/href :route-name/account-explorer {:address address})}
-               [:code.text-xs (format/prefix-0x address)]]])]
+               [gui/Tooltip
+                {:title address}
+                [:span.font-mono.text-xs (format/prefix-0x address)]]]])]
 
           ;; -- Timestamp
           [:td {:class td-class}
-           (let [utc-time (-> (get m :convex-web.block/timestamp)
-                              (format/date-time-from-millis)
-                              (format/date-time-to-string))]
+           (let [timestamp (-> (get m :convex-web.block/timestamp)
+                               (format/date-time-from-millis)
+                               (format/date-time-to-string))]
              [gui/Tooltip
-              {:title utc-time}
-              [:span (timeago/format utc-time)]])]
+              {:title timestamp}
+              [:span (format/time-ago timestamp)]])]
 
           ;; -- Type
           [:td
@@ -189,12 +276,14 @@
            {:class td-class}
            (case (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])
              :convex-web.transaction.type/invoke
-             (let [source (get-in m [:convex-web.signed-data/value :convex-web.transaction/source])]
-               [gui/DefaultButton
-                {:on-click #(stack/push :page.id/code {:title "Source"
-                                                       :state {:source source}
-                                                       :modal? true})}
-                [:span.font-mono.text-xs.text-black "View Source"]])
+             [gui/SecondaryButton
+              {:on-click #(stack/push :page.id/transaction {:state m
+                                                            :modal? true})}
+              [gui/ButtonText
+               {:padding gui/button-child-small-padding
+                :text-size "text-xs"
+                :text-transform "normal-case"}
+               "View details"]]
 
              :convex-web.transaction.type/transfer
              [:span.inline-flex.items-center
@@ -211,9 +300,11 @@
                  [gui/Identicon {:value address :size gui/identicon-size-small}]
 
                  [:a.flex-1.truncate
-                  {:class gui/address-hover-class
+                  {:class gui/hyperlink-hover-class
                    :href (rfe/href :route-name/account-explorer {:address address})}
-                  [:code.text-xs (format/prefix-0x address)]]])])]]))]]])
+                  [gui/Tooltip
+                   {:title address}
+                   [:span.font-mono.text-xs (format/prefix-0x address)]]]])])]]))]]])
 
 (s/def :explorer.blocks.state/pending
   (s/merge :ajax/pending-status (s/keys :req [:runtime/interval-ref])))
@@ -237,20 +328,18 @@
 
 ;; ---
 
-(defn Block [{:convex-web.block/keys [index timestamp] :as block}]
-  [:div.flex.flex-col
+(defn Block [{:convex-web.block/keys [index] :as block}]
+  [:div.flex.flex-col.space-y-8
 
-   ;; -- Block
-   [:div.flex.mb-4
-    [:div.flex.items-center.justify-center.px-2.py-4
-     [:span.text-4xl.text-center.text-gray-700.leading-none index]]
-
-    [:div.flex.flex-col.ml-2
-     [:code.text-xs.text-gray-700 timestamp]
-     [:span.text-xs (.toISOString (js/Date. timestamp))]]]
+   ;; -- Index
+   [:div.flex.flex-col.items-start.space-y-2
+    [gui/Caption "Index"]
+    [:span.text-4xl.text-center.text-gray-700.leading-none index]]
 
    ;; -- Transactions
-   [TransactionsTable (vector block)]])
+   [:div.flex.flex-col.space-y-2
+    [gui/Caption "Transactions"]
+    [TransactionsTable (vector block)]]])
 
 (defn BlockPage [_ {:keys [ajax/status ajax/error convex-web/block]} _]
   (case status
@@ -259,8 +348,7 @@
      [gui/Spinner]]
 
     :ajax.status/success
-    [:div.flex.mt-4.mx-10
-     [Block block]]
+    [Block block]
 
     :ajax.status/error
     [:span (get-in error [:response :error :message])]
@@ -419,7 +507,7 @@
                                                                     :modal? true})}
                  address-blob]
                 [:a.flex-1.mx-2
-                 {:class gui/address-hover-class
+                 {:class gui/hyperlink-hover-class
                   :href (rfe/href :route-name/account-explorer {:address address})}
                  [:code.text-xs address-blob]])
 
@@ -635,8 +723,9 @@
                 [:td {:class td-class}
                  [:div.flex.flex-1.justify-end
                   [:a
-                   {:href (rfe/href :route-name/block-explorer {:index index})}
-                   [:code.underline index]]]]
+                   {:href (rfe/href :route-name/block-explorer {:index index})
+                    :class gui/hyperlink-hover-class}
+                   [:span.font-mono index]]]]
 
                 ;; -- Timestamp
                 [:td {:class td-class}
@@ -645,14 +734,14 @@
                                     (format/date-time-to-string))]
                    [gui/Tooltip
                     {:title utc-time}
-                    [:span (timeago/format utc-time)]])]
+                    [:span (format/time-ago utc-time)]])]
 
                 ;; -- Peer
                 [:td {:class td-class}
                  [:div.flex.items-center
                   [gui/Identicon {:value peer :size gui/identicon-size-small}]
                   [:a
-                   {:class gui/address-hover-class
+                   {:class gui/hyperlink-hover-class
                     :href (rfe/href :route-name/account-explorer {:address peer})}
                    [:span (format/prefix-0x peer)]]]]]))]]]))))
 

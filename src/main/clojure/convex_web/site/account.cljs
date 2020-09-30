@@ -19,16 +19,26 @@
   (get-in account [:convex-web.account/status :convex-web.account-status/balance]))
 
 (defn CheckingBalance []
-  [:span.text-gray-700.text-base "Checking balance..."])
+  [:span.text-gray-700.text-base.animate-pulse "Checking balance..."])
 
 (defn BalanceUnavailable [_]
   [:span.text-gray-700.text-base "Balance unavailable"])
 
-(defn BalanceIs [balance]
+(defn BalanceIs [_ balance]
   [:span.text-gray-700.text-base "Balance " [:span.font-bold balance]])
 
-(defn YourUpdatedBalanceIs [balance]
-  [:span.text-gray-700.text-base "Your updated balance is " [:span.font-bold balance] "."])
+(defn AddressUpdatedBalanceIs [address balance]
+  [:span.inline-flex.text-gray-700.text-base.space-x-1
+   [:a.inline-flex.items-center.space-x-1.w-40
+    {:href (rfe/href :route-name/account-explorer {:address address})}
+    [gui/Identicon {:value address :size gui/identicon-size-small}]
+
+    [:span.font-mono.text-sm.truncate
+     {:class gui/hyperlink-hover-class}
+     (format/prefix-0x address)]]
+
+   [:span " updated balance is "]
+   [:span.font-bold balance] "."])
 
 (defn ShowBalance2 [{:keys [convex-web/account ajax/status ajax/error]} {:keys [Pending Error Success]}]
   (case status
@@ -39,7 +49,7 @@
     [Error error]
 
     :ajax.status/success
-    [Success (format/format-number (balance account))]
+    [Success (:convex-web.account/address account) (format/format-number (balance account))]
 
     ;; Fallback
     [:span]))
@@ -353,6 +363,8 @@
                                                        :address from
                                                        :transaction transaction}]
 
+                     (set-state assoc :convex-web/command {:convex-web.command/status :convex-web.command.status/running})
+
                      (command/execute command (fn [command command']
                                                 (cond
                                                   (= :convex-web.command.status/success (:convex-web.command/status command'))
@@ -389,7 +401,7 @@
      ;; ===========
      (case (:convex-web.command/status command)
        :convex-web.command.status/running
-       [:span.text-base.text-gray-700
+       [:span.text-base.text-gray-700.animate-pulse
         "Processing..."]
 
        :convex-web.command.status/success
@@ -408,7 +420,7 @@
            [gui/Identicon {:value address :size gui/identicon-size-small}]
 
            [:span.font-mono.text-sm.truncate
-            {:class gui/address-hover-class}
+            {:class gui/hyperlink-hover-class}
             (format/prefix-0x (get transfer :convex-web.transfer/to))]])
 
         [:span " to "]
@@ -420,7 +432,7 @@
            [gui/Identicon {:value address :size gui/identicon-size-small}]
 
            [:span.font-mono.text-sm.truncate
-            {:class gui/address-hover-class}
+            {:class gui/hyperlink-hover-class}
             (format/prefix-0x (get transfer :convex-web.transfer/to))]])]
 
        :convex-web.command.status/error
@@ -540,7 +552,7 @@
           :value target
           :on-change
           #(let [value (gui/event-target-value %)]
-             (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] value))}])
+             (set-state assoc-in [:convex-web/faucet :convex-web.faucet/target] (format/trim-0x value)))}])
 
 
       ;; -- Balance
@@ -620,7 +632,7 @@
      (let [copy-style "text-base text-gray-700"]
        (case status
          :ajax.status/pending
-         [:span {:class copy-style}
+         [:span.animate-pulse {:class copy-style}
           "Processing..."]
 
          :ajax.status/error
@@ -631,7 +643,7 @@
          [ShowBalance2 (sub ::?faucet-target (get frame :frame/uuid) target)
           {:Pending CheckingBalance
            :Error BalanceUnavailable
-           :Success YourUpdatedBalanceIs}]
+           :Success AddressUpdatedBalanceIs}]
 
          ;; Unknown status
          [:div]))]))

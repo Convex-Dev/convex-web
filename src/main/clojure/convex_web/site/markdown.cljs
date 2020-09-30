@@ -81,3 +81,23 @@
                        name]))]]))]
 
            [:div])]))))
+
+(defn MarkdownPage [_ state _]
+  [Markdown state])
+
+(def markdown-page
+  #:page {:id :page.id/markdown
+          :component #'MarkdownPage
+          :on-push
+          (fn [_ {:keys [id]} set-state]
+            (set-state update :markdown assoc :ajax/status :ajax.status/pending)
+
+            (backend/GET-markdown-page
+              id
+              {:handler
+               (fn [markdown-page]
+                 (set-state update :markdown merge {:ajax/status :ajax.status/success} markdown-page))
+
+               :error-handler
+               (fn [error]
+                 (set-state update :markdown assoc :ajax/status :ajax.status/error :ajax/error error))}))})

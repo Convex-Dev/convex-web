@@ -519,13 +519,9 @@
 
       -server-error-response)))
 
-(defn -POST-faucet [context {:keys [body] :as request}]
+(defn -POST-faucet [context {:keys [body]}]
   (try
     (let [{:convex-web.faucet/keys [target amount] :as faucet} (transit-decode body)
-
-          session-addresses (session-addresses context request)
-
-          authorized? (contains? session-addresses target)
 
           account (account/find-by-address (system/db context) target)
 
@@ -539,13 +535,6 @@
                  :severity :error
                  :message (str message " Expound: " (expound/expound-str :convex-web/faucet faucet)))
           (-bad-request-response (error message)))
-
-        (not authorized?)
-        (let [message "Unauthorized."]
-          (u/log :logging.event/user-error
-                 :severity :error
-                 :message message)
-          (forbidden-response (error message)))
 
         (< last-faucet-millis-ago config/faucet-wait-millis)
         (let [message (str "You need to wait "
@@ -564,13 +553,6 @@
                  :severity :error
                  :message message)
           (-bad-request-response (error message)))
-
-        (nil? account)
-        (let [message (str "Account " target " not found.")]
-          (u/log :logging.event/user-error
-                 :severity :error
-                 :message message)
-          (not-found-response (error message)))
 
         :else
         (let [conn (system/convex-conn context)

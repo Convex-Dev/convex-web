@@ -15,6 +15,7 @@
             [convex-web.site.store]
             [convex-web.site.format :as format]
             [convex-web.site.environment :as environment]
+            [convex-web.site.markdown :as markdown]
 
             [clojure.string :as str]
             [cljs.spec.test.alpha :as stest]
@@ -46,6 +47,11 @@
 
 (def pages
   [blank-page
+
+   ;; ---
+
+   markdown/markdown-page
+
    ;; ---
 
    welcome/welcome-page
@@ -74,6 +80,7 @@
    explorer/peers-page
    explorer/transactions-page
    explorer/transactions-range-page
+   explorer/transaction-page
 
    ;; ---
 
@@ -90,7 +97,6 @@
    documentation/faq-page
    documentation/white-paper-page
    documentation/about-page
-   documentation/vision-page
    documentation/advanced-topics-page
    documentation/client-api-page
 
@@ -125,7 +131,26 @@
                          :route-name/create-account})}
 
      :others
-     [;; Guides
+     [;; Concepts
+      ;; ==============
+      {:text "Concepts"
+       :top-level? true
+       :route-name :route-name/concepts
+       :href (rfe/href :route-name/concepts)
+       :children
+       [{:text "Vision"
+         :route-name :route-name/vision
+         :href (rfe/href :route-name/vision)}
+
+        {:text "Glossary"
+         :route-name :route-name/glossary
+         :href (rfe/href :route-name/glossary)}
+
+        {:text "FAQ"
+         :route-name :route-name/faq
+         :href (rfe/href :route-name/faq)}]}
+
+      ;; Documentation
       ;; ==============
       {:text "Documentation"
        :top-level? true
@@ -253,14 +278,14 @@
        {})
      ;; -- Item
      [:div.flex.justify-between
-      [:a.self-start.font-medium.pl-2.border-l-2
+      [:a.self-start.font-medium.px-2.border-l-2.transition.duration-200.ease-in-out
        (merge {:href href
                :class [(if top-level?
                          "text-blue-500"
                          "text-gray-black")
                        (if active?
-                         "border-blue-400"
-                         "border-transparent")]}
+                         "border-blue-400 hover:border-blue-400"
+                         "border-transparent hover:border-blue-200")]}
               (when target
                 {:target target}))
 

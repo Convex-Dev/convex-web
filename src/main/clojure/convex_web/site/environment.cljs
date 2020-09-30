@@ -11,14 +11,14 @@
      [:div {:class caption-container-style}
       [:span {:class caption-style} "Symbol"]
       [:div.flex.items-center.space-x-2
-       [gui/Highlight symbol]
+       [:span.font-mono.text-indigo-500 symbol]
        [gui/ClipboardCopy symbol]]]
 
      ;; -- Value
      [:div {:class caption-container-style}
       [:span {:class caption-style} "Value"]
       [:div.flex.items-center..space-x-2
-       [gui/Highlight value]
+       [gui/Highlight value {:pretty? true}]
        [gui/ClipboardCopy value]]]]))
 
 (def entry-page
