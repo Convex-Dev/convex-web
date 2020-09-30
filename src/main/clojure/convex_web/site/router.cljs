@@ -121,7 +121,7 @@
      :controllers
      [{:start (fn [_]
                 (stack/push :page.id/markdown {:title "FAQ"
-                                               :state {:id :glossary}
+                                               :state {:id :faq}
                                                :reset? true}))}]}]
 
 
