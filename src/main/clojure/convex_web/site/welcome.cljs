@@ -219,22 +219,24 @@
 
       [:div.flex.space-x-8
        [:a
-        {:href (rfe/href :route-name/documentation-getting-started)}
+        {:href (rfe/href :route-name/vision)}
         [gui/BlackButton
          {}
          [:div.flex.space-x-4.mx-2
           [:span.font-mono.text-sm.text-white.uppercase
-           "Start Building"]
+           "Our Vision"]
 
           [gui/ArrowCircleRightIcon {:class "h-4 w-4 text-white"}]]]]
 
-       [gui/LightBlueButton
-        {:on-click #(gui/scroll-into-view "how" {:behavior "smooth"})}
-        [:div.flex.space-x-4.mx-2
-         [:span.font-mono.text-sm.text-black.uppercase
-          "How Can I Use Convex?"]
+       [:a
+        {:href (rfe/href :route-name/documentation-getting-started)}
+        [gui/LightBlueButton
+         {}
+         [:div.flex.space-x-4.mx-2
+          [:span.font-mono.text-sm.text-black.uppercase
+           "Start Building"]
 
-         [gui/ArrowCircleDownIcon {:class "h-4 w-4 text-black"}]]]]]
+          [gui/ArrowCircleRightIcon {:class "h-4 w-4 text-black"}]]]]]]
 
 
      [:div.w-full.max-w-screen-xl.mx-auto
