@@ -89,7 +89,8 @@
     {:name :route-name/concepts
      :controllers
      [{:start (fn [_]
-                (stack/push :page.id/markdown {:state {:id :under-construction}
+                (stack/push :page.id/markdown {:title "Concepts"
+                                               :state {:id :concepts}
                                                :reset? true}))}]}]
 
 
@@ -162,7 +163,8 @@
      :controllers
      [{:identity identity
        :start (fn [_]
-                (stack/push :page.id/markdown {:state {:id :under-construction}
+                (stack/push :page.id/markdown {:title "Tools"
+                                               :state {:id :tools}
                                                :reset? true}))}]}]
 
    ;; Wallet
