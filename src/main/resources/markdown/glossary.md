@@ -35,17 +35,23 @@ A Data Object representing an arbitrary sequence of bytes.
 
 ## Block
 
-A collection of transactions submitted simultaneously by a Peer.
+A Block in Convex is collection of transactions submitted simultaneously by a Peer.
 
-Unlike Blockchains, a Block in Convex does *not* contain a hash of the previous block. Blocks can therefore be handled in parallel and re-ordered by the higher level Consensus Algorithm.
+Unlike Blockchains, a Block in Convex does *not* contain a hash of the previous block. 
 
 A Block must be digitally signed by the proposing Peer to be valid for inclusion in consensus.
+
+## Blockchain
+
+A system that maintains an appendable sequence of Blocks where each block contains a cryptographic hash of the previous block (and hence its integrity can be validated recurively all the way back to the original block).
+
+Technically, Convex is not a blockchain because Blocks are not required to contain a hash of any previous Block. This gives Convex a technical advantage because Blocks can therefore be handled in parallel and re-ordered by the higher level Consensus Algorithm after creation.
 
 ## Consensus Algorithm
 
 In general, a consensus algorithm is a procedure or protocol achieve agreement on a single data value among distributed processes or systems or the current state of a distributed system.
 
-In the context of Convex, the Consensus Algorithm is the specific algorithm used to obtain consensus through the use of a convergent Belief Merge Function.
+In the context of Convex, the Consensus Algorithm is the specific algorithm used to obtain consensus through the use of a convergent Belief Merge Function. This algorithm is called Convergent Proof of Stake (CPoS)
 
 ## Consensus Point
 
@@ -91,10 +97,39 @@ A Convex Data Object is a first-class unit of information in the decentralised C
 
 Data Objects include:
 
-* Primitive values
+* Primitive values (numbers, strings, symbols, binary Blobs)
 * Data Structures representing composites of many values (including other data structure)
+* Executable CVM code
+* Some special objects used by the CVM
 
-Most Data Objects are available within the CVM
+Data Objects may be processed by code within the CVM, and are the fundamental building blocks for on-chain systems.
+
+## Dapp
+
+A Dapp is a decentralised application.
+
+We can distinguish between two forms of Dapp:
+
+- **Pure Dapp** - the Dapp consists only of client code and on-chain implementation (i.e. the Dapp depends on the Convex network and nothing else). Such Dapps are simple to build and maintain, and minimise the risk of relying on centralised systems
+- **Hybrid Dapp** - the Dapp uses client code, on-chain-implementation and one or more off-chain servers. This is more complex to build and maintain, but is necessary if additional servers are required (e.g. to store private information, or to integrate with external systems)
+
+## Digital Signature
+
+A cryptographic technique where a piece of data 
+
+Technically, digital signatures in Convex use the Ed25519 algorithm. The data that is signed is the Object ID of a CVM Data Object (which in turn is the SHA3-256 hash of the Encoding)
+
+## Encoding
+
+Every CVM Data Object has an Encoding, which is a representation of the Object as a sequence of bytes.
+
+Encodings are designed to be:
+
+- Small in size (to minimise storage and network bandwidth requirements)
+- Efficient for serialisation and deserialisation
+- Canonical (i.e. any Data Object has one and only one valid Encoding)
+
+The maximum Encoding size is 8191 byes. Larger Data Objects are broken down into multiple Cells which each have their individual Encoding - however this is handled automatically by Convex and not usually a relevant concern for users or developers.
 
 ## Environment
 
@@ -106,13 +141,15 @@ Each Account receives it's own independent Environment for programmatic usage. I
 
 ## Etch
 
-The name of the underlying Convex storage subsystem - "A database for informtion that needs to be carved in stone".
+Etch is the underlying Convex storage subsystem - "A database for informtion that needs to be carved in stone".
 
 Etch implements Converge Immutable Storage for Data Objects.
 
 ## Fork
 
 A Fork in a consensus system is, in general, where two or more different groups diverge in agreement on the value of shared Global State.
+
+This creates significant problems with a system of value exchange because assets may have different ownership in different forks - which in some cases could cause major economic loss (the "double spend problem")
 
 Convex is designed to prevent Forks. In the unlikely event of a fork created by malicious actors or software / network failures, the Convex Network will follow the largest majority among known, trusted Peers (this is a Governance decision outside the scope of the Protocol).
 
@@ -123,6 +160,27 @@ A Function is a Data Object that represents a first-class function on the CVM.
 Functions may be passed as arguments to other functions, and invoked with arbitrary arguments. They may be anonymous, or given an name within an Environment. They may also be closures, i.e. capture lexical values from the point of creation.
 
 Functions can support multiple arities on the CVM (e.g. `+`, although many functions only support a specific arity.
+
+## Memory
+
+Memory in Convex is the amount of on-chain storage allocated as part of the Global State. At any point in time, it is possible to efficiently calculate the total Memory usage of any Convex Data Object (including the Global State itself).
+
+## Memory Accounting
+
+Memory Accounting is the process by which changes in Memory usage are attributed and charged to Users.
+
+This is a necessary feature of Convex to create the right incentives to utilise on-chain memory efficiently. Without a system of Memory Accounting, there would a be a risk of careless usage of Memory leading to ever-increasing size of the Global State (sometimes termed the "state growth problem" in Blockchains).
+
+## On-chain
+
+Data or code is considered to be "on-chain" if it is part of the current consensus state of the CVM.
+
+On-chain data is the *only* information that is visible to to the CVM. It can be accessed and used by Actors, e.g. as part of the management of smart contracts and digital assets.
+
+As a general principle, on-chain data should be kept to the *absolute minimum necessary*. This is because:
+
+- It has a real cost (in terms of both coins and memory)
+- It is effectively public information so should exclude any confidential or private information
 
 ## Ordering
 
@@ -172,7 +230,7 @@ The protocol does not allow Peers to reverse a confirmed consensus, or prevent (
 
 State refers to the complete information managed by execution on the CVM - the State is the value that must be agreed via the Consensus Algorithm
 
-Where there is a risk of ambiguity, State may be termed "CVM State".
+Where there is a risk of ambiguity, State may be termed "CVM State" or "Global State" e.g. to distinguish this from elements of state maintained by other systems.
 
 ## State Transition Function
 
@@ -196,4 +254,10 @@ An Transaction is an indivisible operation that can be executed on the Convex Ne
 
 Transactions must be digitally signed by the owner of the Account in order to be valid. 
 
+## Wallet
 
+A Wallet is a secure collection of Accounts along with their associated private keys.
+
+Wallet functionality may be provided by a Dapp, or embedded in any system that communicates with the Convex Network.
+
+Wallet security is paramount: if access to the private keys in a wallet is compromised, any on-chain digital assets (coins, tokens, smart contract rights etc.) may be at risk.
