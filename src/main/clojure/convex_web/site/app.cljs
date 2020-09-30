@@ -17,7 +17,6 @@
             [convex-web.site.environment :as environment]
             [convex-web.site.markdown :as markdown]
 
-            [clojure.string :as str]
             [cljs.spec.test.alpha :as stest]
 
             [reagent.dom]
