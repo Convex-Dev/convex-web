@@ -47,7 +47,7 @@ Here are some examples:
 - **Public databases**
 - **Self-sovereign identity**
 
-We're already seeing some exciting projects prototyping new ideas with Convex, and 
+We're already seeing some exciting projects prototyping new ideas with Convex, and look forward to seeing a lot more great innovation.
 
 ## What we are delivering
 

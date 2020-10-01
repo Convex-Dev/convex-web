@@ -152,9 +152,9 @@ Etch implements Converge Immutable Storage for Data Objects.
 
 A Fork in a consensus system is, in general, where two or more different groups diverge in agreement on the value of shared Global State.
 
-This creates significant problems with a system of value exchange because assets may have different ownership in different forks - which in some cases could cause major economic loss (the "double spend problem")
+This creates significant problems with a system of value exchange because assets may have different ownership in different forks - which in some cases could cause major economic loss (e.g. the infamous "double spend problem")
 
-Convex is designed to prevent Forks. In the unlikely event of a fork created by malicious actors or software / network failures, the Convex Network will follow the largest majority among known, trusted Peers (this is a Governance decision outside the scope of the Protocol).
+Convex is designed to prevent forks. In the unlikely event of a fork created by malicious actors or software / network failures, the Convex Network will follow the largest majority among known, trusted Peers (this is a governance decision outside the scope of the Protocol).
 
 ## Function
 
@@ -206,6 +206,12 @@ Peers are required to use a private key (corresponding to the Peer's Account) to
 A cryptographic key that can be used to digitally sign transactions. 
 
 Private Keys must be kept secure in order to prevent unauthorised access to Accounts and Digital Assets controlled by that Account.
+
+## Public Key
+
+A cryptographic key that can be used to validate transactions.
+
+Public Keys may be safely shared with others, as they do not allow digital signatures to be created without the corresponding private key. User Accounts in Convex use an Ed25519 Public Key as the Address, which enables any Peer to validate that a transaction for a given user has been signed with the correct Private Key.
 
 ## Schedule
 
