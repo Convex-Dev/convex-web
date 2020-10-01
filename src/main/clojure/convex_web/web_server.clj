@@ -393,7 +393,7 @@
 
 (defn -GET-commands [system _]
   (try
-    (-successful-response (command/query-all (system/db system)))
+    (-successful-response (command/find-all (system/db system)))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
@@ -404,11 +404,8 @@
 
 (defn -GET-command-by-id [system id]
   (try
-    (if-let [command (command/query-by-id (system/db system) id)]
-      (-successful-response (-> command
-                                (command/wrap-result-metadata)
-                                (command/wrap-result)
-                                (command/prune)))
+    (if-let [command (command/find-by-id (system/db system) id)]
+      (-successful-response (command/prune command))
       (not-found-response {:error {:message (str "Command " id " not found.")}}))
     (catch Exception ex
       (u/log :logging.event/system-error

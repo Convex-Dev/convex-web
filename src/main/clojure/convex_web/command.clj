@@ -6,6 +6,7 @@
             [convex-web.specs]
 
             [clojure.spec.alpha :as s]
+            [clojure.tools.logging :as log]
 
             [datalevin.core :as d]
             [expound.alpha :as expound])
@@ -125,13 +126,13 @@
 
 ;; --
 
-(defn query-all [db]
+(defn find-all [db]
   (let [query '[:find [(pull ?e [*]) ...]
                 :in $
                 :where [?e :convex-web.command/id]]]
     (d/q query db)))
 
-(defn query-by-id [db id]
+(defn find-by-id [db id]
   (let [query '[:find (pull ?e [*]) .
                 :in $ ?id
                 :where [?e :convex-web.command/id ?id]]]
@@ -200,6 +201,8 @@
             (throw (ex-info "Invalid Command." {:message (expound/expound-str :convex-web/command running-command)})))
 
           (d/transact! conn [running-command])
+
+          (log/debug "Transacted Command" running-command)
 
           (select-keys running-command [:convex-web.command/id
                                         :convex-web.command/status]))))))

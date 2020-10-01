@@ -79,7 +79,8 @@
                  (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
                                                   ::anomalies/category ::anomalies/incorrect}))))
 
-        ^Address address (convex/address address)]
+        ^Address address (when address
+                           (convex/address address))]
 
     (.sendQuery conn form address)))
 
