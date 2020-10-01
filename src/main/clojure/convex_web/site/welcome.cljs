@@ -224,7 +224,7 @@
          {}
          [:div.flex.space-x-4.mx-2
           [:span.font-mono.text-sm.text-white.uppercase
-           "Our Vision"]
+           "Learn about our vision"]
 
           [gui/ArrowCircleRightIcon {:class "h-4 w-4 text-white"}]]]]
 
@@ -251,7 +251,7 @@
 
       ;; Convex is flexible
       ;; =========================
-      [:div.w-full.flex.mb-40.space-x-8
+      [:div.w-full.flex.items-center.mb-40.space-x-8
 
        ;; -- Image
        [:div {:class "w-1/2"}
@@ -272,7 +272,15 @@
          [Item "Digital currencies"]
          [Item "Prediction markets"]
          [Item "Smart contracts for managing digital assets"]
-         [Item "Immutable provenance records"]]]]
+         [Item "Immutable provenance records"]]
+
+        [:a
+         {:href (rfe/href :route-name/vision)}
+         [gui/SecondaryButton
+          {}
+          [:span.block.font-mono.text-sm.text-white.uppercase
+           {:class gui/button-child-large-padding}
+           "Our vision"]]]]]
 
 
       ;; Convex is fast
