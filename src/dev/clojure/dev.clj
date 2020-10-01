@@ -148,7 +148,7 @@
 
   ;; -- Session
 
-  @web-server/session-ref
+  (session/all-ring (db))
 
   (session/all (db))
   (session/find-session (db) "4feac0cd-cc06-4a3b-bcad-54596771356b")

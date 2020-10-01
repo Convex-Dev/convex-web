@@ -1,14 +1,17 @@
 (ns convex-web.db)
 
 (def schema
-  {;; -- Command
+  {;; -- Ring Session
+   :ring.session/key
+   {:db/unique :db.unique/identity}
 
+
+   ;; -- Command
    :convex-web.command/id
    {:db/unique :db.unique/identity}
 
 
    ;; -- Account
-
    :convex-web.account/address
    {:db/unique :db.unique/identity}
 
@@ -18,7 +21,6 @@
 
 
    ;; -- Session
-
    :convex-web.session/id
    {:db/unique :db.unique/identity}
 

@@ -24,7 +24,6 @@
             [datalevin.core :as d]
             [cognitect.transit :as t]
             [ring.middleware.defaults :refer [wrap-defaults api-defaults site-defaults]]
-            [ring.middleware.session.memory :as memory-session]
             [org.httpkit.server :as http-kit]
             [compojure.core :refer [routes GET POST]]
             [compojure.route :as route]
@@ -40,8 +39,6 @@
            (org.parboiled.errors ParserRuntimeException)
            (convex.core.exceptions ParseException MissingDataException)
            (convex.core.lang.impl AExceptional)))
-
-(def session-ref (atom {}))
 
 (defn ring-session [request]
   (get-in request [:cookies "ring-session" :value]))
@@ -875,7 +872,7 @@
                                (wrap-defaults api-defaults))
 
         site-config {:session
-                     {:store (memory-session/memory-store session-ref)
+                     {:store (session/persistent-session-store (system/db-conn system))
                       :flash true
                       :cookie-attrs {:http-only false :same-site :strict}}}
 

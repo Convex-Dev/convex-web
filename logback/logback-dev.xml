@@ -3,11 +3,6 @@
     <!-- Console (STDOUT) output. -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
-        <!-- Only print log messages at level WARN or higher. -->
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>WARN</level>
-        </filter>
-
         <!-- Default encoder is ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
         <encoder>
             <!-- two-line layout suitable for a terminal -->
@@ -82,21 +77,19 @@
     </appender>
 
     <root level="ALL">
-        <appender-ref ref="STDOUT"/>
-
         <appender-ref ref="ALL_LOG_FILE"/>
     </root>
 
     <logger name="convex-web" level="ALL">
-        <appender-ref ref="APP_LOG_FILE"/>
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="user" level="ALL">
-        <appender-ref ref="APP_LOG_FILE"/>
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <logger name="dev" level="ALL">
-        <appender-ref ref="APP_LOG_FILE"/>
+        <appender-ref ref="STDOUT"/>
     </logger>
 
 </configuration>
