@@ -13,4 +13,4 @@ log/
 /.settings/
 db/
 db-dev/
-dev-test/
+db-test/
