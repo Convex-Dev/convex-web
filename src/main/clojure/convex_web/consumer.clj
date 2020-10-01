@@ -1,9 +1,10 @@
 (ns convex-web.consumer
   (:require [convex-web.convex :as convex]
 
-            [datascript.core :as d]
-            [com.brunobonacci.mulog :as u]
-            [clojure.tools.logging :as log])
+            [clojure.tools.logging :as log]
+
+            [datalevin.core :as d]
+            [com.brunobonacci.mulog :as u])
   (:import (convex.net ResultConsumer)))
 
 (defn ^ResultConsumer result-consumer [{:keys [handle-result handle-error]}]
@@ -14,7 +15,7 @@
     (handleError [id code message]
       (handle-error id code message))))
 
-(defn ^ResultConsumer command-consumer [datascript-conn]
+(defn ^ResultConsumer command-consumer [db-conn]
   (result-consumer
     {:handle-result
      (fn [^Long id object]
@@ -22,7 +23,7 @@
          (log/info "Consumer result" id object)
 
          ;; TODO Change design.
-         #_(let [{:convex-web.command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
+         #_(let [{:convex-web.command/keys [mode address] :as c} (command/query-by-id @db-conn id)]
              (try
                (u/log :logging.event/repl-user
                       :severity :info
@@ -36,10 +37,10 @@
                         :message (str "Consumer received an invalid Command: " c)
                         :exception ex))))
 
-         (d/transact! datascript-conn [(merge {:convex-web.command/id id
-                                               :convex-web.command/status :convex-web.command.status/success}
-                                              (when (some? object)
-                                                {:convex-web.command/object object}))])
+         (d/transact! db-conn [(merge {:convex-web.command/id id
+                                       :convex-web.command/status :convex-web.command.status/success}
+                                      (when (some? object)
+                                        {:convex-web.command/object object}))])
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error
@@ -52,7 +53,7 @@
          (log/error "Consumer error" code message)
 
          ;; TODO Change design. (Same issue as above)
-         #_(let [{:convex-web.command/keys [mode address] :as c} (command/query-by-id @datascript-conn id)]
+         #_(let [{:convex-web.command/keys [mode address] :as c} (command/query-by-id @db-conn id)]
              (u/log :logging.event/repl-error
                     :severity :info
                     :address address
@@ -60,11 +61,11 @@
                     :source (command/source c)
                     :message (str message)))
 
-         (d/transact! datascript-conn [#:convex-web.command{:id id
-                                                            :status :convex-web.command.status/error
-                                                            :error
-                                                            {:code (convex/datafy code)
-                                                             :message (convex/datafy message)}}])
+         (d/transact! db-conn [#:convex-web.command{:id id
+                                                    :status :convex-web.command.status/error
+                                                    :error
+                                                    {:code (convex/datafy code)
+                                                     :message (convex/datafy message)}}])
          (catch Exception ex
            (u/log :logging.event/system-error
                   :severity :error

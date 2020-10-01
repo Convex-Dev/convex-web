@@ -13,11 +13,6 @@
   [system]
   (:web-server system))
 
-(defn datascript
-  "DataScript Component."
-  [system]
-  (:datascript system))
-
 (defn datalevin
   "Datalevin Component."
   [system]
@@ -48,7 +43,7 @@
   (-convex-client (convex system)))
 
 
-;; -- DataScript
+;; -- DB
 
 (defn -db-conn
   [db]

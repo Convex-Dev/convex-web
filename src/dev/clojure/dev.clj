@@ -20,13 +20,12 @@
 
             [com.stuartsierra.component.repl :refer [set-init reset system]]
             [aero.core :as aero]
-            [datascript.core :as d]
+            [datalevin.core :as d]
             [nano-id.core :as nano-id]
             [org.httpkit.client :as http]
             [expound.alpha :as expound])
   (:import (convex.core Init Peer)
-           (convex.core.lang Core Reader Context)
-           (org.slf4j.bridge SLF4JBridgeHandler)))
+           (convex.core.lang Core Reader Context)))
 
 ;; -- Logging
 (set-init

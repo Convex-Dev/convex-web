@@ -7,7 +7,7 @@
 
             [clojure.spec.alpha :as s]
 
-            [datascript.core :as d]
+            [datalevin.core :as d]
             [expound.alpha :as expound])
   (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList)
            (convex.core.lang Reader Symbols)))
@@ -156,10 +156,9 @@
 
         conn (system/convex-conn system)
         peer (peer/peer (system/convex-server system))
-        datascript-conn (system/db-conn system)
         sequence-number (peer/sequence-number peer (convex/address address))
 
-        {:convex-web.account/keys [key-pair]} (account/find-by-address @datascript-conn address)
+        {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) address)
 
         transaction (case type
                       :convex-web.transaction.type/invoke

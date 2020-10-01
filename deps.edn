@@ -67,7 +67,6 @@
                                   cljsjs/react-dom
                                   cljsjs/react-dom-server]}
   metosin/reitit-frontend {:mvn/version "0.5.6"}
-  datascript/datascript {:mvn/version "1.0.1"}
   datalevin/datalevin {:mvn/version "0.3.11"}
   nano-id/nano-id {:mvn/version "1.0.0"}
   expound/expound {:mvn/version "0.8.6"}

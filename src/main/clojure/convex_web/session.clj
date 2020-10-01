@@ -1,6 +1,5 @@
 (ns convex-web.session
-  (:require [datascript.core :as d]
-            [clojure.tools.logging :as log]))
+  (:require [datalevin.core :as d]))
 
 (defn all [db]
   (d/q '[:find [(pull ?e [* {:convex-web.session/accounts
