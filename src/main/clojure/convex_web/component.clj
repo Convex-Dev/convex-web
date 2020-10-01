@@ -72,11 +72,14 @@
 
     (assoc component :stop nil)))
 
-(defrecord Datalevin [conn]
+(defrecord Datalevin [config conn]
   component/Lifecycle
 
   (start [component]
-    (let [conn (d/get-conn "db" db/schema)]
+    (let [{:keys [dir]} (get-in config [:config :datalevin])
+
+          conn (d/create-conn dir db/schema)]
+
       (log/debug "Started Datalevin")
 
       (assoc component
@@ -183,7 +186,8 @@
       (map->MuLog {}) [:config])
 
     :datalevin
-    (map->Datalevin {})
+    (component/using
+      (map->Datalevin {}) [:config])
 
     :consumer
     (component/using

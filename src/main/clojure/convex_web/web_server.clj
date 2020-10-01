@@ -485,7 +485,7 @@
           ^String address-str (.toChecksumHex address)
 
           account #:convex-web.account {:address address-str
-                                        :key-pair generated-key-pair
+                                        :key-pair (str generated-key-pair)
                                         :created-at (inst-ms (Instant/now))}]
 
       ;; Accounts created on Convex Web are persisted into the database.
@@ -600,10 +600,10 @@
 
       -server-error-response)))
 
-(defn -GET-session [context req]
+(defn -GET-session [system req]
   (try
     (let [id (ring-session req)
-          session (merge {::session/id id} (session/find-session (system/db context) id))]
+          session (merge {::session/id id} (session/find-session (system/db system) id))]
       (-successful-response session))
     (catch Exception ex
       (u/log :logging.event/system-error

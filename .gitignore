@@ -12,3 +12,5 @@ etch-db
 log/
 /.settings/
 db/
+db-dev/
+dev-test/
