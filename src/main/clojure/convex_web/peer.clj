@@ -67,23 +67,6 @@
 (defn ^ATransaction transfer-transaction [^Long nonce ^Address address ^Long amount]
   (Transfer/create nonce address amount))
 
-(defn send-query [^Connection conn {:keys [source address lang]}]
-  (let [form (try
-               (case lang
-                 :convex-lisp
-                 (wrap-do (Reader/readAll source))
-
-                 :convex-scrypt
-                 (ScryptNext/readSyntax source))
-               (catch Throwable ex
-                 (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
-                                                  ::anomalies/category ::anomalies/incorrect}))))
-
-        ^Address address (when address
-                           (convex/address address))]
-
-    (.sendQuery conn form address)))
-
 (defn query [^Peer peer {:keys [^String source address lang]}]
   (let [form (try
                (case lang
