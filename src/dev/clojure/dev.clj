@@ -142,6 +142,7 @@
 
   (convex/account-status-data *1)
 
+  (account/find-all (db))
   (account/find-by-address (db) "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f")
 
 
