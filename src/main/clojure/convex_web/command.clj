@@ -11,7 +11,8 @@
             [datalevin.core :as d]
             [expound.alpha :as expound])
   (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList)
-           (convex.core.lang Reader Symbols)))
+           (convex.core.lang Reader Symbols)
+           (convex.core Result)))
 
 (defn source [{:convex-web.command/keys [transaction query]}]
   (or (get query :convex-web.query/source)
@@ -142,13 +143,13 @@
 
 (defn execute-query [system {::keys [address query]}]
   (let [{:convex-web.query/keys [source language]} query]
-    (peer/send-query (system/convex-conn system) {:address address
-                                                  :source source
-                                                  :lang language})))
+    (convex/query (system/convex-client system) {:address address
+                                                 :source source
+                                                 :lang language})))
 
 (s/fdef execute-query
   :args (s/cat :system map? :command :convex-web/incoming-command)
-  :ret pos-int?)
+  :ret #(instance? Result %))
 
 ;; --
 
@@ -173,40 +174,46 @@
 
 (s/fdef execute-transaction
   :args (s/cat :system map? :command :convex-web/incoming-command)
-  :ret pos-int?)
+  :ret #(instance? Result %))
 
 ;; --
 
 (defn execute [system {::keys [mode] :as command}]
   (if-not (s/valid? :convex-web/command command)
     (throw (ex-info "Invalid Command." {:message (expound/expound-str :convex-web/command command)}))
-    (let [conn (system/db-conn system)]
-      (locking conn
-        (let [id (cond
-                   (= :convex-web.command.mode/query mode)
-                   (execute-query system command)
+    (let [^Result result (cond
+                           (= :convex-web.command.mode/query mode)
+                           (execute-query system command)
 
-                   (= :convex-web.command.mode/transaction mode)
-                   (execute-transaction system command))
+                           (= :convex-web.command.mode/transaction mode)
+                           (execute-transaction system command))
 
-              running-command (merge (select-keys command [:convex-web.command/mode
-                                                           :convex-web.command/language
-                                                           :convex-web.command/address
-                                                           :convex-web.command/query
-                                                           :convex-web.command/transaction])
-                                     #:convex-web.command {:id id
-                                                           :status :convex-web.command.status/running})]
+          command' (merge (select-keys command [:convex-web.command/mode
+                                                :convex-web.command/language
+                                                :convex-web.command/address
+                                                :convex-web.command/query
+                                                :convex-web.command/transaction])
 
-          (when-not (s/valid? :convex-web/command running-command)
-            (throw (ex-info "Invalid Command." {:message (expound/expound-str :convex-web/command running-command)})))
+                          #:convex-web.command {:id (.getID result)
+                                                :object (.getValue result)
+                                                :status
+                                                (if (.getErrorCode result)
+                                                  :convex-web.command.status/error
+                                                  :convex-web.command.status/success)})
 
-          (d/transact! conn [running-command])
+          command' (-> command'
+                       (wrap-result-metadata)
+                       (wrap-result))]
 
-          (log/debug "Transacted Command" running-command)
+      (when-not (s/valid? :convex-web/command command')
+        (throw (ex-info "Invalid Command." {:message (expound/expound-str :convex-web/command command')})))
 
-          (select-keys running-command [:convex-web.command/id
-                                        :convex-web.command/status]))))))
+      (d/transact! (system/db-conn system) [command'])
+
+      (log/debug "Transacted Command" command')
+
+      command')))
 
 (s/fdef execute
-  :args (s/cat :system map? :command :convex-web/incoming-command)
+  :args (s/cat :system :convex-web/system :command :convex-web/incoming-command)
   :ret :convex-web/command)

@@ -1,11 +1,13 @@
 (ns convex-web.convex
-  (:require [clojure.string :as str])
+  (:require [clojure.string :as str]
+            [cognitect.anomalies :as anomalies])
   (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob)
            (convex.core.lang Core Reader ScryptNext RT)
-           (convex.core Order Block Peer State Init)
+           (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke Call)
-           (convex.net Connection)))
+           (convex.net Connection)
+           (convex.api Convex)))
 
 (defmacro execute [context form]
   `(let [^String source# ~(pr-str form)
@@ -272,3 +274,33 @@
                      (when type
                        {:type (keyword type)}))})))
        (sort-by (comp :symbol :doc))))
+
+
+
+(defn wrap-do [^AList x]
+  (.cons x (Symbol/create "do")))
+
+(defn cond-wrap-do [^AList x]
+  (let [form1 (first x)
+        form2 (second x)]
+    (if form2
+      (wrap-do x)
+      form1)))
+
+(defn ^Result query [^Convex client {:keys [source address lang]}]
+  (let [q (try
+            (case lang
+              :convex-lisp
+              (wrap-do (Reader/readAll source))
+
+              :convex-scrypt
+              (ScryptNext/readSyntax source))
+            (catch Throwable ex
+              (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
+                                               ::anomalies/category ::anomalies/incorrect}))))
+
+        ^Address address (when address
+                           (convex-web.convex/address address))]
+    (if address
+      @(.query client q)
+      @(.query client q address))))
