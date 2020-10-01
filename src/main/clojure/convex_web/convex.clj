@@ -304,3 +304,6 @@
     (if address
       @(.query client q)
       @(.query client q address))))
+
+(defn ^Result transact2 [^Convex client ^SignedData signed-data]
+  @(.transact client signed-data))

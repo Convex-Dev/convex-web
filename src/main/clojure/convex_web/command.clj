@@ -148,7 +148,7 @@
                                                  :lang language})))
 
 (s/fdef execute-query
-  :args (s/cat :system map? :command :convex-web/incoming-command)
+  :args (s/cat :system :convex-web/system :command :convex-web/incoming-command)
   :ret #(instance? Result %))
 
 ;; --
@@ -156,7 +156,6 @@
 (defn execute-transaction [system {::keys [address transaction]}]
   (let [{:convex-web.transaction/keys [source language amount type]} transaction
 
-        conn (system/convex-conn system)
         peer (peer/peer (system/convex-server system))
         sequence-number (peer/sequence-number peer (convex/address address))
 
@@ -170,10 +169,10 @@
                       (let [to (convex/address (:convex-web.transaction/target transaction))]
                         (peer/transfer-transaction (inc sequence-number) to amount)))]
     (->> (convex/sign key-pair transaction)
-         (convex/transact conn))))
+         (convex/transact2 (system/convex-client system)))))
 
 (s/fdef execute-transaction
-  :args (s/cat :system map? :command :convex-web/incoming-command)
+  :args (s/cat :system :convex-web/system :command :convex-web/incoming-command)
   :ret #(instance? Result %))
 
 ;; --
