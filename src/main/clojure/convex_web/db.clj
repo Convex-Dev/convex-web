@@ -4,15 +4,13 @@
   {;; -- Command
 
    :convex-web.command/id
-   {:db/unique :db.unique/identity
-    :db/index true}
+   {:db/unique :db.unique/identity}
 
 
    ;; -- Account
 
    :convex-web.account/address
-   {:db/unique :db.unique/identity
-    :db/index true}
+   {:db/unique :db.unique/identity}
 
    :convex-web.account/faucets
    {:db/valueType :db.type/ref
@@ -22,8 +20,7 @@
    ;; -- Session
 
    :convex-web.session/id
-   {:db/unique :db.unique/identity
-    :db/index true}
+   {:db/unique :db.unique/identity}
 
    :convex-web.session/accounts
    {:db/valueType :db.type/ref
