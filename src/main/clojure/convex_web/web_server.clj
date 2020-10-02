@@ -96,7 +96,7 @@
          function gtag(){dataLayer.push(arguments);}
          gtag('js', new Date());
 
-         gtag('config', 'UA-179518463-1');"]
+         gtag('config', 'UA-179518463-1', { send_page_view: false });"]
 
        ;; -- End Google Analytics
 
