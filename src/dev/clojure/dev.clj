@@ -78,7 +78,8 @@
     'convex-web.specs-test
     'convex-web.internal-api-test)
 
-  (kaocha/run-all)
+  (kaocha/test-plan)
+  (kaocha/run :unit)
 
 
   ;; -- Sessions
