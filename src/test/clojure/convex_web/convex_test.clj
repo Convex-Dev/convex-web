@@ -1,13 +1,13 @@
 (ns convex-web.convex-test
   (:require [clojure.test :refer :all]
+
             [convex-web.convex :as convex]
-            [clojure.spec.test.alpha :as stest])
-  (:import (convex.core.data Keyword Symbol Address Vectors Maps Lists Sets)
+            [convex-web.test :refer [spec-instrument-fixture]])
+  (:import (convex.core.data Address Maps)
            (convex.core.lang Context)
            (convex.core Init)))
 
-(stest/instrument)
-
+(use-fixtures :once spec-instrument-fixture)
 
 (def context (Context/createFake Init/STATE))
 
