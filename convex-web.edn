@@ -23,7 +23,8 @@
             :prod "https://storage.googleapis.com/convex-world-site"}
 
   :security
-  #profile {:test {:anti-forgery false}
+  #profile {:dev {:anti-forgery true}
+            :test {:anti-forgery false}
             :prod {:anti-forgery true}}}
 
 

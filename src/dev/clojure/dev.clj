@@ -9,6 +9,7 @@
             [convex-web.web-server :as web-server]
             [convex-web.command :as command]
             [convex-web.client :as client]
+            [convex-web.web-server :as web-server]
 
             [clojure.test :refer [is]]
             [clojure.spec.alpha :as s]
@@ -19,6 +20,8 @@
             [clojure.stacktrace :as stacktrace]
 
             [com.stuartsierra.component.repl :refer [set-init reset system]]
+            [kaocha.repl :as kaocha]
+            [ring.mock.request :as mock]
             [aero.core :as aero]
             [datalevin.core :as d]
             [nano-id.core :as nano-id]
@@ -61,9 +64,17 @@
 
 (comment
 
+  ;; -- Testing
+  (let [handler (web-server/site system)]
+    (handler (mock/request :post "/api/internal/generate-account")))
+
+
   (clojure.test/run-tests
     'convex-web.specs-test
-    'convex-web.http-api-test)
+    'convex-web.internal-api-test
+    'convex-web.public-api-test)
+
+  (kaocha/run 'convex-web.specs-test)
 
 
   ;; -- Sessions

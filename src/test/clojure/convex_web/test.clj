@@ -1,7 +1,10 @@
 (ns convex-web.test
-  (:require [clojure.spec.test.alpha :as stest]
-            [com.stuartsierra.component]
-            [clojure.spec.alpha :as s]))
+  (:require [convex-web.component]
+
+            [clojure.spec.alpha :as s]
+            [clojure.spec.test.alpha :as stest]
+
+            [com.stuartsierra.component]))
 
 (defmacro with-try [& body]
   `(try
