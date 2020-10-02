@@ -65,8 +65,11 @@
 (comment
 
   ;; -- Reset database
-  (doseq [f (reverse (file-seq (io/file (get-in system [:config :config :datalevin :dir]))))]
-    (io/delete-file f))
+  (let [dir (get-in system [:config :config :datalevin :dir])]
+    (doseq [f (reverse (file-seq (io/file dir)))]
+      (io/delete-file f))
+
+    (println "Deleted db" dir))
 
 
   ;; -- Testing
