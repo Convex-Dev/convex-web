@@ -2,12 +2,12 @@
   (:require [clojure.test :refer :all]
 
             [convex-web.convex :as convex]
-            [convex-web.test :refer [spec-instrument-fixture]])
+            [convex-web.test :refer [spec-fixture]])
   (:import (convex.core.data Address Maps)
            (convex.core.lang Context)
            (convex.core Init)))
 
-(use-fixtures :once spec-instrument-fixture)
+(use-fixtures :once (spec-fixture))
 
 (def context (Context/createFake Init/STATE))
 

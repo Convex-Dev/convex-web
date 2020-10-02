@@ -868,10 +868,11 @@
                                (wrap-logging)
                                (wrap-defaults api-defaults))
 
-        site-config {:session
-                     {:store (session/persistent-session-store (system/db-conn system))
-                      :flash true
-                      :cookie-attrs {:http-only false :same-site :strict}}}
+        site-config (merge {:session
+                            {:store (session/persistent-session-store (system/db-conn system))
+                             :flash true
+                             :cookie-attrs {:http-only false :same-site :strict}}}
+                           (system/site-config system))
 
         site-handler (-> (site system)
                          (wrap-logging)

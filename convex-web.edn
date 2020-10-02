@@ -20,7 +20,11 @@
  {:asset-prefix-url
   #profile {:dev ""
             :test ""
-            :prod "https://storage.googleapis.com/convex-world-site"}}
+            :prod "https://storage.googleapis.com/convex-world-site"}
+
+  :security
+  #profile {:test {:anti-forgery false}
+            :prod {:anti-forgery true}}}
 
 
  ;; -- DATALEVIN

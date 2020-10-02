@@ -18,6 +18,11 @@
   [system]
   (:datalevin system))
 
+(defn config
+  "Config component."
+  [system]
+  (:config system))
+
 
 ;; -- Convex
 
@@ -73,4 +78,7 @@
 ;; -- Site
 
 (defn site-asset-prefix-url [system]
-  (get-in system [:config :config :site :asset-prefix-url]))
+  (get-in (config system) [:config :site :asset-prefix-url]))
+
+(defn site-config [system]
+  (select-keys (get-in (config system) [:config :site]) [:security]))
