@@ -263,7 +263,7 @@
         [:span.font-mono.text-4xl "Convex is Flexible"]
 
         [:p.text-xl.leading-8
-         "Convex supports decentralised applications that allow ownership and excange of Ditial Assets that need to be
+         "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be
           100% secure and publicly verifiable (both in terms of data and
           application behaviour), such as:"]
 
@@ -293,8 +293,8 @@
         [:span.font-mono.text-4xl "Convex is Fast"]
 
         [:p {:class marketing-copy}
-         "Using Convergent Proof of Stake, a completely new consensus algorithm, Convex is able to execute
-          decentralised applications at internet scale. Using normal consumer
+         "Using Convergent Proof of Stake, a completely new consensus algorithm, the Convex network is able to execute
+          decentralised applications at internet scale. With normal consumer
           grade hardware and network bandwidth the Convex Virtual Machine can achieve:"]
 
         [:div {:class marketing-bullets}
@@ -303,15 +303,14 @@
            1,700 transactions per second typically handled by the VISA network)"]
 
          [Item
-          "Over a million smart contract operations per second"]
+          "Millions of smart contract operations per second"]
 
          [Item
           "Low latency (2-3 seconds for global consensus)"]]
 
         [:p {:class marketing-copy}
-         "In the future, it will be possible to extend scalability even further
-          through proven techniques such as sharding, state channel or side
-          chains."]]
+         "This already is enough to enable consumer applications for the Internet of Value. In the future, 
+          it will be possible to extend scalability even further."]]
 
        ;; -- Image
        [:div {:class "w-1/2"}
