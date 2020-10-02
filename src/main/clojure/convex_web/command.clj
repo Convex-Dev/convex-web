@@ -169,7 +169,7 @@
                       (let [to (convex/address (:convex-web.transaction/target transaction))]
                         (peer/transfer-transaction (inc sequence-number) to amount)))]
     (->> (convex/sign (convex/read-key-pair-data key-pair) transaction)
-         (convex/transact2 (system/convex-client system)))))
+         (convex/transact (system/convex-client system)))))
 
 (s/fdef execute-transaction
   :args (s/cat :system :convex-web/system :command :convex-web/incoming-command)

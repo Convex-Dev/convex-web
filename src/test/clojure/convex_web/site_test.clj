@@ -1,6 +1,7 @@
 (ns convex-web.site-test
   (:require [convex-web.component]
             [convex-web.transit :as transit]
+            [convex-web.test :refer [system-fixture]]
 
             [clojure.test :refer :all]
 
@@ -9,15 +10,7 @@
 
 (def system nil)
 
-(use-fixtures :once (fn [f]
-                      (let [system (com.stuartsierra.component/start
-                                     (convex-web.component/system :test))]
-
-                        (alter-var-root #'system (constantly system))
-
-                        (f)
-
-                        (com.stuartsierra.component/stop system))))
+(use-fixtures :once (system-fixture #'system))
 
 (defn server-url []
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))

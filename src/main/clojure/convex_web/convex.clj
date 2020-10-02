@@ -239,45 +239,6 @@
 (defn ^SignedData sign [^AKeyPair signer ^ATransaction transaction]
   (SignedData/create signer transaction))
 
-(defn ^Long transact [^Connection conn ^SignedData data]
-  (.sendTransaction conn data))
-
-(defn ^AKeyPair generate-account [^Connection conn ^AKeyPair signer ^Long nonce]
-  ;; TODO
-  ;; Extract transfer/transaction.
-  (let [^AKeyPair generated-key-pair (AKeyPair/generate)
-        ^Address generated-address (.getAddress generated-key-pair)]
-
-    (->> (transfer {:nonce nonce :target generated-address :amount 100000000})
-         (sign signer)
-         (transact conn))
-
-    generated-key-pair))
-
-(defn faucet
-  "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
-  [^Connection conn {:keys [nonce target amount]}]
-  (->> (transfer {:nonce nonce :target target :amount amount})
-       (sign Init/HERO_KP)
-       (transact conn)))
-
-(defn reference []
-  (->> (core-metadata)
-       (map
-         (fn [[sym metadata]]
-           (let [{:keys [doc]} (datafy metadata)
-
-                 {:keys [description examples signature type]} doc]
-             {:doc
-              (merge {:description description
-                      :signature signature
-                      :symbol (.getName sym)
-                      :examples examples}
-                     (when type
-                       {:type (keyword type)}))})))
-       (sort-by (comp :symbol :doc))))
-
-
 
 (defn wrap-do [^AList x]
   (.cons x (Symbol/create "do")))
@@ -307,8 +268,42 @@
       @(.query client q)
       @(.query client q address))))
 
-(defn ^Result transact2 [^Convex client ^SignedData signed-data]
+(defn ^Result transact [^Convex client ^SignedData signed-data]
   @(.transact client signed-data))
+
+(defn ^AKeyPair generate-account [^Convex client ^AKeyPair signer ^Long nonce]
+  (let [^AKeyPair generated-key-pair (AKeyPair/generate)
+        ^Address generated-address (.getAddress generated-key-pair)]
+
+    (->> (transfer {:nonce nonce :target generated-address :amount 100000000})
+         (sign signer)
+         (transact client))
+
+    generated-key-pair))
+
+(defn ^Result faucet
+  "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
+  [^Convex client {:keys [nonce target amount]}]
+  (->> (transfer {:nonce nonce :target target :amount amount})
+       (sign Init/HERO_KP)
+       (transact client)))
+
+(defn reference []
+  (->> (core-metadata)
+       (map
+         (fn [[sym metadata]]
+           (let [{:keys [doc]} (datafy metadata)
+
+                 {:keys [description examples signature type]} doc]
+             {:doc
+              (merge {:description description
+                      :signature signature
+                      :symbol (.getName sym)
+                      :examples examples}
+                     (when type
+                       {:type (keyword type)}))})))
+       (sort-by (comp :symbol :doc))))
+
 
 (defn key-pair-data [^AKeyPair key-pair]
   {:convex-web.key-pair/address-checksum-hex (.toChecksumHex (.getAddress key-pair))

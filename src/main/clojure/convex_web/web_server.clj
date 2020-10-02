@@ -38,7 +38,8 @@
            (java.util Date)
            (org.parboiled.errors ParserRuntimeException)
            (convex.core.exceptions ParseException MissingDataException)
-           (convex.core.lang.impl AExceptional)))
+           (convex.core.lang.impl AExceptional)
+           (convex.api Convex)))
 
 (defn ring-session [request]
   (get-in request [:cookies "ring-session" :value]))
@@ -474,7 +475,8 @@
           ^AccountStatus status (peer/account-status state Init/HERO)
           ^Long sequence (peer/account-sequence status)
           ^Connection conn (system/convex-conn system)
-          ^AKeyPair generated-key-pair (convex/generate-account conn Init/HERO_KP (inc sequence))
+          ^Convex client (system/convex-client system)
+          ^AKeyPair generated-key-pair (convex/generate-account client Init/HERO_KP (inc sequence))
           ^Address address (.getAddress generated-key-pair)
           ^String address-str (.toChecksumHex address)
 
@@ -564,15 +566,15 @@
           (-bad-request-response (error message)))
 
         :else
-        (let [conn (system/convex-conn context)
+        (let [client (system/convex-client context)
 
               nonce (inc (convex/hero-sequence (peer/peer (system/convex-server context))))
 
-              tx-id (convex/faucet conn {:nonce nonce
-                                         :target target
-                                         :amount amount})
+              result (convex/faucet client {:nonce nonce
+                                            :target target
+                                            :amount amount})
 
-              faucet {:convex-web.faucet/id tx-id
+              faucet {:convex-web.faucet/id (.getID result)
                       :convex-web.faucet/target target
                       :convex-web.faucet/amount amount
                       :convex-web.faucet/timestamp (.getTime (Date.))}]
