@@ -64,6 +64,11 @@
 
 (comment
 
+  ;; -- Reset database
+  (doseq [f (reverse (file-seq (io/file (get-in system [:config :config :datalevin :dir]))))]
+    (io/delete-file f))
+
+
   ;; -- Testing
   (let [handler (web-server/site system)]
     (handler (mock/request :post "/api/internal/generate-account")))
@@ -71,8 +76,7 @@
 
   (clojure.test/run-tests
     'convex-web.specs-test
-    'convex-web.internal-api-test
-    'convex-web.public-api-test)
+    'convex-web.internal-api-test)
 
   (kaocha/run 'convex-web.specs-test)
 

@@ -4,7 +4,8 @@
             [clojure.spec.alpha :as s]
             [clojure.spec.test.alpha :as stest]
 
-            [com.stuartsierra.component]))
+            [com.stuartsierra.component]
+            [clojure.java.io :as io]))
 
 (defmacro with-try [& body]
   `(try
@@ -29,6 +30,10 @@
                    (convex-web.component/system :test))]
 
       (alter-var-root system-var (constantly system))
+
+      ;; Reset the database
+      (doseq [f (reverse (file-seq (io/file (get-in system [:config :config :datalevin :dir]))))]
+        (io/delete-file f))
 
       (f)
 
