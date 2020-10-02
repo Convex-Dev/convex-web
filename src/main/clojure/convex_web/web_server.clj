@@ -479,8 +479,8 @@
           ^String address-str (.toChecksumHex address)
 
           account #:convex-web.account {:address address-str
-                                        :key-pair (str generated-key-pair)
-                                        :created-at (inst-ms (Instant/now))}]
+                                        :created-at (inst-ms (Instant/now))
+                                        :key-pair (convex/key-pair-data generated-key-pair)}]
 
       ;; Accounts created on Convex Web are persisted into the database.
       ;; NOTE: Not all Accounts in Convex are persisted in the Convex Web database.

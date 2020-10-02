@@ -1,7 +1,9 @@
 (ns convex-web.convex
   (:require [clojure.string :as str]
+            [clojure.spec.alpha :as s]
+
             [cognitect.anomalies :as anomalies])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob)
+  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob)
            (convex.core.lang Core Reader ScryptNext RT)
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
@@ -307,3 +309,14 @@
 
 (defn ^Result transact2 [^Convex client ^SignedData signed-data]
   @(.transact client signed-data))
+
+(defn key-pair-data [^AKeyPair key-pair]
+  {:convex-web.key-pair/address-checksum-hex (.toChecksumHex (.getAddress key-pair))
+   :convex-web.key-pair/blob-hex (.toHexString (.getEncodedPrivateKey key-pair))})
+
+(defn ^AKeyPair read-key-pair-data [{:convex-web.key-pair/keys [address-checksum-hex blob-hex]}]
+  (AKeyPair/create (address address-checksum-hex) (Blob/fromHex blob-hex)))
+
+(s/fdef read-key-pair-data
+  :args (s/cat :key-pair :convex-web/key-pair)
+  :ret #(instance? AKeyPair %))

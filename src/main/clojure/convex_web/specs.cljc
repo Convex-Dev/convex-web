@@ -74,6 +74,14 @@
                                         :convex-web.faucet/amount]))
 
 
+;; -- Key Pair
+
+(s/def :convex-web.key-pair/address-checksum-hex :convex-web/address-string)
+(s/def :convex-web.key-pair/blob-hex :convex-web/non-empty-string)
+
+(s/def :convex-web/key-pair (s/keys :req [:convex-web.key-pair/address-checksum-hex
+                                          :convex-web.key-pair/blob-hex]))
+
 ;; -- Account Status
 
 (s/def :convex-web.account-status/sequence :convex-web/sequence)
@@ -87,9 +95,11 @@
 
 (s/def :convex-web.account/status :convex-web/account-status)
 (s/def :convex-web.account/address :convex-web/address)
+(s/def :convex-web.account/key-pair :convex-web/key-pair)
 
 (s/def :convex-web/account (s/keys :req [:convex-web.account/address]
-                                   :opt [:convex-web.account/status]))
+                                   :opt [:convex-web.account/status
+                                         :convex-web.account/key-pair]))
 
 (s/def :convex-web/accounts (s/coll-of :convex-web/account))
 

@@ -1,9 +1,13 @@
 (ns convex-web.convex-test
   (:require [clojure.test :refer :all]
-            [convex-web.convex :as convex])
+            [convex-web.convex :as convex]
+            [clojure.spec.test.alpha :as stest])
   (:import (convex.core.data Keyword Symbol Address Vectors Maps Lists Sets)
            (convex.core.lang Context)
            (convex.core Init)))
+
+(stest/instrument)
+
 
 (def context (Context/createFake Init/STATE))
 
@@ -78,3 +82,9 @@
       (is (convex/address address-string))
       (is (= (convex/address address-string)
              (Address/fromHex address-string))))))
+
+
+(deftest key-pair-test
+  (let [hero-key-pair (-> Init/HERO_KP convex/key-pair-data convex/read-key-pair-data)]
+    (is (= (.getAddress Init/HERO_KP) (.getAddress hero-key-pair)))
+    #_(is (= (.toHexString (.getEncodedPrivateKey Init/HERO_KP)) (.toHexString (.getEncodedPrivateKey hero-key-pair))))))
