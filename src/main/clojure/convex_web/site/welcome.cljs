@@ -213,8 +213,8 @@
        "Building the Future"]
 
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
-       [:p "Convex is an open technology platoforn for the Internet of Value."]
-       [:p "Create your own digital assets and powerful apps for the Digital Economy of tomorrow."]]
+       [:p "Convex is an open technology platform for the Internet of Value."]
+       [:p "Create your own digital assets and powerful decentralised applications for the Digital Economy of tomorrow."]]
 
 
       [:div.flex.space-x-8
