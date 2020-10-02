@@ -15,43 +15,6 @@
 (defn server-url []
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))
 
-
-(deftest session-test
-  (testing "Get Session"
-    (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/session"))]
-      (is (= 200 status))
-      (is (= #:convex-web.session{:id nil} (transit/decode-string body))))))
-
-(deftest reference-test
-  (testing "Get Reference"
-    (let [{:keys [status]} @(http/get (str (server-url) "/api/internal/reference"))]
-      (is (= 200 status)))))
-
-(deftest generate-account-test
-  (testing "Generate Account"
-    (let [{:keys [status body]} @(http/post (str (server-url) "/api/internal/generate-account"))]
-      (is (= 200 status))
-      (is (= #{:convex-web.account/created-at
-               :convex-web.account/address}
-             (set (keys (transit/decode-string body))))))))
-
-(deftest blocks-test
-  (testing "Get Blocks"
-    (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/blocks-range"))]
-      (is (= 200 status))
-
-      #_(is (= {:convex-web/blocks []
-                :meta {:end 0
-                       :start 0
-                       :total 0}}
-               (transit/decode-string body))))
-
-    #_(let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/blocks-range?start=10&end=15"))]
-        (is (= 400 status))
-
-        (is (= {:error {:message "Invalid start: 10."}}
-               (transit/decode-string body))))))
-
 (deftest accounts-test
   (let [latest-accounts-response @(http/get (str (server-url) "/api/internal/accounts"))
         latest-accounts-body (transit/decode-string (:body latest-accounts-response))]
