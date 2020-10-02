@@ -86,6 +86,21 @@
    :body
    (let [asset-prefix-url (system/site-asset-prefix-url system)]
      (page/html5
+
+       ;; -- Google Analytics
+
+       [:script {:async "true" :src "https://www.googletagmanager.com/gtag/js?id=UA-179518463-1"}]
+
+       [:script
+        "window.dataLayer = window.dataLayer || [];
+         function gtag(){dataLayer.push(arguments);}
+         gtag('js', new Date());
+
+         gtag('config', 'UA-179518463-1');"]
+
+       ;; -- End Google Analytics
+
+
        (stylesheet "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap")
        (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono&display=swap")
 
