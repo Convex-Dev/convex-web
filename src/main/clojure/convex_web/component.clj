@@ -96,43 +96,21 @@
     (assoc component
       :conn nil)))
 
-(defrecord Consumer [datalevin consumer]
-  component/Lifecycle
-
-  (start [component]
-    (let [consumer (consumer/command-consumer (system/-db-conn datalevin))]
-      (log/debug "Started Consumer")
-
-      (assoc component
-        :consumer consumer)))
-
-  (stop [component]
-    (log/debug "Stopped Consumer")
-
-    (assoc component
-      :consumer nil)))
-
-(defrecord Convex [server conn consumer client]
+(defrecord Convex [server client]
   component/Lifecycle
 
   (start [component]
     (let [^Server server (API/launchPeer)
-          ^ResultConsumer consumer (system/-consumer-consumer consumer)
-          ^Connection connection (peer/conn server consumer)
           ^convex.api.Convex client (convex.api.Convex/connect (.getHostAddress server) Init/HERO_KP)]
       (log/debug "Started Convex")
 
       (assoc component
         :server server
-        :conn connection
         :client client)))
 
   (stop [component]
     (when-let [^convex.api.Convex client (:client component)]
       (.disconnect client))
-
-    (when-let [^Connection conn (:conn component)]
-      (.close conn))
 
     (when-let [^Server server (:server component)]
       (.close server))
@@ -189,13 +167,9 @@
     (component/using
       (map->Datalevin {}) [:config])
 
-    :consumer
-    (component/using
-      (map->Consumer {}) [:datalevin])
-
     :convex
     (component/using
-      (map->Convex {}) [:consumer])
+      (map->Convex {}) [])
 
     :web-server
     (component/using

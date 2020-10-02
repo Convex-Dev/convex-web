@@ -40,17 +40,17 @@
     (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/blocks-range"))]
       (is (= 200 status))
 
-      (is (= {:convex-web/blocks []
-              :meta {:end 0
-                     :start 0
-                     :total 0}}
-             (transit/decode-string body))))
+      #_(is (= {:convex-web/blocks []
+                :meta {:end 0
+                       :start 0
+                       :total 0}}
+               (transit/decode-string body))))
 
-    (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/blocks-range?start=10&end=15"))]
-      (is (= 400 status))
+    #_(let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/blocks-range?start=10&end=15"))]
+        (is (= 400 status))
 
-      (is (= {:error {:message "Invalid start: 10."}}
-             (transit/decode-string body))))))
+        (is (= {:error {:message "Invalid start: 10."}}
+               (transit/decode-string body))))))
 
 (deftest accounts-test
   (let [latest-accounts-response @(http/get (str (server-url) "/api/internal/accounts"))

@@ -474,7 +474,6 @@
           ^State state (peer/consensus-state peer)
           ^AccountStatus status (peer/account-status state Init/HERO)
           ^Long sequence (peer/account-sequence status)
-          ^Connection conn (system/convex-conn system)
           ^Convex client (system/convex-client system)
           ^AKeyPair generated-key-pair (convex/generate-account client Init/HERO_KP (inc sequence))
           ^Address address (.getAddress generated-key-pair)
