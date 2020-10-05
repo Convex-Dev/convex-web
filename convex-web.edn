@@ -43,7 +43,8 @@
            :test {:dir "db-test"
                   :reset? true}
 
-           :prod {:dir "db"}}
+           :prod {:dir "db"
+                  :reset? true}}
 
 
  ;; -- CONVEX PEER
