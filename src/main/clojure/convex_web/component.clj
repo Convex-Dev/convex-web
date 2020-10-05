@@ -10,6 +10,7 @@
             [clojure.pprint :as pprint]
             [clojure.tools.logging :as log]
             [clojure.string :as str]
+            [clojure.java.io :as io]
 
             [aero.core :as aero]
             [com.brunobonacci.mulog :as u]
@@ -76,7 +77,13 @@
   component/Lifecycle
 
   (start [component]
-    (let [{:keys [dir]} (get-in config [:config :datalevin])
+    (let [{:keys [dir reset?]} (get-in config [:config :datalevin])
+
+          _ (when reset?
+              (log/info "Reset database:" dir)
+
+              (doseq [f (reverse (file-seq (io/file dir)))]
+                (io/delete-file f true)))
 
           conn (d/create-conn dir db/schema)]
 

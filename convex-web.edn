@@ -37,8 +37,12 @@
  ;; `:dir`  Database directory.
  ;; ==========================
  :datalevin
- #profile {:dev {:dir "db-dev"}
-           :test {:dir "db-test"}
+ #profile {:dev {:dir "db-dev"
+                 :reset? true}
+
+           :test {:dir "db-test"
+                  :reset? true}
+
            :prod {:dir "db"}}
 
 
