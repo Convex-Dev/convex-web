@@ -8,7 +8,6 @@
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke Call)
-           (convex.net Connection)
            (convex.api Convex)))
 
 (defmacro execute [context form]
