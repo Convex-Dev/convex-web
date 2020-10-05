@@ -18,6 +18,7 @@
             [clojure.string :as str]
             [clojure.java.io :as io]
             [clojure.stacktrace :as stacktrace]
+            [clojure.datafy :refer [datafy]]
 
             [com.stuartsierra.component.repl :refer [set-init reset system]]
             [kaocha.repl :as kaocha]

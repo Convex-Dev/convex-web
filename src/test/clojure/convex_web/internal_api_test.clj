@@ -5,7 +5,7 @@
             [convex-web.specs]
             [convex-web.test :refer [system-fixture spec-fixture]]
             [convex-web.web-server :as web-server]
-            [convex-web.transit :as transit]
+            [convex-web.encoding :as encoding]
 
             [ring.mock.request :as mock]))
 
@@ -17,7 +17,7 @@
 (deftest session-test
   (let [handler (web-server/site system)
         response (handler (mock/request :get "/api/internal/session"))
-        body (transit/decode-string (get response :body))]
+        body (encoding/transit-decode-string (get response :body))]
     (is (= 200 (get response :status)))
     (is (= #{:convex-web.session/id} (set (keys body))))))
 
@@ -29,7 +29,7 @@
 (deftest generate-account-test
   (let [handler (web-server/site system)
         response (handler (mock/request :post "/api/internal/generate-account"))
-        body (transit/decode-string (get response :body))]
+        body (encoding/transit-decode-string (get response :body))]
     (is (= "Success!\n" (s/explain-str :convex-web/account body)))
 
     ;; Test a closed set, which is helpful to "remind" us
@@ -41,7 +41,7 @@
 (deftest blocks-test
   (let [handler (web-server/site system)
         response (handler (mock/request :get "/api/internal/blocks-range"))
-        body (transit/decode-string (get response :body))]
+        body (encoding/transit-decode-string (get response :body))]
     (is (= 200 (get response :status)))
     (is (= #{:convex-web/blocks
              :meta}
@@ -52,7 +52,7 @@
 
     (testing "Default"
       (let [response (handler (mock/request :get "/api/internal/accounts"))
-            body (transit/decode-string (get response :body))]
+            body (encoding/transit-decode-string (get response :body))]
         (is (= 200 (get response :status)))
         (is (= #{:convex-web/accounts
                  :meta}
@@ -60,7 +60,7 @@
 
     (testing "Not found"
       (let [response (handler (mock/request :get "/api/internal/accounts/x"))
-            body (transit/decode-string (get response :body))]
+            body (encoding/transit-decode-string (get response :body))]
         (is (= 404 (get response :status)))
         (is (= #{:error} (set (keys body))))
         (is (= "The Account for this Address does not exist." (get-in body [:error :message])))))))

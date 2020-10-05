@@ -7,6 +7,7 @@
             [convex-web.session :as session]
             [convex-web.command :as command]
             [convex-web.config :as config]
+            [convex-web.encoding :as encoding]
 
             [clojure.set :refer [rename-keys]]
             [clojure.edn :as edn]
@@ -117,12 +118,6 @@
 
         (page/include-js (str asset-prefix-url "/js/main.js"))]))})
 
-(defn transit-encode [x]
-  (let [out (ByteArrayOutputStream. 4096)
-        writer (t/writer out :json)]
-    (t/write writer x)
-    (.toString out)))
-
 (defn transit-decode [^InputStream x]
   (when x
     (t/read (t/reader x :json))))
@@ -145,7 +140,7 @@
 (def -server-error-response
   {:status 500
    :headers {"Content-Type" "application/transit+json"}
-   :body (transit-encode (error "Sorry. Our server failed to process your request."))})
+   :body (encoding/transit-encode (error "Sorry. Our server failed to process your request."))})
 
 (def server-error-response
   {:status 500
@@ -155,7 +150,7 @@
 (defn -successful-response [body & more]
   (let [response {:status 200
                   :headers {"Content-Type" "application/transit+json"}
-                  :body (transit-encode body)}]
+                  :body (encoding/transit-encode body)}]
     (apply merge response more)))
 
 (defn successful-response [body & more]
@@ -167,7 +162,7 @@
 (defn -bad-request-response [body]
   {:status 400
    :headers {"Content-Type" "application/transit+json"}
-   :body (transit-encode body)})
+   :body (encoding/transit-encode body)})
 
 (defn bad-request-response [body]
   {:status 400
@@ -177,12 +172,12 @@
 (defn forbidden-response [body]
   {:status 403
    :headers {"Content-Type" "application/transit+json"}
-   :body (transit-encode body)})
+   :body (encoding/transit-encode body)})
 
 (defn not-found-response [body]
   {:status 404
    :headers {"Content-Type" "application/transit+json"}
-   :body (transit-encode body)})
+   :body (encoding/transit-encode body)})
 
 ;; Public APIs
 ;; ==========================

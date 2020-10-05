@@ -1,6 +1,6 @@
 (ns convex-web.site-test
   (:require [convex-web.component]
-            [convex-web.transit :as transit]
+            [convex-web.encoding :as encoding]
             [convex-web.test :refer [system-fixture]]
 
             [clojure.test :refer :all]
@@ -17,7 +17,7 @@
 
 (deftest accounts-test
   (let [latest-accounts-response @(http/get (str (server-url) "/api/internal/accounts"))
-        latest-accounts-body (transit/decode-string (:body latest-accounts-response))]
+        latest-accounts-body (encoding/transit-decode-string (:body latest-accounts-response))]
 
     (testing "Get Latest Accounts"
       (is (= 200 (:status latest-accounts-response)))
@@ -34,7 +34,7 @@
 
               {:keys [status body]} @(http/get (str (server-url) "/api/internal/accounts/" address))
 
-              account (transit/decode-string body)
+              account (encoding/transit-decode-string body)
               account-no-env (dissoc (get account :convex-web.account/status) :convex-web.account-status/environment)]
           (is (= 200 status))
 
@@ -53,7 +53,7 @@
     (testing "Range 10-15"
       (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/accounts?start=10&end=15"))
 
-            body (transit/decode-string body)]
+            body (encoding/transit-decode-string body)]
         (is (= 200 status))
 
         (is (= [:start :end :total] (keys (:meta body))))
@@ -65,4 +65,4 @@
         (is (= 400 status))
 
         (is (= {:error {:message "Invalid end: 150."}}
-               (transit/decode-string body)))))))
+               (encoding/transit-decode-string body)))))))
