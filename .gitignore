@@ -14,3 +14,4 @@ log/
 db/
 db-dev/
 db-test/
+convex-db

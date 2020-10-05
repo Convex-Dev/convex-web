@@ -17,9 +17,11 @@
             [datalevin.core :as d]
             [com.stuartsierra.component :as component])
   (:import (convex.peer Server API)
-           (convex.net Connection ResultConsumer)
            (org.slf4j.bridge SLF4JBridgeHandler)
-           (convex.core Init)))
+           (convex.core Init)
+           (convex.core.data Keywords)
+           (etch EtchStore)
+           (java.io File)))
 
 (defrecord Config [profile config]
   component/Lifecycle
@@ -107,7 +109,12 @@
   component/Lifecycle
 
   (start [component]
-    (let [^Server server (API/launchPeer)
+    (let [
+          ;;^File file (io/file (get (System/getProperties) "user.dir") "convex-db")
+          ;;^EtchStore store (EtchStore/create file)
+          ;;^Server server (API/launchPeer {Keywords/STORE store})
+
+          ^Server server (API/launchPeer)
           ^convex.api.Convex client (convex.api.Convex/connect (.getHostAddress server) Init/HERO_KP)]
       (log/debug "Started Convex")
 
@@ -117,17 +124,24 @@
 
   (stop [component]
     (when-let [^convex.api.Convex client (:client component)]
+      (log/debug "Disconnect Convex Client" client)
+
       (.disconnect client))
 
     (when-let [^Server server (:server component)]
+      (log/debug "Close Peer Server" server)
+
       (.close server))
+
+    (when-let [^EtchStore store (:store component)]
+      (log/debug "Close Etch Store" store)
+
+      (.close store))
 
     (log/debug "Stopped Convex")
 
     (assoc component
-      :conn nil
       :server nil
-      :consumer nil
       :client nil)))
 
 (defrecord WebServer [config convex datalevin stop-fn]
