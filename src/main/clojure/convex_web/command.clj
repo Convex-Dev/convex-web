@@ -7,6 +7,7 @@
 
             [clojure.spec.alpha :as s]
             [clojure.tools.logging :as log]
+            [clojure.datafy :refer [datafy]]
 
             [datalevin.core :as d]
             [expound.alpha :as expound])
@@ -198,7 +199,12 @@
                                                 :status
                                                 (if (.getErrorCode result)
                                                   :convex-web.command.status/error
-                                                  :convex-web.command.status/success)})
+                                                  :convex-web.command.status/success)}
+
+                          (when-let [error-code (.getErrorCode result)]
+                            #:convex-web.command {:error
+                                                  {:code (datafy error-code)
+                                                   :message (datafy (.getValue result))}}))
 
           command' (-> command'
                        (wrap-result-metadata)
