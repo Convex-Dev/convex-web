@@ -79,9 +79,6 @@
       (is (= 200 (get response1 :status)))
       (is (= 200 (get response2 :status)))
 
-      (is (= {:value 10000000000} response-body1))
-      (is (= {:value 10000000000} response-body2))
-
       (is (= response-body1 response-body2)))
 
     (testing "Syntax error"
