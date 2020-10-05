@@ -84,11 +84,13 @@
 
                 org.clojure/tools.namespace {:mvn/version "1.0.0"}}}
 
+
   :test
-  {:extra-paths ["src/test/clojure" "src/test/resources"]
+  {:extra-paths ["src/test/clojure"]
 
    :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
                 lambdaisland/kaocha {:mvn/version "1.0.700"}}}
+
 
   :test-runner
   {:extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
@@ -97,6 +99,8 @@
    :main-opts ["-m" "cognitect.test-runner"
                "-d" "src/test"]}
 
+
+  ;; -- Site (ClojureScript app)
   :site
   {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.773"
                                            ;; These exclusions are required because of Shadow CLJS.
@@ -109,12 +113,13 @@
 
                 binaryage/devtools {:mvn/version "1.0.2"}}}
 
+
+  ;; -- Run server
   :main
   {:main-opts ["-m" "convex-web.core"]}
 
 
   ;; -- Logback configuration
-
   :logback-site
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-site.xml"]}
 
@@ -128,6 +133,7 @@
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-prod.xml"]}
 
 
+  ;; -- Check outdated dependencies
   :outdated
   {:extra-deps {antq/antq {:mvn/version "RELEASE"}}
    :main-opts ["-m" "antq.core"]}}}
