@@ -82,18 +82,7 @@
    :extra-deps {com.stuartsierra/component.repl {:mvn/version "0.2.0"
                                                  :exclusions [org.clojure/tools.namespace]}
 
-                org.clojure/clojurescript {:mvn/version "1.10.773"
-                                           ;; These exclusions are required because of Shadow CLJS.
-                                           :exclusions
-                                           [com.google.javascript/closure-compiler-unshaded
-                                            org.clojure/google-closure-library
-                                            org.clojure/google-closure-library-third-party]}
-
-                org.clojure/tools.namespace {:mvn/version "1.0.0"}
-
-                thheller/shadow-cljs {:mvn/version "2.11.4"}
-
-                binaryage/devtools {:mvn/version "1.0.2"}}}
+                org.clojure/tools.namespace {:mvn/version "1.0.0"}}}
 
   :test
   {:extra-paths ["src/test/clojure" "src/test/resources"]
@@ -108,14 +97,26 @@
    :main-opts ["-m" "cognitect.test-runner"
                "-d" "src/test"]}
 
+  :site
+  {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.773"
+                                           ;; These exclusions are required because of Shadow CLJS.
+                                           :exclusions
+                                           [com.google.javascript/closure-compiler-unshaded
+                                            org.clojure/google-closure-library
+                                            org.clojure/google-closure-library-third-party]}
+
+                thheller/shadow-cljs {:mvn/version "2.11.4"}
+
+                binaryage/devtools {:mvn/version "1.0.2"}}}
+
   :main
   {:main-opts ["-m" "convex-web.core"]}
 
 
   ;; -- Logback configuration
 
-  :logback-shadow-cljs
-  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-shadow-cljs.xml"]}
+  :logback-site
+  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-site.xml"]}
 
   :logback-dev
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-dev.xml"]}

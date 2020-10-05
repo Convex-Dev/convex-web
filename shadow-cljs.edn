@@ -1,4 +1,4 @@
-{:deps {:aliases [:dev :logback-shadow-cljs]}
+{:deps {:aliases [:site :logback-site]}
 
  :nrepl {:port 9000}
 
