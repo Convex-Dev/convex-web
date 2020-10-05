@@ -94,12 +94,11 @@
 
                 binaryage/devtools {:mvn/version "1.0.2"}}}
 
-  :kaocha
-  {:extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
-                lambdaisland/kaocha {:mvn/version "1.0.700"}}}
-
   :test
-  {:extra-paths ["src/test/clojure" "src/test/resources"]}
+  {:extra-paths ["src/test/clojure" "src/test/resources"]
+
+   :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
+                lambdaisland/kaocha {:mvn/version "1.0.700"}}}
 
   :test-runner
   {:extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
