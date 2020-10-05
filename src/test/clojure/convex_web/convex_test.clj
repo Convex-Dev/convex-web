@@ -88,3 +88,36 @@
   (let [hero-key-pair (-> Init/HERO_KP convex/key-pair-data convex/read-key-pair-data)]
     (is (= (.getAddress Init/HERO_KP) (.getAddress hero-key-pair)))
     #_(is (= (.toHexString (.getEncodedPrivateKey Init/HERO_KP)) (.toHexString (.getEncodedPrivateKey hero-key-pair))))))
+
+
+(deftest kind-test
+  (testing "Boolean"
+    (is (= :boolean (convex/kind (convex/execute context true)))))
+
+  (testing "Number"
+    (is (= :number (convex/kind (convex/execute context 1))))
+    (is (= :number (convex/kind (convex/execute context 1.0)))))
+
+  (testing "String"
+    (is (= :string (convex/kind (convex/execute context "")))))
+
+  (testing "Symbol"
+    (is (= :symbol (convex/kind (convex/execute context 'sym)))))
+
+  (testing "Map"
+    (is (= :map (convex/kind (convex/execute context {})))))
+
+  (testing "List"
+    (is (= :list (convex/kind (convex/execute context '())))))
+
+  (testing "Vector"
+    (is (= :vector (convex/kind (convex/execute context [])))))
+
+  (testing "Set"
+    (is (= :set (convex/kind (convex/execute context #{})))))
+
+  (testing "Address"
+    (is (= :address (convex/kind (convex/execute context *address*)))))
+
+  (testing "Blob"
+    (is (= :blob (convex/kind (convex/execute context (blob *address*)))))))

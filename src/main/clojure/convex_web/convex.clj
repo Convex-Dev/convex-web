@@ -315,3 +315,35 @@
 (s/fdef read-key-pair-data
   :args (s/cat :key-pair :convex-web/key-pair)
   :ret #(instance? AKeyPair %))
+
+(defn kind [x]
+  (cond
+    (instance? Boolean x)
+    :boolean
+
+    (instance? Number x)
+    :number
+
+    (instance? String x)
+    :string
+
+    (instance? AMap x)
+    :map
+
+    (instance? AList x)
+    :list
+
+    (instance? AVector x)
+    :vector
+
+    (instance? ASet x)
+    :set
+
+    (instance? Address x)
+    :address
+
+    (instance? ABlob x)
+    :blob
+
+    (instance? Symbol x)
+    :symbol))
