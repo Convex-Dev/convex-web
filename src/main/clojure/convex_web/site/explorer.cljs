@@ -73,7 +73,7 @@
                 convex-web.signed-data/value]} state
 
 
-        {:convex-web.transaction/keys [type source]} value]
+        {:convex-web.transaction/keys [type source result]} value]
     [:div.flex.flex-col.space-y-8.p-6
 
      ;; Header
@@ -142,7 +142,21 @@
         [gui/Highlight source {:pretty? true}]]
 
        :convex-web.transaction.type/transfer
-       [:div])]))
+       [:div])
+
+
+     ;; Result
+     ;; ======================
+     (case type
+       :convex-web.transaction.type/invoke
+       [:div.flex.flex-col.space-y-2
+        [gui/CaptionMono "Result"]
+        [gui/Highlight result {:pretty? true}]]
+
+       :convex-web.transaction.type/transfer
+       [:div])
+
+     ]))
 
 (def transaction-page
   #:page {:id :page.id/transaction

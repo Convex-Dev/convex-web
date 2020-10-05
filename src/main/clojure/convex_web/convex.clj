@@ -127,31 +127,34 @@
 (defn consensus-point [^Order order]
   (.getConsensusPoint order))
 
-(defn transaction [^ATransaction atransaction]
-  (cond
-    (instance? Transfer atransaction)
-    #:convex-web.transaction {:type :convex-web.transaction.type/transfer
-                              :target (.toChecksumHex (.getTarget ^Transfer atransaction))
-                              :amount (.getAmount ^Transfer atransaction)
-                              :sequence (.getSequence ^ATransaction atransaction)}
+(defn transaction [^ATransaction atransaction result]
+  (let [tx (cond
+             (instance? Transfer atransaction)
+             #:convex-web.transaction {:type :convex-web.transaction.type/transfer
+                                       :target (.toChecksumHex (.getTarget ^Transfer atransaction))
+                                       :amount (.getAmount ^Transfer atransaction)
+                                       :sequence (.getSequence ^ATransaction atransaction)}
 
-    (instance? Invoke atransaction)
-    #:convex-web.transaction {:type :convex-web.transaction.type/invoke
-                              :source (str (.getCommand ^Invoke atransaction))
-                              :sequence (.getSequence ^ATransaction atransaction)}
+             (instance? Invoke atransaction)
+             #:convex-web.transaction {:type :convex-web.transaction.type/invoke
+                                       :source (str (.getCommand ^Invoke atransaction))
+                                       :sequence (.getSequence ^ATransaction atransaction)}
 
-    (instance? Call atransaction)
-    #:convex-web.transaction {:type :convex-web.transaction.type/call}))
+             (instance? Call atransaction)
+             #:convex-web.transaction {:type :convex-web.transaction.type/call})]
 
-(defn signed-data-transaction [^SignedData signed-data]
-  #:convex-web.signed-data {:address (.toChecksumHex (.getAddress signed-data))
-                            :value (transaction (.getValue signed-data))})
+    (merge tx {:convex-web.transaction/result (datafy result)})))
 
-(defn block [index ^Block block]
+(defn block [^Peer peer ^Long index ^Block block]
   #:convex-web.block {:index index
                       :timestamp (.getTimeStamp block)
                       :peer (.toChecksumHex (.getPeer block))
-                      :transactions (map signed-data-transaction (.getTransactions block))})
+                      :transactions
+                      (map-indexed
+                        (fn [^Long tx-index ^SignedData signed-data]
+                          #:convex-web.signed-data {:address (.toChecksumHex (.getAddress signed-data))
+                                                    :value (transaction (.getValue signed-data) (.getResult peer index tx-index))})
+                        (.getTransactions block))})
 
 (defn blocks [^Peer peer & [{:keys [start end]}]]
   (let [order (peer-order peer)
@@ -159,7 +162,7 @@
         end (or end (consensus-point order))]
     (reduce
       (fn [blocks index]
-        (conj blocks (block index (.getBlock order index))))
+        (conj blocks (block peer index (.getBlock order index))))
       []
       (range start end))))
 
@@ -167,7 +170,7 @@
   (let [order (peer-order peer)]
     (reduce
       (fn [blocks index]
-        (assoc blocks index (block index (.getBlock order index))))
+        (assoc blocks index (block peer index (.getBlock order index))))
       {}
       (range (consensus-point order)))))
 
