@@ -13,19 +13,21 @@
   [system]
   (:web-server system))
 
-(defn datascript
-  "DataScript Component."
+(defn datalevin
+  "Datalevin Component."
   [system]
-  (:datascript system))
+  (:datalevin system))
+
+(defn config
+  "Config component."
+  [system]
+  (:config system))
 
 
 ;; -- Convex
 
 (defn ^Server -convex-server [convex]
   (:server convex))
-
-(defn ^Connection -convex-conn [convex]
-  (:conn convex))
 
 (defn ^Convex -convex-client [convex]
   (:client convex))
@@ -36,37 +38,29 @@
 (defn ^Server convex-peer-server [system]
   (.getPeer (-convex-server (convex system))))
 
-(defn ^Connection convex-conn [system]
-  (-convex-conn (convex system)))
-
 (defn ^Convex convex-client [system]
   (-convex-client (convex system)))
 
 
-;; -- DataScript
+;; -- DB
 
-(defn -datascript-conn
-  "Connections are lightweight in-memory structures (~atoms) with direct
-   support of transaction listeners ([[listen!]], [[unlisten!]]) and other
-   handy DataScript APIs ([[transact!]], [[reset-conn!]], [[db]]).
+(defn -db-conn
+  [db]
+  (:conn db))
 
-   To access underlying immutable DB value, deref: `@conn`."
-  [datascript]
-  (:conn datascript))
-
-(defn datascript-conn
+(defn db-conn
   "Connections are lightweight in-memory structures (~atoms) with direct
    support of transaction listeners ([[listen!]], [[unlisten!]]) and other
    handy DataScript APIs ([[transact!]], [[reset-conn!]], [[db]]).
 
    To access underlying immutable DB value, deref: `@conn`."
   [system]
-  (-datascript-conn (datascript system)))
+  (-db-conn (datalevin system)))
 
 (defn db
   "Returns the underlying immutable DataScript database value from a connection."
   [system]
-  @(-datascript-conn (datascript system)))
+  @(-db-conn (datalevin system)))
 
 
 ;; -- Consumer
@@ -78,4 +72,7 @@
 ;; -- Site
 
 (defn site-asset-prefix-url [system]
-  (get-in system [:config :config :site :asset-prefix-url]))
+  (get-in (config system) [:config :site :asset-prefix-url]))
+
+(defn site-config [system]
+  (select-keys (get-in (config system) [:config :site]) [:security]))

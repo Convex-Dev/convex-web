@@ -1,4 +1,6 @@
-{:spec
+{;; -- SPEC & INSTRUMENTATION
+ ;; ==========================
+ :spec
  #profile {:dev
            {:check-asserts? true
             :instrument? true}
@@ -11,24 +13,60 @@
            {:check-asserts? false
             :instrument? false}}
 
+
+ ;; -- SITE
+ ;; ==========================
  :site
  {:asset-prefix-url
   #profile {:dev ""
             :test ""
-            :prod "https://storage.googleapis.com/convex-world-site"}}
+            :prod "https://storage.googleapis.com/convex-world-site"}
 
+  :security
+  #profile {:dev {:anti-forgery true}
+            :test {:anti-forgery false}
+            :prod {:anti-forgery true}}}
+
+
+ ;; -- DATALEVIN
+ ;; Datalevin is embedded in our application to store its state.
+ ;; Created accounts via the site, session, commands are all stored
+ ;; in the database so it survives application restarts.
+ ;;
+ ;; Configuration:
+ ;; `:dir`  Database directory.
+ ;; ==========================
+ :datalevin
+ #profile {:dev {:dir "db-dev"
+                 :reset? true}
+
+           :test {:dir "db-test"
+                  :reset? true}
+
+           :prod {:dir "db"
+                  :reset? true}}
+
+
+ ;; -- CONVEX PEER
+ ;; ==========================
  :peer
  {:port
   #profile {:dev :todo
             :prod :todo
             :test :todo}}
 
+
+ ;; -- WEB SERVER
+ ;; ==========================
  :web-server
  {:port
   #profile {:dev 8080
             :prod 8080
             :test 8090}}
 
+
+ ;; -- LOGGING U/LOG
+ ;; ==========================
  :logging
  {:publisher-config
   #profile {:dev

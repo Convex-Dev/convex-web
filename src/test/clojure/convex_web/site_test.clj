@@ -1,6 +1,7 @@
 (ns convex-web.site-test
   (:require [convex-web.component]
             [convex-web.transit :as transit]
+            [convex-web.test :refer [system-fixture]]
 
             [clojure.test :refer :all]
 
@@ -9,53 +10,10 @@
 
 (def system nil)
 
-(use-fixtures :once (fn [f]
-                      (let [system (com.stuartsierra.component/start
-                                     (convex-web.component/system :test))]
-
-                        (alter-var-root #'system (constantly system))
-
-                        (f)
-
-                        (com.stuartsierra.component/stop system))))
+(use-fixtures :once (system-fixture #'system))
 
 (defn server-url []
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))
-
-
-(deftest session-test
-  (testing "Get Session"
-    (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/session"))]
-      (is (= 200 status))
-      (is (= #:convex-web.session{:id nil} (transit/decode-string body))))))
-
-(deftest reference-test
-  (testing "Get Reference"
-    (let [{:keys [status]} @(http/get (str (server-url) "/api/internal/reference"))]
-      (is (= 200 status)))))
-
-(deftest generate-account-test
-  (testing "Generate Account"
-    (let [{:keys [status body]} @(http/post (str (server-url) "/api/internal/generate-account"))]
-      (is (= 403 status))
-      (is (= "<h1>Invalid anti-forgery token</h1>" body)))))
-
-(deftest blocks-test
-  (testing "Get Blocks"
-    (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/blocks-range"))]
-      (is (= 200 status))
-
-      (is (= {:convex-web/blocks []
-              :meta {:end 0
-                     :start 0
-                     :total 0}}
-             (transit/decode-string body))))
-
-    (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/blocks-range?start=10&end=15"))]
-      (is (= 400 status))
-
-      (is (= {:error {:message "Invalid start: 10."}}
-             (transit/decode-string body))))))
 
 (deftest accounts-test
   (let [latest-accounts-response @(http/get (str (server-url) "/api/internal/accounts"))

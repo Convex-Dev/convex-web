@@ -9,6 +9,7 @@
             [convex-web.web-server :as web-server]
             [convex-web.command :as command]
             [convex-web.client :as client]
+            [convex-web.web-server :as web-server]
 
             [clojure.test :refer [is]]
             [clojure.spec.alpha :as s]
@@ -19,14 +20,15 @@
             [clojure.stacktrace :as stacktrace]
 
             [com.stuartsierra.component.repl :refer [set-init reset system]]
+            [kaocha.repl :as kaocha]
+            [ring.mock.request :as mock]
             [aero.core :as aero]
-            [datascript.core :as d]
+            [datalevin.core :as d]
             [nano-id.core :as nano-id]
             [org.httpkit.client :as http]
             [expound.alpha :as expound])
   (:import (convex.core Init Peer)
-           (convex.core.lang Core Reader Context)
-           (org.slf4j.bridge SLF4JBridgeHandler)))
+           (convex.core.lang Core Reader Context)))
 
 ;; -- Logging
 (set-init
@@ -46,14 +48,14 @@
      (.getResult (.executeQuery (peer) (peer/wrap-do (Reader/readAll source#)) Init/HERO))))
 
 (defn db []
-  @(system/datascript-conn system))
+  @(system/db-conn system))
 
 (defn commands
   ([]
    (sort-by :convex-web.command/id (d/q '[:find [(pull ?e [*]) ...]
                                           :in $
                                           :where [?e :convex-web.command/id _]]
-                                        @(system/datascript-conn system))))
+                                        @(system/db-conn system))))
   ([status]
    (filter
      (fn [command]
@@ -62,9 +64,25 @@
 
 (comment
 
+  ;; -- Reset database
+  (let [dir (get-in system [:config :config :datalevin :dir])]
+    (doseq [f (reverse (file-seq (io/file dir)))]
+      (io/delete-file f))
+
+    (println "Deleted db" dir))
+
+
+  ;; -- Testing
+  (let [handler (web-server/site system)]
+    (handler (mock/request :post "/api/internal/generate-account")))
+
+
   (clojure.test/run-tests
     'convex-web.specs-test
-    'convex-web.http-api-test)
+    'convex-web.internal-api-test)
+
+  (kaocha/test-plan)
+  (kaocha/run :unit)
 
 
   ;; -- Sessions
@@ -73,16 +91,16 @@
                            [:convex-web.account/address]}]) ...]
          :in $
          :where [?e :convex-web.session/id _]]
-       @(system/datascript-conn system))
+       @(system/db-conn system))
 
 
   (d/q '[:find (pull ?e [{:convex-web.session/accounts
                           [:convex-web.account/address]}]) .
          :in $ ?id
          :where [?e :convex-web.session/id ?id]]
-       @(system/datascript-conn system) "mydbOh9wCdTcF_vLvUVHR")
+       @(system/db-conn system) "mydbOh9wCdTcF_vLvUVHR")
 
-  (session/find-session @(system/datascript-conn system) "iGlF3AZWw0eGuGfL_ib4-")
+  (session/find-session @(system/db-conn system) "iGlF3AZWw0eGuGfL_ib4-")
 
 
   (let [a (.getAccounts (.getConsensusState (peer/peer (system/convex-server system))))]
@@ -143,12 +161,13 @@
 
   (convex/account-status-data *1)
 
+  (account/find-all (db))
   (account/find-by-address (db) "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f")
 
 
   ;; -- Session
 
-  @web-server/session-ref
+  (session/all-ring (db))
 
   (session/all (db))
   (session/find-session (db) "4feac0cd-cc06-4a3b-bcad-54596771356b")

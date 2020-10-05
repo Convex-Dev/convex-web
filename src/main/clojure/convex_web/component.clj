@@ -3,16 +3,18 @@
             [convex-web.peer :as peer]
             [convex-web.web-server :as web-server]
             [convex-web.consumer :as consumer]
+            [convex-web.db :as db]
 
             [clojure.spec.alpha :as s]
             [clojure.spec.test.alpha :as stest]
             [clojure.pprint :as pprint]
             [clojure.tools.logging :as log]
             [clojure.string :as str]
+            [clojure.java.io :as io]
 
             [aero.core :as aero]
             [com.brunobonacci.mulog :as u]
-            [datascript.core :as d]
+            [datalevin.core :as d]
             [com.stuartsierra.component :as component])
   (:import (convex.peer Server API)
            (convex.net Connection ResultConsumer)
@@ -71,86 +73,51 @@
 
     (assoc component :stop nil)))
 
-(defrecord DataScript [conn]
+(defrecord Datalevin [config conn]
   component/Lifecycle
 
   (start [component]
-    (let [schema {;; -- Command
+    (let [{:keys [dir reset?]} (get-in config [:config :datalevin])
 
-                  :convex-web.command/id
-                  {:db/unique :db.unique/identity
-                   :db/index true}
+          _ (when reset?
+              (log/info "Reset database:" dir)
 
+              (doseq [f (reverse (file-seq (io/file dir)))]
+                (io/delete-file f true)))
 
-                  ;; -- Account
+          conn (d/create-conn dir db/schema)]
 
-                  :convex-web.account/address
-                  {:db/unique :db.unique/identity
-                   :db/index true}
-
-                  :convex-web.account/faucets
-                  {:db/valueType :db.type/ref
-                   :db/cardinality :db.cardinality/many}
-
-
-                  ;; -- Session
-
-                  :convex-web.session/id
-                  {:db/unique :db.unique/identity
-                   :db/index true}
-
-                  :convex-web.session/accounts
-                  {:db/valueType :db.type/ref
-                   :db/cardinality :db.cardinality/many}}
-          conn (d/create-conn schema)]
-      (log/debug "Started DataScript")
+      (log/debug "Started Datalevin")
 
       (assoc component
         :conn conn)))
 
   (stop [component]
-    (log/debug "Stopped DataScript")
+    (try
+      (d/close conn)
+      (catch Exception _
+        nil))
+
+    (log/debug "Stopped Datalevin")
 
     (assoc component
       :conn nil)))
 
-(defrecord Consumer [datascript consumer]
-  component/Lifecycle
-
-  (start [component]
-    (let [consumer (consumer/command-consumer (system/-datascript-conn datascript))]
-      (log/debug "Started Consumer")
-
-      (assoc component
-        :consumer consumer)))
-
-  (stop [component]
-    (log/debug "Stopped Consumer")
-
-    (assoc component
-      :consumer nil)))
-
-(defrecord Convex [server conn consumer client]
+(defrecord Convex [server client]
   component/Lifecycle
 
   (start [component]
     (let [^Server server (API/launchPeer)
-          ^ResultConsumer consumer (system/-consumer-consumer consumer)
-          ^Connection connection (peer/conn server consumer)
           ^convex.api.Convex client (convex.api.Convex/connect (.getHostAddress server) Init/HERO_KP)]
       (log/debug "Started Convex")
 
       (assoc component
         :server server
-        :conn connection
         :client client)))
 
   (stop [component]
     (when-let [^convex.api.Convex client (:client component)]
       (.disconnect client))
-
-    (when-let [^Connection conn (:conn component)]
-      (.close conn))
 
     (when-let [^Server server (:server component)]
       (.close server))
@@ -163,13 +130,13 @@
       :consumer nil
       :client nil)))
 
-(defrecord WebServer [config convex datascript stop-fn]
+(defrecord WebServer [config convex datalevin stop-fn]
   component/Lifecycle
 
   (start [component]
     (let [system {:config config
                   :convex convex
-                  :datascript datascript}
+                  :datalevin datalevin}
 
           port (get-in config [:config :web-server :port])
 
@@ -187,7 +154,7 @@
     (log/debug "Stopped WebServer")
 
     (assoc component
-      :datascript nil
+      :datalevin nil
       :convex nil
       :port nil
       :stop-fn nil)))
@@ -203,17 +170,14 @@
     (component/using
       (map->MuLog {}) [:config])
 
-    :datascript
-    (map->DataScript {})
-
-    :consumer
+    :datalevin
     (component/using
-      (map->Consumer {}) [:datascript])
+      (map->Datalevin {}) [:config])
 
     :convex
     (component/using
-      (map->Convex {}) [:consumer])
+      (map->Convex {}) [])
 
     :web-server
     (component/using
-      (map->WebServer {}) [:config :convex :datascript])))
+      (map->WebServer {}) [:config :convex :datalevin])))

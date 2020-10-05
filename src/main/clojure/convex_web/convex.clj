@@ -1,11 +1,15 @@
 (ns convex-web.convex
-  (:require [clojure.string :as str])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob)
+  (:require [clojure.string :as str]
+            [clojure.spec.alpha :as s]
+
+            [cognitect.anomalies :as anomalies])
+  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob)
            (convex.core.lang Core Reader ScryptNext RT)
-           (convex.core Order Block Peer State Init)
+           (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke Call)
-           (convex.net Connection)))
+           (convex.net Connection)
+           (convex.api Convex)))
 
 (defmacro execute [context form]
   `(let [^String source# ~(pr-str form)
@@ -235,27 +239,54 @@
 (defn ^SignedData sign [^AKeyPair signer ^ATransaction transaction]
   (SignedData/create signer transaction))
 
-(defn ^Long transact [^Connection conn ^SignedData data]
-  (.sendTransaction conn data))
 
-(defn ^AKeyPair generate-account [^Connection conn ^AKeyPair signer ^Long nonce]
-  ;; TODO
-  ;; Extract transfer/transaction.
+(defn wrap-do [^AList x]
+  (.cons x (Symbol/create "do")))
+
+(defn cond-wrap-do [^AList x]
+  (let [form1 (first x)
+        form2 (second x)]
+    (if form2
+      (wrap-do x)
+      form1)))
+
+(defn ^Result query [^Convex client {:keys [source address lang]}]
+  (let [q (try
+            (case lang
+              :convex-lisp
+              (wrap-do (Reader/readAll source))
+
+              :convex-scrypt
+              (ScryptNext/readSyntax source))
+            (catch Throwable ex
+              (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
+                                               ::anomalies/category ::anomalies/incorrect}))))
+
+        ^Address address (when address
+                           (convex-web.convex/address address))]
+    (if address
+      @(.query client q)
+      @(.query client q address))))
+
+(defn ^Result transact [^Convex client ^SignedData signed-data]
+  @(.transact client signed-data))
+
+(defn ^AKeyPair generate-account [^Convex client ^AKeyPair signer ^Long nonce]
   (let [^AKeyPair generated-key-pair (AKeyPair/generate)
         ^Address generated-address (.getAddress generated-key-pair)]
 
     (->> (transfer {:nonce nonce :target generated-address :amount 100000000})
          (sign signer)
-         (transact conn))
+         (transact client))
 
     generated-key-pair))
 
-(defn faucet
+(defn ^Result faucet
   "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
-  [^Connection conn {:keys [nonce target amount]}]
+  [^Convex client {:keys [nonce target amount]}]
   (->> (transfer {:nonce nonce :target target :amount amount})
        (sign Init/HERO_KP)
-       (transact conn)))
+       (transact client)))
 
 (defn reference []
   (->> (core-metadata)
@@ -272,3 +303,15 @@
                      (when type
                        {:type (keyword type)}))})))
        (sort-by (comp :symbol :doc))))
+
+
+(defn key-pair-data [^AKeyPair key-pair]
+  {:convex-web.key-pair/address-checksum-hex (.toChecksumHex (.getAddress key-pair))
+   :convex-web.key-pair/blob-hex (.toHexString (.getEncodedPrivateKey key-pair))})
+
+(defn ^AKeyPair read-key-pair-data [{:convex-web.key-pair/keys [address-checksum-hex blob-hex]}]
+  (AKeyPair/create (address address-checksum-hex) (Blob/fromHex blob-hex)))
+
+(s/fdef read-key-pair-data
+  :args (s/cat :key-pair :convex-web/key-pair)
+  :ret #(instance? AKeyPair %))

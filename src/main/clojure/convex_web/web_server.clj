@@ -21,10 +21,9 @@
 
             [com.brunobonacci.mulog :as u]
             [expound.alpha :as expound]
-            [datascript.core :as d]
+            [datalevin.core :as d]
             [cognitect.transit :as t]
             [ring.middleware.defaults :refer [wrap-defaults api-defaults site-defaults]]
-            [ring.middleware.session.memory :as memory-session]
             [org.httpkit.server :as http-kit]
             [compojure.core :refer [routes GET POST]]
             [compojure.route :as route]
@@ -39,9 +38,8 @@
            (java.util Date)
            (org.parboiled.errors ParserRuntimeException)
            (convex.core.exceptions ParseException MissingDataException)
-           (convex.core.lang.impl AExceptional)))
-
-(def session-ref (atom {}))
+           (convex.core.lang.impl AExceptional)
+           (convex.api Convex)))
 
 (defn ring-session [request]
   (get-in request [:cookies "ring-session" :value]))
@@ -394,10 +392,9 @@
 ;; Internal APIs
 ;; ==========================
 
-(defn -GET-commands [context _]
+(defn -GET-commands [system _]
   (try
-    (let [datascript-conn (system/datascript-conn context)]
-      (-successful-response (command/query-all @datascript-conn)))
+    (-successful-response (command/find-all (system/db system)))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
@@ -406,15 +403,11 @@
 
       -server-error-response)))
 
-(defn -GET-command-by-id [context id]
+(defn -GET-command-by-id [system id]
   (try
-    (let [datascript-conn (system/datascript-conn context)]
-      (if-let [command (command/query-by-id @datascript-conn id)]
-        (-successful-response (-> command
-                                  (command/wrap-result-metadata)
-                                  (command/wrap-result)
-                                  (command/prune)))
-        (not-found-response {:error {:message (str "Command " id " not found.")}})))
+    (if-let [command (command/find-by-id (system/db system) id)]
+      (-successful-response (command/prune command))
+      (not-found-response {:error {:message (str "Command " id " not found.")}}))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
@@ -473,24 +466,26 @@
         (-successful-response #:convex-web.command {:status :convex-web.command.status/error
                                                     :error {:message message}})))))
 
-(defn -POST-generate-account [context req]
+(defn -POST-generate-account [system req]
   (try
     (u/log :logging.event/new-account :severity :info)
 
-    (let [^Peer peer (peer/peer (system/convex-server context))
+    (let [^Peer peer (peer/peer (system/convex-server system))
           ^State state (peer/consensus-state peer)
           ^AccountStatus status (peer/account-status state Init/HERO)
           ^Long sequence (peer/account-sequence status)
-          ^Connection conn (system/convex-conn context)
-          ^AKeyPair generated-key-pair (convex/generate-account conn Init/HERO_KP (inc sequence))
+          ^Convex client (system/convex-client system)
+          ^AKeyPair generated-key-pair (convex/generate-account client Init/HERO_KP (inc sequence))
           ^Address address (.getAddress generated-key-pair)
           ^String address-str (.toChecksumHex address)
 
           account #:convex-web.account {:address address-str
-                                        :key-pair generated-key-pair
-                                        :created-at (inst-ms (Instant/now))}]
+                                        :created-at (inst-ms (Instant/now))
+                                        :key-pair (convex/key-pair-data generated-key-pair)}]
 
-      (d/transact! (system/datascript-conn context) [account])
+      ;; Accounts created on Convex Web are persisted into the database.
+      ;; NOTE: Not all Accounts in Convex are persisted in the Convex Web database.
+      (d/transact! (system/db-conn system) [account])
 
       (-successful-response (select-keys account [::account/address
                                                   ::account/created-at])))
@@ -502,11 +497,11 @@
 
       -server-error-response)))
 
-(defn -POST-confirm-account [context {:keys [body] :as req}]
+(defn -POST-confirm-account [system {:keys [body] :as req}]
   (try
     (let [^String address-str (transit-decode body)
 
-          account (account/find-by-address (system/db context) address-str)]
+          account (account/find-by-address (system/db system) address-str)]
       (cond
         (nil? account)
         (do
@@ -520,9 +515,9 @@
                  :address address-str
                  :message (str "Confirmed Address " address-str "."))
 
-          (d/transact! (system/datascript-conn context) [{:convex-web.session/id (ring-session req)
-                                                          :convex-web.session/accounts
-                                                          [{:convex-web.account/address address-str}]}])
+          (d/transact! (system/db-conn system) [{:convex-web.session/id (ring-session req)
+                                                 :convex-web.session/accounts
+                                                 [{:convex-web.account/address address-str}]}])
 
           (-successful-response (select-keys account [::account/address
                                                       ::account/created-at])))))
@@ -570,21 +565,21 @@
           (-bad-request-response (error message)))
 
         :else
-        (let [conn (system/convex-conn context)
+        (let [client (system/convex-client context)
 
               nonce (inc (convex/hero-sequence (peer/peer (system/convex-server context))))
 
-              tx-id (convex/faucet conn {:nonce nonce
-                                         :target target
-                                         :amount amount})
+              result (convex/faucet client {:nonce nonce
+                                            :target target
+                                            :amount amount})
 
-              faucet {:convex-web.faucet/id tx-id
+              faucet {:convex-web.faucet/id (.getID result)
                       :convex-web.faucet/target target
                       :convex-web.faucet/amount amount
                       :convex-web.faucet/timestamp (.getTime (Date.))}]
 
-          (d/transact! (system/datascript-conn context) [{::account/address target
-                                                          ::account/faucets faucet}])
+          (d/transact! (system/db-conn context) [{::account/address target
+                                                  ::account/faucets faucet}])
 
           (u/log :logging.event/faucet
                  :severity :info
@@ -600,11 +595,10 @@
 
       -server-error-response)))
 
-(defn -GET-session [context req]
+(defn -GET-session [system req]
   (try
-    (let [db @(system/datascript-conn context)
-          id (ring-session req)
-          session (merge {::session/id id} (session/find-session db id))]
+    (let [id (ring-session req)
+          session (merge {::session/id id} (session/find-session (system/db system) id))]
       (-successful-response session))
     (catch Exception ex
       (u/log :logging.event/system-error
@@ -875,10 +869,11 @@
                                (wrap-logging)
                                (wrap-defaults api-defaults))
 
-        site-config {:session
-                     {:store (memory-session/memory-store session-ref)
-                      :flash true
-                      :cookie-attrs {:http-only false :same-site :strict}}}
+        site-config (merge {:session
+                            {:store (session/persistent-session-store (system/db-conn system))
+                             :flash true
+                             :cookie-attrs {:http-only false :same-site :strict}}}
+                           (system/site-config system))
 
         site-handler (-> (site system)
                          (wrap-logging)
