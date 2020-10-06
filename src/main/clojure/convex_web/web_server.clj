@@ -40,7 +40,8 @@
            (org.parboiled.errors ParserRuntimeException)
            (convex.core.exceptions ParseException MissingDataException)
            (convex.core.lang.impl AExceptional)
-           (convex.api Convex)))
+           (convex.api Convex)
+           (convex.core.transactions Invoke)))
 
 (defn ring-session [request]
   (get-in request [:cookies "ring-session" :value]))
@@ -235,7 +236,7 @@
         peer (system/convex-peer-server system)
         sequence-number (or sequence_number (peer/sequence-number peer (convex/address address)) 1)
         command (peer/read source lang)
-        tx (peer/create-invoke (inc sequence-number) command)]
+        tx (Invoke/create (inc sequence-number) command)]
 
     ;; Persist the transaction in the Etch datastore.
     (Ref/createPersisted tx)
@@ -278,6 +279,8 @@
 
         tx-ref (Ref/forHash (Hash/fromHex hash))
 
+        _ (log/debug "Tx Ref" tx-ref)
+
         signed-data (SignedData/create (convex/address address) sig tx-ref)
 
         _ (when-not (.isValid signed-data)
@@ -290,7 +293,9 @@
 
         result (try
                  @(.transact client signed-data)
-                 (catch MissingDataException _
+                 (catch MissingDataException ex
+                   (log/error ex "Failed to transact signed data" signed-data)
+
                    (throw (ex-info "You need to prepare the transaction before submitting."
                                    {::anomalies/category ::anomalies/incorrect}))))
 
