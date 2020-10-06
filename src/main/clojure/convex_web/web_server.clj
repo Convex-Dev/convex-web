@@ -856,6 +856,22 @@
 
               server-error-response)))))))
 
+(defn public-api-handler [system]
+  (-> (public-api system)
+      (wrap-error)
+      (wrap-logging)
+      (wrap-defaults api-defaults)))
+
+(defn site-handler [system]
+  (let [site-config (merge {:session
+                            {:store (session/persistent-session-store (system/db-conn system))
+                             :flash true
+                             :cookie-attrs {:http-only false :same-site :strict}}}
+                           (system/site-config system))]
+    (-> (site system)
+        (wrap-logging)
+        (wrap-defaults (merge-with merge site-defaults site-config)))))
+
 (defn run-server
   "Start HTTP server (default port is 8090).
 
@@ -864,24 +880,9 @@
 
    `options` are the same as org.httpkit.server/run-server."
   [system & [options]]
-  (let [public-api-handler (-> (public-api system)
-                               (wrap-error)
-                               (wrap-logging)
-                               (wrap-defaults api-defaults))
-
-        site-config (merge {:session
-                            {:store (session/persistent-session-store (system/db-conn system))
-                             :flash true
-                             :cookie-attrs {:http-only false :same-site :strict}}}
-                           (system/site-config system))
-
-        site-handler (-> (site system)
-                         (wrap-logging)
-                         (wrap-defaults (merge-with merge site-defaults site-config)))
-
-        ;; The public API handler must come first
+  (let [;; The public API handler must come first
         ;; since the site handler matches a not found.
-        handler (routes public-api-handler site-handler)]
+        handler (routes (public-api-handler system) (site-handler system))]
 
     (http-kit/run-server handler options)))
 
