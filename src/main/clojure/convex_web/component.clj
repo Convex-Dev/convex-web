@@ -38,8 +38,7 @@
                     (System/getProperty "logback.configurationFile")
                     "\n\n"
 
-                    (with-out-str (pprint/pprint config))
-                    "\n--------------------------------------------------\n"))
+                    (with-out-str (pprint/pprint config))))
 
       (SLF4JBridgeHandler/removeHandlersForRootLogger)
       (SLF4JBridgeHandler/install)
@@ -83,14 +82,12 @@
     (let [{:keys [dir reset?]} (get-in config [:config :datalevin])
 
           _ (when reset?
-              (log/info "Reset database:" dir)
+              (println (str "** ATTENTION **\nDatabase " dir " will be deleted!"))
 
               (doseq [f (reverse (file-seq (io/file dir)))]
                 (io/delete-file f true)))
 
           conn (d/create-conn dir db/schema)]
-
-      (log/debug "Started Datalevin")
 
       (assoc component
         :conn conn)))
@@ -100,8 +97,6 @@
       (d/close conn)
       (catch Exception _
         nil))
-
-    (log/debug "Stopped Datalevin")
 
     (assoc component
       :conn nil)))
@@ -121,7 +116,6 @@
           ^Server server (API/launchPeer {Keywords/STORE store})
 
           ^convex.api.Convex client (convex.api.Convex/connect (.getHostAddress server) Init/HERO_KP)]
-      (log/debug "Started Convex")
 
       (assoc component
         :server server
@@ -144,8 +138,6 @@
 
       (.close store))
 
-    (log/debug "Stopped Convex")
-
     (assoc component
       :server nil
       :client nil
@@ -162,7 +154,6 @@
           port (get-in config [:config :web-server :port])
 
           stop-fn (web-server/run-server system {:port port})]
-      (log/debug (str "Started WebServer on port " port))
 
       (assoc component
         :port port
@@ -171,8 +162,6 @@
   (stop [component]
     (when-let [stop (:stop-fn component)]
       (stop))
-
-    (log/debug "Stopped WebServer")
 
     (assoc component
       :datalevin nil

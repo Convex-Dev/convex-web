@@ -2,10 +2,13 @@
   (:require [convex-web.component]
             [convex-web.client :as client]
             [convex-web.config :as config]
+            [convex-web.web-server :as web-server]
+            [convex-web.test :refer [system-fixture]]
 
             [clojure.test :refer :all]
             [clojure.data.json :as json]
 
+            [ring.mock.request :as mock]
             [com.stuartsierra.component]
             [org.httpkit.client :as http])
   (:import (convex.core Init)
@@ -13,15 +16,10 @@
 
 (def system nil)
 
-(use-fixtures :each (fn [f]
-                      (let [system (com.stuartsierra.component/start
-                                     (convex-web.component/system :test))]
+(use-fixtures :once (system-fixture #'system))
 
-                        (alter-var-root #'system (constantly system))
-
-                        (f)
-
-                        (com.stuartsierra.component/stop system))))
+(defn public-api-handler []
+  (web-server/public-api-handler system))
 
 (defn server-url []
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))
@@ -212,27 +210,39 @@ In function: map"} response-body)))))
           hero-address (.getAddress hero-key-pair)
           hero-address-str (.toHexString hero-address)
 
-          ;; Prepare
+          handler (public-api-handler)
+
+          ;; 1. Prepare
           ;; ==========
-          prepare-url (str (server-url) "/api/v1/transaction/prepare")
-          prepare-body (json/write-str {:address hero-address-str :source "(inc 1)"})
-          prepare-response @(http/post prepare-url {:body prepare-body})
+
+          prepare-uri "/api/v1/transaction/prepare"
+
+          prepare-body {:address hero-address-str :source "(inc 1)"}
+
+          prepare-response (handler (-> (mock/request :post prepare-uri)
+                                        (mock/json-body prepare-body)))
+
           prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)
 
-          ;; Submit
+
+          ;; 2. Submit
           ;; ==========
 
-          submit-url (str (server-url) "/api/v1/transaction/submit")
+          submit-uri "/api/v1/transaction/submit"
 
-          submit-body (json/write-str {:address (.toHexString hero-address)
-                                       :hash (get prepare-response-body :hash)
-                                       :sig (.toHexString (.sign hero-key-pair (Hash/fromHex (get prepare-response-body :hash))))})
+          submit-body {:address (.toHexString hero-address)
+                       :hash (get prepare-response-body :hash)
+                       :sig (.toHexString (.sign hero-key-pair (Hash/fromHex (get prepare-response-body :hash))))}
 
-          submit-response @(http/post submit-url {:body submit-body})
+          submit-response (handler (-> (mock/request :post submit-uri)
+                                       (mock/json-body submit-body)))
 
           submit-response-body (json/read-str (get submit-response :body) :key-fn keyword)]
 
+      ;; Prepare is successful
       (is (= 200 (get prepare-response :status)))
+
+      ;; Prepare response must contain these keys
       (is (= #{:sequence_number
                :address
                :source
@@ -240,8 +250,13 @@ In function: map"} response-body)))))
                :hash}
              (set (keys prepare-response-body))))
 
+      ;; Submit is successful
       (is (= 200 (get submit-response :status)))
+
+      ;; Submit response must contain these keys
       (is (= #{:id :value} (set (keys submit-response-body))))
+
+      ;; Submit response result value
       (is (= {:value 2} (select-keys submit-response-body [:value]))))))
 
 (deftest faucet-test

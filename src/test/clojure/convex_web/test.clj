@@ -31,10 +31,6 @@
 
       (alter-var-root system-var (constantly system))
 
-      ;; Reset the database
-      (doseq [f (reverse (file-seq (io/file (get-in system [:config :config :datalevin :dir]))))]
-        (io/delete-file f))
-
       (f)
 
       (com.stuartsierra.component/stop system))))
