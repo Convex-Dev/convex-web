@@ -30,10 +30,9 @@
             [compojure.route :as route]
             [hiccup.page :as page]
             [ring.util.anti-forgery])
-  (:import (java.io ByteArrayOutputStream InputStream)
+  (:import (java.io InputStream)
            (convex.core.crypto AKeyPair Hash ASignature)
            (convex.core.data Address AccountStatus Ref SignedData)
-           (convex.net Connection)
            (convex.core Init Peer State)
            (java.time Instant)
            (java.util Date)
@@ -836,6 +835,8 @@
     (try
       (handler request)
       (catch Throwable ex
+        (log/error ex "Handler error")
+
         (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
           (cond
             incorrect?
