@@ -38,7 +38,7 @@
  ;; ==========================
  :datalevin
  #profile {:dev {:dir "db-dev"
-                 :reset? false}
+                 :reset? true}
 
            :test {:dir "db-test"
                   :reset? true}
@@ -51,11 +51,11 @@
  ;; ==========================
  :peer
  {:store
-  #profile {:dev {:global? false}
+  #profile {:dev {:temp? true}
 
-            :test {:global? false}
+            :test {:temp? true}
 
-            :prod {:global? true}}}
+            :prod {:temp? false}}}
 
 
  ;; -- WEB SERVER

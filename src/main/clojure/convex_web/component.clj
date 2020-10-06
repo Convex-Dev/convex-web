@@ -106,12 +106,16 @@
     (assoc component
       :conn nil)))
 
-(defrecord Convex [server client store]
+(defrecord Convex [config server client store]
   component/Lifecycle
 
   (start [component]
-    (let [^File file (io/file (get (System/getProperties) "user.dir") "convex-db")
-          ^EtchStore store (EtchStore/create file)
+    (let [{:keys [temp?]} (get-in config [:config :peer :store])
+
+          ^EtchStore store (if temp?
+                             (EtchStore/createTemp "convex-db")
+                             (EtchStore/create (io/file (get (System/getProperties) "user.dir") "convex-db")))
+
           _ (Stores/setGlobalStore store)
 
           ^Server server (API/launchPeer {Keywords/STORE store})
@@ -193,7 +197,7 @@
 
     :convex
     (component/using
-      (map->Convex {}) [])
+      (map->Convex {}) [:config])
 
     :web-server
     (component/using
