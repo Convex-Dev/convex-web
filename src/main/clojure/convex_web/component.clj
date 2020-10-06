@@ -2,7 +2,7 @@
   (:require [convex-web.system :as system]
             [convex-web.peer :as peer]
             [convex-web.web-server :as web-server]
-            [convex-web.consumer :as consumer]
+            [convex-web.store :as store]
             [convex-web.db :as db]
 
             [clojure.spec.alpha :as s]
@@ -82,7 +82,7 @@
     (let [{:keys [dir reset?]} (get-in config [:config :datalevin])
 
           _ (when reset?
-              (println (str "** ATTENTION **\nDatabase " dir " will be deleted!"))
+              (println (str "\n** ATTENTION **\nDatabase " dir " will be deleted!\n"))
 
               (doseq [f (reverse (file-seq (io/file dir)))]
                 (io/delete-file f true)))
@@ -105,13 +105,7 @@
   component/Lifecycle
 
   (start [component]
-    (let [{:keys [temp?]} (get-in config [:config :peer :store])
-
-          ^EtchStore store (if temp?
-                             (EtchStore/createTemp "convex-db")
-                             (EtchStore/create (io/file (get (System/getProperties) "user.dir") "convex-db")))
-
-          _ (Stores/setGlobalStore store)
+    (let [^EtchStore store (store/create! (get-in config [:config :peer :store]))
 
           ^Server server (API/launchPeer {Keywords/STORE store})
 
@@ -124,19 +118,10 @@
 
   (stop [component]
     (when-let [^convex.api.Convex client (:client component)]
-      (log/debug "Disconnect Convex Client" client)
-
       (.disconnect client))
 
     (when-let [^Server server (:server component)]
-      (log/debug "Close Peer Server" server)
-
       (.close server))
-
-    (when-let [^EtchStore store (:store component)]
-      (log/debug "Close Etch Store" store)
-
-      (.close store))
 
     (assoc component
       :server nil

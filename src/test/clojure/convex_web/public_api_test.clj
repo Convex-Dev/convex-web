@@ -231,8 +231,11 @@ In function: map"} response-body)))))
           submit-uri "/api/v1/transaction/submit"
 
           submit-body {:address (.toHexString hero-address)
-                       :hash (get prepare-response-body :hash)
-                       :sig (.toHexString (.sign hero-key-pair (Hash/fromHex (get prepare-response-body :hash))))}
+                       :hash (or (get prepare-response-body :hash) (throw (ex-info "Can't submit transaction without its hash." prepare-response)))
+                       :sig (try
+                              (.toHexString (.sign hero-key-pair (Hash/fromHex (get prepare-response-body :hash))))
+                              (catch Exception _
+                                nil))}
 
           submit-response (handler (-> (mock/request :post submit-uri)
                                        (mock/json-body submit-body)))
