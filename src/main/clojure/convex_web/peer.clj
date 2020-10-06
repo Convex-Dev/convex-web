@@ -2,16 +2,11 @@
   (:refer-clojure :exclude [read])
   (:require [cognitect.anomalies :as anomalies]
             [convex-web.convex :as convex])
-  (:import (convex.net ResultConsumer Connection)
-           (convex.peer Server)
+  (:import (convex.peer Server)
            (convex.core.lang Reader ScryptNext)
            (convex.core.data Address AccountStatus Symbol AList)
-           (convex.core Peer State Init)
-           (convex.core.transactions Invoke ATransaction Transfer)
-           (convex.core.store Stores)))
-
-(defn ^Connection conn [^Server server ^ResultConsumer consumer]
-  (Connection/connect (.getHostAddress server) consumer Stores/CLIENT_STORE))
+           (convex.core Peer State)
+           (convex.core.transactions Invoke ATransaction Transfer)))
 
 (defn ^Peer peer [^Server server]
   (.getPeer server))

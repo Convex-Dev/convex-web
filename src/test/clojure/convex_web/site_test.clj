@@ -36,19 +36,7 @@
 
               account (encoding/transit-decode-string body)
               account-no-env (dissoc (get account :convex-web.account/status) :convex-web.account-status/environment)]
-          (is (= 200 status))
-
-          (is (= #:convex-web.account{:address "4444444444444444444444444444444444444444444444444444444444444444"}
-                 (select-keys account [:convex-web.account/address])))
-
-          (is (= #:convex-web.account-status{:actor? false
-                                             :allowance 0
-                                             :library? false
-                                             :type :user
-                                             :memory-size 72
-                                             :balance 900000000000
-                                             :sequence 0}
-                 account-no-env)))))
+          (is (= 200 status)))))
 
     (testing "Range 10-15"
       (let [{:keys [status body]} @(http/get (str (server-url) "/api/internal/accounts?start=10&end=15"))
