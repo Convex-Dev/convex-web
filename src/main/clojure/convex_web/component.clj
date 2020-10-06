@@ -21,7 +21,8 @@
            (convex.core Init)
            (convex.core.data Keywords)
            (etch EtchStore)
-           (java.io File)))
+           (java.io File)
+           (convex.core.store Stores)))
 
 (defrecord Config [profile config]
   component/Lifecycle
@@ -105,22 +106,23 @@
     (assoc component
       :conn nil)))
 
-(defrecord Convex [server client]
+(defrecord Convex [server client store]
   component/Lifecycle
 
   (start [component]
-    (let [
-          ;;^File file (io/file (get (System/getProperties) "user.dir") "convex-db")
-          ;;^EtchStore store (EtchStore/create file)
-          ;;^Server server (API/launchPeer {Keywords/STORE store})
+    (let [^File file (io/file (get (System/getProperties) "user.dir") "convex-db")
+          ^EtchStore store (EtchStore/create file)
+          _ (Stores/setGlobalStore store)
 
-          ^Server server (API/launchPeer)
+          ^Server server (API/launchPeer {Keywords/STORE store})
+
           ^convex.api.Convex client (convex.api.Convex/connect (.getHostAddress server) Init/HERO_KP)]
       (log/debug "Started Convex")
 
       (assoc component
         :server server
-        :client client)))
+        :client client
+        :store store)))
 
   (stop [component]
     (when-let [^convex.api.Convex client (:client component)]
@@ -142,7 +144,8 @@
 
     (assoc component
       :server nil
-      :client nil)))
+      :client nil
+      :store nil)))
 
 (defrecord WebServer [config convex datalevin stop-fn]
   component/Lifecycle

@@ -38,22 +38,24 @@
  ;; ==========================
  :datalevin
  #profile {:dev {:dir "db-dev"
-                 :reset? true}
+                 :reset? false}
 
            :test {:dir "db-test"
                   :reset? true}
 
            :prod {:dir "db"
-                  :reset? true}}
+                  :reset? false}}
 
 
  ;; -- CONVEX PEER
  ;; ==========================
  :peer
- {:port
-  #profile {:dev :todo
-            :prod :todo
-            :test :todo}}
+ {:store
+  #profile {:dev {:global? false}
+
+            :test {:global? false}
+
+            :prod {:global? true}}}
 
 
  ;; -- WEB SERVER
