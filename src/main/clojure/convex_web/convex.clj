@@ -353,9 +353,9 @@
   {:convex-web.key-pair/address-checksum-hex (.toChecksumHex (.getAddress key-pair))
    :convex-web.key-pair/blob-hex (.toHexString (.getEncodedPrivateKey key-pair))})
 
-(defn ^AKeyPair read-key-pair-data [{:convex-web.key-pair/keys [address-checksum-hex blob-hex]}]
+(defn ^AKeyPair create-key-pair [{:convex-web.key-pair/keys [address-checksum-hex blob-hex]}]
   (AKeyPair/create (address address-checksum-hex) (Blob/fromHex blob-hex)))
 
-(s/fdef read-key-pair-data
+(s/fdef create-key-pair
   :args (s/cat :key-pair :convex-web/key-pair)
   :ret #(instance? AKeyPair %))

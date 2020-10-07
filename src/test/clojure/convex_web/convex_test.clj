@@ -76,7 +76,7 @@
 
 
 (deftest key-pair-test
-  (let [hero-key-pair (-> Init/HERO_KP convex/key-pair-data convex/read-key-pair-data)]
+  (let [hero-key-pair (-> Init/HERO_KP convex/key-pair-data convex/create-key-pair)]
     (is (= (.getAddress Init/HERO_KP) (.getAddress hero-key-pair)))
     #_(is (= (.toHexString (.getEncodedPrivateKey Init/HERO_KP)) (.toHexString (.getEncodedPrivateKey hero-key-pair))))))
 

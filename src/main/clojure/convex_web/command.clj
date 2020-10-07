@@ -169,7 +169,7 @@
                       :convex-web.transaction.type/transfer
                       (let [to (convex/address (:convex-web.transaction/target transaction))]
                         (peer/transfer-transaction (inc sequence-number) to amount)))]
-    (->> (convex/sign (convex/read-key-pair-data key-pair) transaction)
+    (->> (convex/sign (convex/create-key-pair key-pair) transaction)
          (convex/transact (system/convex-client system)))))
 
 (s/fdef execute-transaction
