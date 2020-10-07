@@ -3,7 +3,7 @@
             [clojure.spec.alpha :as s]
 
             [cognitect.anomalies :as anomalies])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob)
+  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString)
            (convex.core.lang Core Reader ScryptNext RT)
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
@@ -48,7 +48,7 @@
     (instance? Number x)
     :number
 
-    (instance? String x)
+    (instance? AString x)
     :string
 
     (instance? Keyword x)
@@ -96,11 +96,14 @@
        String
        x
 
+       AString
+       (.toString x)
+
        Keyword
-       (keyword (.getName x))
+       (keyword (.toString (.getName x)))
 
        Symbol
-       (symbol (some-> x (.getNamespace) (.getName)) (.getName x))
+       (symbol (some-> x (.getNamespace) (.getName) (.toString)) (.toString (.getName x)))
 
        AList
        (map datafy x)

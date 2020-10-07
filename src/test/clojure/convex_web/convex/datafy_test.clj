@@ -10,6 +10,9 @@
 (def context (Context/createFake Init/STATE))
 
 (deftest datafy-test
+  (testing "String"
+    (is (= "" (datafy (convex/execute context "")))))
+
   (testing "Symbol"
     (is (= 'sym (datafy (convex/execute context 'sym)))))
 

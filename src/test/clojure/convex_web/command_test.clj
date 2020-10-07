@@ -4,7 +4,8 @@
             [convex-web.command :as c]
             [convex-web.convex :as convex])
   (:import (convex.core Init)
-           (convex.core.lang Context)))
+           (convex.core.lang Context)
+           (convex.core.data StringShort)))
 
 (def context (Context/createFake Init/STATE))
 
@@ -149,7 +150,7 @@
             ::c/query {:convex-web.query/source "\"Hello\""
                        :convex-web.query/language :convex-lisp}
             ::c/status :convex-web.command.status/success
-            ::c/object "Hello"
+            ::c/object (StringShort/create "Hello")
             ::c/metadata {:type :string}}
            (c/wrap-result-metadata {::c/id 1
                                     ::c/mode :convex-web.command.mode/query
@@ -276,7 +277,7 @@
              {:description "Increments the given number by 1. Converts to Long if necessary."
               :examples [{:code "(inc 10)"}]
               :signature [{:params ['num]}]
-              :symbol "inc"
+              :symbol (StringShort/create "inc")
               :type :function}}}
            (c/wrap-result-metadata {::c/id 1
                                     ::c/mode :convex-web.command.mode/query
@@ -298,7 +299,7 @@
              {:description "Defines a function in the current environment."
               :examples [{:code "(defn my-square [x] (* x x))"}]
               :signature [{:params ['name 'params '& 'body]}]
-              :symbol "defn"
+              :symbol (StringShort/create "defn")
               :type :macro}}}
            (-> (c/wrap-result-metadata {::c/id 1
                                         ::c/mode :convex-web.command.mode/query
@@ -323,7 +324,7 @@
              {:description "Creates a definition in the current environment. This value will persist in the enviroment owned by the current account."
               :examples [{:code "(def a 10)"}]
               :signature [{:params ['sym 'value]}]
-              :symbol "def"
+              :symbol (StringShort/create "def")
               :type :special}}}
            (-> (c/wrap-result-metadata {::c/id 1
                                         ::c/mode :convex-web.command.mode/query

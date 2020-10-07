@@ -1,17 +1,22 @@
 (ns convex-web.convex.datafy
   (:require [clojure.core.protocols :as p]
             [clojure.datafy :refer [datafy]])
-  (:import (convex.core.data Keyword Symbol AList AVector AMap ASet Syntax Address ABlob)))
+  (:import (convex.core.data Keyword Symbol AList AVector AMap ASet Syntax Address ABlob AString)))
+
+(extend-type AString
+  p/Datafiable
+  (datafy [x]
+    (.toString x)))
 
 (extend-type Keyword
   p/Datafiable
   (datafy [x]
-    (keyword (.getName x))))
+    (keyword (.toString (.getName x)))))
 
 (extend-type Symbol
   p/Datafiable
   (datafy [x]
-    (symbol (some-> x (.getNamespace) (.getName)) (.getName x))))
+    (symbol (some-> x (.getNamespace) (.getName) (.toString)) (.toString (.getName x)))))
 
 (extend-type AList
   p/Datafiable

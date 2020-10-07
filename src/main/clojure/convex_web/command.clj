@@ -11,7 +11,7 @@
 
             [datalevin.core :as d]
             [expound.alpha :as expound])
-  (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList)
+  (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
            (convex.core.lang Reader Symbols)
            (convex.core Result)))
 
@@ -76,7 +76,7 @@
                      (instance? Number object)
                      {:type :number}
 
-                     (instance? String object)
+                     (instance? AString object)
                      {:type :string}
 
                      (instance? AMap object)
