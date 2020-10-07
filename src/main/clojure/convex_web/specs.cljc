@@ -122,6 +122,18 @@
                                           :convex-web.transfer/to
                                           :convex-web.transfer/amount]))
 
+
+;; -- Result
+
+(s/def :convex-web.result/id nat-int?)
+(s/def :convex-web.result/value any?)
+(s/def :convex-web.result/error-code keyword?)
+
+(s/def :convex-web/result
+  (s/keys :req [:convex-web.result/id
+                :convex-web.result/value]
+          :opt [:convex-web.result/error-code]))
+
 ;; -- Query
 
 (s/def :convex-web.query/source :convex-web/non-empty-string)

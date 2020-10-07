@@ -40,6 +40,41 @@
     {}
     Core/CORE_NAMESPACE))
 
+(defn kind [x]
+  (cond
+    (instance? Boolean x)
+    :boolean
+
+    (instance? Number x)
+    :number
+
+    (instance? String x)
+    :string
+
+    (instance? Keyword x)
+    :keyword
+
+    (instance? AMap x)
+    :map
+
+    (instance? AList x)
+    :list
+
+    (instance? AVector x)
+    :vector
+
+    (instance? ASet x)
+    :set
+
+    (instance? Address x)
+    :address
+
+    (instance? ABlob x)
+    :blob
+
+    (instance? Symbol x)
+    :symbol))
+
 (defn datafy
   ([x]
    (datafy x {:default str}))
@@ -130,7 +165,17 @@
 (defn consensus-point [^Order order]
   (.getConsensusPoint order))
 
-(defn transaction [^ATransaction atransaction result]
+(defn result-data [^Result result]
+  (let [result-id (.getID result)
+        result-error-code (.getErrorCode result)
+        result-value (.getValue result)]
+    (merge #:convex-web.result {:id result-id
+                                :value (datafy result-value)
+                                :meta {:kind (kind result-value)}}
+           (when result-error-code
+             #:convex-web.result {:error-code (datafy result-error-code)}))))
+
+(defn transaction [^ATransaction atransaction ^Result result]
   (let [tx (cond
              (instance? Transfer atransaction)
              #:convex-web.transaction {:type :convex-web.transaction.type/transfer
@@ -146,7 +191,7 @@
              (instance? Call atransaction)
              #:convex-web.transaction {:type :convex-web.transaction.type/call})]
 
-    (merge tx {:convex-web.transaction/result (datafy result)})))
+    (merge tx {:convex-web.transaction/result (result-data result)})))
 
 (defn block [^Peer peer ^Long index ^Block block]
   #:convex-web.block {:index index
@@ -314,35 +359,3 @@
 (s/fdef read-key-pair-data
   :args (s/cat :key-pair :convex-web/key-pair)
   :ret #(instance? AKeyPair %))
-
-(defn kind [x]
-  (cond
-    (instance? Boolean x)
-    :boolean
-
-    (instance? Number x)
-    :number
-
-    (instance? String x)
-    :string
-
-    (instance? AMap x)
-    :map
-
-    (instance? AList x)
-    :list
-
-    (instance? AVector x)
-    :vector
-
-    (instance? ASet x)
-    :set
-
-    (instance? Address x)
-    :address
-
-    (instance? ABlob x)
-    :blob
-
-    (instance? Symbol x)
-    :symbol))

@@ -149,9 +149,16 @@
      ;; ======================
      (case type
        :convex-web.transaction.type/invoke
-       [:div.flex.flex-col.space-y-2
-        [gui/CaptionMono "Result"]
-        [gui/Highlight result {:pretty? true}]]
+       (let [{:convex-web.result/keys [value meta]} result]
+         [:div.flex.flex-col.space-y-2
+          [:div.flex.space-x-1
+           [gui/CaptionMono "Result"]
+
+           ;; -- Meta/Kind
+           (when-let [kind (get meta :kind)]
+             [gui/InfoTooltip (str/capitalize (name kind))])]
+
+          [gui/Highlight value {:pretty? true}]])
 
        :convex-web.transaction.type/transfer
        [:div])
