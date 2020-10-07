@@ -335,7 +335,7 @@
        (sign Init/HERO_KP)
        (transact client)))
 
-(defn reference []
+(defn convex-core-reference []
   (->> (core-metadata)
        (map
          (fn [[sym metadata]]
@@ -345,7 +345,7 @@
              {:doc
               (merge {:description description
                       :signature signature
-                      :symbol (.getName sym)
+                      :symbol (.toString (.getName sym))
                       :examples examples}
                      (when type
                        {:type (keyword type)}))})))

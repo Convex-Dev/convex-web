@@ -180,7 +180,7 @@
   Core/ENVIRONMENT
 
   (convex/core-metadata)
-  (convex/reference)
+  (convex/convex-core-reference)
 
 
   (client/POST-public-v1-transaction-prepare'
