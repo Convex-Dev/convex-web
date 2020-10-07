@@ -75,14 +75,6 @@
       (make-example
         "(transfer \"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\" 1000)")]
 
-     ["Library"
-      (make-example
-        "(def my-library-address (deploy '(defn identity [x] x)))"
-
-        "(import my-library-address :as my-library)"
-
-        "(my-library/identity \"Hello, world!\")")]
-
      ["Simple Storage Actor"
       (make-example
         "(def storage-example-address (deploy '(do (def stored-data nil) (defn get [] stored-data) (defn set [x] (def stored-data x)) (export get set))))")]
