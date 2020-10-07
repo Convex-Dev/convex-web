@@ -3,6 +3,7 @@
             [clojure.spec.alpha :as s]
 
             [convex-web.specs]
+            [convex-web.lang :as lang]
             [convex-web.test :refer :all]
             [convex-web.web-server :as web-server]
             [convex-web.encoding :as encoding]
@@ -15,6 +16,15 @@
 
 (defn site-handler []
   (web-server/site system))
+
+(defn execute-command [body]
+  ((web-server/site system) (-> (mock/request :post "/api/internal/commands")
+                                (transit-body body))))
+
+(defn execute-query [source]
+  (execute-command #:convex-web.command {:mode :convex-web.command.mode/query
+                                         :query {:convex-web.query/source source
+                                                 :convex-web.query/language :convex-lisp}}))
 
 (deftest session-test
   (let [handler (web-server/site system)
@@ -120,3 +130,99 @@
                                                                           :convex-web.transaction/language :convex-lisp}})]
 
         (is (= 403 (get response :status)))))))
+
+(deftest examples-test
+  (testing "Self Balance"
+    (let [source (get-in lang/convex-lisp-examples [:self-balance :source])
+
+          response (execute-query source)
+
+          body (encoding/transit-decode-string (get response :body))]
+
+      (is (= #:convex-web.command{:metadata {:type :number}
+                                  :mode :convex-web.command.mode/query
+                                  :query #:convex-web.query{:language :convex-lisp :source source}
+                                  :status :convex-web.command.status/success}
+
+             (select-keys body [:convex-web.command/metadata
+                                :convex-web.command/mode
+                                :convex-web.command/query
+                                :convex-web.command/status])))
+
+      (is (nat-int? (get body :convex-web.command/object)))))
+
+  (testing "Self Address"
+    (let [source (get-in lang/convex-lisp-examples [:self-address :source])
+
+          response (execute-query source)
+
+          body (encoding/transit-decode-string (get response :body))]
+
+      (is (= #:convex-web.command{:metadata {:type :address}
+                                  :mode :convex-web.command.mode/query
+                                  :query #:convex-web.query{:language :convex-lisp :source source}
+                                  :status :convex-web.command.status/success}
+
+             (select-keys body [:convex-web.command/metadata
+                                :convex-web.command/mode
+                                :convex-web.command/query
+                                :convex-web.command/status])))
+
+      (is (= #{:checksum-hex :hex-string} (set (keys (get body :convex-web.command/object)))))))
+
+  (testing "Check Balance"
+    (let [source (get-in lang/convex-lisp-examples [:check-balance :source])
+
+          response (execute-query source)
+
+          body (encoding/transit-decode-string (get response :body))]
+
+      (is (= #:convex-web.command{:metadata {:type :number}
+                                  :mode :convex-web.command.mode/query
+                                  :query #:convex-web.query{:language :convex-lisp :source source}
+                                  :status :convex-web.command.status/success}
+
+             (select-keys body [:convex-web.command/metadata
+                                :convex-web.command/mode
+                                :convex-web.command/query
+                                :convex-web.command/status])))
+
+      (is (nat-int? (get body :convex-web.command/object)))))
+
+  (testing "Transfer"
+    (let [source (get-in lang/convex-lisp-examples [:transfer :source])
+
+          response (execute-query source)
+
+          body (encoding/transit-decode-string (get response :body))]
+
+      (is (= #:convex-web.command{:metadata {:type :number}
+                                  :mode :convex-web.command.mode/query
+                                  :query #:convex-web.query{:language :convex-lisp :source source}
+                                  :status :convex-web.command.status/success}
+
+             (select-keys body [:convex-web.command/metadata
+                                :convex-web.command/mode
+                                :convex-web.command/query
+                                :convex-web.command/status])))
+
+      (is (nat-int? (get body :convex-web.command/object)))))
+
+  (testing "Subcurrency Actor"
+    (let [source (get-in lang/convex-lisp-examples [:subcurrency-actor :source])
+
+          response (execute-query source)
+
+          body (encoding/transit-decode-string (get response :body))]
+
+      (is (= #:convex-web.command{:metadata {:type :address}
+                                  :mode :convex-web.command.mode/query
+                                  :query #:convex-web.query{:language :convex-lisp :source source}
+                                  :status :convex-web.command.status/success}
+
+             (select-keys body [:convex-web.command/metadata
+                                :convex-web.command/mode
+                                :convex-web.command/query
+                                :convex-web.command/status])))
+
+      (is (= #{:checksum-hex :hex-string} (set (keys (get body :convex-web.command/object))))))))
