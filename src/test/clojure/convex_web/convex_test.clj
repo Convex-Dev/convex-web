@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
 
             [convex-web.convex :as convex]
-            [convex-web.test :refer [spec-fixture]])
+            [convex-web.test :refer :all])
   (:import (convex.core.data Address Maps)
            (convex.core.lang Context)
            (convex.core Init)))
@@ -59,23 +59,14 @@
 (deftest address-test
   (testing "Can't coerce nil"
     (is (= "Can't coerce nil to convex.core.data.Address."
-           (try
-             (convex/address nil)
-             (catch Exception ex
-               (ex-message ex))))))
+           (ex-message (catch-throwable (convex/address nil))))))
 
   (testing "Can't coerce empty string"
     (is (= "Can't coerce empty string to convex.core.data.Address."
-           (try
-             (convex/address "")
-             (catch Exception ex
-               (ex-message ex))))))
+           (ex-message (catch-throwable (convex/address ""))))))
 
   (testing "Invalid Address String"
-    (is (= "Invalid Address hex String [foo]" (try
-                                                (convex/address "foo")
-                                                (catch Error ex
-                                                  (ex-message ex))))))
+    (is (= "Invalid Address hex String [foo]" (ex-message (catch-throwable (convex/address "foo"))))))
 
   (testing "Coerce string to Address"
     (let [address-string "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"]

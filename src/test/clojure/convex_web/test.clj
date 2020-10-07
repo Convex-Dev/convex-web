@@ -8,10 +8,10 @@
             [ring.mock.request :as mock]
             [com.stuartsierra.component]))
 
-(defmacro with-try [& body]
+(defmacro catch-throwable [& body]
   `(try
      ~@body
-     (catch Exception ex#
+     (catch Throwable ex#
        ex#)))
 
 (defn spec-fixture []
