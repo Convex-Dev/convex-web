@@ -6,7 +6,10 @@
 (defn -main
   "Start Convex Web."
   [& _]
-  (let [system (com.stuartsierra.component/start (convex-web.component/system :prod))]
+  (let [_ (log/info "Starting system...")
+
+        system (com.stuartsierra.component/start (convex-web.component/system :prod))]
+
     (.addShutdownHook (Runtime/getRuntime) (Thread. ^Runnable (fn []
                                                                 (try
                                                                   (log/info "Stopping system...")
