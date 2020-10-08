@@ -44,7 +44,7 @@
                   :reset? true}
 
            :prod {:dir "db"
-                  :reset? true}}
+                  :reset? false}}
 
 
  ;; -- CONVEX PEER
@@ -55,7 +55,7 @@
 
             :test {:temp? true}
 
-            :prod {:temp? true}}}
+            :prod {:temp? false}}}
 
 
  ;; -- WEB SERVER

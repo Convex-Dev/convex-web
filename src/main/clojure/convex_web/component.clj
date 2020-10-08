@@ -118,9 +118,13 @@
 
   (stop [component]
     (when-let [^convex.api.Convex client (:client component)]
+      (log/info "Disconnect Client")
+
       (.disconnect client))
 
     (when-let [^Server server (:server component)]
+      (log/info "Close Server")
+
       (.close server))
 
     (assoc component
