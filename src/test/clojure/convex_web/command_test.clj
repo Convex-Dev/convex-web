@@ -10,6 +10,22 @@
 (def context (Context/createFake Init/STATE))
 
 (deftest wrap-result-test
+  (testing "Error"
+    (is (= {::c/id 1
+            ::c/mode :convex-web.command.mode/query
+            ::c/query {:convex-web.query/source "*address*"
+                       :convex-web.query/language :convex-lisp}
+            ::c/status :convex-web.command.status/error
+            ::c/object "X"
+            ::c/error {}}
+           (c/wrap-result {::c/id 1
+                           ::c/mode :convex-web.command.mode/query
+                           ::c/query {:convex-web.query/source "*address*"
+                                      :convex-web.query/language :convex-lisp}
+                           ::c/status :convex-web.command.status/error
+                           ::c/object (StringShort/create "X")
+                           ::c/error {}}))))
+
   (testing "Address"
     (is (= (let [a (convex/execute context *address*)]
              {::c/id 1

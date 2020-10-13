@@ -33,25 +33,18 @@
 
 ;; --
 
-(defn wrap-result [{:convex-web.command/keys [status object] :as command}]
-  (case status
-    :convex-web.command.status/success
-    (if (some? object)
-      (assoc command ::object (cond
-                                (instance? Address object)
-                                {:hex-string (.toHexString object)
-                                 :checksum-hex (.toChecksumHex object)}
+(defn wrap-result [{:convex-web.command/keys [object] :as command}]
+  (assoc command ::object (cond
+                            (instance? Address object)
+                            {:hex-string (.toHexString object)
+                             :checksum-hex (.toChecksumHex object)}
 
-                                (instance? ABlob object)
-                                {:length (.length ^ABlob object)
-                                 :hex-string (.toHexString ^ABlob object)}
+                            (instance? ABlob object)
+                            {:length (.length ^ABlob object)
+                             :hex-string (.toHexString ^ABlob object)}
 
-                                :else
-                                (convex/datafy object)))
-      command)
-
-    ;; Don't need to handle error status because error is already datafy'ed.
-    command))
+                            :else
+                            (convex/datafy object))))
 
 (s/fdef wrap-result
   :args (s/cat :command :convex-web/command)
@@ -213,9 +206,9 @@
       (when-not (s/valid? :convex-web/command command')
         (throw (ex-info "Invalid Command." {:message (expound/expound-str :convex-web/command command')})))
 
-      (d/transact! (system/db-conn system) [command'])
+      (log/debug "Transact Command" command')
 
-      (log/debug "Transacted Command" command')
+      (d/transact! (system/db-conn system) [command'])
 
       command')))
 
