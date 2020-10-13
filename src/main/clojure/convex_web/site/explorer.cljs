@@ -149,16 +149,19 @@
      ;; ======================
      (case type
        :convex-web.transaction.type/invoke
-       (let [{:convex-web.result/keys [value meta]} result]
+       (let [{:convex-web.result/keys [value meta error-code]} result]
          [:div.flex.flex-col.space-y-2
           [:div.flex.space-x-1
-           [gui/CaptionMono "Result"]
+           [gui/CaptionMono (if error-code "Error" "Result")]
 
            ;; -- Meta/Kind
-           (when-let [kind (get meta :kind)]
-             [gui/InfoTooltip (str/capitalize (name kind))])]
+           (when-not error-code
+             (when-let [kind (get meta :kind)]
+               [gui/InfoTooltip (str/capitalize (name kind))]))]
 
-          [gui/Highlight value {:pretty? true}]])
+          (if error-code
+            [:span.font-mono.text-sm.text-red-500 error-code ": " value]
+            [gui/Highlight value {:pretty? true}])])
 
        :convex-web.transaction.type/transfer
        [:div])
