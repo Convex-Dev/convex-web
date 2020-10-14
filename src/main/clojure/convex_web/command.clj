@@ -96,7 +96,7 @@
                      (let [doc (some-> source-form
                                        (convex/metadata)
                                        (convex/datafy)
-                                       (assoc-in [:doc :symbol] (.getName ^Symbol source-form)))]
+                                       (assoc-in [:doc :symbol] (.toString (.getName ^Symbol source-form))))]
                        (merge doc {:type (get-in doc [:doc :type])}))
 
                      ;; This must be after the special handling above because special forms (`def`, ...) returns a Symbol.
@@ -184,6 +184,8 @@
 
                            (= :convex-web.command.mode/transaction mode)
                            (execute-transaction system command))
+
+          _ (log/debug "Result value:" (type (.getValue result)) (.getValue result))
 
           command' (merge (select-keys command [:convex-web.command/mode
                                                 :convex-web.command/language
