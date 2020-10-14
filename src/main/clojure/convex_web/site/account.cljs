@@ -161,7 +161,8 @@
            "Confirm"]]]])
 
      :ajax.status/error
-     [:span "Sorry. Our server failed to create your account. Please try again?"])])
+     [:span.text-base.px-6.py-10
+      "Sorry. Our server failed to create your account. Please try again?"])])
 
 (defn generate-account [_ _ set-state]
   (backend/POST-generate-account
