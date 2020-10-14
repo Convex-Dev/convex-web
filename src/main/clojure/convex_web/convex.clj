@@ -362,3 +362,20 @@
 (s/fdef create-key-pair
   :args (s/cat :key-pair :convex-web/key-pair)
   :ret #(instance? AKeyPair %))
+
+
+(def ^:dynamic sequence-number-ref (atom {}))
+
+(defn next-sequence-number!
+  "Swap state and return the next sequence number.
+
+   If `next` is provided, it will be swapped and returned.
+
+   `not-found` is used, and incremented, if there's no entry in state for `address`."
+  [{:keys [address next not-found]}]
+  (let [address (convex-web.convex/address address)
+
+        m (swap! sequence-number-ref (fn [m]
+                                       (let [next-sequence-number (or next (inc (get m address not-found)))]
+                                         (assoc m address next-sequence-number))))]
+    (get m address)))

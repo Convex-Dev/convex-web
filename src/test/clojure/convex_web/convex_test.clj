@@ -112,3 +112,15 @@
 
   (testing "Blob"
     (is (= :blob (convex/kind (convex/execute context (blob *address*)))))))
+
+(deftest next-sequence-number-test
+  (binding [convex/sequence-number-ref (atom {})]
+    (is (= 1 (convex/next-sequence-number! {:address "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"
+                                            :not-found 0}))))
+
+  (binding [convex/sequence-number-ref (atom {(convex/address "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f") 1})]
+    (is (= 2 (convex/next-sequence-number! {:address "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"}))))
+
+  (binding [convex/sequence-number-ref (atom {})]
+    (is (= 1 (convex/next-sequence-number! {:address "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"
+                                            :next 1})))))

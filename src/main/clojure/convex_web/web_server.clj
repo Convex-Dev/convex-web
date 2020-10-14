@@ -239,16 +239,21 @@
                    (throw (ex-info "Invalid source." {::anomalies/category ::anomalies/incorrect}))))
 
 
-
         peer (system/convex-peer-server system)
-        sequence-number (or sequence_number (peer/sequence-number peer (convex/address address)) 1)
+
+        address (convex/address address)
+
+        next-sequence-number (convex/next-sequence-number! {:address address
+                                                            :next sequence_number
+                                                            :not-found (peer/sequence-number peer address)})
+
         command (peer/read source lang)
-        tx (Invoke/create (inc sequence-number) command)]
+        tx (Invoke/create next-sequence-number command)]
 
     ;; Persist the transaction in the Etch datastore.
     (Ref/createPersisted tx)
 
-    (successful-response {:sequence_number sequence-number
+    (successful-response {:sequence_number next-sequence-number
                           :address address
                           :source source
                           :lang lang

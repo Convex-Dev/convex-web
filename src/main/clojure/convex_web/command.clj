@@ -150,18 +150,22 @@
 (defn execute-transaction [system {::keys [address transaction]}]
   (let [{:convex-web.transaction/keys [source language amount type]} transaction
 
-        peer (peer/peer (system/convex-server system))
-        sequence-number (peer/sequence-number peer (convex/address address))
+        peer (system/convex-peer-server system)
+
+        address (convex/address address)
+
+        next-sequence-number (convex/next-sequence-number! {:address address
+                                                            :not-found (peer/sequence-number peer address)})
 
         {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) address)
 
         transaction (case type
                       :convex-web.transaction.type/invoke
-                      (peer/invoke-transaction (inc sequence-number) source language)
+                      (peer/invoke-transaction next-sequence-number source language)
 
                       :convex-web.transaction.type/transfer
                       (let [to (convex/address (:convex-web.transaction/target transaction))]
-                        (peer/transfer-transaction (inc sequence-number) to amount)))]
+                        (peer/transfer-transaction next-sequence-number to amount)))]
     (->> (convex/sign (convex/create-key-pair key-pair) transaction)
          (convex/transact (system/convex-client system)))))
 
