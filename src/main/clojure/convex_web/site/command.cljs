@@ -46,22 +46,8 @@
 (re-frame/reg-fx :command.fx/execute
   (fn [{:keys [command watch]}]
     (backend/POST-command command {:handler
-                                   (fn [{:convex-web.command/keys [id status] :as command'}]
-                                     (watch command command')
-
-                                     (when-not (= :convex-web.command.status/error status)
-                                       ;; Makes another trip to the server to get the command.
-                                       ;; It's very likely that by the time we reach the server
-                                       ;; the command is ready - either succeeded or failed.
-                                       ;;
-                                       ;; We can also adjust the timeout knob of the request;
-                                       ;; increase the timeout and increase the chance of
-                                       ;; doing a single round-trip to the server.
-                                       (disp :command/!poll {:id id
-                                                             :timeout default-command-timeout
-                                                             :retries default-command-retries
-                                                             :command (merge command command')
-                                                             :watch watch})))
+                                   (fn [command']
+                                     (watch command command'))
 
                                    :error-handler
                                    (fn [error]

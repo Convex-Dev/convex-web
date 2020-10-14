@@ -1,5 +1,6 @@
 (ns convex-web.account
-  (:require [datalevin.core :as d]))
+  (:require [datalevin.core :as d]
+            [convex-web.convex :as convex]))
 
 (defn find-all [db]
   (d/q '[:find [(pull ?e [* {:convex-web.account/faucets [*]}]) ...]
@@ -11,4 +12,4 @@
   (d/q '[:find (pull ?e [* {:convex-web.account/faucets [*]}]) .
          :in $ ?address
          :where [?e :convex-web.account/address ?address]]
-       db address))
+       db (.toChecksumHex (convex/address address))))

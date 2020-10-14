@@ -214,7 +214,9 @@
       server-error-response)))
 
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
-  (let [{:keys [address source lang sequence_number]} (json-decode body)
+  (let [{:keys [address source lang sequence_number] :as prepare} (json-decode body)
+
+        _ (log/debug "Prepare" prepare)
 
         lang (or (some-> lang keyword) :convex-lisp)
 
@@ -231,12 +233,12 @@
         address (try
                   (s/assert :convex-web/address address)
                   (catch Exception _
-                    (throw (ex-info "Invalid address." {::anomalies/category ::anomalies/incorrect}))))
+                    (throw (ex-info (str "Invalid address: " address) {::anomalies/category ::anomalies/incorrect}))))
 
         source (try
                  (s/assert :convex-web/non-empty-string source)
                  (catch Exception _
-                   (throw (ex-info "Invalid source." {::anomalies/category ::anomalies/incorrect}))))
+                   (throw (ex-info "Source is required." {::anomalies/category ::anomalies/incorrect}))))
 
 
         peer (system/convex-peer-server system)
@@ -245,7 +247,7 @@
 
         next-sequence-number (convex/next-sequence-number! {:address address
                                                             :next sequence_number
-                                                            :not-found (peer/sequence-number peer address)})
+                                                            :not-found (or (peer/sequence-number peer address) 1)})
 
         command (peer/read source lang)
         tx (Invoke/create next-sequence-number command)]
@@ -254,7 +256,7 @@
     (Ref/createPersisted tx)
 
     (successful-response {:sequence_number next-sequence-number
-                          :address address
+                          :address (.toChecksumHex address)
                           :source source
                           :lang lang
                           :hash (.toHexString (.getHash tx))})))
@@ -857,7 +859,7 @@
     (try
       (handler request)
       (catch Throwable ex
-        (log/error ex "Handler error")
+        (log/error "An unhandled exception was thrown during the handler execution:" (with-out-str (stacktrace/print-stack-trace ex)))
 
         (case (get (ex-data ex) ::anomalies/category)
           ::anomalies/incorrect

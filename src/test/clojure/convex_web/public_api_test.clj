@@ -116,11 +116,9 @@ In function: map"} response-body)))))
 
 (deftest prepare-test
   (testing "Convex Scrypt"
-    (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
-          prepare-body (json/write-str {:address "8d4da977c8828050c7e9f00e4800f4ab6137e3da4088d78220ffac81e85cc6e0"
-                                        :source "inc(1)"
-                                        :lang :convex-scrypt})
-          response @(http/post prepare-url {:body prepare-body})]
+    (let [response @(client/POST-public-v1-transaction-prepare (server-url) {:address "8d4da977c8828050c7e9f00e4800f4ab6137e3da4088d78220ffac81e85cc6e0"
+                                                                             :source "inc(1)"
+                                                                             :lang :convex-scrypt})]
       (is (= 200 (get response :status))))
 
     (testing "Syntax error"
@@ -144,7 +142,7 @@ In function: map"} response-body)))))
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= "Invalid address." (get-in prepare-response-body [:error :message])))))
+        (is (= "Invalid address: " (get-in prepare-response-body [:error :message])))))
 
     (testing "Invalid Address"
       (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
@@ -153,16 +151,16 @@ In function: map"} response-body)))))
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= "Invalid address." (get-in prepare-response-body [:error :message])))))
+        (is (= "Invalid address: " (get-in prepare-response-body [:error :message])))))
 
-    (testing "Invalid Source"
+    (testing "Missing Source"
       (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
             prepare-body (json/write-str {:address "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f" :source ""})
             prepare-response @(http/post prepare-url {:body prepare-body})
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= "Invalid source." (get-in prepare-response-body [:error :message])))))))
+        (is (= "Source is required." (get-in prepare-response-body [:error :message])))))))
 
 (deftest submit-test
   (testing "Incorrect"

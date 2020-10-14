@@ -155,7 +155,7 @@
         address (convex/address address)
 
         next-sequence-number (convex/next-sequence-number! {:address address
-                                                            :not-found (peer/sequence-number peer address)})
+                                                            :not-found (or (peer/sequence-number peer address) 1)})
 
         {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) address)
 
