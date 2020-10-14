@@ -40,7 +40,8 @@
            (convex.core.exceptions ParseException MissingDataException)
            (convex.core.lang.impl AExceptional)
            (convex.api Convex)
-           (convex.core.transactions Invoke)))
+           (convex.core.transactions Invoke)
+           (java.util.concurrent TimeoutException)))
 
 (defn ring-session [request]
   (get-in request [:cookies "ring-session" :value]))
@@ -179,6 +180,11 @@
    :headers {"Content-Type" "application/transit+json"}
    :body (encoding/transit-encode body)})
 
+(defn service-unavailable-response [body]
+  {:status 503
+   :headers {"Content-Type" "application/json"}
+   :body (json-encode body)})
+
 ;; Public APIs
 ;; ==========================
 
@@ -231,6 +237,8 @@
                  (s/assert :convex-web/non-empty-string source)
                  (catch Exception _
                    (throw (ex-info "Invalid source." {::anomalies/category ::anomalies/incorrect}))))
+
+
 
         peer (system/convex-peer-server system)
         sequence-number (or sequence_number (peer/sequence-number peer (convex/address address)) 1)
@@ -291,12 +299,21 @@
         _ (log/debug "Transact signed data" signed-data)
 
         result (try
-                 @(.transact client signed-data)
+                 (.transactSync client signed-data 500)
+                 (catch TimeoutException ex
+                   (log/error ex "Transaction timed out.")
+
+                   (throw (ex-info "Transaction timed out." {::anomalies/category ::anomalies/busy} ex)))
+
                  (catch MissingDataException ex
                    (log/error ex "Failed to transact signed data" signed-data)
 
-                   (throw (ex-info "You need to prepare the transaction before submitting."
-                                   {::anomalies/category ::anomalies/incorrect}))))
+                   (throw (ex-info "You need to prepare the transaction before submitting." {::anomalies/category ::anomalies/incorrect} ex)))
+
+                 (catch Exception ex
+                   (log/error ex "Transaction fault.")
+
+                   (throw (ex-info "Transaction fault." {::anomalies/category ::anomalies/fault} ex))))
 
         result-response (merge {:id (.getID result)
                                 :value (convex/datafy (.getValue result))}
@@ -837,25 +854,41 @@
       (catch Throwable ex
         (log/error ex "Handler error")
 
-        (let [incorrect? (= ::anomalies/incorrect (get (ex-data ex) ::anomalies/category))]
-          (cond
-            incorrect?
-            (do
-              (u/log :logging.event/user-error
-                     :severity :error
-                     :message (ex-message ex)
-                     :exception ex)
+        (case (get (ex-data ex) ::anomalies/category)
+          ::anomalies/incorrect
+          (do
+            (u/log :logging.event/user-error
+                   :severity :error
+                   :message (ex-message ex)
+                   :exception ex)
 
-              (bad-request-response (error (ex-message ex))))
+            (bad-request-response (error (ex-message ex))))
 
-            :else
-            (do
-              (u/log :logging.event/system-error
-                     :severity :error
-                     :message handler-exception-message
-                     :exception ex)
+          ::anomalies/busy
+          (do
+            (u/log :logging.event/system-error
+                   :severity :error
+                   :message (ex-message ex)
+                   :exception ex)
 
-              server-error-response)))))))
+            (service-unavailable-response (error (ex-message ex))))
+
+          ::anomalies/fault
+          (do
+            (u/log :logging.event/system-error
+                   :severity :error
+                   :message (ex-message ex)
+                   :exception ex)
+
+            server-error-response)
+
+          (do
+            (u/log :logging.event/system-error
+                   :severity :error
+                   :message handler-exception-message
+                   :exception ex)
+
+            server-error-response))))))
 
 (defn public-api-handler [system]
   (-> (public-api system)

@@ -203,13 +203,6 @@
                        (wrap-result-metadata)
                        (wrap-result))]
 
-      (when-not (s/valid? :convex-web/command command')
-        (throw (ex-info "Invalid Command." {:message (expound/expound-str :convex-web/command command')})))
-
-      (log/debug "Transact Command" command')
-
-      (d/transact! (system/db-conn system) [command'])
-
       command')))
 
 (s/fdef execute

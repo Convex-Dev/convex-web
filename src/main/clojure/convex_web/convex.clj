@@ -316,7 +316,7 @@
       @(.query client q address))))
 
 (defn ^Result transact [^Convex client ^SignedData signed-data]
-  @(.transact client signed-data))
+  (.transactSync client signed-data 500))
 
 (defn ^AKeyPair generate-account [^Convex client ^AKeyPair signer ^Long nonce]
   (let [^AKeyPair generated-key-pair (AKeyPair/generate)
