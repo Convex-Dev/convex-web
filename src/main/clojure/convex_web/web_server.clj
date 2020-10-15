@@ -240,26 +240,26 @@
                  (catch Exception _
                    (throw (ex-info "Source is required." {::anomalies/category ::anomalies/incorrect}))))
 
+        address (convex/address address)]
+    (locking (convex/lockee address)
+      (let [peer (system/convex-peer-server system)
 
-        peer (system/convex-peer-server system)
+            next-sequence-number (or sequence_number (inc (or (convex/get-sequence-number address)
+                                                              (peer/sequence-number peer address)
+                                                              0)))
 
-        address (convex/address address)
+            command (peer/read source lang)
 
-        next-sequence-number (convex/next-sequence-number! {:address address
-                                                            :next sequence_number
-                                                            :not-found (or (peer/sequence-number peer address) 1)})
+            tx (Invoke/create next-sequence-number command)]
 
-        command (peer/read source lang)
-        tx (Invoke/create next-sequence-number command)]
+        ;; Persist the transaction in the Etch datastore.
+        (Ref/createPersisted tx)
 
-    ;; Persist the transaction in the Etch datastore.
-    (Ref/createPersisted tx)
-
-    (successful-response {:sequence_number next-sequence-number
-                          :address (.toChecksumHex address)
-                          :source source
-                          :lang lang
-                          :hash (.toHexString (.getHash tx))})))
+        (successful-response {:sequence_number next-sequence-number
+                              :address (.toChecksumHex address)
+                              :source source
+                              :lang lang
+                              :hash (.toHexString (.getHash tx))})))))
 
 (defn POST-v1-transaction-submit [system {:keys [body]}]
   (let [{:keys [address sig hash] :as body} (json-decode body)
@@ -306,7 +306,7 @@
         _ (log/debug "Transact signed data" signed-data)
 
         result (try
-                 (.transactSync client signed-data 500)
+                 (convex/transact client signed-data)
                  (catch TimeoutException ex
                    (log/error ex "Transaction timed out.")
 

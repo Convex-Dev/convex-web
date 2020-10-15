@@ -293,7 +293,7 @@
              {:description "Increments the given number by 1. Converts to Long if necessary."
               :examples [{:code "(inc 10)"}]
               :signature [{:params ['num]}]
-              :symbol (StringShort/create "inc")
+              :symbol "inc"
               :type :function}}}
            (c/wrap-result-metadata {::c/id 1
                                     ::c/mode :convex-web.command.mode/query
@@ -315,7 +315,7 @@
              {:description "Defines a function in the current environment."
               :examples [{:code "(defn my-square [x] (* x x))"}]
               :signature [{:params ['name 'params '& 'body]}]
-              :symbol (StringShort/create "defn")
+              :symbol "defn"
               :type :macro}}}
            (-> (c/wrap-result-metadata {::c/id 1
                                         ::c/mode :convex-web.command.mode/query
@@ -340,7 +340,7 @@
              {:description "Creates a definition in the current environment. This value will persist in the enviroment owned by the current account."
               :examples [{:code "(def a 10)"}]
               :signature [{:params ['sym 'value]}]
-              :symbol (StringShort/create "def")
+              :symbol "def"
               :type :special}}}
            (-> (c/wrap-result-metadata {::c/id 1
                                         ::c/mode :convex-web.command.mode/query

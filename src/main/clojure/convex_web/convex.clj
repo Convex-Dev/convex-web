@@ -316,7 +316,7 @@
       @(.query client q address))))
 
 (defn ^Result transact [^Convex client ^SignedData signed-data]
-  (.transactSync client signed-data 500))
+  (.transactSync client signed-data 1000))
 
 (defn ^AKeyPair generate-account [^Convex client ^AKeyPair signer ^Long nonce]
   (let [^AKeyPair generated-key-pair (AKeyPair/generate)
@@ -363,19 +363,32 @@
   :args (s/cat :key-pair :convex-web/key-pair)
   :ret #(instance? AKeyPair %))
 
+(def addresses-lock-ref (atom {}))
+
+(defn lockee [address]
+  (let [address (convex-web.convex/address address)]
+    (or (get @addresses-lock-ref address)
+        (let [lock (Object.)]
+          (swap! addresses-lock-ref assoc address lock)
+          lock))))
 
 (def ^:dynamic sequence-number-ref (atom {}))
 
-(defn next-sequence-number!
+(defn get-sequence-number [address]
+  (get @sequence-number-ref (convex-web.convex/address address)))
+
+(defn reset-sequence-number! [address]
+  (let [address (convex-web.convex/address address)]
+    (swap! sequence-number-ref (fn [m]
+                                 (dissoc m address)))))
+
+(defn set-sequence-number!
   "Swap state and return the next sequence number.
 
    If `next` is provided, it will be swapped and returned.
 
    `not-found` is used, and incremented, if there's no entry in state for `address`."
   [{:keys [address next not-found]}]
-  (let [address (convex-web.convex/address address)
-
-        m (swap! sequence-number-ref (fn [m]
-                                       (let [next-sequence-number (or next (inc (get m address not-found)))]
-                                         (assoc m address next-sequence-number))))]
-    (get m address)))
+  (let [address (convex-web.convex/address address)]
+    (swap! sequence-number-ref (fn [m]
+                                 (assoc m address (or next (get m address not-found)))))))

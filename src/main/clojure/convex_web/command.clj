@@ -148,30 +148,48 @@
 ;; --
 
 (defn execute-transaction [system {::keys [address transaction]}]
-  (let [{:convex-web.transaction/keys [source language amount type]} transaction
+  (locking (convex/lockee address)
+    (let [{:convex-web.transaction/keys [source language amount type]} transaction
 
-        peer (system/convex-peer-server system)
+          peer (system/convex-peer-server system)
 
-        address (convex/address address)
+          address (convex/address address)
 
-        next-sequence-number (convex/next-sequence-number! {:address address
-                                                            :not-found (or (peer/sequence-number peer address) 1)})
+          next-sequence-number (inc (or (convex/get-sequence-number address)
+                                        (peer/sequence-number peer address)
+                                        0))
 
-        {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) address)
+          {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) address)
 
-        transaction (case type
-                      :convex-web.transaction.type/invoke
-                      (peer/invoke-transaction next-sequence-number source language)
+          atransaction (case type
+                         :convex-web.transaction.type/invoke
+                         (peer/invoke-transaction next-sequence-number source language)
 
-                      :convex-web.transaction.type/transfer
-                      (let [to (convex/address (:convex-web.transaction/target transaction))]
-                        (peer/transfer-transaction next-sequence-number to amount)))]
-    (->> (convex/sign (convex/create-key-pair key-pair) transaction)
-         (convex/transact (system/convex-client system)))))
+                         :convex-web.transaction.type/transfer
+                         (let [to (convex/address (:convex-web.transaction/target transaction))]
+                           (peer/transfer-transaction next-sequence-number to amount)))]
+      (try
+        (let [^Result r (->> (convex/sign (convex/create-key-pair key-pair) atransaction)
+                             (convex/transact (system/convex-client system)))
+
+              bad-sequence-number? (when-let [error-code (.getErrorCode r)]
+                                     (= :SEQUENCE (convex/datafy error-code)))]
+
+          (if bad-sequence-number?
+            (log/error "Result error: Bad sequence number." {:attempted-sequence-number next-sequence-number})
+            (convex/set-sequence-number! {:address address
+                                          :next next-sequence-number}))
+
+          r)
+        (catch Throwable t
+          (convex/reset-sequence-number! address)
+
+          (log/error (str "Transaction failed. (" (.getName (.getClass t)) ")")
+                     {:attempted-sequence-number next-sequence-number}))))))
 
 (s/fdef execute-transaction
   :args (s/cat :system :convex-web/system :command :convex-web/incoming-command)
-  :ret #(instance? Result %))
+  :ret #(s/nilable (instance? Result %)))
 
 ;; --
 
@@ -185,7 +203,9 @@
                            (= :convex-web.command.mode/transaction mode)
                            (execute-transaction system command))
 
-          _ (log/debug "Result value:" (type (.getValue result)) (.getValue result))
+          _ (if result
+              (log/debug "Result value:" (type (.getValue result)) (.getValue result))
+              (log/warn "Result is nil for command:" command))
 
           command' (merge (select-keys command [:convex-web.command/mode
                                                 :convex-web.command/language
@@ -193,14 +213,23 @@
                                                 :convex-web.command/query
                                                 :convex-web.command/transaction])
 
-                          #:convex-web.command {:id (.getID result)
-                                                :object (.getValue result)
-                                                :status
-                                                (if (.getErrorCode result)
-                                                  :convex-web.command.status/error
-                                                  :convex-web.command.status/success)}
+                          (if result
+                            #:convex-web.command {:id (.getID result)
+                                                  :object (.getValue result)
+                                                  :status
+                                                  (if (.getErrorCode result)
+                                                    :convex-web.command.status/error
+                                                    :convex-web.command.status/success)}
 
-                          (when-let [error-code (.getErrorCode result)]
+                            #:convex-web.command {:status :convex-web.command.status/error
+                                                  :error {}})
+
+                          (when-let [error-code (some-> result .getErrorCode)]
+                            (log/error
+                              "Command returned an error:"
+                              (convex/datafy error-code)
+                              (convex/datafy (.getValue result)))
+
                             #:convex-web.command {:error
                                                   {:code (datafy error-code)
                                                    :message (datafy (.getValue result))}}))
