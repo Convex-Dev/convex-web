@@ -309,20 +309,37 @@
 
         result (try
                  (convex/transact client signed-data)
-                 (catch TimeoutException ex
-                   (log/error ex "Transaction timed out.")
+                 (catch Throwable t
+                   ;; Reset sequence number for Address, because we don't know the Peer's state.
+                   (convex/reset-sequence-number! address)
 
-                   (throw (ex-info "Transaction timed out." {::anomalies/category ::anomalies/busy} ex)))
+                   (cond
+                     (instance? TimeoutException t)
+                     (do
+                       (log/error t "Transaction timed out.")
 
-                 (catch MissingDataException ex
-                   (log/error ex "Failed to transact signed data" signed-data)
+                       (throw (ex-info "Transaction timed out." {::anomalies/category ::anomalies/busy} t)))
 
-                   (throw (ex-info "You need to prepare the transaction before submitting." {::anomalies/category ::anomalies/incorrect} ex)))
+                     (instance? MissingDataException t)
+                     (do
+                       (log/error t "Failed to transact signed data" signed-data)
 
-                 (catch Exception ex
-                   (log/error ex "Transaction fault.")
+                       (throw (ex-info "You need to prepare the transaction before submitting." {::anomalies/category ::anomalies/incorrect} t)))
 
-                   (throw (ex-info "Transaction fault." {::anomalies/category ::anomalies/fault} ex))))
+                     :else
+                     (do
+                       (log/error t "Transaction fault.")
+
+                       (throw (ex-info "Transaction fault." {::anomalies/category ::anomalies/fault} t))))))
+
+        bad-sequence-number? (when-let [error-code (.getErrorCode result)]
+                               (= :SEQUENCE (convex/datafy error-code)))
+
+        ;; Reset sequence number for Address, if we got it wrong.
+        _ (when bad-sequence-number?
+            (log/error "Result error: Bad sequence number.")
+
+            (convex/reset-sequence-number! address))
 
         result-response (merge {:id (.getID result)
                                 :value (convex/datafy (.getValue result))}

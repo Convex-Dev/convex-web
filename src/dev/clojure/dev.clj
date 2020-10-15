@@ -185,25 +185,29 @@
   (convex/convex-core-reference)
 
 
-  (dotimes [n 100]
-    (let [prepare-body (client/POST-public-v1-transaction-prepare'
-                         "http://localhost:8080"
-                         {:address (.toChecksumHex Init/HERO)
-                          :source "(map inc [1 2 3])"})
+  ;; ----------------------
 
-          submit-body (client/POST-public-v1-transaction-submit' "http://localhost:8080"
-                                                                 {:address (.toChecksumHex Init/HERO)
-                                                                  :hash (:hash prepare-body)
-                                                                  :sig (.toHexString (.sign Init/HERO_KP (Hash/fromHex (:hash prepare-body))))})]
+  (def prepared
+    (->> (range 10)
+         (map
+           (fn [n]
+             (client/POST-public-v1-transaction-prepare'
+               "http://localhost:8080"
+               {:address (.toChecksumHex Init/HERO)
+                :source (str n)})))
+         (sort-by :sequence_number)))
 
 
-      (when (:error submit-body)
-        (log/debug "\n--------------\n"
-                   "PREPARE\n"
-                   prepare-body
-                   "\nSUBMIT\n"
-                   submit-body
-                   "\n--------------\n"))))
+  (doseq [{:keys [hash]} prepared]
+    (client/POST-public-v1-transaction-submit'
+      "http://localhost:8080"
+      {:address (.toChecksumHex Init/HERO)
+       :hash hash
+       :sig (.toHexString (.sign Init/HERO_KP (Hash/fromHex hash)))}))
+
+
+  ;; ----------------------
+
 
   ;; Hash
   ;; => 4fd279dd67a506bbd987899293d1a4d763f6da04941ccc4748f8dcf548e68bb7
