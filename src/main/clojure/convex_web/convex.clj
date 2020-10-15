@@ -382,13 +382,7 @@
     (swap! sequence-number-ref (fn [m]
                                  (dissoc m address)))))
 
-(defn set-sequence-number!
-  "Swap state and return the next sequence number.
-
-   If `next` is provided, it will be swapped and returned.
-
-   `not-found` is used, and incremented, if there's no entry in state for `address`."
-  [{:keys [address next not-found]}]
+(defn set-sequence-number! [address next]
   (let [address (convex-web.convex/address address)]
     (swap! sequence-number-ref (fn [m]
-                                 (assoc m address (or next (get m address not-found)))))))
+                                 (assoc m address next)))))

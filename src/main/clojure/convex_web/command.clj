@@ -177,8 +177,7 @@
 
           (if bad-sequence-number?
             (log/error "Result error: Bad sequence number." {:attempted-sequence-number next-sequence-number})
-            (convex/set-sequence-number! {:address address
-                                          :next next-sequence-number}))
+            (convex/set-sequence-number! address next-sequence-number))
 
           r)
         (catch Throwable t

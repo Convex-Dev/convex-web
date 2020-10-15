@@ -19,6 +19,7 @@
             [clojure.java.io :as io]
             [clojure.stacktrace :as stacktrace]
             [clojure.datafy :refer [datafy]]
+            [clojure.tools.logging :as log]
 
             [com.stuartsierra.component.repl :refer [set-init reset system]]
             [kaocha.repl :as kaocha]
@@ -29,7 +30,8 @@
             [org.httpkit.client :as http]
             [expound.alpha :as expound])
   (:import (convex.core Init Peer)
-           (convex.core.lang Core Reader Context)))
+           (convex.core.lang Core Reader Context)
+           (convex.core.crypto Hash)))
 
 ;; -- Logging
 (set-init
@@ -183,10 +185,25 @@
   (convex/convex-core-reference)
 
 
-  (client/POST-public-v1-transaction-prepare'
-    "http://localhost:8080"
-    {:address (.toChecksumHex Init/HERO)
-     :source "(map inc [1 2 3])"})
+  (dotimes [n 100]
+    (let [prepare-body (client/POST-public-v1-transaction-prepare'
+                         "http://localhost:8080"
+                         {:address (.toChecksumHex Init/HERO)
+                          :source "(map inc [1 2 3])"})
+
+          submit-body (client/POST-public-v1-transaction-submit' "http://localhost:8080"
+                                                                 {:address (.toChecksumHex Init/HERO)
+                                                                  :hash (:hash prepare-body)
+                                                                  :sig (.toHexString (.sign Init/HERO_KP (Hash/fromHex (:hash prepare-body))))})]
+
+
+      (when (:error submit-body)
+        (log/debug "\n--------------\n"
+                   "PREPARE\n"
+                   prepare-body
+                   "\nSUBMIT\n"
+                   submit-body
+                   "\n--------------\n"))))
 
   ;; Hash
   ;; => 4fd279dd67a506bbd987899293d1a4d763f6da04941ccc4748f8dcf548e68bb7

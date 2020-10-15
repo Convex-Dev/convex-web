@@ -73,7 +73,7 @@
                 convex-web.signed-data/value]} state
 
 
-        {:convex-web.transaction/keys [type source result]} value]
+        {:convex-web.transaction/keys [type source sequence result]} value]
     [:div.flex.flex-col.space-y-8.p-6
 
      ;; Header
@@ -131,7 +131,15 @@
         {:title (gui/transaction-type-description type)}
         [:span.text-sm.uppercase.cursor-default
          {:class (gui/transaction-type-text-color type)}
-         type]]]]
+         type]]]
+
+      ;; -- Sequence Number
+      [:div.flex.flex-col.space-y-2
+       [gui/CaptionMono "Sequence Number"]
+       [gui/Tooltip
+        {:title glossary/sequence-number}
+        [:span.text-sm.uppercase.cursor-default
+         sequence]]]]
 
      ;; Value
      ;; ======================
@@ -181,6 +189,7 @@
      (let [th-style "text-xs uppercase text-gray-600 sticky top-0 cursor-default"
            th-div-style "py-2 mr-8"]
        [:tr
+        ;; -- 0. Block
         [:th
          {:class th-style}
          [:div.flex.space-x-1
@@ -188,6 +197,7 @@
           [:span "Block"]
           [gui/InfoTooltip glossary/block-number]]]
 
+        ;; -- 1. TR#
         [:th
          {:class th-style}
          [:div.flex.space-x-1
@@ -195,6 +205,7 @@
           [:span "TR#"]
           [gui/InfoTooltip glossary/transaction-index]]]
 
+        ;; -- 2. Signer
         [:th
          {:class th-style}
          [:div.flex.space-x-1
@@ -202,6 +213,7 @@
           [:span "Signer"]
           [gui/InfoTooltip "Address of the Account that digitally signed the transaction. This Signature has been verified by all Peers in Consensus."]]]
 
+        ;; -- 3. Timestamp
         [:th
          {:class th-style}
          [:div.flex.space-x-1
@@ -209,6 +221,7 @@
           [:span "Timestamp"]
           [gui/InfoTooltip "UTC Timestamp of the block containing the transaction"]]]
 
+        ;; -- 4. Type
         [:th
          {:class th-style}
          [:div.flex.space-x-1
@@ -219,11 +232,29 @@
             Account to a destination Account; Invoke: Execution of code by
             Signer Account"]]]
 
+        ;; -- 5. Sequence Number
         [:th
          {:class th-style}
          [:div.flex.space-x-1
           {:class th-div-style}
-          [:span "Value"]
+          [:span "Sequence Number"]
+          [gui/InfoTooltip glossary/sequence-number]]]
+
+        ;; -- Status
+        [:th
+         {:class th-style}
+         [:div.flex.space-x-1
+          {:class th-div-style}
+          [:span "Status"]
+          [gui/InfoTooltip
+           "If the Transaction executed successfully, or if there's an error."]]]
+
+        ;; -- 7. Result
+        [:th
+         {:class th-style}
+         [:div.flex.space-x-1
+          {:class th-div-style}
+          [:span "Result"]
           [gui/InfoTooltip
            "Transfer: Amount and destination Address; Invoke: Convex Lisp or
             Scrypt code executed on the CVM for the transaction."]]]])]
@@ -231,13 +262,16 @@
     [:tbody
      (for [m (flatten-transactions blocks)]
        (let [block-index (get m :convex-web.block/index)
-             transaction-index (get-in m [:convex-web.signed-data/value :convex-web.transaction/index])
-             transaction-type (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])
+
+             {transaction-index :convex-web.transaction/index
+              transaction-type :convex-web.transaction/type
+              transaction-sequence :convex-web.transaction/sequence
+              transaction-result :convex-web.transaction/result} (get m :convex-web.signed-data/value)
 
              td-class ["p-1 whitespace-no-wrap text-xs"]]
          ^{:key [block-index transaction-index]}
          [:tr.cursor-default
-          ;; -- Block Index
+          ;; -- 0. Block Index
           [:td {:class td-class}
            [:div.flex.flex-1.justify-end
             [:a
@@ -245,12 +279,12 @@
               :href (rfe/href :route-name/block-explorer {:index block-index})}
              [:span.font-mono block-index]]]]
 
-          ;; -- Transaction Index
+          ;; -- 1. TR#
           [:td {:class (cons "text-right" td-class)}
-           [:span.text-xs
+           [:span.text-xs.mr-8
             transaction-index]]
 
-          ;; -- Signer
+          ;; -- 2. Signer
           [:td {:class td-class}
            (let [address (get m :convex-web.signed-data/address)]
              [:div.flex.items-center.w-40
@@ -263,7 +297,7 @@
                 {:title address}
                 [:span.font-mono.text-xs (format/prefix-0x address)]]]])]
 
-          ;; -- Timestamp
+          ;; -- 3. Timestamp
           [:td {:class td-class}
            (let [timestamp (-> (get m :convex-web.block/timestamp)
                                (format/date-time-from-millis)
@@ -272,7 +306,7 @@
               {:title timestamp}
               [:span (format/time-ago timestamp)]])]
 
-          ;; -- Type
+          ;; -- 4. Type
           [:td
            {:class
             (conj td-class (case transaction-type
@@ -295,7 +329,20 @@
             [:span.text-xs.uppercase
              transaction-type]]]
 
-          ;; -- Value
+          ;; -- 5. Sequence Number
+          [:td
+           {:class (conj td-class "text-right")}
+           [:span.text-xs.uppercase.mr-8
+            transaction-sequence]]
+
+          ;; -- 6. Status
+          [:td
+           {:class td-class}
+           (if (get transaction-result :convex-web.result/error-code)
+             [:span.text-xs.text-red-500 "Error"]
+             [:span.text-xs "Okay"])]
+
+          ;; -- 7. Value
           [:td
            {:class td-class}
            (case (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])

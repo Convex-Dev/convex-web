@@ -252,6 +252,8 @@
 
             tx (Invoke/create next-sequence-number command)]
 
+        (convex/set-sequence-number! address next-sequence-number)
+
         ;; Persist the transaction in the Etch datastore.
         (Ref/createPersisted tx)
 

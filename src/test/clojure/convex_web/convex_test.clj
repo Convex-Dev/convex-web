@@ -113,17 +113,3 @@
   (testing "Blob"
     (is (= :blob (convex/kind (convex/execute context (blob *address*)))))))
 
-(deftest sequence-number-test
-  (binding [convex/sequence-number-ref (atom {})]
-    (let [addr (convex/address "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f")]
-      (is (= {addr 0} (convex/set-sequence-number! {:address addr
-                                                    :not-found 0})))))
-
-  (binding [convex/sequence-number-ref (atom {(convex/address "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f") 1})]
-    (let [addr (convex/address "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f")]
-      (is (= {addr 1} (convex/set-sequence-number! {:address addr})))))
-
-  (binding [convex/sequence-number-ref (atom {})]
-    (let [addr (convex/address "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f")]
-      (is (= {addr 1} (convex/set-sequence-number! {:address addr
-                                                    :next 1}))))))
