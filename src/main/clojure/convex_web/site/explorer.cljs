@@ -340,7 +340,7 @@
            {:class td-class}
            (if (get transaction-result :convex-web.result/error-code)
              [:span.text-xs.text-red-500 "Error"]
-             [:span.text-xs "Okay"])]
+             [:span.text-xs "OK"])]
 
           ;; -- 7. Value
           [:td
