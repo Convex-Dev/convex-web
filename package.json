@@ -21,6 +21,6 @@
   },
   "devDependencies": {
     "shadow-cljs": "^2.11.5",
-    "tailwindcss": "^1.9.1"
+    "tailwindcss": "^1.9.2"
   }
 }
