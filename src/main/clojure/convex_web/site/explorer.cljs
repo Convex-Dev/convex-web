@@ -81,7 +81,7 @@
      [:div.flex.space-x-10.bg-gray-100.p-6.rounded.shadow
 
       ;; -- Block
-      [:div.flex.flex-col.space-y-2
+      [:div.flex.flex-col.space-y-2.text-right
        [gui/CaptionMono "Block"]
        [gui/Tooltip
         {:title glossary/block-number}
@@ -92,7 +92,7 @@
           index]]]]
 
       ;; -- TR#
-      [:div.flex.flex-col.space-y-2
+      [:div.flex.flex-col.space-y-2.text-right
        [gui/CaptionMono "TR#"]
        [gui/Tooltip
         {:title glossary/transaction-index}
@@ -134,12 +134,22 @@
          type]]]
 
       ;; -- Sequence Number
-      [:div.flex.flex-col.space-y-2
+      [:div.flex.flex-col.space-y-2.text-right
        [gui/CaptionMono "Sequence Number"]
        [gui/Tooltip
         {:title glossary/sequence-number}
         [:span.text-sm.uppercase.cursor-default
-         sequence]]]]
+         sequence]]]
+
+      ;; -- Status
+      [:div.flex.flex-col.space-y-2
+       [gui/CaptionMono "Status"]
+       [gui/Tooltip
+        {:title glossary/transaction-status}
+
+        (if (get result :convex-web.result/error-code)
+          [:span.text-sm.uppercase.cursor-default.text-red-500 "Error"]
+          [:span.text-sm.uppercase.cursor-default "OK"])]]]
 
      ;; Value
      ;; ======================
@@ -247,7 +257,7 @@
           {:class th-div-style}
           [:span "Status"]
           [gui/InfoTooltip
-           "If the Transaction executed successfully, or if there's an error."]]]
+           glossary/transaction-status]]]
 
         ;; -- 7. Result
         [:th
