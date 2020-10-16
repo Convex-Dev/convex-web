@@ -252,11 +252,11 @@
        {})
      ;; -- Item
      [:div.flex.justify-between
-      [:a.self-start.font-medium.px-2.border-l-2.transition.duration-200.ease-in-out
+      [:a.self-start.px-2.border-l-2.transition.duration-200.ease-in-out
        (merge {:href href
                :class [(if top-level?
                          "text-blue-500"
-                         "text-gray-black")
+                         "text-gray-500")
                        (if active?
                          "border-blue-400 hover:border-blue-400"
                          "border-transparent hover:border-blue-200")]}
@@ -278,13 +278,13 @@
 
      ;; -- Children
      (when (seq children)
-       [:div.flex.flex-col.ml-4.xl:ml-8
+       [:div.flex.flex-col.ml-4
         (for [{:keys [text] :as child} children]
           ^{:key text} [NavItem route child])])]))
 
 (defn SideNav [active-route]
   (let [{:keys [others]} (nav)]
-    [:nav.flex.flex-col.flex-shrink-0.font-mono.mr-4.overflow-auto
+    [:nav.flex.flex-col.flex-shrink-0.font-mono.text-sm.mr-4.overflow-auto
 
      (for [{:keys [text] :as item} others]
        ^{:key text}

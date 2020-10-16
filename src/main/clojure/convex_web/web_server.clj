@@ -101,8 +101,8 @@
        ;; -- End Google Analytics
 
 
-       (stylesheet "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap")
-       (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono&display=swap")
+       (stylesheet "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap")
+       (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap")
 
        (stylesheet (str asset-prefix-url "/css/highlight/idea.css"))
        (stylesheet (str asset-prefix-url "/css/codemirror.css"))
