@@ -253,15 +253,23 @@
      ;; -- Item
      [:div.flex.justify-between
       [:a.self-start.px-2.border-l-2.transition.duration-200.ease-in-out
-       (merge {:href href
-               :class [(if top-level?
-                         "text-blue-500"
-                         "text-gray-500")
-                       (if active?
-                         "border-blue-400 hover:border-blue-400"
-                         "border-transparent hover:border-blue-200")]}
-              (when target
-                {:target target}))
+       (let [border (if active?
+                      "border-blue-400 hover:border-blue-400"
+                      "border-transparent hover:border-blue-200")
+
+             text-color (cond
+                          top-level?
+                          "text-blue-500"
+
+                          active?
+                          "text-gray-800"
+
+                          :else
+                          "text-gray-500")]
+         (merge {:href href
+                 :class [border text-color]}
+                (when target
+                  {:target target})))
 
        (if target
          [:div.flex.justify-between.items-center
