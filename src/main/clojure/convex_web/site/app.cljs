@@ -490,10 +490,10 @@
            [:div.flex.flex-col.space-y-4
             (when title
               (let [title-size (case (get style :page-style/title-size)
-                                 :large "text-3xl"
+                                 :large "text-2xl"
                                  :small "text-base"
                                  ;; Default
-                                 "text-3xl")]
+                                 "text-2xl")]
                 [:span.font-mono.text-gray-900
                  {:class [title-size "leading-none"]}
                  title]))
