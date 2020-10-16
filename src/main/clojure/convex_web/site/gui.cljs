@@ -832,7 +832,9 @@
 
 (defn RangeNavigation [{:keys [page-count
                                page-num
+                               first-label
                                first-href
+                               last-label
                                last-href
                                previous-href
                                previous-disabled?
@@ -849,7 +851,7 @@
       ;; -- First
       [:a
        {:href first-href}
-       [:span {:class action-style} "Latest"]]
+       [:span {:class action-style} (or first-label "Latest")]]
 
       ;; -- Previous
       [:a
@@ -866,7 +868,7 @@
       ;; -- Last
       [:a
        {:href last-href}
-       [:span {:class action-style} "Earliest"]]]
+       [:span {:class action-style} (or last-label "Earliest")]]]
 
      ;; Index
      ;; =============
