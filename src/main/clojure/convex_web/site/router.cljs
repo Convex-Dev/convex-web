@@ -370,7 +370,7 @@
 (defn start []
   (rfe/start! router (fn [match history]
                        (disp :router/!navigate match history))
-              {:use-fragment true}))
+              {:use-fragment false}))
 
 (defn route-name [route]
   (get-in route [:data :name]))

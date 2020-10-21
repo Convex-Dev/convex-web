@@ -837,7 +837,6 @@
 
 (defn site [system]
   (routes
-    (GET "/" req (index system req))
     (GET "/api/internal/session" req (-GET-session system req))
     (POST "/api/internal/generate-account" req (-POST-generate-account system req))
     (POST "/api/internal/confirm-account" req (-POST-confirm-account system req))
@@ -854,7 +853,10 @@
     (GET "/api/internal/markdown-page" req (-GET-markdown-page system req))
 
     (route/resources "/")
-    (route/not-found "<h1>Page not found</h1>")))
+
+    ;; Fallback to index and let the app router handle "not found".
+    (fn index-handler [req]
+      (index system req))))
 
 (defn public-api [system]
   (routes
@@ -941,7 +943,7 @@
    `options` are the same as org.httpkit.server/run-server."
   [system & [options]]
   (let [;; The public API handler must come first
-        ;; since the site handler matches a not found.
+        ;; because the Site handler returns the index if a route is not found.
         handler (routes (public-api-handler system) (site-handler system))]
 
     (http-kit/run-server handler options)))
