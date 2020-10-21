@@ -67,7 +67,7 @@
                      :exclusions [cljsjs/react
                                   cljsjs/react-dom
                                   cljsjs/react-dom-server]}
-  metosin/reitit-frontend {:mvn/version "0.5.6"}
+  metosin/reitit-frontend {:mvn/version "0.5.9"}
   datalevin/datalevin {:mvn/version "0.3.12"}
   nano-id/nano-id {:mvn/version "1.0.0"}
   expound/expound {:mvn/version "0.8.6"}
