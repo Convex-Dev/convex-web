@@ -44,8 +44,22 @@
   #:page {:id :page.id/blank
           :component #'BlankPage})
 
+(defn NotFoundPage [_ _ _]
+  [:div.h-screen.flex.justify-center
+   [:div.flex.flex-col.items-center.mt-6.space-y-10
+    [gui/ConvexLogo {:width "120px" :height "120px"}]
+
+    [:span.font-mono.text-lg.text-gray-500
+     "Page not found."]]])
+
+(def not-found-page
+  #:page {:id :page.id/not-found
+          :component #'NotFoundPage
+          :scaffolding? false})
+
 (def pages
   [blank-page
+   not-found-page
 
    ;; ---
 
