@@ -13,7 +13,8 @@
             [expound.alpha :as expound])
   (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
            (convex.core.lang Reader Symbols)
-           (convex.core Result)))
+           (convex.core Result)
+           (clojure.lang ExceptionInfo)))
 
 (defn source [{:convex-web.command/keys [transaction query]}]
   (or (get query :convex-web.query/source)
@@ -137,14 +138,9 @@
 
 (defn execute-query [system {::keys [address query]}]
   (let [{:convex-web.query/keys [source language]} query]
-    (try
-      (convex/query (system/convex-client system) {:address address
-                                                   :source source
-                                                   :lang language})
-      (catch Throwable t
-        (log/error t "Query failed." query)
-
-        nil))))
+    (convex/query (system/convex-client system) {:address address
+                                                 :source source
+                                                 :lang language})))
 
 (s/fdef execute-query
   :args (s/cat :system :convex-web/system :command :convex-web/incoming-command)
@@ -199,17 +195,21 @@
 ;; --
 
 (defn execute [system {::keys [mode] :as command}]
-  (if-not (s/valid? :convex-web/command command)
-    (throw (ex-info "Invalid Command." {:message (expound/expound-str :convex-web/command command)}))
-    (let [^Result result (cond
-                           (= :convex-web.command.mode/query mode)
-                           (execute-query system command)
+  (try
+    (let [{:keys [result error]} (try
+                                   {:result (cond
+                                              (= :convex-web.command.mode/query mode)
+                                              (execute-query system command)
 
-                           (= :convex-web.command.mode/transaction mode)
-                           (execute-transaction system command))
+                                              (= :convex-web.command.mode/transaction mode)
+                                              (execute-transaction system command))}
+                                   (catch ExceptionInfo ex
+                                     (log/error ex "Command execution failed.")
 
-          _ (if result
-              (log/debug "Result value:" (type (.getValue result)) (.getValue result))
+                                     {:error ex}))
+
+          _ (if-let [result-value (some-> ^Result result (.getValue))]
+              (log/debug "Result value:" (type result-value) result-value)
               (log/warn "Result is nil for command:" command))
 
           command' (merge (select-keys command [:convex-web.command/mode
@@ -227,7 +227,7 @@
                                                     :convex-web.command.status/success)}
 
                             #:convex-web.command {:status :convex-web.command.status/error
-                                                  :error {}})
+                                                  :error {:code :unknown :message (ex-message error)}})
 
                           (when-let [error-code (some-> result .getErrorCode)]
                             (log/error
