@@ -448,7 +448,8 @@
                       [:span.text-xs.uppercase.text-gray-600
                        (cond
                          (= type :error)
-                         (str "Error (" (name (get-in command [:convex-web.command/error :code])) ")")
+                         (str "Error " (when-let [code (get-in command [:convex-web.command/error :code])]
+                                         (str "(" (name code) ")")))
 
                          :else
                          "Result")]
