@@ -1,6 +1,7 @@
 (ns convex-web.convex
   (:require [clojure.string :as str]
             [clojure.spec.alpha :as s]
+            [clojure.tools.logging :as log]
 
             [cognitect.anomalies :as anomalies])
   (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString)
@@ -8,7 +9,8 @@
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke Call)
-           (convex.api Convex)))
+           (convex.api Convex)
+           (java.util.concurrent Future TimeUnit)))
 
 (defmacro execute [context form]
   `(let [^String source# ~(pr-str form)
@@ -297,26 +299,42 @@
       (wrap-do x)
       form1)))
 
-(defn ^Result query [^Convex client {:keys [source address lang]}]
-  (let [q (try
-            (case lang
-              :convex-lisp
-              (wrap-do (Reader/readAll source))
+(defn ^Result query [^Convex client {:keys [source address lang] :as q}]
+  (let [obj (try
+              (case lang
+                :convex-lisp
+                (wrap-do (Reader/readAll source))
 
-              :convex-scrypt
-              (ScryptNext/readSyntax source))
-            (catch Throwable ex
-              (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
-                                               ::anomalies/category ::anomalies/incorrect}))))
+                :convex-scrypt
+                (ScryptNext/readSyntax source))
+              (catch Throwable ex
+                (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
+                                                 ::anomalies/category ::anomalies/incorrect}))))
 
         ^Address address (when address
                            (convex-web.convex/address address))]
-    (if address
-      @(.query client q)
-      @(.query client q address))))
+    (try
+      (if address
+        (.querySync client obj)
+        (.querySync client obj address))
+      (catch Exception ex
+        (let [message "Failed to get Query result."]
+          (log/error ex message)
+          (throw (ex-info message
+                          (merge q {::anomalies/message (ex-message ex)
+                                    ::anomalies/category ::anomalies/fault})
+                          ex)))))))
 
 (defn ^Result transact [^Convex client ^SignedData signed-data]
-  (.transactSync client signed-data 1000))
+  (try
+    (.transactSync client signed-data 1000)
+    (catch Exception ex
+      (let [message "Failed to get Transaction result."]
+        (log/error ex message)
+        (throw (ex-info message
+                        {::anomalies/message (ex-message ex)
+                         ::anomalies/category ::anomalies/fault}
+                        ex))))))
 
 (defn ^AKeyPair generate-account [^Convex client ^AKeyPair signer ^Long nonce]
   (let [^AKeyPair generated-key-pair (AKeyPair/generate)

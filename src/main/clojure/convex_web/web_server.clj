@@ -41,7 +41,8 @@
            (convex.core.lang.impl AExceptional)
            (convex.api Convex)
            (convex.core.transactions Invoke)
-           (java.util.concurrent TimeoutException)))
+           (java.util.concurrent TimeoutException)
+           (clojure.lang ExceptionInfo)))
 
 (defn ring-session [request]
   (get-in request [:cookies "ring-session" :value]))
@@ -309,28 +310,28 @@
 
         result (try
                  (convex/transact client signed-data)
-                 (catch Throwable t
+                 (catch ExceptionInfo ex
                    ;; Reset sequence number for Address, because we don't know the Peer's state.
                    (convex/reset-sequence-number! address)
 
                    (cond
-                     (instance? TimeoutException t)
+                     (instance? TimeoutException (ex-cause ex))
                      (do
-                       (log/error t "Transaction timed out.")
+                       (log/error ex "Transaction timed out.")
 
-                       (throw (ex-info "Transaction timed out." {::anomalies/category ::anomalies/busy} t)))
+                       (throw (ex-info "Transaction timed out." {::anomalies/category ::anomalies/busy} ex)))
 
-                     (instance? MissingDataException t)
+                     (instance? MissingDataException (ex-cause ex))
                      (do
-                       (log/error t "Failed to transact signed data" signed-data)
+                       (log/error ex "Failed to transact signed data" signed-data)
 
-                       (throw (ex-info "You need to prepare the transaction before submitting." {::anomalies/category ::anomalies/incorrect} t)))
+                       (throw (ex-info "You need to prepare the transaction before submitting." {::anomalies/category ::anomalies/incorrect} ex)))
 
                      :else
                      (do
-                       (log/error t "Transaction fault.")
+                       (log/error ex "Transaction fault.")
 
-                       (throw (ex-info "Transaction fault." {::anomalies/category ::anomalies/fault} t))))))
+                       (throw (ex-info "Transaction fault." {::anomalies/category ::anomalies/fault} ex))))))
 
         bad-sequence-number? (when-let [error-code (.getErrorCode result)]
                                (= :SEQUENCE (convex/datafy error-code)))

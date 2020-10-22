@@ -205,6 +205,12 @@
        :hash hash
        :sig (.toHexString (.sign Init/HERO_KP (Hash/fromHex hash)))}))
 
+  @(client/POST-public-v1-transaction-submit
+     "http://localhost:8080"
+     {:address (.toChecksumHex Init/HERO)
+      :hash "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b"
+      :sig (client/sig Init/HERO_KP "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
+
 
   ;; ----------------------
 

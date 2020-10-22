@@ -137,13 +137,18 @@
 
 (defn execute-query [system {::keys [address query]}]
   (let [{:convex-web.query/keys [source language]} query]
-    (convex/query (system/convex-client system) {:address address
-                                                 :source source
-                                                 :lang language})))
+    (try
+      (convex/query (system/convex-client system) {:address address
+                                                   :source source
+                                                   :lang language})
+      (catch Throwable t
+        (log/error t "Query failed." query)
+
+        nil))))
 
 (s/fdef execute-query
   :args (s/cat :system :convex-web/system :command :convex-web/incoming-command)
-  :ret #(instance? Result %))
+  :ret #(s/nilable (instance? Result %)))
 
 ;; --
 
@@ -183,8 +188,9 @@
         (catch Throwable t
           (convex/reset-sequence-number! address)
 
-          (log/error (str "Transaction failed. (" (.getName (.getClass t)) ")")
-                     {:attempted-sequence-number next-sequence-number}))))))
+          (log/error t "Transaction failed." (merge transaction {:attempted-sequence-number next-sequence-number}))
+
+          nil)))))
 
 (s/fdef execute-transaction
   :args (s/cat :system :convex-web/system :command :convex-web/incoming-command)
