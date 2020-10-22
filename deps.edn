@@ -2,6 +2,12 @@
 
  :deps
  {org.clojure/clojure {:mvn/version "1.10.1"}
+  org.clojure/clojurescript {:mvn/version "1.10.773"
+                             ;; These exclusions are required because of Shadow CLJS.
+                             :exclusions
+                             [com.google.javascript/closure-compiler-unshaded
+                              org.clojure/google-closure-library
+                              org.clojure/google-closure-library-third-party]}
   org.clojure/tools.logging {:mvn/version "1.1.0"}
   org.clojure/data.json {:mvn/version "1.0.0"}
 
@@ -101,16 +107,8 @@
 
 
   ;; -- Site (ClojureScript app)
-  :site
-  {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.773"
-                                           ;; These exclusions are required because of Shadow CLJS.
-                                           :exclusions
-                                           [com.google.javascript/closure-compiler-unshaded
-                                            org.clojure/google-closure-library
-                                            org.clojure/google-closure-library-third-party]}
-
-                thheller/shadow-cljs {:mvn/version "2.11.5"}
-
+  :site-dev
+  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.5"}
                 binaryage/devtools {:mvn/version "1.0.2"}}}
 
 

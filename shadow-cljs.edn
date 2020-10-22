@@ -1,4 +1,4 @@
-{:deps {:aliases [:site :logback-site]}
+{:deps {:aliases [:site-dev :logback-site]}
 
  :nrepl {:port 9000}
 
