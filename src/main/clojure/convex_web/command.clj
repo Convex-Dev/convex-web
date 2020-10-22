@@ -156,13 +156,13 @@
 
           peer (system/convex-peer-server system)
 
-          address (convex/address address)
+          caller-address (convex/address address)
 
-          next-sequence-number (inc (or (convex/get-sequence-number address)
-                                        (peer/sequence-number peer address)
+          next-sequence-number (inc (or (convex/get-sequence-number caller-address)
+                                        (peer/sequence-number peer caller-address)
                                         0))
 
-          {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) address)
+          {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) caller-address)
 
           atransaction (case type
                          :convex-web.transaction.type/invoke
@@ -180,11 +180,11 @@
 
           (if bad-sequence-number?
             (log/error "Result error: Bad sequence number." {:attempted-sequence-number next-sequence-number})
-            (convex/set-sequence-number! address next-sequence-number))
+            (convex/set-sequence-number! caller-address next-sequence-number))
 
           r)
         (catch Throwable t
-          (convex/reset-sequence-number! address)
+          (convex/reset-sequence-number! caller-address)
 
           (log/error t "Transaction failed." (merge transaction {:attempted-sequence-number next-sequence-number}))
 
