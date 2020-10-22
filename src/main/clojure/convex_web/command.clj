@@ -229,7 +229,7 @@
                                                     :convex-web.command.status/success)}
 
                             #:convex-web.command {:status :convex-web.command.status/error
-                                                  :error {:message (ex-message (or (stacktrace/root-cause error) error))}})
+                                                  :error {:message (ex-message (or (some-> error stacktrace/root-cause) error))}})
 
                           (when-let [error-code (some-> result .getErrorCode)]
                             (log/error
