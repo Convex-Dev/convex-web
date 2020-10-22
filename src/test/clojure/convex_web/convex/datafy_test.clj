@@ -3,11 +3,10 @@
             [clojure.datafy :refer [datafy]]
 
             [convex-web.convex.datafy]
-            [convex-web.convex :as convex])
-  (:import (convex.core.lang Context)
-           (convex.core Init)))
+            [convex-web.convex :as convex]
+            [convex-web.test :refer :all]))
 
-(def context (Context/createFake Init/STATE))
+(def context (convex-context))
 
 (deftest datafy-test
   (testing "String"

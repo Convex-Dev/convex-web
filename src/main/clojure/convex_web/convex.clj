@@ -300,15 +300,10 @@
 (defn wrap-do [^AList x]
   (.cons x (Symbol/create "do")))
 
-(defn cond-wrap-do [^AList x]
-  (let [form1 (first x)
-        form2 (second x)]
-    (if form2
-      (wrap-do x)
-      form1)))
-
 (defn ^Result query [^Convex client {:keys [source address lang] :as q}]
-  (let [obj (try
+  (let [_ (log/debug "Query" q)
+
+        obj (try
               (case lang
                 :convex-lisp
                 (wrap-do (Reader/readAll source))
@@ -323,8 +318,8 @@
                            (convex-web.convex/address address))]
     (try
       (if address
-        (.querySync client obj)
-        (.querySync client obj address))
+        (.querySync client obj address)
+        (.querySync client obj))
       (catch Exception ex
         (let [message "Failed to get Query result."
               category (or (throwable-category ex) ::anomalies/fault)]

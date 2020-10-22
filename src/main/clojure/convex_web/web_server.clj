@@ -500,14 +500,7 @@
              :message handler-exception-message
              :exception ex)
 
-      (let [message (cond
-                      (#{ParserRuntimeException ParseException} (class ex))
-                      (str "Syntax error: " (.getMessage (stacktrace/root-cause ex)))
-
-                      :else
-                      "Server error.")]
-        (-successful-response #:convex-web.command {:status :convex-web.command.status/error
-                                                    :error {:message message}})))))
+      -server-error-response)))
 
 (defn -POST-generate-account [system req]
   (try

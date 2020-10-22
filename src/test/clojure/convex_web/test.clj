@@ -6,7 +6,12 @@
             [clojure.spec.test.alpha :as stest]
 
             [ring.mock.request :as mock]
-            [com.stuartsierra.component]))
+            [com.stuartsierra.component])
+  (:import (convex.core.lang Context)
+           (convex.core Init)))
+
+(defn convex-context [& [{:keys [address]}]]
+  (Context/createFake Init/STATE (or address Init/HERO)))
 
 (defmacro catch-throwable [& body]
   `(try

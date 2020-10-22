@@ -4,12 +4,11 @@
             [convex-web.convex :as convex]
             [convex-web.test :refer :all])
   (:import (convex.core.data Address Maps)
-           (convex.core.lang Context)
            (convex.core Init)))
 
 (use-fixtures :once (spec-fixture))
 
-(def context (Context/createFake Init/STATE))
+(def context (convex-context))
 
 (deftest datafy-test
   (testing "Char"

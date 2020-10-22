@@ -2,12 +2,11 @@
   (:require [clojure.test :refer :all]
             [convex-web.specs]
             [convex-web.command :as c]
-            [convex-web.convex :as convex])
-  (:import (convex.core Init)
-           (convex.core.lang Context)
-           (convex.core.data StringShort)))
+            [convex-web.convex :as convex]
+            [convex-web.test :refer :all])
+  (:import (convex.core.data StringShort)))
 
-(def context (Context/createFake Init/STATE))
+(def context (convex-context))
 
 (deftest wrap-result-test
   (testing "Error"

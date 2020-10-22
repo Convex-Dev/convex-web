@@ -8,13 +8,12 @@
             [clojure.spec.alpha :as s]
             [clojure.tools.logging :as log]
             [clojure.datafy :refer [datafy]]
+            [clojure.stacktrace :as stacktrace]
 
-            [datalevin.core :as d]
-            [expound.alpha :as expound])
+            [datalevin.core :as d])
   (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
            (convex.core.lang Reader Symbols)
-           (convex.core Result)
-           (clojure.lang ExceptionInfo)))
+           (convex.core Result)))
 
 (defn source [{:convex-web.command/keys [transaction query]}]
   (or (get query :convex-web.query/source)
@@ -54,9 +53,12 @@
 ;; --
 
 (defn wrap-result-metadata [{:convex-web.command/keys [status object] :as command}]
-  (let [source-form (when (= :convex-lisp (language command))
-                      (when-let [source (source command)]
-                        (first (Reader/readAll source))))
+  (let [source-form (try
+                      (when (= :convex-lisp (language command))
+                        (when-let [source (source command)]
+                          (first (Reader/readAll source))))
+                      (catch Throwable _
+                        nil))
 
         metadata (case status
                    :convex-web.command.status/running
@@ -203,7 +205,7 @@
 
                                               (= :convex-web.command.mode/transaction mode)
                                               (execute-transaction system command))}
-                                   (catch ExceptionInfo ex
+                                   (catch Throwable ex
                                      (log/error ex "Command execution failed.")
 
                                      {:error ex}))
@@ -227,7 +229,7 @@
                                                     :convex-web.command.status/success)}
 
                             #:convex-web.command {:status :convex-web.command.status/error
-                                                  :error {:code :unknown :message (ex-message error)}})
+                                                  :error {:message (ex-message (or (stacktrace/root-cause error) error))}})
 
                           (when-let [error-code (some-> result .getErrorCode)]
                             (log/error
