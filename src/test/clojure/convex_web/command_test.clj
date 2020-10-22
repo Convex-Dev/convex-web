@@ -8,6 +8,78 @@
 
 (def context (convex-context))
 
+(def system nil)
+
+(use-fixtures :each (system-fixture #'system))
+
+(deftest query-mode-test
+  (testing "Simple Commands"
+    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/query
+                                     {:convex-web.query/source "1"
+                                      :convex-web.query/language :convex-lisp}})]
+
+      (is (= {::c/status :convex-web.command.status/success
+              ::c/object 1}
+             (select-keys command [::c/status ::c/object]))))
+
+    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/query
+                                     {:convex-web.query/source "\"Hello\""
+                                      :convex-web.query/language :convex-lisp}})]
+
+      (is (= {::c/status :convex-web.command.status/success
+              ::c/object "Hello"}
+             (select-keys command [::c/status ::c/object])))))
+
+  (testing "Symbol lookup"
+    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/query
+                                     {:convex-web.query/source "inc"
+                                      :convex-web.query/language :convex-lisp}})]
+
+      (is (= {::c/status :convex-web.command.status/success
+              ::c/object "inc"}
+             (select-keys command [::c/status ::c/object])))))
+
+  (testing "Lookup doc"
+    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/query
+                                     {:convex-web.query/source "(doc inc)"
+                                      :convex-web.query/language :convex-lisp}})]
+
+      (is (= {::c/status :convex-web.command.status/success
+              ::c/object
+              {:description "Increments the given number by 1. Converts to Long if necessary."
+               :examples [{:code "(inc 10)"}]
+               :signature [{:params ['num]}]
+               :type :function}}
+             (select-keys command [::c/status ::c/object])))))
+
+  (testing "Syntax error"
+    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/query
+                                     {:convex-web.query/source "("
+                                      :convex-web.query/language :convex-lisp}})]
+
+      (is (= {::c/status :convex-web.command.status/error
+              ::c/object ""
+              ::c/error {:message "Syntax error."}}
+             (select-keys command [::c/status ::c/object ::c/error])))))
+
+  (testing "Cast error"
+    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/query
+                                     {:convex-web.query/source "(map inc 1)"
+                                      :convex-web.query/language :convex-lisp}})]
+
+      (is (= {::c/status :convex-web.command.status/error
+              ::c/object "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"
+              ::c/error
+              {:code :CAST
+               :message "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"}}
+             (select-keys command [::c/status ::c/object ::c/error]))))))
+
 (deftest wrap-result-test
   (testing "Error"
     (is (= {::c/id 1
