@@ -138,8 +138,9 @@
 
 ;; --
 
-(defn execute-query [system {::keys [address query]}]
-  (let [{:convex-web.query/keys [source language]} query]
+(defn execute-query [system command]
+  (let [{::keys [address query]} command
+        {:convex-web.query/keys [source language]} query]
     (convex/query (system/convex-client system) {:address address
                                                  :source source
                                                  :lang language})))
@@ -150,45 +151,46 @@
 
 ;; --
 
-(defn execute-transaction [system {::keys [address transaction]}]
-  (locking (convex/lockee address)
-    (let [{:convex-web.transaction/keys [source language amount type]} transaction
+(defn execute-transaction [system command]
+  (let [{::keys [address transaction]} command]
+    (locking (convex/lockee address)
+      (let [{:convex-web.transaction/keys [source language amount type]} transaction
 
-          peer (system/convex-peer-server system)
+            peer (system/convex-peer-server system)
 
-          caller-address (convex/address address)
+            caller-address (convex/address address)
 
-          next-sequence-number (inc (or (convex/get-sequence-number caller-address)
-                                        (peer/sequence-number peer caller-address)
-                                        0))
+            next-sequence-number (inc (or (convex/get-sequence-number caller-address)
+                                          (peer/sequence-number peer caller-address)
+                                          0))
 
-          {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) caller-address)
+            {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) caller-address)
 
-          atransaction (case type
-                         :convex-web.transaction.type/invoke
-                         (peer/invoke-transaction next-sequence-number source language)
+            atransaction (case type
+                           :convex-web.transaction.type/invoke
+                           (peer/invoke-transaction next-sequence-number source language)
 
-                         :convex-web.transaction.type/transfer
-                         (let [to (convex/address (:convex-web.transaction/target transaction))]
-                           (peer/transfer-transaction next-sequence-number to amount)))]
-      (try
-        (let [^Result r (->> (convex/sign (convex/create-key-pair key-pair) atransaction)
-                             (convex/transact (system/convex-client system)))
+                           :convex-web.transaction.type/transfer
+                           (let [to (convex/address (:convex-web.transaction/target transaction))]
+                             (peer/transfer-transaction next-sequence-number to amount)))]
+        (try
+          (let [^Result r (->> (convex/sign (convex/create-key-pair key-pair) atransaction)
+                               (convex/transact (system/convex-client system)))
 
-              bad-sequence-number? (when-let [error-code (.getErrorCode r)]
-                                     (= :SEQUENCE (convex/datafy error-code)))]
+                bad-sequence-number? (when-let [error-code (.getErrorCode r)]
+                                       (= :SEQUENCE (convex/datafy error-code)))]
 
-          (if bad-sequence-number?
-            (log/error "Result error: Bad sequence number." {:attempted-sequence-number next-sequence-number})
-            (convex/set-sequence-number! caller-address next-sequence-number))
+            (if bad-sequence-number?
+              (log/error "Result error: Bad sequence number." {:attempted-sequence-number next-sequence-number})
+              (convex/set-sequence-number! caller-address next-sequence-number))
 
-          r)
-        (catch Throwable t
-          (convex/reset-sequence-number! caller-address)
+            r)
+          (catch Throwable t
+            (convex/reset-sequence-number! caller-address)
 
-          (log/error t "Transaction failed." (merge transaction {:attempted-sequence-number next-sequence-number}))
+            (log/error t "Transaction failed." (merge transaction {:attempted-sequence-number next-sequence-number}))
 
-          nil)))))
+            (throw t)))))))
 
 (s/fdef execute-transaction
   :args (s/cat :system :convex-web/system :command :convex-web/incoming-command)
