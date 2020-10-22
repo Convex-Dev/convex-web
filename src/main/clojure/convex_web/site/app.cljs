@@ -47,7 +47,10 @@
 (defn NotFoundPage [_ _ _]
   [:div.h-screen.flex.justify-center
    [:div.flex.flex-col.items-center.mt-6.space-y-10
-    [gui/ConvexLogo {:width "120px" :height "120px"}]
+    [:a
+     {:href (rfe/href :route-name/welcome )
+      :alt "Back to Convex : The Internet of Value"}
+     [gui/ConvexLogo {:width "120px" :height "120px"}]]
 
     [:span.font-mono.text-lg.text-gray-500
      "Page not found."]]])
