@@ -10,7 +10,7 @@
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke Call)
            (convex.api Convex)
-           (java.util.concurrent Future TimeUnit)))
+           (java.util.concurrent Future TimeUnit TimeoutException)))
 
 (defmacro execute [context form]
   `(let [^String source# ~(pr-str form)
@@ -29,6 +29,14 @@
   (if (str/starts-with? s "0x")
     (subs s 2)
     s))
+
+(defn throwable-category [throwable]
+  (cond
+    (instance? TimeoutException throwable)
+    ::anomalies/unavailable
+
+    (instance? InterruptedException throwable)
+    ::anomalies/interrupted))
 
 (defn ^String address->checksum-hex [^Address address]
   (.toChecksumHex address))
@@ -318,22 +326,24 @@
         (.querySync client obj)
         (.querySync client obj address))
       (catch Exception ex
-        (let [message "Failed to get Query result."]
+        (let [message "Failed to get Query result."
+              category (or (throwable-category ex) ::anomalies/fault)]
           (log/error ex message)
           (throw (ex-info message
                           (merge q {::anomalies/message (ex-message ex)
-                                    ::anomalies/category ::anomalies/fault})
+                                    ::anomalies/category category})
                           ex)))))))
 
 (defn ^Result transact [^Convex client ^SignedData signed-data]
   (try
     (.transactSync client signed-data 1000)
     (catch Exception ex
-      (let [message "Failed to get Transaction result."]
+      (let [message "Failed to get Transaction result."
+            category (or (throwable-category ex) ::anomalies/fault)]
         (log/error ex message)
         (throw (ex-info message
                         {::anomalies/message (ex-message ex)
-                         ::anomalies/category ::anomalies/fault}
+                         ::anomalies/category category}
                         ex))))))
 
 (defn ^AKeyPair generate-account [^Convex client ^AKeyPair signer ^Long nonce]
