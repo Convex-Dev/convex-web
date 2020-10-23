@@ -249,9 +249,7 @@
                                                               (peer/sequence-number peer address)
                                                               0)))
 
-            command (peer/read source lang)
-
-            tx (Invoke/create next-sequence-number command)]
+            tx (Invoke/create next-sequence-number (peer/read-source source lang))]
 
         (convex/set-sequence-number! address next-sequence-number)
 

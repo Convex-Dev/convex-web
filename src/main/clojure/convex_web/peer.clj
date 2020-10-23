@@ -35,7 +35,7 @@
           (account-status address)
           (account-sequence)))
 
-(defn read [source lang]
+(defn read-source [source lang]
   (try
     (case lang
       :convex-lisp
@@ -46,9 +46,6 @@
     (catch Throwable ex
       (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
                                        ::anomalies/category ::anomalies/incorrect})))))
-
-(defn ^ATransaction create-invoke [^Long nonce command]
-  (Invoke/create nonce command))
 
 (defn ^ATransaction invoke-transaction [^Long nonce ^String source lang]
   (let [object (case lang
