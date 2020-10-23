@@ -249,7 +249,7 @@
                                                               (peer/sequence-number peer address)
                                                               0)))
 
-            tx (Invoke/create next-sequence-number (peer/read-source source lang))]
+            tx (Invoke/create next-sequence-number (convex/read-source source lang))]
 
         (convex/set-sequence-number! address next-sequence-number)
 
@@ -419,9 +419,9 @@
                    (throw (ex-info "Source can't be empty."
                                    {::anomalies/category ::anomalies/incorrect}))))
 
-        result (peer/query (system/convex-peer-server system) {:source source
-                                                               :lang lang
-                                                               :address address})
+        form (convex/read-source source lang)
+
+        result (peer/query (system/convex-peer-server system) form {:address address})
 
         result-response (merge {:value (convex/datafy result)}
                                (when (instance? AExceptional result)

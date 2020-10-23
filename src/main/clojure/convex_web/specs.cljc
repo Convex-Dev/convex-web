@@ -194,7 +194,7 @@
                                     :convex-web.command.status/error
                                     :convex-web.command.status/success})
 
-(s/def :convex-web.command/id int?)
+(s/def :convex-web.command/id any?)
 (s/def :convex-web.command/address :convex-web/address)
 (s/def :convex-web.command/transaction :convex-web/transaction)
 (s/def :convex-web.command/query :convex-web/query)

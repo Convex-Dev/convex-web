@@ -1,9 +1,8 @@
 (ns convex-web.peer
   (:refer-clojure :exclude [read])
-  (:require [cognitect.anomalies :as anomalies]
-            [convex-web.convex :as convex])
+  (:require [convex-web.convex :as convex])
   (:import (convex.peer Server)
-           (convex.core.lang Reader ScryptNext)
+           (convex.core.lang Reader ScryptNext Context)
            (convex.core.data Address AccountStatus Symbol AList)
            (convex.core Peer State)
            (convex.core.transactions Invoke ATransaction Transfer)))
@@ -35,18 +34,6 @@
           (account-status address)
           (account-sequence)))
 
-(defn read-source [source lang]
-  (try
-    (case lang
-      :convex-lisp
-      (cond-wrap-do (Reader/readAll source))
-
-      :convex-scrypt
-      (ScryptNext/readSyntax source))
-    (catch Throwable ex
-      (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
-                                       ::anomalies/category ::anomalies/incorrect})))))
-
 (defn ^ATransaction invoke-transaction [^Long nonce ^String source lang]
   (let [object (case lang
                  :convex-lisp
@@ -59,17 +46,9 @@
 (defn ^ATransaction transfer-transaction [^Long nonce ^Address address ^Long amount]
   (Transfer/create nonce address amount))
 
-(defn query [^Peer peer {:keys [^String source address lang]}]
-  (let [form (try
-               (case lang
-                 :convex-lisp
-                 (wrap-do (Reader/readAll source))
-
-                 :convex-scrypt
-                 (ScryptNext/readSyntax source))
-               (catch Throwable ex
-                 (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
-                                                  ::anomalies/category ::anomalies/incorrect}))))
-        context (.executeQuery peer form (convex/address address))]
+(defn query [^Peer peer ^Object form & [{:keys [address]}]]
+  (let [^Context context (if address
+                           (.executeQuery peer form (convex/address address))
+                           (.executeQuery peer form))]
     (.getValue context)))
 

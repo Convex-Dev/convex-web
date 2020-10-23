@@ -13,7 +13,9 @@
             [datalevin.core :as d])
   (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
            (convex.core.lang Reader Symbols)
-           (convex.core Result)))
+           (convex.core Result)
+           (convex.core.lang.impl AExceptional)
+           (java.util UUID)))
 
 (defn source [{:convex-web.command/keys [transaction query]}]
   (or (get query :convex-web.query/source)
@@ -141,9 +143,19 @@
 (defn execute-query [system command]
   (let [{::keys [address query]} command
         {:convex-web.query/keys [source language]} query]
-    (convex/query (system/convex-client system) {:address address
-                                                 :source source
-                                                 :lang language})))
+
+    ;; Using the Peer API for Queries temporarily.
+    ;; The Convex.queryAsync and Peer.executeQuery are not 'compatible':
+    ;; we must wrap the retured value from Peer.executeQuery in a Result.
+    (let [v (peer/query (system/convex-peer-server system)
+                        (convex/read-source source language)
+                        {:address address})
+
+          id (str (UUID/randomUUID))]
+
+      (if (instance? AExceptional v)
+        (Result/create id (.getMessage ^AExceptional v) (.getCode ^AExceptional v))
+        (Result/create id v)))))
 
 (s/fdef execute-query
   :args (s/cat :system :convex-web/system :command :convex-web/incoming-command)
@@ -246,6 +258,8 @@
           command' (-> command'
                        (wrap-result-metadata)
                        (wrap-result))]
+
+      (log/debug "Wrapped Command" (prn-str command'))
 
       command')))
 

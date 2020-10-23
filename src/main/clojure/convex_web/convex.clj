@@ -12,6 +12,23 @@
            (convex.api Convex)
            (java.util.concurrent Future TimeUnit TimeoutException)))
 
+(defn read-source [source lang]
+  (try
+    (case lang
+      :convex-lisp
+      (let [^AList l (Reader/readAll source)
+            form1 (first l)
+            form2 (second l)]
+        (if form2
+          (.cons l (Symbol/create "do"))
+          form1))
+
+      :convex-scrypt
+      (ScryptNext/readSyntax source))
+    (catch Throwable ex
+      (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
+                                       ::anomalies/category ::anomalies/incorrect})))))
+
 (defmacro execute [context form]
   `(let [^String source# ~(pr-str form)
          context# (.execute ~context (.getResult (.expandCompile ~context (Reader/read source#))))]
