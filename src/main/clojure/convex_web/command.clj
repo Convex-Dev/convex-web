@@ -9,6 +9,7 @@
             [clojure.tools.logging :as log]
             [clojure.datafy :refer [datafy]]
             [clojure.stacktrace :as stacktrace]
+            [clojure.pprint :as pprint]
 
             [datalevin.core :as d])
   (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
@@ -247,7 +248,7 @@
                        (wrap-result-metadata)
                        (wrap-result))]
 
-      (log/debug "Wrapped Command" (prn-str command'))
+      (log/debug "Wrapped Command" (str "(" (type command') "):\n" (with-out-str (pprint/pprint command'))))
 
       command')))
 
