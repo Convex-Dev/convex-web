@@ -7,7 +7,6 @@
 
             [clojure.spec.alpha :as s]
             [clojure.tools.logging :as log]
-            [clojure.datafy :refer [datafy]]
             [clojure.stacktrace :as stacktrace]
             [clojure.pprint :as pprint]
 
@@ -217,38 +216,45 @@
               (log/debug "Result value:" (type result-value) result-value)
               (log/warn "Result is nil for command:" command))
 
+          result-id (some-> result .getID)
+          result-value (some-> result .getValue)
+          result-error-code (some-> result .getErrorCode)
+
+          _ (when result-error-code
+              (log/error "Command returned an error:" result-error-code result-value))
+
+          ;; Command status.
+          command' (if result
+                     (merge #:convex-web.command {:id result-id
+                                                  :object result-value
+                                                  :status
+                                                  (if result-error-code
+                                                    :convex-web.command.status/error
+                                                    :convex-web.command.status/success)}
+                            (when result-error-code
+                              #:convex-web.command {:error
+                                                    {:code (convex/datafy result-error-code)
+                                                     :message (convex/datafy result-value)}}))
+
+                     ;; If there isn't a Result, `error` won't have a code,
+                     ;; and the Exception's message will be used as its message.
+                     #:convex-web.command {:status :convex-web.command.status/error
+                                           :error
+                                           {:message (ex-message (or (some-> error stacktrace/root-cause) error))}})
+
+          ;; Updated Command.
           command' (merge (select-keys command [:convex-web.command/mode
                                                 :convex-web.command/language
                                                 :convex-web.command/address
                                                 :convex-web.command/query
                                                 :convex-web.command/transaction])
 
-                          (if result
-                            #:convex-web.command {:id (.getID result)
-                                                  :object (.getValue result)
-                                                  :status
-                                                  (if (.getErrorCode result)
-                                                    :convex-web.command.status/error
-                                                    :convex-web.command.status/success)}
+                          command')
 
-                            #:convex-web.command {:status :convex-web.command.status/error
-                                                  :error {:message (ex-message (or (some-> error stacktrace/root-cause) error))}})
-
-                          (when-let [error-code (some-> result .getErrorCode)]
-                            (log/error
-                              "Command returned an error:"
-                              (convex/datafy error-code)
-                              (convex/datafy (.getValue result)))
-
-                            #:convex-web.command {:error
-                                                  {:code (datafy error-code)
-                                                   :message (datafy (.getValue result))}}))
-
+          ;; Wrapped Command.
           command' (-> command'
                        (wrap-result-metadata)
                        (wrap-result))]
-
-      (log/debug "Wrapped Command" (str "(" (type command') "):\n" (with-out-str (pprint/pprint command'))))
 
       command')))
 
