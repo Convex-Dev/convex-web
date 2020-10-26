@@ -79,363 +79,88 @@
                :message "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"}}
              (select-keys command [::c/status ::c/object ::c/error]))))))
 
-(deftest wrap-result-test
-  (testing "Error"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "*address*"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/error
-            ::c/object "X"
-            ::c/error {}}
-           (c/wrap-result {::c/id 1
-                           ::c/mode :convex-web.command.mode/query
-                           ::c/query {:convex-web.query/source "*address*"
-                                      :convex-web.query/language :convex-lisp}
-                           ::c/status :convex-web.command.status/error
-                           ::c/object (StringShort/create "X")
-                           ::c/error {}}))))
-
+(deftest sandbox-result-test
   (testing "Address"
-    (is (= (let [a (convex/execute context *address*)]
-             {::c/id 1
-              ::c/mode :convex-web.command.mode/query
-              ::c/query {:convex-web.query/source "*address*"
-                         :convex-web.query/language :convex-lisp}
-              ::c/status :convex-web.command.status/success
-              ::c/object
-              {:checksum-hex (.toChecksumHex a)
-               :hex-string (.toHexString a)}})
-           (c/wrap-result {::c/id 1
-                           ::c/mode :convex-web.command.mode/query
-                           ::c/query {:convex-web.query/source "*address*"
-                                      :convex-web.query/language :convex-lisp}
-                           ::c/status :convex-web.command.status/success
-                           ::c/object (convex/execute context *address*)}))))
+    (is (= {:checksum-hex "7E66429CA9c10e68eFae2dCBF1804f0F6B3369c7164a3187D6233683c258710f"
+            :hex-string "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"}
+           (c/sandbox-result (convex/execute context *address*)))))
 
   (testing "Blob"
-    (is (= (let [a (convex/execute context *address*)]
-             {::c/id 1
-              ::c/mode :convex-web.command.mode/query
-              ::c/query {:convex-web.query/source "(blob *address*)"
-                         :convex-web.query/language :convex-lisp}
-              ::c/status :convex-web.command.status/success
-              ::c/object
-              {:hex-string (.toHexString a)
-               :length 32}})
-           (c/wrap-result {::c/id 1
-                           ::c/mode :convex-web.command.mode/query
-                           ::c/query {:convex-web.query/source "(blob *address*)"
-                                      :convex-web.query/language :convex-lisp}
-                           ::c/status :convex-web.command.status/success
-                           ::c/object (convex/execute context (blob *address*))}))))
+    (is (= {:hex-string "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"
+            :length 32}
+           (c/sandbox-result (convex/execute context (blob *address*))))))
 
-  (testing "Default"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "{:a 1}"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object {:a 1}}
-           (c/wrap-result {::c/id 1
-                           ::c/mode :convex-web.command.mode/query
-                           ::c/query {:convex-web.query/source "{:a 1}"
-                                      :convex-web.query/language :convex-lisp}
-                           ::c/status :convex-web.command.status/success
-                           ::c/object (convex/execute context {:a 1})})))
+  (testing "StringShort"
+    ;; Defaults to datafy.
+    (is (= "X" (c/sandbox-result (StringShort/create "X"))))))
 
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "map"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object "map"}
-           (c/wrap-result {::c/id 1
-                           ::c/mode :convex-web.command.mode/query
-                           ::c/query {:convex-web.query/source "map"
-                                      :convex-web.query/language :convex-lisp}
-                           ::c/status :convex-web.command.status/success
-                           ::c/object (convex/execute context map)})))))
-
-(deftest wrap-result-metadata-test
+(deftest result-metadata-test
   (testing "Nil"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "nil"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/metadata {}
-            ::c/object nil}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "nil"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object nil}))))
+    (is (= {} (c/result-metadata (convex/execute context nil)))))
 
   (testing "Boolean"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "true"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object true
-            ::c/metadata {:type :boolean}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "true"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context true)})))
-
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "false"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object false
-            ::c/metadata {:type :boolean}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "false"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context false)}))))
+    (is (= {:type :boolean} (c/result-metadata (convex/execute context true))))
+    (is (= {:type :boolean} (c/result-metadata (convex/execute context false)))))
 
   (testing "Number"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "1"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object 1
-            ::c/metadata {:type :number}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "1"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context 1)})))
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "1.0"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object 1.0
-            ::c/metadata {:type :number}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "1.0"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context 1.0)}))))
+    (is (= {:type :number} (c/result-metadata (convex/execute context 1))))
+    (is (= {:type :number} (c/result-metadata (convex/execute context 1.0)))))
 
   (testing "String"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "\"Hello\""
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object (StringShort/create "Hello")
-            ::c/metadata {:type :string}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "\"Hello\""
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context "Hello")}))))
+    (is (= {:type :string} (c/result-metadata (convex/execute context "Hello")))))
 
   (testing "Map"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "{}"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object {}
-            ::c/metadata {:type :map}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "{}"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context {})}))))
+    (is (= {:type :map} (c/result-metadata (convex/execute context {}))))
+    (is (= {:type :map} (c/result-metadata (convex/execute context {:a 1})))))
 
   (testing "List"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "'(1 2 3)"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object '(1 2 3)
-            ::c/metadata {:type :list}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "'(1 2 3)"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context '(1 2 3))}))))
+    (is (= {:type :list} (c/result-metadata (convex/execute context '(1 2 3))))))
 
   (testing "Vector"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "[1 2 3]"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object [1 2 3]
-            ::c/metadata {:type :vector}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "[1 2 3]"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context [1 2 3])}))))
+    (is (= {:type :vector} (c/result-metadata (convex/execute context [1 2 3])))))
 
   (testing "Set"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "#{}"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object #{}
-            ::c/metadata {:type :set}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "#{}"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context #{})}))))
+    (is (= {:type :set} (c/result-metadata (convex/execute context #{})))))
 
   (testing "Address"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "*address*"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object (convex/execute context *address*)
-            ::c/metadata {:type :address}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "*address*"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context *address*)}))))
+    (is (= {:type :address} (c/result-metadata (convex/execute context *address*)))))
 
   (testing "Blob"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "(blob *address*)"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object (convex/execute context (blob *address*))
-            ::c/metadata {:type :blob}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "(blob *address*)"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context (blob *address*))}))))
+    (is (= {:type :blob} (c/result-metadata (convex/execute context (blob *address*))))))
 
   (testing "Symbol"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "'s"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object (convex/execute context 's)
-            ::c/metadata {:type :symbol}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "'s"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context 's)}))))
+    (is (= {:type :symbol} (c/result-metadata (convex/execute context 's)))))
 
   (testing "Function"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "inc"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object (convex/execute context inc)
-            ::c/metadata
-            {:type :function
-             :doc
-             {:description "Increments the given number by 1. Converts to Long if necessary."
-              :examples [{:code "(inc 10)"}]
-              :signature [{:params ['num]}]
-              :symbol "inc"
-              :type :function}}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "inc"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/success
-                                    ::c/object (convex/execute context inc)}))))
+    (is (= {} (c/result-metadata (convex/execute context inc))))
+    (is (= {:type :function
+            :doc
+            {:description "Increments the given number by 1. Converts to Long if necessary."
+             :examples [{:code "(inc 10)"}]
+             :signature [{:params ['num]}]
+             :symbol "inc"
+             :type :function}} (c/result-metadata (convex/execute context inc) {:source "inc" :lang :convex-lisp}))))
 
   (testing "Macro"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "defn"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object (convex/execute context defn)
-            ::c/metadata
-            {:type :macro
-             :doc
-             {:description "Defines a function in the current environment."
-              :examples [{:code "(defn my-square [x] (* x x))"}]
-              :signature [{:params ['name 'params '& 'body]}]
-              :symbol "defn"
-              :type :macro}}}
-           (-> (c/wrap-result-metadata {::c/id 1
-                                        ::c/mode :convex-web.command.mode/query
-                                        ::c/query {:convex-web.query/source "defn"
-                                                   :convex-web.query/language :convex-lisp}
-                                        ::c/status :convex-web.command.status/success
-                                        ::c/object (convex/execute context defn)})
-               (update ::c/metadata dissoc :source)
-               (update ::c/metadata dissoc :start)
-               (update ::c/metadata dissoc :end)))))
+    (is (= {} (c/result-metadata (convex/execute context defn))))
+    (is (= {:type :macro
+            :doc
+            {:description "Defines a function in the current environment."
+             :examples [{:code "(defn my-square [x] (* x x))"}]
+             :signature [{:params ['name 'params '& 'body]}]
+             :symbol "defn"
+             :type :macro}
+            :start 1088} (c/result-metadata (convex/execute context defn) {:source "defn" :lang :convex-lisp}))))
 
   (testing "Special"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "def"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/success
-            ::c/object (convex/execute context defn)
-            ::c/metadata
-            {:type :special
-             :doc
-             {:description "Creates a definition in the current environment. This value will persist in the enviroment owned by the current account."
-              :examples [{:code "(def a 10)"}]
-              :signature [{:params ['sym 'value]}]
-              :symbol "def"
-              :type :special}}}
-           (-> (c/wrap-result-metadata {::c/id 1
-                                        ::c/mode :convex-web.command.mode/query
-                                        ::c/query {:convex-web.query/source "def"
-                                                   :convex-web.query/language :convex-lisp}
-                                        ::c/status :convex-web.command.status/success
-                                        ::c/object (convex/execute context defn)})
-               (update ::c/metadata dissoc :source)
-               (update ::c/metadata dissoc :start)
-               (update ::c/metadata dissoc :end)))))
-
-  (testing "Error"
-    (is (= {::c/id 1
-            ::c/mode :convex-web.command.mode/query
-            ::c/query {:convex-web.query/source "Noop"
-                       :convex-web.query/language :convex-lisp}
-            ::c/status :convex-web.command.status/error
-            ::c/metadata {:type :error}
-            ::c/error {:message "Error"}}
-           (c/wrap-result-metadata {::c/id 1
-                                    ::c/mode :convex-web.command.mode/query
-                                    ::c/query {:convex-web.query/source "Noop"
-                                               :convex-web.query/language :convex-lisp}
-                                    ::c/status :convex-web.command.status/error
-                                    ::c/error {:message "Error"}})))))
+    (is (= {:type :symbol} (c/result-metadata (convex/execute context def))))
+    (is (= {:doc {:description "Creates a definition in the current environment. This value will persist in the enviroment owned by the current account."
+                  :examples [{:code "(def a 10)"}]
+                  :signature [{:params ['sym 'value]}]
+                  :symbol "def"
+                  :type :special}
+            :type :special}
+           (c/result-metadata (convex/execute context def) {:source "def" :lang :convex-lisp})))))
 
 
 

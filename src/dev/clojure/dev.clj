@@ -155,9 +155,6 @@
 
   ;; --
 
-  (command/wrap-result #:convex-web.command {:mode :convex-web.command.mode/query})
-
-
   (def status (convex/account-status (peer) "3333333333333333333333333333333333333333333333333333333333333333"))
 
   (convex/environment-data status)
