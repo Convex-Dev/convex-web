@@ -63,7 +63,6 @@
                                       :convex-web.query/language :convex-lisp}})]
 
       (is (= {::c/status :convex-web.command.status/error
-              ::c/object ""
               ::c/error {:message "Syntax error."}}
              (select-keys command [::c/status ::c/object ::c/error])))))
 

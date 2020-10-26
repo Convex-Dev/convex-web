@@ -122,6 +122,56 @@
   :args (s/cat :command :convex-web/command)
   :ret :convex-web/command)
 
+(defn result-metadata [source lang object]
+  (let [source-form (try
+                      (when (= :convex-lisp lang)
+                        (first (Reader/readAll source)))
+                      (catch Throwable _
+                        nil))]
+    (cond
+      (instance? Boolean object)
+      {:type :boolean}
+
+      (instance? Number object)
+      {:type :number}
+
+      (instance? AString object)
+      {:type :string}
+
+      (instance? AMap object)
+      {:type :map}
+
+      (instance? AList object)
+      {:type :list}
+
+      (instance? AVector object)
+      {:type :vector}
+
+      (instance? ASet object)
+      {:type :set}
+
+      (instance? Address object)
+      {:type :address}
+
+      (instance? ABlob object)
+      {:type :blob}
+
+      ;; Lookup metadata for a symbol (except the quote ' symbol).
+      ;; Instead of checking the result object type, we read the source and check the first form.
+      (and (instance? Symbol source-form) (not= Symbols/QUOTE source-form))
+      (let [doc (some-> source-form
+                        (convex/metadata)
+                        (convex/datafy)
+                        (assoc-in [:doc :symbol] (.toString (.getName ^Symbol source-form))))]
+        (merge doc {:type (get-in doc [:doc :type])}))
+
+      ;; This must be after the special handling above because special forms (`def`, ...) returns a Symbol.
+      (instance? Symbol object)
+      {:type :symbol}
+
+      :else
+      {})))
+
 ;; --
 
 (defn prune [command]
@@ -225,13 +275,35 @@
           result-value (some-> result .getValue)
           result-error-code (some-> result .getErrorCode)
 
+          ;; The custom rendering in the Sandbox is driven by the metadata and the object value.
+          ;; Object maps can be defined per type.
+          result-value-coerced (cond
+                                 (instance? Address result-value)
+                                 {:hex-string (.toHexString ^Address result-value)
+                                  :checksum-hex (.toChecksumHex ^Address result-value)}
+
+                                 (instance? ABlob result-value)
+                                 {:length (.length ^ABlob result-value)
+                                  :hex-string (.toHexString ^ABlob result-value)}
+
+                                 :else
+                                 (try
+                                   (convex/datafy result-value)
+                                   (catch Exception ex
+                                     (log/error ex "Result wrapping failed to datafy result-value. It will fallback to `(str result-value)`.")
+
+                                     (str result-value))))
+
+          result-value-metadata (result-metadata (source command) (language command) result-value)
+
           _ (when result-error-code
               (log/error "Command returned an error:" result-error-code result-value))
 
           ;; Command status.
           command' (if result
                      (merge #:convex-web.command {:id result-id
-                                                  :object result-value
+                                                  :object result-value-coerced
+                                                  :metadata result-value-metadata
                                                   :status
                                                   (if result-error-code
                                                     :convex-web.command.status/error
@@ -254,12 +326,7 @@
                                                 :convex-web.command/query
                                                 :convex-web.command/transaction])
 
-                          command')
-
-          ;; Wrapped Command.
-          command' (-> command'
-                       (wrap-result-metadata)
-                       (wrap-result))]
+                          command')]
 
       command')))
 
