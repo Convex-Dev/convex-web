@@ -56,18 +56,6 @@
 (defn db []
   @(system/db-conn system))
 
-(defn commands
-  ([]
-   (sort-by :convex-web.command/id (d/q '[:find [(pull ?e [*]) ...]
-                                          :in $
-                                          :where [?e :convex-web.command/id _]]
-                                        @(system/db-conn system))))
-  ([status]
-   (filter
-     (fn [command]
-       (= status (:convex-web.command/status command)))
-     (commands))))
-
 (comment
 
   ;; -- Reset database
@@ -120,12 +108,6 @@
 
   (convex/consensus-point (convex/peer-order (peer)))
 
-
-  ;; -- Query commands
-  (commands)
-  (commands :convex-web.command.status/running)
-  (commands :convex-web.command.status/success)
-  (commands :convex-web.command.status/error)
 
   ;; -- Execute
 
