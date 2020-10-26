@@ -132,7 +132,7 @@
     (json/read-str (slurp x) :key-fn (or key-fn keyword))))
 
 (def handler-exception-message
-  "An unhandled exception was thrown during the handler execution.")
+  "Handler raised an Exception.")
 
 (defn error [message & [data]]
   {:error (merge {:message message}
@@ -423,7 +423,12 @@
 
         result (peer/query (system/convex-peer-server system) form {:address address})
 
-        result-response (merge {:value (convex/datafy result)}
+        result-response (merge {:value
+                                (try
+                                  (convex/datafy result)
+                                  (catch Exception ex
+                                    (log/error ex "Can't datafy result. Will fallback to `(str result)`.")
+                                    (str result)))}
                                (when (instance? AExceptional result)
                                  {:error-code (convex/datafy (.getCode result))}))]
 

@@ -3,7 +3,7 @@
 
             [convex-web.convex :as convex]
             [convex-web.test :refer :all])
-  (:import (convex.core.data Address Maps)
+  (:import (convex.core.data Address Blob)
            (convex.core Init)))
 
 (use-fixtures :once (spec-fixture))
@@ -12,48 +12,42 @@
 
 (deftest datafy-test
   (testing "Char"
-    (is (instance? java.lang.Character (convex/datafy (convex/execute context \n)))))
-
-  (testing "String"
-    (is (instance? java.lang.String (convex/datafy (convex/execute context "String")))))
+    (is (= \n (convex/datafy (convex/execute context \n)))))
 
   (testing "Long"
-    (is (instance? java.lang.Long (convex/datafy (convex/execute context 1)))))
+    (is (= 1 (convex/datafy (convex/execute context 1)))))
 
   (testing "Double"
-    (is (instance? Double (convex/datafy (convex/execute context 1.0)))))
+    (is (= 1.0 (convex/datafy (convex/execute context 1.0)))))
 
   (testing "Keyword"
-    (is (instance? clojure.lang.Keyword (convex/datafy (convex/execute context :a)))))
+    (is (= :a (convex/datafy (convex/execute context :a)))))
 
   (testing "Symbol"
-    (is (instance? clojure.lang.Symbol (convex/datafy (convex/execute context 's))))
-    (is (instance? clojure.lang.Symbol (convex/datafy (convex/execute context 'a/b)))))
+    (is (= 's (convex/datafy (convex/execute context 's))))
+    (is (= 'a/b (convex/datafy (convex/execute context 'a/b)))))
 
   (testing "List"
-    (is (instance? clojure.lang.ISeq (convex/datafy (convex/execute context '())))))
+    (is (= '() (convex/datafy (convex/execute context '())))))
 
   (testing "Vector"
-    (is (instance? clojure.lang.IPersistentVector (convex/datafy (convex/execute context [])))))
+    (is (= [] (convex/datafy (convex/execute context [])))))
 
   (testing "Map"
-    (is (instance? clojure.lang.IPersistentMap (convex/datafy (convex/execute context {})))))
+    (is (= {} (convex/datafy (convex/execute context {})))))
 
   (testing "Set"
-    (is (instance? clojure.lang.IPersistentSet (convex/datafy (convex/execute context #{})))))
+    (is (= #{} (convex/datafy (convex/execute context #{})))))
 
-  (testing "Custom types"
-    (let [address (Address/fromHex "D0F65BB5d87316D6b7d74dbb93da3D7E416f8B0aF8FffbBD1f276A15f4907bfE")]
-      (is (= {"0xD0F65BB5d87316D6b7d74dbb93da3D7E416f8B0aF8FffbBD1f276A15f4907bfE" 1}
-             (convex/datafy (Maps/create address 1))))
+  (testing "Address"
+    (is (= (.toChecksumHex Init/HERO) (convex/datafy Init/HERO))))
 
-      (is (= {"D0F65BB5d87316D6b7d74dbb93da3D7E416f8B0aF8FffbBD1f276A15f4907bfE" 1}
-             (convex/datafy (Maps/create address 1) {:default
-                                                     (fn [x]
-                                                       (condp instance? x
-                                                         Address (.toChecksumHex ^Address x)
+  (testing "Blob"
+    (is (= (.toHexString (Blob/create (.getBytes "Text"))) (convex/datafy (Blob/create (.getBytes "Text"))))))
 
-                                                         nil))}))))))
+  (testing "Can't datafy"
+    (testing "java.lang.String"
+      (is (= "Can't datafy object 'String'." (.getMessage (catch-throwable (convex/datafy "String"))))))))
 
 (deftest address-test
   (testing "Can't coerce nil"

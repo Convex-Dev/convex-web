@@ -103,55 +103,58 @@
     :symbol))
 
 (defn datafy
-  ([x]
-   (datafy x {:default str}))
-  ([x {:keys [default]}]
-   (let [datafy #(datafy % {:default default})]
-     (condp instance? x
-       Boolean
-       x
+  "Datafy a Convex object `x` to Clojure.
 
-       Character
-       x
+   Throws if there isn't a mapping of a Convex object to Clojure."
+  [x]
+  (condp instance? x
+    Boolean
+    x
 
-       Long
-       x
+    Character
+    x
 
-       Double
-       x
+    Long
+    x
 
-       String
-       x
+    Double
+    x
 
-       AString
-       (.toString x)
+    AString
+    (.toString x)
 
-       Keyword
-       (keyword (.toString (.getName x)))
+    Keyword
+    (keyword (.toString (.getName x)))
 
-       Symbol
-       (symbol (some-> x (.getNamespace) (.getName) (.toString)) (.toString (.getName x)))
+    Symbol
+    (symbol (some-> x (.getNamespace) (.getName) (.toString)) (.toString (.getName x)))
 
-       AList
-       (map datafy x)
+    AList
+    (map datafy x)
 
-       AVector
-       (mapv datafy x)
+    AVector
+    (mapv datafy x)
 
-       AMap
-       (reduce
-         (fn [m [k v]]
-           (assoc m (datafy k) (datafy v)))
-         {}
-         x)
+    AMap
+    (reduce
+      (fn [m [k v]]
+        (assoc m (datafy k) (datafy v)))
+      {}
+      x)
 
-       ASet
-       (into #{} (map datafy x))
+    ASet
+    (into #{} (map datafy x))
 
-       Syntax
-       (datafy (.getValue ^Syntax x))
+    Address
+    (.toChecksumHex ^Address x)
 
-       (default x)))))
+    Blob
+    (.toHexString ^Blob x)
+
+    Syntax
+    (datafy (.getValue ^Syntax x))
+
+    (throw (ex-info (str "Can't datafy object '" x "'.") {:object x}))))
 
 (defn ^Address address [x]
   (cond
@@ -271,7 +274,10 @@
 (defn syntax-data [^Syntax syn]
   #:convex-web.syntax {:source (.getSource syn)
                        :meta (datafy (.getMeta syn))
-                       :value (datafy (.getValue syn))})
+                       :value (try
+                                (datafy (.getValue syn))
+                                (catch Exception _
+                                  (str (.getValue syn))))})
 
 (defn environment-data
   "Account Status' environment data.

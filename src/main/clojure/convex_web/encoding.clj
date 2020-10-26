@@ -17,10 +17,7 @@
 
    Returns a Transit JSON-encoded string."
   [x]
-  (try
-    (let [out (ByteArrayOutputStream. 4096)
-          writer (t/writer out :json)]
-      (t/write writer x)
-      (.toString out))
-    (catch Exception _
-      (transit-encode (str x)))))
+  (let [out (ByteArrayOutputStream. 4096)
+        writer (t/writer out :json)]
+    (t/write writer x)
+    (.toString out)))

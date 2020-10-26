@@ -44,7 +44,12 @@
                              :hex-string (.toHexString ^ABlob object)}
 
                             :else
-                            (convex/datafy object))))
+                            (try
+                              (convex/datafy object)
+                              (catch Exception ex
+                                (log/error ex "Result wrapping failed to datafy object. It will fallback to `(str object)`.")
+
+                                (str object))))))
 
 (s/fdef wrap-result
   :args (s/cat :command :convex-web/command)

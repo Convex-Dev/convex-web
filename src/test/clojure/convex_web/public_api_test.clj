@@ -102,8 +102,7 @@
 
       (is (= 200 (get response :status)))
       ;; FIXME
-      #_(is (= {:error-code "NOBODY"
-                :value "ErrorValue[:NOBODY]"} response-body))))
+      (is (= {:error-code "NOBODY"} (select-keys response-body [:error-code])))))
 
   (testing "Type error"
     (let [response @(client/POST-public-v1-query (server-url) {:address (.toChecksumHex Init/HERO) :source "(map inc 1)"})
