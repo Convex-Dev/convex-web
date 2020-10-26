@@ -48,12 +48,16 @@
 
   ;; IMPORTANT
   ;; `com.google.cloud/google-cloud-logging-logback` has a transitive
-  ;; dependency with `com.google.guava/guava` version `29.0-android`.
-  ;; The issue is that version `29.0-android`
+  ;; dependency with `com.google.guava/guava` version `30.0-android`.
+  ;; The issue is that version `30.0-android`
   ;; doesn't have the class `com.google.common.collect.Streams`,
   ;; which is required by the ClojureScript compiler,
-  ;; so Shadow CLJS release fails (npx shadow-cljs release main).
-  com.google.guava/guava {:mvn/version "29.0-jre"}
+  ;; so Shadow CLJS release fails with this message:
+  ;; ```
+  ;; Execution error (ClassNotFoundException) at jdk.internal.loader.BuiltinClassLoader/loadClass (BuiltinClassLoader.java:606).
+  ;; com.google.common.collect.Streams
+  ;; ```
+  com.google.guava/guava {:mvn/version "30.0-jre"}
 
   com.brunobonacci/mulog {:mvn/version "0.5.0"}
 
