@@ -15,7 +15,7 @@
     "jdenticon": "^3.0.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
-    "react-markdown": "^5.0.0",
+    "react-markdown": "^5.0.2",
     "react-tippy": "^1.4.0",
     "timeago.js": "^4.0.2"
   },
