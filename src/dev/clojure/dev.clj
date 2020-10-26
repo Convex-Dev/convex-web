@@ -38,13 +38,16 @@
   (fn [_]
     (component/system :dev)))
 
-(def context (Context/createFake Init/STATE))
+(def context (Context/createFake Init/STATE Init/HERO))
 
 (defn ^Peer peer []
   (peer/peer (system/convex-server system)))
 
 (defmacro execute [form]
   `(convex/execute context ~form))
+
+(defn execute-string [source]
+  (convex/execute-string context source))
 
 (defmacro execute-query [& form]
   `(let [^String source# ~(str/join " " form)]
@@ -132,6 +135,8 @@
   (execute "Hello")
   (execute (map inc [1 2 3]))
   (execute x)
+
+  (execute-string "(fn [x] x)")
 
   (convex/execute-scrypt context "def x = 1;")
   (convex/execute-scrypt context "do { inc(1); }")

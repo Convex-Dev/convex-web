@@ -5,7 +5,7 @@
 
             [cognitect.anomalies :as anomalies])
   (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString)
-           (convex.core.lang Core Reader ScryptNext RT)
+           (convex.core.lang Core Reader ScryptNext RT Context)
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke Call)
@@ -35,6 +35,12 @@
      (if (.isExceptional context#)
        (.getExceptional context#)
        (.getResult context#))))
+
+(defn execute-string [^Context context ^String source]
+  (let [new-context (.execute context (.getResult (.expandCompile context (Reader/read source))))]
+    (if (.isExceptional new-context)
+      (.getExceptional new-context)
+      (.getResult new-context))))
 
 (defn execute-scrypt [context source]
   (let [context (.execute context (.getResult (.expandCompile context (ScryptNext/readSyntax source))))]
