@@ -443,21 +443,23 @@
 
                   ;; -- Output
                   [:div.flex.flex-col
-                   (let [type (get-in command [:convex-web.command/metadata :type])]
+                   (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
                      [:div.flex.mb-1
                       [:span.text-xs.uppercase.text-gray-600
                        (cond
-                         (= type :error)
+                         error?
                          (str "Error " (when-let [code (get-in command [:convex-web.command/error :code])]
                                          (str "(" (name code) ")")))
 
                          :else
                          "Result")]
 
-                      (when (and type (not= :error type))
-                        [gui/Tooltip
-                         (str/capitalize (name type))
-                         [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]])])
+                      ;; Don't display result type for errors.
+                      (when-not error?
+                        (when-let [type (get-in command [:convex-web.command/metadata :type])]
+                          [gui/Tooltip
+                           (str/capitalize (name type))
+                           [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
 
                    [:div.flex
                     (case status
