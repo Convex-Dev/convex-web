@@ -8,48 +8,29 @@
             [clojure.spec.alpha :as s]
             [clojure.tools.logging :as log]
             [clojure.stacktrace :as stacktrace]
-            [clojure.pprint :as pprint]
 
             [datalevin.core :as d])
   (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
            (convex.core.lang Reader Symbols)
            (convex.core Result)))
 
-(defn source [{:convex-web.command/keys [transaction query]}]
-  (or (get query :convex-web.query/source)
-      (get transaction :convex-web.transaction/source)))
+(defn source [command]
+  (let [{:convex-web.command/keys [transaction query]} command]
+    (or (get query :convex-web.query/source)
+        (get transaction :convex-web.transaction/source))))
 
 (s/fdef source
   :args (s/cat :command :convex-web/command)
   :ret :convex-web/non-empty-string)
 
-(defn language [{:convex-web.command/keys [transaction query]}]
-  (or (get query :convex-web.query/language)
-      (get transaction :convex-web.transaction/language)))
+(defn language [command]
+  (let [{:convex-web.command/keys [transaction query]} command]
+    (or (get query :convex-web.query/language)
+        (get transaction :convex-web.transaction/language))))
 
 (s/fdef language
   :args (s/cat :command :convex-web/command)
   :ret :convex-web/language)
-
-;; --
-
-(defn wrap-result [{:convex-web.command/keys [object] :as command}]
-  (assoc command ::object (cond
-                            (instance? Address object)
-                            {:hex-string (.toHexString object)
-                             :checksum-hex (.toChecksumHex object)}
-
-                            (instance? ABlob object)
-                            {:length (.length ^ABlob object)
-                             :hex-string (.toHexString ^ABlob object)}
-
-                            :else
-                            (try
-                              (convex/datafy object)
-                              (catch Exception ex
-                                (log/error ex "Result wrapping failed to datafy object. It will fallback to `(str object)`.")
-
-                                (str object))))))
 
 ;; --
 
