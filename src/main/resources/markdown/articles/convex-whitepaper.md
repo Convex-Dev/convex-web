@@ -2,17 +2,21 @@
 
 ## Overview
 
-Decentralised networks offer the opportunity to provide a true peer-to-peer system for the value exchange involving digital assets and services - a vision that might well be called the "Internet Of Value". However, existing decentralised networks have notable weaknesses including poor performance, high energy consumption, long transactions confirmation times, vulnerability to "front-running" attacks and/or lack of truly decentralised security.
+Decentralised networks offer the opportunity to provide a true peer-to-peer system for the value exchange involving digital assets and services, protected at the protocol level by cryptographic keys that can be issued an managed on a self-sovereign basis - a vision that might well be called the "Internet Of Value". 
 
-We propose a novel solution based upon merging beliefs shared by peers using a function that is idempotent, commutative and associative, and thus creates a system that provably converges to consensus by forming a conflict-free replicated data type (CRDT). By augmenting this with a system of staking (DPoS), it is possible to guarantee convergence to consensus even in the presence of some proportion of malicious / byzantine peers.
+However, existing decentralised networks have notable weaknesses including poor performance, high energy consumption, long transactions confirmation times, vulnerability to "front-running" attacks and/or lack of truly decentralised security.
+
+We present Convex, a trustless decentralised platform for value exchange. Convex achieves consensus with a novel technical solution based upon merging beliefs shared by peers using a function that is idempotent, commutative and associative, and thus creates a system that provably converges to consensus by forming a conflict-free replicated data type (CRDT). By augmenting this with a system of staking (DPoS), it is possible to guarantee convergence to consensus even in the presence of some proportion of malicious / byzantine peers.
 
 We augment this system with a execution engine, building on the lambda calculate, immutable persistent data structures and content addressable storage. Coupled with the consensus algorithm, this provides a fully decentralised, global computer capable of executing arbitrary smart contracts with decentralised ownership (the "Convex Virtual Machine").
 
 ## Introduction
 
-Convex is a programmable environment that is globally shared on a decentralised network: a "public computer" that everyone can access but where nobody has absolute control.
+Convex is a programmable environment that is globally shared on a trustless decentralised network: a "public computer" that everyone can access but where nobody has absolute control.
 
-The motivation for the development of a system of this nature is because it can support a wide variety of decentralised applications. In particular, the "sweet spot" might be regarded as scenarios where there is a need for globally consistent shared state, but where a centralised solution is not desirable. Some examples might include:
+The motivation for the development of a system of this nature is because it can act as the foundation for the Internet of Value - a system of decentralised value exchange built in the open spirit of the original Internet.
+
+Decentralised applications are comparatively simple to build upon Convex. In particular, the "sweet spot" might be regarded as scenarios where there is a need for globally consistent shared state, but where a centralised solution is not desirable. Some examples might include:
 
 * Games and entertainment where rules include ownership of digital assets
 * Implementation of cryptocurrencies, utility tokens, and other forms of decentralised assets
@@ -21,7 +25,7 @@ The motivation for the development of a system of this nature is because it can 
 * Immutable records of document / data provenance
 * Publicly accessible databases and registries
 
-Some highlights of the Convex design include:
+Some technical highlights of the Convex design include:
 
 * **Actors**: Programs that execute autonomously in the Convex environment with deterministic and verifiable behaviour, suitable for managing assets and enforcing Smart Contracts
 * **Convex Virtual Machine (CVM)** - a fully Turing complete programming and execution environment, with a novel combination of language features to facilitate writing decentralised applications. We manage to implement a working Lisp compiler "on-chain".
@@ -82,8 +86,6 @@ Other technical challenges became apparent over time. Some notable issues:
 * **Cross chain integration** presents a particular problem where different decentralised platforms provide different specialised capabilities, but need to be integrated to form a combined solution. The problems of maintaining consensus, security, reliability etc. are magnified in such situations.
 * **Latency** - The time taken for most blockchains to reach final consensus is too long to offer a positive user experience. This inability to provide quick confirmation and feedback is a significant barrier to mainstream user adoption of decentralised applications.
 * **Upgradability** both networks themselves, and the specific implementations of smart contracts, are difficult to upgrade, in some cases requiring a "hard fork" of the network.
-
-
 
 
 ## Convex Overview
@@ -519,7 +521,7 @@ The CVM defines a small runtime system ("core") that provides CVM capabilities t
 
 * Standard language control structures (loops, conditionals, error handling etc.)
 * Basic numerical functions (focused on 64-bit integer and IEEE 764 double precision floats)
-* Functions to manipulate and manage data structures (vectors, lists, maps sets)
+* Functions to manipulate and manage immutable persistent data structures (vectors, lists, maps sets)
 * Control of assets native to the Convex network, such as balances and stake
 * Ability to interact with Actors (deploying Actors, calling Actor functions)
 * Functionality useful for managing CVM state updates, e.g. transaction rollback
@@ -529,15 +531,9 @@ The core system is designed so that these low level capabilities can be easily c
 
 At the same time, the capabilities of the runtime system are constrained so that they cannot break the rules of CVM execution necessary for deterministic state updates. There is no external IO capability, no ability for non-deterministic behaviour, and no ability to affect CVM state in a way that breaks the security model. CVM code is therefore "sandboxed" from the perspective of the Convex system as a whole.
 
-#### Garbage collection
-
-The CVM automatically garbage collects objects to which references are no longer maintained.
-
-Peer operators may periodically choose to garbage collect old state from long term storage, or alternatively maintain old state for historical analysis. Peers are only required to maintain object information necessary to execute the consensus algorithm (belief structures plus the proportion of CVM state relating to Peer information and stakes).
-
 #### Transparent persistence
 
-The Convex execution engine implements a form of transparent (sometimes also known as orthogonal prsistence). In this model, the CVM state size may exceed the working memory capacity of a Peer, and necessary parts of the state tree are loaded in from persistent storage on demand.
+The Convex execution engine implements a form of transparent (sometimes also known as orthogonal persistence). In this model, the CVM state size may exceed the working memory capacity of a Peer, and necessary parts of the state tree are loaded in from persistent storage on demand.
 
 This presents a significant conceptual benefit for the developer: there is no need to write any code to load or unload data from storage in normal CVM code. This imposes some additional implementation complexity for the CVM itself, but this is considered a worthwhile trade-off, especially since it simplifies the logic of other parts of the Convex Peer implementation (e.g. eliminates the need to explicitly handle the memory consumption growth of block orderings generated by the consensus algorithm over time). 
 
@@ -548,7 +544,7 @@ The CVM includes a small, dynamically typed, embedded Lisp suitable for general 
 Lisp was chosen as the first language implementation in Convex for the following reasons:
 
 * It can be constructed using a very small number of axiomatic primitives, which in turn are based on the Lambda Calculus. This provides a robust logical and mathematical foundation, suitable for the type of verifiable, deterministic computations that the CVM must support.
-* Lisp has a very simple regular syntax, homoiconic nature of code and ability to implement powerful macros. We hope this provides the basis for innovative new languages and domain-specific langauges (DSLs) on the CVM.
+* Lisp has a very simple regular syntax, homoiconic nature of code and ability to implement powerful macros. We hope this provides the basis for innovative new languages and domain-specific languages (DSLs) on the CVM.
 * Lisp compilers are small enough and practical enough to include as a capability within the CVM, avoiding the need for external compilers and tools to generate CVM code.
 * It is comparatively simple to implement, reducing the risk of bugs in the CVM implementation (which may require a protocol update to correct).
 * Lisp is well suited for interactive usage at a REPL prompt. This facilitates rapid prototyping and development of Actors in a way that we believe is a significant advantage for decentralised application builders looking to test and prototype new ideas.
@@ -557,11 +553,11 @@ Developers using the Convex system are not required to use Convex Lisp: It is pe
 
 Convex Lisp draws inspiration from Common Lisp, Racket and Clojure. It is designed as primarily a functional language, with fully immutable data structures, as it is our belief that functional programming forms a strong foundation for building robust, secure systems.
 
-#### Execution worlds
+#### Environments
 
-A feature of the Convex account model is that each account receives it's own programmatic environment where variables, data structures and code can be dynamically defined and updated. Definitions held within different accounts cannot collide: they have isolated namespaces.
+A novel feature of the Convex Account model is that each account receives it's own programmatic environment where variables, data structures and code can be dynamically defined and updated. Definitions held within different accounts cannot collide: they have isolated namespaces.
 
-* For User Accounts, this behaves like a small programmable sandbox completely under the control of the user account.
+* For User Accounts, this behaves like a small programmable sandbox completely under the control of the user.
 * For Actor Accounts, this can be used to store Actor code and state required for the operation of the Actor. The deployment of the Actor is in effect equivalent to creating the Actor Account and initialising the Actor's environment, with subsequent changes to the environment controlled by a set of exported functions that can be externally called.
 
 We believe this is an useful model to encourage rapid development and innovation: for example, a developer can easily experiment with code in their own user account, then capture the same code in the definition of a deployable Actor for production usage.
@@ -575,6 +571,19 @@ The main purpose of the Schedule is to allow Actors to implement autonomous beha
 The schedule is **unstoppable**, in the sense that once the consensus timestamp advances based a scheduled execution time, the associated code is automatically executed. This execution is guaranteed to happen before any other transactions in a block submitted on or after the same timestamp.
 
 Scheduled executions currently cannot be cancelled, but this is not considered to be a serious limitation: Actors can simply implement code to ignore the event if it is no longer relevant.
+
+#### Garbage collection
+
+The CVM automatically garbage collects objects to which references are no longer maintained. The choice of including garbage collection in the CVM is motivated by the following factors:
+
+* **Convenience** - developers need not be concerned with manual memory management. In general, this is a significant productivity win.
+* **Performance** Given a focus on immutable data, garbage collection offers significant performance advantages because references can be shared internally within the CVM implementation, as opposed to relying on expensive "copy on write" approaches.
+* **Security** - Mistakes in memory management are one of the most common types of defect, often resulting in significant security issues (e.g. "buffer overruns"). Such risks are generally unacceptable for smart contract code securing significant digital assets.
+
+Short lived objects are garbage collected by the host runtime (the JVM). This will happen for most temporary objects created during the execution of CVM code. For those data objects that are persisted to long term storage (e.g. because they become part of the updated CVM state), the host runtime may garbage-collect the in-memory copy.
+
+Peer operators may also choose to either garbage collect old persisted state from long term storage, or alternatively maintain old state for historical analysis. Peers are only required to maintain object information necessary to execute the consensus algorithm (belief structures plus the proportion of CVM state relating to Peer information and stakes). For more details, see the section on Convergent Immutable Storage.
+
 
 ### Convergent Immutable Storage
 
@@ -593,15 +602,16 @@ All Cells have a unique Encoding.
 
 The encoding is designed to provide the following properties:
 
-* A bounded maximum encoding size for any Cell
+* A bounded maximum encoding size for any Cell (currently 8191 bytes)
 * Very fast serialisation and deserialisation, with minimal requirements for temporary object allocation.
 * Uniqueness of encoding - there is a 1:1 mapping between object values and valid encodings. This means that Data Object equality can be determined by comparing hashes of encodings.
-* Self describing format: given an valid encoding, the Data Object can be reconstructed without additional context
+* Self describing format: given an valid Cell encoding, the Data Object can be reconstructed without additional context
 
 #### Embedding
 
 Small Data Objects are Embedded within another Cell (e.g. a Cell representing part of a larger data structure). In most cases, this avoids the need to construct and store separate cells for small primitive values.
 
+Currently, most data objects with an encoding size of up to 140 bytes are embedded. 
 
 #### Cell IDs as storage keys
 
@@ -664,7 +674,7 @@ This behaviour is of course configurable by Peer Operators - we expect some will
 
 ### Cryptographic Primitives
 
-Convex uses cryptographic primitives for the following functions.
+Convex uses cryptographic primitives for the following functions:
 
 * Digital Signature (Using Ed25519)
   * For every Transaction submitted
@@ -673,7 +683,7 @@ Convex uses cryptographic primitives for the following functions.
 * Cryptographic Hashes (SHA3-256)
   * For every Cell which forms part of a Decentralised Data Object, a cryptographic hash of its byte encoding is computed for identity, indexing and verification purposes
 
-As an engineering principle, Convex only used trusted implementations of cryptographic algorithms in well tested libraries (currently Bouncy Castle, and the cryptographic routines available as standard in the JVM). We do not intend to "roll our own" with respect to crypto algorithms.
+As an engineering principle, Convex only used trusted implementations of cryptographic algorithms in well tested libraries (currently Bouncy Castle, and the cryptographic routines available as standard in the JVM). There is no need to "roll our own" with respect to proven crypto algorithms.
 
 ## Conclusion
 
@@ -681,8 +691,8 @@ Convex presents a new approach to programmable economic systems that provides a 
 
 At the same time, it maintains a certain degree of simplicity. We believe that simple, composable systems offer a more stable and secure foundation to build upon, and Convex therefore features:
 
-* Simple functional programming on the CVM based on the lambda calculus
+* Functional programming on the CVM based on the lambda calculus
 * Immutability for all data structures
-* A comparatively simple consensus algorithm based on CRDTs
+* A surprisingly simple consensus algorithm based on CRDTs
 
 It is our hope that the innovations in Convex and the engineering decisions made will provide a practical, high performance platform for a new generation of decentralised applications.
