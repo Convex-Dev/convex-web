@@ -734,7 +734,7 @@
           max-items (min consensus config/default-range)
           end consensus
           start (- end max-items)]
-      (-successful-response (convex/blocks peer {:start start :end end})))
+      (-successful-response (convex/blocks-data peer {:start start :end end})))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
@@ -778,7 +778,7 @@
                                 :total consensus}
 
                                :convex-web/blocks
-                               (convex/blocks peer {:start start :end end})})))
+                               (convex/blocks-data peer {:start start :end end})})))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error

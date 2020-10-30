@@ -1,5 +1,13 @@
 (ns convex-web.site.gui
   (:require [convex-web.site.format :as format]
+            [convex-web.site.backend :as backend]
+            [convex-web.site.stack :as stack]
+
+            [clojure.string :as str]
+
+            [reagent.core :as reagent]
+            [reitit.frontend.easy :as rfe]
+            [zprint.core :as zprint]
 
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure"]
@@ -10,13 +18,7 @@
 
             ["@tailwindui/react" :as tailwindui-react]
 
-            ["jdenticon" :as jdenticon]
-
-            [reagent.core :as reagent]
-            [reitit.frontend.easy :as rfe]
-            [zprint.core :as zprint]
-            [convex-web.site.stack :as stack]
-            [clojure.string :as str]))
+            ["jdenticon" :as jdenticon]))
 
 (defn event-target-value [event]
   (some-> event
@@ -423,7 +425,9 @@
    [:code.text-xs.text-gray-700 type]])
 
 (defn SymbolStrip [{:keys [symbol syntax on-click]}]
-  (let [{:convex-web.syntax/keys [meta value]} syntax]
+  (let [{syntax-value :convex-web.syntax/value
+         syntax-value-kind :convex-web.syntax/value-kind
+         syntax-meta :convex-web.syntax/meta} syntax]
     [:div.flex.justify-between.items-center
 
      [:div
@@ -440,20 +444,20 @@
         symbol]
 
        ;; -- Type
-       (when-let [type (get-in meta [:doc :type])]
-         [SymbolType type])]
+       (when syntax-value-kind
+         [SymbolType syntax-value-kind])]
 
       ;; -- Value
-      (when-not (str/blank? value)
-        [:div.w-full [Highlight value]])]
+      (when-not (str/blank? syntax-value)
+        [:div.w-full [Highlight syntax-value]])]
 
      ;; -- Description
      [:div
       {:class "flex justify-between w-1/2"}
-      (when-let [description (get-in meta [:doc :description])]
+      (when-let [description (get-in syntax-meta [:doc :description])]
         [:p.text-sm.text-gray-800.ml-10 description])]]))
 
-(defn SymbolMeta2 [{:keys [doc show-examples?] :or {show-examples? true}}]
+(defn SymbolMeta [{:keys [doc show-examples?] :or {show-examples? true}}]
   (let [{:keys [symbol examples type description signature]} doc]
     [:div.flex.flex-col.flex-1.text-sm.p-2
      [:div.flex.items-center
@@ -957,3 +961,73 @@
 
                   [:span.font-mono.block.ml-2
                    (format/prefix-0x address)]]])]]]]]]))))
+
+
+(defn AddressRenderer [object]
+  (reagent/with-let [account-ref (reagent/atom {:ajax/status :ajax.status/pending})
+
+                     _ (backend/GET-account
+                         object
+                         {:handler
+                          (fn [account]
+                            (reset! account-ref {:account account
+                                                 :ajax/status :ajax.status/success}))
+
+                          :error-handler
+                          (fn [error]
+                            (js/console.error error)
+                            (reset! account-ref {:ajax/status :ajax.status/error
+                                                 :ajax/error error}))})]
+    [:div.flex.flex-col.bg-white.rounded.shadow.p-2
+     [:span.text-xs.text-indigo-500.uppercase "Address"]
+     [:div.flex.items-center
+      [:a.hover:underline.mr-2
+       {:href (rfe/href :route-name/account-explorer {:address object})}
+       [:div.flex.items-center
+
+        ;; *Important*
+        ;; Display identicon if and only if address is an existing Account.
+        (when (= :ajax.status/success (:ajax/status @account-ref))
+          [Identicon {:value object :size identicon-size-small}])
+
+        [:code.text-xs (format/prefix-0x object)]]]
+
+      [ClipboardCopy (format/prefix-0x object)]]
+
+     (case (:ajax/status @account-ref)
+       :ajax.status/pending
+       [SpinnerSmall]
+
+       :ajax.status/error
+       [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])]
+
+       :ajax.status/success
+       [:<>
+        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
+        (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
+          [:span.text-xs.uppercase (format/format-number balance)])
+
+        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
+        (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
+          [:span.text-xs.uppercase type])])]))
+
+(defn BlobRenderer [object]
+  [:div.flex.flex-1.bg-white.rounded.shadow
+   [:div.flex.flex-col.p-2
+    [:span.text-xs.text-indigo-500.uppercase.mt-2
+     "HEX"]
+    [:div.flex
+     [:code.text-xs.mr-2
+      object]
+
+     [ClipboardCopy (str "0x" object)]]]])
+
+(defn ObjectRenderer [object kind]
+  (case kind
+    :address
+    [AddressRenderer object]
+
+    :blob
+    [BlobRenderer object]
+
+    [Highlight (prn-str object)]))

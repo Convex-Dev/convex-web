@@ -2,7 +2,8 @@
   (:require [convex-web.site.gui :as gui]))
 
 (defn EntryPage [_ {:keys [symbol syntax]} _]
-  (let [{:convex-web.syntax/keys [meta value]} syntax
+  (let [{syntax-value :convex-web.syntax/value
+         syntax-value-kind :convex-web.syntax/value-kind} syntax
 
         caption-style "text-gray-600 text-base"
         caption-container-style "flex flex-col space-y-1 leading-none"]
@@ -17,9 +18,7 @@
      ;; -- Value
      [:div {:class caption-container-style}
       [:span {:class caption-style} "Value"]
-      [:div.flex.items-center..space-x-2
-       [gui/Highlight value {:pretty? true}]
-       [gui/ClipboardCopy value]]]]))
+      [gui/ObjectRenderer syntax-value syntax-value-kind]]]))
 
 (def entry-page
   #:page {:id :page.id/environment-entry

@@ -31,7 +31,7 @@
             :ref (fn [el]
                    (when (and el (= symbol (:symbol state)))
                      (.scrollIntoView el)))}
-           [gui/SymbolMeta2 metadata]
+           [gui/SymbolMeta metadata]
 
            [:hr.my-2]]))]
 
