@@ -321,17 +321,14 @@
 
         {:page/keys [title component]} page]
 
-    [:div.fixed.flex.justify-center.items-center.inset-0.overflow-y-auto.z-10
+    [:<>
 
-     ;; -- Background
-     [:div.fixed.inset-0.transition-opacity
-      [:div.absolute.inset-0.bg-gray-500.opacity-75]]
+     ;; Overlay
+     [:div.fixed.inset-0.bg-gray-500.opacity-75.z-50]
 
-     ;; -- Content
-     [:div.flex
-      {:class "transform transition-all"}
-
-      [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
+     ;; Modal
+     [:div.fixed.inset-0.flex.justify-center.items-center.z-50
+      [:div.flex.flex-col.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
 
        ;; -- Header
        [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
