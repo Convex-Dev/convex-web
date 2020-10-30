@@ -963,7 +963,7 @@
                    (format/prefix-0x address)]]])]]]]]]))))
 
 
-(defn ObjectRendererAddress [object _]
+(defn AddressRenderer [object]
   (reagent/with-let [account-ref (reagent/atom {:ajax/status :ajax.status/pending})
 
                      _ (backend/GET-account
@@ -1011,9 +1011,23 @@
         (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
           [:span.text-xs.uppercase type])])]))
 
+(defn BlobRenderer [object]
+  [:div.flex.flex-1.bg-white.rounded.shadow
+   [:div.flex.flex-col.p-2
+    [:span.text-xs.text-indigo-500.uppercase.mt-2
+     "HEX"]
+    [:div.flex
+     [:code.text-xs.mr-2
+      object]
+
+     [ClipboardCopy (str "0x" object)]]]])
+
 (defn ObjectRenderer [object kind]
   (case kind
     :address
-    [ObjectRendererAddress object kind]
+    [AddressRenderer object]
+
+    :blob
+    [BlobRenderer object]
 
     [Highlight (prn-str object)]))

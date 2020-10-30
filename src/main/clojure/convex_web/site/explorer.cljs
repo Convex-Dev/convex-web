@@ -168,7 +168,7 @@
      (case type
        :convex-web.transaction.type/invoke
        (let [{result-value :convex-web.result/value
-              result-value-kind :convex-web.result/value
+              result-value-kind :convex-web.result/value-kind
               result-error-code :convex-web.result/error-code} result]
          [:div.flex.flex-col.space-y-2
           [:div.flex.space-x-1
