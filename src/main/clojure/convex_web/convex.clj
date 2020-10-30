@@ -319,10 +319,10 @@
       (.getAccount Init/HERO)
       (.getSequence)))
 
-(defn ^Transfer transfer [{:keys [nonce target amount]}]
+(defn ^Transfer transfer-transaction [{:keys [nonce target amount]}]
   (Transfer/create ^Long nonce (address target) ^Long amount))
 
-(defn ^Invoke invoke [^Long nonce ^Object command]
+(defn ^Invoke invoke-transaction [^Long nonce ^Object command]
   (Invoke/create nonce command))
 
 (defn ^SignedData sign [^AKeyPair signer ^ATransaction transaction]
@@ -376,7 +376,7 @@
   (let [^AKeyPair generated-key-pair (AKeyPair/generate)
         ^Address generated-address (.getAddress generated-key-pair)]
 
-    (->> (transfer {:nonce nonce :target generated-address :amount 100000000})
+    (->> (transfer-transaction {:nonce nonce :target generated-address :amount 100000000})
          (sign signer)
          (transact client))
 
@@ -385,7 +385,7 @@
 (defn ^Result faucet
   "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
   [^Convex client {:keys [nonce target amount]}]
-  (->> (transfer {:nonce nonce :target target :amount amount})
+  (->> (transfer-transaction {:nonce nonce :target target :amount amount})
        (sign Init/HERO_KP)
        (transact client)))
 

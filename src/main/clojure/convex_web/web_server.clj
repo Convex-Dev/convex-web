@@ -373,9 +373,9 @@
 
             nonce (inc (convex/hero-sequence (peer/peer (system/convex-server system))))
 
-            transfer (convex/transfer {:nonce nonce
-                                       :target address
-                                       :amount amount})
+            transfer (convex/transfer-transaction {:nonce nonce
+                                                   :target address
+                                                   :amount amount})
 
             result @(.transact client transfer)
             result-response (merge {:id (.getID result)

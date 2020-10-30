@@ -157,12 +157,12 @@
 
             atransaction (case type
                            :convex-web.transaction.type/invoke
-                           (convex/invoke next-sequence-number (convex/read-source source language))
+                           (convex/invoke-transaction next-sequence-number (convex/read-source source language))
 
                            :convex-web.transaction.type/transfer
-                           (convex/transfer {:nonce next-sequence-number
-                                             :target target
-                                             :amount amount}))]
+                           (convex/transfer-transaction {:nonce next-sequence-number
+                                                         :target target
+                                                         :amount amount}))]
         (try
           (let [^Result r (->> (convex/sign (convex/create-key-pair key-pair) atransaction)
                                (convex/transact (system/convex-client system)))
