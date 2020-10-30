@@ -48,7 +48,7 @@
   [:div.h-screen.flex.justify-center
    [:div.flex.flex-col.items-center.mt-6.space-y-10
     [:a
-     {:href (rfe/href :route-name/welcome )
+     {:href (rfe/href :route-name/welcome)
       :alt "Back to Convex : The Internet of Value"}
      [gui/ConvexLogo {:width "120px" :height "120px"}]]
 
@@ -321,15 +321,15 @@
 
         {:page/keys [title component]} page]
 
-    [:div {:class "fixed flex justify-center z-10 inset-0 overflow-y-auto"}
+    [:div.fixed.flex.justify-center.items-center.inset-0.overflow-y-auto.z-10
 
      ;; -- Background
      [:div.fixed.inset-0.transition-opacity
       [:div.absolute.inset-0.bg-gray-500.opacity-75]]
 
      ;; -- Content
-     [:div
-      {:class "inline-block px-4 pt-20 pb-4 transform transition-all"}
+     [:div.flex
+      {:class "transform transition-all"}
 
       [:div.flex.flex-col.flex-1.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
 
@@ -349,7 +349,9 @@
             :on-click #(stack/pop)}]]]]
 
        ;; -- Body
-       [:div.flex.flex-1.overflow-auto
+       [:div.flex.flex-1.max-h-full.overflow-auto
+        {:style
+         {:max-height "600px"}}
         [component frame state set-state]]]]]))
 
 ;; TODO This should be extracted into a "generic" component, so it can be used in other parts of the site.
