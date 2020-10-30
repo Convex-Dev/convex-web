@@ -157,7 +157,7 @@
 
             atransaction (case type
                            :convex-web.transaction.type/invoke
-                           (peer/invoke-transaction next-sequence-number source language)
+                           (convex/invoke next-sequence-number (convex/read-source source language))
 
                            :convex-web.transaction.type/transfer
                            (convex/transfer {:nonce next-sequence-number

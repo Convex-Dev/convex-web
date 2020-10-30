@@ -322,9 +322,11 @@
 (defn ^Transfer transfer [{:keys [nonce target amount]}]
   (Transfer/create ^Long nonce (address target) ^Long amount))
 
+(defn ^Invoke invoke [^Long nonce ^Object command]
+  (Invoke/create nonce command))
+
 (defn ^SignedData sign [^AKeyPair signer ^ATransaction transaction]
   (SignedData/create signer transaction))
-
 
 (defn wrap-do [^AList x]
   (.cons x (Symbol/create "do")))

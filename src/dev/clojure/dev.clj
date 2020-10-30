@@ -49,10 +49,6 @@
 (defn execute-string [source]
   (convex/execute-string context source))
 
-(defmacro execute-query [& form]
-  `(let [^String source# ~(str/join " " form)]
-     (.getResult (.executeQuery (peer) (peer/wrap-do (Reader/readAll source#)) Init/HERO))))
-
 (defn db []
   @(system/db-conn system))
 
