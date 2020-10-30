@@ -335,71 +335,13 @@
   [:div.flex.flex-1.bg-white.rounded.shadow
    [gui/SymbolMeta (merge metadata output-symbol-metadata-options)]])
 
+;; TODO: Delete
 (defmethod Output :blob [{:convex-web.command/keys [object]}]
-  (let [{:keys [length hex-string]} object]
-    [:div.flex.flex-1.bg-white.rounded.shadow
-     [:div.flex.flex-col.p-2
-      [:span.text-xs.text-indigo-500.uppercase
-       "Length"]
-      [:code.text-xs
-       length]
+  [gui/ObjectRenderer (get object :hex-string) :blob])
 
-      [:span.text-xs.text-indigo-500.uppercase.mt-2
-       "HEX"]
-      [:div.flex
-       [:code.text-xs.mr-2
-        hex-string]
-
-       [gui/ClipboardCopy (str "0x" hex-string)]]]]))
-
+;; TODO: Delete
 (defmethod Output :address [{:convex-web.command/keys [object]}]
-  (reagent/with-let [account-ref (reagent/atom {:ajax/status :ajax.status/pending})
-
-                     _ (backend/GET-account
-                         (get object :checksum-hex)
-                         {:handler
-                          (fn [account]
-                            (reset! account-ref {:account account
-                                                 :ajax/status :ajax.status/success}))
-
-                          :error-handler
-                          (fn [error]
-                            (js/console.error error)
-                            (reset! account-ref {:ajax/status :ajax.status/error
-                                                 :ajax/error error}))})]
-    (let [{:keys [checksum-hex]} object]
-      [:div.flex.flex-col.bg-white.rounded.shadow.p-2
-       [:span.text-xs.text-indigo-500.uppercase "Address"]
-       [:div.flex.items-center
-        [:a.hover:underline.mr-2
-         {:href (rfe/href :route-name/account-explorer {:address checksum-hex})}
-         [:div.flex.items-center
-
-          ;; *Important*
-          ;; Display identicon if and only if address is an existing Account.
-          (when (= :ajax.status/success (:ajax/status @account-ref))
-            [gui/Identicon {:value checksum-hex :size gui/identicon-size-small}])
-
-          [:code.text-xs (format/prefix-0x checksum-hex)]]]
-
-        [gui/ClipboardCopy (format/prefix-0x checksum-hex)]]
-
-       (case (:ajax/status @account-ref)
-         :ajax.status/pending
-         [gui/SpinnerSmall]
-
-         :ajax.status/error
-         [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])]
-
-         :ajax.status/success
-         [:<>
-          [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
-          (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
-            [:span.text-xs.uppercase (format/format-number balance)])
-
-          [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
-          (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
-            [:span.text-xs.uppercase type])])])))
+  [gui/ObjectRenderer (get object :checksum-hex) :address])
 
 (defn Commands [commands]
   (into [:div] (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
