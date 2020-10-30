@@ -1,6 +1,5 @@
 (ns dev
   (:require [convex-web.system :as system]
-            [convex-web.peer :as peer]
             [convex-web.component :as component]
             [convex-web.convex :as convex]
             [convex-web.session :as session]

@@ -1,7 +1,6 @@
 (ns convex-web.command
   (:require [convex-web.system :as system]
             [convex-web.account :as account]
-            [convex-web.peer :as peer]
             [convex-web.convex :as convex]
             [convex-web.specs]
 
@@ -150,7 +149,7 @@
             caller-address (convex/address address)
 
             next-sequence-number (inc (or (convex/get-sequence-number caller-address)
-                                          (peer/sequence-number peer caller-address)
+                                          (convex/sequence-number peer caller-address)
                                           0))
 
             {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) caller-address)

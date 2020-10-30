@@ -192,7 +192,7 @@
               sym
 
               (string? sym)
-              (Symbol/create sym)
+              (Symbol/create ^String sym)
 
               :else
               (throw (ex-info "'sym' must be either a convex.core.data.Symbol or String." {:sym sym})))]
@@ -200,6 +200,9 @@
 
 (defn ^Order peer-order [^Peer peer]
   (.getPeerOrder peer))
+
+(defn ^State consensus-state [^Peer peer]
+  (.getConsensusState peer))
 
 (defn consensus-point [^Order order]
   (.getConsensusPoint order))
@@ -331,6 +334,12 @@
 (defn wrap-do [^AList x]
   (.cons x (Symbol/create "do")))
 
+(defn execute-query [^Peer peer ^Object form & [{:keys [address]}]]
+  (let [^Context context (if address
+                           (.executeQuery peer form (convex-web.convex/address address))
+                           (.executeQuery peer form))]
+    (.getValue context)))
+
 (defn ^Result query [^Convex client {:keys [source address lang] :as q}]
   (let [_ (log/debug "Query" q)
 
@@ -427,6 +436,11 @@
           lock))))
 
 (def ^:dynamic sequence-number-ref (atom {}))
+
+(defn ^Long sequence-number [^Peer peer ^Address address]
+  (some-> (.getConsensusState peer)
+          (.getAccount address)
+          (.getSequence)))
 
 (defn get-sequence-number [address]
   (get @sequence-number-ref (convex-web.convex/address address)))

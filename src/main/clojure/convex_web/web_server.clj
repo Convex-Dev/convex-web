@@ -1,7 +1,6 @@
 (ns convex-web.web-server
   (:require [convex-web.specs]
             [convex-web.convex :as convex]
-            [convex-web.peer :as peer]
             [convex-web.system :as system]
             [convex-web.account :as account]
             [convex-web.session :as session]
@@ -246,7 +245,7 @@
       (let [peer (system/convex-peer-server system)
 
             next-sequence-number (or sequence_number (inc (or (convex/get-sequence-number address)
-                                                              (peer/sequence-number peer address)
+                                                              (convex/sequence-number peer address)
                                                               0)))
 
             tx (Invoke/create next-sequence-number (convex/read-source source lang))]
@@ -421,7 +420,7 @@
 
         form (convex/read-source source lang)
 
-        result (peer/query (system/convex-peer-server system) form {:address address})
+        result (convex/execute-query (system/convex-peer-server system) form {:address address})
 
         result-response (merge {:value
                                 (try
@@ -509,14 +508,14 @@
   (try
     (u/log :logging.event/new-account :severity :info)
 
-    (let [^Peer peer (system/convex-peer-server system)
-          ^State state (peer/consensus-state peer)
-          ^AccountStatus status (peer/account-status state Init/HERO)
-          ^Long sequence (peer/account-sequence status)
-          ^Convex client (system/convex-client system)
-          ^AKeyPair generated-key-pair (convex/generate-account client Init/HERO_KP (inc sequence))
-          ^Address address (.getAddress generated-key-pair)
-          ^String address-str (.toChecksumHex address)
+    (let [peer (system/convex-peer-server system)
+          state (convex/consensus-state peer)
+          status (.getAccount state Init/HERO)
+          sequence (.getSequence status)
+          client (system/convex-client system)
+          generated-key-pair (convex/generate-account client Init/HERO_KP (inc sequence))
+          address (.getAddress generated-key-pair)
+          address-str (.toChecksumHex address)
 
           account #:convex-web.account {:address address-str
                                         :created-at (inst-ms (Instant/now))

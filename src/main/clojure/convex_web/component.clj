@@ -1,6 +1,5 @@
 (ns convex-web.component
   (:require [convex-web.system :as system]
-            [convex-web.peer :as peer]
             [convex-web.web-server :as web-server]
             [convex-web.store :as store]
             [convex-web.db :as db]
