@@ -191,7 +191,7 @@
 
 (defn GET-v1-account [context address]
   (try
-    (let [peer (peer/peer (system/convex-server context))
+    (let [peer (system/convex-peer-server context)
 
           account-status (try
                            (convex/account-status peer address)
@@ -371,7 +371,7 @@
       :else
       (let [client (system/convex-client system)
 
-            nonce (inc (convex/hero-sequence (peer/peer (system/convex-server system))))
+            nonce (inc (convex/hero-sequence (system/convex-peer-server system)))
 
             transfer (convex/transfer-transaction {:nonce nonce
                                                    :target address
@@ -509,7 +509,7 @@
   (try
     (u/log :logging.event/new-account :severity :info)
 
-    (let [^Peer peer (peer/peer (system/convex-server system))
+    (let [^Peer peer (system/convex-peer-server system)
           ^State state (peer/consensus-state peer)
           ^AccountStatus status (peer/account-status state Init/HERO)
           ^Long sequence (peer/account-sequence status)
@@ -606,7 +606,7 @@
         :else
         (let [client (system/convex-client context)
 
-              nonce (inc (convex/hero-sequence (peer/peer (system/convex-server context))))
+              nonce (inc (convex/hero-sequence (system/convex-peer-server context)))
 
               result (convex/faucet client {:nonce nonce
                                             :target target
@@ -651,7 +651,7 @@
   (try
     (let [{:strs [start end]} query-params
 
-          peer (peer/peer (system/convex-server context))
+          peer (system/convex-peer-server context)
 
           number-of-accounts (count (.getAccounts (.getConsensusState peer)))
           number-of-items (min number-of-accounts config/default-range)
@@ -703,7 +703,7 @@
 
 (defn -GET-account [context address]
   (try
-    (let [peer (peer/peer (system/convex-server context))
+    (let [peer (system/convex-peer-server context)
 
           account-status (try
                            (convex/account-status peer address)
@@ -729,7 +729,7 @@
 
 (defn -GET-blocks [context _]
   (try
-    (let [peer (peer/peer (system/convex-server context))
+    (let [peer (system/convex-peer-server context)
           order (convex/peer-order peer)
           consensus (convex/consensus-point order)
           max-items (min consensus config/default-range)
@@ -748,7 +748,7 @@
   (try
     (let [{:strs [start end]} query-params
 
-          peer (peer/peer (system/convex-server context))
+          peer (system/convex-peer-server context)
           order (convex/peer-order peer)
           consensus (convex/consensus-point order)
 
@@ -790,7 +790,7 @@
 
 (defn -GET-block [context index]
   (try
-    (let [peer (peer/peer (system/convex-server context))
+    (let [peer (system/convex-peer-server context)
           blocks-indexed (convex/blocks-indexed peer)]
       (if-let [block (get blocks-indexed (Long/parseLong index))]
         (-successful-response block)
