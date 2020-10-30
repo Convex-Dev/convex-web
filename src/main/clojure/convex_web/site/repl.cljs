@@ -382,14 +382,7 @@
 
           [:code.text-xs (format/prefix-0x checksum-hex)]]]
 
-        [gui/ClipboardCopy (format/prefix-0x checksum-hex)]
-
-        [:a.ml-2
-         {:href (rfe/href :route-name/account-explorer {:address checksum-hex})
-          :target "_blank"}
-         [gui/Tooltip
-          "External link"
-          [gui/IconExternalLink {:class "w-4 h-4 text-gray-500 hover:text-black"}]]]]
+        [gui/ClipboardCopy (format/prefix-0x checksum-hex)]]
 
        (case (:ajax/status @account-ref)
          :ajax.status/pending
