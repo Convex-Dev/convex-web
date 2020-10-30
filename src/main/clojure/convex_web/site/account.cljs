@@ -121,7 +121,8 @@
 
    (case status
      :ajax.status/pending
-     [gui/Spinner]
+     [:div.flex.justify-center.items-center.p-10
+      [gui/Spinner]]
 
      :ajax.status/success
      (let [address (get account :convex-web.account/address)]
