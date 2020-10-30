@@ -168,10 +168,8 @@
      (case type
        :convex-web.transaction.type/invoke
        (let [{result-value :convex-web.result/value
-              result-error-code :convex-web.result/error-code
-              result-meta :convex-web.result/meta} result
-
-             result-value-kind (get result-meta :kind)]
+              result-value-kind :convex-web.result/value
+              result-error-code :convex-web.result/error-code} result]
          [:div.flex.flex-col.space-y-2
           [:div.flex.space-x-1
            [gui/CaptionMono (if result-error-code "Error" "Result")]

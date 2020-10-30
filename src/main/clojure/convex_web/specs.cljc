@@ -140,12 +140,14 @@
 
 (s/def :convex-web.result/id nat-int?)
 (s/def :convex-web.result/value any?)
+(s/def :convex-web.result/value-kind keyword?)
 (s/def :convex-web.result/error-code keyword?)
 
 (s/def :convex-web/result
   (s/keys :req [:convex-web.result/id
                 :convex-web.result/value]
-          :opt [:convex-web.result/error-code]))
+          :opt [:convex-web.result/value-kind
+                :convex-web.result/error-code]))
 
 ;; -- Query
 

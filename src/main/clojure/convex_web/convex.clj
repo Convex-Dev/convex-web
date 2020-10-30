@@ -219,10 +219,13 @@
         result-error-code (.getErrorCode result)
         result-value (.getValue result)]
     (merge #:convex-web.result {:id result-id
-                                :value (try (datafy result-value) (catch Exception _ (str result-value)))
-                                :meta {:kind (value-kind result-value)}}
+                                :value (try (datafy result-value) (catch Exception _ (str result-value)))}
+
+           (when-let [kind (value-kind result-value)]
+             {:convex-web.result/value-kind kind})
+
            (when result-error-code
-             #:convex-web.result {:error-code (datafy result-error-code)}))))
+             {:convex-web.result/error-code (datafy result-error-code)}))))
 
 (defn transaction-result-data [^ATransaction atransaction ^Result result]
   (let [tx (cond
