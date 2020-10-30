@@ -156,7 +156,7 @@
      (case type
        :convex-web.transaction.type/invoke
        [:div.flex.flex-col.space-y-2
-        [gui/CaptionMono "Code"]
+        [gui/CaptionMono "Source"]
         [gui/Highlight source {:pretty? true}]]
 
        :convex-web.transaction.type/transfer
@@ -167,24 +167,26 @@
      ;; ======================
      (case type
        :convex-web.transaction.type/invoke
-       (let [{:convex-web.result/keys [value meta error-code]} result]
+       (let [{result-value :convex-web.result/value
+              result-error-code :convex-web.result/error-code
+              result-meta :convex-web.result/meta} result
+
+             result-value-kind (get result-meta :kind)]
          [:div.flex.flex-col.space-y-2
           [:div.flex.space-x-1
-           [gui/CaptionMono (if error-code "Error" "Result")]
+           [gui/CaptionMono (if result-error-code "Error" "Result")]
 
            ;; -- Meta/Kind
-           (when-not error-code
-             (when-let [kind (get meta :kind)]
-               [gui/InfoTooltip (str/capitalize (name kind))]))]
+           (when-not result-error-code
+             (when result-value-kind
+               [gui/InfoTooltip (str/capitalize (name result-value-kind))]))]
 
-          (if error-code
-            [:span.font-mono.text-sm.text-red-500 error-code ": " value]
-            [gui/Highlight value {:pretty? true}])])
+          (if result-error-code
+            [:span.font-mono.text-sm.text-red-500 result-error-code ": " result-value]
+            [gui/ObjectRenderer result-value result-value-kind])])
 
        :convex-web.transaction.type/transfer
-       [:div])
-
-     ]))
+       [:div])]))
 
 (def transaction-page
   #:page {:id :page.id/transaction

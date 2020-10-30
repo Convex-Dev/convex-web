@@ -117,7 +117,7 @@
      (let [symbol (get-in metadata [:doc :symbol])]
        ^{:key symbol}
        [:<>
-        [gui/SymbolMeta2 metadata]
+        [gui/SymbolMeta metadata]
 
         [:hr.my-2]]))])
 
@@ -325,15 +325,15 @@
 
 (defmethod Output :function [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
-   [gui/SymbolMeta2 (merge metadata output-symbol-metadata-options)]])
+   [gui/SymbolMeta (merge metadata output-symbol-metadata-options)]])
 
 (defmethod Output :special [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
-   [gui/SymbolMeta2 (merge metadata output-symbol-metadata-options)]])
+   [gui/SymbolMeta (merge metadata output-symbol-metadata-options)]])
 
 (defmethod Output :macro [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
-   [gui/SymbolMeta2 (merge metadata output-symbol-metadata-options)]])
+   [gui/SymbolMeta (merge metadata output-symbol-metadata-options)]])
 
 (defmethod Output :blob [{:convex-web.command/keys [object]}]
   (let [{:keys [length hex-string]} object]

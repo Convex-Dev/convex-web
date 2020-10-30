@@ -76,33 +76,33 @@
 
 (deftest kind-test
   (testing "Boolean"
-    (is (= :boolean (convex/kind (convex/execute context true)))))
+    (is (= :boolean (convex/value-kind (convex/execute context true)))))
 
   (testing "Number"
-    (is (= :number (convex/kind (convex/execute context 1))))
-    (is (= :number (convex/kind (convex/execute context 1.0)))))
+    (is (= :number (convex/value-kind (convex/execute context 1))))
+    (is (= :number (convex/value-kind (convex/execute context 1.0)))))
 
   (testing "String"
-    (is (= :string (convex/kind (convex/execute context "")))))
+    (is (= :string (convex/value-kind (convex/execute context "")))))
 
   (testing "Symbol"
-    (is (= :symbol (convex/kind (convex/execute context 'sym)))))
+    (is (= :symbol (convex/value-kind (convex/execute context 'sym)))))
 
   (testing "Map"
-    (is (= :map (convex/kind (convex/execute context {})))))
+    (is (= :map (convex/value-kind (convex/execute context {})))))
 
   (testing "List"
-    (is (= :list (convex/kind (convex/execute context '())))))
+    (is (= :list (convex/value-kind (convex/execute context '())))))
 
   (testing "Vector"
-    (is (= :vector (convex/kind (convex/execute context [])))))
+    (is (= :vector (convex/value-kind (convex/execute context [])))))
 
   (testing "Set"
-    (is (= :set (convex/kind (convex/execute context #{})))))
+    (is (= :set (convex/value-kind (convex/execute context #{})))))
 
   (testing "Address"
-    (is (= :address (convex/kind (convex/execute context *address*)))))
+    (is (= :address (convex/value-kind (convex/execute context *address*)))))
 
   (testing "Blob"
-    (is (= :blob (convex/kind (convex/execute context (blob *address*)))))))
+    (is (= :blob (convex/value-kind (convex/execute context (blob *address*)))))))
 

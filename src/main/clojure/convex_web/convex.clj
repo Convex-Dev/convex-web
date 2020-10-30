@@ -73,7 +73,7 @@
     {}
     Core/CORE_NAMESPACE))
 
-(defn kind [x]
+(defn value-kind [x]
   (cond
     (instance? Boolean x)
     :boolean
@@ -162,6 +162,13 @@
 
     (throw (ex-info (str "Can't datafy object '" x "'.") {:object x}))))
 
+(defn datafy-safe [x]
+  (try
+    (datafy x)
+    (catch Exception ex
+      (log/error ex)
+      nil)))
+
 (defn ^Address address [x]
   (cond
     (nil? x)
@@ -212,12 +219,12 @@
         result-error-code (.getErrorCode result)
         result-value (.getValue result)]
     (merge #:convex-web.result {:id result-id
-                                :value (datafy result-value)
-                                :meta {:kind (kind result-value)}}
+                                :value (try (datafy result-value) (catch Exception _ (str result-value)))
+                                :meta {:kind (value-kind result-value)}}
            (when result-error-code
              #:convex-web.result {:error-code (datafy result-error-code)}))))
 
-(defn transaction [^ATransaction atransaction ^Result result]
+(defn transaction-result-data [^ATransaction atransaction ^Result result]
   (let [tx (cond
              (instance? Transfer atransaction)
              #:convex-web.transaction {:type :convex-web.transaction.type/transfer
@@ -235,7 +242,7 @@
 
     (merge tx {:convex-web.transaction/result (result-data result)})))
 
-(defn block [^Peer peer ^Long index ^Block block]
+(defn block-data [^Peer peer ^Long index ^Block block]
   #:convex-web.block {:index index
                       :timestamp (.getTimeStamp block)
                       :peer (.toChecksumHex (.getPeer block))
@@ -243,16 +250,16 @@
                       (map-indexed
                         (fn [^Long tx-index ^SignedData signed-data]
                           #:convex-web.signed-data {:address (.toChecksumHex (.getAddress signed-data))
-                                                    :value (transaction (.getValue signed-data) (.getResult peer index tx-index))})
+                                                    :value (transaction-result-data (.getValue signed-data) (.getResult peer index tx-index))})
                         (.getTransactions block))})
 
-(defn blocks [^Peer peer & [{:keys [start end]}]]
+(defn blocks-data [^Peer peer & [{:keys [start end]}]]
   (let [order (peer-order peer)
         start (or start 0)
         end (or end (consensus-point order))]
     (reduce
       (fn [blocks index]
-        (conj blocks (block peer index (.getBlock order index))))
+        (conj blocks (block-data peer index (.getBlock order index))))
       []
       (range start end))))
 
@@ -260,7 +267,7 @@
   (let [order (peer-order peer)]
     (reduce
       (fn [blocks index]
-        (assoc blocks index (block peer index (.getBlock order index))))
+        (assoc blocks index (block-data peer index (.getBlock order index))))
       {}
       (range (consensus-point order)))))
 
@@ -281,12 +288,18 @@
     (address->status (address string-or-address))))
 
 (defn syntax-data [^Syntax syn]
-  #:convex-web.syntax {:source (.getSource syn)
-                       :meta (datafy (.getMeta syn))
-                       :value (try
+  (merge #:convex-web.syntax {:source (.getSource syn)
+                              :value
+                              (try
                                 (datafy (.getValue syn))
                                 (catch Exception _
-                                  (str (.getValue syn))))})
+                                  (str (.getValue syn))))}
+
+         (when-let [meta (datafy-safe (.getMeta syn))]
+           {:convex-web.syntax/meta meta})
+
+         (when-let [kind (value-kind (.getValue syn))]
+           {:convex-web.syntax/value-kind kind})))
 
 (defn environment-data
   "Account Status' environment data.
