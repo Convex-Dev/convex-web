@@ -43,9 +43,6 @@
                  (ScryptNext/readSyntax source))]
     (Invoke/create nonce object)))
 
-(defn ^ATransaction transfer-transaction [^Long nonce ^Address address ^Long amount]
-  (Transfer/create nonce address amount))
-
 (defn query [^Peer peer ^Object form & [{:keys [address]}]]
   (let [^Context context (if address
                            (.executeQuery peer form (convex/address address))

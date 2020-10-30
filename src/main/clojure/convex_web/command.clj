@@ -143,7 +143,7 @@
 (defn execute-transaction [system command]
   (let [{::keys [address transaction]} command]
     (locking (convex/lockee address)
-      (let [{:convex-web.transaction/keys [source language amount type]} transaction
+      (let [{:convex-web.transaction/keys [source language amount type target]} transaction
 
             peer (system/convex-peer-server system)
 
@@ -160,8 +160,9 @@
                            (peer/invoke-transaction next-sequence-number source language)
 
                            :convex-web.transaction.type/transfer
-                           (let [to (convex/address (:convex-web.transaction/target transaction))]
-                             (peer/transfer-transaction next-sequence-number to amount)))]
+                           (convex/transfer {:nonce next-sequence-number
+                                             :target target
+                                             :amount amount}))]
         (try
           (let [^Result r (->> (convex/sign (convex/create-key-pair key-pair) atransaction)
                                (convex/transact (system/convex-client system)))
