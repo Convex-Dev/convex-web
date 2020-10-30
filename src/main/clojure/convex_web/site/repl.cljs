@@ -123,7 +123,7 @@
                                  reference))]
       [:div.flex.flex-col.overflow-auto
 
-       [:input.mb-2.px-1.border.rounded
+       [:input.font-mono.mb-2.px-1.border.rounded
         {:type "text"
          :placeholder "Search"
          :value (or search-string "")
