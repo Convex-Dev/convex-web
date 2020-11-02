@@ -76,7 +76,8 @@
               ::c/object "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"
               ::c/error
               {:code :CAST
-               :message "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"}}
+               :message "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"
+               :trace nil}}
              (select-keys command [::c/status ::c/object ::c/error]))))))
 
 (deftest sandbox-result-test
