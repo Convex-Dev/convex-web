@@ -47,7 +47,7 @@
 
   (testing "Can't datafy"
     (testing "java.lang.String"
-      (is (= "Can't datafy object 'String'." (.getMessage (catch-throwable (convex/datafy "String"))))))))
+      (is (= "Can't datafy java.lang.String." (.getMessage (catch-throwable (convex/datafy "String"))))))))
 
 (deftest address-test
   (testing "Can't coerce nil"

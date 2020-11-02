@@ -121,54 +121,64 @@
 
    Throws if there isn't a mapping of a Convex object to Clojure."
   [x]
-  (condp instance? x
-    Boolean
+  (cond
+    (nil? x)
+    nil
+
+    (isa? (.getClass x) Boolean)
     x
 
-    Character
+    (isa? (.getClass x) Character)
     x
 
-    Long
+    (isa? (.getClass x) Long)
     x
 
-    Double
+    (isa? (.getClass x) Double)
     x
 
-    AString
+    (isa? (.getClass x) AString)
     (.toString x)
 
-    Keyword
+    (isa? (.getClass x) Keyword)
     (keyword (.toString (.getName x)))
 
-    Symbol
+    (isa? (.getClass x) Symbol)
     (symbol (some-> x (.getNamespace) (.getName) (.toString)) (.toString (.getName x)))
 
-    AList
+    (isa? (.getClass x) AList)
     (map datafy x)
 
-    AVector
+    (isa? (.getClass x) AVector)
     (mapv datafy x)
 
-    AMap
+    (isa? (.getClass x) AMap)
     (reduce
       (fn [m [k v]]
         (assoc m (datafy k) (datafy v)))
       {}
       x)
 
-    ASet
+    (isa? (.getClass x) ASet)
     (into #{} (map datafy x))
 
-    Address
+    (isa? (.getClass x) Address)
     (.toChecksumHex ^Address x)
 
-    Blob
+    (isa? (.getClass x) AFn)
+    (.toString x)
+
+    (isa? (.getClass x) AExpander)
+    (.toString x)
+
+    (isa? (.getClass x) Blob)
     (.toHexString ^Blob x)
 
-    Syntax
+    (isa? (.getClass x) Syntax)
     (datafy (.getValue ^Syntax x))
 
-    (throw (ex-info (str "Can't datafy object '" x "'.") {:object x}))))
+    :else
+    (throw (ex-info (str "Can't datafy " (some-> x (.getClass) (.getName)) ".") {:object x}))))
 
 (defn datafy-safe [x]
   (try
