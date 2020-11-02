@@ -346,7 +346,7 @@
                                 (try
                                   (convex/datafy result-value)
                                   (catch Exception ex
-                                    (log/error ex "Can't datafy Transaction result. Will fallback to `(str result)`.")
+                                    (log/warn ex "Can't datafy Transaction result. Will fallback to `(str result)`.")
                                     (str result-value)))}
                                (when-let [error-code (.getErrorCode result)]
                                  {:error-code (convex/datafy error-code)}))
@@ -433,7 +433,7 @@
                                 (try
                                   (convex/datafy result)
                                   (catch Exception ex
-                                    (log/error ex "Can't datafy Query result. Will fallback to `(str result)`.")
+                                    (log/warn ex "Can't datafy Query result. Will fallback to `(str result)`.")
                                     (str result)))}
                                (when (instance? AExceptional result)
                                  {:error-code (convex/datafy (.getCode result))}))]

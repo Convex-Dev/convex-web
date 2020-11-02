@@ -51,7 +51,7 @@
     (try
       (convex/datafy result-value)
       (catch Exception ex
-        (log/error ex "Result wrapping failed to datafy result-value. It will fallback to `(str result-value)`.")
+        (log/warn ex "Result wrapping failed to datafy result-value. It will fallback to `(str result-value)`.")
 
         (str result-value)))))
 
