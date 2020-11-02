@@ -10,7 +10,7 @@
 
 (def system nil)
 
-(use-fixtures :each (system-fixture #'system))
+(use-fixtures :each (make-system-fixture #'system))
 
 (deftest query-mode-test
   (testing "Simple Commands"

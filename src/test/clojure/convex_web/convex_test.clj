@@ -1,14 +1,17 @@
 (ns convex-web.convex-test
   (:require [clojure.test :refer :all]
 
+            [convex-web.system :as sys]
             [convex-web.convex :as convex]
             [convex-web.test :refer :all])
   (:import (convex.core.data Address Blob Syntax Maps)
            (convex.core Init)))
 
-(use-fixtures :once (spec-fixture))
+(def system nil)
 
 (def context (convex-context))
+
+(use-fixtures :once (join-fixtures [(make-system-fixture #'system) spec-fixture]))
 
 (deftest datafy-test
   (testing "nil"
@@ -129,4 +132,45 @@
   (testing "Unknown"
     (is (= nil (convex/value-kind (Syntax/create (Maps/empty)))))
     (is (= nil (convex/value-kind (convex/execute-string context "abc"))))))
+
+(deftest result-data-test
+  (testing "Inc 1"
+    (let [result (-> (sys/convex-client system)
+                     (convex/query {:source "(inc 1)" :lang :convex-lisp})
+                     (convex/result-data))]
+
+      (testing "Expected keys"
+        (is (= #{:convex-web.result/id
+                 :convex-web.result/value
+                 :convex-web.result/value-kind}
+               (-> result keys set))))
+
+      (testing "Expected values"
+        (is (= #:convex-web.result{:value 2
+                                   :value-kind :number}
+               (select-keys result [:convex-web.result/value
+                                    :convex-web.result/value-kind]))))))
+
+  (testing "Error code"
+    (let [result (-> (sys/convex-client system)
+                     (convex/query {:source "(map inc 1)" :lang :convex-lisp})
+                     (convex/result-data))]
+
+      (testing "Expected keys"
+        (is (= #{:convex-web.result/error-code
+                 :convex-web.result/id
+                 :convex-web.result/trace
+                 :convex-web.result/value
+                 :convex-web.result/value-kind}
+               (-> result keys set))))
+
+      (testing "Expected values"
+        (is (= #:convex-web.result{:error-code :CAST
+                                   :trace nil
+                                   :value "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"
+                                   :value-kind :string}
+               (select-keys result [:convex-web.result/value
+                                    :convex-web.result/value-kind
+                                    :convex-web.result/error-code
+                                    :convex-web.result/trace])))))))
 

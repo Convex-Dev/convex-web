@@ -12,7 +12,7 @@
 
 (def system nil)
 
-(use-fixtures :each (system-fixture #'system))
+(use-fixtures :each (make-system-fixture #'system))
 
 (defn site-handler []
   (web-server/site system))

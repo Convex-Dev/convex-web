@@ -1,7 +1,7 @@
 (ns convex-web.site-test
   (:require [convex-web.component]
             [convex-web.encoding :as encoding]
-            [convex-web.test :refer [system-fixture]]
+            [convex-web.test :refer [make-system-fixture]]
 
             [clojure.test :refer :all]
 
@@ -10,7 +10,7 @@
 
 (def system nil)
 
-(use-fixtures :once (system-fixture #'system))
+(use-fixtures :once (make-system-fixture #'system))
 
 (defn server-url []
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))

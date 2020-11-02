@@ -3,7 +3,7 @@
             [convex-web.client :as client]
             [convex-web.config :as config]
             [convex-web.web-server :as web-server]
-            [convex-web.test :refer [system-fixture]]
+            [convex-web.test :refer [make-system-fixture]]
 
             [clojure.test :refer :all]
             [clojure.data.json :as json]
@@ -16,7 +16,7 @@
 
 (def system nil)
 
-(use-fixtures :once (system-fixture #'system))
+(use-fixtures :once (make-system-fixture #'system))
 
 (defn public-api-handler []
   (web-server/public-api-handler system))

@@ -19,18 +19,17 @@
      (catch Throwable ex#
        ex#)))
 
-(defn spec-fixture []
-  (fn [f]
-    (s/check-asserts true)
-    (stest/instrument)
+(defn spec-fixture [f]
+  (s/check-asserts true)
+  (stest/instrument)
 
-    (f)
+  (f)
 
-    (s/check-asserts false)
-    (stest/unstrument)))
+  (s/check-asserts false)
+  (stest/unstrument))
 
 
-(defn system-fixture [system-var]
+(defn make-system-fixture [system-var]
   (fn [f]
     (let [system (com.stuartsierra.component/start
                    (convex-web.component/system :test))]
