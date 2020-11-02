@@ -11,6 +11,9 @@
 (def context (convex-context))
 
 (deftest datafy-test
+  (testing "nil"
+    (is (= nil (convex/datafy nil))))
+
   (testing "Char"
     (is (= \n (convex/datafy (convex/execute context \n)))))
 
