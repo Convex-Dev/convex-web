@@ -121,64 +121,65 @@
 
    Throws if there isn't a mapping of a Convex object to Clojure."
   [x]
-  (cond
-    (nil? x)
-    nil
+  (let [x-class (some-> x .getClass)]
+    (cond
+      (nil? x)
+      nil
 
-    (isa? (.getClass x) Boolean)
-    x
+      (isa? x-class Boolean)
+      x
 
-    (isa? (.getClass x) Character)
-    x
+      (isa? x-class Character)
+      x
 
-    (isa? (.getClass x) Long)
-    x
+      (isa? x-class Long)
+      x
 
-    (isa? (.getClass x) Double)
-    x
+      (isa? x-class Double)
+      x
 
-    (isa? (.getClass x) AString)
-    (.toString x)
+      (isa? x-class AString)
+      (.toString x)
 
-    (isa? (.getClass x) Keyword)
-    (keyword (.toString (.getName x)))
+      (isa? x-class Keyword)
+      (keyword (.toString (.getName x)))
 
-    (isa? (.getClass x) Symbol)
-    (symbol (some-> x (.getNamespace) (.getName) (.toString)) (.toString (.getName x)))
+      (isa? x-class Symbol)
+      (symbol (some-> x (.getNamespace) (.getName) (.toString)) (.toString (.getName x)))
 
-    (isa? (.getClass x) AList)
-    (map datafy x)
+      (isa? x-class AList)
+      (map datafy x)
 
-    (isa? (.getClass x) AVector)
-    (mapv datafy x)
+      (isa? x-class AVector)
+      (mapv datafy x)
 
-    (isa? (.getClass x) AMap)
-    (reduce
-      (fn [m [k v]]
-        (assoc m (datafy k) (datafy v)))
-      {}
-      x)
+      (isa? x-class AMap)
+      (reduce
+        (fn [m [k v]]
+          (assoc m (datafy k) (datafy v)))
+        {}
+        x)
 
-    (isa? (.getClass x) ASet)
-    (into #{} (map datafy x))
+      (isa? x-class ASet)
+      (into #{} (map datafy x))
 
-    (isa? (.getClass x) Address)
-    (.toChecksumHex ^Address x)
+      (isa? x-class Address)
+      (.toChecksumHex ^Address x)
 
-    (isa? (.getClass x) AFn)
-    (.toString x)
+      (isa? x-class AFn)
+      (.toString x)
 
-    (isa? (.getClass x) AExpander)
-    (.toString x)
+      (isa? x-class AExpander)
+      (.toString x)
 
-    (isa? (.getClass x) Blob)
-    (.toHexString ^Blob x)
+      (isa? x-class Blob)
+      (.toHexString ^Blob x)
 
-    (isa? (.getClass x) Syntax)
-    (datafy (.getValue ^Syntax x))
+      (isa? x-class Syntax)
+      (datafy (.getValue ^Syntax x))
 
-    :else
-    (throw (ex-info (str "Can't datafy " (some-> x (.getClass) (.getName)) ".") {:object x}))))
+      :else
+      (throw (ex-info (str "Can't datafy " (some-> x (.getClass) (.getName)) ".") {:object x})))))
 
 (defn datafy-safe [x]
   (try
