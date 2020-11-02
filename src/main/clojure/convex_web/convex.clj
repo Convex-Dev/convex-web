@@ -10,7 +10,9 @@
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke Call)
            (convex.api Convex)
-           (java.util.concurrent Future TimeUnit TimeoutException)))
+           (java.util.concurrent TimeoutException)
+           (clojure.lang AFn)
+           (convex.core.lang.expanders AExpander)))
 
 (defn read-source [source lang]
   (try
@@ -104,6 +106,12 @@
 
     (instance? ABlob x)
     :blob
+
+    (instance? AFn x)
+    :function
+
+    (instance? AExpander x)
+    :macro
 
     (instance? Symbol x)
     :symbol))
