@@ -339,8 +339,15 @@
 
             (convex/reset-sequence-number! address))
 
+        result-value (.getValue result)
+
         result-response (merge {:id (.getID result)
-                                :value (convex/datafy (.getValue result))}
+                                :value
+                                (try
+                                  (convex/datafy result-value)
+                                  (catch Exception ex
+                                    (log/error ex "Can't datafy Transaction result. Will fallback to `(str result)`.")
+                                    (str result-value)))}
                                (when-let [error-code (.getErrorCode result)]
                                  {:error-code (convex/datafy error-code)}))
 
@@ -426,7 +433,7 @@
                                 (try
                                   (convex/datafy result)
                                   (catch Exception ex
-                                    (log/error ex "Can't datafy result. Will fallback to `(str result)`.")
+                                    (log/error ex "Can't datafy Query result. Will fallback to `(str result)`.")
                                     (str result)))}
                                (when (instance? AExceptional result)
                                  {:error-code (convex/datafy (.getCode result))}))]
