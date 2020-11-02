@@ -404,9 +404,29 @@
                                     ::anomalies/category category})
                           ex)))))))
 
-(defn ^Result transact [^Convex client ^SignedData signed-data]
+(defn ^Result transact
+  "Sync transact a SignedData with a default timeout.
+
+   Throws ExceptionInfo."
+  [^Convex client ^SignedData signed-data]
   (try
     (.transactSync client signed-data 1000)
+    (catch Exception ex
+      (let [message "Failed to get Transaction result."
+            category (or (throwable-category ex) ::anomalies/fault)]
+        (log/error ex message)
+        (throw (ex-info message
+                        {::anomalies/message (ex-message ex)
+                         ::anomalies/category category}
+                        ex))))))
+
+(defn ^Result transacta
+  "Sync transact a ATransaction with a default timeout.
+
+   Throws ExceptionInfo."
+  [^Convex client ^ATransaction atransaction]
+  (try
+    (.transactSync client atransaction 1000)
     (catch Exception ex
       (let [message "Failed to get Transaction result."
             category (or (throwable-category ex) ::anomalies/fault)]

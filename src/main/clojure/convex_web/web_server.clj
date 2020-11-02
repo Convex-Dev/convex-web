@@ -185,6 +185,29 @@
    :headers {"Content-Type" "application/json"}
    :body (json-encode body)})
 
+(defn log-rethrow-ex-info
+  "Logs ex with a custom message (for known exceptions),
+   and re-throw as an ExceptionIfo."
+  [ex]
+  (cond
+    (instance? TimeoutException (ex-cause ex))
+    (do
+      (log/error ex "Transaction timed out.")
+
+      (throw (ex-info "Transaction timed out." {::anomalies/category ::anomalies/busy} ex)))
+
+    (instance? MissingDataException (ex-cause ex))
+    (do
+      (log/error ex "Can't transact because of missing data.")
+
+      (throw (ex-info "You need to prepare the transaction before submitting." {::anomalies/category ::anomalies/incorrect} ex)))
+
+    :else
+    (do
+      (log/error ex "Transaction fault.")
+
+      (throw (ex-info "Transaction fault." {::anomalies/category ::anomalies/fault} ex)))))
+
 ;; Public APIs
 ;; ==========================
 
@@ -311,24 +334,7 @@
                    ;; Reset sequence number for Address, because we don't know the Peer's state.
                    (convex/reset-sequence-number! address)
 
-                   (cond
-                     (instance? TimeoutException (ex-cause ex))
-                     (do
-                       (log/error ex "Transaction timed out.")
-
-                       (throw (ex-info "Transaction timed out." {::anomalies/category ::anomalies/busy} ex)))
-
-                     (instance? MissingDataException (ex-cause ex))
-                     (do
-                       (log/error ex "Failed to transact signed data" signed-data)
-
-                       (throw (ex-info "You need to prepare the transaction before submitting." {::anomalies/category ::anomalies/incorrect} ex)))
-
-                     :else
-                     (do
-                       (log/error ex "Transaction fault.")
-
-                       (throw (ex-info "Transaction fault." {::anomalies/category ::anomalies/fault} ex))))))
+                   (log-rethrow-ex-info ex)))
 
         bad-sequence-number? (when-let [error-code (.getErrorCode result)]
                                (= :SEQUENCE (convex/datafy error-code)))
@@ -383,9 +389,20 @@
                                                    :target address
                                                    :amount amount})
 
-            result @(.transact client transfer)
+            result (try
+                     (convex/transacta client transfer)
+                     (catch Exception ex
+                       (log-rethrow-ex-info ex)))
+
+            result-value (.getValue result)
+
             result-response (merge {:id (.getID result)
-                                    :value (convex/datafy (.getValue result))}
+                                    :value
+                                    (try
+                                      (convex/datafy result-value)
+                                      (catch Exception ex
+                                        (log/warn ex "Can't datafy Faucet result. Will fallback to `(str result)`.")
+                                        (str result-value)))}
                                    (when-let [error-code (.getErrorCode result)]
                                      {:error-code (convex/datafy error-code)}))
 
