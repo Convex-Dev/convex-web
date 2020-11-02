@@ -328,13 +328,14 @@
    [:code.text-xs.text-red-500
     (error-message error)]
 
-   [:div.flex.flex-col.space-y-1
-    [:span.text-xs.uppercase.text-gray-600
-     "Trace"]
+   (when-let [trace (seq (:trace error))]
+     [:div.flex.flex-col.space-y-1
+      [:span.text-xs.uppercase.text-gray-600
+       "Trace"]
 
-    (for [t (:trace error)]
-      ^{:key t}
-      [:code.text-xs t])]])
+      (for [t trace]
+        ^{:key t}
+        [:code.text-xs t])])])
 
 (defmulti Output (fn [command]
                    (get-in command [:convex-web.command/metadata :type])))

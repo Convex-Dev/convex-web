@@ -189,7 +189,7 @@
 
      ;; Trace
      ;; ======================
-     (when-let [trace (:convex-web.result/trace result)]
+     (when-let [trace (seq (:convex-web.result/trace result))]
        [:div.flex.flex-col.space-y-2
         [gui/CaptionMono "Trace"]
 
