@@ -208,6 +208,7 @@
           result-id (some-> result .getID)
           result-value (some-> result .getValue)
           result-error-code (some-> result .getErrorCode)
+          result-trace (some-> result .getTrace)
           result-value-data (sandbox-result result-value)
           result-value-metadata (result-metadata result-value {:source (source command)
                                                                :lang (language command)})
@@ -227,7 +228,8 @@
                             (when result-error-code
                               #:convex-web.command {:error
                                                     {:code (convex/datafy result-error-code)
-                                                     :message (convex/datafy result-value)}}))
+                                                     :message (convex/datafy result-value)
+                                                     :trace (convex/datafy result-trace)}}))
 
                      ;; If there isn't a Result, `error` won't have a code,
                      ;; and the Exception's message will be used as its message.

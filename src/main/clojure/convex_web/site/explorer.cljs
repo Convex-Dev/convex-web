@@ -151,7 +151,7 @@
           [:span.text-sm.uppercase.cursor-default.text-red-500 "Error"]
           [:span.text-sm.uppercase.cursor-default "OK"])]]]
 
-     ;; Value
+     ;; Source
      ;; ======================
      (case type
        :convex-web.transaction.type/invoke
@@ -184,7 +184,18 @@
             [gui/ObjectRenderer result-value result-value-kind])])
 
        :convex-web.transaction.type/transfer
-       [:div])]))
+       [:div])
+
+
+     ;; Trace
+     ;; ======================
+     (when-let [trace (:convex-web.result/trace result)]
+       [:div.flex.flex-col.space-y-2
+        [gui/CaptionMono "Trace"]
+
+        (for [t trace]
+          ^{:key t}
+          [:span.font-mono.text-sm t])])]))
 
 (def transaction-page
   #:page {:id :page.id/transaction
