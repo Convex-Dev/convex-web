@@ -3,7 +3,7 @@
 
             [convex-web.convex :as convex]
             [convex-web.test :refer :all])
-  (:import (convex.core.data Address Blob)
+  (:import (convex.core.data Address Blob Syntax Maps)
            (convex.core Init)))
 
 (use-fixtures :once (spec-fixture))
@@ -48,9 +48,20 @@
   (testing "Blob"
     (is (= (.toHexString (Blob/create (.getBytes "Text"))) (convex/datafy (Blob/create (.getBytes "Text"))))))
 
+  (testing "Expander"
+    (is (string? (convex/datafy (convex/execute-string context "defn")))))
+
+  (testing "Syntax"
+    (is (= 1 (convex/datafy (Syntax/create 1))))
+    (is (= (Maps/empty) (convex/datafy (Syntax/create (Maps/empty))))))
+
   (testing "Can't datafy"
     (testing "java.lang.String"
-      (is (= "Can't datafy java.lang.String." (.getMessage (catch-throwable (convex/datafy "String"))))))))
+      (is (= "Can't datafy java.lang.String." (.getMessage (catch-throwable (convex/datafy "String"))))))
+
+    (testing "convex.core.lang.impl.ErrorValue"
+      (is (= "Can't datafy convex.core.lang.impl.ErrorValue."
+             (.getMessage (catch-throwable (convex/datafy (convex/execute-string context "(map inc 1)")))))))))
 
 (deftest address-test
   (testing "Can't coerce nil"
@@ -91,6 +102,12 @@
   (testing "Symbol"
     (is (= :symbol (convex/value-kind (convex/execute context 'sym)))))
 
+  (testing "Macro"
+    (is (= :macro (convex/value-kind (convex/execute-string context "defn")))))
+
+  (testing "Special"
+    (is (= :symbol (convex/value-kind (convex/execute-string context "def")))))
+
   (testing "Map"
     (is (= :map (convex/value-kind (convex/execute context {})))))
 
@@ -107,5 +124,9 @@
     (is (= :address (convex/value-kind (convex/execute context *address*)))))
 
   (testing "Blob"
-    (is (= :blob (convex/value-kind (convex/execute context (blob *address*)))))))
+    (is (= :blob (convex/value-kind (convex/execute context (blob *address*))))))
+
+  (testing "Unknown"
+    (is (= nil (convex/value-kind (Syntax/create (Maps/empty)))))
+    (is (= nil (convex/value-kind (convex/execute-string context "abc"))))))
 
