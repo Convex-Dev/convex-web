@@ -73,6 +73,9 @@
 (defn cm-get-line [^js doc n]
   (.getLine doc n))
 
+(defn set-cursor-at-the-end [^js cm]
+  (.setCursor cm (.lineCount cm) 0))
+
 ;; --
 
 (def available-editor-events

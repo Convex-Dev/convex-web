@@ -248,6 +248,7 @@
                                   i (some-> i (dec) (max 0))]
                               (when i
                                 (codemirror/cm-set-value cm (command-source (get c i)))
+                                (codemirror/set-cursor-at-the-end cm)
 
                                 (reset! history-index i))))
 
@@ -258,6 +259,7 @@
                                     i (some-> @history-index (inc) (min (dec (count c))))]
                                 (when i
                                   (codemirror/cm-set-value cm (command-source (get c i)))
+                                  (codemirror/set-cursor-at-the-end cm)
 
                                   (reset! history-index i))))]
            [codemirror/CodeMirror
