@@ -26,6 +26,10 @@
   [state]
   (:convex-web.repl/commands state))
 
+(defn command-source [{:convex-web.command/keys [query transaction]}]
+  (or (get query :convex-web.query/source)
+      (get transaction :convex-web.transaction/source)))
+
 (defn query?
   "Query Command?"
   [command]
@@ -142,11 +146,15 @@
   ;; because the component doesn't need
   ;; to update when the Atom's value changes.
   (reagent/with-let [editor-ref (atom nil)
-                     source-ref (atom "")]
+                     source-ref (atom "")
+                     history-index (atom nil)]
     (let [active-address (session/?active-address)
 
           execute (fn []
                     (when-let [editor @editor-ref]
+                      ;; Reset history navigation index.
+                      (reset! history-index nil)
+
                       (let [source (codemirror/cm-get-value editor)
 
                             transaction #:convex-web.transaction {:type :convex-web.transaction.type/invoke
@@ -230,7 +238,28 @@
                                      (if (and last-line? last-ch?)
                                        (execute)
                                        codemirror/pass))
-                                   codemirror/pass))]
+                                   codemirror/pass))
+
+               history-up (fn [cm]
+                            (let [c (vec (commands state))
+                                  ;; Do nothing if there are no Commands.
+                                  i (or @history-index (some-> (seq c) count))
+                                  ;; Max '0' to fallback to first Command.
+                                  i (some-> i (dec) (max 0))]
+                              (when i
+                                (codemirror/cm-set-value cm (command-source (get c i)))
+
+                                (reset! history-index i))))
+
+               history-down (fn [cm]
+                              (let [c (vec (commands state))
+                                    ;; Do nothing if there's no index set.
+                                    ;; Min 'count' to fallback to last Command.
+                                    i (some-> @history-index (inc) (min (dec (count c))))]
+                                (when i
+                                  (codemirror/cm-set-value cm (command-source (get c i)))
+
+                                  (reset! history-index i))))]
            [codemirror/CodeMirror
             [:div.relative.flex-shrink-0.flex-1.resize-y.overflow-scroll
              {:style
@@ -258,7 +287,9 @@
 
              :on-mount (fn [_ editor]
                          (->> (codemirror/extra-keys {:enter enter-extra-key
-                                                      :shift-enter execute})
+                                                      :shift-enter execute
+                                                      :ctrl-up history-up
+                                                      :ctrl-down history-down})
                               (codemirror/set-extra-keys editor))
 
                          (reset! editor-ref editor)
@@ -266,7 +297,9 @@
                          (codemirror/cm-focus editor))
              :on-update (fn [_ editor]
                           (->> (codemirror/extra-keys {:enter enter-extra-key
-                                                       :shift-enter execute})
+                                                       :shift-enter execute
+                                                       :ctrl-up history-up
+                                                       :ctrl-down history-down})
                                (codemirror/set-extra-keys editor))
 
                           (codemirror/cm-focus editor))

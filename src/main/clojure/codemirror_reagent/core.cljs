@@ -18,12 +18,31 @@
    :matchBrackets true
    :autoCloseBrackets true})
 
-(defn extra-keys [{:keys [enter shift-enter]}]
+(defn extra-keys
+  "Mapping of key name to key handler function.
+
+   Key handler function is an unary function which gets passed a CodeMirror
+   instance.
+
+   Reference:
+
+   The values of properties in key maps can be either functions of a single
+   argument (the CodeMirror instance), strings, or false. Strings refer to
+   commands, which are described below. If the property is set to false,
+   CodeMirror leaves handling of the key up to the browser. A key handler
+   function may return CodeMirror.Pass to indicate that it has decided not to
+   handle the key, and other handlers (or the default behavior) should be given
+   a turn."
+  [{:keys [enter shift-enter ctrl-up ctrl-down]}]
   (merge {}
          (when enter
            {"Enter" enter})
          (when shift-enter
-           {"Shift-Enter" shift-enter})))
+           {"Shift-Enter" shift-enter})
+         (when ctrl-up
+           {"Ctrl-Up" ctrl-up})
+         (when ctrl-down
+           {"Ctrl-Down" ctrl-down})))
 
 (defn set-extra-keys [editor extra-keys]
   (.setOption editor "extraKeys" (clj->js extra-keys))
@@ -106,7 +125,7 @@
                                             :code-mirror.events/document]))
 
 (defn CodeMirror
-  "CodeMirror React component.
+  "CodeMirror Reagent component.
 
    `configuration` is the 'vanilla configuration' (please see the official docs),
     but as a ClojureScript map, and with keyword keys instead.
