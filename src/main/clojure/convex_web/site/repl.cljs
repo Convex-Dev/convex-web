@@ -548,7 +548,33 @@
 
           [gui/InfoTooltip "Select the programming language to use."]]]]
 
-       [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]]]
+       [:div.flex.space-x-2
+        [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]
+
+        ;; Keymaps.
+        [gui/Tooltip
+         {:html
+          (reagent/as-element
+            [:div.flex.flex-col.text-xs.font-mono.space-y-1
+             [:span.font-bold.text-sm.mb-2 "Keymaps"]
+
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Run: "]
+              [:span.bg-gray-500.p-1.rounded-md "Shift+Return"]]
+
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Clear: "]
+              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Backspace"]]
+
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Navigate history up: "]
+              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Up"]]
+
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Navigate history down: "]
+              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Down"]]])}
+
+         [gui/QuestionMarkCircle {:class "h-4 w-4"}]]]]]
 
      ;; -- Sidebar
      (let [selected-tab (selected-tab state)]
