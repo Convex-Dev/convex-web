@@ -612,7 +612,7 @@
 
 (defn InfoTooltip [tooltip]
   [Tooltip
-   {:title tooltip}
+   {:html (reagent/as-element [:span.text-xs.font-mono. tooltip])}
    [InformationCircleIcon {:class "w-4 h-4 hover:text-gray-500"}]])
 
 
