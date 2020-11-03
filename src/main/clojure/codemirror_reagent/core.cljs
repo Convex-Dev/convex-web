@@ -33,7 +33,7 @@
    function may return CodeMirror.Pass to indicate that it has decided not to
    handle the key, and other handlers (or the default behavior) should be given
    a turn."
-  [{:keys [enter shift-enter ctrl-up ctrl-down]}]
+  [{:keys [enter shift-enter ctrl-up ctrl-down ctrl-backspace]}]
   (merge {}
          (when enter
            {"Enter" enter})
@@ -42,7 +42,9 @@
          (when ctrl-up
            {"Ctrl-Up" ctrl-up})
          (when ctrl-down
-           {"Ctrl-Down" ctrl-down})))
+           {"Ctrl-Down" ctrl-down})
+         (when ctrl-backspace
+           {"Ctrl-Backspace" ctrl-backspace})))
 
 (defn set-extra-keys [editor extra-keys]
   (.setOption editor "extraKeys" (clj->js extra-keys))

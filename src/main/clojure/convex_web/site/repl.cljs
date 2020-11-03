@@ -261,7 +261,10 @@
                                   (codemirror/cm-set-value cm (command-source (get c i)))
                                   (codemirror/set-cursor-at-the-end cm)
 
-                                  (reset! history-index i))))]
+                                  (reset! history-index i))))
+
+               clear-all (fn [cm]
+                           (codemirror/cm-set-value cm ""))]
            [codemirror/CodeMirror
             [:div.relative.flex-shrink-0.flex-1.resize-y.overflow-scroll
              {:style
@@ -291,7 +294,8 @@
                          (->> (codemirror/extra-keys {:enter enter-extra-key
                                                       :shift-enter execute
                                                       :ctrl-up history-up
-                                                      :ctrl-down history-down})
+                                                      :ctrl-down history-down
+                                                      :ctrl-backspace clear-all})
                               (codemirror/set-extra-keys editor))
 
                          (reset! editor-ref editor)
@@ -301,7 +305,8 @@
                           (->> (codemirror/extra-keys {:enter enter-extra-key
                                                        :shift-enter execute
                                                        :ctrl-up history-up
-                                                       :ctrl-down history-down})
+                                                       :ctrl-down history-down
+                                                       :ctrl-backspace clear-all})
                                (codemirror/set-extra-keys editor))
 
                           (codemirror/cm-focus editor))
