@@ -7,9 +7,9 @@
     "watch": "npx shadow-cljs watch :main"
   },
   "dependencies": {
+    "@headlessui/react": "^0.2.0",
     "@tailwindcss/typography": "^0.2.0",
     "@tailwindcss/ui": "^0.7.2",
-    "@tailwindui/react": "^0.1.1",
     "codemirror": "^5.58.2",
     "highlight.js": "^10.3.2",
     "jdenticon": "^3.0.1",

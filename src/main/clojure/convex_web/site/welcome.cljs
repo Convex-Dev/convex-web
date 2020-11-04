@@ -2,9 +2,7 @@
   (:require [convex-web.site.gui :as gui]
 
             [reagent.core :as reagent]
-            [reitit.frontend.easy :as rfe]
-
-            ["@tailwindui/react" :refer [Transition]]))
+            [reitit.frontend.easy :as rfe]))
 
 (defn nav []
   {:concepts

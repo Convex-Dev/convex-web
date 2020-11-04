@@ -16,7 +16,7 @@
             ["react-tippy" :as tippy]
             ["react-markdown" :as ReactMarkdown]
 
-            ["@tailwindui/react" :as tailwindui-react]
+            ["@headlessui/react" :as headlessui-react]
 
             ["jdenticon" :as jdenticon]))
 
@@ -177,7 +177,7 @@
    leave-to: The ending point to leave to, for example opacity-0 after fading
    out.
 
-   https://github.com/tailwindlabs/tailwindui-react#transition"
+   https://github.com/tailwindlabs/headlessui/blob/develop/packages/%40headlessui-react/README.md#transition"
   [{:keys [show?
            enter
            enter-from
@@ -186,7 +186,7 @@
            leave-from
            leave-to]}
    child]
-  [:> tailwindui-react/Transition
+  [:> headlessui-react/Transition
    {:show show?
     :enter enter
     :enterFrom enter-from
