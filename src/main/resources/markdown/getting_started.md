@@ -310,7 +310,7 @@ Now you should be able to observe that your own token balance has been reduced:
 
 ```clojure
 (fungible/balance my-token *address*)
-=> 1000
+=> 900
 ```
 
 And you can also see that the recipint is not the proud owner of 100 tokens:
@@ -326,7 +326,7 @@ If you made it this far, congratulations! You've covered the basic of the Convex
 
 Where you go from here is up to you. Some ideas:
 
-- Learn more about Conex from the other documentation and guides here at `convex.world`
+- Learn more about Convex from the other documentation and guides here at `convex.world`
 - Build a mobile dApp that talks to your Convex Actors with the Client API
 
 We're excited to see what people are able to build using Convex! But most importantly, please let us know your feedback and what you think of Convex so far. You can join the [Convex Discord Server](https://discord.gg/fsnCxEM) to get involved with the discussions:
