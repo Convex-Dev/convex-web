@@ -6,7 +6,7 @@ Decentralised networks offer the opportunity to provide a true peer-to-peer syst
 
 However, existing decentralised networks have notable weaknesses including poor performance, high energy consumption, long transactions confirmation times, vulnerability to "front-running" attacks and/or lack of truly decentralised security.
 
-We present Convex, a trustless decentralised platform for value exchange. Convex achieves consensus with a novel technical solution based upon merging beliefs shared by peers using a function that is idempotent, commutative and associative, and thus creates a system that provably converges to consensus by forming a conflict-free replicated data type (CRDT). By augmenting this with a system of staking (DPoS), it is possible to guarantee convergence to consensus even in the presence of some proportion of malicious / byzantine peers.
+We present Convex, a trustless decentralised platform for value exchange. Convex achieves consensus with a novel technical solution based upon merging beliefs shared by peers using a function that is idempotent, commutative and associative, and thus creates a system that provably converges to consensus by forming a conflict-free replicated data type (CRDT). By augmenting this with a system of economic staking, it is possible to guarantee convergence to consensus even in the presence of some proportion of malicious / byzantine peers. We call this compined scheme "Convergent Proof of Stake" (CPoS).
 
 We augment this system with an execution engine, building on the lambda calculus, immutable persistent data structures and content addressable storage. Coupled with the consensus algorithm, this provides a fully decentralised, global computer capable of executing arbitrary smart contracts with decentralised ownership (the "Convex Virtual Machine").
 
@@ -98,7 +98,7 @@ Convex has been designed to solve many of the technical challenges of Blockchain
 * **Byzantine Fault Tolerance** - Convex meets the strongest possible threshold for security under the model of Byzantine threats. Consensus formation is guaranteed (and stable) as long as at least 2/3 of the effective voting power of the network follows the protocol.
 * **Fully Decentralised** - The network operates under a trustless Peer-to-Peer model: Anyone can operate a Peer in the network, anyone can submit a transaction for execution, and transactions cannot be censored (subject to the usual security assumptions). 
 
-But Convex is more than just a faster Blockchain - it is a platform for building digital economic systems. As such, it combines a number of capabilities that together enable construction of new classes of applications.
+But Convex is not simply a faster Blockchain - it is a platform for building digital economic systems. As such, it combines a number of capabilities that together enable construction of new classes of applications.
 
 Three capabilities are particularly important:
 
@@ -109,11 +109,13 @@ Three capabilities are particularly important:
 
 ### Consensus Algorithm
 
-Convex depends upon a consensus algorithm to ensure that everyone agrees on a single version of the truth - this is a precondition for any decentralised economic system that needs to enforce ownership of digital assets.
-
-The Convex consensus algorithm makes use of **Delegated Proof of Stake**. This avoids the wasteful use of resources and energy that plagues systems based on "Proof of Work". As well as offering substantially improved performance, this means that Convex presents an environmentally friendly alternative to previous models such as Bitcoin or Ethereum.
+Convex, like other decentralised systems, depends upon a consensus algorithm to ensure that everyone agrees on a single version of the truth - this is a precondition for any decentralised economic system that needs to enforce ownership of digital assets.
 
 The algorithm operates using a variant of a **Conflict-free Replicated Data Type** (CRDT), which can be proven to converge to consensus through a few rounds of random gossip between Peers. 
+
+The Convex consensus algorithm makes use of **Proof of Stake**, a mechanism by which peers are required to deposit an economically significant stake to ensure their good behaviour and be granted participation rights in the consensus protocol. This avoids the wasteful use of resources and energy that plagues systems based on "Proof of Work". As well as offering substantially improved performance, this means that Convex presents an environmentally friendly alternative to previous models such as Bitcoin or Ethereum.
+
+
 
 ### Execution Engine
 
@@ -665,7 +667,7 @@ If we had infinite storage, we could just keep accumulating values in the databa
 
 Peers are only strictly required to maintain:
 
-* Enough information regarding Beliefs to participate in the consensus algorithm (about one day of orderings and transactions?)
+* Enough information regarding Beliefs to participate in the consensus algorithm (about one day of orderings and transactions - exact limit TBC)
 * The current State for the CVM
 
 The storage system therefore allows garbage collection to be performed on a periodic basis, so that unused historical storage can be reclaimed. Garbage collection is done on a mark+copy basis, where currently used storage is copied to a new data file, and after which the old data file can be safely discarded. This could theoretically be performed concurrently with ongoing Peer operation in a future version.
@@ -684,6 +686,7 @@ Convex uses cryptographic primitives for the following functions:
   * For every Cell which forms part of a Decentralised Data Object, a cryptographic hash of its byte encoding is computed for identity, indexing and verification purposes
 
 As an engineering principle, Convex only uses trusted implementations of cryptographic algorithms in well tested libraries (currently Bouncy Castle, and the cryptographic routines available as standard in the JVM). We do not intend to "roll our own" with respect to crypto algorithms.
+
 ## Conclusion
 
 Convex presents a new approach to programmable economic systems that provides a powerful combination of scalability, security and decentralisation, suitable for building applications for the Internet of Value.
