@@ -20,7 +20,7 @@
     "timeago.js": "^4.0.2"
   },
   "devDependencies": {
-    "shadow-cljs": "^2.11.6",
+    "shadow-cljs": "^2.11.7",
     "tailwindcss": "^1.9.6"
   }
 }
