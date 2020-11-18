@@ -82,7 +82,7 @@
   nano-id/nano-id {:mvn/version "1.0.0"}
   expound/expound {:mvn/version "0.8.6"}
   fipp/fipp {:mvn/version "0.6.23"}
-  zprint/zprint {:mvn/version "1.0.1"}
+  zprint/zprint {:mvn/version "1.0.2"}
   cljs-ajax/cljs-ajax {:mvn/version "0.8.1"}}
 
  :aliases
