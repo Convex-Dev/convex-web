@@ -17,6 +17,7 @@
             ["react-markdown" :as ReactMarkdown]
 
             ["@headlessui/react" :as headlessui-react]
+            ["qrcode.react" :as QRCode]
 
             ["jdenticon" :as jdenticon]))
 
@@ -756,16 +757,21 @@
      ;; Address
      ;; ==============
      [:div.flex.flex-col
-      [:div.flex.items-center
+      [:div.flex.items-center.space-x-4
        ;; -- Identicon
        [Identicon {:value address :size 88}]
 
        ;; -- Address
-       [:div {:class [caption-container-style "ml-4"]}
+       [:div {:class caption-container-style}
         [:span {:class caption-style} "Address"]
         [:span.inline-flex.items-center
          [:span.font-mono.text-base.mr-2 address-blob]
-         [ClipboardCopy address-blob]]]]
+         [ClipboardCopy address-blob]]]
+
+       ;; -- QR Code
+       [:> QRCode
+        {:value address
+         :size 88}]]
 
       ;; -- Type
       [:span.inline-flex.justify-center.items-center.font-mono.text-xs.text-white.uppercase.mt-2.rounded
