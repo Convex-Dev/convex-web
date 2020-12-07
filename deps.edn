@@ -38,13 +38,13 @@
   org.slf4j/log4j-over-slf4j {:mvn/version "1.7.30"}
 
   ;; Redirect Log4j 2.x to Logback via the SLF4J API
-  org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.13.3"}
+  org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.14.0"}
 
   ;; Redirect java.util.logging to Logback via the SLF4J API.
   org.slf4j/jul-to-slf4j {:mvn/version "1.7.30"}
 
   ;; Google Cloud Logging appender
-  com.google.cloud/google-cloud-logging-logback {:mvn/version "0.118.5-alpha"}
+  com.google.cloud/google-cloud-logging-logback {:mvn/version "0.118.7-alpha"}
 
   ;; IMPORTANT
   ;; `com.google.cloud/google-cloud-logging-logback` has a transitive
@@ -80,7 +80,7 @@
   metosin/reitit-frontend {:mvn/version "0.5.10"}
   datalevin/datalevin {:mvn/version "0.3.13"}
   nano-id/nano-id {:mvn/version "1.0.0"}
-  expound/expound {:mvn/version "0.8.6"}
+  expound/expound {:mvn/version "0.8.7"}
   fipp/fipp {:mvn/version "0.6.23"}
   zprint/zprint {:mvn/version "1.0.2"}
   cljs-ajax/cljs-ajax {:mvn/version "0.8.1"}}
@@ -92,7 +92,7 @@
    :extra-deps {com.stuartsierra/component.repl {:mvn/version "0.2.0"
                                                  :exclusions [org.clojure/tools.namespace]}
 
-                org.clojure/tools.namespace {:mvn/version "1.0.0"}}}
+                org.clojure/tools.namespace {:mvn/version "1.1.0"}}}
 
 
   :test
