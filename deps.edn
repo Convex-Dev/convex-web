@@ -44,7 +44,7 @@
   org.slf4j/jul-to-slf4j {:mvn/version "1.7.30"}
 
   ;; Google Cloud Logging appender
-  com.google.cloud/google-cloud-logging-logback {:mvn/version "0.118.4-alpha"}
+  com.google.cloud/google-cloud-logging-logback {:mvn/version "0.118.5-alpha"}
 
   ;; IMPORTANT
   ;; `com.google.cloud/google-cloud-logging-logback` has a transitive
@@ -73,16 +73,16 @@
   http-kit/http-kit {:mvn/version "2.5.0"}
   compojure/compojure {:mvn/version "1.6.2"}
   hiccup/hiccup {:mvn/version "1.0.5"}
-  re-frame/re-frame {:mvn/version "1.1.1"
+  re-frame/re-frame {:mvn/version "1.1.2"
                      :exclusions [cljsjs/react
                                   cljsjs/react-dom
                                   cljsjs/react-dom-server]}
   metosin/reitit-frontend {:mvn/version "0.5.10"}
-  datalevin/datalevin {:mvn/version "0.3.12"}
+  datalevin/datalevin {:mvn/version "0.3.13"}
   nano-id/nano-id {:mvn/version "1.0.0"}
   expound/expound {:mvn/version "0.8.6"}
   fipp/fipp {:mvn/version "0.6.23"}
-  zprint/zprint {:mvn/version "1.0.1"}
+  zprint/zprint {:mvn/version "1.0.2"}
   cljs-ajax/cljs-ajax {:mvn/version "0.8.1"}}
 
  :aliases
@@ -99,7 +99,7 @@
   {:extra-paths ["src/test/clojure"]
 
    :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
-                lambdaisland/kaocha {:mvn/version "1.0.700"}}}
+                lambdaisland/kaocha {:mvn/version "1.0.732"}}}
 
 
   :test-runner
@@ -112,7 +112,7 @@
 
   ;; -- Site (ClojureScript app)
   :site-dev
-  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.7"}
+  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.8"}
                 binaryage/devtools {:mvn/version "1.0.2"}}}
 
 

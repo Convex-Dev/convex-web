@@ -430,11 +430,13 @@
             (throw (ex-info "Invalid lang."
                             {::anomalies/category ::anomalies/incorrect})))
 
-        address (try
-                  (s/assert :convex-web/address address)
-                  (catch Exception _
-                    (throw (ex-info "Invalid address."
-                                    {::anomalies/category ::anomalies/incorrect}))))
+        ;; Address is optional.
+        address (when-not (nil? address)
+                  (try
+                    (s/assert :convex-web/address address)
+                    (catch Exception _
+                      (throw (ex-info "Invalid address."
+                                      {::anomalies/category ::anomalies/incorrect})))))
 
         source (try
                  (s/assert :convex-web/non-empty-string source)
