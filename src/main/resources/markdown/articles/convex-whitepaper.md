@@ -1,12 +1,12 @@
 # Convex White Paper
 
-## Overview
+## Abstract
 
 Decentralised networks offer the opportunity to provide a true peer-to-peer system for the value exchange involving digital assets and services, protected at the protocol level by cryptographic keys that can be issued an managed on a self-sovereign basis - a vision that might well be called the "Internet Of Value". 
 
 However, existing decentralised networks have notable weaknesses including poor performance, high energy consumption, long transactions confirmation times, vulnerability to "front-running" attacks and/or lack of truly decentralised security.
 
-We present Convex, a trustless decentralised platform for value exchange. Convex achieves consensus with a novel technical solution based upon merging beliefs shared by peers using a function that is idempotent, commutative and associative, and thus creates a system that provably converges to consensus by forming a conflict-free replicated data type (CRDT). By augmenting this with a system of economic staking, it is possible to guarantee convergence to consensus even in the presence of some proportion of malicious / byzantine peers. We call this combined scheme "Convergent Proof of Stake" (CPoS).
+We present Convex, a fully decentralised platform for digital value exchange. Convex achieves consensus with a novel technical solution based upon merging beliefs shared by peers using a function that is idempotent, commutative and associative, and thus creates a system that provably converges to consensus by forming a conflict-free replicated data type (CRDT). By augmenting this with a system of economic staking, it is possible to guarantee convergence to consensus even in the presence of some proportion of malicious / byzantine peers. We call this combined scheme "Convergent Proof of Stake" (CPoS).
 
 We augment this system with an execution engine, building on the lambda calculus, immutable persistent data structures and content addressable storage. Coupled with the consensus algorithm, this provides a fully decentralised, global computer capable of executing arbitrary smart contracts with decentralised ownership (the "Convex Virtual Machine").
 
@@ -132,7 +132,7 @@ Convex implemented a novel storage scheme, specifically designed to support the 
 
 * **Hash keys** - The key for every value in the database is its cryptographic hash
 * **Smart References** - references to data that can be lazily loaded and verified, allowing just a small required subset of data to be accessed on demand.
-* **Orthogonal Persistence** - Decentralised Data Objects used in Convex (such as the CVM state) are stored in a virtual database which may be much larger than main memory. This opens up interesting opportunities for future scalability and sophisticated Actors capable of working with large databases.
+* **Transparent Persistence** - Decentralised Data Objects used in Convex (such as the CVM state) are stored in a virtual database which may be much larger than main memory. This opens up interesting opportunities for future scalability and sophisticated Actors capable of working with large databases.
 * **Novelty Detection** - The design of the storage system enables Convex to detect *novel* information when it is written to storage. This is important to reduce bandwidth requirements: only novel information will typically need to be broadcast to the Peer network.
 * **Proofed Persistence** - Certain proofs relating the the validation of data are persisted along with the data itself. This is an important optimisation: Entire large data structures can be verified in O(1) time by checking the cached proof.
 
@@ -352,14 +352,23 @@ The convex execution engine is referred to as the Convex Virtual Machine (CVM). 
 
 The fundamental control mechanism for the CVM is via Accounts.
 
-* **User Accounts**: Accounts that are controlled by external users, where access is controlled by digital signatures on transactions.
-* **Actor Accounts**: Accounts that are managed by an autonomous Actor, where behaviour is 100% deterministic according the the associated CVM code. Actor functionality may be invoked in a transaction, but only if this is initiated and validated via a User Account.
+* **User Accounts**: Accounts that are controlled by external users, where access is controlled by Ed25519 digital signatures on transactions.
+* **Actor Accounts**: Accounts that are managed by an autonomous Actor, where behaviour is 100% deterministic according the the associated CVM code. Actor functionality may be invoked within a externally submitted transaction, but only if this is initiated and validated via a User Account.
 
-The Account model is conceptually similar to Ethereum: in particular the two types of Account share a common abstraction. Both User Accounts and Actor Accounts may hold exclusive control over assets, allowing for decentralised value exchange mediated by smart contracts.
+It is important to note particular the two types of Account share a common abstraction. Both User Accounts and Actor Accounts may hold exclusive control over assets, allowing for decentralised value exchange mediated by smart contracts. This common abstraction is useful, because it makes it simple to write code that does not need to distiguish between assets controlled directly by a user and assets managed by a Smart Contract.
 
-#### Data Model
+#### Information Model
 
-Convex implements a comprehensive set of data types, which are utilised both within the CVM and in the broader implementation of a Convex Peer (including the consensus algorithm and communication protocols).
+Convex requires a standard data model because in order for consensus to be useful, it must be agreed precisely what the information in consensus represents
+
+Design decisions regarding the information model have been driven by a number of theoretical and pragmatic considerations
+
+- Representing types that are theoretically sound fundamental to computing such as vectors, maps and lambda functions
+- Providing types that are generally likely to be useful for developers of decentralised asset systems
+- Using types that are conveniently represented in modern computing platforms (e.g. the use of 64-bit Long integers and IEEE 754 double precision floating point values)
+- Ensuring that information can be efficiently encoded to minimise storage and bandwidth requirements
+
+Convex therefore implements a comprehensive set of data types, which are utilised both within the CVM and in the broader implementation of a Convex Peer (including the consensus algorithm and communication protocols).
 
 All data types available in the CVM are considered as Decentralised Data Objects (DOs).
 
@@ -386,7 +395,7 @@ There is also a set of non-integral primitive objects generally useful for progr
 * Address (32 bytes hex, e.g. `1f6ca3a7a6fccc7a4ee8034a297b559ee7b343a1912aab89586126564dec166a`)
 * Hash (32 bytes hex, e.g. `04ef3428895f2bccbf67a19e33f4a0ba0d9f67a0eb5eb1841cea13f6abff3134`)
 
-Primitives that are sufficiently small are **embedded** directly within larger Data Objects that contain them. This is an internal implementation detail to reduce the overhead of storing many small objects independently, and is transparent to CVM code.
+Data values that are sufficiently small, including all of the above, are **embedded** directly within larger Data Objects that contain them. This is an internal implementation detail to reduce the overhead of storing and communicating many small objects independently, which is transparent to CVM code.
 
 ##### Nil
 
@@ -394,26 +403,7 @@ Convex supports the value `nil` as a first class value.
 
 By convention, core runtime functions generally return `nil` to indicate the absence of a value, e.g. looking up a value in a map with a key that is not present.
 
-There is no direct equivalent of a `NullPointerException` since CVM objects do not implement methods, however careless use of nils may result in cast errors (e.g. `(+ 2 nil)`). 
-
-##### Syntax Objects
-
-Syntax Objects are wrapped values that contain a raw value and optional metadata. 
-
-Metadata may be an arbitrary Map, but typically would include such things as:
-
-* Source code references
-* Documentation
-* Information generated through macro expansion
-
-Syntax Objects are inspired by Racket, and are generally used for code generation and compilation, although they are also available for use in regular CVM code if desired. They are marginally more efficient than storing a value and metadata as two separate fields in a Map, for example.
-
-The primary usages of Syntax Objects within the CVM are:
-
-* Allowing metadata to be attached to values within the dynamic environment of an Account (e.g. documentation for Actor functions)
-* Supporting the implementation of the Convex Lisp compiler and macro system
-
-NOTE: In the future Syntax Objects may be utilised to implement a gradual type system such as seen in Typed Racket.
+There is no direct equivalent of a `NullPointerException` since CVM objects do not implement methods, however careless use of nils may result in type casting errors (e.g. `(+ 2 nil)`). 
 
 ##### Blobs
 
@@ -439,8 +429,26 @@ A moderately high branching factor (usually 16) is used. This is important becau
 * It facilitates faster lookups (less nodes to traverse by a factor of 4 vs. a binary tree)
 * It reduces the number of new node allocations required to update a path to a leaf node. 
 * It reduces the number of hashes that need to be computed (a performance bottleneck in some cases)
-* There is a certain elegance in being able to index the tree using hex digits
+* There is a certain elegance and performance benefit in being able to index the tree using hex digits
 
+##### Syntax Objects
+
+Syntax Objects are wrapped values that contain both a raw value and optional metadata. 
+
+Metadata may be an arbitrary Map, but typically would include such things as:
+
+* Source code references
+* Documentation
+* Information generated through macro expansion
+
+Syntax Objects are inspired by Racket, and are generally used for code generation and compilation, although they are also available for use in regular CVM code if desired. They are marginally more efficient than storing a value and metadata as two separate fields in a Map, for example.
+
+The primary usages of Syntax Objects within the CVM are:
+
+* Allowing metadata to be attached to values within the dynamic environment of an Account (e.g. documentation for Actor functions)
+* Supporting the implementation of the Convex Lisp compiler and macro system
+
+NOTE: In the future Syntax Objects may be utilised to implement a gradual type system such as seen in Typed Racket.
 
 ##### Records
 
@@ -454,16 +462,33 @@ These are primarily used by the Convex and CVM implementation, though for conven
 
 NOTE: Allowing user-defined, row-polymorphic records is under consideration for future implementation.
 
+##### Ops
+
+Ops are low level, programmatic constructs that represent individual instructions on the CVM. They can be considered analogous to machine code instructions on the CVM. Currently the Ops supported are:
+
+- `cond` - conditional evaluation
+- `constant` - load a constant value
+- `def` - modify environment (map of symbols to values)
+- `do` - sequential composition of operations
+- `invoke` - execution of a Function
+- `lambda` - instantiation of a Function
+- `let` - definition of values in a lexical scope
+- `lookup` - lookup of a value in the environment
+
+These Ops are similar to the some basic primitives often found in a Lisp machine. It should be noted that certain other important primitives e.g. `cons`, `quote`, `=` etc. are currently implemented as functions in the runtime environment.
+
 ##### Functions
 
-Functions are first class objects suitable for use in functional programming. 
+Functions are first class objects suitable for use in functional programming. We choose to implement functions directly in the CVM because they are fundamental and powerful constructs that allow the construction of effective programs without having to simulate them with lower level constructs (e.g. a stack based model).
 
 Important features:
 
-* Support for variable arity application, e.g. `(+ 1 2 3 4)`
+* Support for variable arity function application, e.g. `(+ 1 2 3 4)`
 * Full lexical closures (capturing values in the lexical environment at the point of creation)
 
-In addition, data structures map be used in place of functions in some defined circumstances, e.g.:
+Some functions are provided by default as part of the runtime environment, which are generally available in the standard library `convex.core`. These functions provide the foundation for construction of higher level functionality.
+
+In addition (adopting an idiom that has proved convenient in the Clojure language), data structures map be used in place of functions in some defined circumstances, e.g.:
 
 * Maps may be used as functions that implement map lookup: `({:foo 1 :bar 2} :bar) => 2`
 * Sets may be used as functions to test membership: `(#{1 2 3} 4) => false`
@@ -471,25 +496,25 @@ In addition, data structures map be used in place of functions in some defined c
 
 #### Execution constraints
 
-Since the CVM supports Turing-complete computation, it is necessary to place constraints upon code execution to prevent erroneous, sloppily-written or malicious code from consuming excessive resources.
+Since the CVM supports Turing-complete computation, it is necessary to place constraints upon code execution to prevent erroneous, sloppily-written or malicious code from consuming excessive resources. This is particularly important in a decentralised system because such resources are a global, shared cost.
 
 The CVM therefore constrains both **time** and **space**.
 
 ##### Time
 
-Convex constrains time by placing a "juice cost" on each CVM operation performed. Any transaction executed has a "juice limit" that places a bound on the total amount of computational work that can be performed 
+Convex constrains time by placing a "juice cost" on each CVM operation performed. Any transaction executed has a "juice limit" that places a bound on the total amount of computational work that can be performed within the scope of the transaction.
 
 The originating account for a transaction must reserve juice by paying an amount `[juice limit] x [juice price]` at the start of the transaction. Any unused juice at the end of the transaction is refunded at the same rate. The juice price a dynamically varying price that adjusts with amount of execution performed per unit time by the Convex network as a whole: this is a cryptoeconomic mechanism to disincentivise transactions from being submitted at peak periods, and as a protection from DoS attacks by making it prohibitively expensive to flood the compute capacity of the network for a sustained period of time.
 
-If the juice limit has been exceeded, the CVM terminates transaction execution with an uncatchable exception, and rolls back any state changes. No juice is refunded in such a situation.
+If the juice limit has been exceeded, the CVM terminates transaction execution with an exception, and rolls back any state changes. No juice is refunded in such a situation - this penalises users who attempt excessive resource consumption.
 
 ##### Space
 
-NOTE: FEATURE STILL IN DEVELOPMENT
-
-A significant problem facing a global, decentralised database that provides a commitment to preserve data indefinitely is the problem of state growth: if not constrained, the size of the CVM state might grow excessively large.
+A significant but often overlooked problem facing a global, decentralised database that provides a commitment to preserve data indefinitely is the problem of state growth: if not constrained, the size of the CVM state might grow excessively large.
 
 This is an economic problem: The participants who create additional state are not necessarily the same as those who must bear the cost of ongoing storage. This can create a "Tragedy of the Commons" where participants are careless about creating new state. This could quickly lead to a situation where the state grows too large to be feasible for normal computers to participate as Peers in the Convex networks, which will in turn cause centralisation towards a few large and powerful nodes.
+
+This problem cannot be solved by charging at execution time alone. There is no way to determine at execution time how long a particular set of data will be stored for - it might be deallocated in the very next transaction, or it might need to persist forever. Any "average" estimate will end up penalising those who are being efficient only need the storage briefly, and subsidising those who are careless and consume space forever.
 
 To solve this problem, Convex implements **memory accounting** with the following features:
 
@@ -503,7 +528,7 @@ To solve this problem, Convex implements **memory accounting** with the followin
 
 **Note 2**: Observant system hackers may notice that the memory accounting mechanism means that if Account A causes some memory to be allocated, and Account B causes that same memory to be de-allocated (e.g. through the use of calls to an Actor), then Account B will gain memory from A. We consider this a feature, not a bug: It incentivises participants to clean up state wherever possible, and incentivises the writers of Actor code to consider their memory allocations and deallocations carefully.
 
-To ensure correct economic behaviour, it is necessary for free memory to have an economic cost. Therefore, Convex enables a **memory market** though which memory allocations may be traded. This has the following features:
+To ensure correct economic behaviour, it is necessary for free memory to have an economic cost. Therefore, Convex provides a **memory market** though which memory allocations may be traded. This has the following features:
 
 * An automatic market maker enabling accounts to buy and sell memory at any time, placing an effective price on memory
 * A total cap on available memory set at a level that constrains the total state size to an acceptable level
@@ -516,6 +541,8 @@ The overall cryptoeconomic system of memory accounting and memory markets offers
 * A specific incentive for coders to write memory-efficient code, and provide the ability for unused data to be deleted, if they want their Actors to be considered high quality and trustworthy.
 * A partial disincentive to hoard memory allocations (since expected future cap additions may devalue large memory holdings).
 * When space becomes scarce, there is an incentive for less economically viable applications to wind up operations and sell their memory allocation.
+
+For convenience, memory purchases happen automatically if additional allocations are needed within a transaction. This means that in most cases, users need not be concerned with the specifics of managing their memory allowance.
 
 #### Runtime environment
 
@@ -538,6 +565,14 @@ At the same time, the capabilities of the runtime system are constrained so that
 The Convex execution engine implements a form of transparent (sometimes also known as orthogonal persistence). In this model, the CVM state size may exceed the working memory capacity of a Peer, and necessary parts of the state tree are loaded in from persistent storage on demand.
 
 This presents a significant conceptual benefit for the developer: there is no need to write any code to load or unload data from storage in normal CVM code. This imposes some additional implementation complexity for the CVM itself, but this is considered a worthwhile trade-off, especially since it simplifies the logic of other parts of the Convex Peer implementation (e.g. eliminates the need to explicitly handle the memory consumption growth of block orderings generated by the consensus algorithm over time). 
+
+In the reference implementation, this is achieved with judicious reliance upon the very efficient JVM automatic memory management. This enables the following lifecycle for in-memory data objects:
+
+1. Objects are initial created with strong (RefDirect) references, which ensure that they are held in memory for as long as they are potentially needed
+2. At certain checkpoints (most importantly, after the successful processing of each Block) the current state is *persisted*. All objects which are reachable but not yet persisted are written to storage, and references to them are converted from strong references to soft (RefSoft) references. This happens as an atomic operation.
+3. From this point onwards, the persisted objects may be garbage collected at any time by the JVM if memory pressure occurs
+4. If an attempt is made to access an object that has been garbage collected, the reference automatically fetches the associated data object from storage. This is guaranteed to succeed assuming that the previous persistence step was successfully completed.
+5. Over longer time periods, it is possible to perform garbage collection on the storage itself by compacting the store to remove data that is no longer required by the current consensus state. Peers may choose to do this at their own discretion based on their operational requirements, or alternatively they may decide to preserve all data (for example in order to perform historical analysis)
 
 #### Convex Lisp
 
@@ -587,15 +622,23 @@ Short lived objects are garbage collected by the host runtime (the JVM). This wi
 Peer operators may also choose to either garbage collect old persisted state from long term storage, or alternatively maintain old state for historical analysis. Peers are only required to maintain object information necessary to execute the consensus algorithm (belief structures plus the proportion of CVM state relating to Peer information and stakes). For more details, see the section on Convergent Immutable Storage.
 
 
-### Convergent Immutable Storage
+### Storage System
 
 Convex makes use of a specialised storage system that complements the design of the Execution Engine.
+
+The storage system is also used to facilitate serialisation and transport of data across the network in communication between peers and clients.
 
 #### Cells
 
 Storage is constructed out of Cells. 
 
-A Data Object may be represented as a single Cell, but for larger data structures a tree of Cells is necessary.
+In most cases, a Cell is an immutable value value that represents an object in the CVM Informational Model.
+
+Normally there is a 1-1 mapping between Cells and CVM Data Objects, however there are some exceptions:
+
+- For larger data structures a tree of Cells may be necessary - this is because we need to place a fixed upper bound on the size of each cell.
+- Small data objects do not require a cell in their own right, since it is more efficient to embed them directly within a larger Cell.
+- Some special data structures used in Convex are technically implemented as Cells for the purpose of storage and serialisation, but are unavailable for use within the CVM - for example the `Belief` data structure used in the CPoS consensus algorithm.
 
 
 #### Encoding
@@ -606,7 +649,7 @@ The encoding is designed to provide the following properties:
 
 * A bounded maximum encoding size for any Cell (currently 8191 bytes)
 * Very fast serialisation and deserialisation, with minimal requirements for temporary object allocation.
-* Uniqueness of encoding - there is a 1:1 mapping between object values and valid encodings. This means that Data Object equality can be determined by comparing hashes of encodings.
+* Uniqueness of encoding - there is a 1:1 mapping between object values and valid encodings. This means, among other useful properties, that Data Object equality can be determined by comparing hashes of encodings.
 * Self describing format: given an valid Cell encoding, the Data Object can be reconstructed without additional context
 
 #### Embedding
@@ -619,9 +662,9 @@ Currently, most data objects with an encoding size of up to 140 bytes are embedd
 
 The cryptographic hash of the Cell encoding is used an an identifier to refer to a Cell, and in particular as a key for storage system. 
 
-This has the important property that it makes values in the storage system *immutable* - the data value cannot change for a given key. In turn this provides significant advantages for the implementation:
+This has the important property that it requires all values in the storage system *immutable* - the data value cannot change for a given key, or else the ID will no longer be valid. This restriction may seem limiting at first, but in fact provides significant advantages for the Convex storage implementation:
 
-* No need to re-size values once written: the database can be accumulated in an "append-only" manner.
+* No need to re-size values once written: the database can be accumulated in an "append-only" manner. The prevents storage fragmentation.
 * No need for cache invalidation or synchronisation of replicas: values cannot change
 * Rapid verification: if a hash exists in the store, and the data has already been validated, it must still be valid.
 
@@ -674,6 +717,12 @@ The storage system therefore allows garbage collection to be performed on a peri
 
 This behaviour is of course configurable by Peer Operators - we expect some will want to maintain and index all historical data for analytical purposes.
 
+#### Memory Mapped Implementation
+
+The Convex reference implementation implements the storage system using a specialised memory-mapped database called Etch, which is heavily optimised for the storage of Cells as described here. Assuming sufficient available RAM on a Peer, Etch effectively operates as an in-memory database.
+
+In performance tests, we have observed tens of millions of reads and writes per second. 
+
 ### Cryptographic Primitives
 
 Convex uses cryptographic primitives for the following functions:
@@ -683,7 +732,9 @@ Convex uses cryptographic primitives for the following functions:
   * For every Block proposed by a peer for consensus
   * For every Belief shared by a peer on the gossip network
 * Cryptographic Hashes (SHA3-256)
-  * For every Cell which forms part of a Decentralised Data Object, a cryptographic hash of its byte encoding is computed for identity, indexing and verification purposes
+  * For every Cell which forms part of a Decentralised Data Object, a hash of its byte encoding is computed for storage, identity, indexing and verification purposes
+  * For every key value used in a map data structure, its hash is computed (if necessary)
+* Standard algorithms as used to store and protect keys in common key file formats (.pem, .pfx)
 
 As an engineering principle, Convex only uses trusted implementations of cryptographic algorithms in well tested libraries (currently Bouncy Castle, and the cryptographic routines available as standard in the JVM). We do not intend to "roll our own" with respect to crypto algorithms.
 
