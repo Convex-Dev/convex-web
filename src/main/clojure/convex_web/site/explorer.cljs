@@ -104,7 +104,7 @@
        [gui/CaptionMono "Signer"]
 
        [:div.flex.items-center.w-40
-        [gui/Identicon {:value address :size gui/identicon-size-small}]
+        [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
         [:a.flex-1.truncate
          {:class gui/hyperlink-hover-class
@@ -309,7 +309,7 @@
           [:td {:class td-class}
            (let [address (get m :convex-web.signed-data/address)]
              [:div.flex.items-center.w-40
-              [gui/Identicon {:value address :size gui/identicon-size-small}]
+              [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
               [:a.flex-1.truncate
                {:class gui/hyperlink-hover-class
@@ -389,7 +389,7 @@
 
               (let [address (get-in m [:convex-web.signed-data/value :convex-web.transaction/target])]
                 [:div.flex.items-center.w-40
-                 [gui/Identicon {:value address :size gui/identicon-size-small}]
+                 [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
                  [:a.flex-1.truncate
                   {:class gui/hyperlink-hover-class
@@ -589,7 +589,7 @@
             ;; -- Address
             [:td.flex.items-center {:class td-class}
              [:div.flex.items-center
-              [gui/Identicon {:value address :size 28}]
+              [gui/AIdenticon {:value address :size 28}]
 
               (if modal?
                 [:code.underline.cursor-pointer.mx-2
@@ -833,7 +833,7 @@
                 ;; -- Peer
                 [:td {:class td-class}
                  [:div.flex.items-center
-                  [gui/Identicon {:value peer :size gui/identicon-size-small}]
+                  [gui/AIdenticon {:value peer :size gui/identicon-size-small}]
                   [:a
                    {:class gui/hyperlink-hover-class
                     :href (rfe/href :route-name/account-explorer {:address peer})}

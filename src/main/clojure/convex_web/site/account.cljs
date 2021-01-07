@@ -31,7 +31,7 @@
   [:span.inline-flex.text-gray-700.text-base.space-x-1
    [:a.inline-flex.items-center.space-x-1.w-40
     {:href (rfe/href :route-name/account-explorer {:address address})}
-    [gui/Identicon {:value address :size gui/identicon-size-small}]
+    [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
     [:span.font-mono.text-sm.truncate
      {:class gui/hyperlink-hover-class}
@@ -419,7 +419,7 @@
               address (format/trim-0x address-or-blob)]
           [:a.inline-flex.items-center.space-x-1.w-40
            {:href (rfe/href :route-name/account-explorer {:address address})}
-           [gui/Identicon {:value address :size gui/identicon-size-small}]
+           [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
            [:span.font-mono.text-sm.truncate
             {:class gui/hyperlink-hover-class}
@@ -431,7 +431,7 @@
               address (format/trim-0x address-or-blob)]
           [:a.inline-flex.items-center.space-x-1.w-40
            {:href (rfe/href :route-name/account-explorer {:address address})}
-           [gui/Identicon {:value address :size gui/identicon-size-small}]
+           [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
            [:span.font-mono.text-sm.truncate
             {:class gui/hyperlink-hover-class}
