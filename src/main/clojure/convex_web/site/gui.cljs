@@ -111,8 +111,8 @@
 (def identicon-size-small 26)
 (def identicon-size-large 40)
 
-(defn Identicon
-  "Reagent wrapper for Jidenticon.
+(defn Jdenticon
+  "Reagent wrapper for Jdenticon.
 
    - value is considered a hash string if the string is hexadecimal and
    contains at least 11 characters. It is otherwise considered a value that
@@ -127,6 +127,12 @@
    {:ref (fn [el]
            (when el
              (set! (.-innerHTML el) (jdenticon/toSvg value size))))}])
+
+(defn AIdenticon
+  "Convex Account Identicon."
+  [{:keys [value size]}]
+  [Jdenticon {:value (format/trim-0x (str/lower-case value))
+              :size size}])
 
 (defn Dismissible
   "Dismiss child component when clicking outside."
@@ -759,7 +765,7 @@
      [:div.flex.flex-col
       [:div.flex.items-center.space-x-4
        ;; -- Identicon
-       [Identicon {:value address :size 88}]
+       [AIdenticon {:value address :size 88}]
 
        ;; -- Address
        [:div {:class caption-container-style}
@@ -934,7 +940,7 @@
             ;; Empty, but fill the space.
             [:div.flex-1]
             [:div.flex.flex-1.items-center.px-2
-             [Identicon {:value (format/trim-0x active-address) :size 40}]
+             [AIdenticon {:value active-address :size 40}]
 
              [:span.font-mono.block.ml-2
               (format/prefix-0x active-address)]])
@@ -968,7 +974,7 @@
                    (when (= address active-address)
                      [CheckIcon {:class "h-5 w-5"}])]
 
-                  [Identicon {:value address :size 40}]
+                  [AIdenticon {:value address :size 40}]
 
                   [:span.font-mono.block.ml-2
                    (format/prefix-0x address)]]])]]]]]]))))
@@ -999,7 +1005,7 @@
         ;; *Important*
         ;; Display identicon if and only if address is an existing Account.
         (when (= :ajax.status/success (:ajax/status @account-ref))
-          [Identicon {:value object :size identicon-size-small}])
+          [AIdenticon {:value object :size identicon-size-small}])
 
         [:code.text-xs (format/prefix-0x object)]]]
 
