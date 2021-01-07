@@ -273,17 +273,8 @@
            [codemirror/CodeMirror
             [:div.relative.flex-shrink-0.flex-1.resize-y.overflow-scroll
              {:style
-              {:height "200px"}}
+              {:height "200px"}}]
 
-             ;; -- Reformat Code
-             [:div.absolute.right-0.top-0.m-2.z-10
-              [gui/DefaultButton
-               {:on-click
-                (fn []
-                  (when-let [editor @editor-ref]
-                    (let [pretty (zprint/zprint-str (codemirror/cm-get-value editor) {:parse-string-all? true})]
-                      (codemirror/cm-set-value editor pretty))))}
-               [:span.font-mono.text-xs.text-gray-700.uppercase "Reformat Code"]]]]
             {:configuration {:lineNumbers false
                              :value @source-ref
                              :mode (case (language state)
