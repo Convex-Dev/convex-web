@@ -749,3 +749,12 @@ At the same time, it maintains a certain degree of simplicity. We believe that s
 * A surprisingly simple consensus algorithm based on CRDTs
 
 It is our hope that the innovations in Convex and the engineering decisions made will provide a practical, high performance platform for a new generation of decentralised applications.
+
+## Contact and Links
+
+To learn more and try out the live Convex development test network: [Convex World](https://convex.world)
+
+For discussion of this White Paper and other topics relating to Convex, you are very welcome to join our public [Discord Server](https://discord.gg/5j2mPsk).
+
+Email: mike@convex.world
+
