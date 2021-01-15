@@ -17,6 +17,7 @@
     "qrcode.react": "^1.0.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-highlight.js": "^1.0.7",
     "react-markdown": "^5.0.3",
     "react-tippy": "^1.4.0",
     "timeago.js": "^4.0.2"
