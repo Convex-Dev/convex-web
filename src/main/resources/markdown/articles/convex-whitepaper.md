@@ -95,16 +95,18 @@ However, Blockchain technologies suffer from a range of issues which have proved
 * **Security** - Resistance to attacks on assets and information integrity (such as double spending of digital currency)
 * **Decentralisation** - Ability to operate free from centralised control by a single entity or group of powerful entities
 
+Given that security is essential, and that without decentralisation blockchains offer no compelling reason to switch from centralised solutions, blockchains have generally **sacrificed scalability** to the extent that they are not practical for large scale use cases.
+
 Other technical challenges became apparent over time. Some notable issues:
 
 * **Energy wastage** - The use of "Proof of Work" consensus algorithms has resulted in vast and wasteful energy consumption. This is particularly apparent in the Bitcoin and Ethereum 1.0 networks, which rely on vast amounts of computing power dedicated to hashing.
 * **Unbounded state growth** has been noted in many contexts - on-chain state must in a blockchain in many cases be preserved indefinitely, but the economic costs of this often do not fall on those responsible for creating new state - leading to an instance of "the tragedy of the commons". Over time, this may make it impossible for normal machines to run a node, effectively halting decentralisation.
 * **Front-Running** is a particularly important problem in decentralised finance, where it is possible to steal value from others by quickly inserting a transaction before that of another user, and is exacerbated by the problem of long block times
 * **Cross chain integration** presents a particular problem where different decentralised platforms provide different specialised capabilities, but need to be integrated to form a combined solution. The problems of maintaining consensus, security, reliability etc. are magnified in such situations.
-* **Latency** - The time taken for most blockchains to reach final consensus is too long to offer a positive user experience. This inability to provide quick confirmation and feedback is a significant barrier to mainstream user adoption of decentralised applications.
+* **Latency** - The time taken for most blockchains to confirm final consensus is frequently too long to offer a positive user experience. This inability to provide quick confirmation and feedback is a significant barrier to mainstream user adoption of decentralised applications.
 * **Upgradability** - Both networks themselves, and the specific implementations of smart contracts, are difficult to upgrade, in some cases requiring a "hard fork" of the network.
 
-Convex presents a solution to all of these challenges, and as such we believe it allows a significant evolution "Beyond Blockchain" to deliver the Internet of Value. The remainder of this White Paper explains how we achieve this.
+Convex presents a solution to most of these challenges, and as such we believe it allows a significant evolution "Beyond Blockchain" to deliver the Internet of Value. The remainder of this White Paper explains how we achieve this.
 
 ## Convex Overview
 
@@ -112,8 +114,8 @@ Convex presents a solution to all of these challenges, and as such we believe it
 
 Convex solves many of the technical challenges of Blockchains. With reference to the Scalability Trilemma, Convex offers:
 
-* **Thousands of transactions per second** - Convex offers the capability to operate at VISA-like transaction levels and sub-second block times even *before* scalability solutions such as Layer 2 solutions, state sharding or optimistic lookahead approaches are applied.
-* **Byzantine Fault Tolerance** - Convex meets the strongest possible threshold for security under the model of Byzantine threats. Consensus formation is guaranteed (and stable) as long as at least 2/3 of the effective voting power of the network follows the protocol.
+* **Thousands of transactions per second** - Convex offers the capability to operate at VISA-like transaction levels and sub-second block times even *before* scalability solutions such as Layer 2 solutions, state sharding or optimistic lookahead approaches are applied. Early benchmarking suggests peers running commodity hardware may be able to handle in excess of 40,000 transactions per second.
+* **Byzantine Fault Tolerance** - Convex meets the strongest possible threshold for security under the model of Byzantine threats. Consensus formation is guaranteed (and stable) as long as at least 2/3 of the effective voting power of the network follows the protocol honestly.
 * **Fully Decentralised** - The network operates under a permissionless Peer-to-Peer model: Anyone can operate a Peer in the network, anyone can submit a transaction for execution, and transactions cannot be censored (subject to the usual security assumptions). 
 
 But Convex is not simply a faster Blockchain - it is a platform for building digital economic systems. As such, it combines a number of capabilities that together enable construction of new classes of applications.
@@ -188,9 +190,11 @@ Finally, we note some practical considerations. Information will need to be dura
 The remainder of this White Paper describes the technical implementation of Convex, which implements all of the above capabilities in order to provide a foundation for the Internet of Value.
 
 
-### State
+### Consensus Algorithm
 
-At the core of the Convex design is the concept of the State.
+#### State
+
+At the core of the Convex consensus design is the concept of the State.
 
 The State is a representation of the complete information in the on-chain execution environment at any point in time. The Convex network as a whole operates as a globally replicated state machine, where new updates cause changes to the current State. Updates are defined on a globally consistent basis according to the sequence of transactions confirmed through the Consensus algorithm.
 
@@ -201,8 +205,6 @@ The State is internally represented as a Decentralised Data Object (DO) that inc
 *	Global information (such as the latest Block timestamp)
 
 Since it is a DO, it follows that a State is a Merkle Tree, and has a unique Object ID. This means that if two Peers compute a State update and announce the Object IDs, it is possible to immediately validate if they computed the same resulting State.
-
-### Consensus Algorithm
 
 #### Reduction to Block Ordering Problem
 
@@ -216,14 +218,23 @@ This construction reduces the problem of generalised consensus to the problem of
 
 We define the **consensus point** to be the number of Blocks confirmed by the consensus algorithm, and the **consensus state** to be the state obtained after applying the state update function up to the consensus point.
 
+#### Peers and the Consensus Set
+
+Convex defines the set of actors that participate in the consensus algorithm as Peers in the network.
+
+Any actor may create a Peer by placing an economic **stake**, denominated in the native currency of the network (Convex Coins). The size of the stake determines the relative voting power of the peer in the consensus algorithm, but is at risk of forfeiture in the case that bad behaviour is provably detected, or could be appropriated by malicious actors if the Peer does not maintain strong security for their system (in particular the security of the Peer's private key).
+
+As a reward for helping to operate the network, Peers are entitled to a share of fees for transactions executed on the network. This reward is proportionate to Peer stake.
+
 #### Block proposals
 
 Traditional Blockchain solutions have focused on mechanisms to determine which participant gains the right to propose the next block, which includes a hash of the previous block in order to extend a linked chain of blocks. This was the basis for the original Bitcoin Proof of Work algorithm (which used the ability to mine cryptographic hashes as the basis for allowing a miner to publish a block and claim the corresponding block reward).
 
-This approach of selecting a "leader" to publish a new block creates a couple of problems:
+This approach of selecting a "leader" to publish a new block has some problems:
 
-* It is difficult to determine which participant should be the next leader, in a way that is both efficient, provides security in the presence of potential byzantine actors, and is guaranteed to make progress in cases such as leaders becoming unavailable.
+* It is hard to determine which participant should be the next leader, at least in a way that simultaneously works efficiently, provides security in the presence of potential byzantine actors, and is guaranteed to make progress in cases such as leaders becoming unavailable.
 * Including the hash of the previous block in a chain creates an inherent data dependency that limits the ability to propose blocks in parallel and increases latency - each leader must build upon the work of the previous leader sequentially, which implies a minimum lower bound on the block time (given fundamental physical constraints).
+* It is necessary to make sure that the leader possesses the transactions that should be included in a Block. This implies the need for a mechanism to transmit transactions across peers prior to block creation (e.g. with the "mempool" used by Bitcoin to share pending transactions), which in turn implies communication costs and many opportunities for attacker to launch "front running" attacks on transactions that they observe.
 
 Convex therefore eschews the idea of selecting a leader. **Any Peer may propose a new Block at any time**, and the new Block is independent of all previous Blocks, i.e. it does not form a "chain". A consequence of this is that is is possible for multiple Peers to propose valid blocks for inclusion in consensus at the same time.
 
@@ -242,18 +253,16 @@ This is achieved through:
 
 This effectively forms a join-semilattice for each Peer, and satisfies the conditions required for a CRDT.
 
-There is one subtle point that makes this different from a typical CRDT: Peers are only able to update the part of the Belief structure that represents their *own* proposals (this is enforced via digital signatures).
+There is one subtle point that makes this different from a typical CRDT: Peers are only able to update the part of the overall Belief structure that represents their *own* proposals (this is enforced via digital signatures).
 
 Convergence is guaranteed by a system of continuous voting. At each belief merge step, the Peer computes the total share of stake voting for each proposed Block in the next position after the current consensus point. It is able to do this because it has a view of the orderings proposed by all other Peers. 
 
 This voting is applied iteratively to blocks in following positions, but only counting the votes by Peers that have supported the winning ordering up to this point (i.e. supporting a minority Block causes Peers to be excluded from the considered vote).
 
-Once the overall winning ordering has been determined, the Peer appends any new Blocks it wishes to propose, then adopts this ordering as it's own proposal, which it communicates to all Peers.
+Once the overall winning ordering has been determined, the Peer appends any new Blocks it wishes to propose, then adopts this ordering as it's own proposal. The proposal is incorporated into the Peer's own Belief, which is then communicated back to the other Peers.
 
-This procedure naturally converges to a single ordering: Any situation where Peers are voting for different blocks is unstable and will collapse towards one outcome, since as soon as a slight majority is gained for any proposal it will cause other Peers to switch to supporting it. After a few rounds of gossip, the good Peers (at least) will start to converge on a the same ordering.
-
+This procedure naturally converges to a single ordering: Any situation where Peers are voting for different Blocks is unstable and will collapse towards one outcome, since Peers will switch to whichever ordering is observed to have a slight majority. After a few rounds of gossip, the good Peers (at minimum) will align on the same ordering.
  
-
 #### Stability
 
 At some point, we therefore reach a threshold where greater than 2/3 of the Peers (by stake weight) are aligned in proposing the same ordering. This situation is **stable** because of the following logic:
@@ -264,9 +273,9 @@ At some point, we therefore reach a threshold where greater than 2/3 of the Peer
 
 #### Determining consensus
 
-Once the threshold of Peers are observed by any Peer to be voting for the same ordering, the Peer marks and communicates this as a **proposed consensus point**. And once 2/3 of Peers are observed to have the same proposed consensus point with the same ordering, this value is taken by the Peer as the **new consensus point**. 
+Once the threshold of Peers are observed by any Peer to be voting for the same ordering up to a certain Block number in the ordering, the Peer marks and communicates this as a **proposed consensus point**. And once 2/3 of Peers are observed to have the same proposed consensus point with the same ordering, this value is taken by the Peer as the **new consensus point**. 
 
-This is essentially a decentralised implementation of a 2-phase commit, and is used as a precaution against malicious Peers attempting to reverse consensus by changing their vote at the last minute (this might delay the consensus, but not stop it, since we are already past the tipping point where the good peers supporting the proposed consensus outweigh the bad peers).
+This is essentially a decentralised implementation of a 2-phase commit, and is used as a precaution against malicious Peers attempting to reverse consensus by changing their vote at the last minute (this might delay the consensus briefly, but not stop it, since we are already past the tipping point where the good peers supporting the proposed consensus outweigh the bad peers).
 
 #### Illustration
 
@@ -370,7 +379,7 @@ We believe this is a theoretical optimum for any decentralised network that main
 
 Front running is difficult with the Convex consensus algorithm. While theoretically possible, it would require a sophisticated and well-resourced attacker.
 
-The main reason for this is that transactions are not visible to the network until *after* a new block has been proposed by a Peer and gossiped to the network, by which point it is already well on its way to being included in consensus.
+The main reason for this is that transactions are not visible to the network until *after* a new block has been proposed by a Peer and gossipped to the network, by which point it is already well on its way to being included in consensus.
 
 A user concerned about front-running attacks should submit vulnerable transactions exclusively via a well connected, well-staked Peer (trusted not to be malicious, i.e. this Peer must itself not be participating in a front-running attack).
 
@@ -438,25 +447,19 @@ There is also a set of non-integral primitive objects generally useful for progr
 
 Data values that are sufficiently small, including all of the above, are **embedded** directly within larger Data Objects that contain them. This is an internal implementation detail to reduce the overhead of storing and communicating many small objects independently, which is transparent to CVM code.
 
-##### Nil
 
-Convex supports the value `nil` as a first class value. 
-
-By convention, core runtime functions generally return `nil` to indicate the absence of a value, e.g. looking up a value in a map with a key that is not present.
-
-There is no direct equivalent of a `NullPointerException` since CVM objects do not implement methods, however careless use of nils may result in type casting errors (e.g. `(+ 2 nil)`). 
 
 ##### Blobs
 
 A Blob is an arbitrary-length sequence of bytes, and is considered a first class object on the CVM. 
 
-Internally, Blobs are stored as a Merkle tree of chunks of up to 4096 bytes in length. Blobs may exceed the size of working memory: they can technically be up to 2^63-1 bytes in length. While the main Convex network is not designed for large object storage, they could plausibly be used in future as a basis for decentralised file storage, perhaps as a Layer 2 solution, in a manner similar to IPFS.
+Internally, Blobs are stored as a Merkle tree of chunks of up to 4096 bytes in length. Blobs may exceed the size of working memory: they can technically be up to 2^63-1 bytes in length. While the main Convex network is not specifically designed for large object storage, these constructs could be used in future as a basis for decentralised file storage, perhaps as a Layer 2 solution, in a manner similar to IPFS.
 
 For many purposes, Addresses and Hashes can be also be treated as small fixed-length Blobs.
 
 ##### Data Structures
 
-Convex supports a range of first-class data structures:
+Convex supports a range of first-class data structures, primarily:
 
 * Vectors (`[1 2 3]`)
 * Lists (`(foo bar baz)`)
@@ -489,17 +492,25 @@ The primary usages of Syntax Objects within the CVM are:
 * Allowing metadata to be attached to values within the dynamic environment of an Account (e.g. documentation for Actor functions)
 * Supporting the implementation of the Convex Lisp compiler and macro system
 
-NOTE: In the future Syntax Objects may be utilised to implement a gradual type system such as seen in Typed Racket.
+NOTE: In the future Syntax Objects may be extended to implement a gradual type system such as seen in Typed Racket.
+
+##### Nil
+
+Convex supports the value `nil` as a first class value. 
+
+By convention, core runtime functions generally return `nil` to indicate the absence of a value, e.g. looking up a value in a map with a key that is not present.
+
+There is no direct equivalent of a `NullPointerException` since CVM objects do not implement methods, however careless use of nils may result in type casting errors (e.g. `(+ 2 nil)`). 
 
 ##### Records
 
-Certain CVM structures are record types, e.g.
+Certain CVM structures are defined as built-in record types, e.g.
 
 * AccountStatus
 * PeerStatus
 * State
 
-These are primarily used by the Convex and CVM implementation, though for convenience they may be accessed and treated as Maps from field names to values in CVM code.
+These are primarily used internally by the Convex Peer and CVM implementations, though for convenience they may be accessed and treated as Maps from field names to values in CVM code.
 
 NOTE: Allowing user-defined, row-polymorphic records is under consideration for future implementation.
 
@@ -547,7 +558,7 @@ Convex constrains time by placing a "juice cost" on each CVM operation performed
 
 The originating account for a transaction must reserve juice by paying an amount `[juice limit] x [juice price]` at the start of the transaction. Any unused juice at the end of the transaction is refunded at the same rate. The juice price a dynamically varying price that adjusts with amount of execution performed per unit time by the Convex network as a whole: this is a cryptoeconomic mechanism to disincentivise transactions from being submitted at peak periods, and as a protection from DoS attacks by making it prohibitively expensive to flood the compute capacity of the network for a sustained period of time.
 
-If the juice limit has been exceeded, the CVM terminates transaction execution with an exception, and rolls back any state changes. No juice is refunded in such a situation - this penalises users who attempt excessive resource consumption.
+If the juice limit has been exceeded, the CVM terminates transaction execution with an exception, and rolls back any state changes. No juice is refunded in such a situation - this penalises users who attempt excessive resource consumption either carelessly or maliciously.
 
 ##### Space
 
@@ -581,7 +592,7 @@ The overall cryptoeconomic system of memory accounting and memory markets offers
 * A general incentive for all participants to minimise and manage memory usage. This incentive increases as total state size grows towards the cap.
 * A specific incentive for coders to write memory-efficient code, and provide the ability for unused data to be deleted, if they want their Actors to be considered high quality and trustworthy.
 * A partial disincentive to hoard memory allocations (since expected future cap additions may devalue large memory holdings).
-* When space becomes scarce, there is an incentive for less economically viable applications to wind up operations and sell their memory allocation.
+* When space becomes scarce, there is an incentive for less economically viable applications to wind up operations and sell their freed memory allocation.
 
 For convenience, memory purchases happen automatically if additional allocations are needed within a transaction. This means that in most cases, users need not be concerned with the specifics of managing their memory allowance.
 
@@ -603,9 +614,9 @@ At the same time, the capabilities of the runtime system are constrained so that
 
 #### Transparent persistence
 
-The Convex execution engine implements a form of transparent (sometimes also known as orthogonal persistence). In this model, the CVM state size may exceed the working memory capacity of a Peer, and necessary parts of the state tree are loaded in from persistent storage on demand.
+The Convex execution engine implements a form of transparent (sometimes also known as orthogonal) persistence. In this model, the CVM state size may exceed the working memory capacity of a Peer, and necessary parts of the state tree are loaded in from persistent storage on demand.
 
-This presents a significant conceptual benefit for the developer: there is no need to write any code to load or unload data from storage in normal CVM code. This imposes some additional implementation complexity for the CVM itself, but this is considered a worthwhile trade-off, especially since it simplifies the logic of other parts of the Convex Peer implementation (e.g. eliminates the need to explicitly handle the memory consumption growth of block orderings generated by the consensus algorithm over time). 
+This presents a significant conceptual benefit for the developer: there is no need to write any code to load or unload data from storage in normal CVM code. This imposes some additional implementation complexity for the CVM itself, but this is considered a worthwhile trade-off, especially since it simplifies the logic of other parts of the Convex Peer implementation (e.g. eliminates the need to explicitly handle the memory consumption growth of long block orderings generated by the consensus algorithm over time). 
 
 In the reference implementation, this is achieved with judicious reliance upon the very efficient JVM automatic memory management. This enables the following lifecycle for in-memory data objects:
 
@@ -627,13 +638,13 @@ Lisp was chosen as the first language implementation in Convex for the following
 * It is comparatively simple to implement, reducing the risk of bugs in the CVM implementation (which may require a protocol update to correct).
 * Lisp is well suited for interactive usage at a REPL prompt. This facilitates rapid prototyping and development of Actors in a way that we believe is a significant advantage for decentralised application builders looking to test and prototype new ideas.
 
-Developers using the Convex system are not required to use Convex Lisp: It is perfectly possible to create alternative language front-ends that target the CVM.
+Developers using the Convex system are not required to use Convex Lisp: It is perfectly possible to create alternative language front-ends that target the CVM (e.g. by constructing trees of Ops directly)
 
 Convex Lisp draws inspiration from Common Lisp, Racket and Clojure. It is designed as primarily a functional language, with fully immutable data structures, as it is our belief that functional programming forms a strong foundation for building robust, secure systems.
 
 #### Environments
 
-A novel feature of the Convex Account model is that each account receives it's own programmatic environment where variables, data structures and code can be dynamically defined and updated. Definitions held within different accounts cannot collide: they have isolated namespaces.
+A novel feature of the Convex Account model is that each Account receives it's own programmable environment where variables, data structures and code can be dynamically defined and updated. Definitions held within different accounts cannot collide: they have isolated namespaces.
 
 * For User Accounts, this behaves like a small programmable sandbox completely under the control of the user.
 * For Actor Accounts, this can be used to store Actor code and state required for the operation of the Actor. The deployment of the Actor is in effect equivalent to creating the Actor Account and initialising the Actor's environment, with subsequent changes to the environment controlled by a set of exported functions that can be externally called.
@@ -654,7 +665,7 @@ Scheduled executions currently cannot be cancelled, but this is not considered t
 
 The CVM automatically garbage collects objects to which references are no longer maintained. The choice of including garbage collection in the CVM is motivated by the following factors:
 
-* **Convenience** - developers need not be concerned with manual memory management. In general, this is a significant productivity win.
+* **Convenience** - developers need not be concerned with manual memory management. In general, this is a significant productivity gain.
 * **Performance** Given a focus on immutable data, garbage collection offers significant performance advantages because references can be shared internally within the CVM implementation, as opposed to relying on expensive "copy on write" approaches.
 * **Security** - Mistakes in memory management are one of the most common types of defect, often resulting in significant security issues (e.g. "buffer overruns"). Such risks are generally unacceptable for smart contract code securing significant digital assets.
 
@@ -665,7 +676,7 @@ Peer operators may also choose to either garbage collect old persisted state fro
 
 ### Storage System
 
-Convex makes use of a specialised storage system that complements the design of the Execution Engine.
+Convex makes use of a specialised storage system that complements the design of the Execution Engine. This provides significant performance advantages, since the format of data in storage aligns directly to the usage patterns and data structures utilised in the CVM.
 
 The storage system is also used to facilitate serialisation and transport of data across the network in communication between peers and clients.
 
@@ -691,17 +702,19 @@ The encoding is designed to provide the following properties:
 * A bounded maximum encoding size for any Cell (currently 8191 bytes)
 * Very fast serialisation and deserialisation, with minimal requirements for temporary object allocation.
 * Uniqueness of encoding - there is a 1:1 mapping between object values and valid encodings. This means, among other useful properties, that Data Object equality can be determined by comparing hashes of encodings.
-* Self describing format: given an valid Cell encoding, the Data Object can be reconstructed without additional context
+* Self describing format: given a valid Cell encoding, the Data Object can be reconstructed without additional context
+
+The same encoding is utilised in both durable storage and in network transmission.
 
 #### Embedding
 
-Small Data Objects are Embedded within another Cell (e.g. a Cell representing part of a larger data structure). In most cases, this avoids the need to construct and store separate cells for small primitive values.
+Small Data Objects are Embedded within another Cell (e.g. a Cell representing part of a larger data structure). In most cases, this avoids the need to construct and store separate cells for small primitive values, and often small data structures themselves can be fully embedded.
 
-Currently, most data objects with an encoding size of up to 140 bytes are embedded. 
+Currently, most data objects with an encoding size of up to 140 bytes are automatically embedded. This heuristic may be modified based on further testing and profiling. 
 
 #### Cell IDs as storage keys
 
-The cryptographic hash of the Cell encoding is used an an identifier to refer to a Cell, and in particular as a key for storage system. 
+The cryptographic hash of the Cell encoding is used an an identifier to refer to a Cell, and in particular as a key for addressing data in the storage system. 
 
 This has the important property that it requires all values in the storage system *immutable* - the data value cannot change for a given key, or else the ID will no longer be valid. This restriction may seem limiting at first, but in fact provides significant advantages for the Convex storage implementation:
 
@@ -713,7 +726,9 @@ This has the important property that it requires all values in the storage syste
 
 Given the above design features, we are able to implement a system of immutable storage that is Convergent: Additional storage information may be merged into the store in a manner analogous to a CRDT.
 
-It is a well-known result that taking the union of sets in a purely additive manner (a Grow-only Set) is a valid CRDT.
+It is a well-known result that taking the union of sets in a purely additive manner (a Grow-only Set) is a valid CRDT. The storage system can be regarded as a growing set of immutable (key, value) pairs, and hence satisfies the CRDT property.
+
+This convergence property is particularly beneficial when combined with the structured of Merkle Trees used throughout the CVM: data structures with identical branches are automatically de-duplicated when they are stored, since the existing storage entry can simply be re-used.
 
 #### Status tagging
 
@@ -754,9 +769,9 @@ Peers are only strictly required to maintain:
 * Enough information regarding Beliefs to participate in the consensus algorithm (about one day of orderings and transactions - exact limit TBC)
 * The current State for the CVM
 
-The storage system therefore allows garbage collection to be performed on a periodic basis, so that unused historical storage can be reclaimed. Garbage collection is done on a mark+copy basis, where currently used storage is copied to a new data file, and after which the old data file can be safely discarded. This could theoretically be performed concurrently with ongoing Peer operation in a future version.
+The storage system therefore allows garbage collection to be performed on a periodic basis, so that storage space containing data that is no longer required can be reclaimed. Garbage collection is done on a mark+copy basis, where currently used storage is copied to a new data file, and after which the old data file can be safely discarded. This could theoretically be performed concurrently with ongoing Peer operation in a future version.
 
-This behaviour is of course configurable by Peer Operators - we expect some will want to maintain and index all historical data for analytical purposes.
+This behaviour is of course configurable by Peer Operators - we expect some will want to maintain and index all historical data for analytical purposes, or in order to provide their clients with additional historical query capabilities.
 
 #### Memory Mapped Implementation
 
@@ -768,16 +783,16 @@ In performance tests, we have observed tens of millions of reads and writes per 
 
 Convex uses cryptographic primitives for the following functions:
 
-* Digital Signature (Using Ed25519)
+* Digital Signature (Ed25519)
   * For every Transaction submitted
   * For every Block proposed by a peer for consensus
   * For every Belief shared by a peer on the gossip network
 * Cryptographic Hashes (SHA3-256)
   * For every Cell which forms part of a Decentralised Data Object, a hash of its byte encoding is computed for storage, identity, indexing and verification purposes
   * For every key value used in a map data structure, its hash is computed (if necessary)
-* Standard algorithms as used to store and protect keys in common key file formats (.pem, .pfx)
+* Standard approaches used to store and protect keys in common key file formats (e.g. .pem, .pfx)
 
-As an engineering principle, Convex only uses trusted implementations of cryptographic algorithms in well tested libraries (currently Bouncy Castle, and the cryptographic routines available as standard in the JVM). We do not intend to "roll our own" with respect to crypto algorithms.
+As an engineering principle, Convex only uses trusted implementations of cryptographic algorithms in well tested libraries (currently Bouncy Castle, and the cryptographic routines available as standard in the JVM). There is no need to "roll our own" with respect to fundamental crypto algorithms.
 
 ## Conclusion
 
@@ -793,7 +808,7 @@ It is our hope that the innovations in Convex and the engineering decisions made
 
 ## Contact and Links
 
-To learn more and try out the live Convex development test network: [Convex World](https://convex.world)
+To learn more and experiment with the live Convex test network: [Convex World](https://convex.world)
 
 For discussion of this White Paper and other topics relating to Convex, you are very welcome to join our public [Discord Server](https://discord.gg/5j2mPsk).
 
