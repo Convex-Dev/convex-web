@@ -6,42 +6,10 @@ Decentralised networks offer the opportunity to provide a true peer-to-peer syst
 
 However, existing decentralised networks have notable weaknesses including poor performance, high energy consumption, long transactions confirmation times, vulnerability to "front-running" attacks and/or lack of truly decentralised security.
 
-We present Convex, a fully decentralised platform for digital value exchange. Convex achieves consensus with a novel technical solution based upon merging beliefs shared by peers using a function that is idempotent, commutative and associative, and thus creates a system that provably converges to consensus by forming a conflict-free replicated data type (CRDT). By augmenting this with a system of economic staking, it is possible to guarantee convergence to consensus even in the presence of some proportion of malicious / byzantine peers. We call this combined scheme "Convergent Proof of Stake" (CPoS).
+We present Convex, a fully decentralised platform for the Internet of Value. Convex achieves consensus with a novel technical solution based upon merging beliefs shared by peers using a function that is idempotent, commutative and associative, and thus creates a system that provably converges to consensus by forming a conflict-free replicated data type (CRDT). By augmenting this with a system of economic staking, it is possible to guarantee convergence to consensus even in the presence of some proportion of malicious / byzantine peers. We call this combined scheme "Convergent Proof of Stake" (CPoS).
 
 We augment this system with an execution engine, building on the lambda calculus, immutable persistent data structures and content addressable storage. Coupled with the consensus algorithm, this provides a fully decentralised, global computer capable of executing arbitrary smart contracts with decentralised ownership (the "Convex Virtual Machine").
 
-## Introduction
-
-Convex is a programmable environment that is globally shared on a trustless decentralised network: a "public computer" that everyone can access but where nobody has absolute control.
-
-The motivation for the development of a system of this nature is because it can act as the foundation for the Internet of Value - a system of decentralised value exchange built in the open spirit of the original Internet.
-
-Decentralised applications are comparatively simple to build upon Convex. In particular, the "sweet spot" might be regarded as scenarios where there is a need for globally consistent shared state, but where a centralised solution is not desirable. Some examples might include:
-
-* Games and entertainment where rules include ownership of digital assets
-* Implementation of cryptocurrencies, utility tokens, and other forms of decentralised assets
-* Economic transactions where terms and conditions are automatically guaranteed by Smart Contracts
-* Educational environments for collaborative and interactive programming
-* Immutable records of document / data provenance
-* Publicly accessible databases and registries
-
-Some technical highlights of the Convex design include:
-
-* **Actors**: Programs that execute autonomously in the Convex environment with deterministic and verifiable behaviour, suitable for managing assets and enforcing Smart Contracts
-* **Convex Virtual Machine (CVM)** - a fully Turing complete programming and execution environment, with a novel combination of language features to facilitate writing decentralised applications. We manage to implement a working Lisp compiler "on-chain".
-* **Decentralised Data Object Model** - A data model supporting powerful features such as orthogonal persistence, memory accounting, incremental data sharing and cryptographic verification
-* **Performance**: High throughput, low latency execution (many thousands of transactions per second, ~1 second or below latency)
-* **Security**: Cryptographic security for control over all user accounts and assets, byzantine fault tolerance at the level of the decentralised network.
-
-Convex builds on ideas around decentralised technology popularised through "blockchain" in recent years, but was motivated by a desire to build something better than current incarnations of blockchain technology can offer. Key motivations include:
-
-* Provide a level of performance that makes decentralised applications practical for real work use cases
-* Help the environment by supplanting systems based on Proof of Work
-* Make decentralised software development more productive, engaging and fun
-* Maintain a level of decentralisation that offers security and freedom from centralised control
-* Establish new paradigms of programming around globally shared, consistent state
-
-Convex is our attempt to create a system than can realise these possibilities. This White Paper provides an overview of its design and key capabilities.
 
 ## Context
 
@@ -54,7 +22,7 @@ Towards the end of the 20th Century, the foundational ideas were created for the
 * Entertainment, games, media, communication and social activity moved online (Facebook, Twitter, Instagram)
 * Many business activities and tools moved online (GitHub, Salesforce, Slack)
 
-At the same time ideas were generated that hinted at the potential for economic value exchange *itself* to move to the internet:
+At the same time ideas were generated that hinted at the potential for economic value exchange *itself* to move to the Internet:
 
 * Digital currencies were proposed and implemented
 * Key concepts able to enforce terms on Digital transactions such as Smart Contracts were introduced. 
@@ -62,13 +30,62 @@ At the same time ideas were generated that hinted at the potential for economic 
 
 A problem with moving Value Exchange to the Internet, however, is that parts of the economic transaction still rely on pre-Internet mechanisms: traditional fiat currencies, paper-based contracts and centuries-old legal systems for enforcement. Execution of complete transactions usually depends on  trusting a single centralised entity to operate the interfaces between the Traditional and Internet worlds - handling legal issues, settling payments etc. Under such a model, economics of scale and network effects tend to favor a few commercial giants at the expense of smaller companies. This is a net loss to the economy: stifling innovation, excluding new competition, allowing monopolistic behaviour and "locking in" consumers without many practical choices.
 
-### Decentralised Innovation
+### The Internet of Value
+
+We envision a system that enables value exchange mechanisms while solving the problems of traditional approaches - a network of economic agents that serves the needs of the digital economy.
+
+The properties that are essential to this vision are that it must be:
+
+* **Global** - supporting the digital economy of the whole world
+* **Open** - accessible to everyone, with no unjust barriers to inclusion and participation
+* **Automated** - able to execute end-to-end transactions in a reliable way while automatically enforcing any rules relating to the digital assets involved.
+* **Secure** - providing strong protection against losses (malicious or otherwise) so that holders of assets can maintain trust in their value.
+* **Extensible** - capable of supporting new kinds of digital assets and innovation
+* **Fast** - sufficiently scalable and efficient to serve Internet-scale usage, and meet the performance expectations of as many use cases as possible 
+* **Cheap** - usable at low economic costs, to maximise the potential to create economic opportunity and value without being stifled by unreasonable transaction costs.
+
+Convex has been designed from the ground up to provide these properties.
+
+### Applications
+
+The Internet of Value's primary purpose is to enable **decentralised applications** that typically involve digital assets and value exchange. Just as anyone can create a website on the Internet, anyone can create a decentralised application for the Internet of Value. Convex is therefore designed to make the process as simple and effective as possible.
+
+While there is no practical limit to the ideas that could be implemented, the "sweet spot" might be regarded as scenarios where there is a need for globally consistent shared state, but where a centralised solution is not practical or desirable. Some examples might include:
+
+* Implementation of cryptocurrencies, utility tokens, and other forms of decentralised assets
+* Economic transactions where terms and conditions are automatically guaranteed by Smart Contracts
+* Games and entertainment where rules include ownership of digital assets
+* Educational environments for collaborative and interactive programming
+* Immutable records of document / data provenance
+* Publicly accessible databases and registries
+
+Some technical highlights of the Convex design that support such applications include:
+
+* **Actors**: Programs that execute autonomously in the Convex environment with deterministic and verifiable behaviour, suitable for managing assets and enforcing Smart Contracts
+* **Convex Virtual Machine (CVM)** - a fully Turing complete programming and execution environment, with a novel combination of language features to facilitate writing decentralised applications. We manage to implement a working Lisp compiler "on-chain".
+* **Decentralised Data Object Model** - A data model supporting powerful features such as orthogonal persistence, memory accounting, incremental data sharing and cryptographic verification
+* **Performance**: High throughput, low latency execution (many thousands of transactions per second, ~1 second or below latency)
+* **Security**: Cryptographic security for control over all user accounts and assets, byzantine fault tolerance at the level of the decentralised network.
+
+### Why is Convex needed?
+
+Convex builds on ideas around decentralised technology popularised through "blockchain" in recent years, but was motivated by a desire to build something better than current incarnations of blockchain technology can offer. Key motivations include:
+
+* Provide a level of performance that makes decentralised applications practical for real work use cases
+* Help the environment by supplanting systems based on Proof of Work
+* Make decentralised software development more productive, engaging and fun
+* Maintain a level of decentralisation that offers security and freedom from centralised control
+* Establish new paradigms of programming around globally shared, consistent state
+  
+### Prior Innovation
+
+It would be impossible to list even a tiny fraction of the innovations and achievements that have been seen in the space of decentralised technology, many of which have inspired the Convex project. However some particularly significant events are worth recognising:
 
 In 2009, Bitcoin was launched by Satoshi Nakamoto, which demonstrated for the first time that a digital currency could be operated on a fully decentralised, secure network using a Proof of Work consensus algorithm. The ability to prevent "double spending" using a purely decentralised, online method was a revelation that hinted at the possibility of entire economic systems migrating to the Internet.
 
 In 2015, Ethereum was launched, which extended the concept of the Bitcoin network with a decentralised virtual machine (EVM) capable of executing Turing-complete smart contracts with a global state machine. This enabled a wave of innovations such as tokenisation of assets, and the first attempts at Decentralised Autonomous Organisations.
 
-These innovations paved the way for significant experimentation in the space of digital currencies, tokenisation and cryptoeconomics.
+These innovations paved the way for significant experimentation in the space of digital currencies, tokenisation and cryptoeconomics. The space has attracted massive investment and seen vigorous innovation in recent years, hinting at the enormous opportunities presented by digital value exchange.
 
 ### Technical Challenges
 
@@ -87,20 +104,21 @@ Other technical challenges became apparent over time. Some notable issues:
 * **Latency** - The time taken for most blockchains to reach final consensus is too long to offer a positive user experience. This inability to provide quick confirmation and feedback is a significant barrier to mainstream user adoption of decentralised applications.
 * **Upgradability** - Both networks themselves, and the specific implementations of smart contracts, are difficult to upgrade, in some cases requiring a "hard fork" of the network.
 
+Convex presents a solution to all of these challenges, and as such we believe it allows a significant evolution "Beyond Blockchain" to deliver the Internet of Value. The remainder of this White Paper explains how we achieve this.
 
 ## Convex Overview
 
 ### The Convex Solution
 
-Convex has been designed to solve many of the technical challenges of Blockchains. With reference to the Scalability Trilemma, Convex offers:
+Convex solves many of the technical challenges of Blockchains. With reference to the Scalability Trilemma, Convex offers:
 
-* **Thousands of transactions per second** - Convex will offer the capability to operate at VISA-like transaction levels and sub-second block times even *before* scalability solutions such as Layer 2 solutions, state sharding or optimistic lookahead approaches are applied.
+* **Thousands of transactions per second** - Convex offers the capability to operate at VISA-like transaction levels and sub-second block times even *before* scalability solutions such as Layer 2 solutions, state sharding or optimistic lookahead approaches are applied.
 * **Byzantine Fault Tolerance** - Convex meets the strongest possible threshold for security under the model of Byzantine threats. Consensus formation is guaranteed (and stable) as long as at least 2/3 of the effective voting power of the network follows the protocol.
-* **Fully Decentralised** - The network operates under a trustless Peer-to-Peer model: Anyone can operate a Peer in the network, anyone can submit a transaction for execution, and transactions cannot be censored (subject to the usual security assumptions). 
+* **Fully Decentralised** - The network operates under a permissionless Peer-to-Peer model: Anyone can operate a Peer in the network, anyone can submit a transaction for execution, and transactions cannot be censored (subject to the usual security assumptions). 
 
 But Convex is not simply a faster Blockchain - it is a platform for building digital economic systems. As such, it combines a number of capabilities that together enable construction of new classes of applications.
 
-Three capabilities are particularly important:
+Three capabilities are particularly important and form the main sections of this White Paper:
 
 * The **Consensus Algorithm** which enables the Convex network of Peers to agree on a consistent, replicated state of the world - essential to provide reliable confirmation of transactions in a decentralised system 
 * The **Execution Engine** performs computations necessary to implement secured transactions on the Convex Network, and is the mechanism by which global state is updated and smart contracts are enforced.
@@ -145,7 +163,30 @@ The Storage System supports optional garbage collection for Peers that wish to c
 
 ## Technical Description
 
-This section describes the key elements of the current implementation of Convex.
+### Design Rationale
+
+Convex works on the principle of proving a globally shared state on a permissionless decentralised network which has the ability to execute instructions (transactions) on behalf of users: a "public computer" that everyone can access but where nobody has absolute control. 
+
+The motivation for the development of a system of this nature is because it can act as the foundation for the Internet of Value - a system of decentralised value exchange built in the open spirit of the original Internet. But is this necessary? Could it not be done in a simpler way? In this section we argue that these capabilities are necessary and sufficient (given the additional obvious assumption of adequate performance).
+
+It is important to consider why the Internet itself does not already function as an "Internet of Value". The key insight here is that the original Internet is primarily a **stateless** system that enables communication between different participants. A system of digital value exchange requires **state** - at the very minimum it must be able to record the ownership of digital assets (in Bitcoin, for example, this state is manifested in the set of UXTOs). While clients and servers on the Internet can certainly store state, such state is inadequate for decentralised value exchange because it is susceptible to corruption or arbitrary modification by the party that controls the system.
+
+The problem of not being able to trust centralised actors must be solved, and the solution must therefore involve verification of states (or equivalently, a sequence of deterministic state changes). It must furthermore ensure **consensus** in order that the whole network sees the same state - assets cannot reliably be used for value exchange if there is ambiguity over ownership (the "double spend" problem). To provide the basis for a global, open network, the consensus itself must be **global** and available to all participants. 
+
+Because we wish to avoid the issue of centralised control over the system, it must also be **permissionless** in the sense that any actor can participate on an equal basis and not be excluded or censored by other participants wielding excessive power. This ideal of decentralisation presents the problem however that some actors in the system may be malicious and actively attempting to defraud other actors - a significant problem when valuable digital assets are at stake. Furthermore, even if not malicious, software or hardware failures can potentially disrupt the system. We therefore require the property of **Byzantine Fault Tolerance** - which can be informally  characterised as resistance of the consensus mechanism to malicious attacks and failures. Theoretical results (e.g. the seminal work by Leslie Lamport) have demonstrated that such consensus requires 2/3 of participants to be good actors - that is, byzantine fault tolerance is possible to achieve as long as no more than 1/3 of actors are malicious or faulty. We would like the Internet of Value to operate with a consensus algorithm that achieves this theoretical optimum level of security.
+
+We now consider the nature of Digital Assets, and what is necessary to implement them. A key observation is that for assets to be meaningful, they must obey rules. The most obvious example is that of ownership: only the owner of an asset should be able to use it in an economic transaction. But other rules also apply, e.g. a financial option includes a right to "exercise" the option in exchange for some other underlying asset. Since assets only have value if owners trust that their rules will be enforced, we need a system of encoding and executing these rules in an automated way as part of the decentralised protocol - these are termed **smart contracts**. 
+
+While it would be possible to create a simple system of smart contracts that tackle many useful applications without full programmability, the Internet of Value calls for extensibility to new forms of assets that may not be originally anticipated by the designers of the network. We therefore require a **Turing complete** smart contract execution model (capable of performing any computation) of we are to avoid the risk of future limitations preventing important digital asset classes from being created.
+
+To ensure that only valid transactions are executed on digital assets with the authorisation of the owner, we need a secure way to validate the identity and . This is fortunately a well-studied problem that can be solved with cryptographic techniques, and in particular **digital signatures**, where the authenticity of a transaction can be validated through the use of a secret private key held by users, and a public key that is visible to all.
+
+Maintenance of the network consensus invariably requires resources: powerful servers with compute capability, significant storage and network bandwidth are necessary to operate the consensus algorithm and execute transactions 24/7 at global scale. These resources are not free, and to compensate their operators for the economic cost of their services there is a need to impose **transaction fees** for usage - or else the network could be swamped by low-value or malicious transactions that consume excessive network resources. The need to charge a transaction fee naturally leads to the conclusion that some form of **native currency** is required, being a digital currency that is valid to pay for the usage of network services (which can be enforced at the protocol level). 
+
+Finally, we note some practical considerations. Information will need to be durably maintained and frequently communicated as part of the consensus algorithm and in serving users of the network, which requires systems for **storage** and **transmission** of data. Ideally, such systems need to be **efficient** to provide necessary storage, and they must ensure **integrity** to allow recovery from faults and malicious tampering.
+
+The remainder of this White Paper describes the technical implementation of Convex, which implements all of the above capabilities in order to provide a foundation for the Internet of Value.
+
 
 ### State
 
@@ -355,7 +396,7 @@ The fundamental control mechanism for the CVM is via Accounts.
 * **User Accounts**: Accounts that are controlled by external users, where access is controlled by Ed25519 digital signatures on transactions.
 * **Actor Accounts**: Accounts that are managed by an autonomous Actor, where behaviour is 100% deterministic according the the associated CVM code. Actor functionality may be invoked within a externally submitted transaction, but only if this is initiated and validated via a User Account.
 
-It is important to note particular the two types of Account share a common abstraction. Both User Accounts and Actor Accounts may hold exclusive control over assets, allowing for decentralised value exchange mediated by smart contracts. This common abstraction is useful, because it makes it simple to write code that does not need to distiguish between assets controlled directly by a user and assets managed by a Smart Contract.
+It is important to note particular the two types of Account share a common abstraction. Both User Accounts and Actor Accounts may hold exclusive control over assets, allowing for decentralised value exchange mediated by smart contracts. This common abstraction is useful, because it makes it simple to write code that does not need to distinguish between assets controlled directly by a user and assets managed by a Smart Contract.
 
 #### Information Model
 
