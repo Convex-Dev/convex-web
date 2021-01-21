@@ -17,6 +17,7 @@
     "qrcode.react": "^1.0.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-highlight.js": "^1.0.7",
     "react-markdown": "^5.0.3",
     "react-tippy": "^1.4.0",
     "timeago.js": "^4.0.2"
@@ -24,7 +25,7 @@
   "devDependencies": {
     "autoprefixer": "^10.2.1",
     "postcss": "^8.2.4",
-    "shadow-cljs": "^2.11.13",
+    "shadow-cljs": "^2.11.14",
     "tailwindcss": "^2.0.2"
   }
 }

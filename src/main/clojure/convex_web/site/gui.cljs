@@ -12,6 +12,7 @@
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure"]
             ["highlight.js/lib/languages/javascript"]
+            ["react-highlight.js" :as react-hljs]
 
             ["react-tippy" :as tippy]
             ["react-markdown" :as ReactMarkdown]
@@ -406,20 +407,21 @@
 
         language (get languages language "language-clojure")
 
-        source (str source)]
-    [:div.shadow.overflow-auto
-     [:pre.m-0
-      [:code.text-xs.rounded
-       {:class language
-        :ref highlight-block}
-       (cond
-         (= language "language-clojure")
-         (if pretty?
-           (try (zprint/zprint-str source {:parse-string-all? true}) (catch js/Error _ source))
-           source)
+        source (str source)
+        source (cond
+                 (= language "language-clojure")
+                 (if pretty?
+                   (try
+                     (zprint/zprint-str source {:parse-string-all? true})
+                     (catch js/Error _
+                       source))
+                   source)
 
-         :else
-         source)]]]))
+                 :else
+                 source)]
+    [:div.text-xs.shadow.overflow-auto
+     [:> (.-default react-hljs) {:language language}
+      source]]))
 
 (defn SymbolType [type]
   [:div.px-1.border.rounded-full
