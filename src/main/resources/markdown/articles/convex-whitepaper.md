@@ -59,9 +59,9 @@ There is no practical limit to the ideas that could be implemented given an open
 * Immutable records of document / data provenance
 * Publicly accessible databases and registries
 
-
-
 ### Why is Convex needed?
+
+Convex is needed because, despite the vast potential of the Internet Of Value, a technology did not previously exist to enable it in a satisfactory way.
 
 Convex builds on ideas around decentralised technology popularised through "blockchain" in recent years, but was motivated by a desire to build something better than current incarnations of blockchain technology can offer. Key motivations include:
 
@@ -118,7 +118,7 @@ Some technical highlights of the Convex design that support such applications in
 
 * **Actors**: Programs that execute autonomously in the Convex environment with deterministic and verifiable behaviour, suitable for managing assets and enforcing Smart Contracts
 * **Convex Virtual Machine (CVM)** - a fully Turing complete programming and execution environment, with a novel combination of language features to facilitate writing decentralised applications. We manage to implement a working Lisp compiler "on-chain".
-* **Decentralised Data Object Model** - A data model supporting powerful features such as orthogonal persistence, memory accounting, incremental data sharing and cryptographic verification
+* **Decentralised Data Value Model** - A data model supporting powerful features such as orthogonal persistence, memory accounting, incremental data sharing and cryptographic verification
 * **Performance**: High throughput, low latency execution (many thousands of transactions per second, ~1 second or below latency)
 * **Security**: Cryptographic security for control over all user accounts and assets, byzantine fault tolerance at the level of the decentralised network.
 
@@ -142,8 +142,6 @@ The algorithm operates by implementing a novel variant of a **Conflict-free Repl
 
 The Convex consensus algorithm also makes use of **Proof of Stake**, a mechanism by which peers are required to deposit an economically significant stake to ensure their good behaviour and be granted participation rights in the consensus protocol. This avoids the wasteful use of resources and energy that plagues systems based on "Proof of Work". As well as offering substantially improved performance, this means that Convex presents an environmentally friendly alternative to previous models such as Bitcoin or Ethereum.
 
-
-
 ### Execution Engine
 
 Convex implements a full virtual machine for smart contracts, the **Convex Virtual Machine (CVM)**. The CVM is designed to facilitate digital economic transactions. Given an initial State and an ordering of Blocks (and therefore transactions) from the consensus algorithm, the CVM is able to process the transactions and compute a new updated State. The latest state contains information of interest to users of the Convex network, in particular the record of ownership of digital assets.
@@ -152,18 +150,18 @@ The CVM has the capability to execute arbitrary, Turing-complete **smart contrac
 
 Some particular innovations of interest to facilitate the development of decentralised applications:
 
-* **Decentralised Data Objects** (DOs) - A system of data types and structures enabling efficient and secure replication of data across the Convex network, and supporting the implementation of the CVM. The CVM works with a wide variety of data types enabling construction of powerful applications with optimised performance. 
-* **Convex Lisp** - A powerful language where CVM code is itself expressed as Decentralised Data Objects. The compiler itself executes on-chain - giving developers and Actors the power to construct, compile and deploy new actors on-chain without external tools. This enables systems of on-chain MetaActors - actors who can autonomously create and manage other actors.
+* **Decentralised Data Values (DDVs)**  - A system of data types and structures enabling efficient and secure replication of data across the Convex network, and supporting the implementation of the CVM. The CVM works with a wide variety of data types enabling construction of powerful applications with optimised performance. 
+* **Convex Lisp** - A powerful language where CVM code is itself expressed as Decentralised Data Values. The compiler itself executes on-chain - giving developers and Actors the power to construct, compile and deploy new actors on-chain without external tools. This enables systems of on-chain MetaActors - actors who can autonomously create and manage other actors.
 * **Scheduled Execution** - The protocol allows for deterministic execution of Actor code at any future point in time. This allows for more advanced, time-based processes to be implemented on chain (without such a feature, smart contracts would need external systems and events to trigger execution at specific times, such as the Ethereum Alarm Clock )
 * **Execution Worlds** - Each account on the network (external user or Actor) is granted a secure, scriptable code execution environment with its own database. This enables highly interactive use of the CVM by advanced users.
 
 ### Storage System
 
-Convex implemented a novel storage scheme, specifically designed to support the requirements of Convex DOs. Key features of this system include:
+Convex implemented a novel storage scheme, specifically designed to support the requirements of Convex DDVs. Key features of this system include:
 
 * **Content addressable storage (CAS)** - The key for every value in the database is the cryptographic hash of its encoding.
 * **Smart References** - references to data that can be lazily loaded and verified, allowing just a small required subset of data to be accessed on demand.
-* **Transparent Persistence** - Decentralised Data Objects used in Convex (such as the CVM state) are stored in a virtual database which may be much larger than main memory. This opens up interesting opportunities for future scalability and sophisticated Actors capable of working with large databases.
+* **Transparent Persistence** - Decentralised Data Values used in Convex (such as the CVM state) are stored in a virtual database which may be much larger than main memory. This opens up interesting opportunities for future scalability and sophisticated Actors capable of working with large databases.
 * **Novelty Detection** - The design of the storage system enables Convex to detect *novel* information when it is written to storage. This is important to reduce bandwidth requirements: only novel information will typically need to be broadcast to the Peer network.
 * **Proofed Persistence** - Certain proofs relating the the validation of data are persisted along with the data itself. This is an important optimisation: Entire large data structures can be verified in O(1) time by checking the cached proof.
 
@@ -196,12 +194,22 @@ While it would be possible to create a simple system of smart contracts that tac
 
 To ensure that only valid transactions are executed on digital assets with the authorisation of the owner, we need a secure way to validate the identity and . This is fortunately a well-studied problem that can be solved with cryptographic techniques, and in particular **digital signatures**, where the authenticity of a transaction can be validated through the use of a secret private key held by users, and a public key that is visible to all.
 
-Maintenance of the network consensus invariably requires resources: powerful servers with compute capability, significant storage and network bandwidth are necessary to operate the consensus algorithm and execute transactions 24/7 at global scale. These resources are not free, and to compensate their operators for the economic cost of their services there is a need to impose **transaction fees** for usage - or else the network could be swamped by low-value or malicious transactions that consume excessive network resources. The need to charge a transaction fee naturally leads to the conclusion that some form of **native currency** is required, being a digital currency that is valid to pay for the usage of network services (which can be enforced at the protocol level). 
+Maintenance of the network consensus invariably requires resources: powerful servers with compute capability, significant storage and network bandwidth are necessary to operate the consensus algorithm and execute transactions 24/7 at global scale. These resources are ultimately not free, and to compensate their operators for the economic cost of their services there is a need to impose **transaction fees** for usage. Without some economic cost of transacting, the network could be swamped by low-value or malicious transactions that consume excessive resources. The need to charge a transaction fee naturally leads to the conclusion that some form of **native currency** is required, being a digital currency that is valid to pay for the usage of network services (which can be enforced at the protocol level). 
 
 Finally, we note some practical considerations. Information will need to be durably maintained and frequently communicated as part of the consensus algorithm and in serving users of the network, which requires systems for **storage** and **transmission** of data. Ideally, such systems need to be **efficient** to provide necessary storage, and they must ensure **integrity** to allow recovery from faults and malicious tampering.
 
 The remainder of this White Paper describes the technical implementation of Convex, which implements all of the above capabilities in order to provide a foundation for the Internet of Value.
 
+### A note on Values
+
+As a distributed information system, Convex must deal with the representation of data. We therefore rely frequently on the definition of a Decentralised Data Value (DDV) which has the following properties:
+
+- It is immutable: the information content cannot be changed once constructed
+- It has a unique canonical encoding as a sequence of bytes, which is used for both network transmission and storage
+- It can be assigned a unique Value ID (VID) which is defined as the SHA3-256 cryptographic hash of the value's encoding. This serves multiple purposes, most importantly for cryptographic verification and as a key for various data structures (e.g. hash maps and Content Addressable Storage).
+- Other DDVs can be recursively nested inside - in essence forming a Merkle Tree, which becomes a Merkle DAG given structural sharing of identical children.
+
+Where we refer to "value" or "data value" in this document, we are generally referring to DDVs.
 
 ### Consensus Algorithm
 
@@ -211,13 +219,13 @@ At the core of the Convex consensus design is the concept of the State.
 
 The State is a representation of the complete information in the on-chain execution environment at any point in time. The Convex network as a whole operates as a globally replicated state machine, where new updates cause changes to the current State. Updates are defined on a globally consistent basis according to the sequence of transactions confirmed through the Consensus algorithm.
 
-The State is internally represented as a Decentralised Data Object (DO) that includes:
+The State is represented as an immutable Decentralised Data Value (DDV) that includes:
 *	All Account information and balances
 *	All Actor code and state
 *	All information relating to active Peers and staking
 *	Global information (such as the latest Block timestamp)
 
-Since it is a DO, it follows that a State is a Merkle Tree, and has a unique Object ID. This means that if two Peers compute a State update and announce the Object IDs, it is possible to immediately validate if they computed the same resulting State.
+Since it is a DDV, it follows that a State is a Merkle Tree, and has a unique VID. This means that if two Peers compute a State update and announce the VIDs, it is possible to immediately validate if they computed the same resulting State.
 
 #### Reduction to Block Ordering Problem
 
@@ -373,9 +381,9 @@ Each Peer would theoretically be holding ~100 petabytes of information for their
 
 However, we exploit some powerful techniques to minimise this:
 
-* Beliefs are represented as Decentralised Data Objects that support **structural sharing**: identical values or subtrees with identical values need only be stored once. Since orderings are identical up to the point of consensus, these can be de-duplicated almost perfectly.
+* Beliefs are represented as Decentralised Data Values that support **structural sharing**: identical values or subtrees with identical values need only be stored once. Since orderings are identical up to the point of consensus, these can be de-duplicated almost perfectly.
 * Peers are only required to actively maintain block data for approx. **1 day** (less than 10GB in this case)
-* The Decentralised Data Objects support usage where only the **incremental change** needs to be gossiped. 
+* The Decentralised Data Values support usage where only the **incremental change** needs to be gossiped. 
 * The number of outgoing connections for each Peer is **bounded** to a small constant number of Peers that they wish to gossip to (typically around 10, but configurable on a per-peer basis)
 
 With these techniques, Peers only need to gossip the novelty they receive (in this example around 100k per second, plus some accounting overhead) to a small number of other peers. Bandwidth required is therefore on the order of 2-5MB/s (allowing for some overheads and a reasonable number of Peer connections), which is certainly practical for any modern server with a reasonable network connection.
@@ -433,7 +441,7 @@ Design decisions regarding the information model have been driven by a number of
 
 Convex therefore implements a comprehensive set of data types, which are utilised both within the CVM and in the broader implementation of a Convex Peer (including the consensus algorithm and communication protocols).
 
-All data types available in the CVM are considered as Decentralised Data Objects (DOs).
+All data types available in the CVM are considered as Decentralised Data Values (DDVs).
 
 ##### Primitive types
 
@@ -458,7 +466,7 @@ There is also a set of non-integral primitive objects generally useful for progr
 * Address (32 bytes hex, e.g. `1f6ca3a7a6fccc7a4ee8034a297b559ee7b343a1912aab89586126564dec166a`)
 * Hash (32 bytes hex, e.g. `04ef3428895f2bccbf67a19e33f4a0ba0d9f67a0eb5eb1841cea13f6abff3134`)
 
-Data values that are sufficiently small, including all of the above, are **embedded** directly within larger Data Objects that contain them. This is an internal implementation detail to reduce the overhead of storing and communicating many small objects independently, which is transparent to CVM code.
+Data values that are sufficiently small, including all of the above, are **embedded** directly within larger Data Values that contain them. This is an internal implementation detail to reduce the overhead of storing and communicating many small objects independently, which is transparent to CVM code.
 
 
 
@@ -631,12 +639,12 @@ The Convex execution engine implements a form of transparent (sometimes also kno
 
 This presents a significant conceptual benefit for the developer: there is no need to write any code to load or unload data from storage in normal CVM code. This imposes some additional implementation complexity for the CVM itself, but this is considered a worthwhile trade-off, especially since it simplifies the logic of other parts of the Convex Peer implementation (e.g. eliminates the need to explicitly handle the memory consumption growth of long block orderings generated by the consensus algorithm over time). 
 
-In the reference implementation, this is achieved with judicious reliance upon the very efficient JVM automatic memory management. This enables the following lifecycle for in-memory data objects:
+In the reference implementation, this is achieved with judicious reliance upon the very efficient JVM automatic memory management. This enables the following lifecycle for in-memory data values:
 
-1. Objects are initial created with strong (RefDirect) references, which ensure that they are held in memory for as long as they are potentially needed
+1. Values are initial created with strong (RefDirect) references, which ensure that they are held in memory for as long as they are potentially needed
 2. At certain checkpoints (most importantly, after the successful processing of each Block) the current state is *persisted*. All objects which are reachable but not yet persisted are written to storage, and references to them are converted from strong references to soft (RefSoft) references. This happens as an atomic operation.
 3. From this point onwards, the persisted objects may be garbage collected at any time by the JVM if memory pressure occurs
-4. If an attempt is made to access an object that has been garbage collected, the reference automatically fetches the associated data object from storage. This is guaranteed to succeed assuming that the previous persistence step was successfully completed.
+4. If an attempt is made to access a value that has been garbage collected, the reference automatically fetches the associated data value from storage. This is guaranteed to succeed assuming that the previous persistence step was successfully completed.
 5. Over longer time periods, it is possible to perform garbage collection on the storage itself by compacting the store to remove data that is no longer required by the current consensus state. Peers may choose to do this at their own discretion based on their operational requirements, or alternatively they may decide to preserve all data (for example in order to perform historical analysis)
 
 #### Convex Lisp
@@ -682,7 +690,7 @@ The CVM automatically garbage collects objects to which references are no longer
 * **Performance** Given a focus on immutable data, garbage collection offers significant performance advantages because references can be shared internally within the CVM implementation, as opposed to relying on expensive "copy on write" approaches.
 * **Security** - Mistakes in memory management are one of the most common types of defect, often resulting in significant security issues (e.g. "buffer overruns"). Such risks are generally unacceptable for smart contract code securing significant digital assets.
 
-Short lived objects are garbage collected by the host runtime (the JVM). This will happen for most temporary objects created during the execution of CVM code. For those data objects that are persisted to long term storage (e.g. because they become part of the updated CVM state), the host runtime may garbage-collect the in-memory copy.
+Short lived objects are garbage collected by the host runtime (the JVM). This will happen for most temporary objects created during the execution of CVM code. For those data values that are persisted to long term storage (e.g. because they become part of the updated CVM state), the host runtime may garbage-collect the in-memory copy.
 
 Peer operators may also choose to either garbage collect old persisted state from long term storage, or alternatively maintain old state for historical analysis. Peers are only required to maintain object information necessary to execute the consensus algorithm (belief structures plus the proportion of CVM state relating to Peer information and stakes). For more details, see the section on Convergent Immutable Storage.
 
@@ -699,11 +707,11 @@ Storage is constructed out of Cells.
 
 In most cases, a Cell is an immutable value value that represents an object in the CVM Informational Model.
 
-Normally there is a 1-1 mapping between Cells and CVM Data Objects, however there are some exceptions:
+Normally there is a 1-1 mapping between Cells and CVM DDVs, however there are some exceptions:
 
 - For larger data structures a tree of Cells may be necessary - this is because we need to place a fixed upper bound on the size of each cell.
-- Small data objects do not require a cell in their own right, since it is more efficient to embed them directly within a larger Cell.
-- Some special data structures used in Convex are technically implemented as Cells for the purpose of storage and serialisation, but are unavailable for use within the CVM - for example the `Belief` data structure used in the CPoS consensus algorithm.
+- Small data values do not require a cell in their own right, since it is more efficient to embed them directly within a larger Cell.
+- Some special data structures used in Convex are technically implemented as Cells for the purpose of storage and serialisation, but are unavailable for use within the CVM since the are used externally to the CVM State - for example the `Belief` data structure used in the CPoS consensus algorithm.
 
 
 #### Encoding
@@ -714,18 +722,18 @@ The encoding is designed to provide the following properties:
 
 * A bounded maximum encoding size for any Cell (currently 8191 bytes)
 * Very fast serialisation and deserialisation, with minimal requirements for temporary object allocation.
-* Uniqueness of encoding - there is a 1:1 mapping between object values and valid encodings. This means, among other useful properties, that Data Object equality can be determined by comparing hashes of encodings.
-* Self describing format: given a valid Cell encoding, the Data Object can be reconstructed without additional context
+* Uniqueness of encoding - there is a 1:1 mapping between cell values and valid encodings. This means, among other useful properties, that Data Value equality can be determined by comparing hashes of encodings.
+* Self describing format: given a valid Cell encoding, the Data Value can be reconstructed without additional context
 
 The same encoding is utilised in both durable storage and in network transmission.
 
 #### Embedding
 
-Small Data Objects are Embedded within another Cell (e.g. a Cell representing part of a larger data structure). In most cases, this avoids the need to construct and store separate cells for small primitive values, and often small data structures themselves can be fully embedded.
+Small Data Values are Embedded within another Cell (e.g. a Cell representing part of a larger data structure). In most cases, this avoids the need to construct and store separate cells for small primitive values, and often small data structures themselves can be fully embedded.
 
-Currently, most data objects with an encoding size of up to 140 bytes are automatically embedded. This heuristic may be modified based on further testing and profiling. 
+Currently, most data values with an encoding size of up to 140 bytes are automatically embedded. This heuristic may be modified based on further testing and profiling. 
 
-#### Cell IDs as storage keys
+#### Value IDs as storage keys
 
 The cryptographic hash of the Cell encoding is used an an identifier to refer to a Cell, and in particular as a key for addressing data in the storage system. 
 
@@ -741,7 +749,7 @@ Given the above design features, we are able to implement a system of immutable 
 
 It is a well-known result that taking the union of sets in a purely additive manner (a Grow-only Set) is a valid CRDT. The storage system can be regarded as a growing set of immutable (key, value) pairs, and hence satisfies the CRDT property.
 
-This convergence property is particularly beneficial when combined with the structured of Merkle Trees used throughout the CVM: data structures with identical branches are automatically de-duplicated when they are stored, since the existing storage entry can simply be re-used.
+This convergence property is particularly beneficial when combined with the structured of Merkle trees used throughout the CVM: data structures with identical branches are automatically de-duplicated when they are stored, since the existing storage entry can simply be re-used. If effect, the Merkle trees become Merkle DAGs with guaranteed sharing of identical children.
 
 #### Status tagging
 
@@ -751,12 +759,12 @@ The basic status levels are:
 
 * **UNKNOWN** - The Peer has an identifier (Hash), but does not know yet if this is consistent with any encoded data
 * **STORED** - The Peer has encoded data in storage which is validated to be a well-formed Cell (ignoring children), and consistent with the Hash.
-* **PERSISTED** - The Peer has validated the structure of the Cell completely, including recursively validating all its children. At this point, we can rely on a Data Object represented by the Cell to be usable in CVM execution
+* **PERSISTED** - The Peer has validated the structure of the Cell completely, including recursively validating all its children. At this point, we can rely on a Data Value represented by the Cell to be usable in CVM execution
 * **ANNOUNCED** - The Peer has included the data in a publicly broadcast Belief
 
 Some special status levels are also possible, including:
 
-* **EMBEDDED** - A Data Object is able to be embedded within other Cells, and does *not* need to be individually stored.
+* **EMBEDDED** - A Data Value is able to be embedded within other Cells, and does *not* need to be individually stored.
 * **INVALID** - A cell has been proven to be inconsistent with some validation rules. Such values cannot be used in the CVM, but caching the invalid status can be helpful to avoid the need to redo the validation.
 
 This status tagging is compatible with being included in the storage CRDT, since:
@@ -797,11 +805,12 @@ In performance tests, we have observed tens of millions of reads and writes per 
 Convex uses cryptographic primitives for the following functions:
 
 * Digital Signature (Ed25519)
-  * For every Transaction submitted
-  * For every Block proposed by a peer for consensus
-  * For every Belief shared by a peer on the gossip network
+  * For every Transaction submitted by a Client
+  * For every Block proposed by a Peer for consensus
+  * For every Ordering constructed and shared by a Peer
+  * For every Belief shared by a Peer on the gossip network
 * Cryptographic Hashes (SHA3-256)
-  * For every Cell which forms part of a Decentralised Data Object, a hash of its byte encoding is computed for storage, identity, indexing and verification purposes
+  * For every Cell which forms part of a Decentralised Data Value, a hash of its byte encoding is computed for storage, identity, indexing and verification purposes. This is effectively equal to the VID.
   * For every key value used in a map data structure, its hash is computed (if necessary)
 * Standard approaches used to store and protect keys in common key file formats (e.g. .pem, .pfx)
 
@@ -814,7 +823,7 @@ Convex presents a new approach to programmable economic systems that provides a 
 At the same time, it maintains a certain degree of simplicity. We believe that simple, composable systems offer a more stable and secure foundation to build upon, and Convex therefore features:
 
 * Functional programming on the CVM based on the lambda calculus
-* Immutability for all data structures
+* Immutable values for all data structures
 * A surprisingly simple consensus algorithm based on CRDTs
 
 It is our hope that the innovations in Convex and the engineering decisions made will provide a practical, high performance platform for a new generation of decentralised applications.
