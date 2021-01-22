@@ -10,7 +10,6 @@ We present Convex, a fully decentralised platform for the Internet of Value. Con
 
 We augment this system with an execution engine, building on the lambda calculus, immutable persistent data structures and content addressable storage. Coupled with the consensus algorithm, this provides a fully decentralised, global computer capable of executing arbitrary smart contracts with decentralised ownership (the "Convex Virtual Machine").
 
-
 ## Context
 
 ### Towards a Digital Economy
@@ -34,15 +33,15 @@ A problem with moving Value Exchange to the Internet, however, is that parts of 
 
 We envision a system that enables value exchange mechanisms while solving the problems of traditional approaches - a network of economic agents that serves the needs of the digital economy.
 
-The properties that are essential to this vision are that it must be:
+The seven key properties that are essential to this vision are that it must be:
 
-* **Global** - supporting the digital economy of the whole world
-* **Open** - accessible to everyone, with no unjust barriers to inclusion and participation
+* **Global** - supporting the the whole world
+* **Open** - accessible to everyone, with no unjust barriers to inclusion and participation, and no centralised control. Openness *requires* decentralisation.
 * **Automated** - able to execute end-to-end transactions in a reliable way while automatically enforcing any rules relating to the digital assets involved.
-* **Secure** - providing strong protection against losses (malicious or otherwise) so that holders of assets can maintain trust in their value.
+* **Secure** - providing strong protection against security threats (malicious or otherwise) so that holders of digital assets can maintain trust in their value.
 * **Extensible** - capable of supporting new kinds of digital assets and innovation
-* **Fast** - sufficiently scalable and efficient to serve Internet-scale usage, and meet the performance expectations of as many use cases as possible 
-* **Cheap** - usable at low economic costs, to maximise the potential to create economic opportunity and value without being stifled by unreasonable transaction costs.
+* **Fast** - sufficiently scalable and efficient to serve Internet-scale usage, and meet the performance expectations of all reasonable use cases 
+* **Cheap** - usable with low economic costs, to maximise the potential to create economic opportunity and value without being stifled by transaction costs.
 
 Convex has been designed from the ground up to provide these properties.
 
@@ -61,19 +60,19 @@ There is no practical limit to the ideas that could be implemented given an open
 
 ### Why is Convex needed?
 
-Convex is needed because, despite the vast potential of the Internet Of Value, a technology did not previously exist to enable it in a satisfactory way.
+Convex is needed because, despite the vast potential of the Internet Of Value, a technology did not previously exist to enable it in a satisfactory way. We need a system that is *simultaneously* Global, Open, Automated, Secure, Extensible, Fast and Cheap. Previous systems fall short on one or more of these points.
 
-Convex builds on ideas around decentralised technology popularised through "blockchain" in recent years, but was motivated by a desire to build something better than current incarnations of blockchain technology can offer. Key motivations include:
+Convex builds on ideas around decentralised technology popularised through blockchain innovations in recent years, but was motivated by a desire to build something better than current incarnations of blockchain technology can offer. For example, Bitcoin does well on Global, Open and Secure, but is definitely not Fast or Cheap. 
 
-* Provide a level of performance that makes decentralised applications practical for real work use cases
-* Help the environment by supplanting systems based on Proof of Work
+Key additional motivations for the creation of Convex, while not strictly necessary for the Internet of Value, include:
+
+* Help the environment by supplanting systems based on Proof of Work. 
 * Make decentralised software development more productive, engaging and fun
-* Maintain a level of decentralisation that offers security and freedom from centralised control
-* Establish new paradigms of programming around globally shared, consistent state
+* Establish new paradigms of decentralised programming around globally shared, consistent state
   
 ### Prior Innovation
 
-The space of decentralised technology has seen massive innovation in recent years, many of which have inspired the Convex project. Some particularly significant events are worth noting:
+The space of decentralised technology has seen massive innovation in recent years, many of which have inspired the Convex project. It is not the purpose of this White Paper to chronicle all these exciting developments in detail, but some particularly significant events are worth noting:
 
 In 2009, Bitcoin was launched by Satoshi Nakamoto, which demonstrated for the first time that a digital currency could be operated on a fully decentralised, secure network using a Proof of Work consensus algorithm. The ability to prevent "double spending" using a purely decentralised, online method was a revelation that hinted at the possibility of entire economic systems migrating to the Internet.
 
@@ -554,14 +553,14 @@ These Ops are similar to the some basic primitives often found in a Lisp machine
 
 Functions are first class objects suitable for use in functional programming. We choose to implement functions directly in the CVM because they are fundamental and powerful constructs that allow the construction of effective programs without having to simulate them with lower level constructs (e.g. a stack based model).
 
-Important features:
+Important features of functions include:
 
 * Support for variable arity function application, e.g. `(+ 1 2 3 4)`
 * Full lexical closures (capturing values in the lexical environment at the point of creation)
 
 Some functions are provided by default as part of the runtime environment, which are generally available in the standard library `convex.core`. These functions provide the foundation for construction of higher level functionality.
 
-In addition (adopting an idiom that has proved convenient in the Clojure language), data structures map be used in place of functions in some defined circumstances, e.g.:
+In addition (adopting an idiom that has proved convenient in the Clojure language), data structures may be used in place of functions in some defined circumstances, e.g.:
 
 * Maps may be used as functions that implement map lookup: `({:foo 1 :bar 2} :bar) => 2`
 * Sets may be used as functions to test membership: `(#{1 2 3} 4) => false`
