@@ -4,7 +4,7 @@
             [clojure.tools.logging :as log]
 
             [cognitect.anomalies :as anomalies])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString)
+  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString Amount)
            (convex.core.lang Core Reader ScryptNext RT Context)
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
@@ -177,6 +177,9 @@
 
       (isa? x-class Syntax)
       (datafy (.getValue ^Syntax x))
+
+      (instance? Amount x)
+      (.getValue ^Amount x)
 
       :else
       (throw (ex-info (str "Can't datafy " (some-> x (.getClass) (.getName)) ".") {:object x})))))
