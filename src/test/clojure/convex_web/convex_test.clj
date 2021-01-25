@@ -4,7 +4,7 @@
             [convex-web.system :as sys]
             [convex-web.convex :as convex]
             [convex-web.test :refer :all])
-  (:import (convex.core.data Address Blob Syntax Maps)
+  (:import (convex.core.data Address Blob Syntax Maps Amount)
            (convex.core Init)))
 
 (def system nil)
@@ -22,6 +22,9 @@
 
   (testing "Long"
     (is (= 1 (convex/datafy (convex/execute context 1)))))
+
+  (testing "Amount"
+    (is (= 1 (convex/datafy (Amount/create 1)))))
 
   (testing "Double"
     (is (= 1.0 (convex/datafy (convex/execute context 1.0)))))
