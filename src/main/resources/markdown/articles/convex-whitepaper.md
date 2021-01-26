@@ -275,13 +275,47 @@ This is achieved through:
 
 This effectively forms a join-semilattice for each Peer, and satisfies the conditions required for a CRDT.
 
-There is one subtle point that makes this different from a typical CRDT: Peers are only able to update the part of the overall Belief structure that represents their *own* proposals (this is enforced via digital signatures).
+There is one subtle point that makes this different from a typical CRDT: Peers are only able to update the part of the overall Belief structure that represents their *own* proposals (this is enforced via digital signatures). This ensures that full cryptographic security is maintained throughout the operation of the consensus algorithm since nobody can practically "impersonate" a Peer.  
+
+#### Stake-weighted voting
 
 Convergence is guaranteed by a system of continuous voting. At each belief merge step, the Peer computes the total share of stake voting for each proposed Block in the next position after the current consensus point. It is able to do this because it has a view of the orderings proposed by all other Peers. 
 
-This voting is applied iteratively to blocks in following positions, but only counting the votes by Peers that have supported the winning ordering up to this point (i.e. supporting a minority Block causes Peers to be excluded from the considered vote).
+This voting is applied iteratively to blocks in following positions, but only counting the votes by Peers that have supported the winning ordering up to this point (i.e. supporting a minority Block causes Peers to be temporarily excluded from the considered vote in following blocks).
 
 Once the overall winning ordering has been determined, the Peer appends any new Blocks it wishes to propose, then adopts this ordering as it's own proposal. The proposal is incorporated into the Peer's own Belief, which is then communicated back to the other Peers.
+
+As an illustration, consider three peers that are initially in consensus with respect to an ordering of blocks `XXXX` but peers 1 and 2 propose new blocks A and B:
+
+```
+Peer 1: (stake 20) ordering = XXXXA
+Peer 2: (stake 30) ordering = XXXXB
+Peer 3: (stake 40) ordering = XXXX
+```
+
+Peer 3 observes the orderings of Peer 1 and 2 via network gossip. It sees two conflicting proposals, but because Peer 2 has the higher stake it takes this ordering first. It then appends the other block it has seen:
+
+```
+Peer 1: (stake 20) ordering = XXXXA
+Peer 2: (stake 30) ordering = XXXXB
+Peer 3: (stake 40) ordering = XXXXBA (updated)
+```
+
+Peer 1 observes the orderings of the other Peers at this point. Since there is a conflict, it calculates the vote for each ordering and sees that there is a 70-30 vote in favour of having block B first (and a 40/0 vote in favour of block A next). It therefore adopts the winning ordering proposed by Peer 3.
+
+```
+Peer 1: (stake 20) ordering = XXXXBA (updated)
+Peer 2: (stake 30) ordering = XXXXB
+Peer 3: (stake 40) ordering = XXXXBA 
+```
+
+Peer 2 now observes the orderings. It sees everyone agreed on block B, and a 60-0 vote in favour of Block A next. It therefore adopts this winning ordering as its own:
+
+```
+Peer 1: (stake 20) ordering = XXXXBA 
+Peer 2: (stake 30) ordering = XXXXBA (updated)
+Peer 3: (stake 40) ordering = XXXXBA 
+```
 
 This procedure naturally converges to a single ordering: Any situation where Peers are voting for different Blocks is unstable and will collapse towards one outcome, since Peers will switch to whichever ordering is observed to have a slight majority. After a few rounds of gossip, the good Peers (at minimum) will align on the same ordering.
  
@@ -289,9 +323,8 @@ This procedure naturally converges to a single ordering: Any situation where Pee
 
 At some point, we therefore reach a threshold where greater than 2/3 of the Peers (by stake weight) are aligned in proposing the same ordering. This situation is **stable** because of the following logic:
 
-* Since less than 1/3 of Peers are potentially malicious, the number of good peers in the agreed consensus set strictly outweigh the malicious peers.
-* Even if all malicious peers were to act in concert and attempt to disrupt consensus (the worst case is where they initially support the ordering, then simultaneously switch to a new ordering), they would fail because they are outnumbered by good peers already in alignment, which would (probabilistically) secure the support of the majority of remaining non-aligned good peers and eventually reach the 2/3 threshold again.
-
+* Since we assume less than 1/3 of Peers (by voting weight) are potentially malicious, the number of good peers in the aligned set of peers strictly outweigh the malicious peers.
+* Even if all malicious peers were to act in concert and attempt to disrupt consensus they would still fail because they are outnumbered by good peers already in alignment (the worst case is where they initially support the ordering, then simultaneously switch to a new ordering - the good peers in alignment would outvote them and secure the support of the majority of remaining non-aligned good peers and eventually reach the 2/3 threshold again, but this time, the 2/3 represents good peers only, so cannot be disrupted any further)
 
 #### Determining consensus
 
