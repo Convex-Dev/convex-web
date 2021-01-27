@@ -15,7 +15,7 @@
   com.cognitect/transit-cljs {:mvn/version "0.8.264"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
 
-  world.convex/convex {:local/root "convex-0.0.1-SNAPSHOT.jar"}
+  world.convex/convex {:local/root "convex.jar"}
 
   ;; Required by Convex but it seems to have some
   ;; odd classpath conflict going on, that's why it's added here.

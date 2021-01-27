@@ -213,10 +213,10 @@
 
 (defn GET-v1-account [context address]
   (try
-    (let [peer (system/convex-peer-server context)
+    (let [peer (system/convex-peer context)
 
           account-status (try
-                           (convex/account-status peer address)
+                           (convex/account-status peer (Long/parseLong address))
                            (catch Throwable ex
                              (u/log :logging.event/system-error
                                     :message (str "Failed to read Account Status " address ". Exception:" ex)
@@ -265,13 +265,15 @@
 
         address (convex/address address)]
     (locking (convex/lockee address)
-      (let [peer (system/convex-peer-server system)
+      (let [peer (system/convex-peer system)
 
             next-sequence-number (or sequence_number (inc (or (convex/get-sequence-number address)
                                                               (convex/sequence-number peer address)
                                                               0)))
 
-            tx (Invoke/create next-sequence-number (convex/read-source source lang))]
+            tx (convex/invoke-transaction {:nonce next-sequence-number
+                                           :add address
+                                           :command (convex/read-source source lang)})]
 
         (convex/set-sequence-number! address next-sequence-number)
 
@@ -383,7 +385,7 @@
       :else
       (let [client (system/convex-client system)
 
-            nonce (inc (convex/hero-sequence (system/convex-peer-server system)))
+            nonce (inc (convex/hero-sequence (system/convex-peer system)))
 
             transfer (convex/transfer-transaction {:nonce nonce
                                                    :target address
@@ -446,7 +448,7 @@
 
         form (convex/read-source source lang)
 
-        result (convex/execute-query (system/convex-peer-server system) form {:address address})
+        result (convex/execute-query (system/convex-peer system) form {:address address})
 
         result-response (merge {:value
                                 (try
@@ -534,7 +536,7 @@
   (try
     (u/log :logging.event/new-account :severity :info)
 
-    (let [peer (system/convex-peer-server system)
+    (let [peer (system/convex-peer system)
           state (convex/consensus-state peer)
           status (.getAccount state Init/HERO)
           sequence (.getSequence status)
@@ -631,7 +633,7 @@
         :else
         (let [client (system/convex-client context)
 
-              nonce (inc (convex/hero-sequence (system/convex-peer-server context)))
+              nonce (inc (convex/hero-sequence (system/convex-peer context)))
 
               result (convex/faucet client {:nonce nonce
                                             :target target
@@ -676,7 +678,7 @@
   (try
     (let [{:strs [start end]} query-params
 
-          peer (system/convex-peer-server context)
+          ^Peer peer (system/convex-peer context)
 
           number-of-accounts (count (.getAccounts (.getConsensusState peer)))
           number-of-items (min number-of-accounts config/default-range)
@@ -710,14 +712,7 @@
                                 :total number-of-accounts}
 
                                :convex-web/accounts
-                               (map
-                                 (fn [[address status]]
-                                   (let [address (convex/address->checksum-hex address)
-                                         status (convex/account-status-data status)]
-                                     #:convex-web.account {:address address
-                                                           ;; Dissoc `environment` because it's too much data.
-                                                           :status (dissoc status :convex-web.account-status/environment)}))
-                                 (convex/accounts peer {:start start :end end}))})))
+                               (convex/accounts-indexed peer {:start start :end end})})))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
@@ -728,10 +723,10 @@
 
 (defn -GET-account [context address]
   (try
-    (let [peer (system/convex-peer-server context)
+    (let [peer (system/convex-peer context)
 
           account-status (try
-                           (convex/account-status peer address)
+                           (convex/account-status peer (Long/parseLong address))
                            (catch Throwable ex
                              (u/log :logging.event/system-error
                                     :message (str "Failed to read Account Status " address ". Exception:" ex)
@@ -754,7 +749,7 @@
 
 (defn -GET-blocks [context _]
   (try
-    (let [peer (system/convex-peer-server context)
+    (let [peer (system/convex-peer context)
           order (convex/peer-order peer)
           consensus (convex/consensus-point order)
           max-items (min consensus config/default-range)
@@ -773,7 +768,7 @@
   (try
     (let [{:strs [start end]} query-params
 
-          peer (system/convex-peer-server context)
+          peer (system/convex-peer context)
           order (convex/peer-order peer)
           consensus (convex/consensus-point order)
 
@@ -815,7 +810,7 @@
 
 (defn -GET-block [context index]
   (try
-    (let [peer (system/convex-peer-server context)
+    (let [peer (system/convex-peer context)
           blocks-indexed (convex/blocks-indexed peer)]
       (if-let [block (get blocks-indexed (Long/parseLong index))]
         (-successful-response block)

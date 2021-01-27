@@ -35,7 +35,7 @@
 (defn ^Server convex-server [system]
   (-convex-server (convex system)))
 
-(defn ^Server convex-peer-server [system]
+(defn ^Server convex-peer [system]
   (.getPeer (-convex-server (convex system))))
 
 (defn ^Convex convex-client [system]

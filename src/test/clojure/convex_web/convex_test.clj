@@ -3,8 +3,9 @@
 
             [convex-web.system :as sys]
             [convex-web.convex :as convex]
-            [convex-web.test :refer :all])
-  (:import (convex.core.data Address Blob Syntax Maps Amount)
+            [convex-web.test :refer :all]
+            [clojure.spec.alpha :as s])
+  (:import (convex.core.data Address Blob Syntax Maps)
            (convex.core Init)))
 
 (def system nil)
@@ -22,9 +23,6 @@
 
   (testing "Long"
     (is (= 1 (convex/datafy (convex/execute context 1)))))
-
-  (testing "Amount"
-    (is (= 1 (convex/datafy (Amount/create 1)))))
 
   (testing "Double"
     (is (= 1.0 (convex/datafy (convex/execute context 1.0)))))
@@ -49,7 +47,7 @@
     (is (= #{} (convex/datafy (convex/execute context #{})))))
 
   (testing "Address"
-    (is (= (.toChecksumHex Init/HERO) (convex/datafy Init/HERO))))
+    (is (= (.toString Init/HERO) (convex/datafy Init/HERO))))
 
   (testing "Blob"
     (is (= (.toHexString (Blob/create (.getBytes "Text"))) (convex/datafy (Blob/create (.getBytes "Text"))))))
@@ -69,7 +67,18 @@
       (is (= "Can't datafy convex.core.lang.impl.ErrorValue."
              (.getMessage (catch-throwable (convex/datafy (convex/execute-string context "(map inc 1)")))))))))
 
+(deftest accounts-indexed-test
+  (testing "Indexed Accounts"
+    (is (= true (s/valid? :convex-web/accounts (convex/accounts-indexed (sys/convex-peer system)))))))
+
 (deftest address-test
+  (testing "Coerce string to Address"
+    (is (= (convex/address "1") (Address/create 1)))
+    (is (= (convex/address "#1") (Address/create 1))))
+
+  (testing "No coercion"
+    (is (= (convex/address (Address/create 1)) (Address/create 1))))
+
   (testing "Can't coerce nil"
     (is (= "Can't coerce nil to convex.core.data.Address."
            (ex-message (catch-throwable (convex/address nil))))))
@@ -78,20 +87,8 @@
     (is (= "Can't coerce empty string to convex.core.data.Address."
            (ex-message (catch-throwable (convex/address ""))))))
 
-  (testing "Invalid Address String"
-    (is (= "Invalid Address hex String [foo]" (ex-message (catch-throwable (convex/address "foo"))))))
-
-  (testing "Coerce string to Address"
-    (let [address-string "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"]
-      (is (convex/address address-string))
-      (is (= (convex/address address-string)
-             (Address/fromHex address-string))))))
-
-
-(deftest key-pair-test
-  (let [hero-key-pair (-> Init/HERO_KP convex/key-pair-data convex/create-key-pair)]
-    (is (= (.getAddress Init/HERO_KP) (.getAddress hero-key-pair)))
-    #_(is (= (.toHexString (.getEncodedPrivateKey Init/HERO_KP)) (.toHexString (.getEncodedPrivateKey hero-key-pair))))))
+  (testing "Invalid Address string"
+    (is (= "Can't coerce \"foo\" to convex.core.data.Address." (ex-message (catch-throwable (convex/address "foo")))))))
 
 
 (deftest kind-test
@@ -139,7 +136,7 @@
 (deftest result-data-test
   (testing "Inc 1"
     (let [result (-> (sys/convex-client system)
-                     (convex/query {:source "(inc 1)" :lang :convex-lisp})
+                     (convex/query {:address Init/HERO :source "(inc 1)" :lang :convex-lisp})
                      (convex/result-data))]
 
       (testing "Expected keys"
@@ -156,7 +153,7 @@
 
   (testing "Error code"
     (let [result (-> (sys/convex-client system)
-                     (convex/query {:source "(map inc 1)" :lang :convex-lisp})
+                     (convex/query {:address Init/HERO :source "(map inc 1)" :lang :convex-lisp})
                      (convex/result-data))]
 
       (testing "Expected keys"

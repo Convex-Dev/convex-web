@@ -132,7 +132,7 @@
 (defn AIdenticon
   "Convex Account Identicon."
   [{:keys [value size]}]
-  [Jdenticon {:value (format/trim-0x (str/lower-case value))
+  [Jdenticon {:value value
               :size size}])
 
 (defn Dismissible

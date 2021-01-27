@@ -34,14 +34,13 @@
 ;; --
 
 (defn sandbox-result
-  "The custom rendering in the Sandbox is driven by the metadata and the object value.
+  "Sandbox renderers are 'dispatched' by the metadata and the object value.
 
    Object maps can be defined per type."
   [result-value]
   (cond
     (instance? Address result-value)
-    {:hex-string (.toHexString ^Address result-value)
-     :checksum-hex (.toChecksumHex ^Address result-value)}
+    {:address (.toString ^Address result-value)}
 
     (instance? ABlob result-value)
     {:length (.length ^ABlob result-value)
@@ -144,7 +143,7 @@
     (locking (convex/lockee address)
       (let [{:convex-web.transaction/keys [source language amount type target]} transaction
 
-            peer (system/convex-peer-server system)
+            peer (system/convex-peer system)
 
             caller-address (convex/address address)
 
@@ -156,10 +155,13 @@
 
             atransaction (case type
                            :convex-web.transaction.type/invoke
-                           (convex/invoke-transaction next-sequence-number (convex/read-source source language))
+                           (convex/invoke-transaction {:nonce next-sequence-number
+                                                       :address caller-address
+                                                       :command (convex/read-source source language)} )
 
                            :convex-web.transaction.type/transfer
-                           (convex/transfer-transaction {:nonce next-sequence-number
+                           (convex/transfer-transaction {:address caller-address
+                                                         :nonce next-sequence-number
                                                          :target target
                                                          :amount amount}))]
         (try

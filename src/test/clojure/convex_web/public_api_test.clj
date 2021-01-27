@@ -115,7 +115,7 @@ In function: map"} response-body)))))
 
 (deftest prepare-test
   (testing "Convex Scrypt"
-    (let [response @(client/POST-public-v1-transaction-prepare (server-url) {:address "8d4da977c8828050c7e9f00e4800f4ab6137e3da4088d78220ffac81e85cc6e0"
+    (let [response @(client/POST-public-v1-transaction-prepare (server-url) {:address "#9"
                                                                              :source "inc(1)"
                                                                              :lang :convex-scrypt})]
       (is (= 200 (get response :status))))
@@ -130,7 +130,7 @@ In function: map"} response-body)))))
 
   (testing "Address doesn't exist"
     (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
-          prepare-body (json/write-str {:address "8d4da977c8828050c7e9f00e4800f4ab6137e3da4088d78220ffac81e85cc6e0" :source "(inc 1)"})
+          prepare-body (json/write-str {:address "#999" :source "(inc 1)"})
           prepare-response @(http/post prepare-url {:body prepare-body})]
       (is (= 200 (get prepare-response :status)))))
 

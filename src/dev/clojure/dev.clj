@@ -40,7 +40,7 @@
 (def context (Context/createFake Init/STATE Init/HERO))
 
 (defn ^Peer peer []
-  (system/convex-peer-server system))
+  (system/convex-peer system))
 
 (defmacro execute [form]
   `(convex/execute context ~form))
@@ -92,7 +92,7 @@
   (session/find-session @(system/db-conn system) "iGlF3AZWw0eGuGfL_ib4-")
 
 
-  (let [a (.getAccounts (.getConsensusState (system/convex-peer-server system)))]
+  (let [a (.getAccounts (.getConsensusState (system/convex-peer system)))]
     (doseq [[k v] (convex.core.lang.RT/sequence a)]
       (print k v)))
 

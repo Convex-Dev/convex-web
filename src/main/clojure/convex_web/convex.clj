@@ -4,7 +4,7 @@
             [clojure.tools.logging :as log]
 
             [cognitect.anomalies :as anomalies])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString Amount)
+  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString)
            (convex.core.lang Core Reader ScryptNext RT Context)
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
@@ -50,11 +50,6 @@
       (.getExceptional context)
       (.getResult context))))
 
-(defn ^String trim-0x [^String s]
-  (if (str/starts-with? s "0x")
-    (subs s 2)
-    s))
-
 (defn throwable-category [throwable]
   (cond
     (instance? TimeoutException throwable)
@@ -62,9 +57,6 @@
 
     (instance? InterruptedException throwable)
     ::anomalies/interrupted))
-
-(defn ^String address->checksum-hex [^Address address]
-  (.toChecksumHex address))
 
 (defn core-metadata
   "Core metadata indexed by Symbol."
@@ -137,9 +129,6 @@
     (instance? Double x)
     x
 
-    (instance? Amount x)
-    (.getValue ^Amount x)
-
     (instance? AString x)
     (.toString x)
 
@@ -166,7 +155,7 @@
     (into #{} (map datafy x))
 
     (instance? Address x)
-    (.toChecksumHex ^Address x)
+    (.toString ^Address x)
 
     (instance? AFn x)
     (.toString x)
@@ -198,21 +187,26 @@
     (instance? Address x)
     x
 
+    (nat-int? x)
+    (Address/create ^long x)
+
     (instance? ABlob x)
-    (or (RT/address x) (throw (ex-info "Blob cannot be converted to Address." {:blob x})))
+    (Address/create ^ABlob x)
 
     (and (string? x) (str/blank? x))
     (throw (ex-info (str "Can't coerce empty string to " (.getName Address) ".") {}))
 
     (string? x)
-    (let [s (if (str/starts-with? x "0x")
-              (subs x 2)
+    (let [s (if (str/starts-with? x "#")
+              (subs x 1)
               x)]
-      (Address/fromHex s))
+      (try
+        (Address/create (Long/parseLong s))
+        (catch Exception _
+          (throw (ex-info (str "Can't coerce " (pr-str x) " to " (.getName Address) ".") {})))))
 
     :else
-    (throw (ex-info (str "Can't coerce " (.getName (type x)) " to " (.getName Address) ".") {:address x
-                                                                                             :type (type x)}))))
+    (throw (ex-info (str "Can't coerce " (pr-str x) " to " (.getName Address) ".") {}))))
 
 (defn metadata [sym]
   (let [sym (cond
@@ -257,7 +251,7 @@
   (let [tx (cond
              (instance? Transfer atransaction)
              #:convex-web.transaction {:type :convex-web.transaction.type/transfer
-                                       :target (.toChecksumHex (.getTarget ^Transfer atransaction))
+                                       :target (.toString (.getTarget ^Transfer atransaction))
                                        :amount (.getAmount ^Transfer atransaction)
                                        :sequence (.getSequence ^ATransaction atransaction)}
 
@@ -301,20 +295,16 @@
       (range (consensus-point order)))))
 
 (defn accounts [^Peer peer & [{:keys [start end]}]]
-  ;; Get timestamp - from state
   (let [^State state (.getConsensusState peer)
         start (or start 0)
         end (or end (count (.getAccounts state)))]
-    (reduce
-      (fn [m i]
-        (let [[address status] (.entryAt (.getAccounts state) i)]
-          (assoc m address status)))
-      {}
-      (range start end))))
 
-(defn ^AccountStatus account-status [^Peer peer string-or-address]
-  (let [address->status (accounts peer)]
-    (address->status (address string-or-address))))
+    (log/debug (str "Get Accounts [" start " " end "]"))
+
+    (.subVector (.getAccounts state) start (- end start))))
+
+(defn ^AccountStatus account-status [^Peer peer ^long address]
+  (.get (accounts peer) address))
 
 (defn syntax-data [^Syntax syn]
   (merge #:convex-web.syntax {:source (.getSource syn)
@@ -348,7 +338,7 @@
           actor? (.isActor account-status)
           library? (and actor? (not exports?))]
       (merge #:convex-web.account-status {:sequence (.getSequence account-status)
-                                          :balance (.getValue (.getBalance account-status))
+                                          :balance (.getBalance account-status)
                                           :environment env
                                           :actor? actor?
                                           :library? library?
@@ -359,16 +349,31 @@
                                                   actor? :actor
                                                   :else :user)}))))
 
+(defn accounts-indexed
+  "Returns a mapping of Address to Account Status."
+  [^Peer peer & [{:keys [start end]}]]
+  (map-indexed
+    (fn [address status]
+      (let [status (account-status-data status)]
+        #:convex-web.account {:address address
+                              ;; Dissoc `environment` because it's too much data.
+                              :status (dissoc status :convex-web.account-status/environment)}))
+    (accounts peer {:start start :end end})))
+
 (defn hero-sequence [^Peer peer]
   (-> (.getConsensusState peer)
       (.getAccount Init/HERO)
       (.getSequence)))
 
-(defn ^Transfer transfer-transaction [{:keys [nonce target amount]}]
-  (Transfer/create ^Long nonce (address target) ^Long amount))
+(defn ^Transfer transfer-transaction [{:keys [address nonce target amount]}]
+  (Transfer/create
+    (convex-web.convex/address address)
+    ^Long nonce
+    (convex-web.convex/address target)
+    ^Long amount))
 
-(defn ^Invoke invoke-transaction [^Long nonce ^Object command]
-  (Invoke/create nonce command))
+(defn ^Invoke invoke-transaction [{:keys [nonce address command]}]
+  (Invoke/create address nonce command))
 
 (defn ^SignedData sign [^AKeyPair signer ^ATransaction transaction]
   (SignedData/create signer transaction))
@@ -485,8 +490,8 @@
   (AKeyPair/create (address address-checksum-hex) (Blob/fromHex blob-hex)))
 
 (s/fdef create-key-pair
-  :args (s/cat :key-pair :convex-web/key-pair)
-  :ret #(instance? AKeyPair %))
+        :args (s/cat :key-pair :convex-web/key-pair)
+        :ret #(instance? AKeyPair %))
 
 (def addresses-lock-ref (atom {}))
 

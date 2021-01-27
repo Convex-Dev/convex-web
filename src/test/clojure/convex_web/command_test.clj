@@ -15,6 +15,7 @@
 (deftest query-mode-test
   (testing "Simple Commands"
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
                                      ::c/query
                                      {:convex-web.query/source "1"
                                       :convex-web.query/language :convex-lisp}})]
@@ -24,6 +25,7 @@
              (select-keys command [::c/status ::c/object]))))
 
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
                                      ::c/query
                                      {:convex-web.query/source "\"Hello\""
                                       :convex-web.query/language :convex-lisp}})]
@@ -34,6 +36,7 @@
 
   (testing "Symbol lookup"
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
                                      ::c/query
                                      {:convex-web.query/source "inc"
                                       :convex-web.query/language :convex-lisp}})]
@@ -44,6 +47,7 @@
 
   (testing "Lookup doc"
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
                                      ::c/query
                                      {:convex-web.query/source "(doc inc)"
                                       :convex-web.query/language :convex-lisp}})]
@@ -68,6 +72,7 @@
 
   (testing "Cast error"
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
                                      ::c/query
                                      {:convex-web.query/source "(map inc 1)"
                                       :convex-web.query/language :convex-lisp}})]
@@ -82,13 +87,12 @@
 
 (deftest sandbox-result-test
   (testing "Address"
-    (is (= {:checksum-hex "7E66429CA9c10e68eFae2dCBF1804f0F6B3369c7164a3187D6233683c258710f"
-            :hex-string "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"}
+    (is (= {:address "#9"}
            (c/sandbox-result (convex/execute context *address*)))))
 
   (testing "Blob"
-    (is (= {:hex-string "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"
-            :length 32}
+    (is (= {:hex-string "0000000000000009"
+            :length 8}
            (c/sandbox-result (convex/execute context (blob *address*))))))
 
   (testing "StringShort"
@@ -155,7 +159,7 @@
 
   (testing "Special"
     (is (= {:type :symbol} (c/result-metadata (convex/execute context def))))
-    (is (= {:doc {:description "Creates a definition in the current environment. This value will persist in the enviroment owned by the current account."
+    (is (= {:doc {:description "Creates a definition in the current environment. This value will persist in the environment owned by the current account."
                   :examples [{:code "(def a 10)"}]
                   :signature [{:params ['sym 'value]}]
                   :symbol "def"

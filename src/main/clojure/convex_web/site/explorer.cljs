@@ -575,15 +575,15 @@
     (let [active-address (session/?active-address)
 
           my-addresses (->> (session/?accounts)
-                            (map (comp str/upper-case :convex-web.account/address))
+                            (map :convex-web.account/address)
                             (into #{}))]
       [:tbody
-       (for [{:convex-web.account/keys [address status]} (sort-by (comp str/lower-case :convex-web.account/address) accounts)]
+       (for [{:convex-web.account/keys [address status]} (sort-by :convex-web.account/address accounts)]
          (let [td-class "p-2 font-mono text-xs text-gray-700 whitespace-no-wrap"
 
-               me? (contains? my-addresses (str/upper-case address))
+               me? (contains? my-addresses address)
 
-               address-blob (format/prefix-0x address)]
+               address-blob (str "#" address)]
            ^{:key address}
            [:tr.cursor-default
             ;; -- Address
