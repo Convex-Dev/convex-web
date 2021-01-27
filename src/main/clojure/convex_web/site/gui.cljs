@@ -750,7 +750,7 @@
                                           environment
                                           type]} status
 
-        address-blob (format/prefix-0x address)
+        address-string (format/prefix-# address)
 
         caption-style "text-gray-600 text-base leading-none cursor-default"
         caption-container-style "flex flex-col space-y-1"
@@ -773,8 +773,7 @@
        [:div {:class caption-container-style}
         [:span {:class caption-style} "Address"]
         [:span.inline-flex.items-center
-         [:span.font-mono.text-base.mr-2 address-blob]
-         [ClipboardCopy address-blob]]]
+         [:span.font-mono.text-base.mr-2 address-string]]]
 
        ;; -- QR Code
        [:> QRCode
@@ -945,7 +944,7 @@
              [AIdenticon {:value active-address :size 40}]
 
              [:span.font-mono.block.ml-2
-              (format/prefix-0x active-address)]])
+              (format/prefix-# active-address)]])
 
           [:svg.h-5.w-5.text-gray-400.pr-2.pointer-events-none
            {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
@@ -979,7 +978,7 @@
                   [AIdenticon {:value address :size 40}]
 
                   [:span.font-mono.block.ml-2
-                   (format/prefix-0x address)]]])]]]]]]))))
+                   (format/prefix-# address)]]])]]]]]]))))
 
 
 (defn AddressRenderer [object]
@@ -1009,9 +1008,9 @@
         (when (= :ajax.status/success (:ajax/status @account-ref))
           [AIdenticon {:value object :size identicon-size-small}])
 
-        [:code.text-xs (format/prefix-0x object)]]]
+        [:code.text-xs (format/prefix-# object)]]]
 
-      [ClipboardCopy (format/prefix-0x object)]]
+      [ClipboardCopy (format/prefix-# object)]]
 
      (case (:ajax/status @account-ref)
        :ajax.status/pending

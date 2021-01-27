@@ -35,7 +35,7 @@
 
     [:span.font-mono.text-sm.truncate
      {:class gui/hyperlink-hover-class}
-     (format/prefix-0x address)]]
+     (format/prefix-# address)]]
 
    [:span " updated balance is "]
    [:span.font-bold balance] "."])
@@ -144,7 +144,7 @@
           so please consider as a temporary Account keep a backup of anything
           of value."]
 
-        [:span.font-mono.text-base.text-black (format/prefix-0x address)]
+        [:span.font-mono.text-base.text-black (format/prefix-# address)]
 
         [:div.self-center
          [gui/BlackButton
@@ -423,7 +423,7 @@
 
            [:span.font-mono.text-sm.truncate
             {:class gui/hyperlink-hover-class}
-            (format/prefix-0x (get transfer :convex-web.transfer/to))]])
+            (format/prefix-# (get transfer :convex-web.transfer/to))]])
 
         [:span " to "]
 
@@ -435,7 +435,7 @@
 
            [:span.font-mono.text-sm.truncate
             {:class gui/hyperlink-hover-class}
-            (format/prefix-0x (get transfer :convex-web.transfer/to))]])]
+            (format/prefix-# (get transfer :convex-web.transfer/to))]])]
 
        :convex-web.command.status/error
        [:span.text-base.text-black

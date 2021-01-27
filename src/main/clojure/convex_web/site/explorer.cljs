@@ -111,7 +111,7 @@
           :href (rfe/href :route-name/account-explorer {:address address})}
          [gui/Tooltip
           {:title address}
-          [:span.font-mono.text-xs (format/prefix-0x address)]]]]]
+          [:span.font-mono.text-xs (format/prefix-# address)]]]]]
 
       ;; -- Timestamp
       [:div.flex.flex-col.space-y-2
@@ -316,7 +316,7 @@
                 :href (rfe/href :route-name/account-explorer {:address address})}
                [gui/Tooltip
                 {:title address}
-                [:span.font-mono.text-xs (format/prefix-0x address)]]]])]
+                [:span.font-mono.text-xs (format/prefix-# address)]]]])]
 
           ;; -- 3. Timestamp
           [:td {:class td-class}
@@ -396,7 +396,7 @@
                    :href (rfe/href :route-name/account-explorer {:address address})}
                   [gui/Tooltip
                    {:title address}
-                   [:span.font-mono.text-xs (format/prefix-0x address)]]]])])]]))]]])
+                   [:span.font-mono.text-xs (format/prefix-# address)]]]])])]]))]]])
 
 (s/def :explorer.blocks.state/pending
   (s/merge :ajax/pending-status (s/keys :req [:runtime/interval-ref])))
@@ -583,7 +583,7 @@
 
                me? (contains? my-addresses address)
 
-               address-blob (str "#" address)]
+               address-string (format/prefix-# address)]
            ^{:key address}
            [:tr.cursor-default
             ;; -- Address
@@ -597,13 +597,11 @@
                                                                     {:ajax/status :ajax.status/pending
                                                                      :convex-web/account {:convex-web.account/address address}}
                                                                     :modal? true})}
-                 address-blob]
+                 address-string]
                 [:a.flex-1.mx-2
                  {:class gui/hyperlink-hover-class
                   :href (rfe/href :route-name/account-explorer {:address address})}
-                 [:code.text-xs address-blob]])
-
-              [gui/ClipboardCopy address-blob]]
+                 [:code.text-xs address-string]])]
 
              (when (and me? (not= address active-address))
                [gui/Tooltip
@@ -837,7 +835,7 @@
                   [:a
                    {:class gui/hyperlink-hover-class
                     :href (rfe/href :route-name/account-explorer {:address peer})}
-                   [:span (format/prefix-0x peer)]]]]]))]]]))))
+                   [:span (format/prefix-# peer)]]]]]))]]]))))
 
 (defn BlocksPage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks]} _]
   (case status

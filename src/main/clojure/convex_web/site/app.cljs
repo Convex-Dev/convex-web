@@ -420,7 +420,7 @@
                   [gui/AIdenticon {:value address :size 40}]
 
                   [:span.font-mono.block.ml-2
-                   (format/prefix-0x address)]]])]]]]]]))))
+                   (format/prefix-# address)]]])]]]]]]))))
 
 
 (defn TopNav []
