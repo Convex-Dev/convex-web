@@ -308,14 +308,14 @@
           ;; -- 2. Signer
           [:td {:class td-class}
            (let [address (get m :convex-web.signed-data/address)]
-             [:div.flex.items-center.w-40
+             [:div.flex.items-center.w-40.space-x-1
               [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
               [:a.flex-1.truncate
                {:class gui/hyperlink-hover-class
                 :href (rfe/href :route-name/account-explorer {:address address})}
                [gui/Tooltip
-                {:title (str "Account " (format/prefix-# address))
+                {:title (format/descriptive-address address)
                  :size "small"}
                 [:span.font-mono.text-xs (format/prefix-# address)]]]])]
 
@@ -396,7 +396,7 @@
                   {:class gui/hyperlink-hover-class
                    :href (rfe/href :route-name/account-explorer {:address address})}
                   [gui/Tooltip
-                   {:title (str "Account " (format/prefix-# address))
+                   {:title (format/descriptive-address address)
                     :size "small"}
                    [:span.font-mono.text-xs (format/prefix-# address)]]]])])]]))]]])
 

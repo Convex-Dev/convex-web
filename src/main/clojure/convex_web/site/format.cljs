@@ -38,3 +38,6 @@
 (defn trim-0x [s]
   (when-not (str/blank? s)
     (str/replace s #"^0x" "")))
+
+(defn descriptive-address [address]
+  (str "Account " (prefix-# address)))
