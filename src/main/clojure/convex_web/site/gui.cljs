@@ -982,52 +982,43 @@
 
 
 (defn AddressRenderer [object]
-  (reagent/with-let [account-ref (reagent/atom {:ajax/status :ajax.status/pending})
+  (let [address-long (:address object)]
+    (reagent/with-let [account-ref (reagent/atom {:ajax/status :ajax.status/pending})
 
-                     _ (backend/GET-account
-                         object
-                         {:handler
-                          (fn [account]
-                            (reset! account-ref {:account account
-                                                 :ajax/status :ajax.status/success}))
+                       _ (backend/GET-account
+                           address-long
+                           {:handler
+                            (fn [account]
+                              (reset! account-ref {:account account
+                                                   :ajax/status :ajax.status/success}))
 
-                          :error-handler
-                          (fn [error]
-                            (js/console.error error)
-                            (reset! account-ref {:ajax/status :ajax.status/error
-                                                 :ajax/error error}))})]
-    [:div.flex.flex-col.bg-white.rounded.shadow.p-2
-     [:span.text-xs.text-indigo-500.uppercase "Address"]
-     [:div.flex.items-center
-      [:a.hover:underline.mr-2
-       {:href (rfe/href :route-name/account-explorer {:address object})}
-       [:div.flex.items-center
+                            :error-handler
+                            (fn [error]
+                              (js/console.error error)
+                              (reset! account-ref {:ajax/status :ajax.status/error
+                                                   :ajax/error error}))})]
+      [:div.bg-white.rounded.shadow.p-2
+       (case (:ajax/status @account-ref)
+         :ajax.status/pending
+         [SpinnerSmall]
 
-        ;; *Important*
-        ;; Display identicon if and only if address is an existing Account.
-        (when (= :ajax.status/success (:ajax/status @account-ref))
-          [AIdenticon {:value object :size identicon-size-small}])
+         :ajax.status/error
+         [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])]
 
-        [:code.text-xs (format/prefix-# object)]]]
+         :ajax.status/success
+         [:div.flex.space-x-4
 
-      [ClipboardCopy (format/prefix-# object)]]
+          ;; -- Balance.
+          [:div.flex.flex-col
+           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
+           (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
+             [:span.text-xs.uppercase (format/format-number balance)])]
 
-     (case (:ajax/status @account-ref)
-       :ajax.status/pending
-       [SpinnerSmall]
-
-       :ajax.status/error
-       [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])]
-
-       :ajax.status/success
-       [:<>
-        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
-        (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
-          [:span.text-xs.uppercase (format/format-number balance)])
-
-        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
-        (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
-          [:span.text-xs.uppercase type])])]))
+          ;; -- Type.
+          [:div.flex.flex-col
+           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
+           (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
+             [:span.text-xs.uppercase type])]])])))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
