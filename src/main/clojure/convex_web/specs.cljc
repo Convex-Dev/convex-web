@@ -12,6 +12,8 @@
 
 (s/def :convex-web/sig (s/and :convex-web/non-empty-string #(= 128 (count %))))
 
+(s/def :convex-web/checksum-hex (s/and :convex-web/non-empty-string #(= 64 (count %))))
+
 (s/def :convex-web/amount nat-int?)
 
 (s/def :convex-web/sequence int?)
@@ -188,11 +190,13 @@
 ;; -- Block
 
 (s/def :convex-web.block/index nat-int?)
+(s/def :convex-web.block/peer :convex-web/checksum-hex)
 (s/def :convex-web.block/timestamp pos-int?)
 (s/def :convex-web.block/transactions (s/coll-of :convex-web/signed-data :min-count 1))
 
 (s/def :convex-web/block (s/keys :req [:convex-web.block/index]
                                  :opt [:convex-web.block/timestamp
+                                       :convex-web.block/peer
                                        :convex-web.block/transactions]))
 
 (s/def :convex-web/blocks (s/coll-of :convex-web/block))

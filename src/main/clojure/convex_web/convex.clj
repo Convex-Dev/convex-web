@@ -251,7 +251,7 @@
   (let [tx (cond
              (instance? Transfer atransaction)
              #:convex-web.transaction {:type :convex-web.transaction.type/transfer
-                                       :target (.toString (.getTarget ^Transfer atransaction))
+                                       :target (.longValue (.getTarget ^Transfer atransaction))
                                        :amount (.getAmount ^Transfer atransaction)
                                        :sequence (.getSequence ^ATransaction atransaction)}
 
@@ -272,8 +272,10 @@
                       :transactions
                       (map-indexed
                         (fn [^Long tx-index ^SignedData signed-data]
-                          #:convex-web.signed-data {:address (.toChecksumHex (.getAddress signed-data))
-                                                    :value (transaction-result-data (.getValue signed-data) (.getResult peer index tx-index))})
+                          (let [^ATransaction transaction (.getValue signed-data)]
+                            #:convex-web.signed-data {:address (.longValue (.getAddress transaction))
+                                                      :account-key (.toChecksumHex (.getAccountKey signed-data))
+                                                      :value (transaction-result-data (.getValue signed-data) (.getResult peer index tx-index))}))
                         (.getTransactions block))})
 
 (defn blocks-data [^Peer peer & [{:keys [start end]}]]

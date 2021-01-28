@@ -315,7 +315,8 @@
                {:class gui/hyperlink-hover-class
                 :href (rfe/href :route-name/account-explorer {:address address})}
                [gui/Tooltip
-                {:title address}
+                {:title (str "Account " (format/prefix-# address))
+                 :size "small"}
                 [:span.font-mono.text-xs (format/prefix-# address)]]]])]
 
           ;; -- 3. Timestamp
@@ -395,7 +396,8 @@
                   {:class gui/hyperlink-hover-class
                    :href (rfe/href :route-name/account-explorer {:address address})}
                   [gui/Tooltip
-                   {:title address}
+                   {:title (str "Account " (format/prefix-# address))
+                    :size "small"}
                    [:span.font-mono.text-xs (format/prefix-# address)]]]])])]]))]]])
 
 (s/def :explorer.blocks.state/pending
@@ -830,12 +832,9 @@
 
                 ;; -- Peer
                 [:td {:class td-class}
-                 [:div.flex.items-center
-                  [gui/AIdenticon {:value peer :size gui/identicon-size-small}]
-                  [:a
-                   {:class gui/hyperlink-hover-class
-                    :href (rfe/href :route-name/account-explorer {:address peer})}
-                   [:span (format/prefix-# peer)]]]]]))]]]))))
+                 [:div.flex.items-center.space-x-1
+                  [gui/Jdenticon {:value peer :size gui/identicon-size-small}]
+                  [:span (format/prefix-# peer)]]]]))]]]))))
 
 (defn BlocksPage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks]} _]
   (case status

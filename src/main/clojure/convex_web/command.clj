@@ -40,7 +40,7 @@
   [result-value]
   (cond
     (instance? Address result-value)
-    {:address (.toString ^Address result-value)}
+    {:address (.longValue ^Address result-value)}
 
     (instance? ABlob result-value)
     {:length (.length ^ABlob result-value)
