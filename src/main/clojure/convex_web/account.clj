@@ -8,8 +8,8 @@
          :where [?e :convex-web.account/address]]
        db))
 
-(defn find-by-address [db address]
+(defn find-by-address [db addressable]
   (d/q '[:find (pull ?e [* {:convex-web.account/faucets [*]}]) .
          :in $ ?address
          :where [?e :convex-web.account/address ?address]]
-       db (.longValue (convex/address address))))
+       db (.longValue (convex/address addressable))))
