@@ -19,10 +19,10 @@
   (get-in account [:convex-web.account/status :convex-web.account-status/balance]))
 
 (defn CheckingBalance []
-  [:span.text-gray-700.text-base.animate-pulse "Checking balance..."])
+  [:span.text-gray-700.text-sm.animate-pulse "Checking balance..."])
 
 (defn BalanceUnavailable [_]
-  [:span.text-gray-700.text-base "Balance unavailable"])
+  [:span.text-gray-700.text-sm "Balance unavailable"])
 
 (defn BalanceIs [_ balance]
   [:span.text-gray-700.text-sm "Balance " [:span.font-bold balance]])
@@ -207,22 +207,22 @@
                                     (stack/set-state uuid f)))}))
 
 (re-frame/reg-sub-raw ::?transfer-from-account
-  (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
-    (get-transfer-account (merge m {:state-key :transfer-page/from}))
+                      (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
+                        (get-transfer-account (merge m {:state-key :transfer-page/from}))
 
-    (make-reaction
-      (fn []
-        (when-let [frame (stack/find-frame @app-db uuid)]
-          (get-in frame [:frame/state :transfer-page/from]))))))
+                        (make-reaction
+                          (fn []
+                            (when-let [frame (stack/find-frame @app-db uuid)]
+                              (get-in frame [:frame/state :transfer-page/from]))))))
 
 (re-frame/reg-sub-raw ::?transfer-to-account
-  (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
-    (get-transfer-account (merge m {:state-key :transfer-page/to}))
+                      (fn [app-db [_ {:keys [frame/uuid address] :as m}]]
+                        (get-transfer-account (merge m {:state-key :transfer-page/to}))
 
-    (make-reaction
-      (fn []
-        (when-let [frame (stack/find-frame @app-db uuid)]
-          (get-in frame [:frame/state :transfer-page/to]))))))
+                        (make-reaction
+                          (fn []
+                            (when-let [frame (stack/find-frame @app-db uuid)]
+                              (get-in frame [:frame/state :transfer-page/to]))))))
 
 (defn TransferPage [frame state set-state]
   (let [{:keys [convex-web/transfer convex-web/command transfer-page/config] :as state} state
@@ -248,87 +248,90 @@
                   [:span.text-base.text-gray-700 caption])]
     [:div.flex.flex-col.flex-1.max-w-screen-md.space-y-12
 
-     ;; From
-     ;; ===========
-     [:div.relative.w-full.flex.flex-col
-      [Caption "From"]
-      [gui/AccountSelect
-       {:active-address from
-        :addresses addresses
-        :on-change (fn [address]
-                     (set-state (fn [state]
-                                  (-> state
-                                      (dissoc :convex-web/command)
-                                      (assoc-in [:convex-web/transfer :convex-web.transfer/from] address)))))}]
+     [:div.flex.space-x-4
+      ;; From
+      ;; ===========
+      [:div.relative.w-full.flex.flex-col
+       [Caption "From"]
+       [gui/AccountSelect
+        {:active-address from
+         :addresses addresses
+         :on-change (fn [address]
+                      (set-state (fn [state]
+                                   (-> state
+                                       (dissoc :convex-web/command)
+                                       (assoc-in [:convex-web/transfer :convex-web.transfer/from] address)))))}]
 
-      ;; -- Balance
-      (when (s/valid? :convex-web/address from)
-        (let [params {:frame/uuid (get frame :frame/uuid)
-                      :address from}]
-          [:div.flex.justify-end
-           [ShowBalance2 (sub ::?transfer-from-account params)
-            {:Pending CheckingBalance
-             :Error BalanceUnavailable
-             :Success BalanceIs}]]))]
+       ;; -- Balance
+       (when (s/valid? :convex-web/address from)
+         (let [params {:frame/uuid (get frame :frame/uuid)
+                       :address from}]
+           [:div.flex.justify-end
+            [ShowBalance2 (sub ::?transfer-from-account params)
+             {:Pending CheckingBalance
+              :Error BalanceUnavailable
+              :Success BalanceIs}]]))]
+
+      ;; To
+      ;; ===========
+      (let [to-my-accounts? (get config :transfer-page.config/my-accounts? false)]
+        [:div.w-full.flex.flex-col
+         [:div.flex.justify-between
+          [Caption "To"]
+
+          ;; -- Show My Accounts
+          [:div.flex.items-center
+           [:input
+            {:type "checkbox"
+             :checked to-my-accounts?
+             :on-change
+             (fn []
+               (set-state
+                 (fn [state]
+                   (let [;; Toogle my account
+                         state (update-in state [:transfer-page/config :transfer-page.config/my-accounts?] not)
+                         ;; Always remove to
+                         state (update state :convex-web/transfer dissoc :convex-web.transfer/to)]
+                     state))))}]
+
+           [:span.text-xs.text-gray-600.uppercase.ml-2
+            "Show My Accounts"]]]
 
 
-     ;; To
-     ;; ===========
-     (let [to-my-accounts? (get config :transfer-page.config/my-accounts? false)]
-       [:div.w-full.flex.flex-col
-        [:div.flex.justify-between
-         [Caption "To"]
+         ;; -- Select or Input text
+         (if to-my-accounts?
+           [gui/AccountSelect
+            {:active-address to
+             :addresses addresses
+             :on-change (fn [address]
+                          (set-state (fn [state]
+                                       (-> state
+                                           (dissoc :convex-web/command)
+                                           (assoc-in [:convex-web/transfer :convex-web.transfer/to] address)))))}]
+           [:input
+            {:class gui/input-style
+             :type "text"
+             :value to
+             :on-change
+             #(let [value (gui/event-target-value %)
+                    to (js/parseInt value)]
 
-         ;; -- Show My Accounts
-         [:div.flex.items-center
-          [:input
-           {:type "checkbox"
-            :checked to-my-accounts?
-            :on-change
-            (fn []
-              (set-state
-                (fn [state]
-                  (let [;; Toogle my account
-                        state (update-in state [:transfer-page/config :transfer-page.config/my-accounts?] not)
-                        ;; Always remove to
-                        state (update state :convex-web/transfer dissoc :convex-web.transfer/to)]
-                    state))))}]
+                (set-state
+                  (fn [state]
+                    (let [state' (dissoc state :convex-web/command)]
+                      (if (js/isNaN to)
+                        (update state' :convex-web/transfer dissoc :convex-web.transfer/to)
+                        (assoc-in state' [:convex-web/transfer :convex-web.transfer/to] to))))))}])
 
-          [:span.text-xs.text-gray-600.uppercase.ml-2
-           "Show My Accounts"]]]
-
-
-        ;; -- Select or Input text
-        (if to-my-accounts?
-          [gui/AccountSelect
-           {:active-address (format/trim-0x to)
-            :addresses addresses
-            :on-change (fn [address]
-                         (set-state (fn [state]
-                                      (-> state
-                                          (dissoc :convex-web/command)
-                                          (assoc-in [:convex-web/transfer :convex-web.transfer/to] address)))))}]
-          [:input
-           {:class gui/input-style
-            :type "text"
-            :value to
-            :on-change
-            #(let [value (gui/event-target-value %)]
-               (set-state (fn [state]
-                            (-> state
-                                (dissoc :convex-web/command)
-                                (assoc-in [:convex-web/transfer :convex-web.transfer/to] value)))))}])
-
-        ;; -- Balance
-        (when (s/valid? :convex-web/address to)
-          (let [params {:frame/uuid (get frame :frame/uuid)
-                        :address to}]
-            [:div.flex.justify-end
-             [ShowBalance2 (sub ::?transfer-to-account params)
-              {:Pending CheckingBalance
-               :Error BalanceUnavailable
-               :Success BalanceIs}]]))])
-
+         ;; -- Balance
+         (when (s/valid? :convex-web/address to)
+           (let [params {:frame/uuid (get frame :frame/uuid)
+                         :address to}]
+             [:div.flex.justify-end
+              [ShowBalance2 (sub ::?transfer-to-account params)
+               {:Pending CheckingBalance
+                :Error BalanceUnavailable
+                :Success BalanceIs}]]))])]
 
      ;; Amount
      ;; ===========
@@ -407,35 +410,34 @@
         "Processing..."]
 
        :convex-web.command.status/success
-       [:span.inline-flex.items-center.space-x-2
-        [:span "Transferred "]
+       [:div.p-6.rounded.bg-indigo-50
+        [:span.inline-flex.items-center.space-x-2
+         [:span "Transferred "]
 
-        [:span.font-bold.text-black
-         (format/format-number (get transfer :convex-web.transfer/amount))]
+         [:span.font-bold.text-black
+          (format/format-number (get transfer :convex-web.transfer/amount))]
 
-        [:span " from "]
+         [:span " from "]
 
-        (let [address-or-blob (get transfer :convex-web.transfer/from)
-              address (format/trim-0x address-or-blob)]
-          [:a.inline-flex.items-center.space-x-1.w-40
-           {:href (rfe/href :route-name/account-explorer {:address address})}
-           [gui/AIdenticon {:value address :size gui/identicon-size-small}]
+         (let [address (get transfer :convex-web.transfer/from)]
+           [:a.inline-flex.items-center.space-x-1
+            {:href (rfe/href :route-name/account-explorer {:address address})}
+            [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
-           [:span.font-mono.text-sm.truncate
-            {:class gui/hyperlink-hover-class}
-            (format/prefix-# (get transfer :convex-web.transfer/to))]])
+            [:span.font-mono.text-sm.truncate
+             {:class gui/hyperlink-hover-class}
+             (format/prefix-# (get transfer :convex-web.transfer/from))]])
 
-        [:span " to "]
+         [:span " to "]
 
-        (let [address-or-blob (get transfer :convex-web.transfer/to)
-              address (format/trim-0x address-or-blob)]
-          [:a.inline-flex.items-center.space-x-1.w-40
-           {:href (rfe/href :route-name/account-explorer {:address address})}
-           [gui/AIdenticon {:value address :size gui/identicon-size-small}]
+         (let [address (get transfer :convex-web.transfer/to)]
+           [:a.inline-flex.items-center.space-x-1
+            {:href (rfe/href :route-name/account-explorer {:address address})}
+            [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
-           [:span.font-mono.text-sm.truncate
-            {:class gui/hyperlink-hover-class}
-            (format/prefix-# (get transfer :convex-web.transfer/to))]])]
+            [:span.font-mono.text-sm.truncate
+             {:class gui/hyperlink-hover-class}
+             (format/prefix-# (get transfer :convex-web.transfer/to))]])]]
 
        :convex-web.command.status/error
        [:span.text-base.text-black
@@ -472,20 +474,20 @@
                                                                                                 :ajax/error error}))}))
 
 (re-frame/reg-sub-raw ::?faucet-target
-  (fn [app-db [_ frame-uuid address]]
-    ;; On subscription creation - whenever frame-uuid or address change.
-    (let [{:frame/keys [state]} (stack/find-frame @app-db frame-uuid)
-          state' (select-keys state [:convex-web/faucet :faucet-page/config])]
-      (if (s/valid? :convex-web/address address)
-        (do
-          (stack/set-state frame-uuid (constantly (merge state' {:faucet-page/target {:ajax/status :ajax.status/pending}})))
-          (get-faucet-target-account frame-uuid address))
-        (stack/set-state frame-uuid (constantly state'))))
+                      (fn [app-db [_ frame-uuid address]]
+                        ;; On subscription creation - whenever frame-uuid or address change.
+                        (let [{:frame/keys [state]} (stack/find-frame @app-db frame-uuid)
+                              state' (select-keys state [:convex-web/faucet :faucet-page/config])]
+                          (if (s/valid? :convex-web/address address)
+                            (do
+                              (stack/set-state frame-uuid (constantly (merge state' {:faucet-page/target {:ajax/status :ajax.status/pending}})))
+                              (get-faucet-target-account frame-uuid address))
+                            (stack/set-state frame-uuid (constantly state'))))
 
-    (make-reaction
-      (fn []
-        (let [frame (stack/find-frame @app-db frame-uuid)]
-          (get-in frame [:frame/state :faucet-page/target]))))))
+                        (make-reaction
+                          (fn []
+                            (let [frame (stack/find-frame @app-db frame-uuid)]
+                              (get-in frame [:frame/state :faucet-page/target]))))))
 
 (defn FaucetPage [frame state set-state]
   (let [{:keys [frame/modal?]} frame

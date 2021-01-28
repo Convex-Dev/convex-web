@@ -956,7 +956,7 @@
            (merge dropdown-transition {:show? show?})
            [Dismissible
             {:on-dismiss #(swap! state-ref update :show? (constantly false))}
-            [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
+            [:div.origin-top-right.absolute.right-0.rounded-md.shadow-lg.bg-white
              [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
 
               (for [address addresses]
