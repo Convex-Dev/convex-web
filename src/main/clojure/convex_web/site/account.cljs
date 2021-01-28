@@ -29,7 +29,7 @@
 
 (defn AddressUpdatedBalanceIs [address balance]
   [:span.inline-flex.text-gray-700.text-base.space-x-1
-   [:a.inline-flex.items-center.space-x-1.w-40
+   [:a.inline-flex.items-center.space-x-1
     {:href (rfe/href :route-name/account-explorer {:address address})}
     [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
@@ -644,10 +644,11 @@
           (get-in state [:ajax/error :response :error :message])]
 
          :ajax.status/success
-         [ShowBalance2 (sub ::?faucet-target (get frame :frame/uuid) target)
-          {:Pending CheckingBalance
-           :Error BalanceUnavailable
-           :Success AddressUpdatedBalanceIs}]
+         [:div.p-6.rounded.bg-indigo-50
+          [ShowBalance2 (sub ::?faucet-target (get frame :frame/uuid) target)
+           {:Pending CheckingBalance
+            :Error BalanceUnavailable
+            :Success AddressUpdatedBalanceIs}]]
 
          ;; Unknown status
          [:div]))]))
