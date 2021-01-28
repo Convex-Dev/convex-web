@@ -30,16 +30,13 @@
             [hiccup.page :as page]
             [ring.util.anti-forgery])
   (:import (java.io InputStream)
-           (convex.core.crypto AKeyPair Hash ASignature)
-           (convex.core.data Address AccountStatus Ref SignedData)
-           (convex.core Init Peer State)
+           (convex.core.crypto Hash ASignature)
+           (convex.core.data Ref SignedData)
+           (convex.core Init Peer)
            (java.time Instant)
            (java.util Date)
-           (org.parboiled.errors ParserRuntimeException)
-           (convex.core.exceptions ParseException MissingDataException)
+           (convex.core.exceptions MissingDataException)
            (convex.core.lang.impl AExceptional)
-           (convex.api Convex)
-           (convex.core.transactions Invoke)
            (java.util.concurrent TimeoutException)
            (clojure.lang ExceptionInfo)))
 
@@ -578,18 +575,35 @@
           (not-found-response (error (str "Account " address-long " not found."))))
 
         :else
-        (do
-          (u/log :logging.event/confirm-account
-                 :severity :info
-                 :address address-long
-                 :message (str "Confirmed Address " address-long "."))
+        (let [peer (system/convex-peer system)
+              state (convex/consensus-state peer)
+              status (.getAccount state Init/HERO)
+              sequence (.getSequence status)
+              client (system/convex-client system)
 
-          (d/transact! (system/db-conn system) [{:convex-web.session/id (ring-session req)
-                                                 :convex-web.session/accounts
-                                                 [{:convex-web.account/address address-long}]}])
+              tx-data {:nonce (inc sequence)
+                       :address Init/HERO
+                       :target address-long
+                       :amount 10000000}
 
-          (-successful-response (select-keys account [::account/address
-                                                      ::account/created-at])))))
+              result (->> (convex/transfer-transaction tx-data)
+                          (convex/sign Init/HERO_KP)
+                          (convex/transact client))]
+
+          (if (.isError result)
+            (throw (ex-info "Failed to transfer funds." {:error-code (.getErrorCode result)}))
+            (do
+              (u/log :logging.event/confirm-account
+                     :severity :info
+                     :address address-long
+                     :message (str "Confirmed Address " address-long "."))
+
+              (d/transact! (system/db-conn system) [{:convex-web.session/id (ring-session req)
+                                                     :convex-web.session/accounts
+                                                     [{:convex-web.account/address address-long}]}])
+
+              (-successful-response (select-keys account [::account/address
+                                                          ::account/created-at])))))))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
