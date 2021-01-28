@@ -52,7 +52,17 @@
 (defn db []
   @(system/db-conn system))
 
+
 (comment
+
+  (kaocha/test-plan)
+
+  (kaocha/run :unit)
+  (kaocha/run 'convex-web.integration.peer-integration-test)
+  (kaocha/run 'convex-web.convex-test)
+  (kaocha/run 'convex-web.internal-api-test)
+  (kaocha/run 'convex-web.public-api-test)
+
 
   ;; -- Reset database
   (let [dir (get-in system [:config :config :datalevin :dir])]
@@ -70,9 +80,6 @@
   (clojure.test/run-tests
     'convex-web.specs-test
     'convex-web.internal-api-test)
-
-  (kaocha/test-plan)
-  (kaocha/run :unit)
 
   ;; -- Sessions
   (d/q '[:find [(pull ?e [*
