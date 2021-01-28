@@ -303,8 +303,8 @@
 
     (.subVector (.getAccounts state) start (- end start))))
 
-(defn ^AccountStatus account-status [^Peer peer ^long address]
-  (.get (accounts peer) address))
+(defn ^AccountStatus account-status [^Peer peer ^Address address]
+  (.get (accounts peer) (.longValue address)))
 
 (defn syntax-data [^Syntax syn]
   (merge #:convex-web.syntax {:source (.getSource syn)

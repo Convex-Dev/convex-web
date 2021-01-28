@@ -8,11 +8,7 @@
 
 (s/def :convex-web/blob-string (s/and :convex-web/non-empty-string #(str/starts-with? % "0x")))
 
-(s/def :convex-web/address-string :convex-web/non-empty-string)
-(s/def :convex-web/address-long nat-int?)
-
-(s/def :convex-web/address (s/or :string :convex-web/address-string
-                                 :long :convex-web/address-long))
+(s/def :convex-web/address nat-int?)
 
 (s/def :convex-web/sig (s/and :convex-web/non-empty-string #(= 128 (count %))))
 

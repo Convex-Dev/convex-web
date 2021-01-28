@@ -539,13 +539,13 @@
           sequence (.getSequence status)
           client (system/convex-client system)
 
-          [generated-key-pair address] (convex/create-account
-                                         {:client client
-                                          :signer-key-pair Init/HERO_KP
-                                          :signer-address Init/HERO
-                                          :nonce (inc sequence)})
+          [generated-key-pair generated-address] (convex/create-account
+                                                   {:client client
+                                                    :signer-key-pair Init/HERO_KP
+                                                    :signer-address Init/HERO
+                                                    :nonce (inc sequence)})
 
-          account #:convex-web.account {:address (.longValue address)
+          account #:convex-web.account {:address (.longValue generated-address)
                                         :created-at (inst-ms (Instant/now))
                                         :key-pair (convex/key-pair-data generated-key-pair)}]
 
@@ -740,10 +740,12 @@
 
 (defn -GET-account [context address]
   (try
-    (let [peer (system/convex-peer context)
+    (let [address (convex/address address)
+
+          peer (system/convex-peer context)
 
           account-status (try
-                           (convex/account-status peer (Long/parseLong address))
+                           (convex/account-status peer address)
                            (catch Throwable ex
                              (u/log :logging.event/system-error
                                     :message (str "Failed to read Account Status " address ". Exception:" ex)
@@ -751,7 +753,7 @@
 
           account-status-data (convex/account-status-data account-status)]
       (if account-status
-        (-successful-response #:convex-web.account {:address address
+        (-successful-response #:convex-web.account {:address (.longValue address)
                                                     :status account-status-data})
         (let [message (str "The Account for this Address does not exist.")]
           (log/error message address)
