@@ -4,7 +4,7 @@
             [clojure.tools.logging :as log]
 
             [cognitect.anomalies :as anomalies])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString)
+  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey)
            (convex.core.lang Core Reader ScryptNext RT Context)
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
@@ -373,7 +373,7 @@
     ^Long amount))
 
 (defn ^Invoke invoke-transaction [{:keys [nonce address command]}]
-  (Invoke/create address nonce command))
+  (Invoke/create ^Address address ^Long nonce command))
 
 (defn ^SignedData sign [^AKeyPair signer ^ATransaction transaction]
   (SignedData/create signer transaction))
@@ -417,7 +417,9 @@
                           ex)))))))
 
 (defn ^Result transact
-  "Sync transact a SignedData with a default timeout.
+  "Transact-sync a SignedData with a default timeout.
+
+   Returns Result.
 
    Throws ExceptionInfo."
   [^Convex client ^SignedData signed-data]
@@ -433,7 +435,9 @@
                         ex))))))
 
 (defn ^Result transacta
-  "Sync transact a ATransaction with a default timeout.
+  "Transact-sync an ATransaction with a default timeout.
+
+   Returns Result.
 
    Throws ExceptionInfo."
   [^Convex client ^ATransaction atransaction]
@@ -448,15 +452,32 @@
                          ::anomalies/category category}
                         ex))))))
 
-(defn ^AKeyPair generate-account [^Convex client ^AKeyPair signer ^Long nonce]
+(defn create-account
+  "Creates a new Account on the network.
+
+   Returns a pair of KeyPair and Address."
+  [{:keys [^Convex client
+           ^AKeyPair signer-key-pair
+           ^Address signer-address
+           ^Long nonce]}]
   (let [^AKeyPair generated-key-pair (AKeyPair/generate)
-        ^Address generated-address (.getAddress generated-key-pair)]
 
-    (->> (transfer-transaction {:nonce nonce :target generated-address :amount 100000000})
-         (sign signer)
-         (transact client))
+        ^AccountKey account-key (.getAccountKey generated-key-pair)
 
-    generated-key-pair))
+        ^String public-key-str (.toChecksumHex account-key)
+
+        command (read-source (str "(create-account 0x" public-key-str ")") :convex-lisp)
+
+        tx-data {:nonce nonce
+                 :address signer-address
+                 :command command}
+
+        ^Result result (->> (invoke-transaction tx-data)
+                            (sign signer-key-pair)
+                            (transact client))]
+
+    ;; Result is an Address.
+    [generated-key-pair (.getValue result)]))
 
 (defn ^Result faucet
   "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
@@ -483,15 +504,15 @@
 
 
 (defn key-pair-data [^AKeyPair key-pair]
-  {:convex-web.key-pair/address-checksum-hex (.toChecksumHex (.getAddress key-pair))
-   :convex-web.key-pair/blob-hex (.toHexString (.getEncodedPrivateKey key-pair))})
+  {:convex-web.key-pair/account-key (.toChecksumHex (.getAccountKey key-pair))
+   :convex-web.key-pair/private-key (.toHexString (.getEncodedPrivateKey key-pair))})
 
-(defn ^AKeyPair create-key-pair [{:convex-web.key-pair/keys [address-checksum-hex blob-hex]}]
-  (AKeyPair/create (address address-checksum-hex) (Blob/fromHex blob-hex)))
+(defn ^AKeyPair create-key-pair [{:convex-web.key-pair/keys [account-key private-key]}]
+  (AKeyPair/create (AccountKey/fromChecksumHex account-key) (Blob/fromHex private-key)))
 
 (s/fdef create-key-pair
-        :args (s/cat :key-pair :convex-web/key-pair)
-        :ret #(instance? AKeyPair %))
+  :args (s/cat :key-pair :convex-web/key-pair)
+  :ret #(instance? AKeyPair %))
 
 (def addresses-lock-ref (atom {}))
 

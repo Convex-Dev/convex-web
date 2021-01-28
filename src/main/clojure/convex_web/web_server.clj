@@ -541,11 +541,14 @@
           status (.getAccount state Init/HERO)
           sequence (.getSequence status)
           client (system/convex-client system)
-          generated-key-pair (convex/generate-account client Init/HERO_KP (inc sequence))
-          address (.getAddress generated-key-pair)
-          address-str (.toChecksumHex address)
 
-          account #:convex-web.account {:address address-str
+          [generated-key-pair address] (convex/create-account
+                                         {:client client
+                                          :signer-key-pair Init/HERO_KP
+                                          :signer-address Init/HERO
+                                          :nonce (inc sequence)})
+
+          account #:convex-web.account {:address (.longValue address)
                                         :created-at (inst-ms (Instant/now))
                                         :key-pair (convex/key-pair-data generated-key-pair)}]
 
@@ -565,25 +568,25 @@
 
 (defn -POST-confirm-account [system {:keys [body] :as req}]
   (try
-    (let [^String address-str (transit-decode body)
+    (let [^Long address-long (transit-decode body)
 
-          account (account/find-by-address (system/db system) address-str)]
+          account (account/find-by-address (system/db system) address-long)]
       (cond
         (nil? account)
         (do
-          (u/log :logging.event/user-error :severity :error :message (str "Failed to confirm account; Account " address-str " not found."))
-          (not-found-response (error (str "Account " address-str " not found."))))
+          (u/log :logging.event/user-error :severity :error :message (str "Failed to confirm account; Account " address-long " not found."))
+          (not-found-response (error (str "Account " address-long " not found."))))
 
         :else
         (do
           (u/log :logging.event/confirm-account
                  :severity :info
-                 :address address-str
-                 :message (str "Confirmed Address " address-str "."))
+                 :address address-long
+                 :message (str "Confirmed Address " address-long "."))
 
           (d/transact! (system/db-conn system) [{:convex-web.session/id (ring-session req)
                                                  :convex-web.session/accounts
-                                                 [{:convex-web.account/address address-str}]}])
+                                                 [{:convex-web.account/address address-long}]}])
 
           (-successful-response (select-keys account [::account/address
                                                       ::account/created-at])))))

@@ -75,11 +75,11 @@
 
 ;; -- Key Pair
 
-(s/def :convex-web.key-pair/address-checksum-hex :convex-web/address-string)
-(s/def :convex-web.key-pair/blob-hex :convex-web/non-empty-string)
+(s/def :convex-web.key-pair/account-key :convex-web/non-empty-string)
+(s/def :convex-web.key-pair/private-key :convex-web/non-empty-string)
 
-(s/def :convex-web/key-pair (s/keys :req [:convex-web.key-pair/address-checksum-hex
-                                          :convex-web.key-pair/blob-hex]))
+(s/def :convex-web/key-pair (s/keys :req [:convex-web.key-pair/account-key
+                                          :convex-web.key-pair/private-key]))
 
 ;; -- Account Status
 

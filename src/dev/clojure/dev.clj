@@ -30,7 +30,8 @@
             [expound.alpha :as expound])
   (:import (convex.core Init Peer)
            (convex.core.lang Core Reader Context)
-           (convex.core.crypto Hash)))
+           (convex.core.crypto Hash AKeyPair)
+           (convex.core.data AccountKey)))
 
 ;; -- Logging
 (set-init
@@ -72,6 +73,12 @@
 
   (kaocha/test-plan)
   (kaocha/run :unit)
+
+
+  (let [^AKeyPair key-pair (AKeyPair/generate)
+        ^AccountKey account-key (.getAccountKey key-pair)
+        ^String public-key-str (.toChecksumHex account-key)]
+    (execute-string (str "(create-account 0x" public-key-str ")")))
 
 
   ;; -- Sessions

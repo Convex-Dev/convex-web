@@ -12,4 +12,4 @@
   (d/q '[:find (pull ?e [* {:convex-web.account/faucets [*]}]) .
          :in $ ?address
          :where [?e :convex-web.account/address ?address]]
-       db (.toChecksumHex (convex/address address))))
+       db (.longValue (convex/address address))))
