@@ -25,7 +25,7 @@
   [:span.text-gray-700.text-base "Balance unavailable"])
 
 (defn BalanceIs [_ balance]
-  [:span.text-gray-700.text-base "Balance " [:span.font-bold balance]])
+  [:span.text-gray-700.text-sm "Balance " [:span.font-bold balance]])
 
 (defn AddressUpdatedBalanceIs [address balance]
   [:span.inline-flex.text-gray-700.text-base.space-x-1
