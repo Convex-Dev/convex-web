@@ -272,7 +272,7 @@
                                                               0)))
 
             tx (convex/invoke-transaction {:nonce next-sequence-number
-                                           :add address
+                                           :address address
                                            :command (convex/read-source source lang)})]
 
         (convex/set-sequence-number! address next-sequence-number)
@@ -281,7 +281,7 @@
         (Ref/createPersisted tx)
 
         (successful-response {:sequence_number next-sequence-number
-                              :address (.toChecksumHex address)
+                              :address (.longValue address)
                               :source source
                               :lang lang
                               :hash (.toHexString (.getHash tx))})))))
