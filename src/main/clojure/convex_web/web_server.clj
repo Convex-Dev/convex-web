@@ -238,7 +238,7 @@
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
   (let [{:keys [address source lang sequence_number] :as prepare} (json-decode body)
 
-        _ (log/debug "Prepare" prepare)
+        _ (log/debug "Prepare transaction" prepare)
 
         lang (or (some-> lang keyword) :convex-lisp)
 
@@ -272,23 +272,27 @@
 
             tx (convex/invoke-transaction {:nonce next-sequence-number
                                            :address address
-                                           :command (convex/read-source source lang)})]
+                                           :command (convex/read-source source lang)})
+
+            tx-ref (.toHexString (.getHash tx))]
 
         (convex/set-sequence-number! address next-sequence-number)
 
         ;; Persist the transaction in the Etch datastore.
         (Ref/createPersisted tx)
 
+        (log/debug "Persisted transaction ref" tx-ref)
+
         (successful-response {:sequence_number next-sequence-number
                               :address (.longValue address)
                               :source source
                               :lang lang
-                              :hash (.toHexString (.getHash tx))})))))
+                              :hash tx-ref})))))
 
 (defn POST-v1-transaction-submit [system {:keys [body]}]
   (let [{:keys [address sig hash account_key] :as body} (json-decode body)
 
-        _ (log/debug "POST Transaction Submit" body)
+        _ (log/debug "Submit transaction" body)
 
         _ (u/log :logging.event/transaction-submit
                  :severity :info
@@ -317,7 +321,7 @@
 
         tx-ref (Ref/forHash (Hash/fromHex hash))
 
-        _ (log/debug "Tx Ref" tx-ref)
+        _ (log/debug (str "Ref for hash " hash) tx-ref)
 
         accountKey (AccountKey/fromChecksumHex account_key)
 

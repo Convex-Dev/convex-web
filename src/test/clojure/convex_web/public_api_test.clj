@@ -231,7 +231,7 @@ In function: map"} response-body)))))
 
             submit-body {:address hero-address
                          :account_key hero-account-key
-                         :hash (or (get prepare-response-body :hash) (throw (ex-info "Can't submit transaction without its hash." prepare-response)))
+                         :hash (get prepare-response-body :hash)
                          :sig (try
                                 (.toHexString (.sign hero-key-pair (Hash/fromHex (get prepare-response-body :hash))))
                                 (catch Exception _

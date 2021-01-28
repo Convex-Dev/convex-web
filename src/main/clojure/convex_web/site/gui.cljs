@@ -1008,17 +1008,30 @@
          :ajax.status/success
          [:div.flex.space-x-4
 
-          ;; -- Balance.
+          ;; -- Address.
           [:div.flex.flex-col
-           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
-           (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
-             [:span.text-xs.uppercase (format/format-number balance)])]
+           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Address"]
+           [:a.inline-flex.items-center.space-x-1
+            {:href (rfe/href :route-name/account-explorer {:address address-long})}
+            [AIdenticon {:value (str address-long) :size identicon-size-small}]
+
+            [:span.font-mono.text-xs.truncate
+             {:class hyperlink-hover-class}
+             (format/prefix-# address-long)]]]
+
+          ;; -- Balance.
+          (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
+            [:div.flex.flex-col
+             [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
+             [:div.flex.flex-col.flex-1.justify-center
+              [:span.text-xs (format/format-number balance)]]])
 
           ;; -- Type.
-          [:div.flex.flex-col
-           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
-           (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
-             [:span.text-xs.uppercase type])]])])))
+          (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
+            [:div.flex.flex-col
+             [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
+             [:div.flex.flex-col.flex-1.justify-center
+              [:span.text-xs.uppercase type]]])])])))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
