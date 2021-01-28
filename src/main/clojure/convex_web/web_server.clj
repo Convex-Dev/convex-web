@@ -31,7 +31,7 @@
             [ring.util.anti-forgery])
   (:import (java.io InputStream)
            (convex.core.crypto Hash ASignature)
-           (convex.core.data Ref SignedData)
+           (convex.core.data Ref SignedData AccountKey)
            (convex.core Init Peer)
            (java.time Instant)
            (java.util Date)
@@ -212,16 +212,18 @@
   (try
     (let [peer (system/convex-peer context)
 
+          address (convex/address address)
+
           account-status (try
-                           (convex/account-status peer (Long/parseLong address))
+                           (convex/account-status peer address)
                            (catch Throwable ex
                              (u/log :logging.event/system-error
                                     :message (str "Failed to read Account Status " address ". Exception:" ex)
                                     :exception ex)))]
       (if-let [account-status-data (convex/account-status-data account-status)]
-        (successful-response (merge {:address address} (rename-keys account-status-data {:convex-web.account-status/actor? :is_actor
-                                                                                         :convex-web.account-status/library? :is_library
-                                                                                         :convex-web.account-status/memory-size :memory_size})))
+        (successful-response (merge {:address (.longValue address)} (rename-keys account-status-data {:convex-web.account-status/actor? :is_actor
+                                                                                                      :convex-web.account-status/library? :is_library
+                                                                                                      :convex-web.account-status/memory-size :memory_size})))
         (let [message (str "The Account for this Address does not exist.")]
           (log/error message address)
           (not-found-response {:error {:message message}}))))
@@ -284,7 +286,7 @@
                               :hash (.toHexString (.getHash tx))})))))
 
 (defn POST-v1-transaction-submit [system {:keys [body]}]
-  (let [{:keys [address sig hash] :as body} (json-decode body)
+  (let [{:keys [address sig hash account_key] :as body} (json-decode body)
 
         _ (log/debug "POST Transaction Submit" body)
 
@@ -317,7 +319,9 @@
 
         _ (log/debug "Tx Ref" tx-ref)
 
-        signed-data (SignedData/create (convex/address address) sig tx-ref)
+        accountKey (AccountKey/fromChecksumHex account_key)
+
+        signed-data (SignedData/create accountKey sig tx-ref)
 
         _ (when-not (.isValid signed-data)
             (throw (ex-info "Invalid signature."
@@ -384,7 +388,8 @@
 
             nonce (inc (convex/hero-sequence (system/convex-peer system)))
 
-            transfer (convex/transfer-transaction {:nonce nonce
+            transfer (convex/transfer-transaction {:address Init/HERO
+                                                   :nonce nonce
                                                    :target address
                                                    :amount amount})
 
@@ -740,7 +745,7 @@
 
 (defn -GET-account [context address]
   (try
-    (let [address (convex/address address)
+    (let [address (convex/address-safe address)
 
           peer (system/convex-peer context)
 
@@ -749,7 +754,9 @@
                            (catch Throwable ex
                              (u/log :logging.event/system-error
                                     :message (str "Failed to read Account Status " address ". Exception:" ex)
-                                    :exception ex)))
+                                    :exception ex)
+
+                             nil))
 
           account-status-data (convex/account-status-data account-status)]
       (if account-status

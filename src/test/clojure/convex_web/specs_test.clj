@@ -4,11 +4,14 @@
             [clojure.test :refer :all]
             [clojure.spec.alpha :as s]
 
-            [expound.alpha :as expound]))
+            [expound.alpha :as expound])
+  (:import (convex.core Init)))
 
 (set! s/*explain-out* expound/printer)
 
 (s/check-asserts true)
+
+(def HERO-address (.longValue Init/HERO))
 
 (deftest command-specs
   (testing "Incoming Query"
@@ -21,7 +24,7 @@
 
     (let [q #:convex-web.query {:source "1"
                                 :language :convex-lisp
-                                :address "ABC"}
+                                :address HERO-address}
 
           c #:convex-web.command {:mode :convex-web.command.mode/query
                                   :query q}]
@@ -31,18 +34,18 @@
     (let [t #:convex-web.transaction{:type :convex-web.transaction.type/invoke
                                      :source "1"
                                      :language :convex-lisp
-                                     :target "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"}
+                                     :target 1}
 
-          c #:convex-web.command {:address "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"
+          c #:convex-web.command {:address HERO-address
                                   :mode :convex-web.command.mode/transaction
                                   :transaction t}]
       (is (s/assert :convex-web/command c)))
 
     (let [t #:convex-web.transaction{:type :convex-web.transaction.type/transfer
                                      :amount 1
-                                     :target "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"}
+                                     :target 1}
 
-          c #:convex-web.command {:address "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"
+          c #:convex-web.command {:address HERO-address
                                   :mode :convex-web.command.mode/transaction
                                   :transaction t}]
       (is (s/assert :convex-web/command c))))
@@ -51,10 +54,10 @@
     (let [t #:convex-web.transaction {:type :convex-web.transaction.type/invoke
                                       :source "1"
                                       :language :convex-lisp
-                                      :target "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"}
+                                      :target 1}
 
           c #:convex-web.command {:id 1
-                                  :address "B5cb456779DF23F1032df9C594eec3b3C284987f5735218cFfa422dC07CFf8E0"
+                                  :address HERO-address
                                   :status :convex-web.command.status/running
                                   :mode :convex-web.command.mode/transaction
                                   :transaction t}]
@@ -63,7 +66,7 @@
   (testing "Running Query"
     (let [q #:convex-web.query {:source "1"
                                 :language :convex-lisp
-                                :address "ABC"}
+                                :address HERO-address}
 
           c #:convex-web.command {:id 1
                                   :status :convex-web.command.status/running
@@ -74,7 +77,7 @@
   (testing "Successful Query"
     (let [q #:convex-web.query {:source "1"
                                 :language :convex-lisp
-                                :address "ABC"}
+                                :address HERO-address}
 
           c #:convex-web.command {:id 1
                                   :status :convex-web.command.status/success
@@ -86,7 +89,7 @@
   (testing "Error Query"
     (let [q #:convex-web.query {:source "1"
                                 :language :convex-lisp
-                                :address "ABC"}
+                                :address HERO-address}
 
           c #:convex-web.command {:id 1
                                   :status :convex-web.command.status/error

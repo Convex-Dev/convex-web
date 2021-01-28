@@ -12,64 +12,61 @@
 
 (def context (convex-context))
 
-(use-fixtures :once (join-fixtures [(make-system-fixture #'system) spec-fixture]))
-
 (deftest datafy-test
-  (testing "nil"
-    (is (= nil (convex/datafy nil))))
+  (let [context (convex-context)]
+    (testing "nil"
+      (is (= nil (convex/datafy nil))))
 
-  (testing "Char"
-    (is (= \n (convex/datafy (convex/execute context \n)))))
+    (testing "Char"
+      (is (= \n (convex/datafy (convex/execute context \n)))))
 
-  (testing "Long"
-    (is (= 1 (convex/datafy (convex/execute context 1)))))
+    (testing "Long"
+      (is (= 1 (convex/datafy (convex/execute context 1)))))
 
-  (testing "Double"
-    (is (= 1.0 (convex/datafy (convex/execute context 1.0)))))
+    (testing "Double"
+      (is (= 1.0 (convex/datafy (convex/execute context 1.0)))))
 
-  (testing "Keyword"
-    (is (= :a (convex/datafy (convex/execute context :a)))))
+    (testing "Keyword"
+      (is (= :a (convex/datafy (convex/execute context :a)))))
 
-  (testing "Symbol"
-    (is (= 's (convex/datafy (convex/execute context 's))))
-    (is (= 'a/b (convex/datafy (convex/execute context 'a/b)))))
+    (testing "Symbol"
+      (is (= 's (convex/datafy (convex/execute context 's))))
+      (is (= 'a/b (convex/datafy (convex/execute context 'a/b)))))
 
-  (testing "List"
-    (is (= '() (convex/datafy (convex/execute context '())))))
+    (testing "List"
+      (is (= '() (convex/datafy (convex/execute context '())))))
 
-  (testing "Vector"
-    (is (= [] (convex/datafy (convex/execute context [])))))
+    (testing "Vector"
+      (is (= [] (convex/datafy (convex/execute context [])))))
 
-  (testing "Map"
-    (is (= {} (convex/datafy (convex/execute context {})))))
+    (testing "Map"
+      (is (= {} (convex/datafy (convex/execute context {})))))
 
-  (testing "Set"
-    (is (= #{} (convex/datafy (convex/execute context #{})))))
+    (testing "Set"
+      (is (= #{} (convex/datafy (convex/execute context #{})))))
 
-  (testing "Address"
-    (is (= (.toString Init/HERO) (convex/datafy Init/HERO))))
+    (testing "Address"
+      (is (= (.toString Init/HERO) (convex/datafy Init/HERO))))
 
-  (testing "Blob"
-    (is (= (.toHexString (Blob/create (.getBytes "Text"))) (convex/datafy (Blob/create (.getBytes "Text"))))))
+    (testing "Blob"
+      (is (= (.toHexString (Blob/create (.getBytes "Text"))) (convex/datafy (Blob/create (.getBytes "Text"))))))
 
-  (testing "Expander"
-    (is (string? (convex/datafy (convex/execute-string context "defn")))))
+    (testing "Expander"
+      (is (string? (convex/datafy (convex/execute-string context "defn")))))
 
-  (testing "Syntax"
-    (is (= 1 (convex/datafy (Syntax/create 1))))
-    (is (= (Maps/empty) (convex/datafy (Syntax/create (Maps/empty))))))
+    (testing "Syntax"
+      (is (= 1 (convex/datafy (Syntax/create 1))))
+      (is (= (Maps/empty) (convex/datafy (Syntax/create (Maps/empty))))))
 
-  (testing "Can't datafy"
-    (testing "java.lang.String"
-      (is (= "Can't datafy java.lang.String." (.getMessage (catch-throwable (convex/datafy "String"))))))
+    (testing "Can't datafy"
+      (testing "java.lang.String"
+        (is (= "Can't datafy java.lang.String." (.getMessage (catch-throwable (convex/datafy "String"))))))
 
-    (testing "convex.core.lang.impl.ErrorValue"
-      (is (= "Can't datafy convex.core.lang.impl.ErrorValue."
-             (.getMessage (catch-throwable (convex/datafy (convex/execute-string context "(map inc 1)")))))))))
+      (testing "convex.core.lang.impl.ErrorValue"
+        (is (= "Can't datafy convex.core.lang.impl.ErrorValue."
+               (.getMessage (catch-throwable (convex/datafy (convex/execute-string context "(map inc 1)"))))))))))
 
-(deftest accounts-indexed-test
-  (testing "Indexed Accounts"
-    (is (= true (s/valid? :convex-web/accounts (convex/accounts-indexed (sys/convex-peer system)))))))
+
 
 (deftest address-test
   (testing "Coerce string to Address"
@@ -133,44 +130,5 @@
     (is (= nil (convex/value-kind (Syntax/create (Maps/empty)))))
     (is (= nil (convex/value-kind (convex/execute-string context "abc"))))))
 
-(deftest result-data-test
-  (testing "Inc 1"
-    (let [result (-> (sys/convex-client system)
-                     (convex/query {:address Init/HERO :source "(inc 1)" :lang :convex-lisp})
-                     (convex/result-data))]
 
-      (testing "Expected keys"
-        (is (= #{:convex-web.result/id
-                 :convex-web.result/value
-                 :convex-web.result/value-kind}
-               (-> result keys set))))
-
-      (testing "Expected values"
-        (is (= #:convex-web.result{:value 2
-                                   :value-kind :number}
-               (select-keys result [:convex-web.result/value
-                                    :convex-web.result/value-kind]))))))
-
-  (testing "Error code"
-    (let [result (-> (sys/convex-client system)
-                     (convex/query {:address Init/HERO :source "(map inc 1)" :lang :convex-lisp})
-                     (convex/result-data))]
-
-      (testing "Expected keys"
-        (is (= #{:convex-web.result/error-code
-                 :convex-web.result/id
-                 :convex-web.result/trace
-                 :convex-web.result/value
-                 :convex-web.result/value-kind}
-               (-> result keys set))))
-
-      (testing "Expected values"
-        (is (= #:convex-web.result{:error-code :CAST
-                                   :trace nil
-                                   :value "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"
-                                   :value-kind :string}
-               (select-keys result [:convex-web.result/value
-                                    :convex-web.result/value-kind
-                                    :convex-web.result/error-code
-                                    :convex-web.result/trace])))))))
 

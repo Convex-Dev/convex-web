@@ -87,7 +87,7 @@
 
 (deftest sandbox-result-test
   (testing "Address"
-    (is (= {:address "#9"}
+    (is (= {:address 9}
            (c/sandbox-result (convex/execute context *address*)))))
 
   (testing "Blob"

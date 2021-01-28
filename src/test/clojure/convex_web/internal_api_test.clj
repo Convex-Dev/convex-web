@@ -8,7 +8,8 @@
             [convex-web.web-server :as web-server]
             [convex-web.encoding :as encoding]
 
-            [ring.mock.request :as mock]))
+            [ring.mock.request :as mock])
+  (:import (convex.core Init)))
 
 (def system nil)
 
@@ -86,7 +87,7 @@
                                        (transit-body body))))]
     (testing "Query"
       (let [response (execute-command #:convex-web.command {:mode :convex-web.command.mode/query
-                                                            :address "#9"
+                                                            :address (.longValue Init/HERO)
                                                             :query {:convex-web.query/source "(inc 1)"
                                                                     :convex-web.query/language :convex-lisp}})
 
@@ -106,7 +107,7 @@
 
     (testing "Transaction"
       (let [response (execute-command #:convex-web.command {:mode :convex-web.command.mode/transaction
-                                                            :address "#9"
+                                                            :address (.longValue Init/HERO)
                                                             :transaction {:convex-web.transaction/type :convex-web.transaction.type/invoke
                                                                           :convex-web.transaction/source "(inc 1)"
                                                                           :convex-web.transaction/language :convex-lisp}})]

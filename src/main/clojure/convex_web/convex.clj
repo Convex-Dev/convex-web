@@ -208,6 +208,12 @@
     :else
     (throw (ex-info (str "Can't coerce " (pr-str x) " to " (.getName Address) ".") {}))))
 
+(defn ^Address address-safe [x]
+  (try
+    (address x)
+    (catch Exception _
+      nil)))
+
 (defn metadata [sym]
   (let [sym (cond
               (instance? Symbol sym)
@@ -306,7 +312,8 @@
     (.subVector (.getAccounts state) start (- end start))))
 
 (defn ^AccountStatus account-status [^Peer peer ^Address address]
-  (.get (accounts peer) (.longValue address)))
+  (when address
+    (.get (accounts peer) (.longValue address))))
 
 (defn syntax-data [^Syntax syn]
   (merge #:convex-web.syntax {:source (.getSource syn)
