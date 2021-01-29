@@ -488,6 +488,35 @@
     ;; Result is an Address.
     [generated-key-pair (.getValue result)]))
 
+(defn ^Address create-account-with-key
+  "Creates a new Account on the network.
+
+   Returns Address."
+  [{:keys [^Convex client
+           ^AKeyPair signer-key-pair
+           ^Address signer-address
+           ^Long nonce
+           ^String account-public-key]}]
+  (let [command (read-source (str "(create-account 0x" account-public-key ")") :convex-lisp)
+
+        tx-data {:nonce nonce
+                 :address signer-address
+                 :command command}
+
+        ^Result result (->> (invoke-transaction tx-data)
+                            (sign signer-key-pair)
+                            (transact client))]
+
+    (if (.isError result)
+      (let [error-code (datafy-safe (.getErrorCode result))
+            error-result (datafy-safe (.getValue result))
+            message (pr-str error-code error-result)]
+        (throw (ex-info message {::anomalies/message message
+                                 ::anomalies/category ::anomalies/incorrect
+                                 :error/code error-code
+                                 :error/result error-result})))
+      (.getValue result))))
+
 (defn ^Result faucet
   "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
   [^Convex client {:keys [nonce target amount]}]

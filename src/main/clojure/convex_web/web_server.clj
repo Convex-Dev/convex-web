@@ -201,9 +201,9 @@
 
     :else
     (do
-      (log/error ex "Transaction fault.")
+      (log/error ex "Convex fault.")
 
-      (throw (ex-info "Transaction fault." {::anomalies/category ::anomalies/fault} ex)))))
+      (throw (ex-info "Convex fault." {::anomalies/category ::anomalies/fault} ex)))))
 
 ;; Public APIs
 ;; ==========================
@@ -367,6 +367,23 @@
         _ (log/debug "Transaction result" result)]
 
     (successful-response result-response)))
+
+(defn POST-v1-create-account [system {:keys [body]}]
+  (let [{:keys [public_key]} (json-decode body)]
+    (if-not (s/valid? :convex-web/non-empty-string public_key)
+      (bad-request-response (error "Missing public key."))
+      (let [peer (system/convex-peer system)
+
+            client (system/convex-client system)
+
+            generated-address (convex/create-account-with-key
+                                {:client client
+                                 :signer-key-pair Init/HERO_KP
+                                 :signer-address Init/HERO
+                                 :nonce (inc (convex/hero-sequence peer))
+                                 :account-public-key public_key})]
+
+        (successful-response {:address (.longValue generated-address)})))))
 
 (defn POST-v1-faucet [system {:keys [body]}]
   (let [{:keys [address amount]} (json-decode body)
@@ -538,7 +555,7 @@
 
       -server-error-response)))
 
-(defn -POST-generate-account [system req]
+(defn -POST-create-account [system req]
   (try
     (u/log :logging.event/new-account :severity :info)
 
@@ -885,7 +902,7 @@
 (defn site [system]
   (routes
     (GET "/api/internal/session" req (-GET-session system req))
-    (POST "/api/internal/generate-account" req (-POST-generate-account system req))
+    (POST "/api/internal/generate-account" req (-POST-create-account system req))
     (POST "/api/internal/confirm-account" req (-POST-confirm-account system req))
     (POST "/api/internal/faucet" req (-POST-faucet system req))
     (GET "/api/internal/accounts" req (-GET-accounts system req))
@@ -908,6 +925,7 @@
 (defn public-api [system]
   (routes
     (GET "/api/v1/accounts/:address" [address] (GET-v1-account system address))
+    (POST "/api/v1/create-account" req (POST-v1-create-account system req))
     (POST "/api/v1/faucet" req (POST-v1-faucet system req))
     (POST "/api/v1/query" req (POST-v1-query system req))
     (POST "/api/v1/transaction/prepare" req (POST-v1-transaction-prepare system req))

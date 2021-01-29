@@ -64,6 +64,18 @@
   (kaocha/run 'convex-web.public-api-test)
 
 
+  ;;; -- Create Account
+  (let [^AKeyPair generated-key-pair (AKeyPair/generate)
+        ^AccountKey account-key (.getAccountKey generated-key-pair)
+        ^String account-public-key (.toChecksumHex account-key)]
+    (convex/create-account-with-key
+      {:client (system/convex-client system)
+       :signer-key-pair Init/HERO_KP
+       :signer-address Init/HERO
+       :nonce (inc (convex/hero-sequence (system/convex-peer system)))
+       :account-public-key account-public-key}))
+
+
   ;; -- Reset database
   (let [dir (get-in system [:config :config :datalevin :dir])]
     (doseq [f (reverse (file-seq (io/file dir)))]
