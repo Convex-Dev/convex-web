@@ -46,7 +46,7 @@
       (is (= #{} (convex/datafy (convex/execute context #{})))))
 
     (testing "Address"
-      (is (= (.toString Init/HERO) (convex/datafy Init/HERO))))
+      (is (= (.longValue Init/HERO) (convex/datafy Init/HERO))))
 
     (testing "Blob"
       (is (= (.toHexString (Blob/create (.getBytes "Text"))) (convex/datafy (Blob/create (.getBytes "Text"))))))

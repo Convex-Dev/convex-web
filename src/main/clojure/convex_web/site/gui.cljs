@@ -982,56 +982,55 @@
 
 
 (defn AddressRenderer [object]
-  (let [address-long (:address object)]
-    (reagent/with-let [account-ref (reagent/atom {:ajax/status :ajax.status/pending})
+  (reagent/with-let [account-ref (reagent/atom {:ajax/status :ajax.status/pending})
 
-                       _ (backend/GET-account
-                           address-long
-                           {:handler
-                            (fn [account]
-                              (reset! account-ref {:account account
-                                                   :ajax/status :ajax.status/success}))
+                     _ (backend/GET-account
+                         object
+                         {:handler
+                          (fn [account]
+                            (reset! account-ref {:account account
+                                                 :ajax/status :ajax.status/success}))
 
-                            :error-handler
-                            (fn [error]
-                              (js/console.error error)
-                              (reset! account-ref {:ajax/status :ajax.status/error
-                                                   :ajax/error error}))})]
-      [:div.bg-white.rounded.shadow.p-2
-       (case (:ajax/status @account-ref)
-         :ajax.status/pending
-         [SpinnerSmall]
+                          :error-handler
+                          (fn [error]
+                            (js/console.error error)
+                            (reset! account-ref {:ajax/status :ajax.status/error
+                                                 :ajax/error error}))})]
+    [:div.bg-white.rounded.shadow.p-2
+     (case (:ajax/status @account-ref)
+       :ajax.status/pending
+       [SpinnerSmall]
 
-         :ajax.status/error
-         [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])]
+       :ajax.status/error
+       [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])]
 
-         :ajax.status/success
-         [:div.flex.space-x-4
+       :ajax.status/success
+       [:div.flex.space-x-4
 
-          ;; -- Address.
+        ;; -- Address.
+        [:div.flex.flex-col
+         [:span.text-xs.text-indigo-500.uppercase.mt-2 "Address"]
+         [:a.inline-flex.items-center.space-x-1
+          {:href (rfe/href :route-name/account-explorer {:address object})}
+          [AIdenticon {:value (str object) :size identicon-size-small}]
+
+          [:span.font-mono.text-xs.truncate
+           {:class hyperlink-hover-class}
+           (format/prefix-# object)]]]
+
+        ;; -- Balance.
+        (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
           [:div.flex.flex-col
-           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Address"]
-           [:a.inline-flex.items-center.space-x-1
-            {:href (rfe/href :route-name/account-explorer {:address address-long})}
-            [AIdenticon {:value (str address-long) :size identicon-size-small}]
+           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
+           [:div.flex.flex-col.flex-1.justify-center
+            [:span.text-xs (format/format-number balance)]]])
 
-            [:span.font-mono.text-xs.truncate
-             {:class hyperlink-hover-class}
-             (format/prefix-# address-long)]]]
-
-          ;; -- Balance.
-          (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
-            [:div.flex.flex-col
-             [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
-             [:div.flex.flex-col.flex-1.justify-center
-              [:span.text-xs (format/format-number balance)]]])
-
-          ;; -- Type.
-          (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
-            [:div.flex.flex-col
-             [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
-             [:div.flex.flex-col.flex-1.justify-center
-              [:span.text-xs.uppercase type]]])])])))
+        ;; -- Type.
+        (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
+          [:div.flex.flex-col
+           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
+           [:div.flex.flex-col.flex-1.justify-center
+            [:span.text-xs.uppercase type]]])])]))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow

@@ -155,7 +155,7 @@
     (into #{} (map datafy x))
 
     (instance? Address x)
-    (.toString ^Address x)
+    (.longValue ^Address x)
 
     (instance? AFn x)
     (.toString x)

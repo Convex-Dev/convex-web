@@ -403,7 +403,7 @@
 
 ;; TODO: Delete
 (defmethod Output :address [{:convex-web.command/keys [object]}]
-  [gui/ObjectRenderer object :address])
+  [gui/ObjectRenderer (:address object) :address])
 
 (defn Commands [commands]
   (into [:div] (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
