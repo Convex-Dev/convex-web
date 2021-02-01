@@ -13,9 +13,9 @@
 
 (use-fixtures :once (join-fixtures [(make-system-fixture #'system) spec-fixture]))
 
-(deftest accounts-indexed-test
-  (testing "Indexed Accounts"
-    (is (= true (s/valid? :convex-web/accounts (convex/accounts-indexed (sys/convex-peer system)))))))
+(deftest account-status-test
+  (testing "Account Status"
+    (is (= true (some? (convex/account-status (sys/convex-peer system) (.longValue Init/HERO)))))))
 
 (deftest result-data-test
   (testing "Inc 1"

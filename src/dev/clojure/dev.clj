@@ -31,7 +31,7 @@
   (:import (convex.core Init Peer)
            (convex.core.lang Core Reader Context)
            (convex.core.crypto Hash AKeyPair)
-           (convex.core.data AccountKey)))
+           (convex.core.data AccountKey Address)))
 
 ;; -- Logging
 (set-init
@@ -109,6 +109,19 @@
        @(system/db-conn system) "mydbOh9wCdTcF_vLvUVHR")
 
   (session/find-session @(system/db-conn system) "iGlF3AZWw0eGuGfL_ib4-")
+
+
+  ;; All Convex Addresses.
+  (def all-accounts (convex/accounts-indexed (system/convex-peer system)))
+
+  (get all-accounts (.longValue Init/HERO))
+
+  (map
+    (fn [[address-long _]]
+      address-long)
+    all-accounts)
+
+  (convex/account-status (system/convex-peer system) (.longValue Init/HERO))
 
 
   (let [a (.getAccounts (.getConsensusState (system/convex-peer system)))]

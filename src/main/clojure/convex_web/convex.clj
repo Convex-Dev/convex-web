@@ -14,6 +14,8 @@
            (clojure.lang AFn)
            (convex.core.lang.expanders AExpander)))
 
+(set! *warn-on-reflection* true)
+
 (defn read-source [source lang]
   (try
     (case lang
@@ -304,19 +306,6 @@
       {}
       (range (consensus-point order)))))
 
-(defn accounts [^Peer peer & [{:keys [start end]}]]
-  (let [^State state (.getConsensusState peer)
-        start (or start 0)
-        end (or end (count (.getAccounts state)))]
-
-    (log/debug (str "Get Accounts [" start " " end "]"))
-
-    (.subVector (.getAccounts state) start (- end start))))
-
-(defn ^AccountStatus account-status [^Peer peer ^Address address]
-  (when address
-    (.get (accounts peer) (.longValue address))))
-
 (defn syntax-data [^Syntax syn]
   (merge #:convex-web.syntax {:source (.getSource syn)
                               :value
@@ -361,15 +350,29 @@
                                                   :else :user)}))))
 
 (defn accounts-indexed
-  "Returns a mapping of Address to Account Status."
+  "Returns a mapping of Address long to Account Status."
   [^Peer peer & [{:keys [start end]}]]
-  (map-indexed
-    (fn [address status]
-      (let [status (account-status-data status)]
-        #:convex-web.account {:address address
-                              ;; Dissoc `environment` because it's too much data.
-                              :status (dissoc status :convex-web.account-status/environment)}))
-    (accounts peer {:start start :end end})))
+  (let [state (.getConsensusState peer)
+        start (or start 0)
+        end (or end (.count (.getAccounts ^State state)))
+        all (.getAccounts ^State state)]
+    (reduce
+      (fn [acc address-long]
+        (assoc acc address-long (.get all address-long)))
+      {}
+      (range start end))))
+
+(defn ranged-accounts [^Peer peer & [{:keys [start end]}]]
+  (reduce-kv
+    (fn [all address-long account-status]
+      (conj all #:convex-web.account {:address address-long
+                                      :status (dissoc (account-status-data account-status) :convex-web.account-status/environment)}))
+    []
+    (accounts-indexed peer {:start start :end end})))
+
+(defn ^AccountStatus account-status [^Peer peer ^Address address]
+  (when address
+    (get (accounts-indexed peer) address)))
 
 (defn hero-sequence [^Peer peer]
   (-> (.getConsensusState peer)

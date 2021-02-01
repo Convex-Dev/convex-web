@@ -768,7 +768,7 @@
                                 :total number-of-accounts}
 
                                :convex-web/accounts
-                               (convex/accounts-indexed peer {:start start :end end})})))
+                               (convex/ranged-accounts peer {:start start :end end})})))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
