@@ -507,7 +507,14 @@
       ;; -- Options
       [:div.flex.items-center.justify-between.mt-1
 
-       [:div.flex
+       [:div.flex.space-x-6
+        [:div.flex.items-center
+         [:span.text-xs.text-gray-700.mr-1
+          "Account"]
+         [gui/AIdenticon {:value active-address :size gui/identicon-size-small}]
+         [:span.font-mono.text-sm.block.ml-1
+          (format/prefix-# active-address)]]
+
         ;; -- Mode
         [:div.flex.items-center
 
@@ -527,7 +534,7 @@
           [gui/InfoTooltip "Select \"Transaction\" to execute code as a transaction on the Convex Network. Select \"Query\" to execute code just to compute the result (No on-chain effects will be applied)."]]]
 
         ;; -- Language
-        [:div.flex.items-center.ml-6
+        [:div.flex.items-center
 
          [:span.text-xs.text-gray-700.mr-1
           "Language"]
