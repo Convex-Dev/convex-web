@@ -15,7 +15,7 @@
 
 (deftest account-status-test
   (testing "Account Status"
-    (is (= true (some? (convex/account-status (sys/convex-peer system) (.longValue Init/HERO)))))))
+    (is (= true (some? (convex/account-status (sys/convex-peer system) Init/HERO))))))
 
 (deftest result-data-test
   (testing "Inc 1"
