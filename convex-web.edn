@@ -76,8 +76,8 @@
              :fqn-function "convex-web.logging/dev-logging-publisher"}
 
             :test
-            {:type :console
-             :pretty? true}
+            {:type :custom
+             :fqn-function "convex-web.logging/dev-logging-publisher"}
 
             :prod
             {:type :custom

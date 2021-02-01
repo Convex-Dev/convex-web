@@ -79,19 +79,30 @@
         (is (= {:error {:message ":UNDECLARED \"xabc\""}} body-decoded))))))
 
 (deftest address-test
-  (let [response @(client/GET-public-v1-account (server-url) (.longValue Init/HERO))
-        response-body (json/read-str (get response :body) :key-fn keyword)]
-    (is (= 200 (get response :status)))
-    (is (= #{:address
-             :allowance
-             :balance
-             :environment
-             :is_actor
-             :is_library
-             :memory_size
-             :sequence
-             :type}
-           (set (keys response-body))))))
+  (testing "Get Account by Address"
+    (let [response @(client/GET-public-v1-account (server-url) (.longValue Init/HERO))
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+      (is (= 200 (get response :status)))
+      (is (= #{:address
+               :allowance
+               :balance
+               :environment
+               :is_actor
+               :is_library
+               :memory_size
+               :sequence
+               :type}
+             (set (keys response-body)))))
+
+    (let [response @(client/GET-public-v1-account (server-url) 1267650600228229401496703205376)
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+      (is (= 400 (get response :status)))
+      (is (= {:error {:message "Invalid Address."}} response-body)))
+
+    (let [response @(client/GET-public-v1-account (server-url) -100)
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+      (is (= 404 (get response :status)))
+      (is (= {:error {:message "The Account for this Address does not exist."}} response-body)))))
 
 (deftest query-test
   (testing "Valid"

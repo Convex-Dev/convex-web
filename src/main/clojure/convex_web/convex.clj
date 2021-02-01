@@ -206,7 +206,9 @@
           (throw (ex-info (str "Can't coerce " (pr-str x) " to " (.getName Address) ".") {})))))
 
     :else
-    (throw (ex-info (str "Can't coerce " (pr-str x) " to " (.getName Address) ".") {}))))
+    (let [message (str "Can't coerce " (pr-str x) " to " (.getName Address) ".")]
+      (throw (ex-info message {::anomalies/message message
+                               ::anomalies/category ::anomalies/incorrect})))))
 
 (defn ^Address address-safe [x]
   (try

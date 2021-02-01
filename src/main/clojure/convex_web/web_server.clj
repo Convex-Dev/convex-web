@@ -145,6 +145,8 @@
    :headers {"Content-Type" "application/json"}
    :body (json-encode (error "Sorry. Our server failed to process your request."))})
 
+;; ---
+
 (defn -successful-response [body & more]
   (let [response {:status 200
                   :headers {"Content-Type" "application/transit+json"}
@@ -157,6 +159,8 @@
                   :body (json-encode body)}]
     (apply merge response more)))
 
+;; ---
+
 (defn -bad-request-response [body]
   {:status 400
    :headers {"Content-Type" "application/transit+json"}
@@ -167,20 +171,33 @@
    :headers {"Content-Type" "application/json"}
    :body (json-encode body)})
 
-(defn forbidden-response [body]
+;; ---
+
+(defn -forbidden-response [body]
   {:status 403
+   :headers {"Content-Type" "application/transit+json"}
+   :body (encoding/transit-encode body)})
+
+;; ---
+
+(defn -not-found-response [body]
+  {:status 404
    :headers {"Content-Type" "application/transit+json"}
    :body (encoding/transit-encode body)})
 
 (defn not-found-response [body]
   {:status 404
-   :headers {"Content-Type" "application/transit+json"}
-   :body (encoding/transit-encode body)})
+   :headers {"Content-Type" "application/json"}
+   :body (json-encode body)})
+
+;; ---
 
 (defn service-unavailable-response [body]
   {:status 503
    :headers {"Content-Type" "application/json"}
    :body (json-encode body)})
+
+;; ---
 
 (defn log-rethrow-ex-info
   "Logs ex with a custom message (for known exceptions),
@@ -209,31 +226,27 @@
 ;; ==========================
 
 (defn GET-v1-account [context address]
-  (try
-    (let [peer (system/convex-peer context)
+  (let [peer (system/convex-peer context)
 
-          address (convex/address address)
+        address (try
+                  (convex/address address)
+                  (catch Exception ex
+                    (throw (ex-info "Invalid Address." {::anomalies/message (ex-message ex)
+                                                        ::anomalies/category ::anomalies/incorrect}))))
 
-          account-status (try
-                           (convex/account-status peer address)
-                           (catch Throwable ex
-                             (u/log :logging.event/system-error
-                                    :message (str "Failed to read Account Status " address ". Exception:" ex)
-                                    :exception ex)))]
-      (if-let [account-status-data (convex/account-status-data account-status)]
-        (successful-response (merge {:address (.longValue address)} (rename-keys account-status-data {:convex-web.account-status/actor? :is_actor
-                                                                                                      :convex-web.account-status/library? :is_library
-                                                                                                      :convex-web.account-status/memory-size :memory_size})))
-        (let [message (str "The Account for this Address does not exist.")]
-          (log/error message address)
-          (not-found-response {:error {:message message}}))))
-    (catch Throwable ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
-      server-error-response)))
+        account-status (try
+                         (convex/account-status peer address)
+                         (catch Throwable ex
+                           (u/log :logging.event/system-error
+                                  :message (str "Failed to read Account Status " address ". Exception:" ex)
+                                  :exception ex)))]
+    (if-let [account-status-data (convex/account-status-data account-status)]
+      (successful-response (merge {:address (.longValue address)} (rename-keys account-status-data {:convex-web.account-status/actor? :is_actor
+                                                                                                    :convex-web.account-status/library? :is_library
+                                                                                                    :convex-web.account-status/memory-size :memory_size})))
+      (let [message (str "The Account for this Address does not exist.")]
+        (log/error message address)
+        (not-found-response {:error {:message message}})))))
 
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
   (let [{:keys [address source lang sequence_number] :as prepare} (json-decode body)
@@ -503,7 +516,7 @@
   (try
     (if-let [command (command/find-by-id (system/db system) id)]
       (-successful-response (command/prune command))
-      (not-found-response {:error {:message (str "Command " id " not found.")}}))
+      (-not-found-response {:error {:message (str "Command " id " not found.")}}))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
@@ -542,7 +555,7 @@
                  :severity :error
                  :message "Unauthorized."
                  :exception (ex-info "Unauthorized." {}))
-          (forbidden-response (error "Unauthorized.")))
+          (-forbidden-response (error "Unauthorized.")))
 
         :else
         (let [command' (command/execute context command)]
@@ -598,7 +611,7 @@
         (nil? account)
         (do
           (u/log :logging.event/user-error :severity :error :message (str "Failed to confirm account; Account " address-long " not found."))
-          (not-found-response (error (str "Account " address-long " not found."))))
+          (-not-found-response (error (str "Account " address-long " not found."))))
 
         :else
         (let [peer (system/convex-peer system)
@@ -785,7 +798,7 @@
                                                     :status account-status-data})
         (let [message (str "The Account for this Address does not exist.")]
           (log/error message address)
-          (not-found-response {:error {:message message}}))))
+          (-not-found-response {:error {:message message}}))))
     (catch Throwable ex
       (u/log :logging.event/system-error
              :severity :error
@@ -861,7 +874,7 @@
           blocks-indexed (convex/blocks-indexed peer)]
       (if-let [block (get blocks-indexed (Long/parseLong index))]
         (-successful-response block)
-        (not-found-response {:error {:message (str "Block " index " doesn't exist.")}})))
+        (-not-found-response {:error {:message (str "Block " index " doesn't exist.")}})))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
@@ -887,7 +900,7 @@
           markdown-page (read-markdown-page (keyword page))]
       (cond
         (nil? markdown-page)
-        (not-found-response (error "Markdown page not found."))
+        (-not-found-response (error "Markdown page not found."))
 
         :else
         (-successful-response markdown-page)))
