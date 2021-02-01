@@ -13,6 +13,13 @@
    :transfer
    {:source "(transfer #9 1000)"}
 
+   :simple-storage-actor
+   {:source "(def storage-example-address
+              (deploy '(do (def stored-data nil)
+                           (defn get [] stored-data)
+                           (defn set [x] (def stored-data x))
+                           (export get set))))"}
+
    :subcurrency-actor
    {:source "(deploy '(do (def owner *caller*)
                    (defn contract-transfer

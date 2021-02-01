@@ -24,7 +24,7 @@
 
 (defn execute-query [source]
   (execute-command #:convex-web.command {:mode :convex-web.command.mode/query
-                                         :address 9
+                                         :address (.longValue Init/HERO)
                                          :query {:convex-web.query/source source
                                                  :convex-web.query/language :convex-lisp}}))
 
@@ -190,6 +190,25 @@
                                 :convex-web.command/status])))
 
       (is (nat-int? (get body :convex-web.command/object)))))
+
+  (testing "Simple Storage Actor"
+    (let [source (get-in lang/convex-lisp-examples [:simple-storage-actor :source])
+
+          response (execute-query source)
+
+          body (encoding/transit-decode-string (get response :body))]
+
+      (is (= #:convex-web.command{:metadata {:type :address}
+                                  :mode :convex-web.command.mode/query
+                                  :query #:convex-web.query{:language :convex-lisp :source source}
+                                  :status :convex-web.command.status/success}
+
+             (select-keys body [:convex-web.command/metadata
+                                :convex-web.command/mode
+                                :convex-web.command/query
+                                :convex-web.command/status])))
+
+      (is (= #{:address} (set (keys (get body :convex-web.command/object)))))))
 
   (testing "Subcurrency Actor"
     (let [source (get-in lang/convex-lisp-examples [:subcurrency-actor :source])
