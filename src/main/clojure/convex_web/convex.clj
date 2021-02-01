@@ -372,7 +372,7 @@
 
 (defn ^AccountStatus account-status [^Peer peer ^Address address]
   (when address
-    (get (accounts-indexed peer) address)))
+    (get (accounts-indexed peer) (.longValue address))))
 
 (defn hero-sequence [^Peer peer]
   (-> (.getConsensusState peer)
