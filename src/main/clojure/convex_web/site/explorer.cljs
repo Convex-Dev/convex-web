@@ -580,7 +580,7 @@
                             (map :convex-web.account/address)
                             (into #{}))]
       [:tbody
-       (for [{:convex-web.account/keys [address status]} (sort-by :convex-web.account/address accounts)]
+       (for [{:convex-web.account/keys [address status]} accounts]
          (let [td-class "p-2 font-mono text-xs text-gray-700 whitespace-no-wrap"
 
                me? (contains? my-addresses address)
@@ -684,9 +684,7 @@
      [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
                     :page-num (pagination/page-num start total)
-                    :first-label "First"
                     :first-href (rfe/href :route-name/accounts-explorer)
-                    :last-label "Last"
                     :last-href (rfe/href :route-name/accounts-explorer {} pagination/min-range)
                     :previous-href (rfe/href :route-name/accounts-explorer {} previous-query)
                     :next-href (rfe/href :route-name/accounts-explorer {} next-query)
@@ -698,7 +696,7 @@
        [:div.flex.flex-1.justify-center.items-center
         [gui/Spinner]]
 
-       [AccountsTable accounts {:modal? modal?}])]))
+       [AccountsTable (sort-by :convex-web.account/address #(compare %2 %1) accounts) {:modal? modal?}])]))
 
 (def accounts-range-page
   #:page {:id :page.id/accounts-range-explorer
