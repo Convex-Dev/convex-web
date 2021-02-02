@@ -4,7 +4,8 @@
             [convex-web.command :as c]
             [convex-web.convex :as convex]
             [convex-web.test :refer :all])
-  (:import (convex.core.data StringShort)))
+  (:import (convex.core.data StringShort)
+           (convex.core.lang Core)))
 
 (def context (make-convex-context))
 
@@ -42,7 +43,7 @@
                                       :convex-web.query/language :convex-lisp}})]
 
       (is (= {::c/status :convex-web.command.status/success
-              ::c/object "inc"}
+              ::c/object Core/INC}
              (select-keys command [::c/status ::c/object])))))
 
   (testing "Lookup doc"
@@ -78,10 +79,10 @@
                                       :convex-web.query/language :convex-lisp}})]
 
       (is (= {::c/status :convex-web.command.status/error
-              ::c/object "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"
+              ::c/object "Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence"
               ::c/error
               {:code :CAST
-               :message "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"
+               :message "Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence"
                :trace nil}}
              (select-keys command [::c/status ::c/object ::c/error]))))))
 

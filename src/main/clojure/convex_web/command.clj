@@ -11,7 +11,8 @@
             [datalevin.core :as d])
   (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
            (convex.core.lang Reader Symbols)
-           (convex.core Result)))
+           (convex.core Result)
+           (convex.core.data.prim CVMBool CVMLong CVMDouble)))
 
 (defn source [command]
   (let [{:convex-web.command/keys [transaction query]} command]
@@ -61,10 +62,11 @@
                       (catch Throwable _
                         nil))]
     (cond
-      (instance? Boolean result-value)
+      (instance? CVMBool result-value)
       {:type :boolean}
 
-      (instance? Number result-value)
+      (or (instance? CVMLong result-value)
+          (instance? CVMDouble result-value))
       {:type :number}
 
       (instance? AString result-value)
@@ -220,7 +222,7 @@
 
           ;; Command status.
           command' (if result
-                     (merge #:convex-web.command {:id result-id
+                     (merge #:convex-web.command {:id (convex/datafy result-id)
                                                   :object result-value-data
                                                   :metadata result-value-metadata
                                                   :status

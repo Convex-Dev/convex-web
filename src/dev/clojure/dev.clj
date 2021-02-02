@@ -121,7 +121,7 @@
       address-long)
     all-accounts)
 
-  (convex/account-status (system/convex-peer system) (.longValue Init/HERO))
+  (convex/account-status (system/convex-peer system) Init/HERO)
 
 
   (let [a (.getAccounts (.getConsensusState (system/convex-peer system)))]

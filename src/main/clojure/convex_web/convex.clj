@@ -12,7 +12,8 @@
            (convex.api Convex)
            (java.util.concurrent TimeoutException)
            (clojure.lang AFn)
-           (convex.core.lang.expanders AExpander)))
+           (convex.core.lang.expanders AExpander)
+           (convex.core.data.prim CVMBool CVMChar CVMLong CVMDouble)))
 
 (set! *warn-on-reflection* true)
 
@@ -71,10 +72,11 @@
 
 (defn value-kind [x]
   (cond
-    (instance? Boolean x)
+    (instance? CVMBool x)
     :boolean
 
-    (instance? Number x)
+    (or (instance? CVMLong x)
+        (instance? CVMDouble x))
     :number
 
     (instance? AString x)
@@ -119,26 +121,13 @@
     (nil? x)
     nil
 
-    (instance? Boolean x)
-    x
-
-    (instance? Character x)
-    x
-
-    (instance? Long x)
-    x
-
-    (instance? Double x)
-    x
-
-    (instance? AString x)
-    (.toString ^AString x)
-
     (instance? Keyword x)
     (keyword (.toString (.getName ^Keyword x)))
 
     (instance? Symbol x)
-    (symbol (some-> ^Symbol x (.getNamespace) (.getName) (.toString)) (.toString (.getName ^Symbol x)))
+    (symbol
+      (some-> ^Symbol x (.getNamespace) (.getName) (.toString))
+      (.toString (.getName ^Symbol x)))
 
     (instance? AList x)
     (map datafy x)
@@ -172,7 +161,10 @@
     (datafy (.getValue ^Syntax x))
 
     :else
-    (throw (ex-info (str "Can't datafy " (some-> ^Object x (.getClass) (.getName)) ".") {:object x}))))
+    (let [x' (RT/jvm x)]
+      (if (= x 'x)
+        (throw (ex-info (str "Can't datafy " (pr-str x) (some-> ^Object x (.getClass) (.getName)) ".") {:object x}))
+        x'))))
 
 (defn datafy-safe [x]
   (try
@@ -244,7 +236,7 @@
         result-error-code (.getErrorCode result)
         result-value (.getValue result)
         result-trace (.getTrace result)]
-    (merge #:convex-web.result {:id result-id
+    (merge #:convex-web.result {:id (datafy result-id)
                                 :value (try
                                          (datafy result-value)
                                          (catch Exception _
@@ -358,7 +350,7 @@
         all (.getAccounts ^State state)]
     (reduce
       (fn [acc address-long]
-        (assoc acc address-long (.get all address-long)))
+        (assoc acc address-long (.get all (RT/cvm address-long))))
       {}
       (range start end))))
 

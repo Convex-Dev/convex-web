@@ -367,7 +367,7 @@
 
         result-value (.getValue result)
 
-        result-response (merge {:id (.getID result)
+        result-response (merge {:id (convex/datafy (.getID result))
                                 :value
                                 (try
                                   (convex/datafy result-value)
@@ -434,7 +434,7 @@
 
             result-value (.getValue result)
 
-            result-response (merge {:id (.getID result)
+            result-response (merge {:id (convex/datafy (.getID result))
                                     :value
                                     (try
                                       (convex/datafy result-value)

@@ -1,7 +1,7 @@
 #kaocha/v1 {:tests [{:id :unit
                      :test-paths ["src/test/clojure"]}]
 
-            :kaocha/fail-fast? true
+            :kaocha/fail-fast? false
 
             :kaocha/plugins [:kaocha.plugin/randomize
                              :kaocha.plugin/filter

@@ -57,9 +57,7 @@
         response (handler (mock/request :get "/api/internal/blocks-range"))
         body (encoding/transit-decode-string (get response :body))]
     (is (= 200 (get response :status)))
-    (is (= #{:convex-web/blocks
-             :meta}
-           (set (keys body))))))
+    (is (= #{:convex-web/blocks :meta} (set (keys body))))))
 
 (deftest accounts-test
   (let [handler (web-server/site system)]

@@ -52,15 +52,10 @@
       (is (= 1 (convex/datafy (Syntax/create 1))))
       (is (= (Maps/empty) (convex/datafy (Syntax/create (Maps/empty))))))
 
-    (testing "Can't datafy"
-      (testing "java.lang.String"
-        (is (= "Can't datafy java.lang.String." (.getMessage (catch-throwable (convex/datafy "String"))))))
-
-      (testing "convex.core.lang.impl.ErrorValue"
-        (is (= "Can't datafy convex.core.lang.impl.ErrorValue."
-               (.getMessage (catch-throwable (convex/datafy (convex/execute-string context "(map inc 1)"))))))))))
-
-
+    (testing "Java types"
+      (is (= 1 (convex/datafy 1)))
+      (is (= 1.0 (convex/datafy 1.0)))
+      (is (= "ABC" (convex/datafy "ABC"))))))
 
 (deftest address-test
   (testing "Coerce string to Address"
