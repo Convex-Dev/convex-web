@@ -46,8 +46,8 @@
       (.getExceptional new-context)
       (.getResult new-context))))
 
-(defn execute-scrypt [context source]
-  (let [context (.execute context (.getResult (.expandCompile context (ScryptNext/readSyntax source))))]
+(defn execute-scrypt [^Context context source]
+  (let [context (.execute context (.getResult ^Context (.expandCompile context (ScryptNext/readSyntax source))))]
     (if (.isExceptional context)
       (.getExceptional context)
       (.getResult context))))
@@ -132,13 +132,13 @@
     x
 
     (instance? AString x)
-    (.toString x)
+    (.toString ^AString x)
 
     (instance? Keyword x)
-    (keyword (.toString (.getName x)))
+    (keyword (.toString (.getName ^Keyword x)))
 
     (instance? Symbol x)
-    (symbol (some-> x (.getNamespace) (.getName) (.toString)) (.toString (.getName x)))
+    (symbol (some-> ^Symbol x (.getNamespace) (.getName) (.toString)) (.toString (.getName ^Symbol x)))
 
     (instance? AList x)
     (map datafy x)
@@ -160,10 +160,10 @@
     (.longValue ^Address x)
 
     (instance? AFn x)
-    (.toString x)
+    (.toString ^AFn x)
 
     (instance? AExpander x)
-    (.toString x)
+    (.toString ^AExpander x)
 
     (instance? Blob x)
     (.toHexString ^Blob x)
@@ -172,7 +172,7 @@
     (datafy (.getValue ^Syntax x))
 
     :else
-    (throw (ex-info (str "Can't datafy " (some-> x (.getClass) (.getName)) ".") {:object x}))))
+    (throw (ex-info (str "Can't datafy " (some-> ^Object x (.getClass) (.getName)) ".") {:object x}))))
 
 (defn datafy-safe [x]
   (try
@@ -543,7 +543,7 @@
              {:doc
               (merge {:description description
                       :signature signature
-                      :symbol (.toString (.getName sym))
+                      :symbol (.toString (.getName ^Symbol sym))
                       :examples examples}
                      (when type
                        {:type (keyword type)}))})))
