@@ -6,7 +6,7 @@
             [convex-web.test :refer :all])
   (:import (convex.core.data StringShort)))
 
-(def context (convex-context))
+(def context (make-convex-context))
 
 (def system nil)
 

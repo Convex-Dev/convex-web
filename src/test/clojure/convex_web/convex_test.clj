@@ -1,19 +1,13 @@
 (ns convex-web.convex-test
   (:require [clojure.test :refer :all]
 
-            [convex-web.system :as sys]
             [convex-web.convex :as convex]
-            [convex-web.test :refer :all]
-            [clojure.spec.alpha :as s])
+            [convex-web.test :refer :all])
   (:import (convex.core.data Address Blob Syntax Maps)
            (convex.core Init)))
 
-(def system nil)
-
-(def context (convex-context))
-
 (deftest datafy-test
-  (let [context (convex-context)]
+  (let [context (make-convex-context)]
     (testing "nil"
       (is (= nil (convex/datafy nil))))
 
@@ -89,46 +83,47 @@
 
 
 (deftest kind-test
-  (testing "Boolean"
-    (is (= :boolean (convex/value-kind (convex/execute context true)))))
+  (let [context (make-convex-context)]
+    (testing "Boolean"
+      (is (= :boolean (convex/value-kind (convex/execute context true)))))
 
-  (testing "Number"
-    (is (= :number (convex/value-kind (convex/execute context 1))))
-    (is (= :number (convex/value-kind (convex/execute context 1.0)))))
+    (testing "Number"
+      (is (= :number (convex/value-kind (convex/execute context 1))))
+      (is (= :number (convex/value-kind (convex/execute context 1.0)))))
 
-  (testing "String"
-    (is (= :string (convex/value-kind (convex/execute context "")))))
+    (testing "String"
+      (is (= :string (convex/value-kind (convex/execute context "")))))
 
-  (testing "Symbol"
-    (is (= :symbol (convex/value-kind (convex/execute context 'sym)))))
+    (testing "Symbol"
+      (is (= :symbol (convex/value-kind (convex/execute context 'sym)))))
 
-  (testing "Macro"
-    (is (= :macro (convex/value-kind (convex/execute-string context "defn")))))
+    (testing "Macro"
+      (is (= :macro (convex/value-kind (convex/execute-string context "defn")))))
 
-  (testing "Special"
-    (is (= :symbol (convex/value-kind (convex/execute-string context "def")))))
+    (testing "Special"
+      (is (= :symbol (convex/value-kind (convex/execute-string context "def")))))
 
-  (testing "Map"
-    (is (= :map (convex/value-kind (convex/execute context {})))))
+    (testing "Map"
+      (is (= :map (convex/value-kind (convex/execute context {})))))
 
-  (testing "List"
-    (is (= :list (convex/value-kind (convex/execute context '())))))
+    (testing "List"
+      (is (= :list (convex/value-kind (convex/execute context '())))))
 
-  (testing "Vector"
-    (is (= :vector (convex/value-kind (convex/execute context [])))))
+    (testing "Vector"
+      (is (= :vector (convex/value-kind (convex/execute context [])))))
 
-  (testing "Set"
-    (is (= :set (convex/value-kind (convex/execute context #{})))))
+    (testing "Set"
+      (is (= :set (convex/value-kind (convex/execute context #{})))))
 
-  (testing "Address"
-    (is (= :address (convex/value-kind (convex/execute context *address*)))))
+    (testing "Address"
+      (is (= :address (convex/value-kind (convex/execute context *address*)))))
 
-  (testing "Blob"
-    (is (= :blob (convex/value-kind (convex/execute context (blob *address*))))))
+    (testing "Blob"
+      (is (= :blob (convex/value-kind (convex/execute context (blob *address*))))))
 
-  (testing "Unknown"
-    (is (= nil (convex/value-kind (Syntax/create (Maps/empty)))))
-    (is (= nil (convex/value-kind (convex/execute-string context "abc"))))))
+    (testing "Unknown"
+      (is (= nil (convex/value-kind (Syntax/create (Maps/empty)))))
+      (is (= nil (convex/value-kind (convex/execute-string context "abc")))))))
 
 
 
