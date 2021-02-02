@@ -9,8 +9,6 @@
 
 (def system nil)
 
-(def context (make-convex-context))
-
 (use-fixtures :once (join-fixtures [(make-system-fixture #'system) spec-fixture]))
 
 (deftest account-status-test
