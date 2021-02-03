@@ -270,9 +270,9 @@ In function: map"} response-body)))))
 (deftest prepare-submit-transaction-test
   (testing "Prepare & submit transaction"
     (testing "Simple inc"
-      (let [hero-key-pair Init/HERO_KP
-            hero-address (.longValue Init/HERO)
-            hero-account-key (.toChecksumHex (.getAccountKey Init/HERO_KP))
+      (let [test-key-pair Init/VILLAIN_KP
+            test-address (.longValue Init/VILLAIN)
+            test-account-key (.toChecksumHex (.getAccountKey Init/VILLAIN_KP))
 
             handler (public-api-handler)
 
@@ -281,7 +281,7 @@ In function: map"} response-body)))))
 
             prepare-uri "/api/v1/transaction/prepare"
 
-            prepare-body {:address hero-address :source "(inc 1)"}
+            prepare-body {:address test-address :source "(inc 1)"}
 
             prepare-response (handler (-> (mock/request :post prepare-uri)
                                           (mock/json-body prepare-body)))
@@ -294,11 +294,11 @@ In function: map"} response-body)))))
 
             submit-uri "/api/v1/transaction/submit"
 
-            submit-body {:address hero-address
-                         :account_key hero-account-key
+            submit-body {:address test-address
+                         :account_key test-account-key
                          :hash (get prepare-response-body :hash)
                          :sig (try
-                                (.toHexString (.sign hero-key-pair (Hash/fromHex (get prepare-response-body :hash))))
+                                (.toHexString (.sign test-key-pair (Hash/fromHex (get prepare-response-body :hash))))
                                 (catch Exception _
                                   nil))}
 
@@ -327,63 +327,65 @@ In function: map"} response-body)))))
         ;; Submit response result value
         (is (= {:value 2} (select-keys submit-response-body [:value])))))
 
-    #_(testing "Cast error"
-        (let [hero-key-pair Init/HERO_KP
-              hero-address (.longValue Init/HERO)
+    (testing "Cast error"
+      (let [test-key-pair Init/VILLAIN_KP
+            test-address (.longValue Init/VILLAIN)
+            test-account-key (.toChecksumHex (.getAccountKey Init/VILLAIN_KP))
 
-              handler (public-api-handler)
+            handler (public-api-handler)
 
-              ;; 1. Prepare
-              ;; ==========
+            ;; 1. Prepare
+            ;; ==========
 
-              prepare-uri "/api/v1/transaction/prepare"
+            prepare-uri "/api/v1/transaction/prepare"
 
-              prepare-body {:address hero-address :source "(map inc 1)"}
+            prepare-body {:address test-address :source "(map inc 1)"}
 
-              prepare-response (handler (-> (mock/request :post prepare-uri)
-                                            (mock/json-body prepare-body)))
+            prepare-response (handler (-> (mock/request :post prepare-uri)
+                                          (mock/json-body prepare-body)))
 
-              prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)
+            prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)
 
 
-              ;; 2. Submit
-              ;; ==========
+            ;; 2. Submit
+            ;; ==========
 
-              submit-uri "/api/v1/transaction/submit"
+            submit-uri "/api/v1/transaction/submit"
 
-              submit-body {:address hero-address
-                           :hash (get prepare-response-body :hash)
-                           :sig (try
-                                  (.toHexString (.sign hero-key-pair (Hash/fromHex (get prepare-response-body :hash))))
-                                  (catch Exception _
-                                    nil))}
+            submit-body {:address test-address
+                         :hash (get prepare-response-body :hash)
+                         :account_key test-account-key
+                         :sig (try
+                                (.toHexString (.sign test-key-pair (Hash/fromHex (get prepare-response-body :hash))))
+                                (catch Exception _
+                                  nil))}
 
-              submit-response (handler (-> (mock/request :post submit-uri)
-                                           (mock/json-body submit-body)))
+            submit-response (handler (-> (mock/request :post submit-uri)
+                                         (mock/json-body submit-body)))
 
-              submit-response-body (json/read-str (get submit-response :body) :key-fn keyword)]
+            submit-response-body (json/read-str (get submit-response :body) :key-fn keyword)]
 
-          ;; Prepare is successful, but transaction should fail.
-          (is (= 200 (get prepare-response :status)))
+        ;; Prepare is successful, but transaction should fail.
+        (is (= 200 (get prepare-response :status)))
 
-          ;; Prepare response must contain these keys.
-          (is (= #{:sequence_number
-                   :address
-                   :source
-                   :lang
-                   :hash}
-                 (set (keys prepare-response-body))))
+        ;; Prepare response must contain these keys.
+        (is (= #{:sequence_number
+                 :address
+                 :source
+                 :lang
+                 :hash}
+               (set (keys prepare-response-body))))
 
-          ;; Submit is successful, but the execution failed.
-          (is (= 200 (get submit-response :status)))
+        ;; Submit is successful, but the execution failed.
+        (is (= 200 (get submit-response :status)))
 
-          ;; Submit response must contain these keys.
-          (is (= #{:id :value :error-code} (set (keys submit-response-body))))
+        ;; Submit response must contain these keys.
+        (is (= #{:id :value :error-code} (set (keys submit-response-body))))
 
-          ;; Submit response with error code.
-          (is (= {:error-code "CAST"
-                  :value "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"}
-                 (select-keys submit-response-body [:error-code :value])))))))
+        ;; Submit response with error code.
+        (is (= {:error-code "CAST"
+                :value "Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence"}
+               (select-keys submit-response-body [:error-code :value])))))))
 
 (deftest faucet-test
   (let [address (.longValue Init/HERO)]
