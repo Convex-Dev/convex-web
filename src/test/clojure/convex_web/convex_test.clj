@@ -54,9 +54,7 @@
 
     (testing "Non-CVM types will throw"
       (is (= "Can't datafy :x clojure.lang.Keyword." (ex-message (catch-throwable (convex/datafy :x)))))
-      #_(is (= "Can't datafy :x clojure.lang.Keyword." (ex-message (catch-throwable (convex/datafy [])))))
       (is (= "Can't datafy () clojure.lang.PersistentList$EmptyList." (ex-message (catch-throwable (convex/datafy '())))))
-      #_(is (= "Can't datafy () clojure.lang.PersistentList$EmptyList." (catch-throwable (convex/datafy {}))))
       (is (= "Can't datafy 1 java.lang.Long." (ex-message (catch-throwable (convex/datafy 1)))))
       (is (= "Can't datafy 1.0 java.lang.Double." (ex-message (catch-throwable (convex/datafy 1.0)))))
       (is (= "Can't datafy \"ABC\" java.lang.String." (ex-message (catch-throwable (convex/datafy "ABC"))))))))
