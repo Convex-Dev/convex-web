@@ -162,8 +162,8 @@
 
     :else
     (let [x' (RT/jvm x)]
-      (if (= x 'x)
-        (throw (ex-info (str "Can't datafy " (pr-str x) (some-> ^Object x (.getClass) (.getName)) ".") {:object x}))
+      (if (identical? x x')
+        (throw (ex-info (str "Can't datafy " (pr-str x) " " (some-> ^Object x (.getClass) (.getName)) ".") {:object x}))
         x'))))
 
 (defn datafy-safe [x]

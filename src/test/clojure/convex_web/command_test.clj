@@ -43,7 +43,7 @@
                                       :convex-web.query/language :convex-lisp}})]
 
       (is (= {::c/status :convex-web.command.status/success
-              ::c/object Core/INC}
+              ::c/object "inc"}
              (select-keys command [::c/status ::c/object])))))
 
   (testing "Lookup doc"

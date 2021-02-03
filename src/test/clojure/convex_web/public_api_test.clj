@@ -175,7 +175,7 @@
 
       (is (= 200 (get response :status)))
       (is (= {:error-code "CAST"
-              :value "ErrorValue[:CAST] : Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence
+              :value "ErrorValue[:CAST] : Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence
 In function: map"} response-body)))))
 
 (deftest prepare-test
