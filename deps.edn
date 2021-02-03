@@ -1,7 +1,7 @@
 {:paths ["src/main/clojure" "src/main/resources"]
 
  :deps
- {org.clojure/clojure {:mvn/version "1.10.1"}
+ {org.clojure/clojure {:mvn/version "1.10.2"}
   org.clojure/clojurescript {:mvn/version "1.10.773"
                              ;; These exclusions are required because of Shadow CLJS.
                              :exclusions
