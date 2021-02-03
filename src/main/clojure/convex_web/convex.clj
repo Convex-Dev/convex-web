@@ -4,7 +4,7 @@
             [clojure.tools.logging :as log]
 
             [cognitect.anomalies :as anomalies])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey)
+  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey ACell)
            (convex.core.lang Core Reader ScryptNext RT Context)
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
@@ -394,25 +394,22 @@
     (.getValue context)))
 
 (defn ^Result query [^Convex client {:keys [source address lang] :as q}]
-  (let [_ (log/debug "Query" q)
+  (let [^ACell acell (try
+                       (case lang
+                         :convex-lisp
+                         (wrap-do (Reader/readAll source))
 
-        obj (try
-              (case lang
-                :convex-lisp
-                (wrap-do (Reader/readAll source))
+                         :convex-scrypt
+                         (ScryptNext/readSyntax source))
+                       (catch Throwable ex
+                         (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
+                                                          ::anomalies/category ::anomalies/incorrect}))))
 
-                :convex-scrypt
-                (ScryptNext/readSyntax source))
-              (catch Throwable ex
-                (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
-                                                 ::anomalies/category ::anomalies/incorrect}))))
-
-        ^Address address (when address
-                           (convex-web.convex/address address))]
+        ^Address address (convex-web.convex/address address)]
     (try
-      (if address
-        (.querySync client obj address)
-        (.querySync client obj))
+      (log/debug "Query sync" q)
+
+      (.querySync client ^ACell acell ^Address address)
       (catch Exception ex
         (let [message "Failed to get Query result."
               category (or (throwable-category ex) ::anomalies/fault)]
