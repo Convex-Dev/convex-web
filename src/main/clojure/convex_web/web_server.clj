@@ -695,7 +695,7 @@
                                             :target target
                                             :amount amount})
 
-              faucet {:convex-web.faucet/id (.getID result)
+              faucet {:convex-web.faucet/id (convex/datafy (.getID result))
                       :convex-web.faucet/target target
                       :convex-web.faucet/amount amount
                       :convex-web.faucet/timestamp (.getTime (Date.))}]
