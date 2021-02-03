@@ -61,10 +61,7 @@
 
 (def convex-lisp-examples
   (let [make-example (fn [& examples]
-                       ;; Format & add a blank line to separate examples.
-                       (->> examples
-                            (map #(zprint/zprint-str % {:parse-string-all? true}))
-                            (str/join "\n\n")))]
+                       (str/join "\n\n" examples))]
     [["Self Balance"
       (make-example "*balance*")]
 
@@ -73,11 +70,11 @@
 
      ["Check Balance"
       (make-example
-        "(balance \"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\")")]
+        "(balance #9)")]
 
      ["Transfer"
       (make-example
-        "(transfer \"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\" 1000)")]
+        "(transfer #9 1000)")]
 
      ["Creating a Token"
       (make-example
