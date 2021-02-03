@@ -953,13 +953,14 @@
 
         response))))
 
-(defn wrap-error [handler]
+(defn wrap-error-handling [handler]
   (fn wrap-error-handler [request]
     (try
       (handler request)
       (catch Throwable ex
-        (log/error "An unhandled exception was thrown during the handler execution:" (with-out-str (stacktrace/print-stack-trace ex)))
+        (log/error "Web handler exception:" (with-out-str (stacktrace/print-stack-trace ex)))
 
+        ;; Mapping of anomaies categories to HTTP status code.
         (case (get (ex-data ex) ::anomalies/category)
           ::anomalies/incorrect
           (do
@@ -998,7 +999,7 @@
 
 (defn public-api-handler [system]
   (-> (public-api system)
-      (wrap-error)
+      (wrap-error-handling)
       (wrap-logging)
       (wrap-defaults api-defaults)))
 
