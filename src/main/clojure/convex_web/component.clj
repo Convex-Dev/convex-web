@@ -108,7 +108,7 @@
 
           ^Server server (API/launchPeer {Keywords/STORE store})
 
-          ^convex.api.Convex client (convex.api.Convex/connect (.getHostAddress server) Init/HERO_KP)]
+          ^convex.api.Convex client (convex.api.Convex/connect (.getHostAddress server) Init/HERO Init/HERO_KP)]
 
       (assoc component
         :server server
@@ -116,11 +116,6 @@
         :store store)))
 
   (stop [component]
-    (when-let [^convex.api.Convex client (:client component)]
-      (log/info "Disconnect Client")
-
-      (.disconnect client))
-
     (when-let [^Server server (:server component)]
       (log/info "Close Server")
 
