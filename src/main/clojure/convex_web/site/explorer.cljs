@@ -1006,3 +1006,50 @@
           :state-spec :explorer.blocks/state-spec
           :on-push #'start-polling-blocks
           :on-pop #'stop-polling-blocks})
+
+
+(defn StatePage [_ state set-state]
+  (let [{status :ajax/status
+         error :ajax/error
+         state :convex-web/state} state]
+    (cond
+      (= :ajax.status/pending status)
+      [:div.flex.flex-1.justify-center.items-center
+       [gui/Spinner]]
+
+      (= :ajax.status/success status)
+      [:dl.mt-5.grid.grid-cols-1.gap-5.sm:grid-cols-3.p-2
+       [:div.bg-white.overflow-hidden.shadow.rounded-lg
+        [:div.px-4.py-5.sm:p-6
+         [:dt.text-sm.font-medium.text-gray-500.truncate "Number of Accounts"]
+         [:dd.mt-1.text-3xl.font-semibold.text-gray-900 (:convex-web.state/accounts-count state)]]]
+       [:div.bg-white.overflow-hidden.shadow.rounded-lg
+        [:div.px-4.py-5.sm:p-6
+         [:dt.text-sm.font-medium.text-gray-500.truncate "Avg. Open Rate"]
+         [:dd.mt-1.text-3xl.font-semibold.text-gray-900 "58.16%"]]]
+       [:div.bg-white.overflow-hidden.shadow.rounded-lg
+        [:div.px-4.py-5.sm:p-6
+         [:dt.text-sm.font-medium.text-gray-500.truncate "Avg. Click Rate"]
+         [:dd.mt-1.text-3xl.font-semibold.text-gray-900 "24.57%"]]]]
+
+
+      (= :ajax.status/error status)
+      [:span (get-in error [:response :error :message])])))
+
+(def state-page
+  #:page {:id :page.id/state
+          :title "State"
+          :component #'StatePage
+          :initial-state {:ajax/status :ajax.status/pending}
+          :state-spec (s/merge :ajax/statuses (s/keys :opt [:convex-web/state]))
+          :on-push
+          (fn [_ _ set-state]
+            (backend/GET-state
+              {:handler
+               (fn [state]
+                 (set-state #(assoc % :ajax/status :ajax.status/success
+                                      :convex-web/state state)))
+               :error-handler
+               (fn [error]
+                 (set-state #(assoc % :ajax/status :ajax.status/error
+                                      :ajax/error error)))}))})

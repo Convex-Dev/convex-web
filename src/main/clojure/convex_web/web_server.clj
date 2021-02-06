@@ -32,7 +32,7 @@
   (:import (java.io InputStream)
            (convex.core.crypto Hash ASignature)
            (convex.core.data Ref SignedData AccountKey)
-           (convex.core Init Peer)
+           (convex.core Init Peer State)
            (java.time Instant)
            (java.util Date)
            (convex.core.exceptions MissingDataException)
@@ -730,6 +730,21 @@
 
       -server-error-response)))
 
+(defn -GET-STATE [system _]
+  (try
+    (let [^Peer peer (system/convex-peer system)
+          ^State state (convex/consensus-state peer)
+          all-accounts (.getAccounts state)]
+      (-successful-response
+        {:convex-web.state/accounts-count (count (map convex/account-status-data all-accounts))}))
+    (catch Exception ex
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
+
+      -server-error-response)))
+
 (defn -GET-accounts [context {:keys [query-params]}]
   (try
     (let [{:strs [start end]} query-params
@@ -928,6 +943,7 @@
     (GET "/api/internal/commands/:id" [id] (-GET-command-by-id system (Long/parseLong id)))
     (GET "/api/internal/reference" req (-GET-reference system req))
     (GET "/api/internal/markdown-page" req (-GET-markdown-page system req))
+    (GET "/api/internal/state" req (-GET-STATE system req))
 
     (route/resources "/")
 

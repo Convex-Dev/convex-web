@@ -62,6 +62,9 @@
 (s/def :ajax/pending-status (s/and (s/keys :req [:ajax/status]) #(= :ajax.status/pending (:ajax/status %))))
 (s/def :ajax/success-status (s/and (s/keys :req [:ajax/status]) #(= :ajax.status/success (:ajax/status %))))
 (s/def :ajax/error-status (s/and (s/keys :req [:ajax/status :ajax/error]) #(= :ajax.status/error (:ajax/status %))))
+(s/def :ajax/statuses (s/or :pending :ajax/pending-status
+                            :success :ajax/success-status
+                            :error :ajax/error-status))
 
 
 ;; -- Faucet
@@ -102,6 +105,12 @@
 
 (s/def :convex-web/accounts (s/coll-of :convex-web/account))
 
+
+;; --- State
+
+(s/def :convex-web.state/accounts-count nat-int?)
+
+(s/def :convex-web/state (s/keys :req [:convex-web.state/accounts-count]))
 
 
 ;; -- Syntax

@@ -96,6 +96,7 @@
    explorer/transactions-page
    explorer/transactions-range-page
    explorer/transaction-page
+   explorer/state-page
 
    ;; ---
 
@@ -218,7 +219,11 @@
        :route-name :route-name/explorer
        :href (rfe/href :route-name/explorer)
        :children
-       (->> [{:text "Accounts"
+       (->> [{:text "State"
+              :route-name :route-name/state
+              :href (rfe/href :route-name/state)}
+
+             {:text "Accounts"
               :route-name :route-name/accounts-explorer
               :href (rfe/href :route-name/accounts-explorer)
               :active? (active #{:route-name/accounts-explorer
