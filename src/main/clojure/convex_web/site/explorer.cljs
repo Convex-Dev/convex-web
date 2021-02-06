@@ -1019,18 +1019,14 @@
 
       (= :ajax.status/success status)
       [:dl.mt-5.grid.grid-cols-1.gap-5.sm:grid-cols-3.p-2
-       [:div.bg-white.overflow-hidden.shadow.rounded-lg
+       [:div.bg-gray-50.overflow-hidden.shadow.rounded-lg
         [:div.px-4.py-5.sm:p-6
          [:dt.text-sm.font-medium.text-gray-500.truncate "Number of Accounts"]
          [:dd.mt-1.text-3xl.font-semibold.text-gray-900 (:convex-web.state/accounts-count state)]]]
-       [:div.bg-white.overflow-hidden.shadow.rounded-lg
+       [:div.bg-gray-50.overflow-hidden.shadow.rounded-lg
         [:div.px-4.py-5.sm:p-6
          [:dt.text-sm.font-medium.text-gray-500.truncate "Number of Peers"]
-         [:dd.mt-1.text-3xl.font-semibold.text-gray-900 (:convex-web.state/peers-count state)]]]
-       [:div.bg-white.overflow-hidden.shadow.rounded-lg
-        [:div.px-4.py-5.sm:p-6
-         [:dt.text-sm.font-medium.text-gray-500.truncate "Avg. Click Rate"]
-         [:dd.mt-1.text-3xl.font-semibold.text-gray-900 "24.57%"]]]]
+         [:dd.mt-1.text-3xl.font-semibold.text-gray-900 (:convex-web.state/peers-count state)]]]]
 
 
       (= :ajax.status/error status)
