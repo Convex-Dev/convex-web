@@ -1025,8 +1025,8 @@
          [:dd.mt-1.text-3xl.font-semibold.text-gray-900 (:convex-web.state/accounts-count state)]]]
        [:div.bg-white.overflow-hidden.shadow.rounded-lg
         [:div.px-4.py-5.sm:p-6
-         [:dt.text-sm.font-medium.text-gray-500.truncate "Avg. Open Rate"]
-         [:dd.mt-1.text-3xl.font-semibold.text-gray-900 "58.16%"]]]
+         [:dt.text-sm.font-medium.text-gray-500.truncate "Number of Peers"]
+         [:dd.mt-1.text-3xl.font-semibold.text-gray-900 (:convex-web.state/peers-count state)]]]
        [:div.bg-white.overflow-hidden.shadow.rounded-lg
         [:div.px-4.py-5.sm:p-6
          [:dt.text-sm.font-medium.text-gray-500.truncate "Avg. Click Rate"]

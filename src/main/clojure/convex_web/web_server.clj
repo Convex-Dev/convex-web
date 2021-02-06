@@ -31,7 +31,7 @@
             [ring.util.anti-forgery])
   (:import (java.io InputStream)
            (convex.core.crypto Hash ASignature)
-           (convex.core.data Ref SignedData AccountKey)
+           (convex.core.data Ref SignedData AccountKey BlobMap)
            (convex.core Init Peer State)
            (java.time Instant)
            (java.util Date)
@@ -734,9 +734,15 @@
   (try
     (let [^Peer peer (system/convex-peer system)
           ^State state (convex/consensus-state peer)
-          all-accounts (.getAccounts state)]
+
+          all-accounts (.getAccounts state)
+          accounts-count (count (map convex/account-status-data all-accounts))
+
+          ^BlobMap all-peers (.getPeers state)
+          peers-count (.count all-peers)]
       (-successful-response
-        {:convex-web.state/accounts-count (count (map convex/account-status-data all-accounts))}))
+        #:convex-web.state {:accounts-count accounts-count
+                            :peers-count peers-count}))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
