@@ -458,7 +458,9 @@
 (defn ^Address create-account
   "Creates a new Account on the network.
 
-   Returns Address."
+   Returns Address.
+
+   Throws ExceptionInfo if the transaction fails."
   [^Convex client ^String account-public-key]
   (let [command (read-source (str "(create-account 0x" account-public-key ")") :convex-lisp)
 

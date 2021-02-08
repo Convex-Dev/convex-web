@@ -195,7 +195,6 @@
           response-body (json/read-str (get response :body) :key-fn keyword)]
 
       (is (= 200 (get response :status)))
-      ;; FIXME
       (is (= {:error-code "NOBODY"} (select-keys response-body [:error-code])))))
 
   (testing "Type error"
