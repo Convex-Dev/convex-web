@@ -396,7 +396,8 @@ In function: map"} response-body)))))
             response-body (json/read-str (get response :body) :key-fn keyword)]
 
         (is (= 200 (get response :status)))
-        (is (= #{:id :address :amount :value} (set (keys response-body))))))
+        (is (= #{:id :address :amount :value} (set (keys response-body))))
+        (is (= {:address 9 :amount amount :value amount} (dissoc response-body :id)))))
 
     (testing "Bad request"
       (testing "No payload"
