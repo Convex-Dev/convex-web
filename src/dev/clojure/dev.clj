@@ -68,9 +68,7 @@
   (let [^AKeyPair generated-key-pair (AKeyPair/generate)
         ^AccountKey account-key (.getAccountKey generated-key-pair)
         ^String account-public-key (.toChecksumHex account-key)]
-    (convex/create-account
-      {:client (system/convex-client system)
-       :account-public-key account-public-key}))
+    (convex/create-account (system/convex-client system) account-public-key))
 
 
   ;; -- Reset database

@@ -459,8 +459,7 @@
   "Creates a new Account on the network.
 
    Returns Address."
-  [{:keys [^Convex client
-           ^String account-public-key]}]
+  [^Convex client ^String account-public-key]
   (let [command (read-source (str "(create-account 0x" account-public-key ")") :convex-lisp)
 
         tx-data {:nonce 0

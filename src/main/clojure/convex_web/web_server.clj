@@ -387,9 +387,7 @@
       (bad-request-response (error "Missing public key."))
       (let [client (system/convex-client system)
 
-            generated-address (convex/create-account
-                                {:client client
-                                 :account-public-key public_key})]
+            generated-address (convex/create-account client public_key)]
 
         (successful-response {:address (.longValue generated-address)})))))
 
@@ -573,9 +571,7 @@
 
           ^String public-key-str (.toChecksumHex account-key)
 
-          generated-address (convex/create-account
-                              {:client client
-                               :account-public-key public-key-str})
+          generated-address (convex/create-account client public-key-str)
 
           account #:convex-web.account {:address (.longValue generated-address)
                                         :created-at (inst-ms (Instant/now))
