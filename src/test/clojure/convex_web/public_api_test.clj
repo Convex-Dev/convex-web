@@ -417,11 +417,15 @@ In function: map"} response-body)))))
                (select-keys submit-response-body [:error-code :value])))))))
 
 (deftest faucet-test
-  (let [address (.longValue Init/HERO)]
+  (let [handler (public-api-handler)
+        address (.longValue Init/HERO)]
     (testing "Success"
       (let [amount 1000
 
-            response @(client/POST-v1-faucet (server-url) {:address address :amount amount})
+            response (handler (-> (mock/request :post "/api/v1/faucet")
+                                  (mock/json-body {:address address
+                                                   :amount amount})))
+
             response-body (json/read-str (get response :body) :key-fn keyword)]
 
         (is (= 200 (get response :status)))
