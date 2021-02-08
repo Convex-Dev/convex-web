@@ -70,9 +70,6 @@
         ^String account-public-key (.toChecksumHex account-key)]
     (convex/create-account-with-key
       {:client (system/convex-client system)
-       :signer-key-pair Init/HERO_KP
-       :signer-address Init/HERO
-       :nonce (inc (convex/hero-sequence (system/convex-peer system)))
        :account-public-key account-public-key}))
 
 

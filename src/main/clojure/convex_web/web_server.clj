@@ -385,15 +385,10 @@
   (let [{:keys [public_key]} (json-decode body)]
     (if-not (s/valid? :convex-web/non-empty-string public_key)
       (bad-request-response (error "Missing public key."))
-      (let [peer (system/convex-peer system)
-
-            client (system/convex-client system)
+      (let [client (system/convex-client system)
 
             generated-address (convex/create-account-with-key
                                 {:client client
-                                 :signer-key-pair Init/HERO_KP
-                                 :signer-address Init/HERO
-                                 :nonce (inc (convex/hero-sequence peer))
                                  :account-public-key public_key})]
 
         (successful-response {:address (.longValue generated-address)})))))
@@ -420,10 +415,8 @@
       :else
       (let [client (system/convex-client system)
 
-            nonce (inc (convex/hero-sequence (system/convex-peer system)))
-
             transfer (convex/transfer-transaction {:address Init/HERO
-                                                   :nonce nonce
+                                                   :nonce 0
                                                    :target address
                                                    :amount amount})
 

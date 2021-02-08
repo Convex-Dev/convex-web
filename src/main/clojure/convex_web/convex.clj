@@ -487,19 +487,15 @@
 
    Returns Address."
   [{:keys [^Convex client
-           ^AKeyPair signer-key-pair
-           ^Address signer-address
-           ^Long nonce
            ^String account-public-key]}]
   (let [command (read-source (str "(create-account 0x" account-public-key ")") :convex-lisp)
 
-        tx-data {:nonce nonce
-                 :address signer-address
+        tx-data {:nonce 0
+                 :address Init/HERO
                  :command command}
 
         ^Result result (->> (invoke-transaction tx-data)
-                            (sign signer-key-pair)
-                            (transact client))]
+                            (transacta client))]
 
     (if (.isError result)
       (let [error-code (datafy-safe (.getErrorCode result))
