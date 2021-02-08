@@ -336,7 +336,7 @@
 
         _ (log/debug (str "Ref for hash " hash) tx-ref)
 
-        accountKey (AccountKey/fromChecksumHex account_key)
+        accountKey (AccountKey/fromHex account_key)
 
         signed-data (SignedData/create accountKey sig tx-ref)
 
