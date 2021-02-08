@@ -733,16 +733,13 @@
 (defn -GET-STATE [system _]
   (try
     (let [^Peer peer (system/convex-peer system)
-          ^State state (convex/consensus-state peer)
-
-          all-accounts (.getAccounts state)
-          accounts-count (count (map convex/account-status-data all-accounts))
-
-          ^BlobMap all-peers (.getPeers state)
-          peers-count (.count all-peers)]
+          ^State state (convex/consensus-state peer)]
       (-successful-response
-        #:convex-web.state {:accounts-count accounts-count
-                            :peers-count peers-count}))
+        #:convex-web.state {:accounts-count (.count (.getAccounts state))
+                            :peers-count (.count (.getPeers state))
+                            :memory-size (.getMemorySize state)
+                            :schedule-count (.count (.getSchedule state))
+                            :globals (convex/datafy (.getGlobals state))}))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error

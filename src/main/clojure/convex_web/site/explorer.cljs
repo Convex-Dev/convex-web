@@ -1008,7 +1008,13 @@
           :on-pop #'stop-polling-blocks})
 
 
-(defn StatePage [_ state set-state]
+(defn StateStats [label value]
+  [:div.bg-gray-50.overflow-hidden.shadow.rounded-lg
+   [:div.px-4.py-5.sm:p-6
+    [:dt.text-sm.font-medium.text-gray-500.truncate label]
+    [:dd.mt-1.text-3xl.font-semibold.text-gray-900 value]]])
+
+(defn StatePage [_ state _]
   (let [{status :ajax/status
          error :ajax/error
          state :convex-web/state} state]
@@ -1018,16 +1024,22 @@
        [gui/Spinner]]
 
       (= :ajax.status/success status)
-      [:dl.mt-5.grid.grid-cols-1.gap-5.sm:grid-cols-3.p-2
-       [:div.bg-gray-50.overflow-hidden.shadow.rounded-lg
-        [:div.px-4.py-5.sm:p-6
-         [:dt.text-sm.font-medium.text-gray-500.truncate "Number of Accounts"]
-         [:dd.mt-1.text-3xl.font-semibold.text-gray-900 (:convex-web.state/accounts-count state)]]]
-       [:div.bg-gray-50.overflow-hidden.shadow.rounded-lg
-        [:div.px-4.py-5.sm:p-6
-         [:dt.text-sm.font-medium.text-gray-500.truncate "Number of Peers"]
-         [:dd.mt-1.text-3xl.font-semibold.text-gray-900 (:convex-web.state/peers-count state)]]]]
+      [:dl.mt-5.grid.grid-cols-1.gap-5.sm:grid-cols-4.p-2
+       [StateStats
+        "Number of Peers"
+        (:convex-web.state/peers-count state)]
 
+       [StateStats
+        "Number of Accounts"
+        (:convex-web.state/accounts-count state)]
+
+       [StateStats
+        "Memory Size"
+        (format/format-number (:convex-web.state/memory-size state))]
+
+       [StateStats
+        "Schedule Count"
+        (format/format-number (:convex-web.state/schedule-count state))]]
 
       (= :ajax.status/error status)
       [:span (get-in error [:response :error :message])])))
