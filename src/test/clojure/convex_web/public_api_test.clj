@@ -78,6 +78,35 @@
         (is (= 400 (:status response)))
         (is (= {:error {:message ":UNDECLARED \"xabc\""}} body-decoded))))))
 
+(deftest create-account-and-topup-test
+  (testing "Create new Account and top up"
+    (let [^AKeyPair generated-key-pair (AKeyPair/generate)
+          ^AccountKey account-key (.getAccountKey generated-key-pair)
+          ^String account-public-key (.toChecksumHex account-key)
+
+          handler (public-api-handler)]
+
+      (testing "Create a new Account with Public Key"
+        (let [response (handler (-> (mock/request :post "/api/v1/create-account")
+                                    (mock/json-body {:public_key account-public-key})))
+
+              {generated-address :address} (json/read-str (get response :body) :key-fn keyword)]
+
+          (is (= 200 (:status response)))
+          (is (int? generated-address))
+
+          (testing "Top up Account"
+            (let [amount 1000
+
+                  response (handler (-> (mock/request :post "/api/v1/faucet")
+                                        (mock/json-body {:address generated-address
+                                                         :amount amount})))
+                  response-body (json/read-str (get response :body) :key-fn keyword)]
+
+              (is (= 200 (get response :status)))
+              (is (= #{:id :address :amount :value} (set (keys response-body))))
+              (is (= {:address generated-address :amount amount :value amount} (dissoc response-body :id))))))))))
+
 (deftest address-test
   (testing "Get Account by Address"
     (let [response @(client/GET-public-v1-account (server-url) (.longValue Init/HERO))
