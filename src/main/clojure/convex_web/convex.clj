@@ -455,34 +455,7 @@
                          ::anomalies/category category}
                         ex))))))
 
-(defn create-account
-  "Creates a new Account on the network.
-
-   Returns a pair of KeyPair and Address."
-  [{:keys [^Convex client
-           ^AKeyPair signer-key-pair
-           ^Address signer-address
-           ^Long nonce]}]
-  (let [^AKeyPair generated-key-pair (AKeyPair/generate)
-
-        ^AccountKey account-key (.getAccountKey generated-key-pair)
-
-        ^String public-key-str (.toChecksumHex account-key)
-
-        command (read-source (str "(create-account 0x" public-key-str ")") :convex-lisp)
-
-        tx-data {:nonce nonce
-                 :address signer-address
-                 :command command}
-
-        ^Result result (->> (invoke-transaction tx-data)
-                            (sign signer-key-pair)
-                            (transact client))]
-
-    ;; Result is an Address.
-    [generated-key-pair (.getValue result)]))
-
-(defn ^Address create-account-with-key
+(defn ^Address create-account
   "Creates a new Account on the network.
 
    Returns Address."

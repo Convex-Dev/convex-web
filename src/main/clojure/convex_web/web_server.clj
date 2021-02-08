@@ -30,7 +30,7 @@
             [hiccup.page :as page]
             [ring.util.anti-forgery])
   (:import (java.io InputStream)
-           (convex.core.crypto Hash ASignature)
+           (convex.core.crypto Hash ASignature AKeyPair)
            (convex.core.data Ref SignedData AccountKey BlobMap)
            (convex.core Init Peer State)
            (java.time Instant)
@@ -387,7 +387,7 @@
       (bad-request-response (error "Missing public key."))
       (let [client (system/convex-client system)
 
-            generated-address (convex/create-account-with-key
+            generated-address (convex/create-account
                                 {:client client
                                  :account-public-key public_key})]
 
@@ -561,21 +561,21 @@
 
       -server-error-response)))
 
-(defn -POST-create-account [system req]
+(defn -POST-create-account [system _]
   (try
     (u/log :logging.event/new-account :severity :info)
 
-    (let [peer (system/convex-peer system)
-          state (convex/consensus-state peer)
-          status (.getAccount state Init/HERO)
-          sequence (.getSequence status)
-          client (system/convex-client system)
+    (let [client (system/convex-client system)
 
-          [generated-key-pair generated-address] (convex/create-account
-                                                   {:client client
-                                                    :signer-key-pair Init/HERO_KP
-                                                    :signer-address Init/HERO
-                                                    :nonce (inc sequence)})
+          ^AKeyPair generated-key-pair (AKeyPair/generate)
+
+          ^AccountKey account-key (.getAccountKey generated-key-pair)
+
+          ^String public-key-str (.toChecksumHex account-key)
+
+          generated-address (convex/create-account
+                              {:client client
+                               :account-public-key public-key-str})
 
           account #:convex-web.account {:address (.longValue generated-address)
                                         :created-at (inst-ms (Instant/now))
