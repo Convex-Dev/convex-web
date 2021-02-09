@@ -9,6 +9,8 @@ Create a new Account on the network.
 
 ### Response
 
+- `address`: Address number.
+
 Examples:
  ```json
 {
@@ -21,6 +23,15 @@ Examples:
 *GET* https://convex.world/api/v1/accounts/<address>
 
 ### Response
+
+- `address`: Address number.
+- `is_library`: `true` if Account is a library.
+- `is_actor`: `true` if Account is an Actor.
+- `memory_size`: Ed25519 public key HEX string.
+- `allowance`: Ed25519 public key HEX string.
+- `type`: One of `"user"`, `"library"`, `"actor"`.
+- `balance`: 
+- `sequence`:
 
 Examples:
  ```json
@@ -55,6 +66,11 @@ Examples:
 
 ### Response
 
+- `id`: ID of the Transaction.
+- `address`: Address number.
+- `amount`: Requested amount.
+- `value`: Actual value returned by the Transaction - it can be less than `amount`.
+
 Examples:
  ```json
 {
@@ -82,6 +98,8 @@ Examples:
 ```
 
 ### Response
+
+- `value`: A Convex Lisp value - the result of evaluating `source`. 
 
 Examples:
  ```json
@@ -119,6 +137,11 @@ Examples:
 
 ### Response
 
+- `sequence_number`: Last sequence number of the Account.
+- `address`: Address number of the Account that will execute the Transaction.
+- `source`: Convex Lisp source of the Transaction.
+- `hash`: Unique hash of the Transaction.
+
 Examples:
  ```json
 {
@@ -134,8 +157,8 @@ Examples:
 *POST* https://convex.world/api/v1/transaction/submit
 
 ### Payload
-- `address`: Address number.
-- `account_key`: Ed25519 public key HEX string associated with this Address.
+- `address`: Address number of the Account that will execute the Transaction.
+- `account_key`: Ed25519 public key HEX string associated with Address.
 - `hash`: Prepare Transaction response's hash string.
 - `sig`: Ed25519 signature of the hash using your key pair.
 
