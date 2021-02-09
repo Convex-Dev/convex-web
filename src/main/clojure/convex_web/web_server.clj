@@ -603,20 +603,15 @@
           (-not-found-response (error (str "Account " address-long " not found."))))
 
         :else
-        (let [peer (system/convex-peer system)
-              state (convex/consensus-state peer)
-              status (.getAccount state Init/HERO)
-              sequence (.getSequence status)
-              client (system/convex-client system)
+        (let [client (system/convex-client system)
 
-              tx-data {:nonce (inc sequence)
+              tx-data {:nonce 0
                        :address Init/HERO
                        :target address-long
                        :amount 10000000}
 
               result (->> (convex/transfer-transaction tx-data)
-                          (convex/sign Init/HERO_KP)
-                          (convex/transact client))]
+                          (convex/transacta client))]
 
           (if (.isError result)
             (throw (ex-info "Failed to transfer funds." {:error-code (.getErrorCode result)}))
