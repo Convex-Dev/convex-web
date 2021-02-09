@@ -29,7 +29,7 @@
 
       (testing "Expected values"
         (is (= #:convex-web.result{:value 2
-                                   :value-kind :number}
+                                   :value-kind :long}
                (select-keys result [:convex-web.result/value
                                     :convex-web.result/value-kind]))))))
 

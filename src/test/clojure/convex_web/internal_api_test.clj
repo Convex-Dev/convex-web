@@ -91,7 +91,7 @@
 
             body (encoding/transit-decode-string (get response :body))]
 
-        (is (= #:convex-web.command{:metadata {:type :number}
+        (is (= #:convex-web.command{:metadata {:type :long}
                                     :mode :convex-web.command.mode/query
                                     :object 2
                                     :query #:convex-web.query{:language :convex-lisp :source "(inc 1)"}
@@ -120,7 +120,7 @@
 
           body (encoding/transit-decode-string (get response :body))]
 
-      (is (= #:convex-web.command{:metadata {:type :number}
+      (is (= #:convex-web.command{:metadata {:type :long}
                                   :mode :convex-web.command.mode/query
                                   :query #:convex-web.query{:language :convex-lisp :source source}
                                   :status :convex-web.command.status/success}
@@ -158,7 +158,7 @@
 
           body (encoding/transit-decode-string (get response :body))]
 
-      (is (= #:convex-web.command{:metadata {:type :number}
+      (is (= #:convex-web.command{:metadata {:type :long}
                                   :mode :convex-web.command.mode/query
                                   :query #:convex-web.query{:language :convex-lisp :source source}
                                   :status :convex-web.command.status/success}
@@ -177,7 +177,7 @@
 
           body (encoding/transit-decode-string (get response :body))]
 
-      (is (= #:convex-web.command{:metadata {:type :number}
+      (is (= #:convex-web.command{:metadata {:type :long}
                                   :mode :convex-web.command.mode/query
                                   :query #:convex-web.query{:language :convex-lisp :source source}
                                   :status :convex-web.command.status/success}

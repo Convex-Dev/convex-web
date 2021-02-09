@@ -123,9 +123,11 @@
     (is (= {:type :boolean} (c/result-metadata (convex/execute context true))))
     (is (= {:type :boolean} (c/result-metadata (convex/execute context false)))))
 
-  (testing "Number"
-    (is (= {:type :number} (c/result-metadata (convex/execute context 1))))
-    (is (= {:type :number} (c/result-metadata (convex/execute context 1.0)))))
+  (testing "Long"
+    (is (= {:type :long} (c/result-metadata (convex/execute context 1)))))
+
+  (testing "Double"
+    (is (= {:type :double} (c/result-metadata (convex/execute context 1.0)))))
 
   (testing "String"
     (is (= {:type :string} (c/result-metadata (convex/execute context "Hello")))))
