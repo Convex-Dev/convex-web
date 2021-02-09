@@ -1,4 +1,22 @@
-## Account
+## Create Account
+
+Create a new Account on the network.
+
+*POST* https://convex.world/api/v1/create-account
+
+### Payload
+- `public_key`: Ed25519 public key HEX string.
+
+### Response
+
+Examples:
+ ```json
+{
+  "address": 10
+}
+```
+
+## Account Details
 
 *GET* https://convex.world/api/v1/accounts/<address>
 
@@ -117,7 +135,7 @@ Examples:
 
 ### Payload
 - `address`: Address number.
-- `account_key`: Public key HEX string associated with this Address.
+- `account_key`: Ed25519 public key HEX string associated with this Address.
 - `hash`: Prepare Transaction response's hash string.
 - `sig`: Ed25519 signature of the hash using your key pair.
 
