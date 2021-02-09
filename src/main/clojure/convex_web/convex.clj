@@ -419,7 +419,7 @@
                                     ::anomalies/category category})
                           ex)))))))
 
-(defn ^Result transact
+(defn ^Result transact-signed
   "Transact-sync a SignedData with a default timeout.
 
    Returns Result.
@@ -437,7 +437,7 @@
                          ::anomalies/category category}
                         ex))))))
 
-(defn ^Result transacta
+(defn ^Result transact
   "Transact-sync an ATransaction with a default timeout.
 
    Returns Result.
@@ -469,7 +469,7 @@
                  :command command}
 
         ^Result result (->> (invoke-transaction tx-data)
-                            (transacta client))]
+                            (transact client))]
 
     (if (.isError result)
       (let [error-code (datafy-safe (.getErrorCode result))
@@ -490,7 +490,7 @@
           :target target
           :amount amount})
        (sign Init/HERO_KP)
-       (transact client)))
+       (transact-signed client)))
 
 (defn convex-core-reference []
   (->> (core-metadata)

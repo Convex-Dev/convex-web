@@ -349,7 +349,7 @@
         _ (log/debug "Transact signed data" signed-data)
 
         result (try
-                 (convex/transact client signed-data)
+                 (convex/transact-signed client signed-data)
                  (catch ExceptionInfo ex
                    ;; Reset sequence number for Address, because we don't know the Peer's state.
                    (convex/reset-sequence-number! address)
@@ -419,7 +419,7 @@
                                                    :amount amount})
 
             result (try
-                     (convex/transacta client transfer)
+                     (convex/transact client transfer)
                      (catch Exception ex
                        (log-rethrow-ex-info ex)))
 
@@ -611,7 +611,7 @@
                        :amount 10000000}
 
               result (->> (convex/transfer-transaction tx-data)
-                          (convex/transacta client))]
+                          (convex/transact client))]
 
           (if (.isError result)
             (throw (ex-info "Failed to transfer funds." {:error-code (.getErrorCode result)}))

@@ -168,7 +168,7 @@
                                                          :amount amount}))]
         (try
           (let [^Result r (->> (convex/sign (convex/create-key-pair key-pair) atransaction)
-                               (convex/transact (system/convex-client system)))
+                               (convex/transact-signed (system/convex-client system)))
 
                 bad-sequence-number? (when-let [error-code (.getErrorCode r)]
                                        (= :SEQUENCE (convex/datafy error-code)))]
