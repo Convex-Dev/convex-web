@@ -178,6 +178,11 @@
    :headers {"Content-Type" "application/transit+json"}
    :body (encoding/transit-encode body)})
 
+(defn forbidden-response [body]
+  {:status 403
+   :headers {"Content-Type" "application/json"}
+   :body (json-encode body)})
+
 ;; ---
 
 (defn -not-found-response [body]
@@ -342,7 +347,7 @@
 
         _ (when-not (.isValid signed-data)
             (throw (ex-info "Invalid signature."
-                            {::anomalies/category ::anomalies/incorrect})))
+                            {::anomalies/category ::anomalies/forbidden})))
 
         client (system/convex-client system)
 
@@ -459,12 +464,11 @@
             (throw (ex-info "Invalid lang."
                             {::anomalies/category ::anomalies/incorrect})))
 
-        ;; Address is optional.
         address (when-not (nil? address)
                   (try
                     (s/assert :convex-web/address address)
                     (catch Exception _
-                      (throw (ex-info "Invalid address."
+                      (throw (ex-info (str "Invalid address " address)
                                       {::anomalies/category ::anomalies/incorrect})))))
 
         source (try
@@ -963,42 +967,22 @@
       (catch Throwable ex
         (log/error "Web handler exception:" (with-out-str (stacktrace/print-stack-trace ex)))
 
-        ;; Mapping of anomaies categories to HTTP status code.
+        ;; Mapping of anomalies category to HTTP status code.
         (case (get (ex-data ex) ::anomalies/category)
-          ::anomalies/incorrect
-          (do
-            (u/log :logging.event/user-error
-                   :severity :error
-                   :message (ex-message ex)
-                   :exception ex)
+          ::anomalies/forbidden
+          (forbidden-response (error (ex-message ex)))
 
-            (bad-request-response (error (ex-message ex))))
+          ::anomalies/incorrect
+          (bad-request-response (error (ex-message ex)))
 
           ::anomalies/busy
-          (do
-            (u/log :logging.event/system-error
-                   :severity :error
-                   :message (ex-message ex)
-                   :exception ex)
-
-            (service-unavailable-response (error (ex-message ex))))
+          (service-unavailable-response (error (ex-message ex)))
 
           ::anomalies/fault
-          (do
-            (u/log :logging.event/system-error
-                   :severity :error
-                   :message (ex-message ex)
-                   :exception ex)
+          server-error-response
 
-            server-error-response)
-
-          (do
-            (u/log :logging.event/system-error
-                   :severity :error
-                   :message handler-exception-message
-                   :exception ex)
-
-            server-error-response))))))
+          ;; Default
+          server-error-response)))))
 
 (defn public-api-handler [system]
   (-> (public-api system)
