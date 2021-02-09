@@ -382,6 +382,11 @@
 (defmethod Output :string [{:convex-web.command/keys [object]}]
   [gui/Highlight (prn-str object)])
 
+(defmethod Output :double [{:convex-web.command/keys [object]}]
+  [gui/Highlight (if (js/Number.isInteger object)
+                   (.toFixed object 1)
+                   object)])
+
 (defmethod Output :function [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
    [gui/SymbolMeta (merge metadata output-symbol-metadata-options)]])

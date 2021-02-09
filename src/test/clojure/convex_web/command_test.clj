@@ -4,8 +4,7 @@
             [convex-web.command :as c]
             [convex-web.convex :as convex]
             [convex-web.test :refer :all])
-  (:import (convex.core.data StringShort)
-           (convex.core.lang Core)))
+  (:import (convex.core.data StringShort)))
 
 (def context (make-convex-context))
 
@@ -23,6 +22,16 @@
 
       (is (= {::c/status :convex-web.command.status/success
               ::c/object 1}
+             (select-keys command [::c/status ::c/object]))))
+
+    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
+                                     ::c/query
+                                     {:convex-web.query/source "1.0"
+                                      :convex-web.query/language :convex-lisp}})]
+
+      (is (= {::c/status :convex-web.command.status/success
+              ::c/object 1.0}
              (select-keys command [::c/status ::c/object]))))
 
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
@@ -87,6 +96,12 @@
              (select-keys command [::c/status ::c/object ::c/error]))))))
 
 (deftest sandbox-result-test
+  (testing "Long"
+    (is (= 1 (c/sandbox-result (convex/execute context 1)))))
+
+  (testing "Double"
+    (is (= 1.0 (c/sandbox-result (convex/execute context 1.0)))))
+
   (testing "Address"
     (is (= {:address 9}
            (c/sandbox-result (convex/execute context *address*)))))

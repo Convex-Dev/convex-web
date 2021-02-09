@@ -75,9 +75,11 @@
     (instance? CVMBool x)
     :boolean
 
-    (or (instance? CVMLong x)
-        (instance? CVMDouble x))
-    :number
+    (instance? CVMLong x)
+    :long
+
+    (instance? CVMDouble x)
+    :double
 
     (instance? AString x)
     :string

@@ -55,6 +55,7 @@
 
         (str result-value)))))
 
+;; TODO Merge with `value-kind`.
 (defn result-metadata [result-value & [{:keys [source lang]}]]
   (let [source-form (try
                       (when (and source (= :convex-lisp lang))
@@ -65,9 +66,11 @@
       (instance? CVMBool result-value)
       {:type :boolean}
 
-      (or (instance? CVMLong result-value)
-          (instance? CVMDouble result-value))
-      {:type :number}
+      (instance? CVMLong result-value)
+      {:type :long}
+
+      (instance? CVMDouble result-value)
+      {:type :double}
 
       (instance? AString result-value)
       {:type :string}

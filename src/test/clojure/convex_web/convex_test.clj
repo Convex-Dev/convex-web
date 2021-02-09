@@ -84,9 +84,11 @@
     (testing "Boolean"
       (is (= :boolean (convex/value-kind (convex/execute context true)))))
 
-    (testing "Number"
-      (is (= :number (convex/value-kind (convex/execute context 1))))
-      (is (= :number (convex/value-kind (convex/execute context 1.0)))))
+    (testing "Long"
+      (is (= :long (convex/value-kind (convex/execute context 1)))))
+
+    (testing "Double"
+      (is (= :double (convex/value-kind (convex/execute context 1.0)))))
 
     (testing "String"
       (is (= :string (convex/value-kind (convex/execute context "")))))
