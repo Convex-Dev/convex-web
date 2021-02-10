@@ -233,6 +233,14 @@
    :body (json-encode body)})
 
 
+(defn parse-lang [lang]
+  ({:convexLisp :convex-lisp
+    :convexScrypt :convex-scrypt
+
+    :convex-lisp :convex-lisp
+    :convex-scrypt :convex-scrypt} (or (some-> lang keyword) :convex-lisp)))
+
+
 ;; Public APIs
 ;; ==========================
 
@@ -259,7 +267,7 @@
 
         _ (log/debug "Prepare transaction" prepare)
 
-        lang (or (some-> lang keyword) :convex-lisp)
+        lang (parse-lang lang)
 
         _ (u/log :logging.event/transaction-prepare
                  :severity :info
@@ -493,7 +501,7 @@
 (defn POST-v1-query [system {:keys [body]}]
   (let [{:keys [address source lang]} (json-decode body)
 
-        lang (or (some-> lang keyword) :convex-lisp)
+        lang (parse-lang lang)
 
         _ (u/log :logging.event/query
                  :severity :info
