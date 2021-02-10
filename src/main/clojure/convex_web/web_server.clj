@@ -268,7 +268,7 @@
                         (anomaly-not-found (error-body error-code-NOBODY message error-source-server))))))))
 
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
-  (let [{:keys [address source lang sequence_number] :as prepare} (json-decode body)
+  (let [{:keys [address source lang sequence] :as prepare} (json-decode body)
 
         _ (log/debug "Prepare transaction" prepare)
 
@@ -309,9 +309,9 @@
     (locking (convex/lockee address)
       (let [peer (system/convex-peer system)
 
-            next-sequence-number (or sequence_number (inc (or (convex/get-sequence-number address)
-                                                              (convex/sequence-number peer address)
-                                                              0)))
+            next-sequence-number (or sequence (inc (or (convex/get-sequence-number address)
+                                                       (convex/sequence-number peer address)
+                                                       0)))
 
             tx (convex/invoke-transaction {:nonce next-sequence-number
                                            :address address
@@ -326,7 +326,7 @@
 
         (log/debug "Persisted transaction ref" tx-ref)
 
-        (successful-response {:sequence_number next-sequence-number
+        (successful-response {:sequence next-sequence-number
                               :address (.longValue address)
                               :source source
                               :lang lang

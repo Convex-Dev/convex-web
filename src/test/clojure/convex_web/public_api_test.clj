@@ -390,7 +390,7 @@ In function: map"}
         (is (= 200 (get prepare-response :status)))
 
         ;; Prepare response must contain these keys
-        (is (= #{:sequence_number
+        (is (= #{:sequence
                  :address
                  :source
                  :lang
@@ -448,7 +448,7 @@ In function: map"}
         (is (= 200 (get prepare-response :status)))
 
         ;; Prepare response must contain these keys.
-        (is (= #{:sequence_number
+        (is (= #{:sequence
                  :address
                  :source
                  :lang
