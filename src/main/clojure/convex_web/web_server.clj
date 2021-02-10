@@ -945,7 +945,7 @@
 (defn public-api [system]
   (routes
     (GET "/api/v1/accounts/:address" [address] (GET-v1-account system address))
-    (POST "/api/v1/create-account" req (POST-v1-create-account system req))
+    (POST "/api/v1/createAccount" req (POST-v1-create-account system req))
     (POST "/api/v1/faucet" req (POST-v1-faucet system req))
     (POST "/api/v1/query" req (POST-v1-query system req))
     (POST "/api/v1/transaction/prepare" req (POST-v1-transaction-prepare system req))

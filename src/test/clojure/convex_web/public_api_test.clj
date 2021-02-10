@@ -34,7 +34,7 @@
           handler (public-api-handler)]
 
       (testing "Create a new Account with Public Key"
-        (let [response (handler (-> (mock/request :post "/api/v1/create-account")
+        (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
                                     (mock/json-body {:public_key account-public-key})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
@@ -43,35 +43,35 @@
 
 
       (testing "Bad request"
-        (let [response (handler (-> (mock/request :post "/api/v1/create-account")
+        (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
                                     (mock/json-body {})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:error {:message "Missing public key."}} body-decoded)))
 
-        (let [response (handler (-> (mock/request :post "/api/v1/create-account")
+        (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
                                     (mock/json-body nil)))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:error {:message "Missing public key."}} body-decoded)))
 
-        (let [response (handler (-> (mock/request :post "/api/v1/create-account")
+        (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
                                     (mock/json-body {:public_key nil})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:error {:message "Missing public key."}} body-decoded)))
 
-        (let [response (handler (-> (mock/request :post "/api/v1/create-account")
+        (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
                                     (mock/json-body {:public_key "      "})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:error {:message "Missing public key."}} body-decoded))))
 
-      (let [response (handler (-> (mock/request :post "/api/v1/create-account")
+      (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
                                   (mock/json-body {:public_key "abc"})))
 
             body-decoded (json/read-str (get response :body) :key-fn keyword)]
@@ -87,7 +87,7 @@
           handler (public-api-handler)]
 
       (testing "Create a new Account with Public Key"
-        (let [response (handler (-> (mock/request :post "/api/v1/create-account")
+        (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
                                     (mock/json-body {:public_key account-public-key})))
 
               {generated-address :address} (json/read-str (get response :body) :key-fn keyword)]
