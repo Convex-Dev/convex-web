@@ -387,12 +387,12 @@
     (successful-response result-response)))
 
 (defn POST-v1-create-account [system {:keys [body]}]
-  (let [{:keys [public_key]} (json-decode body)]
-    (if-not (s/valid? :convex-web/non-empty-string public_key)
+  (let [{:keys [publicKey]} (json-decode body)]
+    (if-not (s/valid? :convex-web/non-empty-string publicKey)
       (bad-request-response (error "Missing public key."))
       (let [client (system/convex-client system)
 
-            generated-address (convex/create-account client public_key)]
+            generated-address (convex/create-account client publicKey)]
 
         (successful-response {:address (.longValue generated-address)})))))
 

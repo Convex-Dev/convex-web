@@ -35,7 +35,7 @@
 
       (testing "Create a new Account with Public Key"
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:public_key account-public-key})))
+                                    (mock/json-body {:publicKey account-public-key})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 200 (:status response)))
@@ -58,21 +58,21 @@
           (is (= {:error {:message "Missing public key."}} body-decoded)))
 
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:public_key nil})))
+                                    (mock/json-body {:publicKey nil})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:error {:message "Missing public key."}} body-decoded)))
 
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:public_key "      "})))
+                                    (mock/json-body {:publicKey "      "})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:error {:message "Missing public key."}} body-decoded))))
 
       (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                  (mock/json-body {:public_key "abc"})))
+                                  (mock/json-body {:publicKey "abc"})))
 
             body-decoded (json/read-str (get response :body) :key-fn keyword)]
         (is (= 400 (:status response)))
@@ -88,7 +88,7 @@
 
       (testing "Create a new Account with Public Key"
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:public_key account-public-key})))
+                                    (mock/json-body {:publicKey account-public-key})))
 
               {generated-address :address} (json/read-str (get response :body) :key-fn keyword)]
 
