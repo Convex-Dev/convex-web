@@ -175,6 +175,11 @@
    :headers {"Content-Type" "application/json"}
    :body (json-encode (error-body "ERROR" "Sorry. Our server failed to process your request." error-source-server))})
 
+(defn server-error-response2 [body]
+  {:status 500
+   :headers {"Content-Type" "application/json"}
+   :body (json-encode body)})
+
 ;; ---
 
 (defn -successful-response [body & more]
@@ -1048,11 +1053,20 @@
             ::anomalies/busy
             (service-unavailable-response error-body)
 
+            ;; NOTE
+            ;; Disclose error details to the client for debugging purposes - for the time being (2021-02-10).
+
             ::anomalies/fault
-            server-error-response
+            (server-error-response2
+              (error-body "SERVER"
+                          (with-out-str (stacktrace/print-stack-trace ex))
+                          error-source-server))
 
             ;; Default
-            server-error-response))))))
+            (server-error-response2
+              (error-body "SERVER"
+                          (with-out-str (stacktrace/print-stack-trace ex))
+                          error-source-server))))))))
 
 (defn public-api-handler [system]
   (-> (public-api system)
