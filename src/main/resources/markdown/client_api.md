@@ -4,10 +4,10 @@ Payload and Response are both JSON Objects. Depending on the API endpoint, this 
 
 Create a new Account on the network. This does not require an existing Account on the Test Network because the server will pay for the cost of constructing the new Account.
 
-**POST** https://convex.world/api/v1/create-account
+**POST** https://convex.world/api/v1/createAccount
 
 ### Payload
-- `publicKey`: Ed25519 public key HEX string - it should be 64 characters.
+- `accountKey`: Ed25519 public key HEX string - it should be 64 characters.
 
 ### Response
 

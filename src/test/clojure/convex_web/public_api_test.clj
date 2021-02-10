@@ -35,7 +35,7 @@
 
       (testing "Create a new Account with Public Key"
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:publicKey account-public-key})))
+                                    (mock/json-body {:accountKey account-public-key})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 200 (:status response)))
@@ -50,7 +50,7 @@
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
-                  :value "Missing public key."}
+                  :value "Missing account key."}
                  body-decoded)))
 
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
@@ -60,31 +60,31 @@
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
-                  :value "Missing public key."}
+                  :value "Missing account key."}
                  body-decoded)))
 
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:publicKey nil})))
+                                    (mock/json-body {:accountKey nil})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
-                  :value "Missing public key."}
+                  :value "Missing account key."}
                  body-decoded)))
 
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:publicKey "      "})))
+                                    (mock/json-body {:accountKey "      "})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
-                  :value "Missing public key."}
+                  :value "Missing account key."}
                  body-decoded))))
 
       (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                  (mock/json-body {:publicKey "abc"})))
+                                  (mock/json-body {:accountKey "abc"})))
 
             body-decoded (json/read-str (get response :body) :key-fn keyword)]
         (is (= 400 (:status response)))
@@ -103,7 +103,7 @@
 
       (testing "Create a new Account with Public Key"
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:publicKey account-public-key})))
+                                    (mock/json-body {:accountKey account-public-key})))
 
               {generated-address :address} (json/read-str (get response :body) :key-fn keyword)]
 

@@ -428,16 +428,16 @@
     (successful-response result-response)))
 
 (defn POST-v1-create-account [system {:keys [body]}]
-  (let [{:keys [publicKey]} (json-decode body)]
-    (when-not (s/valid? :convex-web/non-empty-string publicKey)
-      (throw (ex-info "Missing public key."
+  (let [{:keys [accountKey]} (json-decode body)]
+    (when-not (s/valid? :convex-web/non-empty-string accountKey)
+      (throw (ex-info "Missing account key."
                       (anomaly-incorrect
-                        (error-body "MISSING" "Missing public key." error-source-server)))))
+                        (error-body "MISSING" "Missing account key." error-source-server)))))
 
     (let [client (system/convex-client system)
 
           generated-address (try
-                              (convex/create-account client publicKey)
+                              (convex/create-account client accountKey)
                               (catch ExceptionInfo ex
                                 (let [{:keys [result] ::anomalies/keys [message]} (ex-data ex)
                                       code (convex/datafy-safe (.getErrorCode result))]
