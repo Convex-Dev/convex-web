@@ -8,10 +8,17 @@
    {:source "*address*"}
 
    :check-balance
-   {:source "(balance \"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\")"}
+   {:source "(balance #9)"}
 
    :transfer
-   {:source "(transfer \"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\" 1000)"}
+   {:source "(transfer #9 1000)"}
+
+   :simple-storage-actor
+   {:source "(def storage-example-address
+              (deploy '(do (def stored-data nil)
+                           (defn get [] stored-data)
+                           (defn set [x] (def stored-data x))
+                           (export get set))))"}
 
    :subcurrency-actor
    {:source "(deploy '(do (def owner *caller*)

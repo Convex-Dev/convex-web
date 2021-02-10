@@ -28,12 +28,16 @@
                     timestamp)]
     (timeago/format timestamp)))
 
-(defn prefix-0x [s]
-  (when-not (str/blank? s)
-    (if (str/starts-with? s "0x")
-      s
-      (str "0x" s))))
+(defn prefix-# [s]
+  (let [s (if (string? s) s (str s))]
+    (when-not (str/blank? s)
+      (if (str/starts-with? s "#")
+        s
+        (str "#" s)))))
 
 (defn trim-0x [s]
   (when-not (str/blank? s)
     (str/replace s #"^0x" "")))
+
+(defn descriptive-address [address]
+  (str "Account " (prefix-# address)))

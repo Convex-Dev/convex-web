@@ -1,7 +1,7 @@
 {:paths ["src/main/clojure" "src/main/resources"]
 
  :deps
- {org.clojure/clojure {:mvn/version "1.10.1"}
+ {org.clojure/clojure {:mvn/version "1.10.2"}
   org.clojure/clojurescript {:mvn/version "1.10.773"
                              ;; These exclusions are required because of Shadow CLJS.
                              :exclusions
@@ -15,7 +15,7 @@
   com.cognitect/transit-cljs {:mvn/version "0.8.264"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
 
-  world.convex/convex {:local/root "convex-0.0.1-SNAPSHOT.jar"}
+  world.convex/convex {:local/root "convex.jar"}
 
   ;; Required by Convex but it seems to have some
   ;; odd classpath conflict going on, that's why it's added here.
@@ -59,7 +59,7 @@
   ;; ```
   com.google.guava/guava {:mvn/version "30.0-jre"}
 
-  com.brunobonacci/mulog {:mvn/version "0.6.2"}
+  com.brunobonacci/mulog {:mvn/version "0.6.4"}
 
   lambdaisland/glogi {:mvn/version "1.0.74"}
 
@@ -67,7 +67,7 @@
 
 
   aero/aero {:mvn/version "1.1.6"}
-  ring/ring-core {:mvn/version "1.8.2"}
+  ring/ring-core {:mvn/version "1.9.0"}
   ring/ring-defaults {:mvn/version "0.3.2"}
   ring/ring-mock {:mvn/version "0.4.0"}
   http-kit/http-kit {:mvn/version "2.5.1"}
@@ -112,7 +112,7 @@
 
   ;; -- Site (ClojureScript app)
   :site-dev
-  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.14"}
+  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.18"}
                 binaryage/devtools {:mvn/version "1.0.2"}}}
 
 

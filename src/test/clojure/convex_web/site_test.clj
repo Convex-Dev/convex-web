@@ -32,10 +32,7 @@
       (testing "Address 4444444444444444444444444444444444444444444444444444444444444444"
         (let [[{:convex-web.account/keys [address]}] (get latest-accounts-body :convex-web/accounts)
 
-              {:keys [status body]} @(http/get (str (server-url) "/api/internal/accounts/" address))
-
-              account (encoding/transit-decode-string body)
-              account-no-env (dissoc (get account :convex-web.account/status) :convex-web.account-status/environment)]
+              {:keys [status]} @(http/get (str (server-url) "/api/internal/accounts/" address))]
           (is (= 200 status)))))
 
     (testing "Range 10-15"

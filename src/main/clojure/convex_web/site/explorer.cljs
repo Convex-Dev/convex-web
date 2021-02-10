@@ -111,7 +111,7 @@
           :href (rfe/href :route-name/account-explorer {:address address})}
          [gui/Tooltip
           {:title address}
-          [:span.font-mono.text-xs (format/prefix-0x address)]]]]]
+          [:span.font-mono.text-xs (format/prefix-# address)]]]]]
 
       ;; -- Timestamp
       [:div.flex.flex-col.space-y-2
@@ -308,15 +308,16 @@
           ;; -- 2. Signer
           [:td {:class td-class}
            (let [address (get m :convex-web.signed-data/address)]
-             [:div.flex.items-center.w-40
+             [:div.flex.items-center.w-40.space-x-1
               [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
               [:a.flex-1.truncate
                {:class gui/hyperlink-hover-class
                 :href (rfe/href :route-name/account-explorer {:address address})}
                [gui/Tooltip
-                {:title address}
-                [:span.font-mono.text-xs (format/prefix-0x address)]]]])]
+                {:title (format/descriptive-address address)
+                 :size "small"}
+                [:span.font-mono.text-xs (format/prefix-# address)]]]])]
 
           ;; -- 3. Timestamp
           [:td {:class td-class}
@@ -395,8 +396,9 @@
                   {:class gui/hyperlink-hover-class
                    :href (rfe/href :route-name/account-explorer {:address address})}
                   [gui/Tooltip
-                   {:title address}
-                   [:span.font-mono.text-xs (format/prefix-0x address)]]]])])]]))]]])
+                   {:title (format/descriptive-address address)
+                    :size "small"}
+                   [:span.font-mono.text-xs (format/prefix-# address)]]]])])]]))]]])
 
 (s/def :explorer.blocks.state/pending
   (s/merge :ajax/pending-status (s/keys :req [:runtime/interval-ref])))
@@ -575,15 +577,15 @@
     (let [active-address (session/?active-address)
 
           my-addresses (->> (session/?accounts)
-                            (map (comp str/upper-case :convex-web.account/address))
+                            (map :convex-web.account/address)
                             (into #{}))]
       [:tbody
-       (for [{:convex-web.account/keys [address status]} (sort-by (comp str/lower-case :convex-web.account/address) accounts)]
+       (for [{:convex-web.account/keys [address status]} accounts]
          (let [td-class "p-2 font-mono text-xs text-gray-700 whitespace-no-wrap"
 
-               me? (contains? my-addresses (str/upper-case address))
+               me? (contains? my-addresses address)
 
-               address-blob (format/prefix-0x address)]
+               address-string (format/prefix-# address)]
            ^{:key address}
            [:tr.cursor-default
             ;; -- Address
@@ -597,13 +599,11 @@
                                                                     {:ajax/status :ajax.status/pending
                                                                      :convex-web/account {:convex-web.account/address address}}
                                                                     :modal? true})}
-                 address-blob]
+                 address-string]
                 [:a.flex-1.mx-2
                  {:class gui/hyperlink-hover-class
                   :href (rfe/href :route-name/account-explorer {:address address})}
-                 [:code.text-xs address-blob]])
-
-              [gui/ClipboardCopy address-blob]]
+                 [:code.text-xs address-string]])]
 
              (when (and me? (not= address active-address))
                [gui/Tooltip
@@ -684,9 +684,7 @@
      [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
                     :page-num (pagination/page-num start total)
-                    :first-label "First"
                     :first-href (rfe/href :route-name/accounts-explorer)
-                    :last-label "Last"
                     :last-href (rfe/href :route-name/accounts-explorer {} pagination/min-range)
                     :previous-href (rfe/href :route-name/accounts-explorer {} previous-query)
                     :next-href (rfe/href :route-name/accounts-explorer {} next-query)
@@ -698,7 +696,7 @@
        [:div.flex.flex-1.justify-center.items-center
         [gui/Spinner]]
 
-       [AccountsTable accounts {:modal? modal?}])]))
+       [AccountsTable (sort-by :convex-web.account/address #(compare %2 %1) accounts) {:modal? modal?}])]))
 
 (def accounts-range-page
   #:page {:id :page.id/accounts-range-explorer
@@ -832,12 +830,9 @@
 
                 ;; -- Peer
                 [:td {:class td-class}
-                 [:div.flex.items-center
-                  [gui/AIdenticon {:value peer :size gui/identicon-size-small}]
-                  [:a
-                   {:class gui/hyperlink-hover-class
-                    :href (rfe/href :route-name/account-explorer {:address peer})}
-                   [:span (format/prefix-0x peer)]]]]]))]]]))))
+                 [:div.flex.items-center.space-x-1
+                  [gui/Jdenticon {:value peer :size gui/identicon-size-small}]
+                  [:span (format/prefix-# peer)]]]]))]]]))))
 
 (defn BlocksPage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks]} _]
   (case status
@@ -1011,3 +1006,58 @@
           :state-spec :explorer.blocks/state-spec
           :on-push #'start-polling-blocks
           :on-pop #'stop-polling-blocks})
+
+
+(defn StateStats [label value]
+  [:div.bg-gray-50.overflow-hidden.shadow.rounded-lg
+   [:div.px-4.py-5.sm:p-6
+    [:dt.text-sm.font-medium.text-gray-500.truncate label]
+    [:dd.mt-1.text-3xl.font-semibold.text-gray-900 value]]])
+
+(defn StatePage [_ state _]
+  (let [{status :ajax/status
+         error :ajax/error
+         state :convex-web/state} state]
+    (cond
+      (= :ajax.status/pending status)
+      [:div.flex.flex-1.justify-center.items-center
+       [gui/Spinner]]
+
+      (= :ajax.status/success status)
+      [:dl.mt-5.grid.grid-cols-1.gap-5.sm:grid-cols-4.p-2
+       [StateStats
+        "Number of Peers"
+        (:convex-web.state/peers-count state)]
+
+       [StateStats
+        "Number of Accounts"
+        (:convex-web.state/accounts-count state)]
+
+       [StateStats
+        "Memory Size"
+        (format/format-number (:convex-web.state/memory-size state))]
+
+       [StateStats
+        "Schedule Count"
+        (format/format-number (:convex-web.state/schedule-count state))]]
+
+      (= :ajax.status/error status)
+      [:span (get-in error [:response :error :message])])))
+
+(def state-page
+  #:page {:id :page.id/state
+          :title "State"
+          :component #'StatePage
+          :initial-state {:ajax/status :ajax.status/pending}
+          :state-spec (s/merge :ajax/statuses (s/keys :opt [:convex-web/state]))
+          :on-push
+          (fn [_ _ set-state]
+            (backend/GET-state
+              {:handler
+               (fn [state]
+                 (set-state #(assoc % :ajax/status :ajax.status/success
+                                      :convex-web/state state)))
+               :error-handler
+               (fn [error]
+                 (set-state #(assoc % :ajax/status :ajax.status/error
+                                      :ajax/error error)))}))})

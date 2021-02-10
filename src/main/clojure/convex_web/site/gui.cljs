@@ -132,7 +132,7 @@
 (defn AIdenticon
   "Convex Account Identicon."
   [{:keys [value size]}]
-  [Jdenticon {:value (format/trim-0x (str/lower-case value))
+  [Jdenticon {:value value
               :size size}])
 
 (defn Dismissible
@@ -750,7 +750,7 @@
                                           environment
                                           type]} status
 
-        address-blob (format/prefix-0x address)
+        address-string (format/prefix-# address)
 
         caption-style "text-gray-600 text-base leading-none cursor-default"
         caption-container-style "flex flex-col space-y-1"
@@ -773,8 +773,7 @@
        [:div {:class caption-container-style}
         [:span {:class caption-style} "Address"]
         [:span.inline-flex.items-center
-         [:span.font-mono.text-base.mr-2 address-blob]
-         [ClipboardCopy address-blob]]]
+         [:span.font-mono.text-base.mr-2 address-string]]]
 
        ;; -- QR Code
        [:> QRCode
@@ -945,7 +944,7 @@
              [AIdenticon {:value active-address :size 40}]
 
              [:span.font-mono.block.ml-2
-              (format/prefix-0x active-address)]])
+              (format/prefix-# active-address)]])
 
           [:svg.h-5.w-5.text-gray-400.pr-2.pointer-events-none
            {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
@@ -957,7 +956,7 @@
            (merge dropdown-transition {:show? show?})
            [Dismissible
             {:on-dismiss #(swap! state-ref update :show? (constantly false))}
-            [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
+            [:div.origin-top-right.absolute.right-0.rounded-md.shadow-lg.bg-white
              [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
 
               (for [address addresses]
@@ -979,7 +978,7 @@
                   [AIdenticon {:value address :size 40}]
 
                   [:span.font-mono.block.ml-2
-                   (format/prefix-0x address)]]])]]]]]]))))
+                   (format/prefix-# address)]]])]]]]]]))))
 
 
 (defn AddressRenderer [object]
@@ -997,22 +996,7 @@
                             (js/console.error error)
                             (reset! account-ref {:ajax/status :ajax.status/error
                                                  :ajax/error error}))})]
-    [:div.flex.flex-col.bg-white.rounded.shadow.p-2
-     [:span.text-xs.text-indigo-500.uppercase "Address"]
-     [:div.flex.items-center
-      [:a.hover:underline.mr-2
-       {:href (rfe/href :route-name/account-explorer {:address object})}
-       [:div.flex.items-center
-
-        ;; *Important*
-        ;; Display identicon if and only if address is an existing Account.
-        (when (= :ajax.status/success (:ajax/status @account-ref))
-          [AIdenticon {:value object :size identicon-size-small}])
-
-        [:code.text-xs (format/prefix-0x object)]]]
-
-      [ClipboardCopy (format/prefix-0x object)]]
-
+    [:div.bg-white.rounded.shadow.p-2
      (case (:ajax/status @account-ref)
        :ajax.status/pending
        [SpinnerSmall]
@@ -1021,14 +1005,32 @@
        [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])]
 
        :ajax.status/success
-       [:<>
-        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
-        (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
-          [:span.text-xs.uppercase (format/format-number balance)])
+       [:div.flex.space-x-4
 
-        [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
+        ;; -- Address.
+        [:div.flex.flex-col
+         [:span.text-xs.text-indigo-500.uppercase.mt-2 "Address"]
+         [:a.inline-flex.items-center.space-x-1
+          {:href (rfe/href :route-name/account-explorer {:address object})}
+          [AIdenticon {:value (str object) :size identicon-size-small}]
+
+          [:span.font-mono.text-xs.truncate
+           {:class hyperlink-hover-class}
+           (format/prefix-# object)]]]
+
+        ;; -- Balance.
+        (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
+          [:div.flex.flex-col
+           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
+           [:div.flex.flex-col.flex-1.justify-center
+            [:span.text-xs (format/format-number balance)]]])
+
+        ;; -- Type.
         (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
-          [:span.text-xs.uppercase type])])]))
+          [:div.flex.flex-col
+           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
+           [:div.flex.flex-col.flex-1.justify-center
+            [:span.text-xs.uppercase type]]])])]))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow

@@ -216,6 +216,13 @@
                                                 :state {:id :explorer}
                                                 :reset? true}))}]}]
 
+    ["/state"
+     {:name :route-name/state
+      :controllers
+      [{:identity identity
+        :start (fn [_]
+                 (stack/push :page.id/state {:reset? true}))}]}]
+
     ["/accounts"
      {:name :route-name/accounts-explorer
       :controllers

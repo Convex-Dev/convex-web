@@ -6,7 +6,7 @@
             [convex-web.test :refer :all])
   (:import (convex.core.data StringShort)))
 
-(def context (convex-context))
+(def context (make-convex-context))
 
 (def system nil)
 
@@ -15,6 +15,7 @@
 (deftest query-mode-test
   (testing "Simple Commands"
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
                                      ::c/query
                                      {:convex-web.query/source "1"
                                       :convex-web.query/language :convex-lisp}})]
@@ -24,6 +25,17 @@
              (select-keys command [::c/status ::c/object]))))
 
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
+                                     ::c/query
+                                     {:convex-web.query/source "1.0"
+                                      :convex-web.query/language :convex-lisp}})]
+
+      (is (= {::c/status :convex-web.command.status/success
+              ::c/object 1.0}
+             (select-keys command [::c/status ::c/object]))))
+
+    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
                                      ::c/query
                                      {:convex-web.query/source "\"Hello\""
                                       :convex-web.query/language :convex-lisp}})]
@@ -34,6 +46,7 @@
 
   (testing "Symbol lookup"
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
                                      ::c/query
                                      {:convex-web.query/source "inc"
                                       :convex-web.query/language :convex-lisp}})]
@@ -44,6 +57,7 @@
 
   (testing "Lookup doc"
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
                                      ::c/query
                                      {:convex-web.query/source "(doc inc)"
                                       :convex-web.query/language :convex-lisp}})]
@@ -68,27 +82,33 @@
 
   (testing "Cast error"
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
+                                     ::c/address 9
                                      ::c/query
                                      {:convex-web.query/source "(map inc 1)"
                                       :convex-web.query/language :convex-lisp}})]
 
       (is (= {::c/status :convex-web.command.status/error
-              ::c/object "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"
+              ::c/object "Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence"
               ::c/error
               {:code :CAST
-               :message "Can't convert 1 of class java.lang.Long to class class convex.core.data.ASequence"
+               :message "Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence"
                :trace nil}}
              (select-keys command [::c/status ::c/object ::c/error]))))))
 
 (deftest sandbox-result-test
+  (testing "Long"
+    (is (= 1 (c/sandbox-result (convex/execute context 1)))))
+
+  (testing "Double"
+    (is (= 1.0 (c/sandbox-result (convex/execute context 1.0)))))
+
   (testing "Address"
-    (is (= {:checksum-hex "7E66429CA9c10e68eFae2dCBF1804f0F6B3369c7164a3187D6233683c258710f"
-            :hex-string "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"}
+    (is (= {:address 9}
            (c/sandbox-result (convex/execute context *address*)))))
 
   (testing "Blob"
-    (is (= {:hex-string "7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f"
-            :length 32}
+    (is (= {:hex-string "0000000000000009"
+            :length 8}
            (c/sandbox-result (convex/execute context (blob *address*))))))
 
   (testing "StringShort"
@@ -103,9 +123,11 @@
     (is (= {:type :boolean} (c/result-metadata (convex/execute context true))))
     (is (= {:type :boolean} (c/result-metadata (convex/execute context false)))))
 
-  (testing "Number"
-    (is (= {:type :number} (c/result-metadata (convex/execute context 1))))
-    (is (= {:type :number} (c/result-metadata (convex/execute context 1.0)))))
+  (testing "Long"
+    (is (= {:type :long} (c/result-metadata (convex/execute context 1)))))
+
+  (testing "Double"
+    (is (= {:type :double} (c/result-metadata (convex/execute context 1.0)))))
 
   (testing "String"
     (is (= {:type :string} (c/result-metadata (convex/execute context "Hello")))))
@@ -155,7 +177,7 @@
 
   (testing "Special"
     (is (= {:type :symbol} (c/result-metadata (convex/execute context def))))
-    (is (= {:doc {:description "Creates a definition in the current environment. This value will persist in the enviroment owned by the current account."
+    (is (= {:doc {:description "Creates a definition in the current environment. This value will persist in the environment owned by the current account."
                   :examples [{:code "(def a 10)"}]
                   :signature [{:params ['sym 'value]}]
                   :symbol "def"

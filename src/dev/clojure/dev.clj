@@ -30,7 +30,8 @@
             [expound.alpha :as expound])
   (:import (convex.core Init Peer)
            (convex.core.lang Core Reader Context)
-           (convex.core.crypto Hash)))
+           (convex.core.crypto Hash AKeyPair)
+           (convex.core.data AccountKey Address)))
 
 ;; -- Logging
 (set-init
@@ -40,7 +41,7 @@
 (def context (Context/createFake Init/STATE Init/HERO))
 
 (defn ^Peer peer []
-  (system/convex-peer-server system))
+  (system/convex-peer system))
 
 (defmacro execute [form]
   `(convex/execute context ~form))
@@ -51,7 +52,24 @@
 (defn db []
   @(system/db-conn system))
 
+
 (comment
+
+  (kaocha/test-plan)
+
+  (kaocha/run :unit)
+  (kaocha/run 'convex-web.integration.peer-integration-test)
+  (kaocha/run 'convex-web.convex-test)
+  (kaocha/run 'convex-web.internal-api-test)
+  (kaocha/run 'convex-web.public-api-test)
+
+
+  ;;; -- Create Account
+  (let [^AKeyPair generated-key-pair (AKeyPair/generate)
+        ^AccountKey account-key (.getAccountKey generated-key-pair)
+        ^String account-public-key (.toChecksumHex account-key)]
+    (convex/create-account (system/convex-client system) account-public-key))
+
 
   ;; -- Reset database
   (let [dir (get-in system [:config :config :datalevin :dir])]
@@ -69,10 +87,6 @@
   (clojure.test/run-tests
     'convex-web.specs-test
     'convex-web.internal-api-test)
-
-  (kaocha/test-plan)
-  (kaocha/run :unit)
-
 
   ;; -- Sessions
   (d/q '[:find [(pull ?e [*
@@ -92,7 +106,20 @@
   (session/find-session @(system/db-conn system) "iGlF3AZWw0eGuGfL_ib4-")
 
 
-  (let [a (.getAccounts (.getConsensusState (system/convex-peer-server system)))]
+  ;; All Convex Addresses.
+  (def all-accounts (convex/accounts-indexed (system/convex-peer system)))
+
+  (get all-accounts (.longValue Init/HERO))
+
+  (map
+    (fn [[address-long _]]
+      address-long)
+    all-accounts)
+
+  (convex/account-status (system/convex-peer system) Init/HERO)
+
+
+  (let [a (.getAccounts (.getConsensusState (system/convex-peer system)))]
     (doseq [[k v] (convex.core.lang.RT/sequence a)]
       (print k v)))
 

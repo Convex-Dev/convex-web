@@ -10,7 +10,7 @@
   (:import (convex.core.lang Context)
            (convex.core Init)))
 
-(defn convex-context [& [{:keys [address]}]]
+(defn make-convex-context [& [{:keys [address]}]]
   (Context/createFake Init/STATE (or address Init/HERO)))
 
 (defmacro catch-throwable [& body]
