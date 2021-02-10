@@ -478,9 +478,8 @@
             error-result (datafy-safe (.getValue result))
             message (pr-str error-code error-result)]
         (throw (ex-info message {::anomalies/message message
-                                 ::anomalies/category ::anomalies/incorrect
-                                 :error/code error-code
-                                 :error/result error-result})))
+                                 ::anomalies/category ::anomalies/fault
+                                 :result result})))
       (.getValue result))))
 
 (defn ^Result faucet

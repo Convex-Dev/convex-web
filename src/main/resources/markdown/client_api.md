@@ -43,9 +43,9 @@ Examples:
  ```json
 {
   "address": 9,
-  "is_library": false,
-  "is_actor": false,
-  "memory_size": 75,
+  "isLibrary": false,
+  "isActor": false,
+  "memorySize": 75,
   "allowance": 10000000,
   "type": "user",
   "balance": 10000000000,

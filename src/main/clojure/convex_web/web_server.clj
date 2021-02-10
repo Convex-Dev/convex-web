@@ -135,6 +135,36 @@
                  (when data
                    {:data data}))})
 
+;; ---
+
+(def error-code-NOBODY "NOBODY")
+(def error-code-MISSING "MISSING")
+(def error-code-INCORRECT "INCORRECT")
+(def error-code-FORBIDDEN "FORBIDDEN")
+
+(def error-source-server "Server")
+(def error-source-cvm "CVM")
+(def error-source-peer "Peer")
+
+(defn error-body [code value source]
+  {:errorCode code
+   :value value
+   :source source})
+
+(defn anomaly-incorrect [error-body]
+  {::anomalies/category ::anomalies/incorrect
+   ::error-body error-body})
+
+(defn anomaly-forbidden [error-body]
+  {::anomalies/category ::anomalies/forbidden
+   ::error-body error-body})
+
+(defn anomaly-not-found [error-body]
+  {::anomalies/category ::anomalies/not-found
+   ::error-body error-body})
+
+;; ---
+
 (def -server-error-response
   {:status 500
    :headers {"Content-Type" "application/transit+json"}
@@ -143,7 +173,7 @@
 (def server-error-response
   {:status 500
    :headers {"Content-Type" "application/json"}
-   :body (json-encode (error "Sorry. Our server failed to process your request."))})
+   :body (json-encode (error-body "ERROR" "Sorry. Our server failed to process your request." error-source-server))})
 
 ;; ---
 
@@ -202,30 +232,6 @@
    :headers {"Content-Type" "application/json"}
    :body (json-encode body)})
 
-;; ---
-
-(defn log-rethrow-ex-info
-  "Logs ex with a custom message (for known exceptions),
-   and re-throw as an ExceptionIfo."
-  [ex]
-  (cond
-    (instance? TimeoutException (ex-cause ex))
-    (do
-      (log/error ex "Transaction timed out.")
-
-      (throw (ex-info "Transaction timed out." {::anomalies/category ::anomalies/busy} ex)))
-
-    (instance? MissingDataException (ex-cause ex))
-    (do
-      (log/error ex "Can't transact because of missing data.")
-
-      (throw (ex-info "You need to prepare the transaction before submitting." {::anomalies/category ::anomalies/incorrect} ex)))
-
-    :else
-    (do
-      (log/error ex "Convex fault.")
-
-      (throw (ex-info "Convex fault." {::anomalies/category ::anomalies/fault} ex)))))
 
 ;; Public APIs
 ;; ==========================
@@ -236,22 +242,17 @@
         address (try
                   (convex/address address)
                   (catch Exception ex
-                    (throw (ex-info "Invalid Address." {::anomalies/message (ex-message ex)
-                                                        ::anomalies/category ::anomalies/incorrect}))))
+                    (throw (ex-info "Invalid Address."
+                                    (anomaly-incorrect (error-body error-code-INCORRECT (ex-message ex) error-source-server))))))
 
-        account-status (try
-                         (convex/account-status peer address)
-                         (catch Throwable ex
-                           (u/log :logging.event/system-error
-                                  :message (str "Failed to read Account Status " address ". Exception:" ex)
-                                  :exception ex)))]
+        account-status (convex/account-status peer address)]
     (if-let [account-status-data (convex/account-status-data account-status)]
-      (successful-response (merge {:address (.longValue address)} (rename-keys account-status-data {:convex-web.account-status/actor? :is_actor
-                                                                                                    :convex-web.account-status/library? :is_library
-                                                                                                    :convex-web.account-status/memory-size :memory_size})))
+      (successful-response (merge {:address (.longValue address)} (rename-keys account-status-data {:convex-web.account-status/actor? :isActor
+                                                                                                    :convex-web.account-status/library? :isLibrary
+                                                                                                    :convex-web.account-status/memory-size :memorySize})))
       (let [message (str "The Account for this Address does not exist.")]
-        (log/error message address)
-        (not-found-response {:error {:message message}})))))
+        (throw (ex-info message
+                        (anomaly-not-found (error-body error-code-NOBODY message error-source-server))))))))
 
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
   (let [{:keys [address source lang sequence_number] :as prepare} (json-decode body)
@@ -267,18 +268,29 @@
                  :lang lang)
 
         _ (when-not (contains? #{:convex-scrypt :convex-lisp} lang)
-            (throw (ex-info "Invalid lang."
-                            {::anomalies/category ::anomalies/incorrect})))
+            (throw (ex-info "Incorrect lang."
+                            (anomaly-incorrect
+                              (error-body error-code-INCORRECT
+                                          "Incorrect lang."
+                                          error-source-server)))))
 
         address (try
                   (s/assert :convex-web/address address)
                   (catch Exception _
-                    (throw (ex-info (str "Invalid address: " address) {::anomalies/category ::anomalies/incorrect}))))
+                    (throw (ex-info (str "Invalid address: " address)
+                                    (anomaly-incorrect
+                                      (error-body error-code-INCORRECT
+                                                  (str "Invalid address: " address)
+                                                  error-source-server))))))
 
         source (try
                  (s/assert :convex-web/non-empty-string source)
                  (catch Exception _
-                   (throw (ex-info "Source is required." {::anomalies/category ::anomalies/incorrect}))))
+                   (throw (ex-info "Source is required."
+                                   (anomaly-incorrect
+                                     (error-body error-code-MISSING
+                                                 "Source is required."
+                                                 error-source-server))))))
 
         address (convex/address address)]
     (locking (convex/lockee address)
@@ -320,20 +332,29 @@
         address (try
                   (s/assert :convex-web/address address)
                   (catch Exception _
-                    (throw (ex-info "Invalid address."
-                                    {::anomalies/category ::anomalies/incorrect}))))
+                    (throw (ex-info (str "Invalid address: " address)
+                                    (anomaly-incorrect
+                                      (error-body error-code-INCORRECT
+                                                  (str "Invalid address: " address)
+                                                  error-source-server))))))
 
         hash (try
                (s/assert :convex-web/non-empty-string hash)
                (catch Exception _
                  (throw (ex-info "Invalid hash."
-                                 {::anomalies/category ::anomalies/incorrect}))))
+                                 (anomaly-incorrect
+                                   (error-body error-code-INCORRECT
+                                               "Invalid hash."
+                                               error-source-server))))))
 
         sig (try
               (s/assert :convex-web/sig sig)
               (catch Exception _
                 (throw (ex-info "Invalid signature."
-                                {::anomalies/category ::anomalies/incorrect}))))
+                                (anomaly-incorrect
+                                  (error-body error-code-INCORRECT
+                                              "Invalid signature."
+                                              error-source-server))))))
 
         sig (ASignature/fromHex sig)
 
@@ -347,7 +368,10 @@
 
         _ (when-not (.isValid signed-data)
             (throw (ex-info "Invalid signature."
-                            {::anomalies/category ::anomalies/forbidden})))
+                            (anomaly-forbidden
+                              (error-body error-code-FORBIDDEN
+                                          "Invalid signature."
+                                          error-source-peer)))))
 
         client (system/convex-client system)
 
@@ -359,7 +383,11 @@
                    ;; Reset sequence number for Address, because we don't know the Peer's state.
                    (convex/reset-sequence-number! address)
 
-                   (log-rethrow-ex-info ex)))
+                   (throw (ex-info (ex-message ex)
+                                   (anomaly-incorrect
+                                     (error-body error-code-INCORRECT
+                                                 (ex-message ex)
+                                                 error-source-cvm))))))
 
         bad-sequence-number? (when-let [error-code (.getErrorCode result)]
                                (= :SEQUENCE (convex/datafy error-code)))
@@ -372,15 +400,15 @@
 
         result-value (.getValue result)
 
-        result-response (merge {:id (convex/datafy (.getID result))
-                                :value
+        result-response (merge {:value
                                 (try
                                   (convex/datafy result-value)
                                   (catch Exception ex
                                     (log/warn ex "Can't datafy Transaction result. Will fallback to `(str result)`.")
                                     (str result-value)))}
                                (when-let [error-code (.getErrorCode result)]
-                                 {:error-code (convex/datafy error-code)}))
+                                 {:errorCode (convex/datafy-safe error-code)
+                                  :source error-source-cvm}))
 
         _ (log/debug "Transaction result" result)]
 
@@ -388,13 +416,23 @@
 
 (defn POST-v1-create-account [system {:keys [body]}]
   (let [{:keys [publicKey]} (json-decode body)]
-    (if-not (s/valid? :convex-web/non-empty-string publicKey)
-      (bad-request-response (error "Missing public key."))
-      (let [client (system/convex-client system)
+    (when-not (s/valid? :convex-web/non-empty-string publicKey)
+      (throw (ex-info "Missing public key."
+                      (anomaly-incorrect
+                        (error-body "MISSING" "Missing public key." error-source-server)))))
 
-            generated-address (convex/create-account client publicKey)]
+    (let [client (system/convex-client system)
 
-        (successful-response {:address (.longValue generated-address)})))))
+          generated-address (try
+                              (convex/create-account client publicKey)
+                              (catch ExceptionInfo ex
+                                (let [{:keys [result] ::anomalies/keys [message]} (ex-data ex)
+                                      code (convex/datafy-safe (.getErrorCode result))]
+                                  (throw (ex-info message
+                                                  (anomaly-incorrect
+                                                    (error-body code message error-source-cvm)))))))]
+
+      (successful-response {:address (.longValue generated-address)}))))
 
 (defn POST-v1-faucet [system {:keys [body]}]
   (let [{:keys [address amount]} (json-decode body)
@@ -426,12 +464,15 @@
             result (try
                      (convex/transact client transfer)
                      (catch Exception ex
-                       (log-rethrow-ex-info ex)))
+                       (throw (ex-info (ex-message ex)
+                                       (anomaly-incorrect
+                                         (error-body error-code-INCORRECT
+                                                     (ex-message ex)
+                                                     error-source-cvm))))))
 
             result-value (.getValue result)
 
-            result-response (merge {:id (convex/datafy (.getID result))
-                                    :value
+            result-response (merge {:value
                                     (try
                                       (convex/datafy result-value)
                                       (catch Exception ex
@@ -462,22 +503,38 @@
 
         _ (when-not (contains? #{:convex-scrypt :convex-lisp} lang)
             (throw (ex-info "Invalid lang."
-                            {::anomalies/category ::anomalies/incorrect})))
+                            (anomaly-incorrect
+                              (error-body error-code-INCORRECT
+                                          "Invalid lang."
+                                          error-source-server)))))
 
         address (when-not (nil? address)
                   (try
                     (s/assert :convex-web/address address)
                     (catch Exception _
                       (throw (ex-info (str "Invalid address " address)
-                                      {::anomalies/category ::anomalies/incorrect})))))
+                                      (anomaly-incorrect
+                                        (error-body error-code-INCORRECT
+                                                    (str "Invalid address " address)
+                                                    error-source-server)))))))
 
         source (try
                  (s/assert :convex-web/non-empty-string source)
                  (catch Exception _
                    (throw (ex-info "Source can't be empty."
-                                   {::anomalies/category ::anomalies/incorrect}))))
+                                   (anomaly-incorrect
+                                     (error-body error-code-MISSING
+                                                 "Source can't be empty."
+                                                 error-source-server))))))
 
-        form (convex/read-source source lang)
+        form (try
+               (convex/read-source source lang)
+               (catch ExceptionInfo ex
+                 (throw (ex-info (ex-message ex)
+                                 (anomaly-incorrect
+                                   (error-body error-code-INCORRECT
+                                               (str (ex-message ex) " " source)
+                                               error-source-server))))))
 
         result (convex/execute-query (system/convex-peer system) form {:address address})
 
@@ -488,7 +545,8 @@
                                     (log/warn ex "Can't datafy Query result. Will fallback to `(str result)`.")
                                     (str result)))}
                                (when (instance? AExceptional result)
-                                 {:error-code (convex/datafy (.getCode result))}))]
+                                 {:errorCode (convex/datafy (.getCode result))
+                                  :source error-source-cvm}))]
 
     (successful-response result-response)))
 
@@ -960,7 +1018,7 @@
 
         response))))
 
-(defn wrap-error-handling [handler]
+(defn wrap-error [handler]
   (fn wrap-error-handler [request]
     (try
       (handler request)
@@ -968,25 +1026,29 @@
         (log/error "Web handler exception:" (with-out-str (stacktrace/print-stack-trace ex)))
 
         ;; Mapping of anomalies category to HTTP status code.
-        (case (get (ex-data ex) ::anomalies/category)
-          ::anomalies/forbidden
-          (forbidden-response (error (ex-message ex)))
+        (let [{::keys [error-body] ::anomalies/keys [category]} (ex-data ex)]
+          (case category
+            ::anomalies/not-found
+            (not-found-response error-body)
 
-          ::anomalies/incorrect
-          (bad-request-response (error (ex-message ex)))
+            ::anomalies/forbidden
+            (forbidden-response error-body)
 
-          ::anomalies/busy
-          (service-unavailable-response (error (ex-message ex)))
+            ::anomalies/incorrect
+            (bad-request-response error-body)
 
-          ::anomalies/fault
-          server-error-response
+            ::anomalies/busy
+            (service-unavailable-response error-body)
 
-          ;; Default
-          server-error-response)))))
+            ::anomalies/fault
+            server-error-response
+
+            ;; Default
+            server-error-response))))))
 
 (defn public-api-handler [system]
   (-> (public-api system)
-      (wrap-error-handling)
+      (wrap-error)
       (wrap-logging)
       (wrap-defaults api-defaults)))
 

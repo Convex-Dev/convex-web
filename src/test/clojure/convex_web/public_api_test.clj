@@ -48,35 +48,50 @@
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
-          (is (= {:error {:message "Missing public key."}} body-decoded)))
+          (is (= {:errorCode "MISSING"
+                  :source "Server"
+                  :value "Missing public key."}
+                 body-decoded)))
 
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
                                     (mock/json-body nil)))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
-          (is (= {:error {:message "Missing public key."}} body-decoded)))
+          (is (= {:errorCode "MISSING"
+                  :source "Server"
+                  :value "Missing public key."}
+                 body-decoded)))
 
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
                                     (mock/json-body {:publicKey nil})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
-          (is (= {:error {:message "Missing public key."}} body-decoded)))
+          (is (= {:errorCode "MISSING"
+                  :source "Server"
+                  :value "Missing public key."}
+                 body-decoded)))
 
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
                                     (mock/json-body {:publicKey "      "})))
 
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
-          (is (= {:error {:message "Missing public key."}} body-decoded))))
+          (is (= {:errorCode "MISSING"
+                  :source "Server"
+                  :value "Missing public key."}
+                 body-decoded))))
 
       (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
                                   (mock/json-body {:publicKey "abc"})))
 
             body-decoded (json/read-str (get response :body) :key-fn keyword)]
         (is (= 400 (:status response)))
-        (is (= {:error {:message ":UNDECLARED \"xabc\""}} body-decoded))))))
+        (is (= {:errorCode "UNDECLARED"
+                :source "CVM"
+                :value ":UNDECLARED \"xabc\""}
+               body-decoded))))))
 
 (deftest create-account-and-topup-test
   (testing "Create new Account and top up"
@@ -104,8 +119,7 @@
                   response-body (json/read-str (get response :body) :key-fn keyword)]
 
               (is (= 200 (get response :status)))
-              (is (= #{:id :address :amount :value} (set (keys response-body))))
-              (is (= {:address generated-address :amount amount :value amount} (dissoc response-body :id))))))))))
+              (is (= {:address generated-address :amount amount :value amount} response-body)))))))))
 
 (deftest address-test
   (testing "Get Account by Address"
@@ -116,9 +130,9 @@
                :allowance
                :balance
                :environment
-               :is_actor
-               :is_library
-               :memory_size
+               :isActor
+               :isLibrary
+               :memorySize
                :sequence
                :type}
              (set (keys response-body)))))
@@ -126,12 +140,17 @@
     (let [response @(client/GET-public-v1-account (server-url) 1267650600228229401496703205376)
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 400 (get response :status)))
-      (is (= {:error {:message "Invalid Address."}} response-body)))
+      (is (= {:errorCode "INCORRECT"
+              :source "Server"
+              :value "Can't coerce \"1267650600228229401496703205376\" to convex.core.data.Address."}
+             response-body)))
 
     (let [response @(client/GET-public-v1-account (server-url) -100)
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 404 (get response :status)))
-      (is (= {:error {:message "The Account for this Address does not exist."}} response-body)))))
+      (is (= {:errorCode "NOBODY"
+              :value "The Account for this Address does not exist."
+              :source "Server"} response-body)))))
 
 (deftest query-test
   (testing "Valid"
@@ -180,14 +199,20 @@
             response-body (json/read-str (get response :body) :key-fn keyword)]
 
         (is (= 400 (get response :status)))
-        (is (= {:error {:message "Syntax error."}} response-body)))))
+        (is (= {:errorCode "INCORRECT"
+                :source "Server"
+                :value "Syntax error. map(inc [1, 2, 3, 4, 5])"}
+               response-body)))))
 
   (testing "Syntax error"
     (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "(inc 1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
 
       (is (= 400 (get response :status)))
-      (is (= {:error {:message "Syntax error."}} response-body))))
+      (is (= {:errorCode "INCORRECT"
+              :source "Server"
+              :value "Syntax error. (inc 1"}
+             response-body))))
 
   (testing "Non-existent address"
     (let [response @(client/POST-public-v1-query (server-url) {:address 1000
@@ -195,16 +220,21 @@
           response-body (json/read-str (get response :body) :key-fn keyword)]
 
       (is (= 200 (get response :status)))
-      (is (= {:error-code "NOBODY"} (select-keys response-body [:error-code])))))
+      (is (= {:errorCode "NOBODY"
+              :source "CVM"
+              :value "ErrorValue[:NOBODY] : Account does not exist for query: #1000"}
+             response-body))))
 
   (testing "Type error"
     (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "(map inc 1)"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
 
       (is (= 200 (get response :status)))
-      (is (= {:error-code "CAST"
+      (is (= {:errorCode "CAST"
+              :source "CVM"
               :value "ErrorValue[:CAST] : Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence
-In function: map"} response-body)))))
+In function: map"}
+             response-body)))))
 
 (deftest prepare-test
   (testing "Convex Scrypt"
@@ -234,7 +264,10 @@ In function: map"} response-body)))))
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= "Invalid address: " (get-in prepare-response-body [:error :message])))))
+        (is (= {:errorCode "INCORRECT"
+                :source "Server"
+                :value "Invalid address: "}
+               prepare-response-body))))
 
     (testing "Invalid Address"
       (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
@@ -243,7 +276,10 @@ In function: map"} response-body)))))
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= "Invalid address: " (get-in prepare-response-body [:error :message])))))
+        (is (= {:errorCode "INCORRECT"
+                :source "Server"
+                :value "Invalid address: "}
+               prepare-response-body))))
 
     (testing "Missing Source"
       (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
@@ -252,7 +288,10 @@ In function: map"} response-body)))))
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= "Source is required." (get-in prepare-response-body [:error :message])))))))
+        (is (= {:errorCode "MISSING"
+                :source "Server"
+                :value "Source is required."}
+               prepare-response-body))))))
 
 (deftest submit-test
   (testing "Incorrect"
@@ -263,7 +302,10 @@ In function: map"} response-body)))))
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= "Invalid address." (get-in prepare-response-body [:error :message])))))
+        (is (= {:errorCode "INCORRECT"
+                :source "Server"
+                :value "Invalid address: "}
+               prepare-response-body))))
 
     (testing "Invalid Hash"
       (let [prepare-url (str (server-url) "/api/v1/transaction/submit")
@@ -272,7 +314,10 @@ In function: map"} response-body)))))
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= "Invalid hash." (get-in prepare-response-body [:error :message])))))
+        (is (= {:errorCode "INCORRECT"
+                :source "Server"
+                :value "Invalid hash."}
+               prepare-response-body))))
 
     (testing "Invalid Signature"
       (let [prepare-url (str (server-url) "/api/v1/transaction/submit")
@@ -281,7 +326,10 @@ In function: map"} response-body)))))
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= "Invalid signature." (get-in prepare-response-body [:error :message])))))
+        (is (= {:errorCode "INCORRECT"
+                :source "Server"
+                :value "Invalid signature."}
+               prepare-response-body))))
 
     (testing "Missing Data"
       (let [response @(client/POST-public-v1-transaction-submit
@@ -293,7 +341,10 @@ In function: map"} response-body)))))
             response-body (json/read-str (get response :body) :key-fn keyword)]
 
         (is (= 400 (get response :status)))
-        (is (= "You need to prepare the transaction before submitting." (get-in response-body [:error :message])))))))
+        (is (= {:errorCode "INCORRECT"
+                :source "CVM"
+                :value "Failed to get Transaction result."}
+               response-body))))))
 
 (deftest prepare-submit-transaction-test
   (testing "Prepare & submit transaction"
@@ -350,7 +401,7 @@ In function: map"} response-body)))))
         (is (= 200 (get submit-response :status)))
 
         ;; Submit response must contain these keys
-        (is (= #{:id :value} (set (keys submit-response-body))))
+        (is (= {:value 2} submit-response-body))
 
         ;; Submit response result value
         (is (= {:value 2} (select-keys submit-response-body [:value])))))
@@ -407,13 +458,11 @@ In function: map"} response-body)))))
         ;; Submit is successful, but the execution failed.
         (is (= 200 (get submit-response :status)))
 
-        ;; Submit response must contain these keys.
-        (is (= #{:id :value :error-code} (set (keys submit-response-body))))
-
         ;; Submit response with error code.
-        (is (= {:error-code "CAST"
+        (is (= {:errorCode "CAST"
+                :source "CVM"
                 :value "Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence"}
-               (select-keys submit-response-body [:error-code :value])))))))
+               submit-response-body))))))
 
 (deftest faucet-test
   (let [handler (public-api-handler)
@@ -428,8 +477,7 @@ In function: map"} response-body)))))
             response-body (json/read-str (get response :body) :key-fn keyword)]
 
         (is (= 200 (get response :status)))
-        (is (= #{:id :address :amount :value} (set (keys response-body))))
-        (is (= {:address 9 :amount amount :value amount} (dissoc response-body :id)))))
+        (is (= {:address 9 :amount amount :value amount} response-body))))
 
     (testing "Bad request"
       (testing "No payload"
