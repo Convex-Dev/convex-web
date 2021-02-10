@@ -328,7 +328,7 @@
                               :hash tx-ref})))))
 
 (defn POST-v1-transaction-submit [system {:keys [body]}]
-  (let [{:keys [address sig hash account_key] :as body} (json-decode body)
+  (let [{:keys [address sig hash accountKey] :as body} (json-decode body)
 
         _ (log/debug "Submit transaction" body)
 
@@ -370,7 +370,7 @@
 
         _ (log/debug (str "Ref for hash " hash) tx-ref)
 
-        accountKey (AccountKey/fromHex account_key)
+        accountKey (AccountKey/fromHex accountKey)
 
         signed-data (SignedData/create accountKey sig tx-ref)
 

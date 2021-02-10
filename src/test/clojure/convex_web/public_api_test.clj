@@ -335,7 +335,7 @@ In function: map"}
       (let [response @(client/POST-public-v1-transaction-submit
                         (server-url)
                         {:address (.longValue Init/HERO)
-                         :account_key (.toChecksumHex (.getAccountKey Init/HERO_KP))
+                         :accountKey (.toChecksumHex (.getAccountKey Init/HERO_KP))
                          :hash "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b"
                          :sig (client/sig Init/HERO_KP "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
             response-body (json/read-str (get response :body) :key-fn keyword)]
@@ -374,7 +374,7 @@ In function: map"}
             submit-uri "/api/v1/transaction/submit"
 
             submit-body {:address test-address
-                         :account_key test-account-key
+                         :accountKey test-account-key
                          :hash (get prepare-response-body :hash)
                          :sig (try
                                 (.toHexString (.sign test-key-pair (Hash/fromHex (get prepare-response-body :hash))))
@@ -433,7 +433,7 @@ In function: map"}
 
             submit-body {:address test-address
                          :hash (get prepare-response-body :hash)
-                         :account_key test-account-key
+                         :accountKey test-account-key
                          :sig (try
                                 (.toHexString (.sign test-key-pair (Hash/fromHex (get prepare-response-body :hash))))
                                 (catch Exception _
