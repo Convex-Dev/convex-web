@@ -636,8 +636,9 @@
      (let [copy-style "text-base text-gray-700"]
        (case status
          :ajax.status/pending
-         [:span.animate-pulse {:class copy-style}
-          "Processing..."]
+         [:div.p-6.rounded.bg-gray-50
+          [:span.animate-pulse {:class copy-style}
+           "Processing..."]]
 
          :ajax.status/error
          [:div.p-6.rounded.bg-orange-50
