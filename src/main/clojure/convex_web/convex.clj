@@ -484,14 +484,13 @@
 
 (defn ^Result faucet
   "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
-  [^Convex client {:keys [nonce target amount]}]
+  [^Convex client target amount]
   (->> (transfer-transaction
          {:address (.longValue Init/HERO)
-          :nonce nonce
+          :nonce 0
           :target target
           :amount amount})
-       (sign Init/HERO_KP)
-       (transact-signed client)))
+       (transact client)))
 
 (defn convex-core-reference []
   (->> (core-metadata)

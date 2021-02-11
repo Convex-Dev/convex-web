@@ -640,8 +640,9 @@
           "Processing..."]
 
          :ajax.status/error
-         [:span {:class copy-style}
-          (get-in state [:ajax/error :response :error :message])]
+         [:div.p-6.rounded.bg-orange-50
+          [:span {:class copy-style}
+           (get-in state [:ajax/error :response :error :message])]]
 
          :ajax.status/success
          [:div.p-6.rounded.bg-indigo-50

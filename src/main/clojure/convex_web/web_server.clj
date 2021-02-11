@@ -683,7 +683,7 @@
               tx-data {:nonce 0
                        :address Init/HERO
                        :target address-long
-                       :amount 10000000}
+                       :amount 100000000}
 
               result (->> (convex/transfer-transaction tx-data)
                           (convex/transact client))]
@@ -748,11 +748,7 @@
         :else
         (let [client (system/convex-client context)
 
-              nonce (inc (convex/hero-sequence (system/convex-peer context)))
-
-              result (convex/faucet client {:nonce nonce
-                                            :target target
-                                            :amount amount})
+              result (convex/faucet client target amount)
 
               faucet {:convex-web.faucet/id (convex/datafy (.getID result))
                       :convex-web.faucet/target target

@@ -4,7 +4,7 @@
 
 (def max-range 25)
 
-(def max-faucet-amount 10000000)
+(def max-faucet-amount 100000000)
 
 (def faucet-wait-millis
   "Milliseconds a user has to wait, since last request, to submit a Faucet."
