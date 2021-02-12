@@ -10,7 +10,7 @@
             :instrument? true}
 
            :prod
-           {:check-asserts? false
+           {:check-asserts? true
             :instrument? false}}
 
 
