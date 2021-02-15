@@ -147,6 +147,9 @@
     (instance? ASet x)
     (into #{} (map datafy x))
 
+    (instance? AccountKey x)
+    (.toChecksumHex ^AccountKey x)
+
     (instance? Address x)
     (.longValue ^Address x)
 

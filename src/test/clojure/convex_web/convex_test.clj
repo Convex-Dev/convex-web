@@ -39,6 +39,9 @@
     (testing "Set"
       (is (= #{} (convex/datafy (convex/execute context #{})))))
 
+    (testing "AccountKey"
+      (is (= (-> Init/HERO_KP .getAccountKey .toChecksumHex) (convex/datafy (.getAccountKey Init/HERO_KP)))))
+
     (testing "Address"
       (is (= (.longValue Init/HERO) (convex/datafy Init/HERO))))
 
