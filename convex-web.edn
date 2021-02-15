@@ -17,7 +17,11 @@
  ;; -- SITE
  ;; ==========================
  :site
- {:asset-prefix-url
+ {;; It's much faster downloading assets from Google Cloud Storage.
+  ;; Storing the app's assets on Google Cloud Storage also means that
+  ;; the app is deployed simply by uploading the bundled
+  ;; JavaScript file - main.js - to the 'convex-world-site' Bucket.
+  :asset-prefix-url
   #profile {:dev ""
             :test ""
             :prod "https://storage.googleapis.com/convex-world-site"}
@@ -50,12 +54,14 @@
  ;; -- CONVEX PEER
  ;; ==========================
  :peer
- {:store
-  #profile {:dev {:temp? true}
+ #profile {:dev {:port 43577
+                 :store {:temp? true}}
 
-            :test {:temp? true}
+           :test {:port 43578
+                  :store {:temp? true}}
 
-            :prod {:temp? false}}}
+           :prod {:port 43579
+                  :store {:temp? false}}}
 
 
  ;; -- WEB SERVER
