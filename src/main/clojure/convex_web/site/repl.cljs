@@ -268,11 +268,8 @@
                clear-all (fn [cm]
                            (codemirror/cm-set-value cm ""))]
            [codemirror/CodeMirror
-            [:div.relative.flex-shrink-0.flex-1.resize-y.overflow-scroll
-             {:style
-              {:height "200px"}}]
-
-            {:configuration {:lineNumbers false
+            [:div.relative.flex-shrink-0.flex-1.resize-y.overflow-scroll]
+            {:configuration {:lineNumbers true
                              :value @source-ref
                              :mode (case (language state)
                                      :convex-lisp
