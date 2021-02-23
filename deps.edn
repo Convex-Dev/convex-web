@@ -136,6 +136,7 @@
 
 
   ;; -- Check outdated dependencies
+  ;; clojure -M:outdated:logback-dev
   :outdated
   {:extra-deps {antq/antq {:mvn/version "RELEASE"}}
    :main-opts ["-m" "antq.core"]}}}
