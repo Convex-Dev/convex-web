@@ -73,7 +73,7 @@ Request for an amount of free Convex coins on an existing Account.
 **POST** https://convex.world/api/v1/faucet
 
 ### Payload
-- `address`: Account Address encoded as a JSON number.
+- `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1".
 - `amount`: The requested amount in Convex Coins.
 
 Examples:
@@ -86,7 +86,7 @@ Examples:
 
 ### Response
 
-- `address`: Account Address encoded as a JSON number.
+- `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1".
 - `amount`: The requested amount in Convex Coins.
 - `value`: Actual value returned by the Transaction - it can be less than `amount`.
 
@@ -106,7 +106,7 @@ Execute a Query against the current state of the Convex Network. This requires n
 **POST** https://convex.world/api/v1/query
 
 ### Payload
-- `address`: Account Address encoded as a JSON number - the Query will be executed 'as-if' this Account ran the Query.
+- `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1" - the Query will be executed 'as-if' this Account ran the Query.
 - `source`: Convex Lisp source that you want to execute as a Query.
 
 Examples:
@@ -154,7 +154,7 @@ The user is expected to follow up the Prepare with a Submit including the valid 
 **POST** https://convex.world/api/v1/transaction/prepare
 
 ### Payload
-- `address`: Account Address encoded as a JSON number - the Transaction will be constructed using this Address.
+- `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1" - the Transaction will be constructed using this Address.
 - `source`: Convex Lisp source that you want to execute.
 - (Optional) `sequence`: The sequence number used to create the Transaction. If not provided, the server will attempet to determine the correct sequence number. 
 
@@ -194,7 +194,7 @@ The digital signature must be valid for the Ed25519 public key associated with t
 **POST** https://convex.world/api/v1/transaction/submit
 
 ### Payload
-- `address`: Address number of the Account that will execute the Transaction.
+- `address`:  Account Address encoded as a JSON number or string e.g: 1, "1", "#1".
 - `accountKey`: Ed25519 public key HEX string encoded as a 64 character associated with Account.
 - `hash`: Hash of the Transaction encoded as a 64 character HEX string.
 - `sig`: Ed25519 signature of the hash using your key pair encoded as a 128 character HEX string.
