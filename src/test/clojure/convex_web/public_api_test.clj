@@ -156,7 +156,11 @@
   (testing "Valid"
     (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
+      (is (= 200 (get response :status)))
+      (is (= {:value 1} response-body)))
 
+    (let [response @(client/POST-public-v1-query (server-url) {:address (str "#" (.longValue Init/HERO)) :source "1"})
+          response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value 1} response-body))))
 
@@ -264,9 +268,9 @@ In function: map"}
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= {:errorCode "INCORRECT"
+        (is (= {:errorCode "MISSING"
                 :source "Server"
-                :value "Invalid address: "}
+                :value "Source is required."}
                prepare-response-body))))
 
     (testing "Invalid Address"
@@ -276,9 +280,9 @@ In function: map"}
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
         (is (= 400 (get prepare-response :status)))
-        (is (= {:errorCode "INCORRECT"
+        (is (= {:errorCode "MISSING"
                 :source "Server"
-                :value "Invalid address: "}
+                :value "Source is required."}
                prepare-response-body))))
 
     (testing "Missing Source"
@@ -485,7 +489,10 @@ In function: map"}
               response-body (json/read-str (get response :body) :key-fn keyword)]
 
           (is (= 400 (get response :status)))
-          (is (= "Invalid address." (get-in response-body [:error :message])))))
+          (is (= {:errorCode "INCORRECT"
+                  :source "Server"
+                  :value "Invalid address: "}
+                 response-body))))
 
       (testing "Invalid address"
         (let [address ""
@@ -496,7 +503,10 @@ In function: map"}
               response-body (json/read-str (get response :body) :key-fn keyword)]
 
           (is (= 400 (get response :status)))
-          (is (= "Invalid address." (get-in response-body [:error :message])))))
+          (is (= {:errorCode "INCORRECT"
+                  :source "Server"
+                  :value "Invalid address: "}
+                 response-body))))
 
       (testing "Invalid amount"
         (let [address (.longValue Init/HERO)
@@ -507,13 +517,21 @@ In function: map"}
               response-body (json/read-str (get response :body) :key-fn keyword)]
 
           (is (= 400 (get response :status)))
-          (is (= "Invalid amount." (get-in response-body [:error :message])))))
+          (is (= {:errorCode "INCORRECT"
+                  :source "Server"
+                  :value "Invalid amount: -1"}
+                 response-body))))
 
       (testing "Requested amount is greater than allowed"
-        (let [address "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71"
+        (let [address (.longValue Init/HERO)
 
               amount (inc config/max-faucet-amount)
 
-              response @(client/POST-v1-faucet (server-url) {:address address :amount amount})]
+              response @(client/POST-v1-faucet (server-url) {:address address :amount amount})
+              response-body (json/read-str (get response :body) :key-fn keyword)]
 
-          (is (= 400 (get response :status))))))))
+          (is (= 400 (get response :status)))
+          (is (= {:errorCode "INCORRECT"
+                  :source "Server"
+                  :value "You can't request more than 100,000,000."}
+                 response-body)))))))

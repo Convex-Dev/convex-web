@@ -274,12 +274,6 @@
 
         lang (parse-lang lang)
 
-        _ (u/log :logging.event/transaction-prepare
-                 :severity :info
-                 :address address
-                 :source source
-                 :lang lang)
-
         _ (when-not (contains? #{:convex-scrypt :convex-lisp} lang)
             (throw (ex-info "Incorrect lang."
                             (anomaly-incorrect
@@ -287,25 +281,21 @@
                                           "Incorrect lang."
                                           error-source-server)))))
 
+        _ (when-not (s/valid? :convex-web/non-empty-string source)
+            (throw (ex-info "Source is required."
+                            (anomaly-incorrect
+                              (error-body error-code-MISSING
+                                          "Source is required."
+                                          error-source-server)))))
+
         address (try
-                  (s/assert :convex-web/address address)
+                  (convex/address address)
                   (catch Exception _
                     (throw (ex-info (str "Invalid address: " address)
                                     (anomaly-incorrect
                                       (error-body error-code-INCORRECT
                                                   (str "Invalid address: " address)
-                                                  error-source-server))))))
-
-        source (try
-                 (s/assert :convex-web/non-empty-string source)
-                 (catch Exception _
-                   (throw (ex-info "Source is required."
-                                   (anomaly-incorrect
-                                     (error-body error-code-MISSING
-                                                 "Source is required."
-                                                 error-source-server))))))
-
-        address (convex/address address)]
+                                                  error-source-server))))))]
     (locking (convex/lockee address)
       (let [peer (system/convex-peer system)
 
@@ -337,13 +327,8 @@
 
         _ (log/debug "Submit transaction" body)
 
-        _ (u/log :logging.event/transaction-submit
-                 :severity :info
-                 :address address
-                 :hash hash)
-
         address (try
-                  (s/assert :convex-web/address address)
+                  (convex/address address)
                   (catch Exception _
                     (throw (ex-info (str "Invalid address: " address)
                                     (anomaly-incorrect
@@ -351,23 +336,19 @@
                                                   (str "Invalid address: " address)
                                                   error-source-server))))))
 
-        hash (try
-               (s/assert :convex-web/non-empty-string hash)
-               (catch Exception _
-                 (throw (ex-info "Invalid hash."
-                                 (anomaly-incorrect
-                                   (error-body error-code-INCORRECT
-                                               "Invalid hash."
-                                               error-source-server))))))
+        _ (when-not (s/valid? :convex-web/non-empty-string hash)
+            (throw (ex-info "Invalid hash."
+                            (anomaly-incorrect
+                              (error-body error-code-INCORRECT
+                                          "Invalid hash."
+                                          error-source-server)))))
 
-        sig (try
-              (s/assert :convex-web/sig sig)
-              (catch Exception _
-                (throw (ex-info "Invalid signature."
-                                (anomaly-incorrect
-                                  (error-body error-code-INCORRECT
-                                              "Invalid signature."
-                                              error-source-server))))))
+        _ (when-not (s/valid? :convex-web/sig sig)
+            (throw (ex-info "Invalid signature."
+                            (anomaly-incorrect
+                              (error-body error-code-INCORRECT
+                                          "Invalid signature."
+                                          error-source-server)))))
 
         sig (ASignature/fromHex sig)
 
@@ -450,21 +431,31 @@
 (defn POST-v1-faucet [system {:keys [body]}]
   (let [{:keys [address amount]} (json-decode body)
 
-        bad-request (fn [message]
-                      (u/log :logging.event/user-error
-                             :severity :error
-                             :message message)
+        address (try
+                  (convex/address address)
+                  (catch Exception _
+                    (throw (ex-info (str "Invalid address: " address)
+                                    (anomaly-incorrect
+                                      (error-body error-code-INCORRECT
+                                                  (str "Invalid address: " address)
+                                                  error-source-server))))))]
 
-                      (bad-request-response (error message)))]
+
     (cond
-      (not (s/valid? :convex-web/address address))
-      (bad-request "Invalid address.")
-
       (not (s/valid? :convex-web/amount amount))
-      (bad-request "Invalid amount.")
+      (throw (ex-info (str "Invalid amount: " amount)
+                      (anomaly-incorrect
+                        (error-body error-code-INCORRECT
+                                    (str "Invalid amount: " amount)
+                                    error-source-server))))
 
       (> amount config/max-faucet-amount)
-      (bad-request (str "You can't request more than" (pprint/cl-format nil "~:d" config/max-faucet-amount) "."))
+      (let [message (str "You can't request more than " (pprint/cl-format nil "~:d" config/max-faucet-amount) ".")]
+        (throw (ex-info message
+                        (anomaly-incorrect
+                          (error-body error-code-INCORRECT
+                                      message
+                                      error-source-server)))))
 
       :else
       (let [client (system/convex-client system)
@@ -494,7 +485,7 @@
                                    (when-let [error-code (.getErrorCode result)]
                                      {:error-code (convex/datafy error-code)}))
 
-            faucet (merge {:address address :amount amount} result-response)]
+            faucet (merge {:address (convex/datafy address) :amount amount} result-response)]
 
         (u/log :logging.event/faucet
                :severity :info
@@ -521,24 +512,21 @@
                                           "Invalid lang."
                                           error-source-server)))))
 
-        address (when-not (nil? address)
-                  (try
-                    (s/assert :convex-web/address address)
-                    (catch Exception _
-                      (throw (ex-info (str "Invalid address " address)
-                                      (anomaly-incorrect
-                                        (error-body error-code-INCORRECT
-                                                    (str "Invalid address " address)
-                                                    error-source-server)))))))
+        address (try
+                  (convex/address address)
+                  (catch Exception _
+                    (throw (ex-info (str "Invalid address: " address)
+                                    (anomaly-incorrect
+                                      (error-body error-code-INCORRECT
+                                                  (str "Invalid address: " address)
+                                                  error-source-server))))))
 
-        source (try
-                 (s/assert :convex-web/non-empty-string source)
-                 (catch Exception _
-                   (throw (ex-info "Source can't be empty."
-                                   (anomaly-incorrect
-                                     (error-body error-code-MISSING
-                                                 "Source can't be empty."
-                                                 error-source-server))))))
+        _ (when-not (s/valid? :convex-web/non-empty-string source)
+            (throw (ex-info "Source is required."
+                            (anomaly-incorrect
+                              (error-body error-code-MISSING
+                                          "Source is required."
+                                          error-source-server)))))
 
         form (try
                (convex/read-source source lang)
