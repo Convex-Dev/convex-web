@@ -28,7 +28,8 @@
             [compojure.core :refer [routes GET POST]]
             [compojure.route :as route]
             [hiccup.page :as page]
-            [ring.util.anti-forgery])
+            [ring.util.anti-forgery]
+            [ring.middleware.cors :refer [wrap-cors]])
   (:import (java.io InputStream)
            (convex.core.crypto Hash ASignature AKeyPair)
            (convex.core.data Ref SignedData AccountKey BlobMap)
@@ -1056,7 +1057,9 @@
   (-> (public-api system)
       (wrap-error)
       (wrap-logging)
-      (wrap-defaults api-defaults)))
+      (wrap-defaults api-defaults)
+      (wrap-cors :access-control-allow-origin #".*"
+                 :access-control-allow-methods [:get :put :post :delete])))
 
 (defn site-handler [system]
   (let [site-config (merge {:session
