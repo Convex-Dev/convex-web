@@ -35,13 +35,13 @@ We envision a system that enables value exchange mechanisms while solving the pr
 
 The seven key properties that are essential to this vision are that it must be:
 
-* **Global** - supporting the the whole world
-* **Open** - accessible to everyone, with no unjust barriers to inclusion and participation, and no centralised control. Openness *requires* decentralisation.
-* **Automated** - able to execute end-to-end transactions in a reliable way while automatically enforcing any rules relating to the digital assets involved.
-* **Secure** - providing strong protection against security threats (malicious or otherwise) so that holders of digital assets can maintain trust in their value.
-* **Extensible** - capable of supporting new kinds of digital assets and innovation
-* **Fast** - sufficiently scalable and efficient to serve Internet-scale usage, and meet the performance expectations of all reasonable use cases 
-* **Cheap** - usable with low economic costs, to maximise the potential to create economic opportunity and value without being stifled by transaction costs.
+* **Global** - a single, global network for everybody, without artificial boundaries. Potential is maximised when everyone can interact with everyone else.
+* **Open** - a decentralised, technology independent system where anyone can participate without asking for permission. No barriers to entry.
+* **Automated** - able to support atomic, end-to-end transactions that are reliably executed using trusted and reliable smart contracts.
+* **Secure** - protecting against all types of security threats so that users can be confident of the safety of their digital assets and transactions.
+* **Extensible** - capable of supporting unlimited innovation in the types of assets and applications created. Like the Internet, it must not constrain what people can build, and it must make it easy to innovate.
+* **Fast** - quick enough to confirm economic transaction in seconds, meeting the demands of consumer applications.
+* **Cheap** - inexpensive to utilise, so that nobody is excluded by high costs and most kinds of applications are economically viable.
 
 Convex has been designed from the ground up to provide these properties.
 
