@@ -47,7 +47,7 @@ Convex has been designed from the ground up to provide these properties.
 
 ### Applications
 
-The Internet of Value's primary purpose is to enable **decentralised applications** that typically involve digital assets and value exchange. Just as anyone can create a website on the Internet, anyone can create a decentralised application for the Internet of Value. Convex is therefore designed to make the process as simple and effective as possible.
+The Internet of Value's primary purpose is to enable **decentralised applications** that typically involve digital assets and value exchange. Just as anyone can create a website on the Internet, anyone can create a decentralised application for the Internet of Value. Convex is designed to make the process of building, operating and using such applications as simple and effective as possible.
 
 There is no practical limit to the ideas that could be implemented given an open and extensible system. Some notable ideas include:
 
@@ -64,7 +64,7 @@ Convex is needed because, despite the vast potential of the Internet Of Value, a
 
 Convex builds on ideas around decentralised technology popularised through blockchain innovations in recent years, but was motivated by a desire to build something better than blockchains can offer. For example, Bitcoin does well on Global, Open and Secure, but is definitely not Fast or Cheap. 
 
-Key additional motivations for the creation of Convex, while not strictly necessary for the Internet of Value, include:
+Key additional motivations for the creation of Convex, while not strictly central to the mission of supporting the Internet of Value, include goals such as:
 
 * Help the environment by supplanting systems based on Proof of Work. 
 * Make decentralised software development more productive, engaging and fun
@@ -76,7 +76,7 @@ The space of decentralised technology has seen massive innovation in recent year
 
 In 2009, Bitcoin was launched by Satoshi Nakamoto, which demonstrated for the first time that a digital currency could be operated on a fully decentralised, secure network using a Proof of Work consensus algorithm. The ability to prevent "double spending" using a purely decentralised, online method was a revelation that hinted at the possibility of entire economic systems migrating to the Internet.
 
-In 2015, Ethereum was launched, which extended the concept of the Bitcoin network with a decentralised virtual machine (EVM) capable of executing Turing-complete smart contracts with a global state machine. This enabled a wave of innovations such as tokenisation of assets, and the first attempts at Decentralised Autonomous Organisations.
+In 2015, Ethereum was launched, which build upon the ideas of Bitcoin but added a decentralised virtual machine (EVM) capable of executing Turing-complete smart contracts with a global state machine. This enabled a wave of innovations such as tokenisation of assets with smart contracts, and the first attempts at Decentralised Autonomous Organisations.
 
 These innovations paved the way for significant experimentation in the space of digital currencies, tokenisation and cryptoeconomics. The space has attracted massive investment and seen vigorous innovation in recent years, hinting at the enormous opportunities presented by digital value exchange.
 
@@ -111,7 +111,7 @@ Convex solves many of the technical challenges of Blockchains. With reference to
 * **Byzantine Fault Tolerance** - Convex meets the strongest possible threshold for security under the model of Byzantine threats. Consensus formation is guaranteed (and stable) as long as at least 2/3 of the effective voting power of the network follows the protocol honestly.
 * **Fully Decentralised** - The network operates under a permissionless Peer-to-Peer model: Anyone can operate a Peer in the network, anyone can submit a transaction for execution, and transactions cannot be censored (subject to the usual security assumptions). 
 
-But Convex is not simply a faster Blockchain - it is a platform for building digital economic systems. As such, it combines a number of capabilities that together enable construction of new classes of applications.
+But Convex is not just a faster Blockchain - it is a platform for building digital economic systems. As such, it combines a number of capabilities that together enable construction of new classes of applications.
 
 Some technical highlights of the Convex design that support such applications include:
 
@@ -158,7 +158,7 @@ Some particular innovations of interest to facilitate the development of decentr
 
 Convex implemented a novel storage scheme, specifically designed to support the requirements of Convex DDVs. Key features of this system include:
 
-* **Content addressable storage (CAS)** - The key for every value in the database is the cryptographic hash of its encoding.
+* **Content addressable storage (CAS)** - The key for every value in the database is the cryptographic hash of its encoding. This means that given a single root storage hash, an entire Directed Acyclic Graph (DAG) of values is directly reachable by recursively fetching nested values.
 * **Smart References** - references to data that can be lazily loaded and verified, allowing just a small required subset of data to be accessed on demand.
 * **Transparent Persistence** - Decentralised Data Values used in Convex (such as the CVM state) are stored in a virtual database which may be much larger than main memory. This opens up interesting opportunities for future scalability and sophisticated Actors capable of working with large databases.
 * **Novelty Detection** - The design of the storage system enables Convex to detect *novel* information when it is written to storage. This is important to reduce bandwidth requirements: only novel information will typically need to be broadcast to the Peer network.
@@ -183,7 +183,7 @@ The motivation for the development of a system of this nature is because it can 
 
 It is important to consider why the Internet itself does not already function as an "Internet of Value". The key insight here is that the original Internet is primarily a **stateless** system that enables communication between different participants. A system of digital value exchange requires **state** - at the very minimum it must be able to record the ownership of digital assets (in Bitcoin, for example, this state is manifested in the set of UXTOs). While clients and servers on the Internet can certainly store state, such state is inadequate for decentralised value exchange because it is susceptible to corruption or arbitrary modification by the party that controls the system.
 
-If we are unable to trust centralised actors as the sole arbiters of truth, the solution must therefore involve decentralised verification. It must furthermore ensure **consensus** in order that the whole network sees the same verified state - assets cannot reliably be used for value exchange if there is ambiguity over ownership (the "double spend" problem). To provide the basis for a global, open network, the consensus itself must be **global** and available to all participants. 
+If we are unable to trust centralised actors as the sole arbiters of truth regarding the state of assets, the solution must therefore involve decentralised verification. It must furthermore ensure **consensus** in order that the whole network sees the same verified state - assets cannot reliably be used for value exchange if there is ambiguity over ownership (the "double spend" problem). To provide the basis for a global, open network, the consensus itself must be **global** and available to all participants. 
 
 Because we wish to ensure openness and avoid the issue of centralised control over the system, it must also be **permissionless** in the sense that any actor can participate on an equal basis and not be excluded or censored by other participants wielding excessive power. 
 
