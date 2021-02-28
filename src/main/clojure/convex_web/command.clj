@@ -11,7 +11,8 @@
             [datalevin.core :as d])
   (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
            (convex.core.lang Reader Symbols)
-           (convex.core Result)))
+           (convex.core Result)
+           (convex.core.data.prim CVMBool CVMLong CVMDouble)))
 
 (defn source [command]
   (let [{:convex-web.command/keys [transaction query]} command]
@@ -34,14 +35,13 @@
 ;; --
 
 (defn sandbox-result
-  "The custom rendering in the Sandbox is driven by the metadata and the object value.
+  "Sandbox renderers are 'dispatched' by the metadata and the object value.
 
    Object maps can be defined per type."
   [result-value]
   (cond
     (instance? Address result-value)
-    {:hex-string (.toHexString ^Address result-value)
-     :checksum-hex (.toChecksumHex ^Address result-value)}
+    {:address (.longValue ^Address result-value)}
 
     (instance? ABlob result-value)
     {:length (.length ^ABlob result-value)
@@ -55,6 +55,7 @@
 
         (str result-value)))))
 
+;; TODO Merge with `value-kind`.
 (defn result-metadata [result-value & [{:keys [source lang]}]]
   (let [source-form (try
                       (when (and source (= :convex-lisp lang))
@@ -62,11 +63,14 @@
                       (catch Throwable _
                         nil))]
     (cond
-      (instance? Boolean result-value)
+      (instance? CVMBool result-value)
       {:type :boolean}
 
-      (instance? Number result-value)
-      {:type :number}
+      (instance? CVMLong result-value)
+      {:type :long}
+
+      (instance? CVMDouble result-value)
+      {:type :double}
 
       (instance? AString result-value)
       {:type :string}
@@ -144,7 +148,7 @@
     (locking (convex/lockee address)
       (let [{:convex-web.transaction/keys [source language amount type target]} transaction
 
-            peer (system/convex-peer-server system)
+            peer (system/convex-peer system)
 
             caller-address (convex/address address)
 
@@ -156,15 +160,18 @@
 
             atransaction (case type
                            :convex-web.transaction.type/invoke
-                           (convex/invoke-transaction next-sequence-number (convex/read-source source language))
+                           (convex/invoke-transaction {:nonce next-sequence-number
+                                                       :address caller-address
+                                                       :command (convex/read-source source language)} )
 
                            :convex-web.transaction.type/transfer
-                           (convex/transfer-transaction {:nonce next-sequence-number
+                           (convex/transfer-transaction {:address caller-address
+                                                         :nonce next-sequence-number
                                                          :target target
                                                          :amount amount}))]
         (try
           (let [^Result r (->> (convex/sign (convex/create-key-pair key-pair) atransaction)
-                               (convex/transact (system/convex-client system)))
+                               (convex/transact-signed (system/convex-client system)))
 
                 bad-sequence-number? (when-let [error-code (.getErrorCode r)]
                                        (= :SEQUENCE (convex/datafy error-code)))]
@@ -218,7 +225,7 @@
 
           ;; Command status.
           command' (if result
-                     (merge #:convex-web.command {:id result-id
+                     (merge #:convex-web.command {:id (convex/datafy result-id)
                                                   :object result-value-data
                                                   :metadata result-value-metadata
                                                   :status

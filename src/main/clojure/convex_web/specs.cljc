@@ -8,12 +8,11 @@
 
 (s/def :convex-web/blob-string (s/and :convex-web/non-empty-string #(str/starts-with? % "0x")))
 
-(s/def :convex-web/address-string (s/and :convex-web/non-empty-string #(= 64 (count %))))
-
-(s/def :convex-web/address (s/or :address-string :convex-web/address-string
-                                 :blob-string :convex-web/blob-string))
+(s/def :convex-web/address nat-int?)
 
 (s/def :convex-web/sig (s/and :convex-web/non-empty-string #(= 128 (count %))))
+
+(s/def :convex-web/checksum-hex (s/and :convex-web/non-empty-string #(= 64 (count %))))
 
 (s/def :convex-web/amount nat-int?)
 
@@ -63,6 +62,9 @@
 (s/def :ajax/pending-status (s/and (s/keys :req [:ajax/status]) #(= :ajax.status/pending (:ajax/status %))))
 (s/def :ajax/success-status (s/and (s/keys :req [:ajax/status]) #(= :ajax.status/success (:ajax/status %))))
 (s/def :ajax/error-status (s/and (s/keys :req [:ajax/status :ajax/error]) #(= :ajax.status/error (:ajax/status %))))
+(s/def :ajax/statuses (s/or :pending :ajax/pending-status
+                            :success :ajax/success-status
+                            :error :ajax/error-status))
 
 
 ;; -- Faucet
@@ -76,11 +78,11 @@
 
 ;; -- Key Pair
 
-(s/def :convex-web.key-pair/address-checksum-hex :convex-web/address-string)
-(s/def :convex-web.key-pair/blob-hex :convex-web/non-empty-string)
+(s/def :convex-web.key-pair/account-key :convex-web/non-empty-string)
+(s/def :convex-web.key-pair/private-key :convex-web/non-empty-string)
 
-(s/def :convex-web/key-pair (s/keys :req [:convex-web.key-pair/address-checksum-hex
-                                          :convex-web.key-pair/blob-hex]))
+(s/def :convex-web/key-pair (s/keys :req [:convex-web.key-pair/account-key
+                                          :convex-web.key-pair/private-key]))
 
 ;; -- Account Status
 
@@ -103,6 +105,12 @@
 
 (s/def :convex-web/accounts (s/coll-of :convex-web/account))
 
+
+;; --- State
+
+(s/def :convex-web.state/accounts-count nat-int?)
+
+(s/def :convex-web/state (s/keys :req [:convex-web.state/accounts-count]))
 
 
 ;; -- Syntax
@@ -191,11 +199,13 @@
 ;; -- Block
 
 (s/def :convex-web.block/index nat-int?)
+(s/def :convex-web.block/peer :convex-web/checksum-hex)
 (s/def :convex-web.block/timestamp pos-int?)
 (s/def :convex-web.block/transactions (s/coll-of :convex-web/signed-data :min-count 1))
 
 (s/def :convex-web/block (s/keys :req [:convex-web.block/index]
                                  :opt [:convex-web.block/timestamp
+                                       :convex-web.block/peer
                                        :convex-web.block/transactions]))
 
 (s/def :convex-web/blocks (s/coll-of :convex-web/block))

@@ -104,11 +104,14 @@
   component/Lifecycle
 
   (start [component]
-    (let [^EtchStore store (store/create! (get-in config [:config :peer :store]))
+    (let [peer-config (get-in config [:config :peer])
 
-          ^Server server (API/launchPeer {Keywords/STORE store})
+          ^EtchStore store (store/create! (:store peer-config))
 
-          ^convex.api.Convex client (convex.api.Convex/connect (.getHostAddress server) Init/HERO_KP)]
+          ^Server server (API/launchPeer {Keywords/STORE store
+                                          Keywords/PORT (:port peer-config)})
+
+          ^convex.api.Convex client (convex.api.Convex/connect (.getHostAddress server) Init/HERO Init/HERO_KP)]
 
       (assoc component
         :server server
@@ -116,11 +119,6 @@
         :store store)))
 
   (stop [component]
-    (when-let [^convex.api.Convex client (:client component)]
-      (log/info "Disconnect Client")
-
-      (.disconnect client))
-
     (when-let [^Server server (:server component)]
       (log/info "Close Server")
 

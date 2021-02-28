@@ -4,7 +4,7 @@
             [clojure.tools.logging :as log]
 
             [cognitect.anomalies :as anomalies])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString Amount)
+  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey ACell)
            (convex.core.lang Core Reader ScryptNext RT Context)
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
@@ -12,7 +12,10 @@
            (convex.api Convex)
            (java.util.concurrent TimeoutException)
            (clojure.lang AFn)
-           (convex.core.lang.expanders AExpander)))
+           (convex.core.lang.expanders AExpander)
+           (convex.core.data.prim CVMBool CVMChar CVMLong CVMDouble)))
+
+(set! *warn-on-reflection* true)
 
 (defn read-source [source lang]
   (try
@@ -44,16 +47,11 @@
       (.getExceptional new-context)
       (.getResult new-context))))
 
-(defn execute-scrypt [context source]
-  (let [context (.execute context (.getResult (.expandCompile context (ScryptNext/readSyntax source))))]
+(defn execute-scrypt [^Context context source]
+  (let [context (.execute context (.getResult ^Context (.expandCompile context (ScryptNext/readSyntax source))))]
     (if (.isExceptional context)
       (.getExceptional context)
       (.getResult context))))
-
-(defn ^String trim-0x [^String s]
-  (if (str/starts-with? s "0x")
-    (subs s 2)
-    s))
 
 (defn throwable-category [throwable]
   (cond
@@ -62,9 +60,6 @@
 
     (instance? InterruptedException throwable)
     ::anomalies/interrupted))
-
-(defn ^String address->checksum-hex [^Address address]
-  (.toChecksumHex address))
 
 (defn core-metadata
   "Core metadata indexed by Symbol."
@@ -77,11 +72,14 @@
 
 (defn value-kind [x]
   (cond
-    (instance? Boolean x)
+    (instance? CVMBool x)
     :boolean
 
-    (instance? Number x)
-    :number
+    (instance? CVMLong x)
+    :long
+
+    (instance? CVMDouble x)
+    :double
 
     (instance? AString x)
     :string
@@ -125,29 +123,13 @@
     (nil? x)
     nil
 
-    (instance? Boolean x)
-    x
-
-    (instance? Character x)
-    x
-
-    (instance? Long x)
-    x
-
-    (instance? Double x)
-    x
-
-    (instance? Amount x)
-    (.getValue ^Amount x)
-
-    (instance? AString x)
-    (.toString x)
-
     (instance? Keyword x)
-    (keyword (.toString (.getName x)))
+    (keyword (.toString (.getName ^Keyword x)))
 
     (instance? Symbol x)
-    (symbol (some-> x (.getNamespace) (.getName) (.toString)) (.toString (.getName x)))
+    (symbol
+      (some-> ^Symbol x (.getNamespace) (.getName) (.toString))
+      (.toString (.getName ^Symbol x)))
 
     (instance? AList x)
     (map datafy x)
@@ -165,14 +147,17 @@
     (instance? ASet x)
     (into #{} (map datafy x))
 
+    (instance? AccountKey x)
+    (.toChecksumHex ^AccountKey x)
+
     (instance? Address x)
-    (.toChecksumHex ^Address x)
+    (.longValue ^Address x)
 
     (instance? AFn x)
-    (.toString x)
+    (.toString ^AFn x)
 
     (instance? AExpander x)
-    (.toString x)
+    (.toString ^AExpander x)
 
     (instance? Blob x)
     (.toHexString ^Blob x)
@@ -181,7 +166,10 @@
     (datafy (.getValue ^Syntax x))
 
     :else
-    (throw (ex-info (str "Can't datafy " (some-> x (.getClass) (.getName)) ".") {:object x}))))
+    (let [x' (RT/jvm x)]
+      (if (identical? x x')
+        (throw (ex-info (str "Can't datafy " (pr-str x) " " (some-> ^Object x (.getClass) (.getName)) ".") {:object x}))
+        x'))))
 
 (defn datafy-safe [x]
   (try
@@ -198,21 +186,34 @@
     (instance? Address x)
     x
 
+    (nat-int? x)
+    (Address/create ^long x)
+
     (instance? ABlob x)
-    (or (RT/address x) (throw (ex-info "Blob cannot be converted to Address." {:blob x})))
+    (Address/create ^ABlob x)
 
     (and (string? x) (str/blank? x))
     (throw (ex-info (str "Can't coerce empty string to " (.getName Address) ".") {}))
 
     (string? x)
-    (let [s (if (str/starts-with? x "0x")
-              (subs x 2)
+    (let [s (if (str/starts-with? x "#")
+              (subs x 1)
               x)]
-      (Address/fromHex s))
+      (try
+        (Address/create (Long/parseLong s))
+        (catch Exception _
+          (throw (ex-info (str "Can't coerce " (pr-str x) " to " (.getName Address) ".") {})))))
 
     :else
-    (throw (ex-info (str "Can't coerce " (.getName (type x)) " to " (.getName Address) ".") {:address x
-                                                                                             :type (type x)}))))
+    (let [message (str "Can't coerce " (pr-str x) " to " (.getName Address) ".")]
+      (throw (ex-info message {::anomalies/message message
+                               ::anomalies/category ::anomalies/incorrect})))))
+
+(defn ^Address address-safe [x]
+  (try
+    (address x)
+    (catch Exception _
+      nil)))
 
 (defn metadata [sym]
   (let [sym (cond
@@ -240,7 +241,7 @@
         result-error-code (.getErrorCode result)
         result-value (.getValue result)
         result-trace (.getTrace result)]
-    (merge #:convex-web.result {:id result-id
+    (merge #:convex-web.result {:id (datafy result-id)
                                 :value (try
                                          (datafy result-value)
                                          (catch Exception _
@@ -257,7 +258,7 @@
   (let [tx (cond
              (instance? Transfer atransaction)
              #:convex-web.transaction {:type :convex-web.transaction.type/transfer
-                                       :target (.toChecksumHex (.getTarget ^Transfer atransaction))
+                                       :target (.longValue (.getTarget ^Transfer atransaction))
                                        :amount (.getAmount ^Transfer atransaction)
                                        :sequence (.getSequence ^ATransaction atransaction)}
 
@@ -278,8 +279,10 @@
                       :transactions
                       (map-indexed
                         (fn [^Long tx-index ^SignedData signed-data]
-                          #:convex-web.signed-data {:address (.toChecksumHex (.getAddress signed-data))
-                                                    :value (transaction-result-data (.getValue signed-data) (.getResult peer index tx-index))})
+                          (let [^ATransaction transaction (.getValue signed-data)]
+                            #:convex-web.signed-data {:address (.longValue (.getAddress transaction))
+                                                      :account-key (.toChecksumHex (.getAccountKey signed-data))
+                                                      :value (transaction-result-data (.getValue signed-data) (.getResult peer index tx-index))}))
                         (.getTransactions block))})
 
 (defn blocks-data [^Peer peer & [{:keys [start end]}]]
@@ -299,22 +302,6 @@
         (assoc blocks index (block-data peer index (.getBlock order index))))
       {}
       (range (consensus-point order)))))
-
-(defn accounts [^Peer peer & [{:keys [start end]}]]
-  ;; Get timestamp - from state
-  (let [^State state (.getConsensusState peer)
-        start (or start 0)
-        end (or end (count (.getAccounts state)))]
-    (reduce
-      (fn [m i]
-        (let [[address status] (.entryAt (.getAccounts state) i)]
-          (assoc m address status)))
-      {}
-      (range start end))))
-
-(defn ^AccountStatus account-status [^Peer peer string-or-address]
-  (let [address->status (accounts peer)]
-    (address->status (address string-or-address))))
 
 (defn syntax-data [^Syntax syn]
   (merge #:convex-web.syntax {:source (.getSource syn)
@@ -348,7 +335,7 @@
           actor? (.isActor account-status)
           library? (and actor? (not exports?))]
       (merge #:convex-web.account-status {:sequence (.getSequence account-status)
-                                          :balance (.getValue (.getBalance account-status))
+                                          :balance (.getBalance account-status)
                                           :environment env
                                           :actor? actor?
                                           :library? library?
@@ -359,16 +346,45 @@
                                                   actor? :actor
                                                   :else :user)}))))
 
+(defn accounts-indexed
+  "Returns a mapping of Address long to Account Status."
+  [^Peer peer & [{:keys [start end]}]]
+  (let [state (.getConsensusState peer)
+        start (or start 0)
+        end (or end (.count (.getAccounts ^State state)))
+        all (.getAccounts ^State state)]
+    (reduce
+      (fn [acc address-long]
+        (assoc acc address-long (.get all (RT/cvm address-long))))
+      {}
+      (range start end))))
+
+(defn ranged-accounts [^Peer peer & [{:keys [start end]}]]
+  (reduce-kv
+    (fn [all address-long account-status]
+      (conj all #:convex-web.account {:address address-long
+                                      :status (dissoc (account-status-data account-status) :convex-web.account-status/environment)}))
+    []
+    (accounts-indexed peer {:start start :end end})))
+
+(defn ^AccountStatus account-status [^Peer peer ^Address address]
+  (when address
+    (get (accounts-indexed peer) (.longValue address))))
+
 (defn hero-sequence [^Peer peer]
   (-> (.getConsensusState peer)
       (.getAccount Init/HERO)
       (.getSequence)))
 
-(defn ^Transfer transfer-transaction [{:keys [nonce target amount]}]
-  (Transfer/create ^Long nonce (address target) ^Long amount))
+(defn ^Transfer transfer-transaction [{:keys [address nonce target amount]}]
+  (Transfer/create
+    (convex-web.convex/address address)
+    ^Long nonce
+    (convex-web.convex/address target)
+    ^Long amount))
 
-(defn ^Invoke invoke-transaction [^Long nonce ^Object command]
-  (Invoke/create nonce command))
+(defn ^Invoke invoke-transaction [{:keys [nonce address command]}]
+  (Invoke/create ^Address address ^Long nonce command))
 
 (defn ^SignedData sign [^AKeyPair signer ^ATransaction transaction]
   (SignedData/create signer transaction))
@@ -383,25 +399,22 @@
     (.getValue context)))
 
 (defn ^Result query [^Convex client {:keys [source address lang] :as q}]
-  (let [_ (log/debug "Query" q)
+  (let [^ACell acell (try
+                       (case lang
+                         :convex-lisp
+                         (wrap-do (Reader/readAll source))
 
-        obj (try
-              (case lang
-                :convex-lisp
-                (wrap-do (Reader/readAll source))
+                         :convex-scrypt
+                         (ScryptNext/readSyntax source))
+                       (catch Throwable ex
+                         (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
+                                                          ::anomalies/category ::anomalies/incorrect}))))
 
-                :convex-scrypt
-                (ScryptNext/readSyntax source))
-              (catch Throwable ex
-                (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
-                                                 ::anomalies/category ::anomalies/incorrect}))))
-
-        ^Address address (when address
-                           (convex-web.convex/address address))]
+        ^Address address (convex-web.convex/address address)]
     (try
-      (if address
-        (.querySync client obj address)
-        (.querySync client obj))
+      (log/debug "Query sync" q)
+
+      (.querySync client ^ACell acell ^Address address)
       (catch Exception ex
         (let [message "Failed to get Query result."
               category (or (throwable-category ex) ::anomalies/fault)]
@@ -411,8 +424,10 @@
                                     ::anomalies/category category})
                           ex)))))))
 
-(defn ^Result transact
-  "Sync transact a SignedData with a default timeout.
+(defn ^Result transact-signed
+  "Transact-sync a SignedData with a default timeout.
+
+   Returns Result.
 
    Throws ExceptionInfo."
   [^Convex client ^SignedData signed-data]
@@ -427,8 +442,10 @@
                          ::anomalies/category category}
                         ex))))))
 
-(defn ^Result transacta
-  "Sync transact a ATransaction with a default timeout.
+(defn ^Result transact
+  "Transact-sync an ATransaction with a default timeout.
+
+   Returns Result.
 
    Throws ExceptionInfo."
   [^Convex client ^ATransaction atransaction]
@@ -443,21 +460,39 @@
                          ::anomalies/category category}
                         ex))))))
 
-(defn ^AKeyPair generate-account [^Convex client ^AKeyPair signer ^Long nonce]
-  (let [^AKeyPair generated-key-pair (AKeyPair/generate)
-        ^Address generated-address (.getAddress generated-key-pair)]
+(defn ^Address create-account
+  "Creates a new Account on the network.
 
-    (->> (transfer-transaction {:nonce nonce :target generated-address :amount 100000000})
-         (sign signer)
-         (transact client))
+   Returns Address.
 
-    generated-key-pair))
+   Throws ExceptionInfo if the transaction fails."
+  [^Convex client ^String account-public-key]
+  (let [command (read-source (str "(create-account 0x" account-public-key ")") :convex-lisp)
+
+        tx-data {:nonce 0
+                 :address Init/HERO
+                 :command command}
+
+        ^Result result (->> (invoke-transaction tx-data)
+                            (transact client))]
+
+    (if (.isError result)
+      (let [error-code (datafy-safe (.getErrorCode result))
+            error-result (datafy-safe (.getValue result))
+            message (pr-str error-code error-result)]
+        (throw (ex-info message {::anomalies/message message
+                                 ::anomalies/category ::anomalies/fault
+                                 :result result})))
+      (.getValue result))))
 
 (defn ^Result faucet
   "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
-  [^Convex client {:keys [nonce target amount]}]
-  (->> (transfer-transaction {:nonce nonce :target target :amount amount})
-       (sign Init/HERO_KP)
+  [^Convex client target amount]
+  (->> (transfer-transaction
+         {:address (.longValue Init/HERO)
+          :nonce 0
+          :target target
+          :amount amount})
        (transact client)))
 
 (defn convex-core-reference []
@@ -470,7 +505,7 @@
              {:doc
               (merge {:description description
                       :signature signature
-                      :symbol (.toString (.getName sym))
+                      :symbol (.toString (.getName ^Symbol sym))
                       :examples examples}
                      (when type
                        {:type (keyword type)}))})))
@@ -478,11 +513,11 @@
 
 
 (defn key-pair-data [^AKeyPair key-pair]
-  {:convex-web.key-pair/address-checksum-hex (.toChecksumHex (.getAddress key-pair))
-   :convex-web.key-pair/blob-hex (.toHexString (.getEncodedPrivateKey key-pair))})
+  {:convex-web.key-pair/account-key (.toChecksumHex (.getAccountKey key-pair))
+   :convex-web.key-pair/private-key (.toHexString (.getEncodedPrivateKey key-pair))})
 
-(defn ^AKeyPair create-key-pair [{:convex-web.key-pair/keys [address-checksum-hex blob-hex]}]
-  (AKeyPair/create (address address-checksum-hex) (Blob/fromHex blob-hex)))
+(defn ^AKeyPair create-key-pair [{:convex-web.key-pair/keys [account-key private-key]}]
+  (AKeyPair/create (AccountKey/fromChecksumHex account-key) (Blob/fromHex private-key)))
 
 (s/fdef create-key-pair
   :args (s/cat :key-pair :convex-web/key-pair)

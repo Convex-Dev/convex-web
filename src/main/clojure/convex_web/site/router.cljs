@@ -191,7 +191,7 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/faucet {:reset? true
-                                             :state {:convex-web/faucet {:convex-web.faucet/amount 1000000}
+                                             :state {:convex-web/faucet {:convex-web.faucet/amount 100000000}
                                                      :faucet-page/config {:faucet-page.config/my-accounts? true}}}))}]}]
 
 
@@ -215,6 +215,13 @@
                  (stack/push :page.id/markdown {:title "Explorer"
                                                 :state {:id :explorer}
                                                 :reset? true}))}]}]
+
+    ["/state"
+     {:name :route-name/state
+      :controllers
+      [{:identity identity
+        :start (fn [_]
+                 (stack/push :page.id/state {:reset? true}))}]}]
 
     ["/accounts"
      {:name :route-name/accounts-explorer

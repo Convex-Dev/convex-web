@@ -61,10 +61,7 @@
 
 (def convex-lisp-examples
   (let [make-example (fn [& examples]
-                       ;; Format & add a blank line to separate examples.
-                       (->> examples
-                            (map #(zprint/zprint-str % {:parse-string-all? true}))
-                            (str/join "\n\n")))]
+                       (str/join "\n\n" examples))]
     [["Self Balance"
       (make-example "*balance*")]
 
@@ -73,11 +70,11 @@
 
      ["Check Balance"
       (make-example
-        "(balance \"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\")")]
+        "(balance #9)")]
 
      ["Transfer"
       (make-example
-        "(transfer \"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\" 1000)")]
+        "(transfer #9 1000)")]
 
      ["Creating a Token"
       (make-example
@@ -271,11 +268,8 @@
                clear-all (fn [cm]
                            (codemirror/cm-set-value cm ""))]
            [codemirror/CodeMirror
-            [:div.relative.flex-shrink-0.flex-1.resize-y.overflow-scroll
-             {:style
-              {:height "200px"}}]
-
-            {:configuration {:lineNumbers false
+            [:div.relative.flex-shrink-0.flex-1.resize-y.overflow-scroll]
+            {:configuration {:lineNumbers true
                              :value @source-ref
                              :mode (case (language state)
                                      :convex-lisp
@@ -385,6 +379,11 @@
 (defmethod Output :string [{:convex-web.command/keys [object]}]
   [gui/Highlight (prn-str object)])
 
+(defmethod Output :double [{:convex-web.command/keys [object]}]
+  [gui/Highlight (if (js/Number.isInteger object)
+                   (.toFixed object 1)
+                   object)])
+
 (defmethod Output :function [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
    [gui/SymbolMeta (merge metadata output-symbol-metadata-options)]])
@@ -403,7 +402,7 @@
 
 ;; TODO: Delete
 (defmethod Output :address [{:convex-web.command/keys [object]}]
-  [gui/ObjectRenderer (get object :checksum-hex) :address])
+  [gui/ObjectRenderer (:address object) :address])
 
 (defn Commands [commands]
   (into [:div] (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
@@ -507,7 +506,14 @@
       ;; -- Options
       [:div.flex.items-center.justify-between.mt-1
 
-       [:div.flex
+       [:div.flex.space-x-6
+        [:div.flex.items-center
+         [:span.text-xs.text-gray-700.mr-1
+          "Account"]
+         [gui/AIdenticon {:value active-address :size gui/identicon-size-small}]
+         [:span.font-mono.text-sm.block.ml-1
+          (format/prefix-# active-address)]]
+
         ;; -- Mode
         [:div.flex.items-center
 
@@ -527,7 +533,7 @@
           [gui/InfoTooltip "Select \"Transaction\" to execute code as a transaction on the Convex Network. Select \"Query\" to execute code just to compute the result (No on-chain effects will be applied)."]]]
 
         ;; -- Language
-        [:div.flex.items-center.ml-6
+        [:div.flex.items-center
 
          [:span.text-xs.text-gray-700.mr-1
           "Language"]

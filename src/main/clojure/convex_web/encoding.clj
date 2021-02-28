@@ -1,6 +1,7 @@
 (ns convex-web.encoding
   (:require [cognitect.transit :as t]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [clojure.tools.logging :as log])
   (:import (java.io ByteArrayOutputStream InputStream)))
 
 (defn transit-decode-string
@@ -19,5 +20,9 @@
   [x]
   (let [out (ByteArrayOutputStream. 4096)
         writer (t/writer out :json)]
-    (t/write writer x)
-    (.toString out)))
+    (try
+      (t/write writer x)
+      (.toString out)
+      (catch Exception ex
+        (log/error "Can't Transit encode " (prn-str x))
+        (throw ex)))))

@@ -96,6 +96,7 @@
    explorer/transactions-page
    explorer/transactions-range-page
    explorer/transaction-page
+   explorer/state-page
 
    ;; ---
 
@@ -218,7 +219,11 @@
        :route-name :route-name/explorer
        :href (rfe/href :route-name/explorer)
        :children
-       (->> [{:text "Accounts"
+       (->> [{:text "State"
+              :route-name :route-name/state
+              :href (rfe/href :route-name/state)}
+
+             {:text "Accounts"
               :route-name :route-name/accounts-explorer
               :href (rfe/href :route-name/accounts-explorer)
               :active? (active #{:route-name/accounts-explorer
@@ -372,7 +377,10 @@
            {:on-click #(swap! *state update :show? not)}
            [:button.cursor-default.relative.w-full.rounded-md.bg-white.pr-9.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5 {:type "button" :aria-haspopup "listbox" :aria-expanded "true" :aria-labelledby "listbox-label"}
 
-            [gui/AIdenticon {:value selected :size 40}]
+            [:div.flex.items-center.space-x-2
+             [gui/AIdenticon {:value selected :size 40}]
+             [:span.font-mono.block.ml-2
+              (format/prefix-# selected)]]
 
             [:span.absolute.inset-y-0.right-0.flex.items-center.pr-2.pointer-events-none
              [:svg.h-5.w-5.text-gray-400 {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
@@ -420,7 +428,7 @@
                   [gui/AIdenticon {:value address :size 40}]
 
                   [:span.font-mono.block.ml-2
-                   (format/prefix-0x address)]]])]]]]]]))))
+                   (format/prefix-# address)]]])]]]]]]))))
 
 
 (defn TopNav []

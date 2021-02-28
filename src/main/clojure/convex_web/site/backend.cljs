@@ -108,3 +108,10 @@
                                              :params params}
                                             (when error-handler
                                               {:error-handler error-handler}))))
+
+(defn GET-state
+  "Gets the current state of the Convex network."
+  [{:keys [handler error-handler]}]
+  (GET "/api/internal/state" (merge {:handler handler}
+                                    (when error-handler
+                                      {:error-handler error-handler}))))
