@@ -226,7 +226,7 @@ The State is represented as an immutable Decentralised Data Value (DDV) that inc
 *	All information relating to active Peers and staking
 *	Global information (such as the latest Block timestamp)
 
-Since it is a DDV, it follows that a State is a Merkle Tree, and has a unique VID. This means that if two Peers compute a State update and announce the VIDs, it is possible to immediately validate if they computed the same resulting State.
+Since it is a DDV, it follows that a State is a Merkle DAG, and has a unique VID. This means that if two Peers compute a State update and announce the VIDs, it is possible to immediately validate if they computed the same resulting State.
 
 #### Reduction to Block Ordering Problem
 
@@ -273,7 +273,7 @@ This is achieved through:
   * Is idempotent, commutative and associative with respect to the merging of other Beliefs
   * Converges on a stable ordering of Blocks
 
-This effectively forms a join-semilattice for each Peer, and satisfies the conditions required for a CRDT.
+This effectively forms a *join-semilattice* for each Peer, and satisfies the conditions required for a CRDT.
 
 There is one subtle point that makes this different from a typical CRDT: Peers are only able to update the part of the overall Belief structure that represents their *own* proposals (this is enforced via digital signatures). This ensures that full cryptographic security is maintained throughout the operation of the consensus algorithm since nobody can practically "impersonate" a Peer.  
 
