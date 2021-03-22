@@ -33,7 +33,7 @@
   (:import (java.io InputStream)
            (convex.core.crypto Hash ASignature AKeyPair)
            (convex.core.data Ref SignedData AccountKey BlobMap)
-           (convex.core Init Peer State Result)
+           (convex.core Init Peer State Result Order Block)
            (java.time Instant)
            (java.util Date)
            (convex.core.exceptions MissingDataException)
@@ -936,9 +936,11 @@
 (defn -GET-block [context index]
   (try
     (let [peer (system/convex-peer context)
-          blocks-indexed (convex/blocks-indexed peer)]
-      (if-let [block (get blocks-indexed (Long/parseLong index))]
-        (-successful-response block)
+
+          ^Order order (convex/peer-order peer)]
+
+      (if (<= 0 index (dec (.getBlockCount order)))
+        (-successful-response (convex/block-data peer index (.getBlock order index)))
         (-not-found-response {:error {:message (str "Block " index " doesn't exist.")}})))
     (catch Exception ex
       (u/log :logging.event/system-error
