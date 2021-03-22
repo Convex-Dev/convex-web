@@ -363,11 +363,6 @@
   (when address
     (get (accounts-indexed peer) (.longValue address))))
 
-(defn hero-sequence [^Peer peer]
-  (-> (.getConsensusState peer)
-      (.getAccount Init/HERO)
-      (.getSequence)))
-
 (defn ^Transfer transfer-transaction [{:keys [address nonce target amount]}]
   (Transfer/create
     (convex-web.convex/address address)
