@@ -98,9 +98,10 @@
 
   :test
   {:extra-paths ["src/test/clojure"]
+   :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}}}
 
-   :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
-                lambdaisland/kaocha {:mvn/version "1.0.829"}}}
+  :kaocha
+  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.0.829"}}}
 
 
   :test-runner
