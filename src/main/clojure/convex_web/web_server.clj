@@ -935,7 +935,9 @@
 
 (defn -GET-block [context index]
   (try
-    (let [peer (system/convex-peer context)
+    (let [index (Long/parseLong index)
+
+          peer (system/convex-peer context)
 
           ^Order order (convex/peer-order peer)]
 
