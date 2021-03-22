@@ -948,6 +948,8 @@
              :message handler-exception-message
              :exception ex)
 
+      (log/error ex (str "Failed to get Block " index))
+
       -server-error-response)))
 
 (defn -GET-reference [_ _]
