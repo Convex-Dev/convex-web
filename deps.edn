@@ -1,7 +1,7 @@
 {:paths ["src/main/clojure" "src/main/resources"]
 
  :deps
- {org.clojure/clojure {:mvn/version "1.10.2"}
+ {org.clojure/clojure {:mvn/version "1.10.3"}
   org.clojure/clojurescript {:mvn/version "1.10.773"
                              ;; These exclusions are required because of Shadow CLJS.
                              :exclusions
@@ -9,7 +9,7 @@
                               org.clojure/google-closure-library
                               org.clojure/google-closure-library-third-party]}
   org.clojure/tools.logging {:mvn/version "1.1.0"}
-  org.clojure/data.json {:mvn/version "1.0.0"}
+  org.clojure/data.json {:mvn/version "2.0.1"}
 
   com.cognitect/transit-clj {:mvn/version "1.0.324"}
   com.cognitect/transit-cljs {:mvn/version "0.8.264"}
@@ -38,7 +38,7 @@
   org.slf4j/log4j-over-slf4j {:mvn/version "1.7.30"}
 
   ;; Redirect Log4j 2.x to Logback via the SLF4J API
-  org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.14.0"}
+  org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.14.1"}
 
   ;; Redirect java.util.logging to Logback via the SLF4J API.
   org.slf4j/jul-to-slf4j {:mvn/version "1.7.30"}
@@ -67,7 +67,7 @@
 
 
   aero/aero {:mvn/version "1.1.6"}
-  ring/ring-core {:mvn/version "1.9.1"}
+  ring/ring-core {:mvn/version "1.9.2"}
   ring/ring-defaults {:mvn/version "0.3.2"}
   ring/ring-mock {:mvn/version "0.4.0"}
   ring-cors/ring-cors {:mvn/version "0.1.13"}
@@ -100,7 +100,7 @@
   {:extra-paths ["src/test/clojure"]
 
    :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
-                lambdaisland/kaocha {:mvn/version "1.0.732"}}}
+                lambdaisland/kaocha {:mvn/version "1.0.829"}}}
 
 
   :test-runner
@@ -139,5 +139,5 @@
   ;; -- Check outdated dependencies
   ;; clojure -M:outdated:logback-dev
   :outdated
-  {:extra-deps {antq/antq {:mvn/version "RELEASE"}}
+  {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
    :main-opts ["-m" "antq.core"]}}}
