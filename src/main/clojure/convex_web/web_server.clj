@@ -33,7 +33,7 @@
   (:import (java.io InputStream)
            (convex.core.crypto Hash ASignature AKeyPair)
            (convex.core.data Ref SignedData AccountKey BlobMap)
-           (convex.core Init Peer State)
+           (convex.core Init Peer State Result)
            (java.time Instant)
            (java.util Date)
            (convex.core.exceptions MissingDataException)
@@ -422,7 +422,10 @@
                               (convex/create-account client accountKey)
                               (catch ExceptionInfo ex
                                 (let [{:keys [result] ::anomalies/keys [message]} (ex-data ex)
-                                      code (convex/datafy-safe (.getErrorCode result))]
+
+                                      code (some-> ^Result result
+                                                   (.getErrorCode)
+                                                   (convex/datafy-safe))]
                                   (throw (ex-info message
                                                   (anomaly-incorrect
                                                     (error-body code message error-source-cvm)))))))]
