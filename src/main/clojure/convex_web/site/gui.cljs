@@ -1036,10 +1036,10 @@
   [:div.flex.flex-1.bg-white.rounded.shadow
    [:div.flex.flex-col.p-2
     [:span.text-xs.text-indigo-500.uppercase.mt-2
-     "HEX"]
+     "Blob"]
     [:div.flex
      [:code.text-xs.mr-2
-      object]
+      (str "0x" object)]
 
      [ClipboardCopy (str "0x" object)]]]])
 

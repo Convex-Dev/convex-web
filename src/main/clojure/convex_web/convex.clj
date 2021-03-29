@@ -159,8 +159,8 @@
     (instance? AExpander x)
     (.toString ^AExpander x)
 
-    (instance? Blob x)
-    (.toHexString ^Blob x)
+    (instance? ABlob x)
+    (.toHexString ^ABlob x)
 
     (instance? Syntax x)
     (datafy (.getValue ^Syntax x))
