@@ -2,7 +2,7 @@
 
  :deps
  {org.clojure/clojure {:mvn/version "1.10.3"}
-  org.clojure/clojurescript {:mvn/version "1.10.773"
+  org.clojure/clojurescript {:mvn/version "1.10.844"
                              ;; These exclusions are required because of Shadow CLJS.
                              :exclusions
                              [com.google.javascript/closure-compiler-unshaded
@@ -61,7 +61,7 @@
 
   com.brunobonacci/mulog {:mvn/version "0.6.5"}
 
-  lambdaisland/glogi {:mvn/version "1.0.74"}
+  lambdaisland/glogi {:mvn/version "1.0.83"}
 
   ;; -- End-of-Logging
 
@@ -115,7 +115,7 @@
 
   ;; -- Site (ClojureScript app)
   :site-dev
-  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.11.18"}
+  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.12.1"}
                 binaryage/devtools {:mvn/version "1.0.2"}}}
 
 
