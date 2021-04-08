@@ -1,7 +1,8 @@
 (ns codemirror-reagent.core
   (:require [cljs.pprint :as pprint]
             [cljs.spec.alpha :as s]
-            [reagent.core :as reagent]
+            [reagent.core :as r]
+            [reagent.dom :as dom]
 
             ["codemirror" :as codemirror]
             ["codemirror/mode/javascript/javascript"]
@@ -140,12 +141,12 @@
   (let [configuration (merge default-configuration configuration)
 
         codemirror-ref (atom nil)]
-    (reagent/create-class
+    (r/create-class
       {:display-name "CodeMirror"
 
        :component-did-mount
        (fn [this]
-         (let [node (reagent.dom/dom-node this)
+         (let [node (dom/dom-node this)
                configuration (merge default-configuration configuration)
                editor (codemirror node (clj->js configuration))]
 
@@ -194,7 +195,7 @@
          ;; It's important to use this `on-update`
          ;; instead of the one passed to the outer function,
          ;; since props might be different from the initial mount state.
-         (let [[_ _ {:keys [configuration on-update]}] (reagent/argv this)
+         (let [[_ _ {:keys [configuration on-update]}] (r/argv this)
 
                {:keys [value mode]} configuration
 
