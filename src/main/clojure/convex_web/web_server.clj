@@ -32,13 +32,11 @@
             [ring.middleware.cors :refer [wrap-cors]])
   (:import (java.io InputStream)
            (convex.core.crypto Hash ASignature AKeyPair)
-           (convex.core.data Ref SignedData AccountKey BlobMap)
-           (convex.core Init Peer State Result Order Block)
+           (convex.core.data Ref SignedData AccountKey ACell)
+           (convex.core Init Peer State Result Order)
            (java.time Instant)
            (java.util Date)
-           (convex.core.exceptions MissingDataException)
            (convex.core.lang.impl AExceptional)
-           (java.util.concurrent TimeoutException)
            (clojure.lang ExceptionInfo)))
 
 (defn ring-session [request]
@@ -313,7 +311,7 @@
         (convex/set-sequence-number! address next-sequence-number)
 
         ;; Persist the transaction in the Etch datastore.
-        (Ref/createPersisted tx)
+        (ACell/createPersisted tx)
 
         (log/debug "Persisted transaction ref" tx-ref)
 
