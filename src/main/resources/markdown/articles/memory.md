@@ -16,7 +16,7 @@ Convex implements a novel solution of Memory Accounting to help manage the probl
 - Each user is given a memory allowance
 - Memory allowance is consumed when on-chain storage is allocated, and released when stored objects are deleted
 - A common "pool" of memory is available which limits the maximum size of the on-chain state. This pool can be increased or reduced subject to on-chain governance by the Foundation
-- A user may buy additional memory at any time from the pool, or sell memory back to the pool for Convex gil
+- A user may buy additional memory at any time from the pool, or sell memory back to the pool for Convex Coins
 
 
 ### Memory Accounting Design
@@ -164,6 +164,8 @@ This achievement is possible because:
 
 - The Memory Size is computed incrementally and cached for each Cell.
 - The number of child cells for each Cell is itself bounded by a small constant
+- Memory Size computation is usually lazy, that is it is not performed unless required
+- The immutable nature of Convex Cell values means that there is never a need to update Memory Sizes once cached
 
 The computational cost of performing this memory accounting is factored in to the juice cost of operations that perform new Cell allocations. The storage cost is, of course, factored in to the general economics of the Memory Accounting model.
 

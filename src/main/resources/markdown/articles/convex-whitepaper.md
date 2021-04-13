@@ -98,8 +98,9 @@ Other technical challenges became apparent over time. Some notable issues:
 * **Cross chain integration** presents a particular problem where different decentralised platforms provide different specialised capabilities, but need to be integrated to form a combined solution. The problems of maintaining consensus, security, reliability etc. are magnified in such situations.
 * **Latency** - The time taken for most blockchains to confirm final consensus is frequently too long to offer a positive user experience. This inability to provide quick confirmation and feedback is a significant barrier to mainstream user adoption of decentralised applications.
 * **Upgradability** - Both networks themselves, and the specific implementations of smart contracts, are difficult to upgrade, in some cases requiring a "hard fork" of the network.
+* **State Growth** - Decentralised databases have an issue with *state growth*, defined as the increasing requirement for peers to store information that accumulates over time. Because on-chain data must be retained, potentially indefinitely (in order to satisfy future on-chain queries or smart contract operation), this imposes increasing economic costs on Peer operators
 
-Convex presents a solution to most of these challenges, and as such we believe it allows a significant evolution "Beyond Blockchain" to deliver the Internet of Value. The remainder of this White Paper explains how we achieve this.
+Convex presents a solution to these challenges, and as such we believe it allows a significant evolution "Beyond Blockchain" to deliver the Internet of Value. The remainder of this White Paper explains how we achieve this.
 
 ## Convex Overview
 
@@ -170,6 +171,23 @@ The database engine itself is called Etch. Etch is an embedded database engine o
 
 The Storage System supports optional garbage collection for Peers that wish to compact storage size. A Peer is only required to maintain the current state, and a short history sufficient to participate in the consensus algorithm. Of course, Peers may choose to retain additional information for historical analysis.
 
+### Memory Accounting
+
+Decentralised databases have an issue with *state growth*, defined as the increasing requirement for peers to store information that accumulates over time. Because on-chain data must be retained, potentially indefinitely, in order to satisfy future on-chain queries or smart contract operation, there is no option to discard data arbitrarily: a correct peer cannot do so and maintain correct participation in the consensus protocol.
+
+This growing demand for storage space presents a significant problem.
+
+- It creates a requirement for peers to incur increasing storage costs over time, for data that must be retained indefinitely
+- There are perverse incentives at work: a user might pay a one-off code to store data on-chain, but does not bear the cost of indefinite future storage (which falls on peer operators)
+- Over time, careless use of on-chain storage may make it impractical for a typical individual to operate a peer with normal computer hardware and storage capabilities
+- This problem might be manageable for low-transaction-volume platforms, but is clearly unaccaptable for systems such as Convex that are designed to handle high volumes of transactions for sustained periods of time
+
+Convex implements a novel solution of Memory Accounting to help manage the problem.
+
+- Each user is given a memory allowance
+- Memory allowance is consumed when on-chain storage is allocated, and released when stored objects are deleted
+- A common "pool" of memory is available which limits the maximum size of the on-chain state. This pool can be increased or reduced subject to on-chain governance by the Foundation
+- A user may buy additional memory at any time from the pool, or sell memory back to the pool for Convex Coins
 
 ## Technical Description
 
@@ -815,9 +833,25 @@ It is a well-known result that taking the union of sets in a purely additive man
 
 This convergence property is particularly beneficial when combined with the structured of Merkle trees used throughout the CVM: data structures with identical branches are automatically de-duplicated when they are stored, since the existing storage entry can simply be re-used. If effect, the Merkle trees become Merkle DAGs with guaranteed sharing of identical children.
 
+#### Monotonic Headers
+
+In addition to value IDs and encodings, the storage system allows header information to be attached to each Cell.
+
+As we require the storage system to be convergent, we require each field of the header to be *monotonic*, i.e. there is a simple function that can compute the new header as the maximum value of any previous header values. This ensure that the headers themselves satisfy the convergence property.
+
+The current Convex implementation utilises Monotonic Headers for the following fields:
+
+- Lazily computed memory size (any value is considered to replace an empty value)
+- Status tagging (see below)
+- Marking Cells to be pinned for purposes of durable persistence or garbage collection
+
+Unlike the Encoding, Monotonic Headers associated with each Value ID are essentially *transient* in nature, i.e. they can be reset or discarded without affecting the Cells themselves. This allows the Monotonic headers to be used locally by Peers independently of the general functioning of Convex as a decentralised network. For example, rebuilding the database during garbage collection may safely unmark pinned Cells providing the Peer has ensured that it has retained all the information it needs.
+
 #### Status tagging
 
-In additional to the raw data values, the storage system implements a system of status tagging, used to indicate the level to which a data value has been verified by the Peer.
+In order to support efficient Peer operation, the storage system implements a system of status tagging, used to indicate the level to which a data value has been verified by the Peer.
+
+Status tagging is monotonic in nature (increases in value) and hence can be included in part of the  Monotonic Header
 
 The basic status levels are:
 
@@ -831,8 +865,8 @@ Some special status levels are also possible, including:
 * **EMBEDDED** - A Data Value is able to be embedded within other Cells, and does *not* need to be individually stored.
 * **INVALID** - A cell has been proven to be inconsistent with some validation rules. Such values cannot be used in the CVM, but caching the invalid status can be helpful to avoid the need to redo the validation.
 
-This status tagging is compatible with being included in the storage CRDT, since:
-* The status level can never go backwards: once verified, the result stands forever.
+This status tagging is monotonic and compatible with being included in the storage CRDT, since:
+* The status level can never go backwards: once verified, the result is known to be true forever. If the status was reset (e.g. in the case of storage failure), the only real loss would be the Peer having to repeat certain calculations to re-verify the status.
 * Where there are two possible outcomes (valid or invalid, embedded or non-embedded) all Peers that perform correct validation must agree (i.e. it is effectively monotonic for any given data value)
 
 #### Novelty detection
@@ -846,7 +880,7 @@ Novelty detection is important for the following reasons:
 
 #### Garbage Collection
 
-If we had infinite storage, we could just keep accumulating values in the database forever. However, practical concerns of storage limits will probably make this infeasible for most Peers.
+If we had infinite cheap storage, we could just keep accumulating values in the database forever. However, practical concerns of storage limits will probably make this infeasible for most Peers.
 
 Peers are only strictly required to maintain:
 
@@ -861,7 +895,101 @@ This behaviour is of course configurable by Peer Operators - we expect some will
 
 The Convex reference implementation implements the storage system using a specialised memory-mapped database called Etch, which is heavily optimised for the storage of Cells as described here. Assuming sufficient available RAM on a Peer, Etch effectively operates as an in-memory database.
 
-In performance tests, we have observed tens of millions of reads and writes per second. 
+In performance tests, we have observed millions of reads and writes per second. This compares favourably to traditional approaches, such as using a relational database or generalised key-value store.
+
+### Memory Accounting
+
+In order to address the problem of economic and storage costs of state growth, Convex performs continuous memory accounting calculations to ensure that participants pay appropriate costs for resources that they consume.
+
+#### Memory Size
+
+Each Cell (in memory or storage) is defined to have a "Memory Size" which approximates the actual storage requirement (in bytes) for the object
+
+The Memory Size includes:
+
+- The size of the Encoding of the Cell in bytes
+- The total Memory Size of referenced child Cells, (e.g. if the object is a data structure)
+- An allowance for indexing and storage overheads (currently set to a fixed estimate of 64 bytes)
+
+#### Lazy computation
+
+Memory Size for a Cell is only calculated when required (usually at the point that the State resulting from a transaction is persisted to storage).
+
+This minimises the computational costs associated with memory accounting for transient in-memory objects.
+
+#### Memory Allowance
+
+Each Account on the Convex network is given a Memory Allowance which is a quantity of memory that may be consumed by that Account before incurring additional costs.
+
+#### Consumption
+
+Whenever a transaction is executed on the CVM, Memory Consumption is calculated based on the total impact of the transaction on the size of CVM state.
+
+Memory Consumption is computed at the end of each transaction, and is defined as:
+
+`Memory Consumption = [Size of CVM state at end of transaction] - [Size of CVM state at start of transaction]` 
+
+If a transaction has zero Memory Consumption, it will complete normally with no effect from the Memory Accounting subsystem
+
+If a transaction would complete normally, but has a positive Memory Consumption, the following resolutions are attempted, in this order:
+
+1. If the user has sufficient allowance, the additional memory requirement will be deducted from the allowance, and the transaction will complete normally
+2. If the transaction execution context has remaining juice, and attempt will be made to automatically purchase sufficient memory from the pool. The maximum amount paid will be the current juice price multiplied by the remaining juice for the transaction. If this succeeds, the transaction will complete successfully with the additional memory purchase included in the total juice cost.
+3. The transaction will fail with a MEMORY condition, and any state changes will be rolled back. The User will still be charged the juice cost of the transaction
+
+If a transaction has negative Memory Consumption, the memory allowance of the user will be increased by the absolute size of this value. In effect, this is a refund granted for releasing storage requirements.
+
+
+#### Allowance transfers
+
+It is permissible to make an allowance transfer directly between Accounts. This is a practical decision for the following reasons:
+
+- It enables Actors to automate management of allowances more effectively
+- It enables Accounts controlled by the same user to shift allowances appropriately
+- It avoids any need for resource-consuming "tricks" such as allocating Memory from one Account, and deallocating it from another to make an allowance transfer
+- It creates a potential for Memory Allowances to be handled as an asset by smart contracts
+
+
+#### Actor Considerations
+
+All Accounts, including Actors, have a Memory Allowance. However, in most cases Actors have no need for a Memory Allowance because and memory consumption will be accounted for against a User account that was the Origin of a transaction.
+
+The exception to this is with scheduled execution, where an Actor itself may be the Origin for a transaction.
+
+Actor developers may include a capability to reclaim Memory allowances from an Actor (e.g. transferring it to a nominated User Account). This is optional, but without this there may be no way to ever utilise an allowance held within an Actor (either because a scheduled transaction obtained a Memory refund, or because an allowance transfer was made to the Actor).
+
+#### Pool trading
+
+The Memory Pool employs a simple Automated Market Maker, allowing users to buy and sell memory allowances at any time.
+
+The Memory Pool liquidity is provided by the Convex Foundation as service to the ecosystem. It is the Foundation's responsibility to govern the continuous availability of memory at an appropriate price.
+
+#### Size persistence
+
+The memory size is persisted in the Storage System as part of the header information for a Cell. Persisting this value is important to ensure that memory sizes can be computed incrementally without re-visiting the complete tree of child Cells.
+
+#### Memory Accounting impact
+
+The memory accounting subsystem is designed so that it always has a minimal effect on CVM state size, even though it causes changes in the CVM state (consumption of allowances etc.). This limits any risk of state growth size from the memory accounting itself.
+
+This is achieved mainly by ensuring that state changes due to memory accounting cause no net Cell allocations, at most small embedded fields within existing Cells are updated (specifically balances and allowances stored within Accounts). 
+
+#### Performance characteristics
+
+Memory Accounting is O(1) for each non-embedded Cell allocated, with a relatively small constant. This would appear to be asymptotically optimal for any system that performs exact memory accounting at a fine-grained level.
+
+This achievement is possible because:
+
+- The Memory Size is computed incrementally and cached for each Cell.
+- The number of child cells for each Cell is itself bounded by a small constant
+- Memory Size computation is usually lazy, that is it is not performed unless required
+- The immutable nature of Convex Cell values means that there is never a need to update Memory Sizes once cached
+
+#### Accounting for computational costs
+
+The direct computational cost of performing this memory accounting is factored in to the juice cost of operations that perform new Cell allocations. This compensates Peer operators for the (relatively small) overhead of performing meory accounting.
+
+The storage cost is, of course, handled by the general economics of the Memory Accounting model and pool trading.
 
 ### Cryptographic Primitives
 
