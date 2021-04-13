@@ -35,7 +35,7 @@ We envision a system that enables value exchange mechanisms while solving the pr
 
 The seven key properties that are essential to this vision are that it must be:
 
-* **Global** - a single, global network for everybody, without artificial boundaries. Potential is maximised when everyone can interact with everyone else.
+* **Global** - a single, global network for everybody, without artificial boundaries. Potential is maximised when everyone can transact with everyone else.
 * **Open** - a decentralised, technology independent system where anyone can participate without asking for permission. No barriers to entry.
 * **Automated** - able to support atomic, end-to-end transactions that are reliably executed using trusted and reliable smart contracts.
 * **Secure** - protecting against all types of security threats so that users can be confident of the safety of their digital assets and transactions.
