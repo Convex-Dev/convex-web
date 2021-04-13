@@ -104,7 +104,6 @@
 
     <root level="ALL">
         <appender-ref ref="ALL_LOG_FILE"/>
-        <appender-ref ref="CLOUD"/>
     </root>
 
     <logger name="convex" level="ALL">

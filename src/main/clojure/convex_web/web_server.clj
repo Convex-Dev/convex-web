@@ -32,13 +32,11 @@
             [ring.middleware.cors :refer [wrap-cors]])
   (:import (java.io InputStream)
            (convex.core.crypto Hash ASignature AKeyPair)
-           (convex.core.data Ref SignedData AccountKey BlobMap)
-           (convex.core Init Peer State)
+           (convex.core.data Ref SignedData AccountKey ACell)
+           (convex.core Init Peer State Result Order)
            (java.time Instant)
            (java.util Date)
-           (convex.core.exceptions MissingDataException)
            (convex.core.lang.impl AExceptional)
-           (java.util.concurrent TimeoutException)
            (clojure.lang ExceptionInfo)))
 
 (defn ring-session [request]
@@ -313,7 +311,7 @@
         (convex/set-sequence-number! address next-sequence-number)
 
         ;; Persist the transaction in the Etch datastore.
-        (Ref/createPersisted tx)
+        (ACell/createPersisted tx)
 
         (log/debug "Persisted transaction ref" tx-ref)
 
@@ -422,7 +420,10 @@
                               (convex/create-account client accountKey)
                               (catch ExceptionInfo ex
                                 (let [{:keys [result] ::anomalies/keys [message]} (ex-data ex)
-                                      code (convex/datafy-safe (.getErrorCode result))]
+
+                                      code (some-> ^Result result
+                                                   (.getErrorCode)
+                                                   (convex/datafy-safe))]
                                   (throw (ex-info message
                                                   (anomaly-incorrect
                                                     (error-body code message error-source-cvm)))))))]
@@ -932,16 +933,22 @@
 
 (defn -GET-block [context index]
   (try
-    (let [peer (system/convex-peer context)
-          blocks-indexed (convex/blocks-indexed peer)]
-      (if-let [block (get blocks-indexed (Long/parseLong index))]
-        (-successful-response block)
+    (let [index (Long/parseLong index)
+
+          peer (system/convex-peer context)
+
+          ^Order order (convex/peer-order peer)]
+
+      (if (<= 0 index (dec (.getBlockCount order)))
+        (-successful-response (convex/block-data peer index (.getBlock order index)))
         (-not-found-response {:error {:message (str "Block " index " doesn't exist.")}})))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
              :message handler-exception-message
              :exception ex)
+
+      (log/error ex (str "Failed to get Block " index))
 
       -server-error-response)))
 

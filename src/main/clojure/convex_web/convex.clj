@@ -159,8 +159,8 @@
     (instance? AExpander x)
     (.toString ^AExpander x)
 
-    (instance? Blob x)
-    (.toHexString ^Blob x)
+    (instance? ABlob x)
+    (.toHexString ^ABlob x)
 
     (instance? Syntax x)
     (datafy (.getValue ^Syntax x))
@@ -295,14 +295,6 @@
       []
       (range start end))))
 
-(defn blocks-indexed [^Peer peer]
-  (let [order (peer-order peer)]
-    (reduce
-      (fn [blocks index]
-        (assoc blocks index (block-data peer index (.getBlock order index))))
-      {}
-      (range (consensus-point order)))))
-
 (defn syntax-data [^Syntax syn]
   (merge #:convex-web.syntax {:source (.getSource syn)
                               :value
@@ -371,11 +363,6 @@
   (when address
     (get (accounts-indexed peer) (.longValue address))))
 
-(defn hero-sequence [^Peer peer]
-  (-> (.getConsensusState peer)
-      (.getAccount Init/HERO)
-      (.getSequence)))
-
 (defn ^Transfer transfer-transaction [{:keys [address nonce target amount]}]
   (Transfer/create
     (convex-web.convex/address address)
@@ -384,7 +371,7 @@
     ^Long amount))
 
 (defn ^Invoke invoke-transaction [{:keys [nonce address command]}]
-  (Invoke/create ^Address address ^Long nonce command))
+  (Invoke/create ^Address address ^Long nonce ^ACell command))
 
 (defn ^SignedData sign [^AKeyPair signer ^ATransaction transaction]
   (SignedData/create signer transaction))
@@ -432,7 +419,7 @@
    Throws ExceptionInfo."
   [^Convex client ^SignedData signed-data]
   (try
-    (.transactSync client signed-data 1000)
+    (.transactSync client signed-data 10000)
     (catch Exception ex
       (let [message "Failed to get Transaction result."
             category (or (throwable-category ex) ::anomalies/fault)]
@@ -450,7 +437,7 @@
    Throws ExceptionInfo."
   [^Convex client ^ATransaction atransaction]
   (try
-    (.transactSync client atransaction 1000)
+    (.transactSync client atransaction 10000)
     (catch Exception ex
       (let [message "Failed to get Transaction result."
             category (or (throwable-category ex) ::anomalies/fault)]
