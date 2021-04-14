@@ -11,7 +11,7 @@ Using the [Sandbox](https://convex.world/#/sandbox) is the easiest way to experi
 
 ## Lisp basics
 
-Lisp all about expressions. All code in Lisp is ultimately an expression that can be evaluated to get a resulting value (or maybe an error, if something went wrong...). So let's take a quick tour through the most common types of expressions, and the values that they produce.
+Lisp is all about expressions. All code in Lisp is ultimately an expression that can be evaluated to get a resulting value (or maybe an error, if something went wrong...). So let's take a quick tour through the most common types of expressions, and the values that they produce.
 
 ### Literals
 
@@ -76,13 +76,20 @@ nil
 => nil
 ```
 
+Addresses (which refer to Accounts) can be expressed as a literal starting with `#`. Address literals need not refer to an account that actually exists.
+
+```clojure
+#12345
+=> #12345
+```
+
 Finally, there is also support for byte data encoded in hexadecimal (we call these "Blob literals" because they can technically be arbitrary Binary Large OBjects). Any hex string with an even number of digits is valid.
 
 ```clojure
 0xff1234
 => 0xff1234
 
-;; This is OK, and results in a zero length Blob
+;; NOTE: This is OK, and results in a zero length Blob
 0x
 => 0x
 ```
@@ -697,7 +704,7 @@ Actors are autonomous programs that live on the CVM. Most importantly, they are 
 
 Actors have quite similar capabilities to Users:
 
-- They have an Account on the CVM, with an address like `0x6f7f341B648F36B11C8AE735997Aeb868124951Beded1C5371C89cD1d3AA9E6b1`
+- They have an Account on the CVM, with an address like `#2501`
 - They have their own dynamic environment, which can contain definitions and data just like a User's environment.
 - They can control digital assets, coins and memory allocations
 
@@ -838,6 +845,13 @@ To use this Actor, it needs to be deployed and then called with the offer amount
 => {#2599 100000}
 ```
 
+### Important security note for Actors
+
+Actor code runs in the Account of the actor itself. In many circumstances, calling Actor code can be considered "safe" in the sense that it cannot in general access assets owned by the calling account. However there are some risks that you should be aware of:
+
+- If you make an Actor call, you are still liable for paying any transaction fees (and memory usage) associated with running actor code. If this is a concern, you should evaluate the Actor code to determine if there is any risk of high transaction fees (or set an appropriate transaction fee limit).
+- An Actor may call other Actors. This can open up a "re-entrancy attack" if the Actor calls back into other code that you were not expecting (may change state of other actors for example) and invalidate some assumptions about the state of other Actors that you previously made. If you consider this a risk, calling an Actor, especially an unknown / untrusted one, should usually be the *last* thing you do in a transaction.
+- An Actor may "accept" Convex Coins or other digital assets that have been offered to it. Only offer assets to an Actor that you intend to call if you are comfortable that the Actor may claim these assets. 
 	
 ## Libraries
 
@@ -854,12 +868,12 @@ This approach is powerful because:
 
 Using libraries is easy! All you need to do is:
 
-- `import` the library using its Address and give it a convenient alias e.g. `foo`
+- `import` the library using its Address or CNS name and give it a convenient alias e.g. `foo`
 - Use symbols defined in the library by prefixing the symbol name with the alias e.g. `foo/bar`
 
 ```clojure
 ;; Import a library (in this case, the standard registry Actor)
-(import 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff :as reg)
+(import convex.registry :as reg)
 
 ;; Use a symbol from the library (in this case, count the number of registered accounts)
 (count reg/registry)
