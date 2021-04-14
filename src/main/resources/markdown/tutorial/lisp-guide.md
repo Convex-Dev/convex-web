@@ -707,15 +707,15 @@ To create an Actor, you need to deploy some code to initialise the actor. The co
 
 ```clojure
 ;; Deploy an actor, get the resulting address
-(deploy-once '(def some-data "Hello"))
-=> 0x1416E4b915D0aeCAa9362a0d37612Bf924fA4BC01449827Ae907154f8317113B
+(deploy '(def some-data "Hello"))
+=> #1033
 
 ;; This is undeclared, since some-data exists in the Actor's environment, not ours
 some-data
 => UNDECLARED
 
 ;; we can look up the data in the new Actor's environment however:
-(lookup 0x1416E4b915D0aeCAa9362a0d37612Bf924fA4BC01449827Ae907154f8317113B 'some-data)
+(lookup #1033 'some-data)
 => "Hello"
 ```
 
@@ -774,11 +774,11 @@ Sometimes you want to pass parameters to construct an Actor. `defactor` lets you
   (export calc))
 
 ;; deploy multipliers with different parameters
-(def times2 (deploy-once (multiplier 2)))
-=> 0x80f0b6467DDbeB80a4A7D719A69949CFE9aC04bbdd6fD3A637Ef941Da39D86B9
+(def times2 (deploy (multiplier 2)))
+=> #2601
 
-(def times3 (deploy-once (multiplier 3)))
-=> 0x322bc9a01E84922A9E27d77CCdE027a4b504F8B2a2AFf1D841608beac1263C5F
+(def times3 (deploy (multiplier 3)))
+=> #2602
 
 ;; test them out!
 (call times2 (calc 10))
@@ -788,13 +788,6 @@ Sometimes you want to pass parameters to construct an Actor. `defactor` lets you
 => 30
 ```
 
-Note the use of `deploy-once` rather than `deploy` in this case. `deploy-once` is like deploy, but if an actor with exactly the same initialisation code has been deployed already it will simply return a reference to the existing Actor. This is useful in cases where you don't need multiple copies of the same Actor - it is cheaper to simply refer to a singleton Actor.
-
-Examples where `deploy-once` is a good idea:
-
-- An Actor which has no mutable state (like the multiplier above)
-- An Actor where you want multiple people to share the same instance, such as a chat room channel
-- An Actor that benefits from more users providing liquidity, e.g. a digital asset exchange
 
 ### Sending funds to Actors
 
@@ -830,11 +823,11 @@ To use this Actor, it needs to be deployed and then called with the offer amount
 
 ```
 ;; A charity address that you want to be the beneficiary of donations
-(def charity (address 0xf3393030Fc4252b7a91C5306f4d6670062384818145bF6239380bDDa3486055c))
+(def charity #2055)
 
 ;; Deploy the donations fund
-(def charity-fund (deploy-once donations foo))
-=> 0x62BccF81C937Bca59edFDcEd8fB3a5c0da895420d5932e5e688445A734aE68C5
+(def charity-fund (deploy (donations charity)))
+=> #2603
 
 ;; Donate to charity
 (call charity-fund 100000 (donate))
@@ -842,7 +835,7 @@ To use this Actor, it needs to be deployed and then called with the offer amount
 
 ;; See who has donated so far!
 (lookup charity-fund 'all-donations)
-=> {#addr 0x0f49f3005c950ff5822f6b51f7dfe31c18adbd90570afe99af680b8ce5e4996f 100000}
+=> {#2599 100000}
 ```
 
 	
