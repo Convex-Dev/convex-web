@@ -191,7 +191,7 @@ The simplest Actor you can build is an empty Actor:
 
 ```clojure
 ;; Deploy an empty Actor, with code defined by 'nil'
-(def actor (deploy-once nil))
+(def actor (deploy nil))
 => 0x5d53469f20Fef4f8EAB52B88044EDE69C77A6A68a60728609Fc4a65Ff531E7D0
 ```
 

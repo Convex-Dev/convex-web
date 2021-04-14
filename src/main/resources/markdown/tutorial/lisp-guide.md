@@ -871,11 +871,10 @@ Using libraries is easy! All you need to do is:
 Deploying libraries is just like deploying an Actor, with a few key differences to note:
 
 - You don't need to `export` any functions (unless you really want to enable `call`)
-- `deploy-once` is normally recommended, since libraries should be deployed once and re-used.
 
 ```clojure
 (def my-lib-address 
-  (deploy-once
+  (deploy
     '(defn distance [x y]
        (sqrt (+ (* x x) (* y y))))))
        
