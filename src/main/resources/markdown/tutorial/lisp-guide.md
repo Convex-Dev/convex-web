@@ -127,7 +127,7 @@ Some *special symbols* are provided by Convex to make it easier to access specia
 
 ;; Get the Address of the current Account via the special symbol '*address*'
 *address*
-=> 0x924a3A1bE387E591d364CA4ac596004811b2Fcae6bF261355eEF15Ccf1108613
+=> #123
 ```
 
 ### Functions
