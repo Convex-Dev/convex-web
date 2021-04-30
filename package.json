@@ -7,11 +7,11 @@
     "watch": "npx shadow-cljs watch :main"
   },
   "dependencies": {
-    "@headlessui/react": "^0.3.0",
+    "@headlessui/react": "^1.1.1",
     "@tailwindcss/typography": "^0.4.0",
     "@tailwindcss/ui": "^0.7.2",
     "@types/react": "^16.14.3",
-    "codemirror": "^5.60.0",
+    "codemirror": "^5.61.0",
     "highlight.js": "^10.7.2",
     "jdenticon": "^3.1.0",
     "qrcode.react": "^1.0.1",
@@ -23,9 +23,9 @@
     "timeago.js": "^4.0.2"
   },
   "devDependencies": {
-    "autoprefixer": "^10.2.4",
-    "postcss": "^8.2.5",
+    "autoprefixer": "^10.2.5",
+    "postcss": "^8.2.13",
     "shadow-cljs": "^2.12.5",
-    "tailwindcss": "^2.0.3"
+    "tailwindcss": "^2.1.2"
   }
 }
