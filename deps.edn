@@ -9,10 +9,10 @@
                               org.clojure/google-closure-library
                               org.clojure/google-closure-library-third-party]}
   org.clojure/tools.logging {:mvn/version "1.1.0"}
-  org.clojure/data.json {:mvn/version "2.1.0"}
+  org.clojure/data.json {:mvn/version "2.2.2"}
 
   com.cognitect/transit-clj {:mvn/version "1.0.324"}
-  com.cognitect/transit-cljs {:mvn/version "0.8.264"}
+  com.cognitect/transit-cljs {:mvn/version "0.8.269"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
 
   world.convex/convex {:local/root "convex.jar"}
@@ -61,13 +61,13 @@
 
   com.brunobonacci/mulog {:mvn/version "0.6.5"}
 
-  lambdaisland/glogi {:mvn/version "1.0.83"}
+  lambdaisland/glogi {:mvn/version "1.0.106"}
 
   ;; -- End-of-Logging
 
 
   aero/aero {:mvn/version "1.1.6"}
-  ring/ring-core {:mvn/version "1.9.2"}
+  ring/ring-core {:mvn/version "1.9.3"}
   ring/ring-defaults {:mvn/version "0.3.2"}
   ring/ring-mock {:mvn/version "0.4.0"}
   ring-cors/ring-cors {:mvn/version "0.1.13"}
@@ -78,8 +78,8 @@
                      :exclusions [cljsjs/react
                                   cljsjs/react-dom
                                   cljsjs/react-dom-server]}
-  metosin/reitit-frontend {:mvn/version "0.5.12"}
-  datalevin/datalevin {:mvn/version "0.3.17"}
+  metosin/reitit-frontend {:mvn/version "0.5.13"}
+  datalevin/datalevin {:mvn/version "0.4.30"}
   nano-id/nano-id {:mvn/version "1.0.0"}
   expound/expound {:mvn/version "0.8.9"}
   fipp/fipp {:mvn/version "0.6.23"}
