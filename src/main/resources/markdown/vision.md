@@ -1,6 +1,6 @@
 Convex is foundational technology for the **Internet of Value**. 
 
-Throughout history, people have improved their lives and societies by exchanging good and services to fulfil their needs. Marketplaces, trade routes, legal systems, currencies and financial institutions developed to support value exchange over the centuries. 
+Throughout history, people have improved their lives and societies by exchanging goods and services to fulfil their needs. Marketplaces, trade routes, legal systems, currencies and financial institutions developed to support value exchange over the centuries. 
 
 In the modern world, assets are increasingly managed with digital systems, and in many cases are entirely digital themselves. However the facilities to enable value to be exchanged for such assets are still mostly dependent on traditional and inefficient mechanisms:
 
