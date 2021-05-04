@@ -1008,7 +1008,7 @@ As an engineering principle, Convex only uses trusted implementations of cryptog
 
 ## Conclusion
 
-Convex presents a new approach to programmable economic systems that provides a powerful combination of scalability, security and decentralisation, suitable for building applications for the Internet of Value.
+Convex presents a new approach to programmable economic systems that provides a powerful combination of scalability, security and decentralisation - suitable for building applications for the Internet of Value.
 
 At the same time, it maintains a certain degree of simplicity. We believe that simple, composable systems offer a more stable and secure foundation to build upon, and Convex therefore features:
 
