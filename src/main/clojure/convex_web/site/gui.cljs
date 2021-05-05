@@ -39,9 +39,9 @@
   (when el
     (.scrollIntoView el)))
 
-(defn highlight-block [el]
+(defn highlight-element [el]
   (when el
-    (.highlightBlock hljs el)))
+    (.highlightElement hljs el)))
 
 (defn transaction-type-text-color [transaction-type]
   (case transaction-type
@@ -508,7 +508,7 @@
             ^{:key code}
             [:pre.text-xs.mb-1
              [:code.clojure.rounded
-              {:ref highlight-block}
+              {:ref highlight-element}
               code]])]))]))
 
 
@@ -913,7 +913,7 @@
                           :hover "hover:opacity-50"}]]
 
    [:code.hljs.language-clojure.text-sm.rounded
-    {:ref highlight-block}
+    {:ref highlight-element}
     value]])
 
 (defn Markdown [markdown]

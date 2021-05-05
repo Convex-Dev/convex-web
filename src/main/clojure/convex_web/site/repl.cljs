@@ -268,8 +268,9 @@
                clear-all (fn [cm]
                            (codemirror/cm-set-value cm ""))]
            [codemirror/CodeMirror
-            [:div.relative.flex-shrink-0.flex-1.resize-y.overflow-scroll]
-            {:configuration {:lineNumbers true
+            [:div.relative.flex-shrink-0.flex-1.overflow-auto
+             {:style {:max-height "300px"}}]
+            {:configuration {:lineNumbers false
                              :value @source-ref
                              :mode (case (language state)
                                      :convex-lisp
@@ -491,10 +492,10 @@
     [:div.flex.flex-1.space-x-8.overflow-auto
 
      ;; -- REPL
-     [:div.flex.flex-col.mb-6 {:class "w-3/5"}
+     [:div.flex.flex-col.mb-6.space-y-1 {:class "w-3/5"}
 
       ;; -- Commands
-      [:div.flex.bg-gray-100.border.rounded.mb-2.overflow-auto
+      [:div.flex.bg-gray-100.border.rounded.overflow-auto
        {:style
         {:height "70vh"}}
        [:div.flex.flex-col.flex-1
