@@ -270,7 +270,7 @@
            [codemirror/CodeMirror
             [:div.relative.flex-shrink-0.flex-1.overflow-auto
              {:style {:max-height "300px"}}]
-            {:configuration {:lineNumbers true
+            {:configuration {:lineNumbers false
                              :value @source-ref
                              :mode (case (language state)
                                      :convex-lisp
