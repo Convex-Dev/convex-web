@@ -268,7 +268,8 @@
                clear-all (fn [cm]
                            (codemirror/cm-set-value cm ""))]
            [codemirror/CodeMirror
-            [:div.relative.flex-shrink-0.flex-1.resize-y.overflow-scroll]
+            [:div.relative.flex-shrink-0.flex-1.overflow-auto
+             {:style {:max-height "300px"}}]
             {:configuration {:lineNumbers true
                              :value @source-ref
                              :mode (case (language state)

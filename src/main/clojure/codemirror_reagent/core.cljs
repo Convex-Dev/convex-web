@@ -150,6 +150,9 @@
                configuration (merge default-configuration configuration)
                editor (codemirror node (clj->js configuration))]
 
+           ;; TODO: Expose in the API.
+           (.setSize editor nil "auto")
+
            ;; --
 
            (when (seq events)
