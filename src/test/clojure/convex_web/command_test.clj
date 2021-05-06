@@ -77,7 +77,7 @@
                                       :convex-web.query/language :convex-lisp}})]
 
       (is (= {::c/status :convex-web.command.status/error
-              ::c/error {:message "Syntax error."}}
+              ::c/error {:message "Error while parsing action 'Input/ExpressionList/ZeroOrMore/Sequence/Expression/FirstOf/DelimitedExpression/DataStructure/List/FirstOf/Sequence/List_Action1' at input position (line 1, pos 3):\n(\n  ^\n\nconvex.core.exceptions.ParseException: Expected closing ')'"}}
              (select-keys command [::c/status ::c/object ::c/error])))))
 
   (testing "Cast error"

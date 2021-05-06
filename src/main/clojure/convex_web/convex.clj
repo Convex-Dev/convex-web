@@ -31,7 +31,7 @@
       :convex-scrypt
       (ScryptNext/readSyntax source))
     (catch Throwable ex
-      (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
+      (throw (ex-info (ex-message ex) {::anomalies/message (ex-message ex)
                                        ::anomalies/category ::anomalies/incorrect})))))
 
 (defmacro execute [context form]
@@ -394,7 +394,7 @@
                          :convex-scrypt
                          (ScryptNext/readSyntax source))
                        (catch Throwable ex
-                         (throw (ex-info "Syntax error." {::anomalies/message (ex-message ex)
+                         (throw (ex-info (ex-message ex) {::anomalies/message (ex-message ex)
                                                           ::anomalies/category ::anomalies/incorrect}))))
 
         ^Address address (convex-web.convex/address address)]
