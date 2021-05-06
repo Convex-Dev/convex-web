@@ -412,6 +412,11 @@
                  (= language "language-clojure")
                  (if pretty?
                    (try
+                     ;; Zprint struggles to format this string and freezes the app:
+                     ;;
+                     ;; "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}"
+                     ;;
+                     ;; See issue https://github.com/Convex-Dev/convex/issues/87
                      #_(zprint/zprint-str source {:parse-string-all? true})
                      source
                      (catch js/Error _
