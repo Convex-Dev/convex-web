@@ -412,7 +412,8 @@
                  (= language "language-clojure")
                  (if pretty?
                    (try
-                     (zprint/zprint-str source {:parse-string-all? true})
+                     #_(zprint/zprint-str source {:parse-string-all? true})
+                     source
                      (catch js/Error _
                        source))
                    source)
