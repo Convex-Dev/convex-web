@@ -211,11 +211,11 @@
       [gui/ConvexLogo {:width "56px" :height "64px"}]
 
       [:span.font-mono.text-6xl
-       "Building the Future"]
+       "The Internet of Value"]
 
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
-       [:p "Convex is an open technology platform for the Internet of Value."]
-       [:p "Create your own digital assets and powerful decentralised applications for the Digital Economy of tomorrow."]]
+       [:p "Convex is an open, decentralised, and efficient technology platform built in the spirit of the original Internet."]
+       [:p "Create your own digital assets, smart contracts and powerful decentralised applications for the Digital Economy of tomorrow."]]
 
 
       [:div.flex.space-x-8
@@ -225,7 +225,7 @@
          {}
          [:div.flex.space-x-4.mx-2
           [:span.font-mono.text-sm.text-white.uppercase
-           "Learn about our vision"]
+           "Our Vision"]
 
           [gui/ArrowCircleRightIcon {:class "h-4 w-4 text-white"}]]]]
 
@@ -247,7 +247,7 @@
         {:class "w-4/5"
          :style
          {:color "#62A6E1"}}
-        "The tools to build the Digital Economy are here."]]
+        "Full Stack Solution for the Intrnet of Value."]]
 
 
       ;; Convex is flexible
