@@ -632,7 +632,7 @@
 
 (defn InfoTooltip [tooltip]
   [Tooltip
-   {:html (reagent/as-element [:span.text-xs.font-mono. tooltip])}
+   {:html (reagent/as-element [:p.text-xs.font-mono.leading-relaxed tooltip])}
    [InformationCircleIcon {:class "w-4 h-4 hover:text-gray-500"}]])
 
 
@@ -689,7 +689,7 @@
   [{:keys [selected options on-change]}]
   [:select
    {:class
-    ["text-sm"
+    ["text-xs"
      "p-1"
      "rounded"
      "focus:outline-none"

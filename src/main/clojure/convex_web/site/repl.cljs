@@ -512,14 +512,14 @@
       [Input state set-state]
 
       ;; -- Options
-      [:div.flex.items-center.justify-between.mt-1
+      [:div.flex.items-center.justify-between.mt-1.cursor-default
 
        [:div.flex.space-x-6
         [:div.flex.items-center
          [:span.text-xs.text-gray-700.mr-1
           "Account"]
          [gui/AIdenticon {:value active-address :size gui/identicon-size-small}]
-         [:span.font-mono.text-sm.block.ml-1
+         [:span.font-mono.text-xs.block.ml-1
           (format/prefix-# active-address)]]
 
         ;; -- Mode
