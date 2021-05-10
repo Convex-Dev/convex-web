@@ -270,7 +270,7 @@
         leaf? (empty? children)]
     [:div.flex.flex-col.justify-center
      (if leaf?
-       {:class "h-6 xl:h-8"}
+       {:class "h-6 xl:h-7"}
        {})
      ;; -- Item
      [:div.flex.justify-between
@@ -318,7 +318,7 @@
 
      (for [{:keys [text] :as item} others]
        ^{:key text}
-       [:div.mb-2.xl:mb-6
+       [:div.mb-2
         [NavItem active-route item]])]))
 
 (defn Modal [{:frame/keys [uuid page state] :as frame}]
@@ -507,7 +507,7 @@
        [SideNav (:route/match (router/?route))]
 
        ;; -- Page
-       [:div.relative.flex.flex-col.flex-1.xl:pl-24.space-y-4.overflow-auto
+       [:div.relative.flex.flex-col.flex-1.xl:pl-4.space-y-4.overflow-auto
         (when active-page-frame
           [:<>
 
