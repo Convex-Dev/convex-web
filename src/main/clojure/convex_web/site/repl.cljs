@@ -108,13 +108,20 @@
                       convex-lisp-examples)]
        (map
          (fn [[title source-code]]
-           ^{:key title}
-           [:div.flex.flex-col.py-2
-            [:div.flex.justify-between.items-center
-             [Title title]
-             [gui/ClipboardCopy source-code]]
+           (let [source-code (try
+                               (if convex-scrypt?
+                                 source-code
+                                 (zprint/zprint-str source-code {:parse-string? true
+                                                                 :width 60}))
+                               (catch js/Error _
+                                 source-code))]
+             ^{:key title}
+             [:div.flex.flex-col.py-2
+              [:div.flex.justify-between.items-center
+               [Title title]
+               [gui/ClipboardCopy source-code]]
 
-            [gui/Highlight source-code {:language language}]])
+              [gui/Highlight source-code {:language language}]]))
          examples))]))
 
 (defn Reference [reference]
