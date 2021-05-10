@@ -3,8 +3,19 @@
 
             [convex-web.convex :as convex]
             [convex-web.test :refer :all])
-  (:import (convex.core.data Address Blob Syntax Maps)
-           (convex.core Init)))
+  (:import (convex.core.data Address Blob Syntax Maps Symbol)
+           (convex.core Init)
+           (convex.core.data.prim CVMLong)))
+
+(deftest read-source-test
+  (is (= [] (convex/read-source "()" :convex-lisp)))
+  (is (= [] (convex/read-source "[]" :convex-lisp)))
+
+  (testing "Read all with do"
+    (is (= [(Symbol/create "do")
+            (CVMLong/create 1)
+            (CVMLong/create 2)]
+           (convex/read-source "1 2" :convex-lisp)))))
 
 (deftest datafy-test
   (let [context (make-convex-context)]

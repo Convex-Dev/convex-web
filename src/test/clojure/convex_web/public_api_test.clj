@@ -205,7 +205,7 @@
         (is (= 400 (get response :status)))
         (is (= {:errorCode "INCORRECT"
                 :source "Server"
-                :value "Syntax error. map(inc [1, 2, 3, 4, 5])"}
+                :value "Error while parsing action 'CompilationUnit/CompilationUnit_Action2' at input position (line 1, pos 1):\nmap(inc [1, 2, 3, 4, 5])\n^\n\nconvex.core.exceptions.ParseException: Invalid program."}
                response-body)))))
 
   (testing "Syntax error"
@@ -215,7 +215,7 @@
       (is (= 400 (get response :status)))
       (is (= {:errorCode "INCORRECT"
               :source "Server"
-              :value "Syntax error. (inc 1"}
+              :value "Error while parsing action 'Input/ExpressionList/ZeroOrMore/Sequence/Expression/FirstOf/DelimitedExpression/DataStructure/List/FirstOf/Sequence/List_Action1' at input position (line 1, pos 8):\n(inc 1\n       ^\n\nconvex.core.exceptions.ParseException: Expected closing ')'"}
              response-body))))
 
   (testing "Non-existent address"

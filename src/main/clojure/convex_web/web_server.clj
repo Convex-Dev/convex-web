@@ -536,7 +536,7 @@
                  (throw (ex-info (ex-message ex)
                                  (anomaly-incorrect
                                    (error-body error-code-INCORRECT
-                                               (str (ex-message ex) " " source)
+                                               (ex-message ex)
                                                error-source-server))))))
 
         result (convex/execute-query (system/convex-peer system) form {:address address})

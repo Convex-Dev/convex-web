@@ -39,9 +39,9 @@
   (when el
     (.scrollIntoView el)))
 
-(defn highlight-block [el]
+(defn highlight-element [el]
   (when el
-    (.highlightBlock hljs el)))
+    (.highlightElement hljs el)))
 
 (defn transaction-type-text-color [transaction-type]
   (case transaction-type
@@ -412,7 +412,13 @@
                  (= language "language-clojure")
                  (if pretty?
                    (try
-                     (zprint/zprint-str source {:parse-string-all? true})
+                     ;; Zprint struggles to format this string and freezes the app:
+                     ;;
+                     ;; "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}"
+                     ;;
+                     ;; See issue https://github.com/Convex-Dev/convex/issues/87
+                     #_(zprint/zprint-str source {:parse-string-all? true})
+                     source
                      (catch js/Error _
                        source))
                    source)
@@ -508,7 +514,7 @@
             ^{:key code}
             [:pre.text-xs.mb-1
              [:code.clojure.rounded
-              {:ref highlight-block}
+              {:ref highlight-element}
               code]])]))]))
 
 
@@ -913,7 +919,7 @@
                           :hover "hover:opacity-50"}]]
 
    [:code.hljs.language-clojure.text-sm.rounded
-    {:ref highlight-block}
+    {:ref highlight-element}
     value]])
 
 (defn Markdown [markdown]
