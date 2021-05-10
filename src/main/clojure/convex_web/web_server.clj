@@ -419,14 +419,25 @@
           generated-address (try
                               (convex/create-account client accountKey)
                               (catch ExceptionInfo ex
-                                (let [{:keys [result] ::anomalies/keys [message]} (ex-data ex)
+                                (let [{:keys [result] ::anomalies/keys [category]} (ex-data ex)
 
-                                      code (some-> ^Result result
-                                                   (.getErrorCode)
-                                                   (convex/datafy-safe))]
-                                  (throw (ex-info message
-                                                  (anomaly-incorrect
-                                                    (error-body code message error-source-cvm)))))))]
+                                      error-code (or (some-> ^Result result
+                                                             (.getErrorCode)
+                                                             (convex/datafy-safe))
+                                                     error-code-INCORRECT)
+
+                                      error-message (ex-message ex)
+
+                                      error-source (cond
+                                                     (= ::anomalies/incorrect category)
+                                                     error-source-server
+
+                                                     :else
+                                                     error-source-cvm)]
+                                  (throw
+                                    (ex-info error-message
+                                             (anomaly-incorrect
+                                               (error-body error-code error-message error-source)))))))]
 
       (successful-response {:address (.longValue generated-address)}))))
 

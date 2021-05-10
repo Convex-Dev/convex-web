@@ -88,10 +88,10 @@
                                       :convex-web.query/language :convex-lisp}})]
 
       (is (= {::c/status :convex-web.command.status/error
-              ::c/object "Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence"
+              ::c/object "Can't convert 1 of class convex.core.data.prim.CVMLong to type class convex.core.data.ASequence"
               ::c/error
               {:code :CAST
-               :message "Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence"
+               :message "Can't convert 1 of class convex.core.data.prim.CVMLong to type class convex.core.data.ASequence"
                :trace nil}}
              (select-keys command [::c/status ::c/object ::c/error]))))))
 
@@ -172,8 +172,8 @@
              :examples [{:code "(defn my-square [x] (* x x))"}]
              :signature [{:params ['name 'params '& 'body]}]
              :symbol "defn"
-             :type :macro}
-            :start 1088} (c/result-metadata (convex/execute context defn) {:source "defn" :lang :convex-lisp}))))
+             :type :macro}}
+           (select-keys (c/result-metadata (convex/execute context defn) {:source "defn" :lang :convex-lisp}) [:type :doc]))))
 
   (testing "Special"
     (is (= {:type :symbol} (c/result-metadata (convex/execute context def))))
