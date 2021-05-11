@@ -798,7 +798,8 @@
        :on-change identity}]
 
      [Tooltip
-      {:title "Copy"}
+      {:title "Copy"
+       :size "small"}
       [CopyClipboardIcon
        {:class
         ["w-4 h-4 cursor-pointer"
