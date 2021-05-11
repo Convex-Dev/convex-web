@@ -487,7 +487,7 @@
 
                  :else
                  source)]
-    [:div.text-xs.shadow.overflow-auto
+    [:div.text-xs.overflow-auto
      [:> (.-default react-hljs) {:language language}
       source]]))
 
