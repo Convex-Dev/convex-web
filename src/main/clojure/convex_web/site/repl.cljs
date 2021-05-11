@@ -508,9 +508,13 @@
      [:div.w-screen.flex.flex-col.mb-6.space-y-1
 
       [:div.flex.justify-end
-       [gui/DefaultButton
-        {:on-click #(toggle-sidebar set-state)}
-        [:span.text-xs.uppercase "Examples"]]]
+       [gui/Tooltip
+        {:title "Show Examples & Reference"
+         :size "small"}
+        [gui/DefaultButton
+         {:on-click #(toggle-sidebar set-state)}
+         [gui/MenuAlt3Icon
+          {:class "h-5 w-5"}]]]]
 
       ;; -- Commands
       [:div.flex.flex-1.bg-gray-100.border.rounded.overflow-auto
