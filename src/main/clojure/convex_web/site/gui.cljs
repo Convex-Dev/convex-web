@@ -238,7 +238,7 @@
             :leaveFrom "translate-x-0"
             :leaveTo "translate-x-full"}
 
-           [:div.w-screen.max-w-2xl
+           [:div.w-screen.max-w-lg
             [:div.h-full.flex.flex-col.py-6.bg-white.shadow-xl.overflow-y-scroll
 
              ;; Header.
