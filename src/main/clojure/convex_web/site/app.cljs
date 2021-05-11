@@ -314,7 +314,7 @@
 
 (defn SideNav [active-route]
   (let [{:keys [others]} (nav)]
-    [:nav.flex.flex-col.flex-shrink-0.font-mono.text-sm.mr-4.overflow-auto
+    [:nav.flex.flex-col.flex-shrink-0.font-mono.text-sm.overflow-auto
 
      (for [{:keys [text] :as item} others]
        ^{:key text}
@@ -501,13 +501,13 @@
      ;; Main
      ;; ================
      [:div.w-full.mx-auto.px-6
-      [:div.h-screen.flex.pt-24
+      [:div.h-screen.flex.pt-24.space-x-10
 
        ;; -- Nav
        [SideNav (:route/match (router/?route))]
 
        ;; -- Page
-       [:div.relative.flex.flex-col.flex-1.xl:pl-4.space-y-4.overflow-auto
+       [:div.relative.flex.flex-col.flex-1.space-y-4.overflow-auto
         (when active-page-frame
           [:<>
 

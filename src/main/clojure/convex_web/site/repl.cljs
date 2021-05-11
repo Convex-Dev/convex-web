@@ -499,12 +499,10 @@
     [:div.flex.flex-1.space-x-8.overflow-auto
 
      ;; -- REPL
-     [:div.flex.flex-col.mb-6.space-y-1 {:class "w-3/5"}
+     [:div.w-screen.flex.flex-col.mb-6.space-y-1
 
       ;; -- Commands
-      [:div.flex.bg-gray-100.border.rounded.overflow-auto
-       {:style
-        {:height "70vh"}}
+      [:div.flex.flex-1.bg-gray-100.border.rounded.overflow-auto
        [:div.flex.flex-col.flex-1
         [Commands (commands state)]]]
 
@@ -512,7 +510,7 @@
       [Input state set-state]
 
       ;; -- Options
-      [:div.flex.items-center.justify-between.mt-1.cursor-default
+      [:div.flex.flex-col.space-y-4.mt-1.cursor-default
 
        [:div.flex.space-x-6
         [:div.flex.items-center
@@ -559,7 +557,7 @@
           [gui/InfoTooltip "Select the programming language to use."]]]]
 
        [:div.flex.space-x-2
-        [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]
+        [:span.text-xs.text-gray-700 "Press " [:code.font-bold "Shift+Return"] " to run."]
 
         ;; Keymaps.
         [gui/Tooltip
@@ -587,7 +585,9 @@
          [gui/QuestionMarkCircle {:class "h-4 w-4"}]]]]]
 
      ;; -- Sidebar
-     (let [selected-tab (selected-tab state)]
+     #_[gui/SlideOver {:open? true}]
+
+     #_(let [selected-tab (selected-tab state)]
        [:div.flex.flex-col.ml-2.xl:ml-16.p-2.border-l
         {:class "w-2/5"}
 
