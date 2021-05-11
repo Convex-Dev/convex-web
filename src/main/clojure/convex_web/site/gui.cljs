@@ -207,58 +207,57 @@
 
    child])
 
-(defn SlideOver [{:keys [open?]}]
-  [:> headlessui-react/Transition.Root
-   {:show open?
-    :as react/Fragment}
+(defn SlideOver [{:keys [open? on-close]} child]
+  ;; Coerce to boolean because nil is invalid.
+  (let [open? (boolean open?)]
+    [:> headlessui-react/Transition.Root
+     {:show open?
+      :as react/Fragment}
 
-   [:> headlessui-react/Dialog
-    {:as "div"
-     :static true
-     :className "z-50 fixed inset-0 overflow-hidden"
-     :open open?
-     :onClose #()}
+     [:> headlessui-react/Dialog
+      {:as "div"
+       :static true
+       :className "z-50 fixed inset-0 overflow-hidden"
+       :open open?
+       :onClose (or on-close identity)}
 
-    (reagent/as-element
-      [:div.absolute.inset-0.overflow-hidden
+      (reagent/as-element
+        [:div.absolute.inset-0.overflow-hidden
 
-       [:> headlessui-react/Dialog.Overlay
-        {:className "absolute inset-0"}]
+         [:> headlessui-react/Dialog.Overlay
+          {:className "absolute inset-0"}]
 
-       [:div.fixed.inset-y-0.right-0.pl-10.max-w-full.flex.sm:pl-16
+         [:div.fixed.inset-y-0.right-0.pl-10.max-w-full.flex.sm:pl-16
 
-        [:> headlessui-react/Transition.Child
-         {:as react/Fragment
-          :enter "transform transition ease-in-out duration-500 sm:duration-700"
-          :enterFrom "translate-x-full"
-          :enterTo "translate-x-0"
-          :leave "transform transition ease-in-out duration-500 sm:duration-700"
-          :leaveFrom "translate-x-0"
-          :leaveTo "translate-x-full"}
+          [:> headlessui-react/Transition.Child
+           {:as react/Fragment
+            :enter "transform transition ease-in-out duration-500 sm:duration-700"
+            :enterFrom "translate-x-full"
+            :enterTo "translate-x-0"
+            :leave "transform transition ease-in-out duration-500 sm:duration-700"
+            :leaveFrom "translate-x-0"
+            :leaveTo "translate-x-full"}
 
-         [:div.w-screen.max-w-2xl
-          [:div.h-full.flex.flex-col.py-6.bg-white.shadow-xl.overflow-y-scroll
+           [:div.w-screen.max-w-2xl
+            [:div.h-full.flex.flex-col.py-6.bg-white.shadow-xl.overflow-y-scroll
 
-           ;; Header.
-           [:div.px-4.sm:px-6
-            [:div.flex.items-start.justify-between
-             [:> headlessui-react/Dialog.Title
-              {:className "text-lg font-medium text-gray-900"}
-              "Panel title"]
+             ;; Header.
+             [:div.px-4.sm:px-6
+              [:div.h-7.flex.justify-end
+               [:button
+                {:className "bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                 :onClick on-close}
+                [:span {:className "sr-only"} "Close panel"]
+                [:> XIcon {:className "h-6 w-6" :aria-hidden "true"}]]]]
 
-             [:div.ml-3.h-7.flex.items-center
-              [:button
-               {:className "bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" :onClick #()}
-               [:span {:className "sr-only"} "Close panel"]
-               [:> XIcon {:className "h-6 w-6" :aria-hidden "true"}]]]]]
+             ;; Body.
+             [:div.mt-6.relative.flex-1.px-4.sm:px-6
+              [:div.absolute.inset-0.px-4.sm:px-6
+               [:div.h-full
+                {:aria-hidden "true"}
+                child]]]
 
-           ;; Body.
-           [:div.mt-6.relative.flex-1.px-4.sm:px-6
-            [:div.absolute.inset-0.px-4.sm:px-6
-             [:div.h-full.border-2.border-dashed.border-gray-200
-              {:aria-hidden "true"}]]]
-
-           ]]]]])]])
+             ]]]]])]]))
 
 (def dropdown-transition
   {:enter "transition ease-out duration-100"

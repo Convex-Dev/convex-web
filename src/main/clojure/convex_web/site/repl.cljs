@@ -41,7 +41,13 @@
   (= :convex-web.command.mode/transaction (:convex-web.command/mode command)))
 
 (defn selected-tab [state]
-  (get-in state [:convex-web.repl/sidebar :sidebar/tab]))
+  (get-in state [:convex-web.repl/sidebar :sidebar/tab] :examples))
+
+(defn sidebar-open? [state]
+  (get-in state [:convex-web.repl/sidebar :sidebar/open?] false))
+
+(defn toggle-sidebar [set-state]
+  (set-state update-in [:convex-web.repl/sidebar :sidebar/open?] not))
 
 ;; ---
 
@@ -501,6 +507,11 @@
      ;; -- REPL
      [:div.w-screen.flex.flex-col.mb-6.space-y-1
 
+      [:div.flex.justify-end
+       [gui/DefaultButton
+        {:on-click #(toggle-sidebar set-state)}
+        [:span.text-xs.uppercase "Examples"]]]
+
       ;; -- Commands
       [:div.flex.flex-1.bg-gray-100.border.rounded.overflow-auto
        [:div.flex.flex-col.flex-1
@@ -585,39 +596,39 @@
          [gui/QuestionMarkCircle {:class "h-4 w-4"}]]]]]
 
      ;; -- Sidebar
-     #_[gui/SlideOver {:open? true}]
+     [gui/SlideOver
+      {:open? (sidebar-open? state)
+       :on-close #(toggle-sidebar set-state)}
+      (let [selected-tab (selected-tab state)]
+        [:div.flex.flex-col
 
-     #_(let [selected-tab (selected-tab state)]
-       [:div.flex.flex-col.ml-2.xl:ml-16.p-2.border-l
-        {:class "w-2/5"}
+         ;; -- Tabs
+         [:div.flex.mb-5
 
-        ;; -- Tabs
-        [:div.flex.mb-5
+          ;; -- Examples Tab
+          [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer
+           {:class
+            (if (= :examples selected-tab)
+              "border-b border-indigo-500"
+              "text-black text-opacity-50")
+            :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :examples)}
+           "Examples"]
 
-         ;; -- Examples Tab
-         [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer
-          {:class
-           (if (= :examples selected-tab)
-             "border-b border-indigo-500"
-             "text-black text-opacity-50")
-           :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :examples)}
-          "Examples"]
+          ;; -- Reference Tab
+          [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer.ml-4
+           {:class
+            (if (= :reference selected-tab)
+              "border-b border-indigo-500"
+              "text-black text-opacity-50")
+            :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :reference)}
+           "Reference"]]
 
-         ;; -- Reference Tab
-         [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer.ml-4
-          {:class
-           (if (= :reference selected-tab)
-             "border-b border-indigo-500"
-             "text-black text-opacity-50")
-           :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :reference)}
-          "Reference"]]
+         (case selected-tab
+           :examples
+           [Examples (language state)]
 
-        (case selected-tab
-          :examples
-          [Examples (language state)]
-
-          :reference
-          [Reference reference])])]))
+           :reference
+           [Reference reference])])]]))
 
 (def sandbox-page
   #:page {:id :page.id/repl
