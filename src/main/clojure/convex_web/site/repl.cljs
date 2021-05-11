@@ -560,8 +560,10 @@
          [:span.text-xs.text-gray-700.mr-1
           "Account"]
          [gui/AIdenticon {:value active-address :size gui/identicon-size-small}]
-         [:span.font-mono.text-xs.block.ml-1
-          (format/prefix-# active-address)]]
+         [:a.hover:underline.hover:text-blue-500
+          {:href (rfe/href :route-name/account-explorer {:address active-address})}
+          [:span.font-mono.text-xs.block.ml-1
+           (format/prefix-# active-address)]]]
 
         ;; -- Mode
         [:div.flex.items-center
