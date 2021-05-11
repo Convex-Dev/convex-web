@@ -5,6 +5,7 @@
   "scripts": {
     "start": "npx shadow-cljs server",
     "watch": "npx shadow-cljs watch :main",
+    "release": "npx shadow-cljs release main",
     "tailwindcss-build": "npx tailwindcss build -o src/main/resources/public/css/styles.css",
     "tailwindcss-build:prod": "NODE_ENV=production npx tailwindcss build -o src/main/resources/public/css/styles.css"
   },
