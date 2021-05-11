@@ -31,7 +31,7 @@
       :convex-scrypt
       (ScryptNext/readSyntax source))
     (catch Throwable ex
-      (throw (ex-info (ex-message ex) {::anomalies/category ::anomalies/incorrect})))))
+      (throw (ex-info (str "Reader error: " (ex-message ex)) {::anomalies/category ::anomalies/incorrect})))))
 
 (defmacro execute [context form]
   `(let [^String source# ~(pr-str form)
@@ -127,7 +127,7 @@
 
     (instance? Symbol x)
     (symbol
-      (some-> ^Symbol x (.getNamespace) (.getName) (.toString))
+      (some-> ^Symbol x (.getPath) (.toString))
       (.toString (.getName ^Symbol x)))
 
     (instance? AList x)
@@ -165,10 +165,15 @@
     (datafy (.getValue ^Syntax x))
 
     :else
-    (let [x' (RT/jvm x)]
-      (if (identical? x x')
-        (throw (ex-info (str "Can't datafy " (pr-str x) " " (some-> ^Object x (.getClass) (.getName)) ".") {:object x}))
-        x'))))
+    (let [e (fn []
+              (throw (ex-info (str "Can't datafy " (pr-str x) " " (some-> ^Object x (.getClass) (.getName)) ".") {:object x})))]
+      (try
+        (let [x' (RT/jvm x)]
+          (if (identical? x x')
+            (e)
+            x'))
+        (catch Exception _
+          (e))))))
 
 (defn datafy-safe [x]
   (try

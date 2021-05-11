@@ -41,7 +41,13 @@
   (= :convex-web.command.mode/transaction (:convex-web.command/mode command)))
 
 (defn selected-tab [state]
-  (get-in state [:convex-web.repl/sidebar :sidebar/tab]))
+  (get-in state [:convex-web.repl/sidebar :sidebar/tab] :examples))
+
+(defn sidebar-open? [state]
+  (get-in state [:convex-web.repl/sidebar :sidebar/open?] false))
+
+(defn toggle-sidebar [set-state]
+  (set-state update-in [:convex-web.repl/sidebar :sidebar/open?] not))
 
 ;; ---
 
@@ -108,13 +114,20 @@
                       convex-lisp-examples)]
        (map
          (fn [[title source-code]]
-           ^{:key title}
-           [:div.flex.flex-col.py-2
-            [:div.flex.justify-between.items-center
-             [Title title]
-             [gui/ClipboardCopy source-code]]
+           (let [source-code (try
+                               (if convex-scrypt?
+                                 source-code
+                                 (zprint/zprint-str source-code {:parse-string? true
+                                                                 :width 60}))
+                               (catch js/Error _
+                                 source-code))]
+             ^{:key title}
+             [:div.flex.flex-col.py-2
+              [:div.flex.justify-between.items-center
+               [Title title]
+               [gui/ClipboardCopy source-code]]
 
-            [gui/Highlight source-code {:language language}]])
+              [gui/Highlight source-code {:language language}]]))
          examples))]))
 
 (defn Reference [reference]
@@ -492,28 +505,65 @@
     [:div.flex.flex-1.space-x-8.overflow-auto
 
      ;; -- REPL
-     [:div.flex.flex-col.mb-6.space-y-1 {:class "w-3/5"}
+     [:div.w-screen.flex.flex-col.mb-6.space-y-1
+
+      [:div.flex.justify-end
+       [gui/Tooltip
+        {:title "Show Examples & Reference"
+         :size "small"}
+        [gui/DefaultButton
+         {:on-click #(toggle-sidebar set-state)}
+         [gui/MenuAlt3Icon
+          {:class "h-5 w-5"}]]]]
 
       ;; -- Commands
-      [:div.flex.bg-gray-100.border.rounded.overflow-auto
-       {:style
-        {:height "70vh"}}
+      [:div.flex.flex-1.bg-gray-100.border.rounded.overflow-auto
        [:div.flex.flex-col.flex-1
         [Commands (commands state)]]]
+
+      [:div.flex.space-x-2
+       [:span.text-xs.text-gray-700 "Press " [:code.font-bold "Shift+Return"] " to run."]
+
+       ;; Keymaps.
+       [gui/Tooltip
+        {:html
+         (reagent/as-element
+           [:div.flex.flex-col.text-xs.font-mono.space-y-1
+            [:span.font-bold.text-sm.mb-2 "Keymaps"]
+
+            [:div.flex.items-center.space-x-2
+             [:span.font-bold "Run: "]
+             [:span.bg-gray-500.p-1.rounded-md "Shift+Return"]]
+
+            [:div.flex.items-center.space-x-2
+             [:span.font-bold "Clear: "]
+             [:span.bg-gray-500.p-1.rounded-md "Ctrl+Backspace"]]
+
+            [:div.flex.items-center.space-x-2
+             [:span.font-bold "Navigate history up: "]
+             [:span.bg-gray-500.p-1.rounded-md "Ctrl+Up"]]
+
+            [:div.flex.items-center.space-x-2
+             [:span.font-bold "Navigate history down: "]
+             [:span.bg-gray-500.p-1.rounded-md "Ctrl+Down"]]])}
+
+        [gui/QuestionMarkCircle {:class "h-4 w-4"}]]]
 
       ;; -- Input
       [Input state set-state]
 
       ;; -- Options
-      [:div.flex.items-center.justify-between.mt-1
+      [:div.flex.flex-col.space-y-4.mt-1.cursor-default
 
        [:div.flex.space-x-6
         [:div.flex.items-center
          [:span.text-xs.text-gray-700.mr-1
           "Account"]
          [gui/AIdenticon {:value active-address :size gui/identicon-size-small}]
-         [:span.font-mono.text-sm.block.ml-1
-          (format/prefix-# active-address)]]
+         [:a.hover:underline.hover:text-blue-500
+          {:href (rfe/href :route-name/account-explorer {:address active-address})}
+          [:span.font-mono.text-xs.block.ml-1
+           (format/prefix-# active-address)]]]
 
         ;; -- Mode
         [:div.flex.items-center
@@ -549,68 +599,42 @@
               :value "Convex Lisp"}]
             :on-change #(set-state assoc :convex-web.repl/language %)}]
 
-          [gui/InfoTooltip "Select the programming language to use."]]]]
-
-       [:div.flex.space-x-2
-        [:span.text-xs.text-gray-700 "Press " [:code "Shift+Return"] " to run."]
-
-        ;; Keymaps.
-        [gui/Tooltip
-         {:html
-          (reagent/as-element
-            [:div.flex.flex-col.text-xs.font-mono.space-y-1
-             [:span.font-bold.text-sm.mb-2 "Keymaps"]
-
-             [:div.flex.items-center.space-x-2
-              [:span.font-bold "Run: "]
-              [:span.bg-gray-500.p-1.rounded-md "Shift+Return"]]
-
-             [:div.flex.items-center.space-x-2
-              [:span.font-bold "Clear: "]
-              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Backspace"]]
-
-             [:div.flex.items-center.space-x-2
-              [:span.font-bold "Navigate history up: "]
-              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Up"]]
-
-             [:div.flex.items-center.space-x-2
-              [:span.font-bold "Navigate history down: "]
-              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Down"]]])}
-
-         [gui/QuestionMarkCircle {:class "h-4 w-4"}]]]]]
+          [gui/InfoTooltip "Select the programming language to use."]]]]]]
 
      ;; -- Sidebar
-     (let [selected-tab (selected-tab state)]
-       [:div.flex.flex-col.ml-2.xl:ml-16.p-2.border-l
-        {:class "w-2/5"}
+     [gui/SlideOver
+      {:open? (sidebar-open? state)
+       :on-close #(toggle-sidebar set-state)}
+      (let [selected-tab (selected-tab state)]
+        [:div.flex.flex-col
 
-        ;; -- Tabs
-        [:div.flex.mb-5
+         ;; -- Tabs
+         [:div.flex.mb-5
 
-         ;; -- Examples Tab
-         [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer
-          {:class
-           (if (= :examples selected-tab)
-             "border-b border-indigo-500"
-             "text-black text-opacity-50")
-           :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :examples)}
-          "Examples"]
+          ;; -- Examples Tab
+          [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer
+           {:class
+            (if (= :examples selected-tab)
+              "border-b border-indigo-500"
+              "text-black text-opacity-50")
+            :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :examples)}
+           "Examples"]
 
-         ;; -- Reference Tab
-         [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer.ml-4
-          {:class
-           (if (= :reference selected-tab)
-             "border-b border-indigo-500"
-             "text-black text-opacity-50")
-           :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :reference)}
-          "Reference"]]
+          ;; -- Reference Tab
+          [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer.ml-4
+           {:class
+            (if (= :reference selected-tab)
+              "border-b border-indigo-500"
+              "text-black text-opacity-50")
+            :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :reference)}
+           "Reference"]]
 
-        (case selected-tab
-          :examples
-          [Examples (language state)]
+         (case selected-tab
+           :examples
+           [Examples (language state)]
 
-          :reference
-          [Reference reference])])]))
+           :reference
+           [Reference reference])])]]))
 
 (def sandbox-page
   #:page {:id :page.id/repl

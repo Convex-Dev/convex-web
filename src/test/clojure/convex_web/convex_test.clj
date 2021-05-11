@@ -5,11 +5,29 @@
             [convex-web.test :refer :all])
   (:import (convex.core.data Address Blob Syntax Maps Symbol)
            (convex.core Init)
-           (convex.core.data.prim CVMLong)))
+           (convex.core.data.prim CVMLong)
+           (clojure.lang ExceptionInfo)))
 
 (deftest read-source-test
   (is (= [] (convex/read-source "()" :convex-lisp)))
   (is (= [] (convex/read-source "[]" :convex-lisp)))
+
+  (testing "Blob literal"
+    (is (= (Blob/fromHex "Fd0cfE9EDf767823b927a25D6840ae2367455c29A7B77CBBF146Be3EeF270356")
+           (convex/read-source "0xFd0cfE9EDf767823b927a25D6840ae2367455c29A7B77CBBF146Be3EeF270356" :convex-lisp)))
+
+    (let [e (try
+              (convex/read-source "0xABC" :convex-lisp)
+              (catch ExceptionInfo ex
+                ex))]
+      (is (= "Reader error: Parse error at Position{line=1, column=6}\n Source: <>\n Message: null"
+             (ex-message e)))
+      (is (= #:cognitect.anomalies{:category :cognitect.anomalies/incorrect}
+             (ex-data e)))))
+
+  (testing "Address literal"
+    (is (= (Address/create 8)
+           (convex/read-source "#8" :convex-lisp))))
 
   (testing "Read all with do"
     (is (= [(Symbol/create "do")
@@ -35,8 +53,9 @@
       (is (= :a (convex/datafy (convex/execute context :a)))))
 
     (testing "Symbol"
-      (is (= 's (convex/datafy (convex/execute context 's))))
-      (is (= 'a/b (convex/datafy (convex/execute context 'a/b)))))
+      (is (= 's (convex/datafy (convex/execute-string context "'s"))))
+      (is (= (symbol "a" "b") (convex/datafy (convex/execute-string context "'a/b"))))
+      (is (= (symbol "#8" "inc") (convex/datafy (convex/execute-string context "'#8/inc")))))
 
     (testing "List"
       (is (= '() (convex/datafy (convex/execute context '())))))

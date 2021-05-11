@@ -9,6 +9,7 @@
             [reitit.frontend.easy :as rfe]
             [zprint.core :as zprint]
 
+            ["react" :as react]
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure"]
             ["highlight.js/lib/languages/javascript"]
@@ -18,6 +19,7 @@
             ["react-markdown" :as ReactMarkdown]
 
             ["@headlessui/react" :as headlessui-react]
+            ["@heroicons/react/outline" :refer [XIcon]]
             ["qrcode.react" :as QRCode]
 
             ["jdenticon" :as jdenticon]))
@@ -205,6 +207,58 @@
 
    child])
 
+(defn SlideOver [{:keys [open? on-close]} child]
+  ;; Coerce to boolean because nil is invalid.
+  (let [open? (boolean open?)]
+    [:> headlessui-react/Transition.Root
+     {:show open?
+      :as react/Fragment}
+
+     [:> headlessui-react/Dialog
+      {:as "div"
+       :static true
+       :className "z-50 fixed inset-0 overflow-hidden"
+       :open open?
+       :onClose (or on-close identity)}
+
+      (reagent/as-element
+        [:div.absolute.inset-0.overflow-hidden
+
+         [:> headlessui-react/Dialog.Overlay
+          {:className "absolute inset-0"}]
+
+         [:div.fixed.inset-y-0.right-0.pl-10.max-w-full.flex.sm:pl-16
+
+          [:> headlessui-react/Transition.Child
+           {:as react/Fragment
+            :enter "transform transition ease-in-out duration-500 sm:duration-700"
+            :enterFrom "translate-x-full"
+            :enterTo "translate-x-0"
+            :leave "transform transition ease-in-out duration-500 sm:duration-700"
+            :leaveFrom "translate-x-0"
+            :leaveTo "translate-x-full"}
+
+           [:div.w-screen.max-w-lg
+            [:div.h-full.flex.flex-col.py-6.bg-white.shadow-xl.overflow-y-scroll
+
+             ;; Header.
+             [:div.px-4.sm:px-6
+              [:div.h-7.flex.justify-end
+               [:button
+                {:className "bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                 :onClick on-close}
+                [:span {:className "sr-only"} "Close panel"]
+                [:> XIcon {:className "h-6 w-6" :aria-hidden "true"}]]]]
+
+             ;; Body.
+             [:div.mt-6.relative.flex-1.px-4.sm:px-6
+              [:div.absolute.inset-0.px-4.sm:px-6
+               [:div.h-full
+                {:aria-hidden "true"}
+                child]]]
+
+             ]]]]])]]))
+
 (def dropdown-transition
   {:enter "transition ease-out duration-100"
    :enter-from "transform opacity-0 scale-95"
@@ -339,6 +393,14 @@
           attrs)
    [:path {:d "M5 13l4 4L19 7"}]])
 
+(defn MenuAlt3Icon [& [attrs]]
+  [:svg
+   (merge {:viewBox "0 0 20 20"
+           :fill "currentColor"}
+          attrs)
+   [:path
+    {:fill-rule "evenodd" :d "M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" :clip-rule "evenodd"}]])
+
 (defn IconXCircle [& [attrs]]
   [:svg
    (merge {:fill "none"
@@ -425,7 +487,7 @@
 
                  :else
                  source)]
-    [:div.text-xs.shadow.overflow-auto
+    [:div.text-xs.overflow-auto
      [:> (.-default react-hljs) {:language language}
       source]]))
 
@@ -632,7 +694,7 @@
 
 (defn InfoTooltip [tooltip]
   [Tooltip
-   {:html (reagent/as-element [:span.text-xs.font-mono. tooltip])}
+   {:html (reagent/as-element [:p.text-xs.font-mono.leading-relaxed tooltip])}
    [InformationCircleIcon {:class "w-4 h-4 hover:text-gray-500"}]])
 
 
@@ -689,7 +751,7 @@
   [{:keys [selected options on-change]}]
   [:select
    {:class
-    ["text-sm"
+    ["text-xs"
      "p-1"
      "rounded"
      "focus:outline-none"
@@ -736,7 +798,8 @@
        :on-change identity}]
 
      [Tooltip
-      {:title "Copy"}
+      {:title "Copy"
+       :size "small"}
       [CopyClipboardIcon
        {:class
         ["w-4 h-4 cursor-pointer"

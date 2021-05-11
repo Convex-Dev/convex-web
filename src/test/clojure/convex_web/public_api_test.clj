@@ -83,15 +83,16 @@
                   :value "Missing account key."}
                  body-decoded))))
 
-      (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                  (mock/json-body {:accountKey "abc"})))
+      (testing "Incorrect Account Key"
+        (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
+                                    (mock/json-body {:accountKey "123"})))
 
-            body-decoded (json/read-str (get response :body) :key-fn keyword)]
-        (is (= 400 (:status response)))
-        (is (= {:errorCode "UNDECLARED"
-                :source "CVM"
-                :value ":UNDECLARED \"xabc\""}
-               body-decoded))))))
+              body-decoded (json/read-str (get response :body) :key-fn keyword)]
+          (is (= 400 (:status response)))
+          (is (= {:errorCode "INCORRECT"
+                  :source "Server"
+                  :value "Reader error: Parse error at Position{line=1, column=22}\n Source: <)>\n Message: null"}
+                 body-decoded)))))))
 
 (deftest create-account-and-topup-test
   (testing "Create new Account and top up"
@@ -205,7 +206,7 @@
         (is (= 400 (get response :status)))
         (is (= {:errorCode "INCORRECT"
                 :source "Server"
-                :value "Error while parsing action 'CompilationUnit/CompilationUnit_Action2' at input position (line 1, pos 1):\nmap(inc [1, 2, 3, 4, 5])\n^\n\nconvex.core.exceptions.ParseException: Invalid program."}
+                :value "Reader error: Error while parsing action 'CompilationUnit/CompilationUnit_Action2' at input position (line 1, pos 1):\nmap(inc [1, 2, 3, 4, 5])\n^\n\nconvex.core.exceptions.ParseException: Invalid program."}
                response-body)))))
 
   (testing "Syntax error"
@@ -215,7 +216,7 @@
       (is (= 400 (get response :status)))
       (is (= {:errorCode "INCORRECT"
               :source "Server"
-              :value "Error while parsing action 'Input/ExpressionList/ZeroOrMore/Sequence/Expression/FirstOf/DelimitedExpression/DataStructure/List/FirstOf/Sequence/List_Action1' at input position (line 1, pos 8):\n(inc 1\n       ^\n\nconvex.core.exceptions.ParseException: Expected closing ')'"}
+              :value "Reader error: Error while parsing action 'Input/ExpressionList/ZeroOrMore/Sequence/Expression/FirstOf/DelimitedExpression/DataStructure/List/FirstOf/Sequence/List_Action1' at input position (line 1, pos 8):\n(inc 1\n       ^\n\nconvex.core.exceptions.ParseException: Expected closing ')'"}
              response-body))))
 
   (testing "Non-existent address"
@@ -236,7 +237,7 @@
       (is (= 200 (get response :status)))
       (is (= {:errorCode "CAST"
               :source "CVM"
-              :value "ErrorValue[:CAST] : Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence
+              :value "ErrorValue[:CAST] : Can't convert 1 of class convex.core.data.prim.CVMLong to type class convex.core.data.ASequence
 In function: map"}
              response-body)))))
 
@@ -465,7 +466,7 @@ In function: map"}
         ;; Submit response with error code.
         (is (= {:errorCode "CAST"
                 :source "CVM"
-                :value "Can't convert 1 of class convex.core.data.prim.CVMLong to class class convex.core.data.ASequence"}
+                :value "Can't convert 1 of class convex.core.data.prim.CVMLong to type class convex.core.data.ASequence"}
                submit-response-body))))))
 
 (deftest faucet-test

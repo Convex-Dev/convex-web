@@ -1,3 +1,3 @@
 #!/bin/sh -x
 
-npx shadow-cljs release main
+npm run release
