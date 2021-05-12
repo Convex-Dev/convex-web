@@ -1171,7 +1171,7 @@
              [RefreshIcon {:class "w-4 h-4"}])]]]
 
         ;; Balance & Type.
-        [:div.flex.space-x-4
+        [:div.flex.space-x-8
          ;; -- Balance.
          (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
            [:div.flex.flex-col
