@@ -1063,29 +1063,39 @@
                   [:span.font-mono.block.ml-2
                    (format/prefix-# address)]]])]]]]]]))))
 
-
-(defn EnvironmentDisclosure [environment]
+(defn Disclosure [{:keys [text]} children]
   [:> headlessui-react/Disclosure
    (fn [^js props]
      (r/as-element
        [:<>
+        ;; Open & close.
         [:> headlessui-react/Disclosure.Button
          {:className "flex justify-between w-40 px-4 py-2 text-sm font-medium text-left text-blue-900 bg-blue-100 rounded-lg hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75"}
          [:span.text-xs
-          "Environment"]
+          text]
          [IconChevronUp
           {:class ["w-4 h-4 text-blue-500"
                    (when (.-open props)
                      "transform rotate-180")]}]]
 
+        ;; Show children.
         [:> headlessui-react/Disclosure.Panel
          {:className "px-4 pb-2 text-sm text-gray-500"}
 
-         [:ul
-          (map
-            (fn [s]
-              [:li [:span.font-mono.font-bold s]])
-            (sort (keys environment)))]]]))])
+         children]]))])
+
+(defn EnvironmentBrowser [environment]
+  [Disclosure
+   {:text "Environment"}
+   (into [:ul.space-y-1]
+         (map
+           (fn [[s {:convex-web.syntax/keys [value]}]]
+             [:li [Disclosure {:text s}
+                   [Highlight
+                    (if (string? value)
+                      value
+                      (str value)) {:language :convex-lisp}]]])
+           (sort-by first environment)))])
 
 (defn AddressRenderer [address]
   (r/with-let [account-ref (r/atom {:ajax/status :ajax.status/pending})
@@ -1171,7 +1181,7 @@
             [:div.flex.flex-col.flex-1.justify-center
              [:span.text-xs.uppercase type]]])]
 
-        [EnvironmentDisclosure
+        [EnvironmentBrowser
          (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/environment])]])]))
 
 (defn BlobRenderer [object]
