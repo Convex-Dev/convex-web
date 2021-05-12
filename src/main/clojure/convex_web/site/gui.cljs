@@ -1071,35 +1071,40 @@
        [SpinnerSmall]
 
        :ajax.status/error
-       [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])]
+       [:div.flex.flex-col.space-y-1
+        [:div.flex.items-center.space-x-1
+         [AIdenticon {:value (str object) :size identicon-size-small}]
+
+         [:span.font-mono.text-xs.truncate
+          (format/prefix-# object)]]
+
+        [:span.text-xs (get-in @account-ref [:ajax/error :response :error :message])]]
 
        :ajax.status/success
-       [:div.flex.space-x-4
+       [:div.flex.flex-col.space-y-1
+        [:a.inline-flex.items-center.space-x-1
+         {:href (rfe/href :route-name/account-explorer {:address object})}
+         [AIdenticon {:value (str object) :size identicon-size-small}]
 
-        ;; -- Address.
-        [:div.flex.flex-col
-         [:span.text-xs.text-indigo-500.uppercase.mt-2 "Address"]
-         [:a.inline-flex.items-center.space-x-1
-          {:href (rfe/href :route-name/account-explorer {:address object})}
-          [AIdenticon {:value (str object) :size identicon-size-small}]
+         [:span.font-mono.text-xs.truncate
+          {:class hyperlink-hover-class}
+          (format/prefix-# object)]]
 
-          [:span.font-mono.text-xs.truncate
-           {:class hyperlink-hover-class}
-           (format/prefix-# object)]]]
+        [:div.flex.space-x-4
 
-        ;; -- Balance.
-        (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
-          [:div.flex.flex-col
-           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
-           [:div.flex.flex-col.flex-1.justify-center
-            [:span.text-xs (format/format-number balance)]]])
+         ;; -- Balance.
+         (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
+           [:div.flex.flex-col
+            [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
+            [:div.flex.flex-col.flex-1.justify-center
+             [:span.text-xs (format/format-number balance)]]])
 
-        ;; -- Type.
-        (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
-          [:div.flex.flex-col
-           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
-           [:div.flex.flex-col.flex-1.justify-center
-            [:span.text-xs.uppercase type]]])])]))
+         ;; -- Type.
+         (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
+           [:div.flex.flex-col
+            [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
+            [:div.flex.flex-col.flex-1.justify-center
+             [:span.text-xs.uppercase type]]])]])]))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
