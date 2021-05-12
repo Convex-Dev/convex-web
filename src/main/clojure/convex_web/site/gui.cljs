@@ -1070,7 +1070,7 @@
        [:<>
         ;; Open & close.
         [:> headlessui-react/Disclosure.Button
-         {:className "flex justify-between w-40 px-4 py-2 text-sm font-medium text-left text-blue-900 bg-blue-100 rounded-lg hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75"}
+         {:className "flex justify-between w-full px-4 py-2 text-sm font-medium font-mono text-left text-blue-900 bg-blue-100 rounded-lg hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75"}
          [:span.text-xs
           text]
          [IconChevronUp
@@ -1084,18 +1084,25 @@
 
          children]]))])
 
-(defn EnvironmentBrowser [environment]
-  [Disclosure
-   {:text "Environment"}
-   (into [:ul.space-y-1]
-         (map
-           (fn [[s {:convex-web.syntax/keys [value]}]]
-             [:li [Disclosure {:text s}
-                   [Highlight
-                    (if (string? value)
-                      value
-                      (str value)) {:language :convex-lisp}]]])
-           (sort-by first environment)))])
+(defn EnvironmentBrowser
+  "A disclousure interface to browse an account's environment."
+  [environment]
+  [:div
+   [Disclosure
+    {:text "Environment"}
+    (into [:ul.space-y-1.mt-1]
+          (map
+            (fn [[s {:convex-web.syntax/keys [value]}]]
+              (let [source (if (string? value)
+                             value
+                             (str value))]
+                [:li [Disclosure {:text s}
+                      [Highlight
+                       (zprint/zprint-str source {:parse-string-all? true
+                                                  :width 60})
+
+                       {:language :convex-lisp}]]]))
+            (sort-by first environment)))]])
 
 (defn AddressRenderer [address]
   (r/with-let [account-ref (r/atom {:ajax/status :ajax.status/pending})
@@ -1111,7 +1118,7 @@
                     (fn [error]
                       (reset! account-ref {:ajax/status :ajax.status/error
                                            :ajax/error error}))})]
-    [:div.bg-white.rounded.shadow.p-3
+    [:div.w-full.max-w-prose.bg-white.rounded.shadow.p-3
      (case (:ajax/status @account-ref)
        :ajax.status/pending
        [SpinnerSmall]
