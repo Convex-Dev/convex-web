@@ -1160,8 +1160,6 @@
                 address
                 {:handler
                  (fn [account]
-                   (js/console.log (get-in account [:convex-web.account/status :convex-web.account-status/environment]))
-
                    (swap! account-ref merge {:account account
                                              :refresh {:ajax/status :ajax.status/success}}))
 
