@@ -452,6 +452,13 @@
           attrs)
    [:path {:fill-rule "evenodd" :d "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" :clip-rule "evenodd"}]])
 
+(defn IconChevronUp [& [attrs]]
+  [:svg
+   (merge {:viewBox "0 0 20 20"
+           :fill "currentColor"}
+          attrs)
+   [:path {:fillRule "evenodd" :d "M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" :clipRule "evenodd"}]])
+
 (defn GitHubIcon [& [attrs]]
   [:svg
    (merge {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
@@ -1057,6 +1064,29 @@
                    (format/prefix-# address)]]])]]]]]]))))
 
 
+(defn EnvironmentDisclosure [environment]
+  [:> headlessui-react/Disclosure
+   (fn [^js props]
+     (r/as-element
+       [:<>
+        [:> headlessui-react/Disclosure.Button
+         {:className "flex justify-between w-40 px-4 py-2 text-sm font-medium text-left text-blue-900 bg-blue-100 rounded-lg hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75"}
+         [:span.text-xs
+          "Environment"]
+         [IconChevronUp
+          {:class ["w-4 h-4 text-blue-500"
+                   (when (.-open props)
+                     "transform rotate-180")]}]]
+
+        [:> headlessui-react/Disclosure.Panel
+         {:className "px-4 pb-2 text-sm text-gray-500"}
+
+         [:ul
+          (map
+            (fn [s]
+              [:li [:span.font-mono.font-bold s]])
+            (sort (keys environment)))]]]))])
+
 (defn AddressRenderer [address]
   (r/with-let [account-ref (r/atom {:ajax/status :ajax.status/pending})
 
@@ -1071,7 +1101,7 @@
                     (fn [error]
                       (reset! account-ref {:ajax/status :ajax.status/error
                                            :ajax/error error}))})]
-    [:div.bg-white.rounded.shadow.p-2
+    [:div.bg-white.rounded.shadow.p-3
      (case (:ajax/status @account-ref)
        :ajax.status/pending
        [SpinnerSmall]
@@ -1087,7 +1117,9 @@
         [:span.text-xs (get-in @account-ref [:ajax/error :response :error :message])]]
 
        :ajax.status/success
-       [:div.flex.flex-col.space-y-1
+       [:div.flex.flex-col.space-y-3
+
+        ;; Address & Refresh.
         [:div.flex.justify-between
          [:a.inline-flex.items-center.space-x-1
           {:href (rfe/href :route-name/account-explorer {:address address})}
@@ -1111,6 +1143,8 @@
                 address
                 {:handler
                  (fn [account]
+                   (js/console.log (get-in account [:convex-web.account/status :convex-web.account-status/environment]))
+
                    (swap! account-ref merge {:account account
                                              :refresh {:ajax/status :ajax.status/success}}))
 
@@ -1121,20 +1155,24 @@
              [SpinnerSmall]
              [RefreshIcon {:class "w-4 h-4"}])]]]
 
+        ;; Balance & Type.
         [:div.flex.space-x-4
          ;; -- Balance.
          (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
            [:div.flex.flex-col
-            [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
+            [:span.text-xs.text-indigo-500.uppercase "Balance"]
             [:div.flex.flex-col.flex-1.justify-center
              [:span.text-xs (format/format-number balance)]]])
 
          ;; -- Type.
          (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
            [:div.flex.flex-col
-            [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
+            [:span.text-xs.text-indigo-500.uppercase "Type"]
             [:div.flex.flex-col.flex-1.justify-center
-             [:span.text-xs.uppercase type]]])]])]))
+             [:span.text-xs.uppercase type]]])]
+
+        [EnvironmentDisclosure
+         (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/environment])]])]))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
