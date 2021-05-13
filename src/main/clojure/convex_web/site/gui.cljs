@@ -4,8 +4,10 @@
             [convex-web.site.stack :as stack]
 
             [clojure.string :as str]
+            [goog.string :as gstring]
+            [goog.string.format]
 
-            [reagent.core :as reagent]
+            [reagent.core :as r]
             [reitit.frontend.easy :as rfe]
             [zprint.core :as zprint]
 
@@ -140,14 +142,14 @@
 (defn Dismissible
   "Dismiss child component when clicking outside."
   [{:keys [on-dismiss]} child]
-  (let [el (reagent/atom nil)
+  (let [el (r/atom nil)
 
         handler (fn [e]
                   (when-let [el @el]
                     (when-not (.contains el (.-target e))
                       (on-dismiss))))]
 
-    (reagent/create-class
+    (r/create-class
       {:component-did-mount
        (fn [_]
          (.addEventListener js/document "click" handler false))
@@ -221,7 +223,7 @@
        :open open?
        :onClose (or on-close identity)}
 
-      (reagent/as-element
+      (r/as-element
         [:div.absolute.inset-0.overflow-hidden
 
          [:> headlessui-react/Dialog.Overlay
@@ -452,11 +454,25 @@
           attrs)
    [:path {:fill-rule "evenodd" :d "M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" :clip-rule "evenodd"}]])
 
+(defn IconChevronUp [& [attrs]]
+  [:svg
+   (merge {:viewBox "0 0 20 20"
+           :fill "currentColor"}
+          attrs)
+   [:path {:fillRule "evenodd" :d "M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" :clipRule "evenodd"}]])
+
 (defn GitHubIcon [& [attrs]]
   [:svg
    (merge {:xmlns "http://www.w3.org/2000/svg" :width "24" :height "24" :viewBox "0 0 24 24"}
           attrs)
    [:path {:d "M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"}]])
+
+(defn RefreshIcon [& [attrs]]
+  [:svg
+   (merge {:viewBox "0 0 20 20"
+           :fill "currentColor"}
+          attrs)
+   [:path {:fillRule "evenodd" :d "M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" :clipRule "evenodd"}]])
 
 (defn QuestionMarkCircle [& [attrs]]
   [:svg
@@ -694,7 +710,7 @@
 
 (defn InfoTooltip [tooltip]
   [Tooltip
-   {:html (reagent/as-element [:p.text-xs.font-mono.leading-relaxed tooltip])}
+   {:html (r/as-element [:p.text-xs.font-mono.leading-relaxed tooltip])}
    [InformationCircleIcon {:class "w-4 h-4 hover:text-gray-500"}]])
 
 
@@ -811,116 +827,6 @@
           (.select (.getElementById js/document id))
           (.execCommand js/document "copy"))}]]]))
 
-(defn Account [{:convex-web.account/keys [address status]}]
-  (let [{:convex-web.account-status/keys [memory-size
-                                          allowance
-                                          balance
-                                          sequence
-                                          environment
-                                          type]} status
-
-        address-string (format/prefix-# address)
-
-        caption-style "text-gray-600 text-base leading-none cursor-default"
-        caption-container-style "flex flex-col space-y-1"
-        value-style "text-sm cursor-default"
-
-        Caption (fn [{:keys [label tooltip]}]
-                  [:div.flex.space-x-1
-                   [:span {:class caption-style} label]
-                   [InfoTooltip tooltip]])]
-    [:div.flex.flex-col.items-start.space-y-8
-
-     ;; Address
-     ;; ==============
-     [:div.flex.flex-col
-      [:div.flex.items-center.space-x-4
-       ;; -- Identicon
-       [AIdenticon {:value address :size 88}]
-
-       ;; -- Address
-       [:div {:class caption-container-style}
-        [:span {:class caption-style} "Address"]
-        [:span.inline-flex.items-center
-         [:span.font-mono.text-base.mr-2 address-string]]]
-
-       ;; -- QR Code
-       [:> QRCode
-        {:value address
-         :size 88}]]
-
-      ;; -- Type
-      [:span.inline-flex.justify-center.items-center.font-mono.text-xs.text-white.uppercase.mt-2.rounded
-       {:style {:width "88px" :height "32px"}
-        :class (account-type-bg-color status)}
-       type]]
-
-
-     ;; Balance
-     ;; ==============
-     [:div {:class caption-container-style}
-      [Caption
-       {:label "Balance"
-        :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
-      [:code.text-2xl.cursor-default (format/format-number balance)]]
-
-
-     ;; Memory
-     ;; ==============
-     [:div.flex.w-full {:class "space-x-1/6"}
-      ;; -- Memory Allowance
-      [:div {:class caption-container-style}
-       [Caption
-        {:label "Memory Allowance"
-         :tooltip
-         "Reserved Memory Allowance in bytes. If you create on-chain data
-        beyond this amount, you will be charged extra transaction fees to
-        aquire memory at the current memory pool price."}]
-       [:code {:class value-style} allowance]]
-
-      ;; -- Memory Size
-      [:div {:class caption-container-style}
-       [Caption
-        {:label "Memory Size"
-         :tooltip
-         "Size in bytes of this Account, which includes any definitions you
-          have created in your Enviornment."}]
-       [:code {:class value-style} memory-size]]
-
-      ;; -- Sequence
-      [:div {:class caption-container-style}
-       [Caption
-        {:label "Sequence"
-         :tooltip "Sequence number for this Account, which is equal to the
-                    number of transactions that have been executed."}]
-       [:code {:class value-style} (if (neg? sequence) "n/a" sequence)]]]
-
-
-     ;; Environment
-     ;; ==============
-     [:div.w-full {:class caption-container-style}
-      [Caption
-       {:label "Environment"
-        :tooltip
-        "Environment, a space where reserved for each Account that can freely
-         store on-chain data and definitions (e.g. code that you write in
-         Convex Lisp)"}]
-      [:div.flex.flex-col.items-center.w-full.px-10.overflow-auto.border.rounded.p-2
-       [:div.flex.flex-col.w-full.divide-y
-        (let [environment (sort-by (comp str first) environment)]
-          (if (seq environment)
-            (for [[symbol syntax] environment]
-              ^{:key symbol}
-              [:div.w-full.py-2.px-1
-               [SymbolStrip
-                {:symbol symbol
-                 :syntax syntax
-                 :on-click #(stack/push :page.id/environment-entry {:modal? true
-                                                                    :state
-                                                                    {:symbol symbol
-                                                                     :syntax syntax}})}]])
-            [:span.text-xs.text-gray-700.text-center "Empty"]))]]]]))
-
 (defn RangeNavigation [{:keys [page-count
                                page-num
                                first-label
@@ -989,10 +895,10 @@
   [:> ReactMarkdown
    {:source markdown
     :renderers
-    {:code (reagent/reactify-component MarkdownCodeBlock)}}])
+    {:code (r/reactify-component MarkdownCodeBlock)}}])
 
 (defn AccountSelect [{:keys [active-address addresses on-change]}]
-  (let [state-ref (reagent/atom {:show? false})]
+  (let [state-ref (r/atom {:show? false})]
     (fn [{:keys [active-address addresses on-change]}]
       (let [{:keys [show?]} @state-ref
 
@@ -1049,57 +955,156 @@
                   [:span.font-mono.block.ml-2
                    (format/prefix-# address)]]])]]]]]]))))
 
+(def disclosure-button-shared
+  ["w-full px-4 py-2 rounded-lg"
+   "flex justify-between"
+   "text-sm font-medium font-mono text-left"
+   "focus:outline-none focus-visible:ring focus-visible:ring-opacity-75"])
 
-(defn AddressRenderer [object]
-  (reagent/with-let [account-ref (reagent/atom {:ajax/status :ajax.status/pending})
+(defn disclosure-button-colors [color]
+  (map
+    #(gstring/format % color)
+    #{"text-%s-900"
+      "bg-%s-100"
+      "hover:bg-%s-200"
+      "focus-visible:ring-%s-500"}))
 
-                     _ (backend/GET-account
-                         object
-                         {:handler
-                          (fn [account]
-                            (reset! account-ref {:account account
-                                                 :ajax/status :ajax.status/success}))
+(defn DisclosureButton [{:keys [text color open?]}]
+  [:> headlessui-react/Disclosure.Button
+   {:className
+    (str/join " " (into disclosure-button-shared (disclosure-button-colors color)))}
+   [:span.text-xs
+    text]
+   [IconChevronUp
+    {:class
+     ["w-4 h-4"
+      (gstring/format "text-%s-500" color)
+      (when open? "transform rotate-180")]}]])
 
-                          :error-handler
-                          (fn [error]
-                            (js/console.error error)
-                            (reset! account-ref {:ajax/status :ajax.status/error
-                                                 :ajax/error error}))})]
-    [:div.bg-white.rounded.shadow.p-2
+(defn Disclosure [{:keys [text color]} children]
+  [:> headlessui-react/Disclosure
+   (fn [^js props]
+     (r/as-element
+       [:<>
+        ;; Open & close.
+        [DisclosureButton
+         {:text text
+          :color color
+          :open? (.-open props)}]
+
+        ;; Show children.
+        [:> headlessui-react/Disclosure.Panel
+         {:className "px-4 pb-2 text-sm text-gray-500"}
+
+         children]]))])
+
+(defn EnvironmentBrowser
+  "A disclousure interface to browse an account's environment."
+  [environment]
+  [:div
+   [Disclosure
+    {:text "Environment"
+     :color "blue"}
+    (into [:ul.space-y-1.mt-1]
+          (map
+            (fn [[s {:convex-web.syntax/keys [value]}]]
+              (let [source (if (string? value)
+                             value
+                             (str value))]
+                [:li [Disclosure
+                      {:text s
+                       :color "gray"}
+                      [Highlight
+                       (zprint/zprint-str source {:parse-string-all? true
+                                                  :width 60})
+
+                       {:language :convex-lisp}]]]))
+            (sort-by first environment)))]])
+
+(defn AddressRenderer [address]
+  (r/with-let [account-ref (r/atom {:ajax/status :ajax.status/pending})
+
+               _ (backend/GET-account
+                   address
+                   {:handler
+                    (fn [account]
+                      (reset! account-ref {:account account
+                                           :ajax/status :ajax.status/success}))
+
+                    :error-handler
+                    (fn [error]
+                      (reset! account-ref {:ajax/status :ajax.status/error
+                                           :ajax/error error}))})]
+    [:div.w-full.max-w-prose.bg-white.rounded.shadow.p-3
      (case (:ajax/status @account-ref)
        :ajax.status/pending
        [SpinnerSmall]
 
        :ajax.status/error
-       [:span.text-xs.text-red-500 (get-in @account-ref [:ajax/error :response :error :message])]
+       [:div.flex.flex-col.space-y-1
+        [:div.flex.items-center.space-x-1
+         [AIdenticon {:value (str address) :size identicon-size-small}]
+
+         [:span.font-mono.text-xs.truncate
+          (format/prefix-# address)]]
+
+        [:span.text-xs (get-in @account-ref [:ajax/error :response :error :message])]]
 
        :ajax.status/success
-       [:div.flex.space-x-4
+       [:div.flex.flex-col.space-y-3
 
-        ;; -- Address.
-        [:div.flex.flex-col
-         [:span.text-xs.text-indigo-500.uppercase.mt-2 "Address"]
+        ;; Address & Refresh.
+        [:div.flex.justify-between
          [:a.inline-flex.items-center.space-x-1
-          {:href (rfe/href :route-name/account-explorer {:address object})}
-          [AIdenticon {:value (str object) :size identicon-size-small}]
+          {:href (rfe/href :route-name/account-explorer {:address address})}
+          [AIdenticon {:value (str address) :size identicon-size-small}]
 
           [:span.font-mono.text-xs.truncate
            {:class hyperlink-hover-class}
-           (format/prefix-# object)]]]
+           (format/prefix-# address)]]
 
-        ;; -- Balance.
-        (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
-          [:div.flex.flex-col
-           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Balance"]
-           [:div.flex.flex-col.flex-1.justify-center
-            [:span.text-xs (format/format-number balance)]]])
+         [Tooltip
+          {:title "Refresh"
+           :size "small"}
+          [DefaultButton
+           {:on-click
+            (fn []
+              ;; Store the status of this request in a place specific to refresh
+              ;; because we don't want the whole UI to transition to pending.
+              (swap! account-ref assoc-in [:refresh :ajax/status] :ajax.status/pending)
 
-        ;; -- Type.
-        (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
-          [:div.flex.flex-col
-           [:span.text-xs.text-indigo-500.uppercase.mt-2 "Type"]
-           [:div.flex.flex-col.flex-1.justify-center
-            [:span.text-xs.uppercase type]]])])]))
+              (backend/GET-account
+                address
+                {:handler
+                 (fn [account]
+                   (swap! account-ref merge {:account account
+                                             :refresh {:ajax/status :ajax.status/success}}))
+
+                 :error-handler
+                 (fn [_]
+                   (swap! account-ref merge {:refresh {:ajax/status :ajax.status/error}}))}))}
+           (if (= :ajax.status/pending (get-in @account-ref [:refresh :ajax/status]))
+             [SpinnerSmall]
+             [RefreshIcon {:class "w-4 h-4"}])]]]
+
+        ;; Balance & Type.
+        [:div.flex.space-x-8
+         ;; -- Balance.
+         (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
+           [:div.flex.flex-col
+            [:span.text-xs.text-indigo-500.uppercase "Balance"]
+            [:div.flex.flex-col.flex-1.justify-center
+             [:span.text-xs (format/format-number balance)]]])
+
+         ;; -- Type.
+         (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
+           [:div.flex.flex-col
+            [:span.text-xs.text-indigo-500.uppercase "Type"]
+            [:div.flex.flex-col.flex-1.justify-center
+             [:span.text-xs.uppercase type]]])]
+
+        [EnvironmentBrowser
+         (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/environment])]])]))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
@@ -1121,3 +1126,101 @@
     [BlobRenderer object]
 
     [Highlight (prn-str object)]))
+
+(defn Account [{:convex-web.account/keys [address status]}]
+  (let [{:convex-web.account-status/keys [memory-size
+                                          allowance
+                                          balance
+                                          sequence
+                                          environment
+                                          type]} status
+
+        address-string (format/prefix-# address)
+
+        caption-style "text-gray-600 text-base leading-none cursor-default"
+        caption-container-style "flex flex-col space-y-1"
+        value-style "text-sm cursor-default"
+
+        Caption (fn [{:keys [label tooltip]}]
+                  [:div.flex.space-x-1
+                   [:span {:class caption-style} label]
+                   [InfoTooltip tooltip]])]
+    [:div.flex.flex-col.items-start.space-y-8
+
+     ;; Address
+     ;; ==============
+     [:div.flex.flex-col
+      [:div.flex.items-center.space-x-4
+       ;; -- Identicon
+       [AIdenticon {:value address :size 88}]
+
+       ;; -- Address
+       [:div {:class caption-container-style}
+        [:span {:class caption-style} "Address"]
+        [:span.inline-flex.items-center
+         [:span.font-mono.text-base.mr-2 address-string]]]
+
+       ;; -- QR Code
+       [:> QRCode
+        {:value (str address)
+         :size 88}]]
+
+      ;; -- Type
+      [:span.inline-flex.justify-center.items-center.font-mono.text-xs.text-white.uppercase.mt-2.rounded
+       {:style {:width "88px" :height "32px"}
+        :class (account-type-bg-color status)}
+       type]]
+
+
+     ;; Balance
+     ;; ==============
+     [:div {:class caption-container-style}
+      [Caption
+       {:label "Balance"
+        :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
+      [:code.text-2xl.cursor-default (format/format-number balance)]]
+
+
+     ;; Memory
+     ;; ==============
+     [:div.flex.w-full {:class "space-x-1/6"}
+      ;; -- Memory Allowance
+      [:div {:class caption-container-style}
+       [Caption
+        {:label "Memory Allowance"
+         :tooltip
+         "Reserved Memory Allowance in bytes. If you create on-chain data
+        beyond this amount, you will be charged extra transaction fees to
+        aquire memory at the current memory pool price."}]
+       [:code {:class value-style} allowance]]
+
+      ;; -- Memory Size
+      [:div {:class caption-container-style}
+       [Caption
+        {:label "Memory Size"
+         :tooltip
+         "Size in bytes of this Account, which includes any definitions you
+          have created in your Enviornment."}]
+       [:code {:class value-style} memory-size]]
+
+      ;; -- Sequence
+      [:div {:class caption-container-style}
+       [Caption
+        {:label "Sequence"
+         :tooltip "Sequence number for this Account, which is equal to the
+                    number of transactions that have been executed."}]
+       [:code {:class value-style} (if (neg? sequence) "n/a" sequence)]]]
+
+
+     ;; Environment
+     ;; ==============
+     [:div.w-full.max-w-prose.flex.flex-col.space-y-2
+      (if (seq environment)
+        [:<>
+         [EnvironmentBrowser environment]
+
+         [:p.text-sm.text-gray-500.max-w-prose
+          "The environment is a space reserved for each Account
+           that can freely store on-chain data and definitions.
+           (e.g. code that you write in Convex Lisp)"]]
+        [:span.text-xs.text-gray-700.text-center "Empty"])]]))
