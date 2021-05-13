@@ -1217,12 +1217,9 @@
      ;; Environment
      ;; ==============
      [:div.w-full.max-w-prose.flex.flex-col.space-y-2
-      (if (seq environment)
-        [:<>
-         [EnvironmentBrowser environment]
+      [EnvironmentBrowser environment]
 
-         [:p.text-sm.text-gray-500.max-w-prose
-          "The environment is a space reserved for each Account
-           that can freely store on-chain data and definitions.
-           (e.g. code that you write in Convex Lisp)"]]
-        [:span.text-xs.text-gray-700.text-center "Empty"])]]))
+      [:p.text-sm.text-gray-500.max-w-prose
+       "The environment is a space reserved for each Account
+        that can freely store on-chain data and definitions.
+        (e.g. code that you write in Convex Lisp)"]]]))
