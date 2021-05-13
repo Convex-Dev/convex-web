@@ -4,6 +4,8 @@
             [convex-web.site.stack :as stack]
 
             [clojure.string :as str]
+            [goog.string :as gstring]
+            [goog.string.format]
 
             [reagent.core :as r]
             [reitit.frontend.easy :as rfe]
@@ -1063,20 +1065,42 @@
                   [:span.font-mono.block.ml-2
                    (format/prefix-# address)]]])]]]]]]))))
 
-(defn Disclosure [{:keys [text]} children]
+(def disclosure-button-shared
+  ["w-full px-4 py-2 rounded-lg"
+   "flex justify-between"
+   "text-sm font-medium font-mono text-left"
+   "focus:outline-none focus-visible:ring focus-visible:ring-opacity-75"])
+
+(defn disclosure-button-colors [color]
+  (map
+    #(gstring/format % color)
+    #{"text-%s-900"
+      "bg-%s-100"
+      "hover:bg-%s-200"
+      "focus-visible:ring-%s-500"}))
+
+(defn DisclosureButton [{:keys [text color open?]}]
+  [:> headlessui-react/Disclosure.Button
+   {:className
+    (str/join " " (into disclosure-button-shared (disclosure-button-colors color)))}
+   [:span.text-xs
+    text]
+   [IconChevronUp
+    {:class
+     ["w-4 h-4"
+      (gstring/format "text-%s-500" color)
+      (when open? "transform rotate-180")]}]])
+
+(defn Disclosure [{:keys [text color]} children]
   [:> headlessui-react/Disclosure
    (fn [^js props]
      (r/as-element
        [:<>
         ;; Open & close.
-        [:> headlessui-react/Disclosure.Button
-         {:className "flex justify-between w-full px-4 py-2 text-sm font-medium font-mono text-left text-blue-900 bg-blue-100 rounded-lg hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75"}
-         [:span.text-xs
-          text]
-         [IconChevronUp
-          {:class ["w-4 h-4 text-blue-500"
-                   (when (.-open props)
-                     "transform rotate-180")]}]]
+        [DisclosureButton
+         {:text text
+          :color color
+          :open? (.-open props)}]
 
         ;; Show children.
         [:> headlessui-react/Disclosure.Panel
@@ -1089,14 +1113,17 @@
   [environment]
   [:div
    [Disclosure
-    {:text "Environment"}
+    {:text "Environment"
+     :color "blue"}
     (into [:ul.space-y-1.mt-1]
           (map
             (fn [[s {:convex-web.syntax/keys [value]}]]
               (let [source (if (string? value)
                              value
                              (str value))]
-                [:li [Disclosure {:text s}
+                [:li [Disclosure
+                      {:text s
+                       :color "gray"}
                       [Highlight
                        (zprint/zprint-str source {:parse-string-all? true
                                                   :width 60})
