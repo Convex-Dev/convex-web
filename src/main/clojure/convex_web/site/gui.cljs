@@ -827,116 +827,6 @@
           (.select (.getElementById js/document id))
           (.execCommand js/document "copy"))}]]]))
 
-(defn Account [{:convex-web.account/keys [address status]}]
-  (let [{:convex-web.account-status/keys [memory-size
-                                          allowance
-                                          balance
-                                          sequence
-                                          environment
-                                          type]} status
-
-        address-string (format/prefix-# address)
-
-        caption-style "text-gray-600 text-base leading-none cursor-default"
-        caption-container-style "flex flex-col space-y-1"
-        value-style "text-sm cursor-default"
-
-        Caption (fn [{:keys [label tooltip]}]
-                  [:div.flex.space-x-1
-                   [:span {:class caption-style} label]
-                   [InfoTooltip tooltip]])]
-    [:div.flex.flex-col.items-start.space-y-8
-
-     ;; Address
-     ;; ==============
-     [:div.flex.flex-col
-      [:div.flex.items-center.space-x-4
-       ;; -- Identicon
-       [AIdenticon {:value address :size 88}]
-
-       ;; -- Address
-       [:div {:class caption-container-style}
-        [:span {:class caption-style} "Address"]
-        [:span.inline-flex.items-center
-         [:span.font-mono.text-base.mr-2 address-string]]]
-
-       ;; -- QR Code
-       [:> QRCode
-        {:value (str address)
-         :size 88}]]
-
-      ;; -- Type
-      [:span.inline-flex.justify-center.items-center.font-mono.text-xs.text-white.uppercase.mt-2.rounded
-       {:style {:width "88px" :height "32px"}
-        :class (account-type-bg-color status)}
-       type]]
-
-
-     ;; Balance
-     ;; ==============
-     [:div {:class caption-container-style}
-      [Caption
-       {:label "Balance"
-        :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
-      [:code.text-2xl.cursor-default (format/format-number balance)]]
-
-
-     ;; Memory
-     ;; ==============
-     [:div.flex.w-full {:class "space-x-1/6"}
-      ;; -- Memory Allowance
-      [:div {:class caption-container-style}
-       [Caption
-        {:label "Memory Allowance"
-         :tooltip
-         "Reserved Memory Allowance in bytes. If you create on-chain data
-        beyond this amount, you will be charged extra transaction fees to
-        aquire memory at the current memory pool price."}]
-       [:code {:class value-style} allowance]]
-
-      ;; -- Memory Size
-      [:div {:class caption-container-style}
-       [Caption
-        {:label "Memory Size"
-         :tooltip
-         "Size in bytes of this Account, which includes any definitions you
-          have created in your Enviornment."}]
-       [:code {:class value-style} memory-size]]
-
-      ;; -- Sequence
-      [:div {:class caption-container-style}
-       [Caption
-        {:label "Sequence"
-         :tooltip "Sequence number for this Account, which is equal to the
-                    number of transactions that have been executed."}]
-       [:code {:class value-style} (if (neg? sequence) "n/a" sequence)]]]
-
-
-     ;; Environment
-     ;; ==============
-     [:div.w-full {:class caption-container-style}
-      [Caption
-       {:label "Environment"
-        :tooltip
-        "Environment, a space where reserved for each Account that can freely
-         store on-chain data and definitions (e.g. code that you write in
-         Convex Lisp)"}]
-      [:div.flex.flex-col.items-center.w-full.px-10.overflow-auto.border.rounded.p-2
-       [:div.flex.flex-col.w-full.divide-y
-        (let [environment (sort-by (comp str first) environment)]
-          (if (seq environment)
-            (for [[symbol syntax] environment]
-              ^{:key symbol}
-              [:div.w-full.py-2.px-1
-               [SymbolStrip
-                {:symbol symbol
-                 :syntax syntax
-                 :on-click #(stack/push :page.id/environment-entry {:modal? true
-                                                                    :state
-                                                                    {:symbol symbol
-                                                                     :syntax syntax}})}]])
-            [:span.text-xs.text-gray-700.text-center "Empty"]))]]]]))
-
 (defn RangeNavigation [{:keys [page-count
                                page-num
                                first-label
@@ -1236,3 +1126,101 @@
     [BlobRenderer object]
 
     [Highlight (prn-str object)]))
+
+(defn Account [{:convex-web.account/keys [address status]}]
+  (let [{:convex-web.account-status/keys [memory-size
+                                          allowance
+                                          balance
+                                          sequence
+                                          environment
+                                          type]} status
+
+        address-string (format/prefix-# address)
+
+        caption-style "text-gray-600 text-base leading-none cursor-default"
+        caption-container-style "flex flex-col space-y-1"
+        value-style "text-sm cursor-default"
+
+        Caption (fn [{:keys [label tooltip]}]
+                  [:div.flex.space-x-1
+                   [:span {:class caption-style} label]
+                   [InfoTooltip tooltip]])]
+    [:div.flex.flex-col.items-start.space-y-8
+
+     ;; Address
+     ;; ==============
+     [:div.flex.flex-col
+      [:div.flex.items-center.space-x-4
+       ;; -- Identicon
+       [AIdenticon {:value address :size 88}]
+
+       ;; -- Address
+       [:div {:class caption-container-style}
+        [:span {:class caption-style} "Address"]
+        [:span.inline-flex.items-center
+         [:span.font-mono.text-base.mr-2 address-string]]]
+
+       ;; -- QR Code
+       [:> QRCode
+        {:value (str address)
+         :size 88}]]
+
+      ;; -- Type
+      [:span.inline-flex.justify-center.items-center.font-mono.text-xs.text-white.uppercase.mt-2.rounded
+       {:style {:width "88px" :height "32px"}
+        :class (account-type-bg-color status)}
+       type]]
+
+
+     ;; Balance
+     ;; ==============
+     [:div {:class caption-container-style}
+      [Caption
+       {:label "Balance"
+        :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
+      [:code.text-2xl.cursor-default (format/format-number balance)]]
+
+
+     ;; Memory
+     ;; ==============
+     [:div.flex.w-full {:class "space-x-1/6"}
+      ;; -- Memory Allowance
+      [:div {:class caption-container-style}
+       [Caption
+        {:label "Memory Allowance"
+         :tooltip
+         "Reserved Memory Allowance in bytes. If you create on-chain data
+        beyond this amount, you will be charged extra transaction fees to
+        aquire memory at the current memory pool price."}]
+       [:code {:class value-style} allowance]]
+
+      ;; -- Memory Size
+      [:div {:class caption-container-style}
+       [Caption
+        {:label "Memory Size"
+         :tooltip
+         "Size in bytes of this Account, which includes any definitions you
+          have created in your Enviornment."}]
+       [:code {:class value-style} memory-size]]
+
+      ;; -- Sequence
+      [:div {:class caption-container-style}
+       [Caption
+        {:label "Sequence"
+         :tooltip "Sequence number for this Account, which is equal to the
+                    number of transactions that have been executed."}]
+       [:code {:class value-style} (if (neg? sequence) "n/a" sequence)]]]
+
+
+     ;; Environment
+     ;; ==============
+     [:div.w-full.max-w-prose.flex.flex-col.space-y-2
+      (if (seq environment)
+        [:<>
+         [EnvironmentBrowser environment]
+
+         [:p.text-sm.text-gray-500.max-w-prose
+          "The environment is a space reserved for each Account
+           that can freely store on-chain data and definitions.
+           (e.g. code that you write in Convex Lisp)"]]
+        [:span.text-xs.text-gray-700.text-center "Empty"])]]))
