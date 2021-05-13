@@ -16,7 +16,7 @@ npm install
 
 Compile CSS:
 ```
-bin/compile-css
+npm run styles-dev
 ```
 
 Run Shadow CLJS:
@@ -48,16 +48,13 @@ npm install
 
 Compile & bundle app:
 ```
-bin/release-app
+npm run release
 ```
 
 Compile CSS:
 ```
-NODE_ENV=production bin/compile-css
+npm run styles
 ```
-
-The `NODE_ENV` environment variable is very important because
-that's how Tailwind knows it should prune unused classes.
 
 ### Server
 
