@@ -862,7 +862,7 @@
 
        ;; -- QR Code
        [:> QRCode
-        {:value address
+        {:value (str address)
          :size 88}]]
 
       ;; -- Type
