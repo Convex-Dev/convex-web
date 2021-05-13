@@ -1005,21 +1005,23 @@
    [Disclosure
     {:text "Environment"
      :color "blue"}
-    (into [:ul.space-y-1.mt-1]
-          (map
-            (fn [[s {:convex-web.syntax/keys [value]}]]
-              (let [source (if (string? value)
-                             value
-                             (str value))]
-                [:li [Disclosure
-                      {:text s
-                       :color "gray"}
-                      [Highlight
-                       (zprint/zprint-str source {:parse-string-all? true
-                                                  :width 60})
+    (if (seq environment)
+      (into [:ul.space-y-1.mt-1]
+            (map
+              (fn [[s {:convex-web.syntax/keys [value]}]]
+                (let [source (if (string? value)
+                               value
+                               (str value))]
+                  [:li [Disclosure
+                        {:text s
+                         :color "gray"}
+                        [Highlight
+                         (zprint/zprint-str source {:parse-string-all? true
+                                                    :width 60})
 
-                       {:language :convex-lisp}]]]))
-            (sort-by first environment)))]])
+                         {:language :convex-lisp}]]]))
+              (sort-by first environment)))
+      [:p.mt-1.text-xs "Empty"])]])
 
 (defn AddressRenderer [address]
   (r/with-let [account-ref (r/atom {:ajax/status :ajax.status/pending})
