@@ -678,8 +678,11 @@
                     :first-label "First"
                     :first-href (rfe/href :route-name/accounts-explorer)
 
-                    :previous-href (rfe/href :route-name/accounts-explorer {} {:start (max 0 (- start config/default-range))
-                                                                               :end start})
+                    :previous-href (rfe/href :route-name/accounts-explorer {} (let [start' (max 0 (- start config/default-range))]
+                                                                                {:start start'
+                                                                                 :end (if (< (- start start') config/default-range)
+                                                                                        (min total config/default-range)
+                                                                                        start)}))
 
                     :next-href (rfe/href :route-name/accounts-explorer {} (let [end' (min total (+ end config/default-range))
 
