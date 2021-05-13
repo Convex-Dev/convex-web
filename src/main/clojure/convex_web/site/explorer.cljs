@@ -54,8 +54,8 @@
          (reverse))))
 
 (s/fdef flatten-transactions
-  :args (s/cat :blocks :convex-web/blocks)
-  :ret (s/merge :convex-web/block :convex-web/signed-data))
+        :args (s/cat :blocks :convex-web/blocks)
+        :ret (s/merge :convex-web/block :convex-web/signed-data))
 
 
 (defn CodePage [_ {:keys [source]} _]
@@ -681,8 +681,13 @@
                     :previous-href (rfe/href :route-name/accounts-explorer {} {:start (max 0 (- start config/default-range))
                                                                                :end start})
 
-                    :next-href (rfe/href :route-name/accounts-explorer {} {:start end
-                                                                           :end (min total (+ end config/default-range))})
+                    :next-href (rfe/href :route-name/accounts-explorer {} (let [end' (min total (+ end config/default-range))
+
+                                                                                start (if (< (- end' end) config/default-range)
+                                                                                        (- end' config/default-range)
+                                                                                        end)]
+                                                                            {:start start
+                                                                             :end (min total (+ end config/default-range))}))
 
                     :last-label "Last"
                     :last-href (rfe/href :route-name/accounts-explorer {} {:start (max 0 (- total config/default-range))
