@@ -813,8 +813,8 @@
           number-of-accounts (count (.getAccounts (.getConsensusState peer)))
           number-of-items (min number-of-accounts config/default-range)
 
-          end (or (some-> end Long/parseLong) number-of-accounts)
-          start (or (some-> start Long/parseLong) (- end number-of-items))
+          end (or (some-> end Long/parseLong) number-of-items)
+          start (or (some-> start Long/parseLong) 0)
 
           start-valid? (<= 0 start end)
           end-valid? (>= number-of-accounts end start)
