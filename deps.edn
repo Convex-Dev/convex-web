@@ -80,6 +80,10 @@
                                   cljsjs/react-dom-server]}
   metosin/reitit-frontend {:mvn/version "0.5.13"}
   datalevin/datalevin {:mvn/version "0.4.31"}
+
+  org.graalvm.js/js {:mvn/version "20.1.0"}
+  org.graalvm.js/js-scriptengine {:mvn/version "20.1.0"}
+
   nano-id/nano-id {:mvn/version "1.0.0"}
   expound/expound {:mvn/version "0.8.9"}
   fipp/fipp {:mvn/version "0.6.23"}
@@ -115,7 +119,7 @@
 
   ;; -- Site (ClojureScript app)
   :site-dev
-  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.12.5"}
+  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.13.0"}
                 binaryage/devtools {:mvn/version "1.0.3"}}}
 
 
