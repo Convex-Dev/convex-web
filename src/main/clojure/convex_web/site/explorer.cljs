@@ -673,7 +673,7 @@
      ;; -- Pagination
      [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
-                    :page-num (pagination/page-num start total)
+                    :page-num (pagination/page-num2 end config/default-range)
 
                     :first-label "First"
                     :first-href (rfe/href :route-name/accounts-explorer)

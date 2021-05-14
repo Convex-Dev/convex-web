@@ -29,3 +29,16 @@
   (is (= 2 (pagination/page-num 5 35)))
   (is (= 3 (pagination/page-num 4 35)))
   (is (= 3 (pagination/page-num 0 35))))
+
+(deftest page-num2-test
+  (let [n 10]
+    (is (= 1 (pagination/page-num2 -100 n)))
+    (is (= 1 (pagination/page-num2 -1 n)))
+    (is (= 1 (pagination/page-num2 0 n)))
+    (is (= 1 (pagination/page-num2 1 n)))
+    (is (= 1 (pagination/page-num2 9 n)))
+    (is (= 1 (pagination/page-num2 10 n)))
+    (is (= 2 (pagination/page-num2 11 n)))
+    (is (= 2 (pagination/page-num2 20 n)))
+    (is (= 3 (pagination/page-num2 21 n)))
+    (is (= 3 (pagination/page-num2 30 n)))))

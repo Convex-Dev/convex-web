@@ -36,3 +36,16 @@
   "Returns the page number for `offset`."
   [offset num-of-items]
   (inc (quot (- (dec num-of-items) offset) convex-web.config/default-range)))
+
+(defn page-num2
+  "Returns the page number for `offset`.
+
+   `n` is the number of items per page.
+
+   Example:
+
+   (page-num2 50 10)
+   ;; => 5"
+  [offset n]
+  (max 1 #?(:clj  (int (Math/ceil (/ offset n)))
+            :cljs (js/Math.ceil (/ offset n)))))
