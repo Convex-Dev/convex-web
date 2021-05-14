@@ -1,6 +1,6 @@
 If you've got this far, you may be interested in some of the more advanced features of Convex Lisp. This section is intended for people who want to know more about how Convex Lisp work, and how it integrated with the capabilities of the CVM.
 
-## Complier Phases
+## Compiler Phases
 
 How does 'Code as Data' actually work? The secret is in understanding the phases of the Convex Lisp compiler
 
@@ -22,15 +22,15 @@ Expansion is the second phase of the compiler. Expansion takes the raw form data
 '(foo :bar :baz) -> <Syntax Object>
 ```
 
-In this phase, any macros are applied to the forms analysed, which has the effect of replacing them with the macro expansion. 
+In this phase, any macros are applied to the forms analyzed, which has the effect of replacing them with the macro expansion.
 
-This means that arbitrary CVM code in macros *can* be executed during expansion - which in turn can be sometimes useful, e.g. in smart contract code that wishes to generate code based on analysing the CVM state.
+This means that arbitrary CVM code in macros *can* be executed during expansion - which in turn can be sometimes useful, e.g. in smart contract code that wishes to generate code based on analyzing the CVM state.
 
 Phase 2 expansion can be performed either on-chain or off-chain.
 
 ### 3. Compilation
 
-In the third phase, Syntax Objects are *compiled* into *Ops*, which are the low level instructions that can be executed by the CVM.  
+In the third phase, Syntax Objects are *compiled* into *Ops*, which are the low-level instructions that can be executed by the CVM.
 
 ```clojure
 <Syntax Object> -> <Op>
@@ -69,15 +69,15 @@ Convex Ops are technically a form of [p-code](https://en.wikipedia.org/wiki/P-co
 - Ops can be executed very efficiently many times (avoiding the more expensive phases of parsing, expansion and compilation).
 - Ops are very compact in terms of memory used - making them ideal for network transmission and efficient usage of on-chain storage.
 - We can improve underlying performance and implementation details of the CVM without breaking CVM code that has been compiled to Ops.
-- Ops are designed to match up with the runtime and security checks that the CVM must perform when executing code securely on-chain. 
+- Ops are designed to match up with the runtime and security checks that the CVM must perform when executing code securely on-chain.
 
 ## Macros
 
-We've actually used a couple of macros already in this guide: `if`, `undef` and `defn` are all examples of macros. 
+We've actually used a couple of macros already in this guide: `if`, `undef` and `defn` are all examples of macros.
 
 A macro is a procedure that generates new code at compile time (technically, in the *expansion* phase of the compiler). Macros are an incredibly powerful tool that allow you to enhance the Convex Lisp language with new capabilities and syntax.
 
-As a simple example, let's consider a macro that allows you to use 'infix' notation for for mathematical expressions, i.e. instead of writing `(+ 1 2)` we want to write `1 + 2`. It is possible to do this with a simple macro that rewrites the infix expression into the expected Lisp format:
+As a simple example, let's consider a macro that allows you to use 'infix' notation for mathematical expressions, i.e. instead of writing `(+ 1 2)` we want to write `1 + 2`. It is possible to do this with a simple macro that rewrites the infix expression into the expected Lisp format:
 
 ```clojure
 (defmacro infix [arg1 operator arg2]
@@ -105,7 +105,7 @@ A key risk of developing smart contracts is that once they are live, significant
 
 It is therefore *an option* to make Actors upgradable. This is no panacea but a trade-off: You can the ability to patch problems in the original smart contract, but also open up the possibility that this upgrade feature itself may be exploited by attackers.
 
-An upgradable actor can be implemented by providing an exeported function that allows a trusted user to execute an `eval` operation in the context of the Actor. A minimal implementation of this that lways trusts the user who deployed the Actor might look like:
+An upgradable actor can be implemented by providing an exported function that allows a trusted user to execute an `eval` operation in the context of the Actor. A minimal implementation of this that always trusts the user who deployed the Actor might look like:
 
 ```clojure
 ;; deploy an upgradable Actor
@@ -136,6 +136,5 @@ An upgradable actor can be implemented by providing an exeported function that a
 => :foo-called     
 ```
 
-**SECURITY NOTE:** Adding a general purpose upgrade feature like this lets you correct bugs or add new enhancements to Actors, but it opens the risk that the same mechanism could be used to compromise the Actor's behaviour if an attacker were able to impersonate the owner, and also creates the risk that the Actor may be permananently disabled by the owner by mistake. As always, you must perform your own security analysis to determine whether this trade-off is worthwhile for the Actors that you deploy.
-
+**SECURITY NOTE:** Adding a general purpose upgrade feature like this lets you correct bugs or add new enhancements to Actors, but it opens the risk that the same mechanism could be used to compromise the Actor's behavior if an attacker were able to impersonate the owner, and also creates the risk that the Actor may be permanently disabled by the owner by mistake. As always, you must perform your own security analysis to determine whether this trade-off is worthwhile for the Actors that you deploy.
 

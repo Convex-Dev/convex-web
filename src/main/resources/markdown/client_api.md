@@ -56,7 +56,7 @@ Examples:
 
 ### Error cases
 
-If the Account does not exist, an error status 404 with the folloing payload:
+If the Account does not exist, an error status 404 with the following payload:
 
 ```json
 {
@@ -101,7 +101,7 @@ Examples:
 
 ## Query
 
-Execute a Query against the current state of the Convex Network. This requires no Transaction fees, or digital signature. 
+Execute a Query against the current state of the Convex Network. This requires no Transaction fees, or digital signature.
 
 **POST** https://convex.world/api/v1/query
 
@@ -119,7 +119,7 @@ Examples:
 
 ### Response
 
-- `value`: A CVM return value encoded as JSON - the result of evaluating `source`. In the case of a CVM error, this will contain the message. 
+- `value`: A CVM return value encoded as JSON - the result of evaluating `source`. In the case of a CVM error, this will contain the message.
 
 Examples:
  ```json
@@ -137,7 +137,7 @@ The `errorCode` key is present if the response is an error:
 }
 ```
 
-Wheter or not if there's a CVM error, the HTTP status will be 200 indicating that the Query was executed.
+Whether or not there's a CVM error, the HTTP status will be 200 indicating that the Query was executed.
 
 ### Error cases
 
@@ -156,7 +156,7 @@ The user is expected to follow up the Prepare with a Submit including the valid 
 ### Payload
 - `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1" - the Transaction will be constructed using this Address.
 - `source`: Convex Lisp source that you want to execute.
-- (Optional) `sequence`: The sequence number used to create the Transaction. If not provided, the server will attempet to determine the correct sequence number. 
+- (Optional) `sequence`: The sequence number used to create the Transaction. If not provided, the server will attempt to determine the correct sequence number.
 
 Examples:
 ```json

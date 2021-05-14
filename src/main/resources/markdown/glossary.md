@@ -3,7 +3,7 @@
 An Account is a record of identification and ownership within Convex. Accounts may be either:
 
 * **User Accounts**: Accounts that are controlled by external users, where access is controlled by digital signatures on transactions.
-* **Actor Accounts**: Accounts that are managed by an autonomous Actor, where behaviour is 100% deterministic according the the associated CVM code. 
+* **Actor Accounts**: Accounts that are managed by an autonomous Actor, where behavior is 100% deterministic according the associated CVM code.
 
 ## Actor
 
@@ -24,13 +24,13 @@ Technically, the Address of a User Account is an `Ed25519` Public Key. You must 
 
 ## Belief
 
-A Belief is a specialised data structure containing a Peer's combined view of what other Peers are communicating with respected to the Consensus Algorithm.
+A Belief is a specialized data structure containing a Peer's combined view of what other Peers are communicating with respected to the Consensus Algorithm.
 
 ## Belief Merge Function
 
-A specialised function that can be used to merge beliefs from different Peers.
+A specialized function that can be used to merge beliefs from different Peers.
 
-Each Peer runs a Belief Merge function as part of the Consensus Algorithm. 
+Each Peer runs a Belief Merge function as part of the Consensus Algorithm.
 
 ## Blob
 
@@ -38,15 +38,15 @@ A Data Object representing an arbitrary sequence of bytes.
 
 ## Block
 
-A Block in Convex is collection of transactions submitted simultaneously by a Peer.
+A Block in Convex is a collection of transactions submitted simultaneously by a Peer.
 
-Unlike Blockchains, a Block in Convex does *not* contain a hash of the previous block. 
+Unlike Blockchains, a Block in Convex does *not* contain a hash of the previous block.
 
 A Block must be digitally signed by the proposing Peer to be valid for inclusion in consensus.
 
 ## Blockchain
 
-A system that maintains an appendable sequence of Blocks where each block contains a cryptographic hash of the previous block (and hence its integrity can be validated recurively all the way back to the original block).
+A system that maintains an appendable sequence of Blocks where each block contains a cryptographic hash of the previous block (and hence its integrity can be validated recursively all the way back to the original block).
 
 Technically, Convex is not a blockchain because Blocks are not required to contain a hash of any previous Block. This gives Convex a technical advantage because Blocks can therefore be handled in parallel and re-ordered by the higher level Consensus Algorithm after creation.
 
@@ -60,7 +60,7 @@ In the context of Convex, the Consensus Algorithm is the specific algorithm used
 
 The greatest position in the Ordering of Blocks produced by the Consensus Algorithm which has been confirmed as being in Consensus. Each Peer maintains it's own view of the Consensus Point based on observed consensus proposals from other Peers.
 
-The Consensus Point cannot be rolled back according to the rules of the Protocol (any attempt to do so would therefore constitute a Fork). However some Peers may advance their Consensus Point slightly before others.
+The Consensus Point cannot be rolled back according to the rules of the Protocol (any attempt to do so would therefore constitute a Fork). However, some Peers may advance their Consensus Point slightly before others.
 
 Users transacting on the Convex network should use the Consensus Point of a trusted Peer to confirm that their transactions have been successfully executed on the Convex Network.
 
@@ -72,7 +72,7 @@ A network of Peers, maintaining a consistent global state and executing state tr
 
 A programming language based on Lisp, that is available by default as part of the CVM.
 
-All programming languages represent trade-offs. Convex Lisp prioritises features that are believed to be well suited to the development of decentralised economic systems. This includes:
+All programming languages represent trade-offs. Convex Lisp prioritizes features that are believed to be well suited to the development of decentralized economic systems. This includes:
 
 * Emphasis on functional programming to reduce error and improve logical clarity
 * Use of immutable data structures
@@ -82,7 +82,7 @@ All programming languages represent trade-offs. Convex Lisp prioritises features
 
 Acronym for Conflict-free Replicated Data Type, a data structure that can be replicated across many computers in a network and is guaranteed (mathematically) to reach eventual consistency.
 
-The Consensus Algorithm makes use of what is effectively a CRDT (of Beliefs) to guarantee convergence on a single consensus. 
+The Consensus Algorithm makes use of what is effectively a CRDT (of Beliefs) to guarantee convergence on a single consensus.
 
 ## CVM
 
@@ -96,7 +96,7 @@ Different languages may be compiled to CVM code.
 
 ## Data Object
 
-A Convex Data Object is a first-class unit of information in the decentralised Convex system.
+A Convex Data Object is a first-class unit of information in the decentralized Convex system.
 
 Data Objects include:
 
@@ -109,16 +109,16 @@ Data Objects may be processed by code within the CVM, and are the fundamental bu
 
 ## Dapp
 
-A Dapp is a decentralised application.
+A Dapp is a decentralized application.
 
 We can distinguish between two forms of Dapp:
 
-- **Pure Dapp** - the Dapp consists only of client code and on-chain implementation (i.e. the Dapp depends on the Convex network and nothing else). Such Dapps are simple to build and maintain, and minimise the risk of relying on centralised systems
+- **Pure Dapp** - the Dapp consists only of client code and on-chain implementation (i.e. the Dapp depends on the Convex network and nothing else). Such Dapps are simple to build and maintain, and minimize the risk of relying on centralized systems
 - **Hybrid Dapp** - the Dapp uses client code, on-chain-implementation and one or more off-chain servers. This is more complex to build and maintain, but is necessary if additional servers are required (e.g. to store private information, or to integrate with external systems)
 
 ## Digital Signature
 
-A cryptographic technique where a piece of data 
+A cryptographic technique where a piece of data
 
 Technically, digital signatures in Convex use the Ed25519 algorithm. The data that is signed is the Object ID of a CVM Data Object (which in turn is the SHA3-256 hash of the Encoding)
 
@@ -128,23 +128,23 @@ Every CVM Data Object has an Encoding, which is a representation of the Object a
 
 Encodings are designed to be:
 
-- Small in size (to minimise storage and network bandwidth requirements)
-- Efficient for serialisation and deserialisation
+- Small in size (to minimize storage and network bandwidth requirements)
+- Efficient for serialization and deserialization
 - Canonical (i.e. any Data Object has one and only one valid Encoding)
 
 The maximum Encoding size is 8191 byes. Larger Data Objects are broken down into multiple Cells which each have their individual Encoding - however this is handled automatically by Convex and not usually a relevant concern for users or developers.
 
 ## Environment
 
-An Environment on the CVM is a mapping from Symbols to defined values. 
+An Environment on the CVM is a mapping from Symbols to defined values.
 
-The Convex environment is should be familiar to those who study the formal semantics of programming languages. It is implemented as a functional, immutable map, where new definitions result in the creation and usage of a new Environment.
+The Convex environment should be familiar to those who study the formal semantics of programming languages. It is implemented as a functional, immutable map, where new definitions result in the creation and usage of a new Environment.
 
-Each Account receives it's own independent Environment for programmatic usage. If the Account is an Actor, exported definitions in the environment define the behaviour of the Actor.
+Each Account receives it's own independent Environment for programmatic usage. If the Account is an Actor, exported definitions in the environment define the behavior of the Actor.
 
 ## Etch
 
-Etch is the underlying Convex storage subsystem - "A database for informtion that needs to be carved in stone".
+Etch is the underlying Convex storage subsystem - "A database for information that needs to be carved in stone".
 
 Etch implements Converge Immutable Storage for Data Objects.
 
@@ -158,11 +158,11 @@ Convex is designed to prevent forks. In the unlikely event of a fork created by 
 
 ## Function
 
-A Function is a Data Object that represents a first-class function on the CVM. 
+A Function is a Data Object that represents a first-class function on the CVM.
 
-Functions may be passed as arguments to other functions, and invoked with arbitrary arguments. They may be anonymous, or given an name within an Environment. They may also be closures, i.e. capture lexical values from the point of creation.
+Functions may be passed as arguments to other functions, and invoked with arbitrary arguments. They may be anonymous, or given a name within an Environment. They may also be closures, i.e. capture lexical values from the point of creation.
 
-Functions can support multiple arities on the CVM (e.g. `+`, although many functions only support a specific arity.
+Functions can support multiple arities on the CVM (e.g. `+`, although many functions only support a specific arity.)
 
 ## Identicon
 
@@ -176,13 +176,13 @@ Memory in Convex is the amount of on-chain storage allocated as part of the Glob
 
 Memory Accounting is the process by which changes in Memory usage are attributed and charged to Users.
 
-This is a necessary feature of Convex to create the right incentives to utilise on-chain memory efficiently. Without a system of Memory Accounting, there would a be a risk of careless usage of Memory leading to ever-increasing size of the Global State (sometimes termed the "state growth problem" in Blockchains).
+This is a necessary feature of Convex to create the right incentives to utilize on-chain memory efficiently. Without a system of Memory Accounting, there would be a risk of careless usage of Memory leading to ever-increasing size of the Global State (sometimes termed the "state growth problem" in Blockchains).
 
 ## On-chain
 
 Data or code is considered to be "on-chain" if it is part of the current consensus state of the CVM.
 
-On-chain data is the *only* information that is visible to to the CVM. It can be accessed and used by Actors, e.g. as part of the management of smart contracts and digital assets.
+On-chain data is the *only* information that is visible to the CVM. It can be accessed and used by Actors, e.g. as part of the management of smart contracts and digital assets.
 
 As a general principle, on-chain data should be kept to the *absolute minimum necessary*. This is because:
 
@@ -197,15 +197,15 @@ In normal use of the Convex system, the Ordering will be confirmed up to a certa
 
 ## Peer
 
-A Peer is a system that participates in the operation of the decentralised Convex Network.
+A Peer is a system that participates in the operation of the decentralized Convex Network.
 
 Peers are required to use a private key (corresponding to the Peer's Account) to sign certain messages. Because of this, a Peer's Stake may be at risk if the system is not adequately secured.
 
 ## Private Key
 
-A cryptographic key that can be used to digitally sign transactions. 
+A cryptographic key that can be used to digitally sign transactions.
 
-Private Keys must be kept secure in order to prevent unauthorised access to Accounts and Digital Assets controlled by that Account.
+Private Keys must be kept secure in order to prevent unauthorized access to Accounts and Digital Assets controlled by that Account.
 
 ## Public Key
 
@@ -217,17 +217,17 @@ Public Keys may be safely shared with others, as they do not allow digital signa
 
 The Schedule is a feature in the CVM enabling CVM code to be scheduled for future execution. Once included in the Schedule, such code is *unstoppable* - it's execution is guaranteed by the protocol.
 
-Scheduled code may be used to implement actors that take periodic actions, smart contracts that have defined behaviour after a certain period of time etc.
+Scheduled code may be used to implement actors that take periodic actions, smart contracts that have defined behavior after a certain period of time etc.
 
 ## Smart Contract
 
 A Smart Contract is a self-executing economic contract with the terms of the agreement written into lines of code that are executed deterministically on the CVM. Buyer and sellers can predict exactly how the Smart Contract will behave, and can therefore trust it to enforce contract terms and conditions effectively.
 
-Typically a Smart Contract would be implemented using an Actor, but it is possible for a single Actor to manage many smart contracts, and likewise for a single Smart Contract to be executed across multiple Actors. It may be helpful to think of Smart Contracts as secure economic constructs, and Actors as an lower level implementation mechanism.
+Typically a Smart Contract would be implemented using an Actor, but it is possible for a single Actor to manage many smart contracts, and likewise for a single Smart Contract to be executed across multiple Actors. It may be helpful to think of Smart Contracts as secure economic constructs, and Actors as a lower level implementation mechanism.
 
 ## Stake
 
-A Stake is an asset with economic value put at risk by some entity in order to prove commitment to its participation in some economic transaction and / or good future behaviour.
+A Stake is an asset with economic value put at risk by some entity in order to prove commitment to its participation in some economic transaction and / or good future behavior.
 
 Convex uses a mechanism called Delegated Proof of Stake to admit Peers for participation in the Consensus algorithm. Other forms of stakes may be used in Smart Contracts.
 
@@ -237,8 +237,8 @@ Convex uses Stakes to determine the voting weight of each Peer in the Consensus 
 
 Benefits for a Peer having a higher effective voting stake are:
 
-* Slightly more influence over which Blocks get ordered first, if two blocks are simultaneously submitted for consensus 
-* They may also benefit from slightly improved overall latency for Blocks that they submit. 
+* Slightly more influence over which Blocks get ordered first, if two blocks are simultaneously submitted for consensus
+* They may also benefit from slightly improved overall latency for Blocks that they submit.
 
 While good Peers are expected to be content neutral, they may legitimately wish to offer better QoS to their partners or customers, and having a higher voting stake can help them to achieve this.
 
@@ -255,7 +255,7 @@ Where there is a risk of ambiguity, State may be termed "CVM State" or "Global S
 
 The State Transition Function is the function that updates the State in response to new Blocks of Transactions after they are confirmed by the Consensus algorithm.
 
-Formally this might be recursively specified as 
+Formally this might be recursively specified as
 
 ```
 S[n+1] = f(S[n],B[n])
@@ -269,9 +269,9 @@ where:
 
 ## Transaction
 
-An Transaction is an indivisible operation that can be executed on the Convex Network. A Transaction must be linked to a User Account, and must be signed by the corresponding Private Key in order to be valid.
+A Transaction is an indivisible operation that can be executed on the Convex Network. A Transaction must be linked to a User Account, and must be signed by the corresponding Private Key in order to be valid.
 
-Transactions must be digitally signed by the owner of the Account in order to be valid. 
+Transactions must be digitally signed by the owner of the Account in order to be valid.
 
 ## Wallet
 
