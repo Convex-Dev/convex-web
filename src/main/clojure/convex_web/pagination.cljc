@@ -44,7 +44,7 @@
 
    Example:
 
-   (page-num2 50 10)
+   (page-num 50 10)
    ;; => 5"
   [offset n]
   (max 1 #?(:clj  (int (Math/ceil (/ offset n)))

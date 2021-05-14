@@ -54,8 +54,8 @@
          (reverse))))
 
 (s/fdef flatten-transactions
-        :args (s/cat :blocks :convex-web/blocks)
-        :ret (s/merge :convex-web/block :convex-web/signed-data))
+  :args (s/cat :blocks :convex-web/blocks)
+  :ret (s/merge :convex-web/block :convex-web/signed-data))
 
 
 (defn CodePage [_ {:keys [source]} _]
