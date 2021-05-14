@@ -673,7 +673,7 @@
      ;; -- Pagination
      [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
-                    :page-num (pagination/page-num2 end config/default-range)
+                    :page-num (pagination/page-num end config/default-range)
 
                     :first-label "First"
                     :first-href (rfe/href :route-name/accounts-explorer)
@@ -907,7 +907,7 @@
 
      [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
-                    :page-num (pagination/page-num start total)
+                    :page-num (pagination/page-num-reverse start total)
                     :first-href (rfe/href :route-name/blocks)
                     :last-href (rfe/href :route-name/blocks {} pagination/min-range)
                     :previous-href (rfe/href :route-name/blocks {} previous-query)
@@ -969,7 +969,7 @@
                       next-range)]
      [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
-                    :page-num (pagination/page-num start total)
+                    :page-num (pagination/page-num-reverse start total)
                     :first-href (rfe/href :route-name/transactions)
                     :last-href (rfe/href :route-name/transactions {} pagination/min-range)
                     :previous-href (rfe/href :route-name/transactions {} previous-query)

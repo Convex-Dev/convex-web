@@ -32,12 +32,12 @@
   [num-of-items]
   (max 1 (quot (+ num-of-items (dec config/default-range)) config/default-range)))
 
-(defn page-num
+(defn page-num-reverse
   "Returns the page number for `offset`."
   [offset num-of-items]
   (inc (quot (- (dec num-of-items) offset) convex-web.config/default-range)))
 
-(defn page-num2
+(defn page-num
   "Returns the page number for `offset`.
 
    `n` is the number of items per page.
