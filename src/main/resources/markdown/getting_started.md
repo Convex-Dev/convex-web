@@ -1,6 +1,6 @@
 This page provides a quick guided tour of Convex. We'll take you through everything from creating your first Account to launching your very own digital token!
 
-You don't need any particular programming langauge experience to follow this guide, but if you want to follow using the Sandbox you will need to *precisely* enter some commands in Convex Lisp. If you want to learn more about Convex Lisp as a programming language, check out the [Convex Lisp Tutorial](https://convex.world/#/documentation/convex-lisp).
+You don't need any particular programming language experience to follow this guide, but if you want to follow using the Sandbox you will need to *precisely* enter some commands in Convex Lisp. If you want to learn more about Convex Lisp as a programming language, check out the [Convex Lisp Tutorial](https://convex.world/#/documentation/convex-lisp).
 
 ## Making an Account
 
@@ -92,33 +92,33 @@ If you try to transfer a particularly large amount, you will get an error saying
 
 ## The Environment
 
-As well as a coin balance, every Account has its own **Enviornment**. This is a magical space that the Account controls that can be used to store information. It's best to illustrate whis with an example:
+As well as a coin balance, every Account has its own **Environment**. This is a magical space that the Account controls that can be used to store information. It's best to illustrate this with an example:
 
 ```clojure
-(def favourite-number 101)
+(def favorite-number 101)
 => 101
 ```
 
-The `def` command creates a **Definition** in the environment names with the Symbol `favourite-number`. Once created, this definition stays in the Environment forever (unless you remove it or change it). 
+The `def` command creates a **Definition** in the environment names with the Symbol `favorite-number`. Once created, this definition stays in the Environment forever (unless you remove it or change it). 
 
 Once you have a value defined in the environment, you can use it freely in future commands. For example, if you just want to see what value the definition has you can just type in the symbol itself:
 
 ```clojure
-favourite-number
+favorite-number
 => 101
 ```
 
 Or if you want to use your defined values in other calculations or commands:
 
 ```clojure
-(* favourite-number 1000)
+(* favorite-number 1000)
 => 101000
 ```
 
 If you want to delete a definition, you can use `undef`
 
 ```clojure
-(undef favourite-number)
+(undef favorite-number)
 => nil
 ```
 
@@ -145,7 +145,7 @@ Here's a simple TODO list application:
   :OK)
 ```
 
-Using the application is easyL
+Using the application is easy
 
 ```
 ;; Check current TODOs
@@ -195,7 +195,7 @@ The simplest Actor you can build is an empty Actor:
 => 0x5d53469f20Fef4f8EAB52B88044EDE69C77A6A68a60728609Fc4a65Ff531E7D0
 ```
 
-This Actor does nothing. It contains no useful information. It has no exported functions, and therefore can never do anything. This is useless, but reassuring! Security is all about the confidence of knowing what harmful things *can't* be be done.
+This Actor does nothing. It contains no useful information. It has no exported functions, and therefore can never do anything. This is useless, but reassuring! Security is all about the confidence of knowing what harmful things *can't* be done.
 
 Although not useful, this empty Actor still exists on the Convex Network. You can confirm it is an Actor, and inspect its balance for example:
 
@@ -282,7 +282,7 @@ You can deploy a new Fungible token in one line!
 
 This will create and deploy a new Actor which represents your token, and `my-token` is set to hold the Address of the new Actor.
 
-The `:supply` configuration parameter determines how may tokens will exist. Initially, the Aoount that deployed the token (i.e. your User Account) will control all the tokens.
+The `:supply` configuration parameter determines how may tokens will exist. Initially, the Account that deployed the token (i.e. your User Account) will control all the tokens.
 
 ### Using tokens
 
@@ -313,7 +313,7 @@ Now you should be able to observe that your own token balance has been reduced:
 => 900
 ```
 
-And you can also see that the recipint is not the proud owner of 100 tokens:
+And you can also see that the recipient is not the proud owner of 100 tokens:
 
 ```clojure
 (fungible/balance my-token 0xb18a010f0DbA07091A2F521f9593F232115013082c48b43AF5CFB5AE8f26b72e)
@@ -333,7 +333,7 @@ We're excited to see what people are able to build using Convex! But most import
 
 - [Convex Discord](https://discord.gg/fsnCxEM) 
 
-And also please check out the Convex-Dev discord if you would like to get involved with the open source development and bounty programme!
+And also please check out the Convex-Dev discord if you would like to get involved with the open source development and bounty program!
 
 - [Convex-Dev GitHub](https://github.com/orgs/Convex-Dev)
 
