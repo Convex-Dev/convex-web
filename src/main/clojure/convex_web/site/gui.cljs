@@ -1016,8 +1016,11 @@
                         {:text s
                          :color "gray"}
                         [Highlight
-                         (zprint/zprint-str source {:parse-string-all? true
-                                                    :width 60})
+                         (try
+                           (zprint/zprint-str source {:parse-string-all? true
+                                                      :width 60})
+                           (catch js/Error _
+                             source))
 
                          {:language :convex-lisp}]]]))
               (sort-by first environment)))
