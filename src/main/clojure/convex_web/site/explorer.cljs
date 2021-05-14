@@ -104,7 +104,7 @@
       [:div.flex.flex-col.space-y-2
        [gui/CaptionMono "Signer"]
 
-       [:div.flex.items-center.w-40
+       [:div.flex.items-center
         [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
         [:a.flex-1.truncate
