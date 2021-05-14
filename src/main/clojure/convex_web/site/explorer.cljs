@@ -9,6 +9,7 @@
             [convex-web.site.markdown :as markdown]
             [convex-web.site.session :as session]
             [convex-web.glossary :as glossary]
+            [convex-web.config :as config]
 
             [clojure.string :as str]
             [cljs.spec.alpha :as s]
@@ -665,29 +666,36 @@
 ;; -- Accounts Range
 
 (defn AccountsRangePage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/accounts meta]} set-state]
-  (let [{:keys [start end total] :as range} meta
+  (let [{:keys [start end total] :as range} meta]
 
-        {start-previous-range :start end-previous-range :end :as previous-range} (pagination/increase-range end total)
-
-        previous-query (if (= start-previous-range end-previous-range)
-                         {}
-                         previous-range)
-
-        {start-next-range :start end-next-range :end :as next-range} (pagination/decrease-range start)
-
-        next-query (if (= start-next-range end-next-range)
-                     pagination/min-range
-                     next-range)]
     [:div.flex.flex-col.flex-1.space-y-2
 
      ;; -- Pagination
      [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
-                    :page-num (pagination/page-num start total)
+                    :page-num (pagination/page-num end config/default-range)
+
+                    :first-label "First"
                     :first-href (rfe/href :route-name/accounts-explorer)
-                    :last-href (rfe/href :route-name/accounts-explorer {} pagination/min-range)
-                    :previous-href (rfe/href :route-name/accounts-explorer {} previous-query)
-                    :next-href (rfe/href :route-name/accounts-explorer {} next-query)
+
+                    :previous-href (rfe/href :route-name/accounts-explorer {} (let [start' (max 0 (- start config/default-range))]
+                                                                                {:start start'
+                                                                                 :end (if (< (- start start') config/default-range)
+                                                                                        (min total config/default-range)
+                                                                                        start)}))
+
+                    :next-href (rfe/href :route-name/accounts-explorer {} (let [end' (min total (+ end config/default-range))
+
+                                                                                start (if (< (- end' end) config/default-range)
+                                                                                        (- end' config/default-range)
+                                                                                        end)]
+                                                                            {:start start
+                                                                             :end (min total (+ end config/default-range))}))
+
+                    :last-label "Last"
+                    :last-href (rfe/href :route-name/accounts-explorer {} {:start (max 0 (- total config/default-range))
+                                                                           :end total})
+
                     :ajax/status status})]
 
      ;; -- Body
@@ -696,7 +704,7 @@
        [:div.flex.flex-1.justify-center.items-center
         [gui/Spinner]]
 
-       [AccountsTable (sort-by :convex-web.account/address #(compare %2 %1) accounts) {:modal? modal?}])]))
+       [AccountsTable (sort-by :convex-web.account/address #(compare %1 %2) accounts) {:modal? modal?}])]))
 
 (def accounts-range-page
   #:page {:id :page.id/accounts-range-explorer
@@ -899,7 +907,7 @@
 
      [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
-                    :page-num (pagination/page-num start total)
+                    :page-num (pagination/page-num-reverse start total)
                     :first-href (rfe/href :route-name/blocks)
                     :last-href (rfe/href :route-name/blocks {} pagination/min-range)
                     :previous-href (rfe/href :route-name/blocks {} previous-query)
@@ -961,7 +969,7 @@
                       next-range)]
      [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
-                    :page-num (pagination/page-num start total)
+                    :page-num (pagination/page-num-reverse start total)
                     :first-href (rfe/href :route-name/transactions)
                     :last-href (rfe/href :route-name/transactions {} pagination/min-range)
                     :previous-href (rfe/href :route-name/transactions {} previous-query)

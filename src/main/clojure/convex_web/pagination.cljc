@@ -32,7 +32,20 @@
   [num-of-items]
   (max 1 (quot (+ num-of-items (dec config/default-range)) config/default-range)))
 
-(defn page-num
+(defn page-num-reverse
   "Returns the page number for `offset`."
   [offset num-of-items]
   (inc (quot (- (dec num-of-items) offset) convex-web.config/default-range)))
+
+(defn page-num
+  "Returns the page number for `offset`.
+
+   `n` is the number of items per page.
+
+   Example:
+
+   (page-num 50 10)
+   ;; => 5"
+  [offset n]
+  (max 1 #?(:clj  (int (Math/ceil (/ offset n)))
+            :cljs (js/Math.ceil (/ offset n)))))

@@ -22,10 +22,23 @@
   (is (= 2 (pagination/page-count 30)))
   (is (= 3 (pagination/page-count 35))))
 
+(deftest page-num-reverse-test
+  (is (= 1 (pagination/page-num-reverse 35 35)))
+  (is (= 1 (pagination/page-num-reverse 30 35)))
+  (is (= 1 (pagination/page-num-reverse 20 35)))
+  (is (= 2 (pagination/page-num-reverse 5 35)))
+  (is (= 3 (pagination/page-num-reverse 4 35)))
+  (is (= 3 (pagination/page-num-reverse 0 35))))
+
 (deftest page-num-test
-  (is (= 1 (pagination/page-num 35 35)))
-  (is (= 1 (pagination/page-num 30 35)))
-  (is (= 1 (pagination/page-num 20 35)))
-  (is (= 2 (pagination/page-num 5 35)))
-  (is (= 3 (pagination/page-num 4 35)))
-  (is (= 3 (pagination/page-num 0 35))))
+  (let [n 10]
+    (is (= 1 (pagination/page-num -100 n)))
+    (is (= 1 (pagination/page-num -1 n)))
+    (is (= 1 (pagination/page-num 0 n)))
+    (is (= 1 (pagination/page-num 1 n)))
+    (is (= 1 (pagination/page-num 9 n)))
+    (is (= 1 (pagination/page-num 10 n)))
+    (is (= 2 (pagination/page-num 11 n)))
+    (is (= 2 (pagination/page-num 20 n)))
+    (is (= 3 (pagination/page-num 21 n)))
+    (is (= 3 (pagination/page-num 30 n)))))
