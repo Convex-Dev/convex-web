@@ -8,7 +8,7 @@ We would love to hear your thoughts and feedback about Convex!
 
 ## Open Source Developers
 
-All Convex code will be available as Open Source on GitHub under the Convex-Dev organization, managed by the Convex Foundation.
+All Convex code will be available as Open Source on GitHub under the Convex-Dev organisation, managed by the Convex Foundation.
 
 - [Convex-Dev GitHub](https://github.com/orgs/Convex-Dev)
 

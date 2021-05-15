@@ -2,7 +2,7 @@
 
 ### Storage Example
 
-Define your contract initialization function:
+Define your contract initialisation function:
 
 ```clojure
 (defn storage-example-init []

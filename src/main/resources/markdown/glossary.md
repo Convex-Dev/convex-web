@@ -24,11 +24,11 @@ Technically, the Address of a User Account is an `Ed25519` Public Key. You must 
 
 ## Belief
 
-A Belief is a specialized data structure containing a Peer's combined view of what other Peers are communicating with respected to the Consensus Algorithm.
+A Belief is a specialised data structure containing a Peer's combined view of what other Peers are communicating with respected to the Consensus Algorithm.
 
 ## Belief Merge Function
 
-A specialized function that can be used to merge beliefs from different Peers.
+A specialised function that can be used to merge beliefs from different Peers.
 
 Each Peer runs a Belief Merge function as part of the Consensus Algorithm.
 
@@ -72,7 +72,7 @@ A network of Peers, maintaining a consistent global state and executing state tr
 
 A programming language based on Lisp, that is available by default as part of the CVM.
 
-All programming languages represent trade-offs. Convex Lisp prioritizes features that are believed to be well suited to the development of decentralized economic systems. This includes:
+All programming languages represent trade-offs. Convex Lisp prioritises features that are believed to be well suited to the development of decentralised economic systems. This includes:
 
 * Emphasis on functional programming to reduce error and improve logical clarity
 * Use of immutable data structures
@@ -96,7 +96,7 @@ Different languages may be compiled to CVM code.
 
 ## Data Object
 
-A Convex Data Object is a first-class unit of information in the decentralized Convex system.
+A Convex Data Object is a first-class unit of information in the decentralised Convex system.
 
 Data Objects include:
 
@@ -109,11 +109,11 @@ Data Objects may be processed by code within the CVM, and are the fundamental bu
 
 ## Dapp
 
-A Dapp is a decentralized application.
+A Dapp is a decentralised application.
 
 We can distinguish between two forms of Dapp:
 
-- **Pure Dapp** - the Dapp consists only of client code and on-chain implementation (i.e. the Dapp depends on the Convex network and nothing else). Such Dapps are simple to build and maintain, and minimize the risk of relying on centralized systems
+- **Pure Dapp** - the Dapp consists only of client code and on-chain implementation (i.e. the Dapp depends on the Convex network and nothing else). Such Dapps are simple to build and maintain, and minimise the risk of relying on centralised systems
 - **Hybrid Dapp** - the Dapp uses client code, on-chain-implementation and one or more off-chain servers. This is more complex to build and maintain, but is necessary if additional servers are required (e.g. to store private information, or to integrate with external systems)
 
 ## Digital Signature
@@ -128,8 +128,8 @@ Every CVM Data Object has an Encoding, which is a representation of the Object a
 
 Encodings are designed to be:
 
-- Small in size (to minimize storage and network bandwidth requirements)
-- Efficient for serialization and deserialization
+- Small in size (to minimise storage and network bandwidth requirements)
+- Efficient for serialisation and deserialisation
 - Canonical (i.e. any Data Object has one and only one valid Encoding)
 
 The maximum Encoding size is 8191 byes. Larger Data Objects are broken down into multiple Cells which each have their individual Encoding - however this is handled automatically by Convex and not usually a relevant concern for users or developers.
@@ -176,7 +176,7 @@ Memory in Convex is the amount of on-chain storage allocated as part of the Glob
 
 Memory Accounting is the process by which changes in Memory usage are attributed and charged to Users.
 
-This is a necessary feature of Convex to create the right incentives to utilize on-chain memory efficiently. Without a system of Memory Accounting, there would be a risk of careless usage of Memory leading to ever-increasing size of the Global State (sometimes termed the "state growth problem" in Blockchains).
+This is a necessary feature of Convex to create the right incentives to utilise on-chain memory efficiently. Without a system of Memory Accounting, there would be a risk of careless usage of Memory leading to ever-increasing size of the Global State (sometimes termed the "state growth problem" in Blockchains).
 
 ## On-chain
 
@@ -197,7 +197,7 @@ In normal use of the Convex system, the Ordering will be confirmed up to a certa
 
 ## Peer
 
-A Peer is a system that participates in the operation of the decentralized Convex Network.
+A Peer is a system that participates in the operation of the decentralised Convex Network.
 
 Peers are required to use a private key (corresponding to the Peer's Account) to sign certain messages. Because of this, a Peer's Stake may be at risk if the system is not adequately secured.
 
@@ -205,7 +205,7 @@ Peers are required to use a private key (corresponding to the Peer's Account) to
 
 A cryptographic key that can be used to digitally sign transactions.
 
-Private Keys must be kept secure in order to prevent unauthorized access to Accounts and Digital Assets controlled by that Account.
+Private Keys must be kept secure in order to prevent unauthorised access to Accounts and Digital Assets controlled by that Account.
 
 ## Public Key
 
