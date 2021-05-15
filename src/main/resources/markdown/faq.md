@@ -24,7 +24,7 @@ But it's important to note that performance and scalability is not just about ra
 - High execution throughput (e.g. 10,000+ token-based smart contract transactions per second)
 - Advanced features (smart contracts, memory accounting, an on-chain compiler, autonomous Actors)
 - A unified global state machine supporting atomic transactions
-- True decentralization as a public utility network (with Convergent Proof of Stake)
+- True decentralisation as a public utility network (with Convergent Proof of Stake)
 - Ability to operate a Peer with affordable hardware
 
 We achieve all this *without* resorting to over-complicated scaling solutions that introduce various new problems (e.g. cross-shard transactions). We can always add additional scaling features later, but it may not even be necessary.
@@ -34,7 +34,7 @@ We achieve all this *without* resorting to over-complicated scaling solutions th
 
 Convex provides a number of mechanisms for integration.
 
-For most decentralized apps, it is easy to build a client-side application which makes use of the **Client API**. This is a convenient REST API using JSON that is ideal for web and mobile applications developers.
+For most decentralised apps, it is easy to build a client-side application which makes use of the **Client API**. This is a convenient REST API using JSON that is ideal for web and mobile applications developers.
 
 Advanced applications can use the **Binary API** and construct messages directly to communicate with Peers. This is currently only possible for JVM-based languages (Java, Clojure, Scala etc.), but more may be supported in the future.
 
@@ -43,7 +43,7 @@ Integrators can also use **Direct Peer Integration** where they run a fully oper
 
 ## What should go on-chain?
 
-You often have a choice between putting code and information on the public Convex network or keeping it on a separate server when building a decentralized application. Some applications might do both: we call these "hybrid" dApps.
+You often have a choice between putting code and information on the public Convex network or keeping it on a separate server when building a decentralised application. Some applications might do both: we call these "hybrid" dApps.
 
 Some general principles:
 
@@ -62,9 +62,9 @@ We think of Convex as "Beyond Blockchain".
 
 Convex shares many common attributes with traditional public blockchains:
 
-- A decentralized consensus network
+- A decentralised consensus network
 - Security from malicious actors with cryptographic techniques
-- Decentralized ownership of accounts, including the ability to control digital assets and currencies
+- Decentralised ownership of accounts, including the ability to control digital assets and currencies
 - Ability to deploy and execute secure smart contract code
 - Transactions are grouped into Blocks
 
@@ -99,7 +99,7 @@ Memory Accounting is the system in Convex used to track the usage of on-chain me
 
 If a user executes a transaction that releases memory, the amount of released memory is credited back to the user's allowance. This creates a good incentive to "clean up after yourself". Actors and smart contracts should also be designed with the option to clean up memory after it is no longer required.
 
-We need Memory Accounting because on-chain memory is a **scarce resource**, and should be used wisely. An effective way of doing this is to make memory allowances themselves into a digital asset, that can be transferred and traded. This creates a market incentive to utilize memory as efficiently as possible.
+We need Memory Accounting because on-chain memory is a **scarce resource**, and should be used wisely. An effective way of doing this is to make memory allowances themselves into a digital asset, that can be transferred and traded. This creates a market incentive to utilise memory as efficiently as possible.
 
 
 ## What is the difference between Actors and Smart Contracts?
@@ -117,14 +117,14 @@ We are targeting Main Network Launch (Convex One) in the second half of 2021.
 
 An important caveat: getting it right is more important than rushing a release. We won't launch until we are 100% sure it is ready for production use and fully secure with real-world value at stake.
 
-People will depend on Convex to be a secure, reliable platform for decentralized applications and digital assets. It is not acceptable to expose them to security risks from flaws in the platform, nor is it acceptable to make breaking changes to the CVM that could cause significant problems with smart contracts.
+People will depend on Convex to be a secure, reliable platform for decentralised applications and digital assets. It is not acceptable to expose them to security risks from flaws in the platform, nor is it acceptable to make breaking changes to the CVM that could cause significant problems with smart contracts.
 
 
 ## Can I buy Convex as a cryptocurrency?
 
 Not yet, but soon!
 
-We are establishing the Convex Foundation a non-profit organization which will facilitate the initial sale of Convex native coins in the near future. Initially, this will be only to institutional investors. Funds raised will be invested in building Convex and the ecosystem.
+We are establishing the Convex Foundation a non-profit organisation which will facilitate the initial sale of Convex native coins in the near future. Initially, this will be only to institutional investors. Funds raised will be invested in building Convex and the ecosystem.
 
 
 ## Who is building Convex?
