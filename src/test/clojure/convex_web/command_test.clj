@@ -186,4 +186,8 @@
            (c/result-metadata (convex/execute context def) {:source "def" :lang :convex-lisp})))))
 
 
-
+(comment
+  (require 'convex-web.command-test)
+  (in-ns 'convex-web.command-test)
+  
+  (run-tests))

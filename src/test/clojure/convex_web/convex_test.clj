@@ -158,4 +158,8 @@
       (is (= nil (convex/value-kind (convex/execute-string context "abc")))))))
 
 
-
+(comment
+  (require 'convex-web.convex-test)
+  (in-ns 'convex-web.convex-test)
+  
+  (run-tests))

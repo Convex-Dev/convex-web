@@ -226,3 +226,9 @@
                                 :convex-web.command/status])))
 
       (is (= #{:address} (set (keys (get body :convex-web.command/object))))))))
+
+(comment
+  (require 'convex-web.internal-api-test)
+  (in-ns 'convex-web.internal-api-test)
+  
+  (run-tests))
