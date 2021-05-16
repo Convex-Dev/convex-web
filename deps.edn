@@ -101,6 +101,9 @@
   {:extra-paths ["src/test/clojure"]
    :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
                 lambdaisland/kaocha {:mvn/version "1.0.829"}}}
+  
+  :repl
+  {:jvm-opts ["-Dclojure.server.repl={:port,5555,:accept,clojure.core.server/repl}"]}
 
   :kaocha
   {:extra-deps {lambdaisland/kaocha {:mvn/version "1.0.829"}}}
