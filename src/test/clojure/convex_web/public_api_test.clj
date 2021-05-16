@@ -159,6 +159,11 @@
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value 1} response-body)))
+    
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "(list 1 2 3)"})
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+      (is (= 200 (get response :status)))
+      (is (= {:value [1 2 3]} response-body)))
 
     (let [response @(client/POST-public-v1-query (server-url) {:address (str "#" (.longValue Init/HERO)) :source "1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]

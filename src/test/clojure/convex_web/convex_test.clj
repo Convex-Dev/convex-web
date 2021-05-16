@@ -64,7 +64,8 @@
       (is (= [] (convex/datafy (convex/execute context [])))))
 
     (testing "Map"
-      (is (= {} (convex/datafy (convex/execute context {})))))
+      (is (= {} (convex/datafy (convex/execute context {}))))
+      (is (= {'(1) '(2)} (convex/datafy (convex/execute context {(list 1) (list 2)})))))
 
     (testing "Set"
       (is (= #{} (convex/datafy (convex/execute context #{})))))
