@@ -562,7 +562,7 @@
    ;; Devtools
    ;; ================
    (when goog.DEBUG
-     [:div.fixed.bottom-0.right-0.flex.items-center.mr-4.mb-4.p-2.shadow-md.rounded.bg-yellow-300.z-50
+     [:div.fixed.bottom-0.left-0.flex.items-center.ml-6.mb-4.p-2.shadow-md.rounded.bg-yellow-300.z-50
 
       [gui/IconAdjustments
        (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))

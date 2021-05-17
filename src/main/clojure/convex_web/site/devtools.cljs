@@ -380,8 +380,8 @@
     [:div
      {:class
       ["flex flex-col"
-       "fixed top-0 bottom-0 right-0 z-50"
-       "mt-4 mr-4 mb-20"
+       "fixed top-0 bottom-0 left-0 z-50"
+       "mt-4 ml-4 mb-20"
        "w-2/5"
        "border rounded shadow-2xl"
        "border-green-500"]}

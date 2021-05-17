@@ -647,7 +647,6 @@
 
 (def sandbox-page
   #:page {:id :page.id/repl
-          ;;:title "Sandbox"
           :description "Use the Sandbox to execute transactions live on the Convex Network."
           :initial-state
           {:convex-web.repl/language :convex-lisp
