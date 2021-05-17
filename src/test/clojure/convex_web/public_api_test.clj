@@ -154,16 +154,24 @@
               :source "Server"} response-body)))))
 
 (deftest query-test
+  (testing "Set"
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "#{1}"})
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+      (is (= 200 (get response :status)))
+      ;; JSON does not have sets, so the encoder uses a vector instead.
+      (is (= {:value [1]} response-body))))
+
+  (testing "List"
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "(list 1 2 3)"})
+          response-body (json/read-str (get response :body) :key-fn keyword)]
+      (is (= 200 (get response :status)))
+      (is (= {:value [1 2 3]} response-body))))
+
   (testing "Valid"
     (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value 1} response-body)))
-    
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "(list 1 2 3)"})
-          response-body (json/read-str (get response :body) :key-fn keyword)]
-      (is (= 200 (get response :status)))
-      (is (= {:value [1 2 3]} response-body)))
 
     (let [response @(client/POST-public-v1-query (server-url) {:address (str "#" (.longValue Init/HERO)) :source "1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
