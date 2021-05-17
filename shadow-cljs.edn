@@ -12,5 +12,10 @@
    :modules {:main {:init-fn convex-web.site.app/init}}
    :output-dir "src/main/resources/public/js"
    :asset-path "/js"
+   
    :devtools
-   {:preloads [re-frisk.preload]}}}}
+   {:preloads [re-frisk.preload]}
+   
+   :compiler-options
+   {:warnings-as-errors 
+    {:ignore #{sci.*}}}}}}
