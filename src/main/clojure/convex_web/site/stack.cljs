@@ -169,7 +169,7 @@
   (disp :stack/!push* frame options))
 
 (defn push
-  "Push Frame to the Stack for Page.
+  "Push Page.
 
    You can pass a Page's ID or the entity itself.
    In case the Page's ID is given, it will be used to find the Page entity,
