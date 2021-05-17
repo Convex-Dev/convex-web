@@ -11,4 +11,6 @@
   {:target :browser
    :modules {:main {:init-fn convex-web.site.app/init}}
    :output-dir "src/main/resources/public/js"
-   :asset-path "/js"}}}
+   :asset-path "/js"
+   :devtools
+   {:preloads [re-frisk.preload]}}}}
