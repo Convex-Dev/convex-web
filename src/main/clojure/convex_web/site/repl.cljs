@@ -345,15 +345,22 @@
 (def output-symbol-metadata-options
   {:show-examples? false})
 
+(defn error-code-string [code]
+  (cond
+    (string? code)
+    code
+
+    (keyword? code)
+    (name code)
+
+    :else
+    (str code)))
+
 (defmulti error-message :code)
 
 (defmethod error-message :default
   [{:keys [code message]}]
-  (let [code (some-> code
-                     (name)
-                     (str/capitalize)
-                     (str ": "))]
-    (str code message)))
+  (str (error-code-string code) ": " message))
 
 (defmethod error-message :STATE
   [{:keys [message]}]
@@ -458,8 +465,10 @@
                       [:span.text-xs.uppercase.text-gray-600
                        (cond
                          error?
-                         (str "Error " (when-let [code (get-in command [:convex-web.command/error :code])]
-                                         (str "(" (name code) ")")))
+                         (let [code (get-in command [:convex-web.command/error :code])]
+                           (apply str (if (keyword? code)
+                                        ["Error " (str "(" (error-code-string code) ")")]
+                                        ["Unrecognised Non-Keyword Error Code"])))
 
                          :else
                          "Result")]
