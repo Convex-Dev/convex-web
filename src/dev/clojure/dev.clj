@@ -21,6 +21,8 @@
             [clojure.tools.logging :as log]
 
             [com.stuartsierra.component.repl :refer [set-init reset system]]
+            [shadow.cljs.devtools.server :as shadow-server]
+            [shadow.cljs.devtools.api :as shadow]
             [kaocha.repl :as kaocha]
             [ring.mock.request :as mock]
             [aero.core :as aero]
@@ -38,6 +40,14 @@
   (fn [_]
     (component/system :dev)))
 
+(defn start-app 
+  "Start Shadow CLJS server and the watch process.
+  
+   You need to start the REPL with the `site-dev` alias."
+  []
+  (shadow-server/start!)
+  (shadow/watch :main))
+
 (def context (Context/createFake Init/STATE Init/HERO))
 
 (defn ^Peer peer []
@@ -54,6 +64,8 @@
 
 
 (comment
+  
+  (start-app)
 
   (kaocha/test-plan)
 
