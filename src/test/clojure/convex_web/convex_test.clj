@@ -22,7 +22,8 @@
                 ex))]
       (is (= "Reader error: Parse error at Position{line=1, column=6}\n Source: <>\n Message: null"
              (ex-message e)))
-      (is (= #:cognitect.anomalies{:category :cognitect.anomalies/incorrect}
+      (is (= {:cognitect.anomalies/category :cognitect.anomalies/incorrect
+              :convex-web.result/error-code :READER}
              (ex-data e)))))
 
   (testing "Address literal"
