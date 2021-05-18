@@ -31,7 +31,8 @@
       :convex-scrypt
       (ScryptNext/readSyntax source))
     (catch Throwable ex
-      (throw (ex-info (str "Reader error: " (ex-message ex)) {::anomalies/category ::anomalies/incorrect})))))
+      (throw (ex-info (str "Reader error: " (ex-message ex)) {::anomalies/category ::anomalies/incorrect
+                                                              :convex-web.result/error-code :READER})))))
 
 (defmacro execute [context form]
   `(let [^String source# ~(pr-str form)

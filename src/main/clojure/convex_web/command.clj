@@ -242,7 +242,10 @@
                      ;; and the Exception's message will be used as its message.
                      #:convex-web.command {:status :convex-web.command.status/error
                                            :error
-                                           {:message (ex-message (or (some-> error stacktrace/root-cause) error))}})
+                                           (merge {:message (ex-message (or (some-> error stacktrace/root-cause) error))}
+                                             ;; If the Reader fails, it will add the error code to the exception data.
+                                             (when-let [code (:convex-web.result/error-code (ex-data error))]
+                                               {:code code}))})
 
           ;; Updated Command.
           command' (merge (select-keys command [:convex-web.command/mode
