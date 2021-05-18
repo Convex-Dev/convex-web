@@ -16,6 +16,9 @@
    :devtools
    {:preloads [re-frisk.preload]}
    
+   :build-hooks
+   [(shadow.cljs.build-report/hook)]
+   
    :compiler-options
    {:warnings-as-errors 
     {:ignore #{sci.*}}}}}}

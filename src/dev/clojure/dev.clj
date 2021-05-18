@@ -65,6 +65,8 @@
 
 (comment
   
+  (reset)
+  
   (start-app)
 
   (kaocha/test-plan)
