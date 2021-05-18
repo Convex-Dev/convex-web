@@ -838,7 +838,9 @@
                                next-href
                                next-disabled?
                                ajax/status]}]
-  (let [action-style "block font-mono text-xs text-gray-800 hover:text-gray-500 hover:underline active:text-gray-900 uppercase"
+
+  (let [href #(when (not= :ajax.status/pending status) {:href %})
+        action-style "block font-mono text-xs text-gray-800 hover:text-gray-500 hover:underline active:text-gray-900 uppercase"
         index-style "block font-mono text-xs text-gray-600 uppercase"]
     [:div.flex.space-x-8
 
@@ -847,24 +849,24 @@
      [:div.flex.items-center.space-x-4.px-2.py-1.border.border-gray-600.rounded
       ;; -- First
       [:a
-       {:href first-href}
+       (href first-href)
        [:span {:class action-style} (or first-label "Latest")]]
 
       ;; -- Previous
       [:a
-       (merge {:href previous-href} (when previous-disabled?
+       (merge (href previous-href) (when previous-disabled?
                                       {:class "pointer-events-none"}))
        [:span {:class action-style} "Previous"]]
 
       ;; -- Next
       [:a
-       (merge {:href next-href} (when next-disabled?
+       (merge (href next-href) (when next-disabled?
                                   {:class "pointer-events-none"}))
        [:span {:class action-style} "Next"]]
 
       ;; -- Last
       [:a
-       {:href last-href}
+       (href last-href)
        [:span {:class action-style} (or last-label "Earliest")]]]
 
      ;; Index
