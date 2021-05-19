@@ -1,4 +1,4 @@
-(ns convex-web.site.headlessui
+(ns convex-web.site.gui.command
   (:require
     [reagent.core :as r]
 

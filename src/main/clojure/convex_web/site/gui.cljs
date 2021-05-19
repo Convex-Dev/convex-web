@@ -2,7 +2,7 @@
   (:require [convex-web.site.format :as format]
             [convex-web.site.backend :as backend]
             [convex-web.site.stack :as stack]
-            [convex-web.site.headlessui :as headlessui]
+            [convex-web.site.gui.command :as command]
 
             [clojure.string :as str]
             [goog.string :as gstring]
@@ -1023,7 +1023,7 @@
                         [:div.relative
                          
                          [:div.absolute.right-0.top-0.m-2
-                          [headlessui/Popover]]
+                          [command/Popover]]
                          
                          [Highlight
                          (try
