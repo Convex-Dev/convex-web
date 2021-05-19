@@ -1,12 +1,10 @@
 (ns convex-web.site.explorer
-  (:require [convex-web.site.runtime :refer [sub disp]]
-            [convex-web.site.runtime :as runtime]
+  (:require [convex-web.site.runtime :as runtime]
             [convex-web.site.backend :as backend]
             [convex-web.site.gui :as gui]
             [convex-web.site.stack :as stack]
             [convex-web.site.format :as format]
             [convex-web.pagination :as pagination]
-            [convex-web.site.markdown :as markdown]
             [convex-web.site.session :as session]
             [convex-web.glossary :as glossary]
             [convex-web.config :as config]

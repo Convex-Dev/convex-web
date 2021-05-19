@@ -2,7 +2,6 @@
   (:require [convex-web.site.format :as format]
             [convex-web.site.backend :as backend]
             [convex-web.site.stack :as stack]
-            [convex-web.site.gui.command :as command]
 
             [clojure.string :as str]
             [goog.string :as gstring]
