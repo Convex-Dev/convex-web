@@ -2,6 +2,7 @@
   (:require [convex-web.site.format :as format]
             [convex-web.site.backend :as backend]
             [convex-web.site.stack :as stack]
+            [convex-web.site.headlessui :as headlessui]
 
             [clojure.string :as str]
             [goog.string :as gstring]
@@ -1019,14 +1020,19 @@
                   [:li [Disclosure
                         {:DisclosureButton (disclosure-button {:text s
                                                                :color "gray"})}
-                        [Highlight
+                        [:div.relative
+                         
+                         [:div.absolute.right-0.top-0.m-2
+                          [headlessui/Popover]]
+                         
+                         [Highlight
                          (try
                            (zprint/zprint-str source {:parse-string-all? true
                                                       :width 60})
                            (catch js/Error _
                              source))
 
-                         {:language :convex-lisp}]]]))
+                         {:language :convex-lisp}]]]]))
               (sort-by first environment)))
       [:p.mt-1.text-xs "Empty"])]])
 
