@@ -971,28 +971,30 @@
       "hover:bg-%s-200"
       "focus-visible:ring-%s-500"}))
 
-(defn DisclosureButton [{:keys [text color open?]}]
-  [:> headlessui-react/Disclosure.Button
-   {:className
-    (str/join " " (into disclosure-button-shared (disclosure-button-colors color)))}
-   [:span.text-xs
-    text]
-   [IconChevronUp
-    {:class
-     ["w-4 h-4"
-      (gstring/format "text-%s-500" color)
-      (when open? "transform rotate-180")]}]])
+(defn disclosure-button 
+  "Returns a headlessui-react/Disclosure.Button 
+   which can be used with the Disclosure component."
+  [{:keys [text color]}]
+  (fn [{:keys [open?]}]
+    [:> headlessui-react/Disclosure.Button
+     {:className
+      (str/join " " (into disclosure-button-shared (disclosure-button-colors color)))}
+     [:span.text-xs
+      text]
+     [IconChevronUp
+      {:class
+       ["w-4 h-4"
+        (gstring/format "text-%s-500" color)
+        (when open? "transform rotate-180")]}]]))
 
-(defn Disclosure [{:keys [text color]} children]
+(defn Disclosure [{:keys [DisclosureButton]} children]  
   [:> headlessui-react/Disclosure
    (fn [^js props]
      (r/as-element
        [:<>
         ;; Open & close.
         [DisclosureButton
-         {:text text
-          :color color
-          :open? (.-open props)}]
+         {:open? (.-open props)}]
 
         ;; Show children.
         [:> headlessui-react/Disclosure.Panel
@@ -1005,8 +1007,8 @@
   [environment]
   [:div
    [Disclosure
-    {:text "Environment"
-     :color "blue"}
+    {:DisclosureButton (disclosure-button {:text "Environment"
+                                           :color "blue"})}
     (if (seq environment)
       (into [:ul.space-y-1.mt-1]
             (map
@@ -1015,8 +1017,8 @@
                                value
                                (str value))]
                   [:li [Disclosure
-                        {:text s
-                         :color "gray"}
+                        {:DisclosureButton (disclosure-button {:text s
+                                                               :color "gray"})}
                         [Highlight
                          (try
                            (zprint/zprint-str source {:parse-string-all? true
