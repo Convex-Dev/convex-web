@@ -1006,51 +1006,66 @@
 
 (defn InvokePopover
   [{invoke-symbol :symbol}]
-  (r/with-let [open? (r/atom false)]
+  (r/with-let [open?-ref (r/atom false)
+               command-result-ref (r/atom nil)]
     [:> headlessui-react/Popover
-     {:open (boolean open?)
+     {:open (boolean @open?-ref)
       :className "relative"}
      (fn [^js props]
        (r/as-element
          [:<>
           
           [:> headlessui-react/Popover.Button
-           {:className "outline-none"
-            :onClick (fn []
-                       (swap! open? not))}
+           {:className "outline-none"}
            
-           [PlayIcon {:class "w-4 h-4 text-green-500"}]]
+           [PlayIcon 
+            {:class "w-4 h-4 text-green-500"
+             :onClick 
+             (fn []
+               (swap! open?-ref not))}]]
           
-          (when (.-open props)
+          (when @open?-ref
             [:> headlessui-react/Popover.Panel
              {:static true
               :className "absolute z-10 mt-3 transform -translate-x-1/2 left-1/2"}
              
              [:div
               {:class "overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"}
-              [:div.relative.flex.items-center.bg-white.p-6.space-x-2
-               [:input.border.rounded
-                {:type "text"
-                 :value ""
-                 :on-change #()}]
+              
+              [:div.flex.flex-col.space-y-3
                
-               [DefaultButton
-                {:on-click
-                 (fn []
-                   (let [active-address @(rf/subscribe [:session/?active-address])]
-                     (rf/dispatch [:command/!execute
-                                   {:convex-web.command/mode :convex-web.command.mode/transaction
-                                    :convex-web.command/address active-address
-                                    :convex-web.command/transaction
-                                    {:convex-web.transaction/type :convex-web.transaction.type/invoke
-                                     :convex-web.transaction/source (str "(#" active-address "/" invoke-symbol ")")
-                                     :convex-web.transaction/language :convex-lisp}}
-                                   (fn [old-state new-state]
-                                     (rf/dispatch
-                                       [:session/!set-state
-                                        (fn [state]
-                                          (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj (merge old-state new-state)))]))])))}
-                "Run"]]]])]))]))
+               [:div.relative.flex.flex-col.space-y-3.bg-white.p-6
+                
+                ;; Invoke args.
+                [:div.flex.items-center.space-x-3
+                 [:input.border.rounded
+                  {:type "text"
+                   :value ""
+                   :on-change #()}]
+                 
+                 [DefaultButton
+                  {:on-click
+                   (fn []
+                     (let [active-address @(rf/subscribe [:session/?active-address])]
+                       (rf/dispatch [:command/!execute
+                                     {:convex-web.command/mode :convex-web.command.mode/transaction
+                                      :convex-web.command/address active-address
+                                      :convex-web.command/transaction
+                                      {:convex-web.transaction/type :convex-web.transaction.type/invoke
+                                       :convex-web.transaction/source (str "(#" active-address "/" invoke-symbol ")")
+                                       :convex-web.transaction/language :convex-lisp}}
+                                     (fn [old-state new-state]
+                                       (let [command (merge old-state new-state)]
+                                         (reset! command-result-ref command)
+                                         
+                                         (rf/dispatch
+                                           [:session/!set-state
+                                            (fn [state]
+                                              (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj command))])))])))}
+                  "Run"]] 
+                
+                (when (contains? @command-result-ref :convex-web.command/object)
+                  [Highlight (prn-str (:convex-web.command/object @command-result-ref))])]]]])]))]))
 
 (defn EnvironmentBrowser
   "A disclousure interface to browse an account's environment."
