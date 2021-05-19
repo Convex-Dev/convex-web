@@ -1005,67 +1005,79 @@
          children]]))])
 
 (defn InvokePopover
+  "This is a POC component with a GUI to invoke a function.
+  
+  It has external dependencies with command and session.
+  
+  The command is executed exactly like it would have been in the Sandbox,
+  and its state is stored in the session state."
   [{invoke-symbol :symbol}]
   (r/with-let [open?-ref (r/atom false)
+               args-ref (r/atom "")
                command-result-ref (r/atom nil)]
-    [:> headlessui-react/Popover
-     {:open (boolean @open?-ref)
-      :className "relative"}
-     (fn [^js props]
-       (r/as-element
-         [:<>
-          
-          [:> headlessui-react/Popover.Button
-           {:className "outline-none"}
-           
-           [PlayIcon 
-            {:class "w-4 h-4 text-green-500"
-             :onClick 
-             (fn []
-               (swap! open?-ref not))}]]
-          
-          (when @open?-ref
-            [:> headlessui-react/Popover.Panel
-             {:static true
-              :className "absolute z-10 mt-3 transform -translate-x-1/2 left-1/2"}
+    (let [active-address @(rf/subscribe [:session/?active-address])]
+      [:> headlessui-react/Popover
+       {:open (boolean @open?-ref)
+        :className "relative"}
+       (fn [^js props]
+         (r/as-element
+           [:<>
+            
+            [:> headlessui-react/Popover.Button
+             {:className "outline-none"}
              
-             [:div
-              {:class "overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"}
-              
-              [:div.flex.flex-col.space-y-3
+             [PlayIcon 
+              {:class "w-4 h-4 text-green-500"
+               :onClick 
+               (fn []
+                 (swap! open?-ref not))}]]
+            
+            (when @open?-ref
+              [:> headlessui-react/Popover.Panel
+               {:static true
+                :className "absolute z-10 mt-3 transform -translate-x-1/2 left-1/2"}
                
-               [:div.relative.flex.flex-col.space-y-3.bg-white.p-6
+               [:div
+                {:class "overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"}
                 
-                ;; Invoke args.
-                [:div.flex.items-center.space-x-3
-                 [:input.border.rounded
-                  {:type "text"
-                   :value ""
-                   :on-change #()}]
+                [:div.flex.flex-col.space-y-3
                  
-                 [DefaultButton
-                  {:on-click
-                   (fn []
-                     (let [active-address @(rf/subscribe [:session/?active-address])]
-                       (rf/dispatch [:command/!execute
-                                     {:convex-web.command/mode :convex-web.command.mode/transaction
-                                      :convex-web.command/address active-address
-                                      :convex-web.command/transaction
-                                      {:convex-web.transaction/type :convex-web.transaction.type/invoke
-                                       :convex-web.transaction/source (str "(#" active-address "/" invoke-symbol ")")
-                                       :convex-web.transaction/language :convex-lisp}}
-                                     (fn [old-state new-state]
-                                       (let [command (merge old-state new-state)]
-                                         (reset! command-result-ref command)
-                                         
-                                         (rf/dispatch
-                                           [:session/!set-state
-                                            (fn [state]
-                                              (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj command))])))])))}
-                  "Run"]] 
-                
-                (when (contains? @command-result-ref :convex-web.command/object)
-                  [Highlight (prn-str (:convex-web.command/object @command-result-ref))])]]]])]))]))
+                 [:div.relative.flex.flex-col.space-y-3.bg-white.p-6
+                  
+                  ;; Invoke args.
+                  [:div.flex.items-center.space-x-3
+                   [:input.border.rounded
+                    {:type "text"
+                     :value @args-ref
+                     :on-change
+                     (fn [event]
+                       (js/console.log event (event-target-value event))
+                       
+                       (reset! args-ref (event-target-value event)))}]
+                   
+                   [DefaultButton
+                    {:on-click
+                     (fn []
+                       (rf/dispatch 
+                         [:command/!execute
+                          {:convex-web.command/mode :convex-web.command.mode/transaction
+                           :convex-web.command/address active-address
+                           :convex-web.command/transaction
+                           {:convex-web.transaction/type :convex-web.transaction.type/invoke
+                            :convex-web.transaction/source (str "(#" active-address "/" invoke-symbol " " @args-ref ")")
+                            :convex-web.transaction/language :convex-lisp}}
+                          (fn [old-state new-state]
+                            (let [command (merge old-state new-state)]
+                              (reset! command-result-ref command)
+                              
+                              (rf/dispatch
+                                [:session/!set-state
+                                 (fn [state]
+                                   (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj command))])))]))}
+                    "Run"]] 
+                  
+                  (when (contains? @command-result-ref :convex-web.command/object)
+                    [Highlight (prn-str (:convex-web.command/object @command-result-ref))])]]]])]))])))
 
 (defn EnvironmentBrowser
   "A disclousure interface to browse an account's environment."
