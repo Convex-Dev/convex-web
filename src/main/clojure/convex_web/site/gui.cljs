@@ -9,6 +9,7 @@
             [goog.string.format]
 
             [reagent.core :as r]
+            [re-frame.core :as rf]
             [reitit.frontend.easy :as rfe]
             [zprint.core :as zprint]
 
@@ -1003,6 +1004,46 @@
 
          children]]))])
 
+(defn InvokePopover
+  [m]
+  [:> headlessui-react/Popover
+   {:className "relative"}
+   [:> headlessui-react/Popover.Button
+    {:className "outline-none"}
+
+    [PlayIcon {:class "w-4 h-4 text-green-500"}]]
+
+   [:> headlessui-react/Popover.Panel
+    {:className "absolute z-10 mt-3 transform -translate-x-1/2 left-1/2"}
+
+    (r/as-element
+      [:div
+       {:class "overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"}
+       [:div.relative.flex.items-center.bg-white.p-6.space-x-2
+        [:input.border.rounded
+         {:type "text"
+          :value ""
+          :on-change #()}]
+
+        [DefaultButton
+         {:on-click
+          (fn []
+            (let [active-address @(rf/subscribe [:session/?active-address])]
+              (rf/dispatch [:command/!execute
+                            {:convex-web.command/mode :convex-web.command.mode/transaction
+                             :convex-web.command/address active-address
+                             :convex-web.command/transaction
+                             {:convex-web.transaction/type :convex-web.transaction.type/invoke
+                              :convex-web.transaction/source (str "(#" active-address "/" (:symbol m) ")")
+                              :convex-web.transaction/language :convex-lisp}}
+                            (fn [old-state new-state]
+                              (rf/dispatch
+                                [:session/!set-state
+                                 (fn [state]
+                                   (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj (merge old-state new-state)))]))])))}
+         "Run"]]])]])
+
+
 (defn EnvironmentBrowser
   "A disclousure interface to browse an account's environment."
   [environment]
@@ -1023,7 +1064,7 @@
                         [:div.relative
                          
                          [:div.absolute.right-0.top-0.m-2
-                          [command/Popover]]
+                          [InvokePopover {:symbol s}]]
                          
                          [Highlight
                          (try
