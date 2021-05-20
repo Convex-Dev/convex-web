@@ -195,68 +195,67 @@
 ;; --
 
 (defn execute [system {::keys [mode] :as command}]
-  (try
-    (let [{:keys [result error]} (try
-                                   {:result (cond
-                                              (= :convex-web.command.mode/query mode)
-                                              (execute-query system command)
-
-                                              (= :convex-web.command.mode/transaction mode)
-                                              (execute-transaction system command))}
-                                   (catch Throwable ex
-                                     (log/error ex "Command execution failed.")
-
-                                     {:error ex}))
-
-          _ (if-let [result-value (some-> ^Result result (.getValue))]
-              (log/debug "Result value:" (type result-value) result-value)
-              (log/warn "Result is nil for command:" command))
-
-          result-id (some-> result .getID)
-          result-value (some-> result .getValue)
-          result-error-code (some-> result .getErrorCode)
-          result-trace (some-> result .getTrace)
-          result-value-data (sandbox-result result-value)
-          result-value-metadata (result-metadata result-value {:source (source command)
-                                                               :lang (language command)})
-
-          _ (when result-error-code
-              (log/error "Command returned an error:" result-error-code result-value))
-
-          ;; Command status.
-          command' (if result
-                     (merge #:convex-web.command {:id (convex/datafy result-id)
-                                                  :object result-value-data
-                                                  :metadata result-value-metadata
-                                                  :status
-                                                  (if result-error-code
-                                                    :convex-web.command.status/error
-                                                    :convex-web.command.status/success)}
-                            (when result-error-code
-                              #:convex-web.command {:error
-                                                    {:code (convex/datafy result-error-code)
-                                                     :message (convex/datafy result-value)
-                                                     :trace (convex/datafy result-trace)}}))
-
-                     ;; If there isn't a Result, `error` won't have a code,
-                     ;; and the Exception's message will be used as its message.
-                     #:convex-web.command {:status :convex-web.command.status/error
-                                           :error
-                                           (merge {:message (ex-message (or (some-> error stacktrace/root-cause) error))}
-                                             ;; If the Reader fails, it will add the error code to the exception data.
-                                             (when-let [code (:convex-web.result/error-code (ex-data error))]
-                                               {:code code}))})
-
-          ;; Updated Command.
-          command' (merge (select-keys command [:convex-web.command/mode
-                                                :convex-web.command/language
-                                                :convex-web.command/address
-                                                :convex-web.command/query
-                                                :convex-web.command/transaction])
-
-                          command')]
-
-      command')))
+  (let [{:keys [result error]} (try
+                                 {:result (cond
+                                            (= :convex-web.command.mode/query mode)
+                                            (execute-query system command)
+                                            
+                                            (= :convex-web.command.mode/transaction mode)
+                                            (execute-transaction system command))}
+                                 (catch Throwable ex
+                                   (log/error ex "Command execution failed.")
+                                   
+                                   {:error ex}))
+        
+        _ (if-let [result-value (some-> ^Result result (.getValue))]
+            (log/debug "Result value:" (type result-value) result-value)
+            (log/warn "Result is nil for command:" command))
+        
+        result-id (some-> result .getID)
+        result-value (some-> result .getValue)
+        result-error-code (some-> result .getErrorCode)
+        result-trace (some-> result .getTrace)
+        result-value-data (sandbox-result result-value)
+        result-value-metadata (result-metadata result-value {:source (source command)
+                                                             :lang (language command)})
+        
+        _ (when result-error-code
+            (log/error "Command returned an error:" result-error-code result-value))
+        
+        ;; Command status.
+        command' (if result
+                   (merge #:convex-web.command {:id (convex/datafy result-id)
+                                                :object result-value-data
+                                                :metadata result-value-metadata
+                                                :status
+                                                (if result-error-code
+                                                  :convex-web.command.status/error
+                                                  :convex-web.command.status/success)}
+                     (when result-error-code
+                       #:convex-web.command {:error
+                                             {:code (convex/datafy result-error-code)
+                                              :message (convex/datafy result-value)
+                                              :trace (convex/datafy result-trace)}}))
+                   
+                   ;; If there isn't a Result, `error` won't have a code,
+                   ;; and the Exception's message will be used as its message.
+                   #:convex-web.command {:status :convex-web.command.status/error
+                                         :error
+                                         (merge {:message (ex-message (or (some-> error stacktrace/root-cause) error))}
+                                           ;; If the Reader fails, it will add the error code to the exception data.
+                                           (when-let [code (:convex-web.result/error-code (ex-data error))]
+                                             {:code code}))})
+        
+        ;; Updated Command.
+        command' (merge (select-keys command [:convex-web.command/mode
+                                              :convex-web.command/language
+                                              :convex-web.command/address
+                                              :convex-web.command/query
+                                              :convex-web.command/transaction])
+                   
+                   command')]
+    
+    command'))
 
 (s/fdef execute
   :args (s/cat :system :convex-web/system :command :convex-web/incoming-command)
