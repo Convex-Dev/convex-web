@@ -1013,7 +1013,7 @@
     invoke-symbol :symbol}]
   ;; Component local state.
   (r/with-let [open?-ref (r/atom false)
-               args-ref (r/atom "")
+               args-ref (r/atom "")               
                command-result-ref (r/atom nil)]
     
     (let [;; Commands are stored per address in the session,
@@ -1075,7 +1075,11 @@
                   ;; Invoke args.
                   [:div.flex.items-center.space-x-3
                    [:input.border.rounded.p-2
-                    {:type "text"
+                    {:ref
+                     (fn [element]
+                       (when element
+                         (.focus element)))
+                     :type "text"
                      :value args
                      :on-key-up
                      (fn [event]                       
@@ -1084,9 +1088,7 @@
                                (= 13 (.-keyCode event)))
                          (run)))
                      :on-change
-                     (fn [event]
-                       (js/console.log event (event-target-value event))
-                       
+                     (fn [event]                       
                        (reset! args-ref (event-target-value event)))}]
                    
                    [DefaultButton
