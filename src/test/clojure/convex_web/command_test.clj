@@ -1,9 +1,14 @@
 (ns convex-web.command-test
   (:require [clojure.test :refer :all]
+            
+            [ring.mock.request :as mock]
+            
             [convex-web.specs]
             [convex-web.command :as c]
             [convex-web.convex :as convex]
-            [convex-web.test :refer :all])
+            [convex-web.test :refer :all]
+            [convex-web.encoding :as encoding]
+            [convex-web.web-server :as web-server])
   (:import (convex.core.data StringShort)))
 
 (def context (make-convex-context))
@@ -11,6 +16,46 @@
 (def system nil)
 
 (use-fixtures :each (make-system-fixture #'system))
+
+(deftest transact-mode-test
+  (testing "Rollback"
+    
+    (let [handler (web-server/site system)
+          
+          response (handler (mock/request :post "/api/internal/generate-account"))
+          
+          account (encoding/transit-decode-string (get response :body))
+          
+          response (handler (mock/request :post "/api/internal/confirm-account" 
+                              (encoding/transit-encode (:convex-web.account/address account))))
+          
+          command1 (c/execute system #:convex-web.command {:mode :convex-web.command.mode/transaction
+                                                           :address (:convex-web.account/address account)
+                                                           :transaction
+                                                           #:convex-web.transaction 
+                                                           {:source "(def x 1)"
+                                                            :type :convex-web.transaction.type/invoke
+                                                            :language :convex-lisp}})
+          
+          command2 (c/execute system #:convex-web.command {:mode :convex-web.command.mode/transaction
+                                                           :address (:convex-web.account/address account)
+                                                           :transaction
+                                                           #:convex-web.transaction 
+                                                           {:source "(do (def x 2) (rollback :abort))"
+                                                            :type :convex-web.transaction.type/invoke
+                                                            :language :convex-lisp}})
+          
+          command3 (c/execute system #:convex-web.command {:mode :convex-web.command.mode/transaction
+                                                           :address (:convex-web.account/address account)
+                                                           :transaction
+                                                           #:convex-web.transaction 
+                                                           {:source "x"
+                                                            :type :convex-web.transaction.type/invoke
+                                                            :language :convex-lisp}})]
+      
+      (is (= 1 (:convex-web.command/object command1)))
+      (is (= :abort (:convex-web.command/object command2)))
+      (is (= 2 (:convex-web.command/object command3))))))
 
 (deftest query-mode-test
   (testing "Simple Commands"
