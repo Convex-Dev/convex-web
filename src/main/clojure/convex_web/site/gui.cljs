@@ -1,7 +1,6 @@
 (ns convex-web.site.gui
   (:require [convex-web.site.format :as format]
             [convex-web.site.backend :as backend]
-            [convex-web.site.stack :as stack]
 
             [clojure.string :as str]
             [goog.string :as gstring]
@@ -631,7 +630,7 @@
               "focus:outline-none"
               "hover:opacity-75"
               "active:bg-gray-200"
-              (if disabled?
+              (when disabled?
                 "text-gray-500 pointer-events-none")]
              :on-click identity}
             attrs)
@@ -646,7 +645,7 @@
               "rounded"
               "shadow-md"
               "focus:outline-none"
-              (if disabled?
+              (when disabled?
                 "pointer-events-none")]
              :on-click identity}
             attrs)
@@ -660,7 +659,7 @@
               "rounded"
               "shadow-md"
               "focus:outline-none"
-              (if disabled?
+              (when disabled?
                 "pointer-events-none")]
              :on-click identity}
             attrs)
@@ -674,7 +673,7 @@
               "rounded"
               "shadow-md"
               "focus:outline-none"
-              (if disabled?
+              (when disabled?
                 "pointer-events-none")]
              :on-click identity}
             attrs)
@@ -692,7 +691,7 @@
               "focus:outline-none"
               "hover:bg-gray-200"
               "active:bg-gray-300"
-              (if disabled?
+              (when disabled?
                 "pointer-events-none")]
              :on-click identity}
             attrs)
