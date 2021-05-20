@@ -1,13 +1,13 @@
 (ns convex-web.site.gui
   (:require [convex-web.site.format :as format]
             [convex-web.site.backend :as backend]
-            [convex-web.site.stack :as stack]
 
             [clojure.string :as str]
             [goog.string :as gstring]
             [goog.string.format]
 
             [reagent.core :as r]
+            [re-frame.core :as rf]
             [reitit.frontend.easy :as rfe]
             [zprint.core :as zprint]
 
@@ -630,7 +630,7 @@
               "focus:outline-none"
               "hover:opacity-75"
               "active:bg-gray-200"
-              (if disabled?
+              (when disabled?
                 "text-gray-500 pointer-events-none")]
              :on-click identity}
             attrs)
@@ -645,7 +645,7 @@
               "rounded"
               "shadow-md"
               "focus:outline-none"
-              (if disabled?
+              (when disabled?
                 "pointer-events-none")]
              :on-click identity}
             attrs)
@@ -659,7 +659,7 @@
               "rounded"
               "shadow-md"
               "focus:outline-none"
-              (if disabled?
+              (when disabled?
                 "pointer-events-none")]
              :on-click identity}
             attrs)
@@ -673,7 +673,7 @@
               "rounded"
               "shadow-md"
               "focus:outline-none"
-              (if disabled?
+              (when disabled?
                 "pointer-events-none")]
              :on-click identity}
             attrs)
@@ -691,7 +691,7 @@
               "focus:outline-none"
               "hover:bg-gray-200"
               "active:bg-gray-300"
-              (if disabled?
+              (when disabled?
                 "pointer-events-none")]
              :on-click identity}
             attrs)
@@ -971,28 +971,30 @@
       "hover:bg-%s-200"
       "focus-visible:ring-%s-500"}))
 
-(defn DisclosureButton [{:keys [text color open?]}]
-  [:> headlessui-react/Disclosure.Button
-   {:className
-    (str/join " " (into disclosure-button-shared (disclosure-button-colors color)))}
-   [:span.text-xs
-    text]
-   [IconChevronUp
-    {:class
-     ["w-4 h-4"
-      (gstring/format "text-%s-500" color)
-      (when open? "transform rotate-180")]}]])
+(defn disclosure-button 
+  "Returns a headlessui-react/Disclosure.Button 
+   which can be used with the Disclosure component."
+  [{:keys [text color]}]
+  (fn [{:keys [open?]}]
+    [:> headlessui-react/Disclosure.Button
+     {:className
+      (str/join " " (into disclosure-button-shared (disclosure-button-colors color)))}
+     [:span.text-xs
+      text]
+     [IconChevronUp
+      {:class
+       ["w-4 h-4"
+        (gstring/format "text-%s-500" color)
+        (when open? "transform rotate-180")]}]]))
 
-(defn Disclosure [{:keys [text color]} children]
+(defn Disclosure [{:keys [DisclosureButton]} children]  
   [:> headlessui-react/Disclosure
    (fn [^js props]
      (r/as-element
        [:<>
         ;; Open & close.
         [DisclosureButton
-         {:text text
-          :color color
-          :open? (.-open props)}]
+         {:open? (.-open props)}]
 
         ;; Show children.
         [:> headlessui-react/Disclosure.Panel
@@ -1000,33 +1002,137 @@
 
          children]]))])
 
+(defn InvokePopover
+  "This is a POC component with a GUI to invoke a function.
+  
+  It has external dependencies with command and session.
+  
+  The command is executed exactly like it would have been in the Sandbox,
+  and its state is stored in the session state."
+  [{invoke-address :address
+    invoke-symbol :symbol}]
+  ;; Component local state.
+  (r/with-let [open?-ref (r/atom false)
+               args-ref (r/atom "")               
+               command-result-ref (r/atom nil)]
+    
+    (let [;; Commands are stored per address in the session,
+          ;; so we need to know the active address.
+          active-address @(rf/subscribe [:session/?active-address])
+          
+          ;; Arguments that are passed to the function.
+          args @args-ref
+          
+          ;; The Command returned by the server.
+          command-result @command-result-ref
+          
+          run (fn []
+                (rf/dispatch 
+                  [:command/!execute
+                   {:convex-web.command/mode :convex-web.command.mode/transaction
+                    :convex-web.command/address active-address
+                    :convex-web.command/transaction
+                    {:convex-web.transaction/type :convex-web.transaction.type/invoke
+                     :convex-web.transaction/source (str "(#" invoke-address "/" invoke-symbol " " args ")")
+                     :convex-web.transaction/language :convex-lisp}}
+                   (fn [old-state new-state]
+                     (let [command (merge old-state new-state)]
+                       (reset! command-result-ref command)
+                       
+                       (rf/dispatch
+                         [:session/!set-state
+                          (fn [state]
+                            (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj command))])))]))]
+      
+      [:> headlessui-react/Popover
+       {:open (boolean @open?-ref)
+        :className "relative"}
+       (fn [_]
+         (r/as-element
+           [:<>
+            
+            [:> headlessui-react/Popover.Button
+             {:className "outline-none"}
+             
+             [PlayIcon 
+              {:class "w-4 h-4 text-green-500"
+               :onClick 
+               (fn []
+                 (swap! open?-ref not))}]]
+            
+            (when @open?-ref
+              [:> headlessui-react/Popover.Panel
+               {:static true
+                :className "absolute z-10 mt-3 transform -translate-x-1/2 left-1/2"}
+               
+               [:div
+                {:class "overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"}
+                
+                [:div.flex.flex-col.space-y-3
+                 
+                 [:div.relative.flex.flex-col.space-y-3.bg-white.p-6
+                  
+                  ;; Invoke args.
+                  [:div.flex.items-center.space-x-3
+                   [:input.border.rounded.p-2
+                    {:ref
+                     (fn [element]
+                       (when element
+                         (.focus element)))
+                     :type "text"
+                     :value args
+                     :on-key-up
+                     (fn [event]                       
+                       (when (or 
+                               (= "Enter" (.-key event))
+                               (= 13 (.-keyCode event)))
+                         (run)))
+                     :on-change
+                     (fn [event]                       
+                       (reset! args-ref (event-target-value event)))}]
+                   
+                   [DefaultButton
+                    {:on-click run}
+                    "Run"]]
+                  
+                  (when (contains? command-result :convex-web.command/object)
+                    [Highlight (prn-str (:convex-web.command/object command-result))])]]]])]))])))
+
 (defn EnvironmentBrowser
   "A disclousure interface to browse an account's environment."
-  [environment]
-  [:div
-   [Disclosure
-    {:text "Environment"
-     :color "blue"}
-    (if (seq environment)
-      (into [:ul.space-y-1.mt-1]
-            (map
-              (fn [[s {:convex-web.syntax/keys [value]}]]
-                (let [source (if (string? value)
-                               value
-                               (str value))]
-                  [:li [Disclosure
-                        {:text s
-                         :color "gray"}
-                        [Highlight
-                         (try
-                           (zprint/zprint-str source {:parse-string-all? true
-                                                      :width 60})
-                           (catch js/Error _
-                             source))
-
-                         {:language :convex-lisp}]]]))
-              (sort-by first environment)))
-      [:p.mt-1.text-xs "Empty"])]])
+  [account]
+  (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
+    [:div
+     [Disclosure
+      {:DisclosureButton (disclosure-button {:text "Environment"
+                                             :color "blue"})}
+      (if (seq environment)
+        (into [:ul.space-y-1.mt-1]
+          (map
+            (fn [[s {:convex-web.syntax/keys [value]}]]
+              (let [source (if (string? value)
+                             value
+                             (str value))]
+                [:li [Disclosure
+                      {:DisclosureButton (disclosure-button {:text s
+                                                             :color "gray"})}
+                      [:div.relative
+                       
+                       [:div.absolute.right-0.top-0.m-2
+                        [InvokePopover 
+                         {:address (:convex-web.account/address account)
+                          :symbol s}]]
+                       
+                       [Highlight
+                        (try
+                          (zprint/zprint-str source {:parse-string-all? true
+                                                     :width 60})
+                          (catch js/Error _
+                            source))
+                        
+                        {:language :convex-lisp}]]]]))
+            (sort-by first environment)))
+        [:p.mt-1.text-xs "Empty"])]]))
 
 (defn AddressRenderer [address]
   (r/with-let [account-ref (r/atom {:ajax/status :ajax.status/pending})
@@ -1111,7 +1217,7 @@
              [:span.text-xs.uppercase type]]])]
 
         [EnvironmentBrowser
-         (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/environment])]])]))
+         (:account @account-ref)]])]))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
@@ -1134,12 +1240,11 @@
 
     [Highlight (prn-str object)]))
 
-(defn Account [{:convex-web.account/keys [address status]}]
+(defn Account [{:convex-web.account/keys [address status] :as account}]
   (let [{:convex-web.account-status/keys [memory-size
                                           allowance
                                           balance
                                           sequence
-                                          environment
                                           type]} status
 
         address-string (format/prefix-# address)
@@ -1222,7 +1327,7 @@
      ;; Environment
      ;; ==============
      [:div.w-full.max-w-prose.flex.flex-col.space-y-2
-      [EnvironmentBrowser environment]
+      [EnvironmentBrowser account]
 
       [:p.text-sm.text-gray-500.max-w-prose
        "The environment is a space reserved for each Account
