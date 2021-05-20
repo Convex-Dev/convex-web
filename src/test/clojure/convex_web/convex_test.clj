@@ -3,10 +3,11 @@
 
             [convex-web.convex :as convex]
             [convex-web.test :refer :all])
-  (:import (convex.core.data Address Blob Syntax Maps Symbol)
+  (:import (convex.core.data Address Blob Syntax Maps Symbol Keyword)
            (convex.core Init)
            (convex.core.data.prim CVMLong)
-           (clojure.lang ExceptionInfo)))
+           (clojure.lang ExceptionInfo)
+           (convex.core.lang.impl RollbackValue)))
 
 (deftest read-source-test
   (is (= [] (convex/read-source "()" :convex-lisp)))
@@ -113,6 +114,16 @@
   (testing "Invalid Address string"
     (is (= "Can't coerce \"foo\" to convex.core.data.Address." (ex-message (catch-throwable (convex/address "foo")))))))
 
+
+(deftest rollback-test
+  (testing "Rollback exceptional value"
+    (let [context1 (make-convex-context)
+          
+          context2 (convex/execute-string* context1 "(def x 1)")
+          
+          context3 (convex/execute-string* context2 "(do (def x 2) (rollback :abort))")]
+      
+      (is (= (Keyword/create "abort") (.getValue (.getExceptional context3)))))))
 
 (deftest kind-test
   (let [context (make-convex-context)]

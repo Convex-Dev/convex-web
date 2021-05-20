@@ -41,6 +41,11 @@
        (.getExceptional context#)
        (.getResult context#))))
 
+(defn execute-string* 
+  "Executes and returns a new Context."
+  [^Context context ^String source]
+  (.execute context (.getResult (.expandCompile context (Reader/read source)))))
+
 (defn execute-string [^Context context ^String source]
   (let [new-context (.execute context (.getResult (.expandCompile context (Reader/read source))))]
     (if (.isExceptional new-context)
