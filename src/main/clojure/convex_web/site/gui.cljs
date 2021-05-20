@@ -1009,15 +1009,45 @@
   
   The command is executed exactly like it would have been in the Sandbox,
   and its state is stored in the session state."
-  [{invoke-symbol :symbol}]
+  [{invoke-address :address
+    invoke-symbol :symbol}]
+  ;; Component local state.
   (r/with-let [open?-ref (r/atom false)
                args-ref (r/atom "")
                command-result-ref (r/atom nil)]
-    (let [active-address @(rf/subscribe [:session/?active-address])]
+    
+    (let [;; Commands are stored per address in the session,
+          ;; so we need to know the active address.
+          active-address @(rf/subscribe [:session/?active-address])
+          
+          ;; Arguments that are passed to the function.
+          args @args-ref
+          
+          ;; The Command returned by the server.
+          command-result @command-result-ref
+          
+          run (fn []
+                (rf/dispatch 
+                  [:command/!execute
+                   {:convex-web.command/mode :convex-web.command.mode/transaction
+                    :convex-web.command/address active-address
+                    :convex-web.command/transaction
+                    {:convex-web.transaction/type :convex-web.transaction.type/invoke
+                     :convex-web.transaction/source (str "(#" invoke-address "/" invoke-symbol " " args ")")
+                     :convex-web.transaction/language :convex-lisp}}
+                   (fn [old-state new-state]
+                     (let [command (merge old-state new-state)]
+                       (reset! command-result-ref command)
+                       
+                       (rf/dispatch
+                         [:session/!set-state
+                          (fn [state]
+                            (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj command))])))]))]
+      
       [:> headlessui-react/Popover
        {:open (boolean @open?-ref)
         :className "relative"}
-       (fn [^js props]
+       (fn [_]
          (r/as-element
            [:<>
             
@@ -1044,9 +1074,15 @@
                   
                   ;; Invoke args.
                   [:div.flex.items-center.space-x-3
-                   [:input.border.rounded
+                   [:input.border.rounded.p-2
                     {:type "text"
-                     :value @args-ref
+                     :value args
+                     :on-key-up
+                     (fn [event]                       
+                       (when (or 
+                               (= "Enter" (.-key event))
+                               (= 13 (.-keyCode event)))
+                         (run)))
                      :on-change
                      (fn [event]
                        (js/console.log event (event-target-value event))
@@ -1054,62 +1090,47 @@
                        (reset! args-ref (event-target-value event)))}]
                    
                    [DefaultButton
-                    {:on-click
-                     (fn []
-                       (rf/dispatch 
-                         [:command/!execute
-                          {:convex-web.command/mode :convex-web.command.mode/transaction
-                           :convex-web.command/address active-address
-                           :convex-web.command/transaction
-                           {:convex-web.transaction/type :convex-web.transaction.type/invoke
-                            :convex-web.transaction/source (str "(#" active-address "/" invoke-symbol " " @args-ref ")")
-                            :convex-web.transaction/language :convex-lisp}}
-                          (fn [old-state new-state]
-                            (let [command (merge old-state new-state)]
-                              (reset! command-result-ref command)
-                              
-                              (rf/dispatch
-                                [:session/!set-state
-                                 (fn [state]
-                                   (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj command))])))]))}
-                    "Run"]] 
+                    {:on-click run}
+                    "Run"]]
                   
-                  (when (contains? @command-result-ref :convex-web.command/object)
-                    [Highlight (prn-str (:convex-web.command/object @command-result-ref))])]]]])]))])))
+                  (when (contains? command-result :convex-web.command/object)
+                    [Highlight (prn-str (:convex-web.command/object command-result))])]]]])]))])))
 
 (defn EnvironmentBrowser
   "A disclousure interface to browse an account's environment."
-  [environment]
-  [:div
-   [Disclosure
-    {:DisclosureButton (disclosure-button {:text "Environment"
-                                           :color "blue"})}
-    (if (seq environment)
-      (into [:ul.space-y-1.mt-1]
-            (map
-              (fn [[s {:convex-web.syntax/keys [value]}]]
-                (let [source (if (string? value)
-                               value
-                               (str value))]
-                  [:li [Disclosure
-                        {:DisclosureButton (disclosure-button {:text s
-                                                               :color "gray"})}
-                        [:div.relative
-                         
-                         [:div.absolute.right-0.top-0.m-2
-                          [InvokePopover 
-                           {:symbol s}]]
-                         
-                         [Highlight
-                         (try
-                           (zprint/zprint-str source {:parse-string-all? true
-                                                      :width 60})
-                           (catch js/Error _
-                             source))
-
-                         {:language :convex-lisp}]]]]))
-              (sort-by first environment)))
-      [:p.mt-1.text-xs "Empty"])]])
+  [account]
+  (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
+    [:div
+     [Disclosure
+      {:DisclosureButton (disclosure-button {:text "Environment"
+                                             :color "blue"})}
+      (if (seq environment)
+        (into [:ul.space-y-1.mt-1]
+          (map
+            (fn [[s {:convex-web.syntax/keys [value]}]]
+              (let [source (if (string? value)
+                             value
+                             (str value))]
+                [:li [Disclosure
+                      {:DisclosureButton (disclosure-button {:text s
+                                                             :color "gray"})}
+                      [:div.relative
+                       
+                       [:div.absolute.right-0.top-0.m-2
+                        [InvokePopover 
+                         {:address (:convex-web.account/address account)
+                          :symbol s}]]
+                       
+                       [Highlight
+                        (try
+                          (zprint/zprint-str source {:parse-string-all? true
+                                                     :width 60})
+                          (catch js/Error _
+                            source))
+                        
+                        {:language :convex-lisp}]]]]))
+            (sort-by first environment)))
+        [:p.mt-1.text-xs "Empty"])]]))
 
 (defn AddressRenderer [address]
   (r/with-let [account-ref (r/atom {:ajax/status :ajax.status/pending})
@@ -1194,7 +1215,7 @@
              [:span.text-xs.uppercase type]]])]
 
         [EnvironmentBrowser
-         (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/environment])]])]))
+         (:account @account-ref)]])]))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
@@ -1217,12 +1238,11 @@
 
     [Highlight (prn-str object)]))
 
-(defn Account [{:convex-web.account/keys [address status]}]
+(defn Account [{:convex-web.account/keys [address status] :as account}]
   (let [{:convex-web.account-status/keys [memory-size
                                           allowance
                                           balance
                                           sequence
-                                          environment
                                           type]} status
 
         address-string (format/prefix-# address)
@@ -1305,7 +1325,7 @@
      ;; Environment
      ;; ==============
      [:div.w-full.max-w-prose.flex.flex-col.space-y-2
-      [EnvironmentBrowser environment]
+      [EnvironmentBrowser account]
 
       [:p.text-sm.text-gray-500.max-w-prose
        "The environment is a space reserved for each Account
