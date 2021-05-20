@@ -1,16 +1,14 @@
 (ns convex-web.site.devtools
   (:require [convex-web.specs]
             [convex-web.site.stack :as stack]
-            [convex-web.site.runtime :refer [sub disp]]
+            [convex-web.site.runtime :refer [sub disp] :as runtime]
             [convex-web.site.gui :as gui]
             [convex-web.site.command :as command]
             [convex-web.site.session :as session]
-            [convex-web.site.runtime :as runtime]
             [convex-web.site.backend :as backend]
 
             [cljs.spec.alpha :as s]
             [cljs.pprint :as pprint]
-            [clojure.string :as str]
 
             [codemirror-reagent.core :as codemirror]
             [lambdaisland.glogi :as log]
