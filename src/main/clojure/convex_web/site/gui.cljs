@@ -1099,9 +1099,12 @@
                  [:div.relative.flex.flex-col.space-y-3.bg-white.py-7.px-6
                   
                   ;; Close button.
-                  [:button.p-1.absolute.top-0.right-0.mt-1.mr-1
+                  [:button
                    {:class 
-                    ["text-gray-500 hover:text-gray-700"
+                    ["absolute top-0 right-0"
+                     "rounded-lg"
+                     "p-1 mt-1 mr-1"
+                     "text-gray-500 hover:text-gray-700"
                      "bg-gray-100 hover:bg-gray-200"
                      "hover:shadow-md"
                      "transition-all"]
