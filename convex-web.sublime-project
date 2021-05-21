@@ -1,7 +1,22 @@
 {
-	"folders": [
+	"folders": 
+	[
 		{
 			"path": "."
 		}
-	]
+	],
+
+	"build_systems":
+    [
+        {
+            "name": "Run tests",
+            "shell_cmd": "bin/test",
+            "working_dir": "$project_path" 
+        },
+        {
+            "name": "Run tests with Kaocha",
+            "shell_cmd": "bin/kaocha",
+            "working_dir": "$project_path" 
+        }
+    ]
 }
