@@ -1096,11 +1096,24 @@
                 
                 [:div.flex.flex-col.space-y-3
                  
-                 [:div.relative.flex.flex-col.space-y-3.bg-white.p-6
+                 [:div.relative.flex.flex-col.space-y-3.bg-white.py-7.px-6
+                  
+                  ;; Close button.
+                  [:button.p-1.absolute.top-0.right-0.mt-1.mr-1
+                   {:class 
+                    ["text-gray-500 hover:text-gray-700"
+                     "bg-gray-100 hover:bg-gray-200"
+                     "hover:shadow-md"
+                     "transition-all"]
+                    
+                    :on-click #(swap! state-ref update :open? not)}
+                   
+                   [:> XIcon
+                    {:className "w-4 h-4"}]]
                   
                   ;; Invoke args.
                   [:div.flex.items-center.space-x-3
-                   [:input.border.rounded.p-2
+                   [:input.border.rounded.p-2.focus:outline-none.focus:border-blue-300
                     {:ref
                      (fn [element]
                        (when element
