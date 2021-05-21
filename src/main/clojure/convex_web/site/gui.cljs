@@ -5,6 +5,8 @@
             [clojure.string :as str]
             [goog.string :as gstring]
             [goog.string.format]
+            
+            [codemirror-reagent.core :as codemirror]
 
             [reagent.core :as r]
             [re-frame.core :as rf]
@@ -1119,6 +1121,13 @@
                     {:on-click run
                      :disabled (= :ajax.status/pending ajax-status)}
                     "Run"]]
+                  
+                  ;; Preview Convex Lisp.
+                  [codemirror/CodeMirror
+                   [:div.flex-1]
+                   {:configuration
+                    {:readOnly true
+                     :value invoke-source}}]
                   
                   (cond
                     (= :ajax.status/pending ajax-status)
