@@ -1010,7 +1010,9 @@
   The command is executed exactly like it would have been in the Sandbox,
   and its state is stored in the session state."
   [{invoke-address :address
-    invoke-symbol :symbol}]
+    invoke-symbol :symbol
+    invoke-syntax :syntax}]
+  
   ;; Component local state.
   (r/with-let [state-ref (r/atom 
                            {:open? false
@@ -1033,6 +1035,17 @@
            result :result
            ajax-status :ajax/status} @state-ref
           
+          invoke-symbol-ifn? (or 
+                               (= :function (get-in invoke-syntax [:convex-web.syntax/meta :doc :type]))
+                               ;; If there isn't a type, we assume it's a function.
+                               (= nil (get-in invoke-syntax [:convex-web.syntax/meta :doc :type])))
+          
+          qualified-symbol (str "#" invoke-address "/" invoke-symbol)
+          
+          invoke-source (if invoke-symbol-ifn?
+                          (str "(" qualified-symbol " " args ")")
+                          qualified-symbol)
+          
           run (fn []
                 (swap! state-ref assoc :ajax/status :ajax.status/pending)
                 
@@ -1042,7 +1055,7 @@
                     :convex-web.command/address active-address
                     :convex-web.command/transaction
                     {:convex-web.transaction/type :convex-web.transaction.type/invoke
-                     :convex-web.transaction/source (str "(#" invoke-address "/" invoke-symbol " " args ")")
+                     :convex-web.transaction/source invoke-source
                      :convex-web.transaction/language :convex-lisp}}
                    (fn [old-state new-state]
                      (let [command (merge old-state new-state)]
@@ -1125,7 +1138,7 @@
       (if (seq environment)
         (into [:ul.space-y-1.mt-1]
           (map
-            (fn [[s {:convex-web.syntax/keys [value]}]]
+            (fn [[s {:convex-web.syntax/keys [value] :as syntax}]]
               (let [source (if (string? value)
                              value
                              (str value))]
@@ -1137,7 +1150,8 @@
                        [:div.absolute.right-0.top-0.m-2
                         [InvokePopover 
                          {:address (:convex-web.account/address account)
-                          :symbol s}]]
+                          :symbol s
+                          :syntax syntax}]]
                        
                        [Highlight
                         (try
