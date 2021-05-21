@@ -23,7 +23,7 @@
             ["react-markdown" :as ReactMarkdown]
 
             ["@headlessui/react" :as headlessui-react]
-            ["@heroicons/react/outline" :refer [XIcon]]
+            ["@heroicons/react/solid" :refer [XIcon]]
             ["qrcode.react" :as QRCode]
 
             ["jdenticon" :as jdenticon]))
