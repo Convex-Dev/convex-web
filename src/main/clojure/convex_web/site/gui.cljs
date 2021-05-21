@@ -1012,21 +1012,30 @@
   [{invoke-address :address
     invoke-symbol :symbol}]
   ;; Component local state.
-  (r/with-let [open?-ref (r/atom false)
-               args-ref (r/atom "")               
-               command-result-ref (r/atom nil)]
+  (r/with-let [state-ref (r/atom 
+                           {:open? false
+                            
+                            ;; Arguments that are passed to the function.
+                            :args ""
+                            
+                            ;; Command result.
+                            :result nil
+                            
+                            ;; Status of the command request.
+                            :ajax/status nil})]
     
     (let [;; Commands are stored per address in the session,
           ;; so we need to know the active address.
           active-address @(rf/subscribe [:session/?active-address])
           
-          ;; Arguments that are passed to the function.
-          args @args-ref
-          
-          ;; The Command returned by the server.
-          command-result @command-result-ref
+          {open? :open?
+           args :args
+           result :result
+           ajax-status :ajax/status} @state-ref
           
           run (fn []
+                (swap! state-ref assoc :ajax/status :ajax.status/pending)
+                
                 (rf/dispatch 
                   [:command/!execute
                    {:convex-web.command/mode :convex-web.command.mode/transaction
@@ -1037,7 +1046,9 @@
                      :convex-web.transaction/language :convex-lisp}}
                    (fn [old-state new-state]
                      (let [command (merge old-state new-state)]
-                       (reset! command-result-ref command)
+                       (swap! state-ref assoc 
+                         :result command
+                         :ajax/status :ajax.status/success)
                        
                        (rf/dispatch
                          [:session/!set-state
@@ -1045,7 +1056,7 @@
                             (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj command))])))]))]
       
       [:> headlessui-react/Popover
-       {:open (boolean @open?-ref)
+       {:open open?
         :className "relative"}
        (fn [_]
          (r/as-element
@@ -1058,9 +1069,9 @@
               {:class "w-4 h-4 text-green-500"
                :onClick 
                (fn []
-                 (swap! open?-ref not))}]]
+                 (swap! state-ref update :open? not))}]]
             
-            (when @open?-ref
+            (when open?
               [:> headlessui-react/Popover.Panel
                {:static true
                 :className "absolute z-10 mt-3 transform -translate-x-1/2 left-1/2"}
@@ -1089,14 +1100,19 @@
                          (run)))
                      :on-change
                      (fn [event]                       
-                       (reset! args-ref (event-target-value event)))}]
+                       (swap! state-ref assoc :args (event-target-value event)))}]
                    
                    [DefaultButton
-                    {:on-click run}
+                    {:on-click run
+                     :disabled (= :ajax.status/pending ajax-status)}
                     "Run"]]
                   
-                  (when (contains? command-result :convex-web.command/object)
-                    [Highlight (prn-str (:convex-web.command/object command-result))])]]]])]))])))
+                  (cond
+                    (= :ajax.status/pending ajax-status)
+                    [SpinnerSmall]
+                    
+                    (= :ajax.status/success ajax-status)
+                    [Highlight (prn-str (:convex-web.command/object result))])]]]])]))])))
 
 (defn EnvironmentBrowser
   "A disclousure interface to browse an account's environment."
