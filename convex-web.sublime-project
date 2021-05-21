@@ -17,6 +17,21 @@
             "name": "Run tests with Kaocha",
             "shell_cmd": "bin/kaocha",
             "working_dir": "$project_path" 
-        }
+        },
+        {
+            "name": "Release app",
+            "shell_cmd": "npm run release",
+            "working_dir": "$project_path" 
+        },
+        {
+            "name": "Styles",
+            "shell_cmd": "npm run styles",
+            "working_dir": "$project_path" 
+        },
+        {
+            "name": "Styles dev",
+            "shell_cmd": "npm run styles-dev",
+            "working_dir": "$project_path" 
+        },
     ]
 }
