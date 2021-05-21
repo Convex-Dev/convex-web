@@ -1011,7 +1011,7 @@
   
   The command is executed exactly like it would have been in the Sandbox,
   and its state is stored in the session state."
-  [{invoke-address :address
+  [{invoke-account :account
     invoke-symbol :symbol
     invoke-syntax :syntax}]
   
@@ -1042,10 +1042,23 @@
                                ;; If there isn't a type, we assume it's a function.
                                (= nil (get-in invoke-syntax [:convex-web.syntax/meta :doc :type])))
           
-          qualified-symbol (str "#" invoke-address "/" invoke-symbol)
+          call? (get-in invoke-account [:convex-web.account/status :convex-web.account-status/actor?])
           
-          invoke-source (if invoke-symbol-ifn?
+          invoke-address (str (:convex-web.account/address invoke-account))
+          invoke-address (if (str/starts-with? invoke-address "#")
+                           invoke-address
+                           (str "#" invoke-address))
+          
+          qualified-symbol (str invoke-address "/" invoke-symbol)
+          
+          invoke-source (cond
+                          call?
+                          (str "(call " invoke-address " (" invoke-symbol " " args "))")
+                          
+                          invoke-symbol-ifn?
                           (str "(" qualified-symbol " " args ")")
+                          
+                          :else
                           qualified-symbol)
           
           run (fn []
@@ -1174,7 +1187,7 @@
                        
                        [:div.absolute.right-0.top-0.m-2
                         [InvokePopover 
-                         {:address (:convex-web.account/address account)
+                         {:account account
                           :symbol s
                           :syntax syntax}]]
                        
