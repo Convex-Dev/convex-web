@@ -339,6 +339,7 @@
       (merge #:convex-web.account-status {:sequence (.getSequence account-status)
                                           :balance (.getBalance account-status)
                                           :environment env
+                                          :exports (or (datafy (.getExports account-status)) #{})
                                           :actor? actor?
                                           :library? library?
                                           :memory-size (.getMemorySize account-status)

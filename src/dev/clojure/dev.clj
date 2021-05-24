@@ -83,11 +83,6 @@
   (let [handler (web-server/site system)]
     (handler (mock/request :post "/api/internal/generate-account")))
 
-
-  (clojure.test/run-tests
-    'convex-web.specs-test
-    'convex-web.internal-api-test)
-
   ;; -- Sessions
   (d/q '[:find [(pull ?e [*
                           {:convex-web.session/accounts
