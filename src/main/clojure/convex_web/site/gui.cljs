@@ -1308,50 +1308,70 @@
 
     [Highlight (prn-str object)]))
 
-(defn Account [{:convex-web.account/keys [address status] :as account}]
-  (let [{:convex-web.account-status/keys [memory-size
+
+(defn AccountActions [account]
+  (let [{account-address :convex-web.account/address
+         account-status :convex-web.account/status} account
+        
+        {exports :convex-web.account-status/exports} account-status]
+    [:div.flex.space-x-3.p-4
+     
+     (for [s exports]
+       ^{:key s}
+       [DefaultButton 
+        {:on-click #(js/console.log s)}
+        (str s)])
+     
+     ]))
+
+
+(defn Account [account]
+  (let [{:convex-web.account/keys [address status]} account
+        
+        {:convex-web.account-status/keys [memory-size
                                           allowance
                                           balance
                                           sequence
-                                          type]} status
-
+                                          type
+                                          exports]} status
+        
         address-string (format/prefix-# address)
-
+        
         caption-style "text-gray-600 text-base leading-none cursor-default"
         caption-container-style "flex flex-col space-y-1"
         value-style "text-sm cursor-default"
-
+        
         Caption (fn [{:keys [label tooltip]}]
                   [:div.flex.space-x-1
                    [:span {:class caption-style} label]
                    [InfoTooltip tooltip]])]
     [:div.flex.flex-col.items-start.space-y-8
-
+     
      ;; Address
      ;; ==============
      [:div.flex.flex-col
       [:div.flex.items-center.space-x-4
        ;; -- Identicon
        [AIdenticon {:value address :size 88}]
-
+       
        ;; -- Address
        [:div {:class caption-container-style}
         [:span {:class caption-style} "Address"]
         [:span.inline-flex.items-center
          [:span.font-mono.text-base.mr-2 address-string]]]
-
+       
        ;; -- QR Code
        [:> QRCode
         {:value (str address)
          :size 88}]]
-
+      
       ;; -- Type
       [:span.inline-flex.justify-center.items-center.font-mono.text-xs.text-white.uppercase.mt-2.rounded
        {:style {:width "88px" :height "32px"}
         :class (account-type-bg-color status)}
        type]]
-
-
+     
+     
      ;; Balance
      ;; ==============
      [:div {:class caption-container-style}
@@ -1359,8 +1379,8 @@
        {:label "Balance"
         :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
       [:code.text-2xl.cursor-default (format/format-number balance)]]
-
-
+     
+     
      ;; Memory
      ;; ==============
      [:div.flex.w-full {:class "space-x-1/6"}
@@ -1370,34 +1390,46 @@
         {:label "Memory Allowance"
          :tooltip
          "Reserved Memory Allowance in bytes. If you create on-chain data
-        beyond this amount, you will be charged extra transaction fees to
-        aquire memory at the current memory pool price."}]
+         beyond this amount, you will be charged extra transaction fees to
+         aquire memory at the current memory pool price."}]
        [:code {:class value-style} allowance]]
-
+      
       ;; -- Memory Size
       [:div {:class caption-container-style}
        [Caption
         {:label "Memory Size"
          :tooltip
          "Size in bytes of this Account, which includes any definitions you
-          have created in your Enviornment."}]
+         have created in your Enviornment."}]
        [:code {:class value-style} memory-size]]
-
+      
       ;; -- Sequence
       [:div {:class caption-container-style}
        [Caption
         {:label "Sequence"
          :tooltip "Sequence number for this Account, which is equal to the
-                    number of transactions that have been executed."}]
+         number of transactions that have been executed."}]
        [:code {:class value-style} (if (neg? sequence) "n/a" sequence)]]]
-
-
+     
+     
+     ;; -- Actions
+     [:div.w-full.flex.flex-col.space-y-2
+      [Caption
+       {:label "Actions"
+        :tooltip "Interact with the Smart Contract."}]
+      
+      (if (seq exports)
+        [AccountActions account]
+        [:span.text-sm.text-gray-500.max-w-prose
+         "This Account doesn't export any action."])]
+     
+     
      ;; Environment
      ;; ==============
      [:div.w-full.max-w-prose.flex.flex-col.space-y-2
       [EnvironmentBrowser account]
-
+      
       [:p.text-sm.text-gray-500.max-w-prose
        "The environment is a space reserved for each Account
-        that can freely store on-chain data and definitions.
-        (e.g. code that you write in Convex Lisp)"]]]))
+       that can freely store on-chain data and definitions.
+       (e.g. code that you write in Convex Lisp)"]]]))
