@@ -135,7 +135,8 @@
                :isLibrary
                :memorySize
                :sequence
-               :type}
+               :type
+               :exports}
              (set (keys response-body)))))
 
     (let [response @(client/GET-public-v1-account (server-url) 1267650600228229401496703205376)
