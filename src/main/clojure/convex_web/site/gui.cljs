@@ -1573,13 +1573,13 @@
      ;; -- Actions
      [:div.w-full.flex.flex-col.space-y-2
       [Caption
-       {:label "Actions"
-        :tooltip "Interact with the Smart Contract."}]
+       {:label "Callable Functions"
+        :tooltip "Accounts may have functions that any user of the Convex netwtork can call."}]
       
       (if (seq exports)
         [AccountActions account]
         [:span.text-sm.text-gray-500.max-w-prose
-         "This Account doesn't export any action."])]
+         "This Account doesn't have any callable functions."])]
      
      
      ;; Environment
