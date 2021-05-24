@@ -3,7 +3,7 @@
  :deps
  {org.clojure/clojure {:mvn/version "1.10.3"}
   org.clojure/tools.logging {:mvn/version "1.1.0"}
-  org.clojure/data.json {:mvn/version "2.3.0"}
+  org.clojure/data.json {:mvn/version "2.3.1"}
 
   com.cognitect/transit-clj {:mvn/version "1.0.324"}
   com.cognitect/transit-cljs {:mvn/version "0.8.269"}
@@ -95,8 +95,8 @@
   
   ;; -- Site dev
   :site-dev
-  {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.844"}
-                thheller/shadow-cljs {:mvn/version "2.13.0"}
+  {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.866"}
+                thheller/shadow-cljs {:mvn/version "2.14.0"}
                 binaryage/devtools {:mvn/version "1.0.3"}
                 re-frisk/re-frisk {:mvn/version "1.5.1"}}}
 
@@ -105,7 +105,7 @@
   :test
   {:extra-paths ["src/test/clojure"]
    :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}
-                lambdaisland/kaocha {:mvn/version "1.0.829"}}}
+                lambdaisland/kaocha {:mvn/version "1.0.861"}}}
   
   
   ;; -- Socket REPL
@@ -115,7 +115,7 @@
   
   ;; -- Kaocha test runner
   :kaocha
-  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.0.829"}}}
+  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.0.861"}}}
 
 
   ;; -- Cognitect test runner
