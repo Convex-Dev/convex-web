@@ -11,7 +11,7 @@
            (convex.core Init)))
 
 (defn make-convex-context [& [{:keys [address]}]]
-  (Context/createFake Init/STATE (or address Init/HERO)))
+  (Context/createFake (Init/createState) (or address Init/HERO)))
 
 (defmacro catch-throwable [& body]
   `(try

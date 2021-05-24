@@ -49,7 +49,7 @@
       (testing "Expected values"
         (is (= #:convex-web.result{:error-code :CAST
                                    :trace nil
-                                   :value "Can't convert 1 of class convex.core.data.prim.CVMLong to type class convex.core.data.ASequence"
+                                   :value "Can't convert value of type Long to type Sequence"
                                    :value-kind :string}
                (select-keys result [:convex-web.result/value
                                     :convex-web.result/value-kind

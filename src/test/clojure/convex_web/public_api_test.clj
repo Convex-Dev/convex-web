@@ -251,8 +251,7 @@
       (is (= 200 (get response :status)))
       (is (= {:errorCode "CAST"
               :source "CVM"
-              :value "ErrorValue[:CAST] : Can't convert 1 of class convex.core.data.prim.CVMLong to type class convex.core.data.ASequence
-In function: map"}
+              :value "ErrorValue[:CAST] : Can't convert value of type Long to type Sequence\nIn function: map"}
              response-body)))))
 
 (deftest prepare-test
@@ -480,7 +479,7 @@ In function: map"}
         ;; Submit response with error code.
         (is (= {:errorCode "CAST"
                 :source "CVM"
-                :value "Can't convert 1 of class convex.core.data.prim.CVMLong to type class convex.core.data.ASequence"}
+                :value "Can't convert value of type Long to type Sequence"}
                submit-response-body))))))
 
 (deftest faucet-test

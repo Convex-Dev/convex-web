@@ -34,7 +34,7 @@
   (shadow-server/start!)
   (shadow/watch :main))
 
-(def context (Context/createFake Init/STATE Init/HERO))
+(def context (Context/createFake (Init/createState) Init/HERO))
 
 (defn ^Peer peer []
   (system/convex-peer system))

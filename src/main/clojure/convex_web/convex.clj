@@ -12,8 +12,7 @@
            (convex.api Convex)
            (java.util.concurrent TimeoutException)
            (clojure.lang AFn)
-           (convex.core.lang.expanders AExpander)
-           (convex.core.data.prim CVMBool CVMChar CVMLong CVMDouble)))
+           (convex.core.data.prim CVMBool CVMLong CVMDouble)))
 
 (set! *warn-on-reflection* true)
 
@@ -113,9 +112,6 @@
     (instance? AFn x)
     :function
 
-    (instance? AExpander x)
-    :macro
-
     (instance? Symbol x)
     :symbol))
 
@@ -160,9 +156,6 @@
 
     (instance? AFn x)
     (.toString ^AFn x)
-
-    (instance? AExpander x)
-    (.toString ^AExpander x)
 
     (instance? ABlob x)
     (.toHexString ^ABlob x)
@@ -343,7 +336,7 @@
                                           :actor? actor?
                                           :library? library?
                                           :memory-size (.getMemorySize account-status)
-                                          :allowance (.getAllowance account-status)
+                                          :allowance (.getMemory account-status)
                                           :type (cond
                                                   library? :library
                                                   actor? :actor

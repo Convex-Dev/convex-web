@@ -44,7 +44,7 @@
     {:address (.longValue ^Address result-value)}
 
     (instance? ABlob result-value)
-    {:length (.length ^ABlob result-value)
+    {:length (.count ^ABlob result-value)
      :hex-string (.toHexString ^ABlob result-value)}
 
     :else

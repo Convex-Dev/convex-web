@@ -6,8 +6,7 @@
   (:import (convex.core.data Address Blob Syntax Maps Symbol Keyword)
            (convex.core Init)
            (convex.core.data.prim CVMLong)
-           (clojure.lang ExceptionInfo)
-           (convex.core.lang.impl RollbackValue)))
+           (clojure.lang ExceptionInfo)))
 
 (deftest read-source-test
   (is (= [] (convex/read-source "()" :convex-lisp)))
@@ -81,11 +80,8 @@
     (testing "Blob"
       (is (= (.toHexString (Blob/create (.getBytes "Text"))) (convex/datafy (Blob/create (.getBytes "Text"))))))
 
-    (testing "Expander"
-      (is (string? (convex/datafy (convex/execute-string context "defn")))))
-
     (testing "Syntax"
-      (is (= 1 (convex/datafy (Syntax/create 1))))
+      (is (= 1 (convex/datafy (Syntax/create (CVMLong/create 1)))))
       (is (= (Maps/empty) (convex/datafy (Syntax/create (Maps/empty))))))
 
     (testing "Non-CVM types will throw"
@@ -141,9 +137,6 @@
 
     (testing "Symbol"
       (is (= :symbol (convex/value-kind (convex/execute context 'sym)))))
-
-    (testing "Macro"
-      (is (= :macro (convex/value-kind (convex/execute-string context "defn")))))
 
     (testing "Special"
       (is (= :symbol (convex/value-kind (convex/execute-string context "def")))))
