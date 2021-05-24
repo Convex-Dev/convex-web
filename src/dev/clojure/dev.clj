@@ -4,36 +4,22 @@
             [convex-web.convex :as convex]
             [convex-web.session :as session]
             [convex-web.account :as account]
-            [convex-web.logging :as logging]
             [convex-web.web-server :as web-server]
-            [convex-web.command :as command]
             [convex-web.client :as client]
-            [convex-web.web-server :as web-server]
 
-            [clojure.test :refer [is]]
-            [clojure.spec.alpha :as s]
-            [clojure.spec.test.alpha :as stest]
-            [clojure.repl :refer [doc]]
-            [clojure.string :as str]
             [clojure.java.io :as io]
             [clojure.stacktrace :as stacktrace]
-            [clojure.datafy :refer [datafy]]
-            [clojure.tools.logging :as log]
 
             [com.stuartsierra.component.repl :refer [set-init reset system]]
             [shadow.cljs.devtools.server :as shadow-server]
             [shadow.cljs.devtools.api :as shadow]
             [kaocha.repl :as kaocha]
             [ring.mock.request :as mock]
-            [aero.core :as aero]
-            [datalevin.core :as d]
-            [nano-id.core :as nano-id]
-            [org.httpkit.client :as http]
-            [expound.alpha :as expound])
+            [datalevin.core :as d])
   (:import (convex.core Init Peer)
            (convex.core.lang Core Reader Context)
            (convex.core.crypto Hash AKeyPair)
-           (convex.core.data AccountKey Address)))
+           (convex.core.data AccountKey)))
 
 ;; -- Logging
 (set-init
