@@ -1165,6 +1165,167 @@
                     (= :ajax.status/success ajax-status)
                     [Highlight (prn-str (:convex-web.command/object result))])]]]])]))])))
 
+(defn InvokePopover2
+  "This is a POC component with a GUI to invoke a function.
+  
+  It has external dependencies with command and session.
+  
+  The command is executed exactly like it would have been in the Sandbox,
+  and its state is stored in the session state."
+  [{invoke-account :account
+    invoke-symbol :symbol
+    invoke-syntax :syntax}]
+  
+  ;; Component local state.
+  (r/with-let [state-ref (r/atom 
+                           {:open? false
+                            
+                            ;; Arguments that are passed to the function.
+                            :args ""
+                            
+                            ;; Command result.
+                            :result nil
+                            
+                            ;; Status of the command request.
+                            :ajax/status nil})]
+    
+    (let [;; Commands are stored per address in the session,
+          ;; so we need to know the active address.
+          active-address @(rf/subscribe [:session/?active-address])
+          
+          {open? :open?
+           args :args
+           result :result
+           ajax-status :ajax/status} @state-ref
+          
+          invoke-symbol-ifn? (or 
+                               (= :function (get-in invoke-syntax [:convex-web.syntax/meta :doc :type]))
+                               ;; If there isn't a type, we assume it's a function.
+                               (= nil (get-in invoke-syntax [:convex-web.syntax/meta :doc :type])))
+          
+          call? (get-in invoke-account [:convex-web.account/status :convex-web.account-status/actor?])
+          
+          invoke-address (str (:convex-web.account/address invoke-account))
+          invoke-address (if (str/starts-with? invoke-address "#")
+                           invoke-address
+                           (str "#" invoke-address))
+          
+          qualified-symbol (str invoke-address "/" invoke-symbol)
+          
+          invoke-source (cond
+                          call?
+                          (str "(call " invoke-address " (" invoke-symbol " " args "))")
+                          
+                          invoke-symbol-ifn?
+                          (str "(" qualified-symbol " " args ")")
+                          
+                          :else
+                          qualified-symbol)
+          
+          run (fn []
+                (swap! state-ref assoc :ajax/status :ajax.status/pending)
+                
+                (rf/dispatch 
+                  [:command/!execute
+                   {:convex-web.command/mode :convex-web.command.mode/transaction
+                    :convex-web.command/address active-address
+                    :convex-web.command/transaction
+                    {:convex-web.transaction/type :convex-web.transaction.type/invoke
+                     :convex-web.transaction/source invoke-source
+                     :convex-web.transaction/language :convex-lisp}}
+                   (fn [old-state new-state]
+                     (let [command (merge old-state new-state)]
+                       (swap! state-ref assoc 
+                         :result command
+                         :ajax/status :ajax.status/success)
+                       
+                       (rf/dispatch
+                         [:session/!set-state
+                          (fn [state]
+                            (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj command))])))]))]
+      
+      [:> headlessui-react/Popover
+       {:open open?
+        :className "relative"}
+       (fn [_]
+         (r/as-element
+           [:<>
+            
+            [:> headlessui-react/Popover.Button
+             {:className "outline-none"}
+             
+             [DefaultButton
+              {:onClick 
+               (fn []
+                 (swap! state-ref update :open? not))}
+              invoke-symbol]]
+            
+            (when open?
+              [:> headlessui-react/Popover.Panel
+               {:static true
+                :className "absolute z-10 mt-2"}
+               
+               [:div
+                {:class "overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"}
+                
+                [:div.flex.flex-col.space-y-3
+                 
+                 [:div.relative.flex.flex-col.space-y-3.bg-white.py-7.px-6
+                  
+                  ;; Close button.
+                  [:button
+                   {:class 
+                    ["absolute top-0 right-0"
+                     "rounded-lg"
+                     "p-1 mt-1 mr-1"
+                     "text-gray-500 hover:text-gray-700"
+                     "bg-gray-100 hover:bg-gray-200"
+                     "hover:shadow-md"
+                     "transition-all"]
+                    
+                    :on-click #(swap! state-ref update :open? not)}
+                   
+                   [:> XIcon
+                    {:className "w-4 h-4"}]]
+                  
+                  ;; Invoke args.
+                  [:div.flex.items-center.space-x-3
+                   [:input.border.rounded.p-2.focus:outline-none.focus:border-blue-300
+                    {:ref
+                     (fn [element]
+                       (when element
+                         (.focus element)))
+                     :type "text"
+                     :value args
+                     :on-key-up
+                     (fn [event]                       
+                       (when (or 
+                               (= "Enter" (.-key event))
+                               (= 13 (.-keyCode event)))
+                         (run)))
+                     :on-change
+                     (fn [event]                       
+                       (swap! state-ref assoc :args (event-target-value event)))}]
+                   
+                   [DefaultButton
+                    {:on-click run
+                     :disabled (= :ajax.status/pending ajax-status)}
+                    "Run"]]
+                  
+                  ;; Preview Convex Lisp.
+                  [codemirror/CodeMirror
+                   [:div.flex-1]
+                   {:configuration
+                    {:readOnly true
+                     :value invoke-source}}]
+                  
+                  (cond
+                    (= :ajax.status/pending ajax-status)
+                    [SpinnerSmall]
+                    
+                    (= :ajax.status/success ajax-status)
+                    [Highlight (prn-str (:convex-web.command/object result))])]]]])]))])))
+
 (defn EnvironmentBrowser
   "A disclousure interface to browse an account's environment."
   [account]
@@ -1310,20 +1471,17 @@
 
 
 (defn AccountActions [account]
-  (let [{account-address :convex-web.account/address
-         account-status :convex-web.account/status} account
+  (let [{account-status :convex-web.account/status} account
         
-        {exports :convex-web.account-status/exports} account-status]
+        {environment :convex-web.account-status/environment
+         exports :convex-web.account-status/exports} account-status]
     [:div.flex.space-x-3.p-4
-     
      (for [s exports]
        ^{:key s}
-       [DefaultButton 
-        {:on-click #(js/console.log s)}
-        (str s)])
-     
-     ]))
-
+       [InvokePopover2
+        {:account account
+         :symbol s
+         :syntax (environment s)}])]))
 
 (defn Account [account]
   (let [{:convex-web.account/keys [address status]} account
