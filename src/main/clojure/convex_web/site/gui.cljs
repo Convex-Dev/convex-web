@@ -1470,18 +1470,37 @@
     [Highlight (prn-str object)]))
 
 
-(defn AccountActions [account]
-  (let [{account-status :convex-web.account/status} account
-        
-        {environment :convex-web.account-status/environment
-         exports :convex-web.account-status/exports} account-status]
-    [:div.flex.space-x-3.p-4
-     (for [s exports]
-       ^{:key s}
-       [InvokePopover2
-        {:account account
-         :symbol s
-         :syntax (environment s)}])]))
+(defn CallableFunctions [account]
+  (r/with-let [exports (->> 
+                         (get-in account [:convex-web.account/status :convex-web.account-status/exports])
+                         (sort-by name))
+               
+               default-tab (first exports)
+               
+               selected-tab-ref (r/atom default-tab)]
+    
+    [:div.flex.flex-col.max-w-md.w-full
+     ;; Tabs.
+     [:div.flex
+      {:class "space-x-0.5"}
+      (doall
+        (for [s exports]
+          ^{:key s}
+          [:button.rounded-none.rounded-t-lg.px-3.py-2.text-sm.border-l.border-r.border-t.focus:outline-none
+           {:class 
+            (if (= s @selected-tab-ref)
+              "bg-blue-50 border-blue-200 text-gray-900"
+              "bg-gray-100 hover:bg-gray-200 text-gray-500")
+            
+            :on-click #(reset! selected-tab-ref s)}
+           [:span s]]))]
+     
+     ;; Args & call.
+     [:div.px-3.py-5.bg-gray-50.border.rounded-b-lg.rounded-tr-lg
+      
+      [DefaultButton 
+       {}
+       "Call"]]]))
 
 (defn Account [account]
   (let [{:convex-web.account/keys [address status]} account
@@ -1571,13 +1590,13 @@
      
      
      ;; -- Actions
-     [:div.w-full.flex.flex-col.space-y-2
+     [:div.w-full.flex.flex-col.space-y-3
       [Caption
        {:label "Callable Functions"
         :tooltip "Accounts may have functions that any user of the Convex netwtork can call."}]
       
       (if (seq exports)
-        [AccountActions account]
+        [CallableFunctions account]
         [:span.text-sm.text-gray-500.max-w-prose
          "This Account doesn't have any callable functions."])]
      
