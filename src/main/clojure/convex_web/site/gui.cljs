@@ -1489,97 +1489,124 @@
            result :result
            ajax-status :ajax/status} @state-ref]
       
-      [:div.flex.flex-col.max-w-md.w-full
+      [:div.flex.space-x-10
        
-       ;; Tabs.
-       [:div.flex
-        {:class "space-x-0.5"}
-        (doall
-          (for [s exports]
-            ^{:key s}
-            [:button.rounded-none.rounded-t-lg.px-3.py-2.text-sm.border-l.border-r.border-t.focus:outline-none
-             {:style 
-              {:min-width "60px"}
-              
-              :class 
-              (if (= s @selected-tab-ref)
-                "bg-blue-50 border-blue-200 text-gray-900"
-                "bg-gray-100 hover:bg-gray-200 text-gray-500")
-              
-              :on-click 
-              (fn []
-                (reset! selected-tab-ref s))}
-             
-             [:span s]]))]
-       
-       ;; Args & call.
-       [:div.px-3.py-5.bg-gray-50.border.rounded-b-lg.rounded-tr-lg
+       [:div.flex.flex-col.max-w-md.w-full
         
-        (let [selected-sym @selected-tab-ref
-              
-              callable-syntax (some
-                                (fn [[sym syn]]
-                                  (when (= sym selected-sym)
-                                    syn))
-                                (get-in account [:convex-web.account/status :convex-web.account-status/environment]))
-              
-              invoke-symbol-ifn? (or 
-                                   (= :function (get-in callable-syntax [:convex-web.syntax/meta :doc :type]))
-                                   ;; If there isn't a type, we assume it's a function.
-                                   (= nil (get-in callable-syntax [:convex-web.syntax/meta :doc :type])))
-              
-              ;; Use `(call ... )` instead of `(#1/f)` if account is an actor.
-              call? (get-in account [:convex-web.account/status :convex-web.account-status/actor?])
-              
-              callable-address (str (:convex-web.account/address account))
-              callable-address (if (str/starts-with? callable-address "#")
-                                 callable-address
-                                 (str "#" callable-address))
-              
-              qualified-symbol (str callable-address "/" selected-sym)
-              
-              callable-source (cond
-                                call?
-                                (str "(call " callable-address " (" selected-sym " " args "))")
-                                
-                                invoke-symbol-ifn?
-                                (str "(" qualified-symbol " " args ")")
-                                
-                                :else
-                                qualified-symbol)]
-          
-          [:div.flex.flex-col.items-start.space-y-3
-           [DefaultButton 
-            {:on-click
-             (fn []
+        ;; Tabs.
+        [:div.flex
+         {:class "space-x-0.5"}
+         (doall
+           (for [s exports]
+             ^{:key s}
+             [:button.rounded-none.rounded-t-lg.px-3.py-2.text-sm.border-l.border-r.border-t.focus:outline-none
+              {:style 
+               {:min-width "60px"}
                
-               (swap! state-ref assoc :ajax/status :ajax.status/pending)
+               :class 
+               (if (= s @selected-tab-ref)
+                 "bg-blue-50 border-blue-200 text-gray-900"
+                 "bg-gray-100 hover:bg-gray-200 text-gray-500")
                
-               (rf/dispatch 
-                 [:command/!execute
-                  {:convex-web.command/mode :convex-web.command.mode/transaction
-                   :convex-web.command/address active-address
-                   :convex-web.command/transaction
-                   {:convex-web.transaction/type :convex-web.transaction.type/invoke
-                    :convex-web.transaction/source callable-source
-                    :convex-web.transaction/language :convex-lisp}}
-                  (fn [old-state new-state]
-                    (let [command (merge old-state new-state)]
-                      
-                      (js/console.log command)
-                      
-                      (swap! state-ref assoc 
-                        :result command
-                        :ajax/status :ajax.status/success)))]))}
-            "Call"]
+               :on-click 
+               (fn []
+                 (reset! selected-tab-ref s))}
+              
+              [:span s]]))]
+        
+        ;; Args & call.
+        [:div.px-3.py-5.bg-gray-50.border.rounded-b-lg.rounded-tr-lg
+         
+         (let [selected-sym @selected-tab-ref
+               
+               callable-syntax (some
+                                 (fn [[sym syn]]
+                                   (when (= sym selected-sym)
+                                     syn))
+                                 (get-in account [:convex-web.account/status :convex-web.account-status/environment]))
+               
+               invoke-symbol-ifn? (or 
+                                    (= :function (get-in callable-syntax [:convex-web.syntax/meta :doc :type]))
+                                    ;; If there isn't a type, we assume it's a function.
+                                    (= nil (get-in callable-syntax [:convex-web.syntax/meta :doc :type])))
+               
+               ;; Use `(call ... )` instead of `(#1/f)` if account is an actor.
+               call? (get-in account [:convex-web.account/status :convex-web.account-status/actor?])
+               
+               callable-address (str (:convex-web.account/address account))
+               callable-address (if (str/starts-with? callable-address "#")
+                                  callable-address
+                                  (str "#" callable-address))
+               
+               qualified-symbol (str callable-address "/" selected-sym)
+               
+               callable-source (cond
+                                 call?
+                                 (str "(call " callable-address " (" selected-sym " " args "))")
+                                 
+                                 invoke-symbol-ifn?
+                                 (str "(" qualified-symbol " " args ")")
+                                 
+                                 :else
+                                 qualified-symbol)]
            
-           ;; Result.
-           (cond
-             (= :ajax.status/pending ajax-status)
-             [SpinnerSmall]
-             
-             (= :ajax.status/success ajax-status)
-             [Highlight (prn-str (:convex-web.command/object result))])])]])))
+           [:div.flex.flex-col.items-start.space-y-3
+            [DefaultButton 
+             {:on-click
+              (fn []
+                
+                (swap! state-ref assoc :ajax/status :ajax.status/pending)
+                
+                (rf/dispatch 
+                  [:command/!execute
+                   {:convex-web.command/mode :convex-web.command.mode/transaction
+                    :convex-web.command/address active-address
+                    :convex-web.command/transaction
+                    {:convex-web.transaction/type :convex-web.transaction.type/invoke
+                     :convex-web.transaction/source callable-source
+                     :convex-web.transaction/language :convex-lisp}}
+                   (fn [old-state new-state]
+                     (let [command (merge old-state new-state)]
+                       
+                       (js/console.log command)
+                       
+                       (swap! state-ref assoc 
+                         :result command
+                         :ajax/status :ajax.status/success)))]))}
+             "Call"]])]]
+       
+       ;; Input & output.
+       (when ajax-status
+         [:div.flex.flex-col.flex-1.space-y-2.max-w-md.w-full.border-2.border-blue-200.rounded-lg.p-3
+          
+          ;; Input.
+          [:div.flex.flex-col.flex-1.space-y-2
+           
+           [:span.font-mono.text-gray-600.text-xs.leading-none.cursor-default
+            "Input"]
+           
+           [:div.flex.flex-col.flex-1
+            (cond
+              (= :ajax.status/pending ajax-status)
+              [SpinnerSmall]
+              
+              (= :ajax.status/success ajax-status)
+              [Highlight (get-in result [:convex-web.command/transaction :convex-web.transaction/source])])]]
+          
+          ;; Output.
+          [:div.flex.flex-col.flex-1.space-y-2
+           
+           [:span.font-mono.text-gray-600.text-xs.leading-none.cursor-default
+            "Output"]
+           
+           [:div.flex.flex-col.flex-1
+            (cond
+              (= :ajax.status/pending ajax-status)
+              [SpinnerSmall]
+              
+              (= :ajax.status/success ajax-status)
+              [:div
+               [Highlight (prn-str (:convex-web.command/object result))]])]]])])))
 
 (defn Account [account]
   (let [{:convex-web.account/keys [address status]} account
