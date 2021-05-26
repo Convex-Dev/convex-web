@@ -1573,11 +1573,9 @@
                (fn [event]                       
                  (swap! state-ref assoc :args (event-target-value event)))}]]
             
-            
             [DefaultButton 
              {:on-click
               (fn []
-                
                 (swap! state-ref assoc :ajax/status :ajax.status/pending)
                 
                 (rf/dispatch 
@@ -1591,7 +1589,6 @@
                    (fn [old-state new-state]
                      (let [command (merge old-state new-state)]
                        
-                       (js/console.log command)
                        
                        (swap! state-ref assoc 
                          :result command
@@ -1614,7 +1611,13 @@
               [SpinnerSmall]
               
               (= :ajax.status/success ajax-status)
-              [Highlight (get-in result [:convex-web.command/transaction :convex-web.transaction/source])])]]
+              (let [source (get-in result [:convex-web.command/transaction :convex-web.transaction/source])]
+                [Highlight 
+                 (try                             
+                   (zprint/zprint-str source {:parse-string-all? true
+                                              :width 60})
+                   (catch js/Error _
+                     source))]))]]
           
           ;; Output.
           [:div.flex.flex-col.flex-1.space-y-2
@@ -1622,14 +1625,19 @@
            [:span.font-mono.text-gray-600.text-xs.leading-none.cursor-default
             "Output"]
            
-           [:div.flex.flex-col.flex-1
+           [:div.flex.flex-col.flex-1.max-h-80.overflow-auto
             (cond
               (= :ajax.status/pending ajax-status)
               [SpinnerSmall]
               
               (= :ajax.status/success ajax-status)
               [:div
-               [Highlight (prn-str (:convex-web.command/object result))]])]]])])))
+               (let [result-object (:convex-web.command/object result)
+                     result-object-str (try
+                                         (zprint/zprint-str result-object {:width 60})
+                                         (catch js/Error _
+                                           (pr-str result-object)))]
+                 [Highlight result-object-str])])]]])])))
 
 (defn Account [account]
   (let [{:convex-web.account/keys [address status]} account
