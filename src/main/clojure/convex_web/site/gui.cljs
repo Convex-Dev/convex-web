@@ -1500,17 +1500,17 @@
       
       [:div.flex.space-x-10
        
-       [:div.flex.flex-col.max-w-md.w-full
+       [:div.flex.flex-col.max-w-md.w-full.overflow-auto
         
         ;; Tabs.
-        [:div.flex
+        [:div.flex.overflow-auto
          {:class "space-x-0.5"}
          (doall
            (for [s exports]
              ^{:key s}
              [:button.rounded-none.rounded-t-lg.px-3.py-2.text-xs.border-l.border-r.border-t.focus:outline-none
               {:style 
-               {:min-width "60px"}
+               {:min-width "90px"}
                
                :class 
                (if (= s selected-tab)
