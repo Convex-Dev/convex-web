@@ -1487,7 +1487,8 @@
           
           {args :args
            result :result
-           ajax-status :ajax/status} @state-ref]
+           ajax-status :ajax/status
+           args-input-field :args-input-field} @state-ref]
       
       [:div.flex.space-x-10
        
@@ -1510,7 +1511,11 @@
                
                :on-click 
                (fn []
-                 (reset! selected-tab-ref s))}
+                 (reset! selected-tab-ref s)
+                 (swap! state-ref assoc :args "")
+                 
+                 (when args-input-field
+                   (.focus args-input-field)))}
               
               [:span s]]))]
         
@@ -1560,7 +1565,9 @@
               {:ref
                (fn [element]
                  (when element
-                   (.focus element)))
+                   (.focus element)
+                   
+                   (swap! state-ref assoc :args-input-field element)))
                :type "text"
                :value args
                :on-key-up
