@@ -1475,20 +1475,28 @@
                          (get-in account [:convex-web.account/status :convex-web.account-status/exports])
                          (sort-by name))
                
+               ;; Tab stores the selected symbol.
                default-tab (first exports)
                
-               ;; Selected tab stores the selected symbol.
-               selected-tab-ref (r/atom default-tab)
-               
-               state-ref (r/atom {})]
+               state-ref (r/atom {:selected-tab default-tab})]
     
     (let [;; Address which will be used to execute transactions.
           active-address @(rf/subscribe [:session/?active-address])
           
-          {args :args
+          {;; Result of the Command.
            result :result
+           
+           ;; Ajax status of the Comand.
            ajax-status :ajax/status
-           args-input-field :args-input-field} @state-ref]
+          
+           ;; Raw args as string.
+           args :args
+           
+           ;; Args DOM element.
+           args-input-field :args-input-field
+           
+           ;; Selected tab stores the selected symbol.
+           selected-tab :selected-tab} @state-ref]
       
       [:div.flex.space-x-10
        
@@ -1505,14 +1513,15 @@
                {:min-width "60px"}
                
                :class 
-               (if (= s @selected-tab-ref)
+               (if (= s selected-tab)
                  "bg-blue-50 border-blue-200 text-gray-900"
                  "bg-gray-100 hover:bg-gray-200 text-gray-500")
                
                :on-click 
                (fn []
-                 (reset! selected-tab-ref s)
-                 (swap! state-ref assoc :args "")
+                 (swap! state-ref assoc 
+                   :args "" 
+                   :selected-tab s)
                  
                  (when args-input-field
                    (.focus args-input-field)))}
@@ -1522,11 +1531,9 @@
         ;; Args & call.
         [:div.px-3.py-5.bg-gray-50.border.rounded-b-lg
          
-         (let [selected-sym @selected-tab-ref
-               
-               callable-syntax (some
+         (let [callable-syntax (some
                                  (fn [[sym syn]]
-                                   (when (= sym selected-sym)
+                                   (when (= sym selected-tab)
                                      syn))
                                  (get-in account [:convex-web.account/status :convex-web.account-status/environment]))
                
@@ -1543,11 +1550,11 @@
                                   callable-address
                                   (str "#" callable-address))
                
-               qualified-symbol (str callable-address "/" selected-sym)
+               qualified-symbol (str callable-address "/" selected-tab)
                
                callable-source (cond
                                  call?
-                                 (str "(call " callable-address " (" selected-sym " " args "))")
+                                 (str "(call " callable-address " (" selected-tab " " args "))")
                                  
                                  invoke-symbol-ifn?
                                  (str "(" qualified-symbol " " args ")")
