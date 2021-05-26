@@ -1,37 +1,39 @@
 {
-	"folders": 
-	[
-		{
-			"path": "."
-		}
-	],
-
-	"build_systems":
-    [
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "build_systems": [
+        {
+            "name": "Outdated deps.edn",
+            "shell_cmd": "clj -M:outdated:logback-dev",
+            "working_dir": "$project_path"
+        },
         {
             "name": "Run tests",
             "shell_cmd": "bin/test",
-            "working_dir": "$project_path" 
+            "working_dir": "$project_path"
         },
         {
             "name": "Run tests with Kaocha",
             "shell_cmd": "bin/kaocha",
-            "working_dir": "$project_path" 
+            "working_dir": "$project_path"
         },
         {
             "name": "Release app",
             "shell_cmd": "npm run release",
-            "working_dir": "$project_path" 
+            "working_dir": "$project_path"
         },
         {
             "name": "Styles",
             "shell_cmd": "npm run styles",
-            "working_dir": "$project_path" 
+            "working_dir": "$project_path"
         },
         {
             "name": "Styles dev",
             "shell_cmd": "npm run styles-dev",
-            "working_dir": "$project_path" 
-        },
+            "working_dir": "$project_path"
+        }
     ]
 }
