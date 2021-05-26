@@ -1499,7 +1499,7 @@
          (doall
            (for [s exports]
              ^{:key s}
-             [:button.rounded-none.rounded-t-lg.px-3.py-2.text-sm.border-l.border-r.border-t.focus:outline-none
+             [:button.rounded-none.rounded-t-lg.px-3.py-2.text-xs.border-l.border-r.border-t.focus:outline-none
               {:style 
                {:min-width "60px"}
                
@@ -1515,7 +1515,7 @@
               [:span s]]))]
         
         ;; Args & call.
-        [:div.px-3.py-5.bg-gray-50.border.rounded-b-lg.rounded-tr-lg
+        [:div.px-3.py-5.bg-gray-50.border.rounded-b-lg
          
          (let [selected-sym @selected-tab-ref
                
@@ -1551,6 +1551,29 @@
                                  qualified-symbol)]
            
            [:div.flex.flex-col.items-start.space-y-3
+            
+            [:div.flex.flex-col.space-y-1
+             [:span.text-gray-600.text-xs.font-mono
+              "Args"]
+             
+             [:input.font-mono.text-xs.border.rounded.p-2.focus:outline-none.focus:border-blue-300
+              {:ref
+               (fn [element]
+                 (when element
+                   (.focus element)))
+               :type "text"
+               :value args
+               :on-key-up
+               (fn [event]                       
+                 (when (or 
+                         (= "Enter" (.-key event))
+                         (= 13 (.-keyCode event)))
+                   nil))
+               :on-change
+               (fn [event]                       
+                 (swap! state-ref assoc :args (event-target-value event)))}]]
+            
+            
             [DefaultButton 
              {:on-click
               (fn []
