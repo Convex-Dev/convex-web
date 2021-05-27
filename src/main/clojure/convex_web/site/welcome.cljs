@@ -247,7 +247,7 @@
         {:class "w-4/5"
          :style
          {:color "#62A6E1"}}
-        "Full Stack Solution for the Intrnet of Value."]]
+        "Full Stack Solution for the Internet of Value."]]
 
 
       ;; Convex is flexible
