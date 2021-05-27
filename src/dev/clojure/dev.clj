@@ -112,13 +112,17 @@
   (instance? convex.core.lang.impl.Fn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "(fn [x] x)"))
   
+  ;; `convex.core.lang.impl.Fn/getParams` returns AVector<Syntax>
   (def params (.getParams (execute-string "(fn [x y] (+ x y))")))
-  
-  (def param-x (first params))
   
   ;; Parameters data.
   (map
     (fn [param]
+      ;; A function parameter Syntax object wraps a Symbol:
+      ;; 
+      ;; (.getValue param) ;; => convex.core.data.Symbol
+      ;; 
+      ;; Symbol is ASymbolic, so it's possibe to read its name `(.getName symbol)`.
       {:symbol (-> param .getValue .getName .toString)
        :metadata (.getMeta param)})
     params)
