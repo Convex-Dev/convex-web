@@ -119,8 +119,19 @@
   (when x
     (t/read (t/reader x :json))))
 
+(defn json-key-fn [x]
+  (cond
+    (ident? x)
+    (name x)
+    
+    (string? x)
+    x
+    
+    :else
+    (pr-str x)))
+
 (defn json-encode [x]
-  (json/write-str x))
+  (json/write-str x :key-fn json-key-fn))
 
 (defn json-decode [^InputStream x & [{:keys [key-fn]}]]
   (when x
