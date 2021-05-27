@@ -1473,7 +1473,7 @@
 (defn CallableFunctions [account]
   (r/with-let [exports (->> 
                          (get-in account [:convex-web.account/status :convex-web.account-status/exports])
-                         (sort-by name))
+                         (sort-by (comp name :name)))
                
                ;; Tab stores the selected symbol.
                default-tab (first exports)
@@ -1506,7 +1506,7 @@
         [:div.flex.overflow-auto
          {:class "space-x-0.5"}
          (doall
-           (for [s exports]
+           (for [{s :name} exports]
              ^{:key s}
              [:button.rounded-none.rounded-t-lg.px-3.py-2.text-xs.border-l.border-r.border-t.focus:outline-none
               {:style 
@@ -1517,7 +1517,7 @@
                  "bg-blue-50 border-blue-200 text-gray-900"
                  "bg-gray-100 hover:bg-gray-200 text-gray-500")
                
-               :on-click 
+               :on-click
                (fn []
                  (swap! state-ref assoc 
                    :args "" 

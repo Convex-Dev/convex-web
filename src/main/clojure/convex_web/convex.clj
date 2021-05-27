@@ -328,11 +328,29 @@
     (let [env (environment-data (.getEnvironment account-status))
           exports? (contains? env '*exports*)
           actor? (.isActor account-status)
-          library? (and actor? (not exports?))]
+          library? (and actor? (not exports?))
+          
+          ;; Reify exported functions giving it a name and arglists attributes.
+          exports (map 
+                    (fn [sym]
+                      (let [syn (.get (.getEnvironment account-status) sym)
+                            
+                            ;; Syntax `syn` wraps a Fn, and a Fn has arguments - Syntax<Fn>.
+                            f (.getValue syn)
+                            
+                            arglists (map 
+                                       (fn [^Syntax param]
+                                         ;; Syntax `param` wraps a Symbol - Syntax<Symbol>.
+                                         (datafy (.getValue param)))
+                                       (.getParams f))]
+                        {:name (datafy sym)
+                         :arglists arglists}))
+                    (.getExports account-status))]
+      
       (merge #:convex-web.account-status {:sequence (.getSequence account-status)
                                           :balance (.getBalance account-status)
                                           :environment env
-                                          :exports (or (datafy (.getExports account-status)) #{})
+                                          :exports exports
                                           :actor? actor?
                                           :library? library?
                                           :memory-size (.getMemorySize account-status)
