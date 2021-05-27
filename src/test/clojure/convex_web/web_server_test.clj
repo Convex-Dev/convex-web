@@ -1,5 +1,5 @@
 (ns convex-web.web-server-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is testing]]
             
             [convex-web.web-server :as web-server]))
 

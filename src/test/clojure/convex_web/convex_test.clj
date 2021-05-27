@@ -1,8 +1,8 @@
 (ns convex-web.convex-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is run-tests testing]]
 
             [convex-web.convex :as convex]
-            [convex-web.test :refer :all])
+            [convex-web.test :refer [catch-throwable make-convex-context]])
   (:import (convex.core.data Address Blob Syntax Maps Symbol Keyword)
            (convex.core Init)
            (convex.core.data.prim CVMLong)
