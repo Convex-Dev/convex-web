@@ -1478,7 +1478,8 @@
                ;; Tab stores the selected symbol.
                default-tab (first exports)
                
-               state-ref (r/atom {:selected-tab default-tab})]
+               state-ref (r/atom {:selected-tab default-tab
+                                  :selected-fn (first exports)})]
     
     (let [;; Address which will be used to execute transactions.
           active-address @(rf/subscribe [:session/?active-address])
@@ -1488,15 +1489,21 @@
            
            ;; Ajax status of the Comand.
            ajax-status :ajax/status
-          
+           
            ;; Raw args as string.
            args :args
            
-           ;; Args DOM element.
-           args-input-field :args-input-field
+           callable :selected-fn
            
            ;; Selected tab stores the selected symbol.
-           selected-tab :selected-tab} @state-ref]
+           selected-tab :selected-tab} @state-ref
+          
+          args-str (->> 
+                     (:arglists callable)
+                     (map
+                       (fn [arg]
+                         (get args arg)))
+                     (str/join " "))]
       
       [:div.flex.space-x-10
        
@@ -1506,25 +1513,23 @@
         [:div.flex.overflow-auto
          {:class "space-x-0.5"}
          (doall
-           (for [{s :name} exports]
+           (for [{s :name :as exported} exports]
              ^{:key s}
              [:button.rounded-none.rounded-t-lg.px-3.py-2.text-xs.border-l.border-r.border-t.focus:outline-none
               {:style 
                {:min-width "90px"}
                
                :class 
-               (if (= s selected-tab)
+               (if (= exported selected-tab)
                  "bg-blue-50 border-blue-200 text-gray-900"
                  "bg-gray-100 hover:bg-gray-200 text-gray-500")
                
                :on-click
                (fn []
                  (swap! state-ref assoc 
-                   :args "" 
-                   :selected-tab s)
-                 
-                 (when args-input-field
-                   (.focus args-input-field)))}
+                   :args {}
+                   :selected-tab exported
+                   :selected-fn exported))}
               
               [:span s]]))]
         
@@ -1550,42 +1555,35 @@
                                   callable-address
                                   (str "#" callable-address))
                
-               qualified-symbol (str callable-address "/" selected-tab)
+               qualified-symbol (str callable-address "/" (:name callable))
                
                callable-source (cond
                                  call?
-                                 (str "(call " callable-address " (" selected-tab " " args "))")
+                                 (str "(call " callable-address " (" (:name callable) " " args-str "))")
                                  
                                  invoke-symbol-ifn?
-                                 (str "(" qualified-symbol " " args ")")
+                                 (str "(" qualified-symbol " " args-str ")")
                                  
                                  :else
                                  qualified-symbol)]
            
            [:div.flex.flex-col.items-start.space-y-3
             
-            [:div.flex.flex-col.space-y-1
-             [:span.text-gray-600.text-xs.font-mono
-              "Args"]
-             
-             [:input.font-mono.text-xs.border.rounded.p-2.focus:outline-none.focus:border-blue-300
-              {:ref
-               (fn [element]
-                 (when element
-                   (.focus element)
-                   
-                   (swap! state-ref assoc :args-input-field element)))
-               :type "text"
-               :value args
-               :on-key-up
-               (fn [event]                       
-                 (when (or 
-                         (= "Enter" (.-key event))
-                         (= 13 (.-keyCode event)))
-                   nil))
-               :on-change
-               (fn [event]                       
-                 (swap! state-ref assoc :args (event-target-value event)))}]]
+            ;; Args.
+            (map
+              (fn [sym]
+                ^{:key sym}
+                [:div.flex.flex-col
+                 [:span.text-gray-600.text-xs.font-mono
+                  sym]
+                 
+                 [:input.font-mono.text-xs.border.rounded.p-2.focus:outline-none.focus:border-blue-300
+                  {:type "text"
+                   :value (get-in @state-ref [:args sym])                    
+                   :on-change
+                   (fn [event]                       
+                     (swap! state-ref assoc-in [:args sym] (event-target-value event)))}]])
+              (get-in @state-ref [:selected-fn :arglists]))
             
             [DefaultButton 
              {:on-click
@@ -1602,7 +1600,6 @@
                      :convex-web.transaction/language :convex-lisp}}
                    (fn [old-state new-state]
                      (let [command (merge old-state new-state)]
-                       
                        
                        (swap! state-ref assoc 
                          :result command
