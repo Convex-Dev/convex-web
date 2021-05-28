@@ -1479,7 +1479,7 @@
                default-tab (first exports)
                
                state-ref (r/atom {:selected-tab default-tab
-                                  :selected-fn (first exports)})]
+                                  :callable (first exports)})]
     
     (let [;; Address which will be used to execute transactions.
           active-address @(rf/subscribe [:session/?active-address])
@@ -1493,7 +1493,7 @@
            ;; Raw args as string.
            args :args
            
-           callable :selected-fn
+           callable :callable
            
            ;; Selected tab stores the selected symbol.
            selected-tab :selected-tab} @state-ref
@@ -1529,7 +1529,7 @@
                  (swap! state-ref assoc 
                    :args {}
                    :selected-tab exported
-                   :selected-fn exported))}
+                   :callable exported))}
               
               [:span s]]))]
         
@@ -1583,7 +1583,7 @@
                    :on-change
                    (fn [event]                       
                      (swap! state-ref assoc-in [:args sym] (event-target-value event)))}]])
-              (get-in @state-ref [:selected-fn :arglists]))
+              (get-in @state-ref [:callable :arglists]))
             
             [DefaultButton 
              {:on-click
