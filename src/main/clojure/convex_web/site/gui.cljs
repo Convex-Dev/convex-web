@@ -1475,11 +1475,9 @@
                          (get-in account [:convex-web.account/status :convex-web.account-status/exports])
                          (sort-by (comp name :name)))
                
-               ;; Tab stores the selected symbol.
                default-tab (first exports)
                
-               state-ref (r/atom {:selected-tab default-tab
-                                  :callable (first exports)})]
+               state-ref (r/atom {:selected-tab default-tab})]
     
     (let [;; Address which will be used to execute transactions.
           active-address @(rf/subscribe [:session/?active-address])
@@ -1493,13 +1491,11 @@
            ;; Raw args as string.
            args :args
            
-           callable :callable
-           
-           ;; Selected tab stores the selected symbol.
+           ;; Selected tab stores the selected callable.
            selected-tab :selected-tab} @state-ref
           
           args-str (->> 
-                     (:arglists callable)
+                     (:arglists selected-tab)
                      (map
                        (fn [arg]
                          (get args arg)))
@@ -1528,8 +1524,7 @@
                (fn []
                  (swap! state-ref assoc 
                    :args {}
-                   :selected-tab exported
-                   :callable exported))}
+                   :selected-tab exported))}
               
               [:span s]]))]
         
@@ -1550,16 +1545,18 @@
                ;; Use `(call ... )` instead of `(#1/f)` if account is an actor.
                call? (get-in account [:convex-web.account/status :convex-web.account-status/actor?])
                
+               callable-name (:name selected-tab)
+               
                callable-address (str (:convex-web.account/address account))
                callable-address (if (str/starts-with? callable-address "#")
                                   callable-address
                                   (str "#" callable-address))
                
-               qualified-symbol (str callable-address "/" (:name callable))
+               qualified-symbol (str callable-address "/" callable-name)
                
                callable-source (cond
                                  call?
-                                 (str "(call " callable-address " (" (:name callable) " " args-str "))")
+                                 (str "(call " callable-address " (" callable-name " " args-str "))")
                                  
                                  invoke-symbol-ifn?
                                  (str "(" qualified-symbol " " args-str ")")
@@ -1583,7 +1580,7 @@
                    :on-change
                    (fn [event]                       
                      (swap! state-ref assoc-in [:args sym] (event-target-value event)))}]])
-              (get-in @state-ref [:callable :arglists]))
+              (get-in @state-ref [:selected-tab :arglists]))
             
             [DefaultButton 
              {:on-click
