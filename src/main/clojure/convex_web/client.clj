@@ -5,7 +5,8 @@
             [clojure.data.json :as json]
 
             [org.httpkit.client :as http])
-  (:import (convex.core.crypto Hash AKeyPair)))
+  (:import (convex.core.crypto AKeyPair)
+           (convex.core.data Hash)))
 
 (defn sig [^AKeyPair key-pair ^String hash]
   (.toHexString (.sign key-pair (Hash/fromHex hash))))

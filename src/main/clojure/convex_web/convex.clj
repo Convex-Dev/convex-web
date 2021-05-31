@@ -4,14 +4,14 @@
             [clojure.tools.logging :as log]
 
             [cognitect.anomalies :as anomalies])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey ACell)
-           (convex.core.lang Core Reader ScryptNext RT Context)
+  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey ACell AHashMap)
+           (convex.core.lang Core Reader ScryptNext RT Context AFn)
+           (convex.core.lang.impl Fn)
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke Call)
            (convex.api Convex)
            (java.util.concurrent TimeoutException)
-           (clojure.lang AFn)
            (convex.core.data.prim CVMBool CVMLong CVMDouble)))
 
 (set! *warn-on-reflection* true)
@@ -69,10 +69,10 @@
   "Core metadata indexed by Symbol."
   []
   (reduce
-    (fn [m [^Symbol sym ^Syntax syn]]
-      (assoc m sym (.getMeta syn)))
+    (fn [m [^Symbol sym ^AHashMap metadata]]
+      (assoc m sym metadata))
     {}
-    Core/CORE_NAMESPACE))
+    Core/METADATA))
 
 (defn value-kind [x]
   (cond
@@ -315,11 +315,11 @@
 (defn environment-data
   "Account Status' environment data.
 
-   Where keys are symbols and values are syntax data."
+   Mapping of symbol to cell."
   [environment]
   (reduce
-    (fn [env [^Symbol sym ^Syntax syn]]
-      (assoc env (datafy sym) (syntax-data syn)))
+    (fn [env [^Symbol sym ^ACell acell]]
+      (assoc env (datafy sym) (datafy acell)))
     {}
     environment))
 
@@ -333,10 +333,8 @@
           ;; Reify exported functions giving it a name and arglists attributes.
           exports (map 
                     (fn [sym]
-                      (let [syn (.get (.getEnvironment account-status) sym)
-                            
-                            ;; Syntax `syn` wraps a Fn, and a Fn has arguments - Syntax<Fn>.
-                            f (.getValue syn)
+                      (let [;; We know this ACell is a Fn because we're iterating over exported functions.
+                            ^Fn f (.get (.getEnvironment account-status) sym)
                             
                             arglists (map 
                                        (fn [^Syntax param]

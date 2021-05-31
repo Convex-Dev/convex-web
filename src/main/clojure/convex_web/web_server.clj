@@ -31,8 +31,8 @@
             [ring.util.anti-forgery]
             [ring.middleware.cors :refer [wrap-cors]])
   (:import (java.io InputStream)
-           (convex.core.crypto Hash ASignature AKeyPair)
-           (convex.core.data Ref SignedData AccountKey ACell)
+           (convex.core.crypto ASignature AKeyPair)
+           (convex.core.data Ref SignedData AccountKey ACell Hash)
            (convex.core Init Peer State Result Order)
            (java.time Instant)
            (java.util Date)
@@ -821,14 +821,17 @@
 
           ^Peer peer (system/convex-peer context)
 
-          number-of-accounts (count (.getAccounts (.getConsensusState peer)))
+          number-of-accounts (.size (.getAccounts (.getConsensusState peer)))
+          _ (log/debug "Number of Accounts", number-of-accounts)
+
           number-of-items (min number-of-accounts config/default-range)
+          _ (log/debug "Number of items", number-of-items)
 
           end (or (some-> end Long/parseLong) number-of-items)
           start (or (some-> start Long/parseLong) 0)
 
           start-valid? (<= 0 start end)
-          end-valid? (>= number-of-accounts end start)
+          end-valid? (>= number-of-items end start)
           range-valid? (<= (- end start) config/max-range)]
       (cond
         (not start-valid?)
