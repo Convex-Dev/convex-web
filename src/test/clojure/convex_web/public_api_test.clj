@@ -3,21 +3,21 @@
             [convex-web.client :as client]
             [convex-web.config :as config]
             [convex-web.web-server :as web-server]
-            [convex-web.test :refer [make-system-fixture]]
+            [convex-web.test :as test]
 
-            [clojure.test :refer :all]
+            [clojure.test :refer [deftest is testing use-fixtures]]
             [clojure.data.json :as json]
 
             [ring.mock.request :as mock]
             [com.stuartsierra.component]
             [org.httpkit.client :as http])
   (:import (convex.core Init)
-           (convex.core.crypto Hash AKeyPair)
-           (convex.core.data AccountKey)))
+           (convex.core.crypto AKeyPair)
+           (convex.core.data Hash AccountKey)))
 
 (def system nil)
 
-(use-fixtures :once (make-system-fixture #'system))
+(use-fixtures :once (test/make-system-fixture #'system))
 
 (defn public-api-handler []
   (web-server/public-api-handler system))

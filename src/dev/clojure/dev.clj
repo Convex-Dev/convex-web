@@ -15,8 +15,8 @@
             [datalevin.core :as d])
   (:import (convex.core Init Peer)
            (convex.core.lang Core Reader Context)
-           (convex.core.crypto Hash AKeyPair)
-           (convex.core.data AccountKey)))
+           (convex.core.crypto AKeyPair)
+           (convex.core.data Hash AccountKey)))
 
 ;; -- Logging
 (set-init
@@ -166,7 +166,8 @@
   
   
   Core/ENVIRONMENT
-  
+  Core/METADATA
+
   (convex/core-metadata)
   (convex/convex-core-reference)
   
