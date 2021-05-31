@@ -12,7 +12,7 @@
            (convex.core.transactions Transfer ATransaction Invoke Call)
            (convex.api Convex)
            (java.util.concurrent TimeoutException)
-           (convex.core.data.prim CVMBool CVMLong CVMDouble)))
+           (convex.core.data.prim CVMByte CVMBool CVMLong CVMDouble)))
 
 (set! *warn-on-reflection* true)
 
@@ -81,6 +81,9 @@
 
     (instance? CVMLong x)
     :long
+    
+    (instance? CVMByte x)
+    :byte
 
     (instance? CVMDouble x)
     :double
@@ -159,6 +162,9 @@
 
     (instance? ABlob x)
     (.toHexString ^ABlob x)
+    
+    (instance? CVMByte x)
+    (.longValue x)
 
     (instance? Syntax x)
     (datafy (.getValue ^Syntax x))

@@ -41,6 +41,10 @@
     (testing "nil"
       (is (= nil (convex/datafy nil))))
 
+    (testing "Byte"
+      (is (= convex.core.data.prim.CVMByte (type (convex/execute-string context "(nth 0xFF 0)"))))
+      (is (= 255 (convex/datafy (convex/execute-string context "(nth 0xFF 0)")))))
+    
     (testing "Char"
       (is (= \n (convex/datafy (convex/execute context \n)))))
 
@@ -128,6 +132,9 @@
 
     (testing "Long"
       (is (= :long (convex/value-kind (convex/execute context 1)))))
+    
+    (testing "Byte"
+      (is (= :byte (convex/value-kind (convex/execute-string context "(nth 0xFF 0)")))))
 
     (testing "Double"
       (is (= :double (convex/value-kind (convex/execute context 1.0)))))

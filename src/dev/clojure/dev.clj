@@ -107,7 +107,9 @@
   
   
   ;; -- Execute  
-  
+
+  (execute-string "(nth 0xFF 0)")
+
   (instance? convex.core.lang.AFn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "(fn [x] x)"))

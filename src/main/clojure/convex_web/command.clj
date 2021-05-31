@@ -208,7 +208,7 @@
                                    {:error ex}))
         
         _ (if-let [result-value (some-> ^Result result (.getValue))]
-            (log/debug (str (source command) "\n" (type result-value) " =>\n" result-value))
+            (log/debug (str "Source: " (source command) "\nType: " (type result-value) " \nValue: " result-value))
             (log/warn "Missing result. Command:" command))
         
         result-id (some-> result .getID)
