@@ -1324,7 +1324,8 @@
                                           balance
                                           sequence
                                           type
-                                          exports]} status
+                                          exports
+                                          account-key]} status
         
         address-string (format/prefix-# address)
         
@@ -1363,13 +1364,22 @@
        type]]
      
      
+     ;; Public key
+     ;; ==============
+     [:div
+       [Caption
+        {:label "Public Key"
+         :tooltip "Public Keys may be safely shared with others, as they do not allow digital signatures to be created without the corresponding private key."}]
+       [:code.text-sm (or account-key "-")]]
+     
+     
      ;; Balance
      ;; ==============
      [:div {:class caption-container-style}
-      [Caption
-       {:label "Balance"
-        :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
-      [:code.text-2xl.cursor-default (format/format-number balance)]]
+       [Caption
+        {:label "Balance"
+         :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
+       [:code.text-2xl.cursor-default (format/format-number balance)]]
      
      
      ;; Memory

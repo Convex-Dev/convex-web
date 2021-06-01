@@ -351,7 +351,8 @@
                          :arglists arglists}))
                     (.getExports account-status))]
       
-      (merge #:convex-web.account-status {:sequence (.getSequence account-status)
+      (merge #:convex-web.account-status {:account-key (some-> account-status .getAccountKey .toChecksumHex)
+                                          :sequence (.getSequence account-status)
                                           :balance (.getBalance account-status)
                                           :environment env
                                           :exports exports
