@@ -352,7 +352,7 @@
                     (.getExports account-status))]
       
       (merge #:convex-web.account-status {:account-key (some-> account-status .getAccountKey .toChecksumHex)
-                                          :holdings (datafy (.getHoldings account-status))
+                                          :controller (datafy (.getController account-status))
                                           :sequence (.getSequence account-status)
                                           :balance (.getBalance account-status)
                                           :environment env
