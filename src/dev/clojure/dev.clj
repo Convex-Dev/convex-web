@@ -99,6 +99,10 @@
       (print k v)))
   
   
+  ;; Globals is a tuple with timestamp + fees + juice price.
+  (.getGlobals (convex/consensus-state (peer)))
+  
+  
   (str Init/HERO)
   (str Init/VILLAIN)
   

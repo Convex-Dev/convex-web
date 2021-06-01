@@ -1028,25 +1028,35 @@
       (= :ajax.status/pending status)
       [:div.flex.flex-1.justify-center.items-center
        [gui/Spinner]]
-
+      
       (= :ajax.status/success status)
-      [:dl.mt-5.grid.grid-cols-1.gap-5.sm:grid-cols-4.p-2
-       [StateStats
-        "Number of Peers"
-        (:convex-web.state/peers-count state)]
-
-       [StateStats
-        "Number of Accounts"
-        (:convex-web.state/accounts-count state)]
-
-       [StateStats
-        "Memory Size"
-        (format/format-number (:convex-web.state/memory-size state))]
-
-       [StateStats
-        "Schedule Count"
-        (format/format-number (:convex-web.state/schedule-count state))]]
-
+      (let [[timestamp _ juice-price] (:convex-web.state/globals state)]
+        [:dl.mt-5.grid.grid-cols-1.gap-5.sm:grid-cols-4.p-2
+         [StateStats
+          "Timestamp"
+          [:span.text-sm.font-normal
+           (.toString (js/Date. timestamp))]]
+         
+         [StateStats
+          "Juice Price"
+          juice-price]
+         
+         [StateStats
+          "Number of Peers"
+          (:convex-web.state/peers-count state)]
+         
+         [StateStats
+          "Number of Accounts"
+          (:convex-web.state/accounts-count state)]
+         
+         [StateStats
+          "Memory Size"
+          (format/format-number (:convex-web.state/memory-size state))]
+         
+         [StateStats
+          "Schedule Count"
+          (format/format-number (:convex-web.state/schedule-count state))]])
+      
       (= :ajax.status/error status)
       [:span (get-in error [:response :error :message])])))
 
