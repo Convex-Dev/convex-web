@@ -127,7 +127,9 @@
     (let [response @(client/GET-public-v1-account (server-url) (.longValue Init/HERO))
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
-      (is (= #{:address
+      (is (= #{:account-key
+               :controller
+               :address
                :allowance
                :balance
                :environment
