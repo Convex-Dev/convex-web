@@ -216,7 +216,7 @@
           {:class th-div-style}
           [:span "Block"]
           [gui/InfoTooltip glossary/block-number]]]
-
+        
         ;; -- 1. TR#
         [:th
          {:class th-style}
@@ -224,7 +224,7 @@
           {:class th-div-style}
           [:span "TR#"]
           [gui/InfoTooltip glossary/transaction-index]]]
-
+        
         ;; -- 2. Signer
         [:th
          {:class th-style}
@@ -232,7 +232,7 @@
           {:class th-div-style}
           [:span "Signer"]
           [gui/InfoTooltip "Address of the Account that digitally signed the transaction. This Signature has been verified by all Peers in Consensus."]]]
-
+        
         ;; -- 3. Timestamp
         [:th
          {:class th-style}
@@ -240,7 +240,7 @@
           {:class th-div-style}
           [:span "Timestamp"]
           [gui/InfoTooltip "UTC Timestamp of the block containing the transaction"]]]
-
+        
         ;; -- 4. Type
         [:th
          {:class th-style}
@@ -251,7 +251,7 @@
            "Transfer: Direct transfer of Convex Coins from the Signer's
             Account to a destination Account; Invoke: Execution of code by
             Signer Account"]]]
-
+        
         ;; -- 5. Sequence Number
         [:th
          {:class th-style}
@@ -259,7 +259,7 @@
           {:class th-div-style}
           [:span "Sequence Number"]
           [gui/InfoTooltip glossary/sequence-number]]]
-
+        
         ;; -- Status
         [:th
          {:class th-style}
@@ -268,7 +268,7 @@
           [:span "Status"]
           [gui/InfoTooltip
            glossary/transaction-status]]]
-
+        
         ;; -- 7. Result
         [:th
          {:class th-style}
@@ -278,38 +278,40 @@
           [gui/InfoTooltip
            "Transfer: Amount and destination Address; Invoke: Convex Lisp or
             Scrypt code executed on the CVM for the transaction."]]]])]
-
+    
     [:tbody
      (for [m (flatten-transactions blocks)]
        (let [block-index (get m :convex-web.block/index)
-
+             
              {transaction-index :convex-web.transaction/index
               transaction-type :convex-web.transaction/type
               transaction-sequence :convex-web.transaction/sequence
               transaction-result :convex-web.transaction/result} (get m :convex-web.signed-data/value)
-
+             
              td-class ["p-1 whitespace-no-wrap text-xs"]]
          ^{:key [block-index transaction-index]}
          [:tr.cursor-default
           ;; -- 0. Block Index
           [:td {:class td-class}
            [:div.flex.flex-1.justify-end
-            [:a
-             {:class gui/hyperlink-hover-class
-              :href (rfe/href :route-name/block-explorer {:index block-index})}
-             [:span.font-mono block-index]]]]
-
+            [:a.hover:text-blue-500
+             {:href (rfe/href :route-name/block-explorer {:index block-index})}
+             [:div.flex.space-x-3
+              [:span.font-mono block-index]
+              
+              [:span "View"]]]]]
+          
           ;; -- 1. TR#
           [:td {:class (cons "text-right" td-class)}
            [:span.text-xs.mr-8
             transaction-index]]
-
+          
           ;; -- 2. Signer
           [:td {:class td-class}
            (let [address (get m :convex-web.signed-data/address)]
              [:div.flex.items-center.w-40.space-x-1
               [gui/AIdenticon {:value address :size gui/identicon-size-small}]
-
+              
               [:a.flex-1.truncate
                {:class gui/hyperlink-hover-class
                 :href (rfe/href :route-name/account-explorer {:address address})}
@@ -317,52 +319,52 @@
                 {:title (format/descriptive-address address)
                  :size "small"}
                 [:span.font-mono.text-xs (format/prefix-# address)]]]])]
-
+          
           ;; -- 3. Timestamp
           [:td {:class td-class}
            (let [timestamp (-> (get m :convex-web.block/timestamp)
-                               (format/date-time-from-millis)
-                               (format/date-time-to-string))]
+                             (format/date-time-from-millis)
+                             (format/date-time-to-string))]
              [gui/Tooltip
               {:title timestamp}
               [:span (format/time-ago timestamp)]])]
-
+          
           ;; -- 4. Type
           [:td
            {:class
             (conj td-class (case transaction-type
                              :convex-web.transaction.type/transfer
                              "text-indigo-500"
-
+                             
                              :convex-web.transaction.type/invoke
                              "text-pink-500"
-
+                             
                              ""))}
            [gui/Tooltip
             (case transaction-type
               :convex-web.transaction.type/transfer
               "Direct transfer of Convex Coins from the Signer's Account to a destination Account"
-
+              
               :convex-web.transaction.type/invoke
               "Execution of code by Signer Account"
-
+              
               "")
             [:span.text-xs.uppercase
              transaction-type]]]
-
+          
           ;; -- 5. Sequence Number
           [:td
            {:class (conj td-class "text-right")}
            [:span.text-xs.uppercase.mr-8
             transaction-sequence]]
-
+          
           ;; -- 6. Status
           [:td
            {:class td-class}
            (if (get transaction-result :convex-web.result/error-code)
              [:span.text-xs.text-red-500 "ERROR"]
              [:span.text-xs "OK"])]
-
+          
           ;; -- 7. Value
           [:td
            {:class td-class}
@@ -376,21 +378,21 @@
                 :text-size "text-xs"
                 :text-transform "normal-case"}
                "View details"]]
-
+             
              :convex-web.transaction.type/transfer
              [:span.inline-flex.items-center
               [:span.mr-1 "Transferred"]
-
+              
               [:span.font-bold.text-indigo-500.mr-1
                (format/format-number
                  (get-in m [:convex-web.signed-data/value :convex-web.transaction/amount]))]
-
+              
               [:span.mr-1 " to "]
-
+              
               (let [address (get-in m [:convex-web.signed-data/value :convex-web.transaction/target])]
                 [:div.flex.items-center.w-40
                  [gui/AIdenticon {:value address :size gui/identicon-size-small}]
-
+                 
                  [:a.flex-1.truncate
                   {:class gui/hyperlink-hover-class
                    :href (rfe/href :route-name/account-explorer {:address address})}
@@ -541,21 +543,21 @@
          [:div.flex.space-x-1
           {:class th-class}
           [:span "Address"]]]
-
+        
         [:th
          [:div.flex.space-x-1
           {:class th-class}
           [:span "Type"]
           [gui/InfoTooltip
            "The Type of Account, may be User, Actor or Library"]]]
-
+        
         [:th
          [:div.flex.space-x-1
           {:class th-class}
           [:span "Balance"]
           [gui/InfoTooltip
            "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"]]]
-
+        
         [:th
          [:div.flex.space-x-1
           {:class th-class}
@@ -563,7 +565,7 @@
           [gui/InfoTooltip
            "Size in bytes of this Account, which includes any definitions you
             have created in your Enviornment."]]]
-
+        
         [:th
          [:div.flex.space-x-1
           {:class th-class}
@@ -572,18 +574,18 @@
            "Reserved Memory Allowance in bytes. If you create on-chain data
             beyond this amount, you will be charged extra transaction fees to
             aquire memory at the current memory pool price."]]]])]
-
+    
     (let [active-address (session/?active-address)
-
+          
           my-addresses (->> (session/?accounts)
-                            (map :convex-web.account/address)
-                            (into #{}))]
+                         (map :convex-web.account/address)
+                         (into #{}))]
       [:tbody
        (for [{:convex-web.account/keys [address status]} accounts]
          (let [td-class "p-2 font-mono text-xs text-gray-700 whitespace-no-wrap"
-
+               
                me? (contains? my-addresses address)
-
+               
                address-string (format/prefix-# address)]
            ^{:key address}
            [:tr.cursor-default
@@ -591,7 +593,7 @@
             [:td.flex.items-center {:class td-class}
              [:div.flex.items-center
               [gui/AIdenticon {:value address :size 28}]
-
+              
               (if modal?
                 [:code.underline.cursor-pointer.mx-2
                  {:on-click #(stack/push :page.id/account-explorer {:state
@@ -599,24 +601,26 @@
                                                                      :convex-web/account {:convex-web.account/address address}}
                                                                     :modal? true})}
                  address-string]
-                [:a.flex-1.mx-2
-                 {:class gui/hyperlink-hover-class
-                  :href (rfe/href :route-name/account-explorer {:address address})}
-                 [:code.text-xs address-string]])]
-
+                [:a.flex-1.mx-2.hover:text-blue-500
+                 {:href (rfe/href :route-name/account-explorer {:address address})}
+                 [:div.flex.space-x-3
+                  [:code.text-xs address-string]
+                  
+                  [:span "View"]]])]
+             
              (when (and me? (not= address active-address))
                [gui/Tooltip
                 {:title "Switch to this account"}
                 [:span.uppercase.text-gray-500.hover:text-black.ml-4.mr-4.cursor-pointer
                  {:on-click #(session/pick-address address)}
                  "Switch"]])
-
+             
              (when (and me? (= address active-address))
                [gui/Tooltip
                 {:title "This account is active"}
                 [gui/CheckIcon {:class "w-4 h-4 text-green-500 ml-4"}]])]
-
-
+            
+            
             ;; -- Type
             [:td {:class td-class}
              [gui/Tooltip
@@ -625,19 +629,19 @@
                {:class (gui/account-type-text-color status)}
                [:span.uppercase
                 (gui/account-type-label status)]]]]
-
+            
             ;; -- Balance
             [:td {:class td-class}
              [:div.flex.justify-end
               [:span.text-xs.font-bold.text-indigo-500
                (format/format-number (str (:convex-web.account-status/balance status)))]]]
-
+            
             ;; -- Memory size
             [:td {:class td-class}
              [:div.flex.justify-end
               [:span.text-xs.font-bold.text-indigo-500
                (format/format-number (str (:convex-web.account-status/memory-size status)))]]]
-
+            
             ;; -- Memory allowance
             [:td {:class td-class}
              [:div.flex.justify-end
