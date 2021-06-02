@@ -822,16 +822,13 @@
           ^Peer peer (system/convex-peer context)
 
           number-of-accounts (.size (.getAccounts (.getConsensusState peer)))
-          _ (log/debug "Number of Accounts", number-of-accounts)
-
           number-of-items (min number-of-accounts config/default-range)
-          _ (log/debug "Number of items", number-of-items)
 
           end (or (some-> end Long/parseLong) number-of-items)
           start (or (some-> start Long/parseLong) 0)
 
           start-valid? (<= 0 start end)
-          end-valid? (>= number-of-items end start)
+          end-valid? (>= number-of-accounts end start)
           range-valid? (<= (- end start) config/max-range)]
       (cond
         (not start-valid?)

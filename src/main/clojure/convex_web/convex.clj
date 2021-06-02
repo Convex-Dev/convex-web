@@ -26,7 +26,7 @@
         (if form2
           (.cons l (Symbol/create "do"))
           form1))
-
+      
       :convex-scrypt
       (ScryptNext/readSyntax source))
     (catch Throwable ex
@@ -339,14 +339,19 @@
           ;; Reify exported functions giving it a name and arglists attributes.
           exports (map 
                     (fn [sym]
-                      (let [;; We know this ACell is a Fn because we're iterating over exported functions.
-                            ^Fn f (.get (.getEnvironment account-status) sym)
+                      (let [f (.get (.getEnvironment account-status) sym)
                             
-                            arglists (map 
-                                       (fn [^Syntax param]
-                                         ;; Syntax `param` wraps a Symbol - Syntax<Symbol>.
-                                         (datafy (.getValue param)))
-                                       (.getParams f))]
+                            arglists  (cond                              
+                                        (instance? Fn f)
+                                        (map 
+                                          (fn [^Syntax param]
+                                            ;; Syntax `param` wraps a Symbol - Syntax<Symbol>.
+                                            (datafy (.getValue param)))
+                                          (.getParams f))
+                                        
+                                        ;; TODO: Handle MultiFn.
+                                        :else
+                                        [])]
                         {:name (datafy sym)
                          :arglists arglists}))
                     (.getExports account-status))]
