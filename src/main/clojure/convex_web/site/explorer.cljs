@@ -768,15 +768,15 @@
                                    :ascending? false})]
     (fn [blocks]
       (let [{:keys [keyfn ascending?]} @sorting-ref
-
+            
             {:keys [SortIcon comparator]} (if ascending?
                                             {:SortIcon gui/SortAscendingIcon
                                              :comparator #(compare %1 %2)}
                                             {:SortIcon gui/SortDescendingIcon
                                              :comparator #(compare %2 %1)})
-
+            
             blocks (sort-by keyfn comparator blocks)
-
+            
             SortableColumn (fn [{keyfn' :keyfn label :label tooltip :tooltip}]
                              [:div.flex.space-x-4.p-2.hover:bg-gray-200.cursor-default
                               {:on-click #(reset! sorting-ref {:keyfn keyfn'
@@ -784,7 +784,7 @@
                               [:div.flex.space-x-1
                                [:span label]
                                [gui/InfoTooltip tooltip]]
-
+                              
                               [SortIcon {:class ["w-4 h-4 ml-1" (when-not (= keyfn' keyfn)
                                                                   "invisible")]}]])]
         [:div
@@ -797,43 +797,46 @@
                 {:label "Index"
                  :tooltip "Block number, indicating the position of the block in the consensus ordering."
                  :keyfn :convex-web.block/index}]]
-
+              
               [:th
                {:class th-class}
                [SortableColumn
                 {:label "Timestamp"
                  :tooltip "UTC Timestamp of the block, as declared by the publishing Peer"
                  :keyfn :convex-web.block/timestamp}]]
-
+              
               [:th
                {:class th-class}
                [SortableColumn
                 {:label "Peer"
                  :tooltip "Address of the Peer on the Convex network that published the block (e.g. the convex.world Server)"
                  :keyfn :convex-web.block/peer}]]])]
-
+          
           [:tbody
-           (for [{:convex-web.block/keys [index peer timestamp] :as block} blocks]
+           (for [{:convex-web.block/keys [index peer timestamp]} blocks]
              (let [td-class ["text-xs text-gray-700 whitespace-no-wrap px-2"]]
                ^{:key index}
                [:tr.cursor-default
                 ;; -- Index
                 [:td {:class td-class}
                  [:div.flex.flex-1.justify-end
-                  [:a
-                   {:href (rfe/href :route-name/block-explorer {:index index})
-                    :class gui/hyperlink-hover-class}
-                   [:span.font-mono index]]]]
-
+                  [:a.hover:text-blue-500
+                   {:href (rfe/href :route-name/block-explorer {:index index})}
+                   [:div.flex.space-x-3
+                    [:span.font-mono index]
+                    
+                    [:span
+                     "View"]]]]]
+                
                 ;; -- Timestamp
                 [:td {:class td-class}
                  (let [utc-time (-> timestamp
-                                    (format/date-time-from-millis)
-                                    (format/date-time-to-string))]
+                                  (format/date-time-from-millis)
+                                  (format/date-time-to-string))]
                    [gui/Tooltip
                     {:title utc-time}
                     [:span (format/time-ago utc-time)]])]
-
+                
                 ;; -- Peer
                 [:td {:class td-class}
                  [:div.flex.items-center.space-x-1
