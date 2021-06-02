@@ -1,11 +1,35 @@
-This section of `convex.world` is dedicated to helping people learn about and build solutions using Convex.
+# Convex
 
-If you are new and want to get a taste of using Convex, we recommend starting with the [Getting Started Guide](https://convex.world/#/documentation/getting-started). This guide will take you from the very basics of how Convex works through to launching your own Token!
+Convex is a global platform for trusted applications and digital assets.
 
-If you are a more experienced developer and want to learn more about Convex Lisp and the CVM, check out the [Lisp Guide](https://convex.world/#/documentation/tutorial). This guide introduces the Lisp language, and how to use it to access the advanced features of Convex.
+## Why Convex?
 
-The [Advanced Topics](https://convex.world/#/documentation/advanced-topics) section covers more sophisticated capabilities of Convex such as security, macros and the on-chain compiler. We'll be updating this over time to cover all the advanced features.
+### Convex is Flexible
 
-There are also reference sections for the Convex Core Library and the Client API - essential tools for anyone building applications and smart contracts.
+Convex is well suited as a platform for applications that need to be 100% secure and also publicly verifiable (both in terms of data and application behaviour).
 
-We hope you enjoy learning about Convex! If you have questions or feedback, please join us on the [Convex Discord Server](https://discord.gg/fsnCxEM).
+Some examples:
+
+- Public registries and databases
+- Digital currencies
+- Prediction markets
+- Immutable provenance records
+- Smart contracts for managing digital assets
+
+### Convex is Fast
+
+With a novel consensus algorithm, Convex can execute decentralised applications at internet scale. Using normal consumer-grade hardware and network bandwidth the network can achieve:
+
+- Thousands of digitally signed transactions per second (more than the 1,700 transactions per second typically handled by the VISA network)
+- Ability to execute over a million operations per second on the CVM
+- Low latency (around 1 second for global consensus)
+
+In the future, it will be possible to extend scalability even further through proven techniques such as sharding, state channel or side chains.
+
+### Convex is Fun
+
+We believe in providing a powerful, interactive environment for development in Convex that enables high productivity while maintaining secure coding principles.
+
+Convex provides an interactive REPL allowing users to code directly on the Convex platform using Convex Lisp. 
+
+
