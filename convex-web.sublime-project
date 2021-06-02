@@ -17,7 +17,7 @@
             "working_dir": "$project_path"
         },
         {
-            "name": "Run tests with Kaocha",
+            "name": "Kaocha",
             "shell_cmd": "bin/kaocha",
             "working_dir": "$project_path"
         },
