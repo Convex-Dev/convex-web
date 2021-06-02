@@ -1325,7 +1325,8 @@
                                           sequence
                                           type
                                           exports
-                                          account-key]} status
+                                          account-key
+                                          controller]} status
         
         address-string (format/prefix-# address)
         
@@ -1382,9 +1383,16 @@
        [:code.text-2xl.cursor-default (format/format-number balance)]]
      
      
-     ;; Memory
-     ;; ==============
-     [:div.flex.w-full {:class "space-x-1/6"}
+     [:div.flex.w-full.md:space-x-16.space-x-6
+      
+      [:div {:class caption-container-style}
+       [Caption
+        {:label "Controller"
+         :tooltip
+         "Controller for this Account."}]
+       [:code {:class value-style} (or (some->> controller (str "#")) "-")]]
+      
+      
       ;; -- Memory Allowance
       [:div {:class caption-container-style}
        [Caption
