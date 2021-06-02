@@ -6,7 +6,7 @@ Using the [Sandbox](https://convex.world/#/sandbox) is the easiest way to experi
 
 - Open the Sandbox (you can create a free, anonymous temporary account with one just one click!)
 - Select "Convex Lisp" as the language, if not already selected 
-- Type example code from this guide into the Sandox input window as you progress
+- Type example code from this guide into the Sandbox input window as you progress
 - You will see outputs from Convex in the output window. we use `=>` to indicate expected outputs in the examples below.
 
 ## Lisp basics
@@ -83,13 +83,13 @@ Addresses (which refer to Accounts) can be expressed as a literal starting with 
 => #12345
 ```
 
-Finally, there is also support for byte data encoded in hexadecimal (we call these "Blob literals" because they can technically be arbitrary Binary Large OBjects). Any hex string with an even number of digits is valid.
+Finally, there is also support for byte data encoded in hexadecimal (we call these "Blob literals" because they can technically be arbitrary Binary Large Objects). Any hex string with an even number of digits is valid.
 
 ```clojure
 0xff1234
 => 0xff1234
 
-;; NOTE: This is OK, and results in a zero length Blob
+;; NOTE: This is OK, and results in a zero-length Blob
 0x
 => 0x
 ```
@@ -98,7 +98,7 @@ Blob literals are somewhat unusual as a data type, but are very convenient for m
 
 ### Symbols
 
-Symbols are named references to value in the Convex programming environment. When used as expressions, they look up the value that they refer to in the current context. Usually you would first use `def` to create a new value in the environment.
+Symbols are named references to value in the Convex programming environment. When used as expressions, they look up the value that they refer to in the current context. Usually, you would first use `def` to create a new value in the environment.
 
 ```clojure
 ;; Define a symbol with 'def'
@@ -118,7 +118,7 @@ bad
 => 'bad' is undeclared.
 ```
 
-Some *special symbols* are provided by Convex to make it easier to access special values provided by the CVM. By convention, and in order to make them stand out when reading Convex Lisp code, these symbol names start and end with asterisks (`*`).
+Some *special symbols* are provided by Convex to make it easier to access special values provided by the CVM. By convention, and to make them stand out when reading Convex Lisp code, these symbol names start and end with asterisks (`*`).
 
 ```clojure
 ;; Get the available balance of the current Account via the special symbol '*balance*'
@@ -144,7 +144,7 @@ Functions can be called in an expression by placing the function name in a list 
 => 11
 ```
 
-This construct of applying a function by forming an expression with the function it the beginning of a list followed by its arguments is classic Lisp syntax. This may be surprising to people who are new to Lisp but are used to languages such as C, Java or JavaScript. If it helps, you can think of simply moving the opening parenthesis of the argument list before the function name:
+This construct of applying a function by forming an expression with the function at the beginning of a list followed by its arguments is classic Lisp syntax. This may be surprising to people who are new to Lisp but are used to languages such as C, Java or JavaScript. If it helps, you can think of simply moving the opening parenthesis of the argument list before the function name:
 
 ```clojure
 // In a C-like language
@@ -165,7 +165,7 @@ The Convex core runtime library provides a wide variety of useful functions that
 (+ 1 2 3)
 => 10
 
-;; There are various predicate functions that test values and return a boolean
+;; There are several predicate functions that test values and return a boolean
 ;; e.g. 'str?' tests if the argument is a String
 (str? "Hello")
 => true
@@ -193,9 +193,9 @@ You can also create anonymous functions and use them directly with the `fn` spec
 
 ### Data structures
 
-Convex provides a powerful set of data structures as part of the CVM. In fact, one reasons Convex performs so well is due to the power of the data structures.
+Convex provides a powerful set of data structures as part of the CVM. In fact, one of the reasons Convex performs so well is due to the power of the data structures.
 
-All Convex data structures are *immutable* - functions which make a change to a data structure actually create a new data structure. There are some clever tricks which mean that most of the data in large data structures doens't need to be cloned, which makes this extremely fast.
+All Convex data structures are *immutable* - functions that make a change to a data structure actually create a new data structure. There are some clever tricks that mean that most of the data in large data structures don't need to be cloned, which makes this extremely fast.
 
 #### Vectors
 
@@ -239,7 +239,7 @@ There are many functions in the core library that work with Vectors. Some simple
 => [1 2 3]
 ```
 
-In general, you should use Vectors whenever you need to store an ordered sequence of values. They are the fastest data structure for indexed lookup, and for appending a single element to the end with `conj`. Vectors are the natural Convex equivalent to what are often called "arrays" or "tuples" in other languages.
+In general, you should use Vectors whenever you need to store an ordered sequence of values. They are the fastest data structure for indexed lookup, and for appending a single element to the end with `conj`. Vectors are the natural Convex equivalent to what is often called "arrays" or "tuples" in other languages.
 
 #### Maps
 
@@ -302,7 +302,7 @@ There are a variety of useful functions in the core library that are designed to
 => [:foo :bar]
 ```
 
-In general, you should use Maps whenever you need to look up values with a specific key, and the order doesn't matter. Maps support very efficient lookup by key. `assoc` and `dissoc` are also very efficient.
+In general, you should use Maps whenever you need to look up values with a specific key, and the order doesn't matter. Maps support a very efficient lookup by key. `assoc` and `dissoc` are also very efficient.
 
 #### Sets
 
@@ -372,7 +372,7 @@ If you enter a List directly in the Sandbox, it will get executed as an expressi
 => 11
 ```
 
-This is helpful for executing code, but not useful if you want to use Lists as a data structure! If you want to stop a List from being automatically evaluated, you can *quote* the List by adding the character `'` before this list. This tells Convex to interpret the List as a literal data structure:
+This is helpful for executing code, but it is not useful if you want to use Lists as a data structure! If you want to stop a List from being automatically evaluated, you can *quote* the List by adding the character `'` before this list. This tells Convex to interpret the List as a literal data structure:
 
 ```clojure
 '(inc 10)
@@ -399,13 +399,13 @@ In normal code, you should generally prefer Vectors over Lists for storing data.
 
 ### Special forms
 
-Convex Lisp includes a number of special forms, that implement behaviour that can't be achieved using regular functions from the core library.
+Convex Lisp includes several special forms, that implement behaviour that can't be achieved using regular functions from the core library.
 
 #### Conditionals
 
-General purpose languages need some way of controlling conditional execution of code, and Convex Lisp is no exception. 
+General-purpose languages need some way of controlling the conditional execution of code, and Convex Lisp is no exception. 
 
-Convex Lisp provides an `if` macro that evaluates a conditional expression, and then executes one of two other expressions depending on whether the value of the first is true of false.
+Convex Lisp provides an `if` macro that evaluates a conditional expression and then executes one of two other expressions depending on whether the value of the first is true or false.
 
 ```clojure
 ;; A simple if expression that always takes the 'true' branch
@@ -452,7 +452,7 @@ Implementation note: `if` is actually a macro that expands to a `cond` form unde
 
 #### Do blocks
 
-The `do` special form groups a number of expressions into a single expression and returns the value of the last expression (or `nil` if there are zero expressions). Results from earlier expressions are discarded. Typically, the earlier expressions are included in order to perform some side effect.
+The `do` special form groups a number of expressions into a single expression and returns the value of the last expression (or `nil` if there are zero expressions). Results from earlier expressions are discarded. Typically, the earlier expressions are included to perform some side effect.
 
 ```clojure
 ;; A do Block with three expressions inside, all are executed but only the last result is returned.
@@ -468,7 +468,7 @@ The `do` special form groups a number of expressions into a single expression an
 => 200
 ```
 
-The `do` form serves a similar purpose to a code block in many other languages. It's useful for grouping a number of statements together for the purposes of side effects.
+The `do` form serves a similar purpose to a code block in many other languages. It's useful for grouping several statements together for the purposes of side effects.
 
 
 #### Let and local variables
@@ -510,7 +510,7 @@ You can also use `set!` to set the binding of a local variable. This value will 
 => 20
 ```
 
-#### Def and the environemnent
+#### Def and the environment
 
 We've already seen the `def` special form in a couple of examples, where it was used to set the value of a symbol:
 
@@ -557,7 +557,7 @@ When you want to iteratively re-evaluate an expression, you can use `loop` and `
 
 Loop works like `let` in that it establishes local loop variable bindings that you can use in each iteration. `recur` will jump back to the start of the loop, updating the loop variables. It is normal to use a conditional expression to determine whether to recur or not. The value returned from the loop will be the value of the last expression executed (in this case `i`)
 
-You can also use `recur` to repeat evaluation of a function body:
+You can also use `recur` to repeat the evaluation of a function body:
 
 ```
 ;; A factorial function using an accumulator
@@ -583,7 +583,7 @@ Sometimes, you want to use a symbol itself rather than the thing that the symbol
 a
 => 10
 
-;; Use the Symbol a itself
+;; Use the Symbol itself
 (quote a)
 => a
 
@@ -617,7 +617,7 @@ We've looked at the basic constructs of Convex Lisp, but it's worth taking a mom
 
 ### Code is Data
 
-A key idea in Lisp is that 'Code is Data'. The language syntax is expressed in the data structures of the language. This property is known as *homoiconicity*, and is one of the features of Lisp that makes in uniquely powerful.
+A key idea in Lisp is that 'Code is Data'. The language syntax is expressed in the data structures of the language. This property is known as *homoiconicity*, and is one of the features of Lisp that makes it uniquely powerful.
 
 You can use the `eval` function to execute code that is provided as data:
 
@@ -634,7 +634,7 @@ You can use the `eval` function to execute code that is provided as data:
 => 3
 ```
 
-The power of 'Code is Data' starts to become apparent when you relise that since you can use code to construct data, you can equivalently use code to construct code.
+The power of 'Code is Data' starts to become apparent when you realise that since you can use code to construct data, you can equivalently use code to construct code.
 
 ```
 (defn make-code [operation arguments]
@@ -651,7 +651,7 @@ Hopefully, it is now clear why Lisp puts parentheses *before* the function name:
 
 ### SECURITY: Important note for `eval`
 
-You should **NEVER** use `eval` on data from an untrusted source. It will be able to execute anything that you can in your environment - including helping itself to any coins and tokens controlled by your account. If you are unsure whether this is a risk or not, a good rule is that you should avoid using `eval` at all in any environment with economically valuable assets.
+You should **NEVER** use `eval` on data from an untrusted source. It will be able to execute anything that you can in your environment - including helping itself with any coins and tokens controlled by your account. If you are unsure whether this is a risk or not, a good rule is that you should avoid using `eval` at all in any environment with economically valuable assets.
 
 
 
@@ -660,15 +660,15 @@ You should **NEVER** use `eval` on data from an untrusted source. It will be abl
 
 Convex Lisp is designed to support functional programming. We can think of functional programming as a paradigm where:
 
-- Functions are first class objects in the language
+- Functions are first-class objects in the language
 - Programs are developed by composing pure functions and immutable data
 - Mutable data and side effects are generally avoided
 
-Functional programming offers us a number of major advantages:
+Functional programming offers us many major advantages:
 
-- Code expressed using pure functions is easier to reason about and test, because you don't have to worry about internal or external mutable state that might affect behaviour.
+- Code expressed using pure functions is easier to reason about and test, because you don't have to worry about the internal or external mutable state that might affect behaviour.
 - It is often much shorter and quicker to read/write than equivalent imperative code
-- Immutable data is a *great* fit for the CVM which is deigned around immutable, cryptographically verified data structures.
+- Immutable data is a *great* fit for the CVM which is designed around immutable, cryptographically verified data structures.
 
 Here's a simple example of functional programming, where we define a first-class function `square` and then pass it to another function to achieve our intended result:
 
@@ -700,7 +700,7 @@ We can get a bit more sophisticated, and use functions to create other functions
 
 ## Actors
 
-Actors are autonomous programs that live on the CVM. Most importantly, they are the "workers" that enable to operation of smart contracts.
+Actors are autonomous programs that live on the CVM. Most importantly, they are the "workers" that enable the operation of smart contracts.
 
 Actors have quite similar capabilities to Users:
 
@@ -710,7 +710,7 @@ Actors have quite similar capabilities to Users:
 
 ### Creating an Actor
 
-To create an Actor, you need to deploy some code to initialise the actor. The code is executed when the Actor is deployed, and can be used to set up the environment of the actor, e.g. defining new values or functions.
+To create an Actor, you need to deploy some code to initialise the actor. The code is executed when the Actor is deployed and can be used to set up the environment of the actor, e.g. defining new values or functions.
 
 ```clojure
 ;; Deploy an actor, get the resulting address
@@ -721,7 +721,7 @@ To create an Actor, you need to deploy some code to initialise the actor. The co
 some-data
 => UNDECLARED
 
-;; we can look up the data in the new Actor's environment however:
+;; However, we can look up the data in the new Actor's environment:
 (lookup #1033 'some-data)
 => "Hello"
 ```
@@ -800,7 +800,7 @@ Sometimes you want to pass parameters to construct an Actor. `defactor` lets you
 
 Like Users, Actor Accounts can have their own balance of funds. 
 
-You can use the `transfer` function to transfer funds to an Actor, however this causes a problem: what if the Actor doesn't expect to receive funds, and there is not facility to transfer the funds elsewhere? This can cause coins to be irrevocably lost.
+You can use the `transfer` function to transfer funds to an Actor.However, this causes a problem: what if the Actor doesn't expect to receive funds, and there is no a facility to transfer the funds elsewhere? This can cause coins to be irrevocably lost.
 
 The better way to transfer funds is to "offer" them to the Actor you are calling, which then has to actively `accept` the funds to acknowledge receipt. Then, if coded correctly, there is no risk of funds being transferred that the receiving actor is unable to handle.
 
@@ -847,10 +847,10 @@ To use this Actor, it needs to be deployed and then called with the offer amount
 
 ### Important security note for Actors
 
-Actor code runs in the Account of the actor itself. In many circumstances, calling Actor code can be considered "safe" in the sense that it cannot in general access assets owned by the calling account. However there are some risks that you should be aware of:
+Actor code runs in the Account of the actor itself. In many circumstances, calling Actor code can be considered "safe" in the sense that it cannot in general access assets owned by the calling account. However, there are some risks that you should be aware of:
 
 - If you make an Actor call, you are still liable for paying any transaction fees (and memory usage) associated with running actor code. If this is a concern, you should evaluate the Actor code to determine if there is any risk of high transaction fees (or set an appropriate transaction fee limit).
-- An Actor may call other Actors. This can open up a "re-entrancy attack" if the Actor calls back into other code that you were not expecting (may change state of other actors for example) and invalidate some assumptions about the state of other Actors that you previously made. If you consider this a risk, calling an Actor, especially an unknown / untrusted one, should usually be the *last* thing you do in a transaction.
+- An Actor may call other Actors. This can open up a "re-entrancy attack" if the Actor calls back into other code that you were not expecting (may change the state of other actors for example) and invalidate some assumptions about the state of other Actors that you previously made. If you consider this a risk, calling an Actor, especially an unknown / untrusted one, should usually be the *last* thing you do in a transaction.
 - An Actor may "accept" Convex Coins or other digital assets that have been offered to it. Only offer assets to an Actor that you intend to call if you are comfortable that the Actor may claim these assets. 
 	
 ## Libraries
@@ -862,7 +862,7 @@ This approach is powerful because:
 - We make use of Convex as a global repository for libraries
 - You can deploy libraries in the same way as you deploy Actors - no special tools needed!
 - Libraries get all the same security and management guarantees as Actors
-- You can use library functionality to access Actors
+- You can use the library functionality to access Actors
 
 ### Using libraries
 

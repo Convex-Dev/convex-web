@@ -1,30 +1,11 @@
- The [convex.world explorer](https://convex.world/#/explorer) contains utilities to help you examine and analyse the state of the Convex network. We need utilities to help us do this because Convex is has at it's heart a large decentralised database which supports complex data structures that would be extremely hard to inspect manually!
+This section of `convex.world` is dedicated to helping people learn about and build solutions using Convex.
 
-The key utilities implemented so far are listed below:
+If you are new and want to get a taste of using Convex, we recommend starting with the [Getting Started Guide](https://convex.world/#/documentation/getting-started). This guide will take you from the very basics of how Convex works through to launching your own Token!
 
-## Accounts
+If you are a more experienced developer and want to learn more about Convex Lisp and the CVM, check out the [Lisp Guide](https://convex.world/#/documentation/tutorial). This guide introduces the Lisp language, and how to use it to access the advanced features of Convex.
 
-The [Accounts](https://convex.world/#/explorer/accounts) utility lets you browse and examine all Accounts that exist in the network. Accounts can be either User Accounts or autonomous Actors.
+The [Advanced Topics](https://convex.world/#/documentation/advanced-topics) section covers more sophisticated capabilities of Convex such as security, macros and the on-chain compiler. We'll be updating this over time to cover all the advanced features.
 
-Useful information that you may wish to examine for each Account includes:
+There are also reference sections for the Convex Core Library and the Client API - essential tools for anyone building applications and smart contracts.
 
-- The current coin balance of the Account
-- The available Memory Allowance
-- The symbols that are defined in the Account's environment
-
-## Blocks
-
-The [Blocks](https://convex.world/#/explorer/blocks) utility lets you inspect all blocks that have been accepted into the official network consensus, right back to the initialisation of the network.
-
-## Transactions
-
-The [Transactions](https://convex.world/#/explorer/transactions) utility lets you examine all the transactions that have been executed (because they have been executed, they must already have been included in a Block).
-
-You can see all information relevant to a transaction, including:
-
-- Block number and transaction number at which the transaction was submitted 
-- Sequence Number (used to give each transaction a unique id and prevent replay attacks)
-- Type of transaction (Invoke, Transfer etc.)
-- Timestamp at which the transaction was included
-- Address of the signer
-- Any value associated (e.g. what code was executed in an Invoke transaction)
+We hope you enjoy learning about Convex! If you have questions or feedback, please join us on the [Convex Discord Server](https://discord.gg/fsnCxEM).

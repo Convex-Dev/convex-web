@@ -1,8 +1,11 @@
-`convex.world` provides a number of tools to help you explore the state of the Convex network and perform basic actions.
+This section of `convex.world` is dedicated to helping people learn about and build solutions using Convex.
 
-The [Wallet](https://convex.world/#/wallet) contains a number of Accounts that you control. The private keys for these Accounts are at present managed by the `convex.world` server for your convenience while using the test network. 
+If you are new and want to get a taste of using Convex, we recommend starting with the [Getting Started Guide](https://convex.world/#/documentation/getting-started). This guide will take you from the very basics of how Convex works through to launching your own Token!
 
-The [Faucet](https://convex.world/#/faucet) allows you to request free Convex Coins for the test network. You can top up your Accounts here whenever you need more!
+If you are a more experienced developer and want to learn more about Convex Lisp and the CVM, check out the [Lisp Guide](https://convex.world/#/documentation/tutorial). This guide introduces the Lisp language, and how to use it to access the advanced features of Convex.
 
-The [Transfer](https://convex.world/#/transfer) tool lets you transfer coins from your Accounts to any other Accounts. 
+The [Advanced Topics](https://convex.world/#/documentation/advanced-topics) section covers more sophisticated capabilities of Convex such as security, macros and the on-chain compiler. We'll be updating this over time to cover all the advanced features.
 
+There are also reference sections for the Convex Core Library and the Client API - essential tools for anyone building applications and smart contracts.
+
+We hope you enjoy learning about Convex! If you have questions or feedback, please join us on the [Convex Discord Server](https://discord.gg/fsnCxEM).

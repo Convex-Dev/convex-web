@@ -16,7 +16,7 @@ The Convex Lisp parser is part of the Convex platform code but technically outsi
 
 ### 2. Expansion
 
-Expansion is the second phase of the compiler. Expansion takes the raw form data structures and translates them into Syntax Objects, which are representation of the Convex Lisp Abstract Syntax Tree (AST)
+Expansion is the second phase of the compiler. Expansion takes the raw form data structures and translates them into Syntax Objects, which are a representation of the Convex Lisp Abstract Syntax Tree (AST)
 
 ```clojure
 '(foo :bar :baz) -> <Syntax Object>
@@ -36,7 +36,7 @@ In the third phase, Syntax Objects are *compiled* into *Ops*, which are the low-
 <Syntax Object> -> <Op>
 ```
 
-There are only a small number of Op types on the CVM, which are roughly based on the fundamental operations required to implement the [Lambda Calculus](https://en.wikipedia.org/wiki/Lambda_calculus). Currently these are:
+There are only a small number of Op types on the CVM, which are roughly based on the fundamental operations required to implement the [Lambda Calculus](https://en.wikipedia.org/wiki/Lambda_calculus). Currently, these are:
 
 - **Cond** - Performs a conditional branch
 - **Constant** - Loads a constant value
@@ -68,14 +68,14 @@ Convex Ops are technically a form of [p-code](https://en.wikipedia.org/wiki/P-co
 
 - Ops can be executed very efficiently many times (avoiding the more expensive phases of parsing, expansion and compilation).
 - Ops are very compact in terms of memory used - making them ideal for network transmission and efficient usage of on-chain storage.
-- We can improve underlying performance and implementation details of the CVM without breaking CVM code that has been compiled to Ops.
+- We can improve the underlying performance and implementation details of the CVM without breaking CVM code that has been compiled to Ops.
 - Ops are designed to match up with the runtime and security checks that the CVM must perform when executing code securely on-chain.
 
 ## Macros
 
 We've actually used a couple of macros already in this guide: `if`, `undef` and `defn` are all examples of macros.
 
-A macro is a procedure that generates new code at compile time (technically, in the *expansion* phase of the compiler). Macros are an incredibly powerful tool that allow you to enhance the Convex Lisp language with new capabilities and syntax.
+A macro is a procedure that generates new code at compile time (technically, in the *expansion* phase of the compiler). Macros are an incredibly powerful tool that allows you to enhance the Convex Lisp language with new capabilities and syntax.
 
 As a simple example, let's consider a macro that allows you to use 'infix' notation for mathematical expressions, i.e. instead of writing `(+ 1 2)` we want to write `1 + 2`. It is possible to do this with a simple macro that rewrites the infix expression into the expected Lisp format:
 
@@ -97,7 +97,7 @@ What is happening here? The macro defines an expander function that takes three 
 Macros are powerful tools, but should only be used when they are needed - they are more complicated to use and understand than regular functions. The best use cases for macros are usually:
 
 - Writing new syntax / language extensions that need to make use of arguments *without* evaluating them beforehand. If you are happy to use arguments after regular evaluation, then regular functions are probably a better fit.
-- Situations where you want code to be evaluated at compile time, e.g. to avoid repeatedly performing the same expensive computation at runtime.
+- Situations where you want code to be evaluated at compile-time, e.g. to avoid repeatedly performing the same expensive computation at runtime.
 
 ## Upgradable Actors
 
@@ -136,5 +136,5 @@ An upgradable actor can be implemented by providing an exported function that al
 => :foo-called     
 ```
 
-**SECURITY NOTE:** Adding a general purpose upgrade feature like this lets you correct bugs or add new enhancements to Actors, but it opens the risk that the same mechanism could be used to compromise the Actor's behavior if an attacker were able to impersonate the owner, and also creates the risk that the Actor may be permanently disabled by the owner by mistake. As always, you must perform your own security analysis to determine whether this trade-off is worthwhile for the Actors that you deploy.
+**SECURITY NOTE:** Adding a general-purpose upgrade feature like this lets you correct bugs or add new enhancements to Actors, but it opens the risk that the same mechanism could be used to compromise the Actor's behaviour if an attacker were able to impersonate the owner, and also creates the risk that the Actor may be permanently disabled by the owner by mistake. As always, you must perform your own security analysis to determine whether this trade-off is worthwhile for the Actors that you deploy.
 
