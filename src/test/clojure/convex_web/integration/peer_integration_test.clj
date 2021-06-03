@@ -24,11 +24,12 @@
       (testing "Expected keys"
         (is (= #{:convex-web.result/id
                  :convex-web.result/value
+                 :convex-web.result/type
                  :convex-web.result/value-kind}
                (-> result keys set))))
 
       (testing "Expected values"
-        (is (= #:convex-web.result{:value 2
+        (is (= #:convex-web.result{:value "2"
                                    :value-kind :long}
                (select-keys result [:convex-web.result/value
                                     :convex-web.result/value-kind]))))))
@@ -41,6 +42,7 @@
       (testing "Expected keys"
         (is (= #{:convex-web.result/error-code
                  :convex-web.result/id
+                 :convex-web.result/type
                  :convex-web.result/trace
                  :convex-web.result/value
                  :convex-web.result/value-kind}
