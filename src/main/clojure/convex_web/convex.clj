@@ -252,10 +252,7 @@
         ^AVector result-trace (.getTrace result)]
     (merge #:convex-web.result {:id (datafy result-id)
                                 :type (.toString (.getType result-value))
-                                :value (try
-                                         (datafy result-value)
-                                         (catch Exception _
-                                           (str result-value)))}
+                                :value (.toString result-value)}
 
            (when-let [kind (value-kind result-value)]
              {:convex-web.result/value-kind kind})

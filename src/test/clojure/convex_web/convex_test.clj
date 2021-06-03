@@ -3,8 +3,9 @@
 
             [convex-web.convex :as convex]
             [convex-web.test :refer [catch-throwable make-convex-context]])
-  (:import (convex.core.data Address Blob Syntax Maps Symbol Keyword)
-           (convex.core Init)
+  (:import (convex.core.data Address Blob Syntax Maps Symbol Keyword Vectors)
+           (convex.core Init Result)
+           (convex.core.lang Core)
            (convex.core.data.prim CVMLong)
            (clojure.lang ExceptionInfo)))
 
@@ -169,6 +170,74 @@
     (testing "Unknown"
       (is (= nil (convex/value-kind (Syntax/create (Maps/empty)))))
       (is (= nil (convex/value-kind (convex/execute-string context "abc")))))))
+
+
+(deftest result-data-test
+  (testing "Long"
+    (is (= 
+          {:convex-web.result/id 1,
+           :convex-web.result/type "Long",
+           :convex-web.result/value "1",
+           :convex-web.result/value-kind :long}
+          (convex/result-data 
+            (Result/create
+              (CVMLong/create 1) 
+              (CVMLong/create 1))))))
+  
+  (testing "Keyword"
+    (is (= 
+          {:convex-web.result/id 1,
+           :convex-web.result/type "Keyword",
+           :convex-web.result/value ":a",
+           :convex-web.result/value-kind :keyword}
+          (convex/result-data 
+            (Result/create
+              (CVMLong/create 1) 
+              (Keyword/create "a"))))))
+  
+  (testing "Address"
+    (is (= 
+          {:convex-web.result/id 1,
+           :convex-web.result/type "Blob",
+           :convex-web.result/value "#1",
+           :convex-web.result/value-kind :address}
+          (convex/result-data 
+            (Result/create
+              (CVMLong/create 1) 
+              (Address/create 1))))))
+  
+  (testing "Vector"
+    (is (= 
+          {:convex-web.result/id 1,
+           :convex-web.result/type "Vector",
+           :convex-web.result/value "[]",
+           :convex-web.result/value-kind :vector}
+          (convex/result-data 
+            (Result/create
+              (CVMLong/create 1) 
+              (Vectors/empty))))))
+  
+  (testing "Map"
+    (is (= 
+          {:convex-web.result/id 1,
+           :convex-web.result/type "Map",
+           :convex-web.result/value "{}",
+           :convex-web.result/value-kind :map}
+          (convex/result-data 
+            (Result/create
+              (CVMLong/create 1) 
+              (Maps/empty))))))
+  
+  (testing "Core function"
+    (is (= 
+          {:convex-web.result/id 1,
+           :convex-web.result/type "Function",
+           :convex-web.result/value "map",
+           :convex-web.result/value-kind :function}
+          (convex/result-data 
+            (Result/create
+              (CVMLong/create 1) 
+              Core/MAP))))))
 
 
 (comment
