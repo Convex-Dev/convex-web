@@ -198,7 +198,7 @@
   (testing "Address"
     (is (= 
           {:convex-web.result/id 1,
-           :convex-web.result/type "Blob",
+           :convex-web.result/type "Address",
            :convex-web.result/value "#1",
            :convex-web.result/value-kind :address}
           (convex/result-data 
