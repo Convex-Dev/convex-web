@@ -1,6 +1,5 @@
 (ns convex-web.site.repl
-  (:require [convex-web.site.runtime :refer [disp sub]]
-            [convex-web.site.gui :as gui]
+  (:require [convex-web.site.gui :as gui]
             [convex-web.site.command :as command]
             [convex-web.site.session :as session]
             [convex-web.site.stack :as stack]
