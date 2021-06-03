@@ -246,11 +246,12 @@
   (.getConsensusPoint order))
 
 (defn result-data [^Result result]
-  (let [result-id (.getID result)
-        result-error-code (.getErrorCode result)
-        result-value (.getValue result)
-        result-trace (.getTrace result)]
+  (let [^ACell result-id (.getID result)
+        ^ACell result-error-code (.getErrorCode result)
+        ^ACell result-value (.getValue result)
+        ^AVector result-trace (.getTrace result)]
     (merge #:convex-web.result {:id (datafy result-id)
+                                :type (.toString (.getType result-value))
                                 :value (try
                                          (datafy result-value)
                                          (catch Exception _
