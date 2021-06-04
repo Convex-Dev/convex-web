@@ -273,33 +273,40 @@
 (defn transaction-result-data [^ATransaction atransaction ^Result result]
   (let [tx (cond
              (instance? Transfer atransaction)
-             #:convex-web.transaction {:type :convex-web.transaction.type/transfer
-                                       :target (.longValue (.getTarget ^Transfer atransaction))
-                                       :amount (.getAmount ^Transfer atransaction)
-                                       :sequence (.getSequence ^ATransaction atransaction)}
-
+             #:convex-web.transaction 
+             {:type :convex-web.transaction.type/transfer
+              :target (.longValue (.getTarget ^Transfer atransaction))
+              :amount (.getAmount ^Transfer atransaction)
+              :sequence (.getSequence ^ATransaction atransaction)}
+             
              (instance? Invoke atransaction)
-             #:convex-web.transaction {:type :convex-web.transaction.type/invoke
-                                       :source (str (.getCommand ^Invoke atransaction))
-                                       :sequence (.getSequence ^ATransaction atransaction)}
-
+             #:convex-web.transaction 
+             {:type :convex-web.transaction.type/invoke
+              :source (str (.getCommand ^Invoke atransaction))
+              :sequence (.getSequence ^ATransaction atransaction)}
+             
              (instance? Call atransaction)
-             #:convex-web.transaction {:type :convex-web.transaction.type/call})]
-
+             #:convex-web.transaction 
+             {:type :convex-web.transaction.type/call})]
+    
     (merge tx {:convex-web.transaction/result (result-data result)})))
 
 (defn block-data [^Peer peer ^Long index ^Block block]
-  #:convex-web.block {:index index
-                      :timestamp (.getTimeStamp block)
-                      :peer (.toChecksumHex (.getPeer block))
-                      :transactions
-                      (map-indexed
-                        (fn [^Long tx-index ^SignedData signed-data]
-                          (let [^ATransaction transaction (.getValue signed-data)]
-                            #:convex-web.signed-data {:address (.longValue (.getAddress transaction))
-                                                      :account-key (.toChecksumHex (.getAccountKey signed-data))
-                                                      :value (transaction-result-data (.getValue signed-data) (.getResult peer index tx-index))}))
-                        (.getTransactions block))})
+  #:convex-web.block 
+  {:index index
+   :timestamp (.getTimeStamp block)
+   :peer (.toChecksumHex (.getPeer block))
+   :transactions
+   (map-indexed
+     (fn [^Long tx-index ^SignedData signed-data]
+       (let [^ATransaction transaction (.getValue signed-data)]
+         #:convex-web.signed-data 
+         {:address (.longValue (.getAddress transaction))
+          :account-key (.toChecksumHex (.getAccountKey signed-data))
+          :value (transaction-result-data 
+                   (.getValue signed-data)
+                   (.getResult peer index tx-index))}))
+     (.getTransactions block))})
 
 (defn blocks-data [^Peer peer & [{:keys [start end]}]]
   (let [order (peer-order peer)
@@ -312,18 +319,20 @@
       (range start end))))
 
 (defn syntax-data [^Syntax syn]
-  (merge #:convex-web.syntax {:source (.getSource syn)
-                              :value
-                              (try
-                                (datafy (.getValue syn))
-                                (catch Exception _
-                                  (str (.getValue syn))))}
-
-         (when-let [meta (datafy-safe (.getMeta syn))]
-           {:convex-web.syntax/meta meta})
-
-         (when-let [kind (value-kind (.getValue syn))]
-           {:convex-web.syntax/value-kind kind})))
+  (merge 
+    #:convex-web.syntax 
+    {:source (.getSource syn)
+     :value
+     (try
+       (datafy (.getValue syn))
+       (catch Exception _
+         (str (.getValue syn))))}
+    
+    (when-let [meta (datafy-safe (.getMeta syn))]
+      {:convex-web.syntax/meta meta})
+    
+    (when-let [kind (value-kind (.getValue syn))]
+      {:convex-web.syntax/value-kind kind})))
 
 (defn environment-data
   "Account Status' environment data.
