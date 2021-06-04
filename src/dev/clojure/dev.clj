@@ -16,7 +16,7 @@
   (:import (convex.core Init Peer)
            (convex.core.lang Core Reader Context)
            (convex.core.crypto AKeyPair)
-           (convex.core.data Hash AccountKey)))
+           (convex.core.data Hash AccountKey Symbol)))
 
 ;; -- Logging
 (set-init
@@ -111,9 +111,9 @@
   
   
   ;; -- Execute  
-
+  
   (execute-string "(nth 0xFF 0)")
-
+  
   (instance? convex.core.lang.AFn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "(fn [x] x)"))
@@ -132,6 +132,13 @@
       {:symbol (-> param .getValue .getName .toString)
        :metadata (.getMeta param)})
     params)
+  
+  
+  ;; Lookup metadata.
+  (convex/datafy 
+    (or 
+      (.lookupMeta context (Symbol/create "map"))
+      (.lookupMeta context Init/HERO (Symbol/create "map"))))
   
   
   (convex/execute-scrypt context "def x = 1;")
@@ -173,7 +180,7 @@
   
   Core/ENVIRONMENT
   Core/METADATA
-
+  
   (convex/core-metadata)
   (convex/convex-core-reference)
   
