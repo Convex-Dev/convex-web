@@ -167,7 +167,7 @@
      (case type
        :convex-web.transaction.type/invoke
        (let [{result-value :convex-web.result/value
-              result-value-kind :convex-web.result/value-kind
+              result-value-type :convex-web.result/type
               result-error-code :convex-web.result/error-code} result]
          [:div.flex.flex-col.space-y-2
           [:div.flex.space-x-1
@@ -175,12 +175,12 @@
 
            ;; -- Meta/Kind
            (when-not result-error-code
-             (when result-value-kind
-               [gui/InfoTooltip (str/capitalize (name result-value-kind))]))]
+             (when result-value-type
+               [gui/InfoTooltip (str/capitalize (name result-value-type))]))]
 
           (if result-error-code
             [:span.font-mono.text-sm.text-red-500 result-error-code ": " result-value]
-            [gui/ObjectRenderer result-value result-value-kind])])
+            [gui/ObjectRenderer result-value result-value-type])])
 
        :convex-web.transaction.type/transfer
        [:div])
