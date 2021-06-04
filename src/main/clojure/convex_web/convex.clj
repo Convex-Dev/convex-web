@@ -245,21 +245,30 @@
 (defn consensus-point [^Order order]
   (.getConsensusPoint order))
 
+(def normalize-type
+  {"Function" :function
+   "Long" :long
+   "Keyword" :keyword
+   "Blob" :blob
+   "Address" :address
+   "Vector" :vector
+   "Map" :map})
+
 (defn result-data [^Result result]
   (let [^ACell result-id (.getID result)
         ^ACell result-error-code (.getErrorCode result)
         ^ACell result-value (.getValue result)
         ^AVector result-trace (.getTrace result)]
     (merge #:convex-web.result {:id (datafy result-id)
-                                :type (.toString (.getType result-value))
+                                :type (normalize-type (-> result-value .getType .toString))
                                 :value (.toString result-value)}
-
-           (when-let [kind (value-kind result-value)]
-             {:convex-web.result/value-kind kind})
-
-           (when result-error-code
-             {:convex-web.result/error-code (datafy result-error-code)
-              :convex-web.result/trace (datafy result-trace)}))))
+      
+      (when-let [kind (value-kind result-value)]
+        {:convex-web.result/value-kind kind})
+      
+      (when result-error-code
+        {:convex-web.result/error-code (datafy result-error-code)
+         :convex-web.result/trace (datafy result-trace)}))))
 
 (defn transaction-result-data [^ATransaction atransaction ^Result result]
   (let [tx (cond
