@@ -1128,8 +1128,8 @@
 
      [ClipboardCopy (str "0x" object)]]]])
 
-(defn ObjectRenderer [object kind]
-  (case kind
+(defn ObjectRenderer [object type]
+  (case type
     :address
     [AddressRenderer object]
 
