@@ -218,7 +218,6 @@
         result-value-data (sandbox-result result-value)
         result-value-metadata (result-metadata result-value {:source (source command)
                                                              :lang (language command)})
-        result-data (convex/result-data result)
         
         _ (when result-error-code
             (log/error "Command returned an error:" result-error-code result-value))
@@ -227,7 +226,7 @@
         command' (if result
                    (merge #:convex-web.command {:id (convex/datafy result-id)
                                                 :object result-value-data
-                                                :result result-data
+                                                :result (convex/result-data result)
                                                 :metadata result-value-metadata
                                                 :status
                                                 (if result-error-code
