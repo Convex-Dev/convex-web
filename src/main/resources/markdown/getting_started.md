@@ -4,13 +4,15 @@ You don't need any particular programming language experience to follow this gui
 
 ## Making an Account
 
-To get started, you'll need to create an **Account**, if you don't have one already. Press `Create Account` to get a new free account. An account is your identity on the Convex system, and is named using an **Address** which is a 64-character hexadecimal string that looks something like this:
+To get started, you'll need to create an **Account**, if you don't have one already. Press `Create Account` to get a new free account. An account is your identity on the Convex system, and is named using a numeric **Address** which is looks something like this:
 
 ```
-0x8506cc53f9b7dD152C9BB5386d50C360ff85EFD043049aea55B44362D92C0E1C
+#123
 ```
 
-Accounts are free and disposable on the test system. Make as many as you like. Just be aware that we will periodically delete all accounts as we roll out and test upgrades to the system over the next few months - so don't get too attached to it!
+Conventionally, we display Addresses with a `#` to distinguish them from other numbers.
+
+Accounts are free and disposable on the Test Network. Make as many as you like. Just be aware that we will periodically delete all accounts as we roll out and test upgrades to the system over the next few months - so don't get too attached to it!
 
 ## Coins
 
@@ -192,7 +194,7 @@ The simplest Actor you can build is an empty Actor:
 ```clojure
 ;; Deploy an empty Actor, with code defined by 'nil'
 (def actor (deploy nil))
-=> 0x5d53469f20Fef4f8EAB52B88044EDE69C77A6A68a60728609Fc4a65Ff531E7D0
+=> #1234
 ```
 
 This Actor does nothing. It contains no useful information. It has no exported functions, and therefore can never do anything. This is useless, but reassuring! Security is all about the confidence of knowing what harmful things *can't* be done.
@@ -200,10 +202,10 @@ This Actor does nothing. It contains no useful information. It has no exported f
 Although not useful, this empty Actor still exists on the Convex Network. You can confirm it is an Actor, and inspect its balance for example:
 
 ```clojure
-(actor? 0x5d53469f20Fef4f8EAB52B88044EDE69C77A6A68a60728609Fc4a65Ff531E7D0)
+(actor? #1234)
 => true
 
-(balance 0x5d53469f20Fef4f8EAB52B88044EDE69C77A6A68a60728609Fc4a65Ff531E7D0)
+(balance #1234)
 => 0
 ```
 
@@ -296,14 +298,14 @@ You can check your token balance easily using another function in the Fungible l
 As expected, we are initially in possession of all 1000 tokens. Instead of using your current Address (`*address*`) you can equivalently check the token balance of any other Address, which by default will be 0.
 
 ```clojure
-(fungible/balance my-token 0xb18a010f0DbA07091A2F521f9593F232115013082c48b43AF5CFB5AE8f26b72e)
+(fungible/balance my-token #666)
 => 0
 ```
 
 If you want to transfer 100 Tokens to another Account:
 
 ```clojure
-(fungible/transfer my-token 0xb18a010f0DbA07091A2F521f9593F232115013082c48b43AF5CFB5AE8f26b72e 100)
+(fungible/transfer my-token #666 100)
 ```
 
 Now you should be able to observe that your own token balance has been reduced:
@@ -316,7 +318,7 @@ Now you should be able to observe that your own token balance has been reduced:
 And you can also see that the recipient is not the proud owner of 100 tokens:
 
 ```clojure
-(fungible/balance my-token 0xb18a010f0DbA07091A2F521f9593F232115013082c48b43AF5CFB5AE8f26b72e)
+(fungible/balance my-token #666)
 => 100
 ```
 
