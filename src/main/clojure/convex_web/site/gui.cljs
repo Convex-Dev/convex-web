@@ -1130,10 +1130,10 @@
 
 (defn ObjectRenderer [object type]
   (case type
-    :address
+    "Address"
     [AddressRenderer object]
 
-    :blob
+    "Blob"
     [BlobRenderer object]
 
     [Highlight (prn-str object)]))

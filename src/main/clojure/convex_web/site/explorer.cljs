@@ -176,7 +176,7 @@
            ;; -- Meta/Kind
            (when-not result-error-code
              (when result-value-type
-               [gui/InfoTooltip (str/capitalize (name result-value-type))]))]
+               [gui/InfoTooltip result-value-type]))]
 
           (if result-error-code
             [:span.font-mono.text-sm.text-red-500 result-error-code ": " result-value]

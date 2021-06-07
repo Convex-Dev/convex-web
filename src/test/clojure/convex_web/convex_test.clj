@@ -189,7 +189,7 @@
   (testing "Long"
     (is (= 
           {:convex-web.result/id 1,
-           :convex-web.result/type :long,
+           :convex-web.result/type "Long",
            :convex-web.result/value "1",
            :convex-web.result/value-kind :long}
           (convex/result-data 
@@ -200,7 +200,7 @@
   (testing "Keyword"
     (is (= 
           {:convex-web.result/id 1,
-           :convex-web.result/type :keyword,
+           :convex-web.result/type "Keyword",
            :convex-web.result/value ":a",
            :convex-web.result/value-kind :keyword}
           (convex/result-data 
@@ -211,7 +211,7 @@
   (testing "Address"
     (is (= 
           {:convex-web.result/id 1,
-           :convex-web.result/type :address,
+           :convex-web.result/type "Address",
            :convex-web.result/value "#1",
            :convex-web.result/value-kind :address}
           (convex/result-data 
@@ -222,7 +222,7 @@
   (testing "Vector"
     (is (= 
           {:convex-web.result/id 1,
-           :convex-web.result/type :vector,
+           :convex-web.result/type "Vector",
            :convex-web.result/value "[]",
            :convex-web.result/value-kind :vector}
           (convex/result-data 
@@ -233,7 +233,7 @@
   (testing "Map"
     (is (= 
           {:convex-web.result/id 1,
-           :convex-web.result/type :map,
+           :convex-web.result/type "Map",
            :convex-web.result/value "{}",
            :convex-web.result/value-kind :map}
           (convex/result-data 
@@ -244,7 +244,7 @@
   (testing "Core function"
     (is (= 
           {:convex-web.result/id 1,
-           :convex-web.result/type :function,
+           :convex-web.result/type "Function",
            :convex-web.result/value "map",
            :convex-web.result/value-kind :function}
           (convex/result-data 

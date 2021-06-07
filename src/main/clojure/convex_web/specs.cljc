@@ -148,13 +148,7 @@
 
 (s/def :convex-web.result/id nat-int?)
 (s/def :convex-web.result/value any?)
-(s/def :convex-web.result/type #{:function
-                                 :long 
-                                 :keyword 
-                                 :blob
-                                 :address
-                                 :vector
-                                 :map})
+(s/def :convex-web.result/type string?)
 (s/def :convex-web.result/error-code keyword?)
 
 (s/def :convex-web/result
