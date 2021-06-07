@@ -6,7 +6,7 @@
             [cognitect.anomalies :as anomalies])
   (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey ACell AHashMap)
            (convex.core.lang Core Reader ScryptNext RT Context AFn)
-           (convex.core.lang.impl Fn)
+           (convex.core.lang.impl Fn CoreFn)
            (convex.core Order Block Peer State Init Result)
            (convex.core.crypto AKeyPair)
            (convex.core.transactions Transfer ATransaction Invoke Call)
@@ -268,6 +268,9 @@
     (merge #:convex-web.result {:id (datafy result-id)
                                 :type (or (some-> result-value .getType .toString) "Nil")
                                 :value (.toString result-value)}
+      
+      (when (instance? CoreFn result-value)
+        {:convex-web.result/metadata (datafy (metadata (.getSymbol result-value)))})
       
       (when-let [kind (value-kind result-value)]
         {:convex-web.result/value-kind kind})
