@@ -57,6 +57,21 @@
       (.getExceptional context)
       (.getResult context))))
 
+(defn hero-fake-context []
+  (Context/createFake (Init/createState) Init/HERO))
+
+(defn fake-context [^State state]
+  (Context/createFake state))
+
+(defn peer-context [^Peer peer]
+  (fake-context (.getState peer)))
+
+(defn lookup-metadata
+  ([^Context context ^Symbol sym]
+   (.lookupMeta context sym))
+  ([^Context context ^Address address ^Symbol sym]
+   (.lookupMeta context address sym)))
+
 (defn throwable-category [throwable]
   (cond
     (instance? TimeoutException throwable)

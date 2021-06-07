@@ -137,8 +137,8 @@
   ;; Lookup metadata.
   (convex/datafy 
     (or 
-      (.lookupMeta context (Symbol/create "map"))
-      (.lookupMeta context Init/HERO (Symbol/create "map"))))
+      (.lookupMeta context Init/HERO (Symbol/create "map"))
+      (.lookupMeta context (Symbol/create "map"))))
   
   
   (convex/execute-scrypt context "def x = 1;")

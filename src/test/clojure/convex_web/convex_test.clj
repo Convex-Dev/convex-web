@@ -5,7 +5,7 @@
             [convex-web.test :refer [catch-throwable make-convex-context]])
   (:import (convex.core.data Address Blob Syntax Maps Symbol Keyword Vectors)
            (convex.core Init Result)
-           (convex.core.lang Core)
+           (convex.core.lang Core Context)
            (convex.core.data.prim CVMLong)
            (clojure.lang ExceptionInfo)))
 
@@ -36,6 +36,19 @@
             (CVMLong/create 1)
             (CVMLong/create 2)]
            (convex/read-source "1 2" :convex-lisp)))))
+
+(deftest lookup-metadata-test
+  (is (= 
+        '{:doc
+          {:description
+           "Applies a function to each element of a data structure in sequence, and returns a vector of results. Additional collection may be provided to call a function with higher arity.",
+           :examples [{:code "(map inc [1 2 3])"}],
+           :signature [{:params [f coll]} {:params [f coll1 coll2 & more-colls]}],
+           :type :function}}
+        (convex/datafy
+          (convex/lookup-metadata 
+            (convex/hero-fake-context)
+            (Symbol/create "map"))))))
 
 (deftest datafy-test
   (let [context (make-convex-context)]
