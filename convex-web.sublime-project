@@ -2,7 +2,8 @@
     "folders": [
         {
             "path": ".",
-            "folder_exclude_patterns": [".clj-kondo"],
+            "file_exclude_patterns": ["*iml"],
+            "folder_exclude_patterns": [".clj-kondo", "log", "target", "deployment"],
         }
     ],
     "build_systems": [
