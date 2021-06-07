@@ -12,11 +12,11 @@
   "dependencies": {
     "@headlessui/react": "^1.2.0",
     "@heroicons/react": "^1.0.1",
-    "@tailwindcss/typography": "^0.4.0",
+    "@tailwindcss/typography": "^0.4.1",
     "@tailwindcss/ui": "^0.7.2",
     "@types/react": "^17.0.5",
     "codemirror": "^5.61.1",
-    "highlight.js": "^11.0.0",
+    "highlight.js": "^11.0.1",
     "jdenticon": "^3.1.0",
     "qrcode.react": "^1.0.1",
     "react": "17.0.1",
@@ -30,6 +30,6 @@
     "autoprefixer": "^10.2.5",
     "postcss": "^8.2.15",
     "shadow-cljs": "^2.14.3",
-    "tailwindcss": "^2.1.2"
+    "tailwindcss": "^2.1.4"
   }
 }
