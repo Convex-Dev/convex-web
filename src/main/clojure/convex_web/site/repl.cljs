@@ -397,10 +397,17 @@
                      :convex-web.result/value])])
 
 (defmethod Output "Function" [command]
-  [:div.flex.flex-1.bg-white.rounded.shadow
-   [gui/SymbolMeta (merge 
-                     (get-in command [:convex-web.command/result :convex-web.result/metadata]) 
-                     output-symbol-metadata-options)]])
+  (let [result-value (get-in command [:convex-web.command/result :convex-web.result/value])
+        result-metadata (get-in command [:convex-web.command/result :convex-web.result/metadata])]
+    (if result-metadata
+      [:div.flex.flex-1.bg-white.rounded.shadow
+       [gui/SymbolMeta2 
+        (merge 
+          {:symbol result-value
+           :metadata result-metadata}
+          output-symbol-metadata-options)]]
+      [gui/Highlight 
+       (get-in command  [:convex-web.command/result :convex-web.result/value])])))
 
 (defmethod Output "Special" [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow

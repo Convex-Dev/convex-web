@@ -595,6 +595,45 @@
               {:ref highlight-element}
               code]])]))]))
 
+(defn SymbolMeta2 [{:keys [symbol metadata show-examples?]}]
+  (let [{:keys [examples type description signature]} (:doc metadata)]
+    [:div.flex.flex-col.flex-1.text-sm.p-2
+     [:div.flex.items-center
+
+      ;; -- Symbol
+      [:code.font-bold.mr-2 symbol]
+
+      ;; -- Type
+      (when type
+        [SymbolType type])
+
+      [:a.ml-2
+       {:href (rfe/href :route-name/documentation-reference {} {:symbol symbol})
+        :target "_blank"}
+       [IconExternalLink {:class "h-4 w-4 text-gray-500 hover:text-black"}]]]
+
+     ;; -- Signature
+     [:div.flex.flex-col.my-2
+      (for [{:keys [params]} signature]
+        ^{:key params}
+        [:code.text-xs (str params)])]
+
+     ;; -- Description
+     [:span.my-2 description]
+
+     ;; -- Examples
+     (when show-examples?
+       (when (seq examples)
+         [:div.flex.flex-col.items-start.my-2
+
+          [:span.text-sm.text-black.text-opacity-75.mt-2.mb-1 "Examples"]
+
+          (for [{:keys [code]} examples]
+            ^{:key code}
+            [:pre.text-xs.mb-1
+             [:code.clojure.rounded
+              {:ref highlight-element}
+              code]])]))]))
 
 (def hyperlink-hover-class "hover:underline hover:text-blue-500")
 
