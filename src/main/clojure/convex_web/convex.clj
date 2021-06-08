@@ -272,9 +272,6 @@
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol result-value)))})
       
-      (when-let [kind (value-kind result-value)]
-        {:convex-web.result/value-kind kind})
-      
       (when result-error-code
         {:convex-web.result/error-code (datafy result-error-code)
          :convex-web.result/trace (datafy result-trace)}))))

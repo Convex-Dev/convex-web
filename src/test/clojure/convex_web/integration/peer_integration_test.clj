@@ -24,13 +24,11 @@
       (testing "Expected keys"
         (is (= #{:convex-web.result/id
                  :convex-web.result/value
-                 :convex-web.result/type
-                 :convex-web.result/value-kind}
+                 :convex-web.result/type}
                (-> result keys set))))
 
       (testing "Expected values"
-        (is (= #:convex-web.result{:value "2"
-                                   :value-kind :long}
+        (is (= #:convex-web.result{:value "2"}
                (select-keys result [:convex-web.result/value
                                     :convex-web.result/value-kind]))))))
 
@@ -44,15 +42,13 @@
                  :convex-web.result/id
                  :convex-web.result/type
                  :convex-web.result/trace
-                 :convex-web.result/value
-                 :convex-web.result/value-kind}
+                 :convex-web.result/value}
                (-> result keys set))))
 
       (testing "Expected values"
         (is (= #:convex-web.result{:error-code :CAST
                                    :trace nil
-                                   :value "Can't convert value of type Long to type Sequence"
-                                   :value-kind :string}
+                                   :value "Can't convert value of type Long to type Sequence"}
                (select-keys result [:convex-web.result/value
                                     :convex-web.result/value-kind
                                     :convex-web.result/error-code
