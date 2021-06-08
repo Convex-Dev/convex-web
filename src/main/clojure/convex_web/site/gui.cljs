@@ -1165,17 +1165,6 @@
 
      [ClipboardCopy (str "0x" object)]]]])
 
-(defn ObjectRenderer [object type]
-  (case type
-    "Address"
-    [AddressRenderer object]
-
-    "Blob"
-    [BlobRenderer object]
-
-    [Highlight (prn-str object)]))
-
-
 (defn ResultRenderer [result]
   (let [{result-type :convex-web.result/type
          result-value :convex-web.result/value} result]

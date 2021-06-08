@@ -438,9 +438,9 @@
            
            ;; Don't display result type for errors.
            (when-not error?
-             (when-let [type (get-in command [:convex-web.command/metadata :type])]
+             (when-let [type (get-in command [:convex-web.command/result :convex-web.result/type])]
                [gui/Tooltip
-                (str/capitalize (name type))
+                (str/capitalize type)
                 [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
         
         [:div.flex
