@@ -1186,7 +1186,19 @@
       "Blob"
       [BlobRenderer result-value]
       
-      [Highlight (prn-str result-value)])))
+      "Function"
+      (let [{result-value :convex-web.result/value
+             result-metadata :convex-web.result/metadata} result]
+        (if result-metadata
+          [:div.flex.flex-1.bg-white.rounded.shadow
+           [SymbolMeta2 
+            {:symbol result-value
+             :metadata result-metadata
+             :show-examples? false}]]
+          [Highlight result-value]))
+      
+      ;; Default.
+      [Highlight result-value])))
 
 
 (defn CallableFunctions [account]
