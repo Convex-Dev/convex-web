@@ -3,11 +3,9 @@
             [convex-web.site.backend :as backend]
 
             [clojure.string :as str]
+            
             [goog.string :as gstring]
             [goog.string.format]
-            
-            [codemirror-reagent.core :as codemirror]
-
             [reagent.core :as r]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as rfe]
@@ -597,6 +595,45 @@
               {:ref highlight-element}
               code]])]))]))
 
+(defn SymbolMeta2 [{:keys [symbol metadata show-examples?]}]
+  (let [{:keys [examples type description signature]} (:doc metadata)]
+    [:div.flex.flex-col.flex-1.text-sm.p-2
+     [:div.flex.items-center
+
+      ;; -- Symbol
+      [:code.font-bold.mr-2 symbol]
+
+      ;; -- Type
+      (when type
+        [SymbolType type])
+
+      [:a.ml-2
+       {:href (rfe/href :route-name/documentation-reference {} {:symbol symbol})
+        :target "_blank"}
+       [IconExternalLink {:class "h-4 w-4 text-gray-500 hover:text-black"}]]]
+
+     ;; -- Signature
+     [:div.flex.flex-col.my-2
+      (for [{:keys [params]} signature]
+        ^{:key params}
+        [:code.text-xs (str params)])]
+
+     ;; -- Description
+     [:span.my-2 description]
+
+     ;; -- Examples
+     (when show-examples?
+       (when (seq examples)
+         [:div.flex.flex-col.items-start.my-2
+
+          [:span.text-sm.text-black.text-opacity-75.mt-2.mb-1 "Examples"]
+
+          (for [{:keys [code]} examples]
+            ^{:key code}
+            [:pre.text-xs.mb-1
+             [:code.clojure.rounded
+              {:ref highlight-element}
+              code]])]))]))
 
 (def hyperlink-hover-class "hover:underline hover:text-blue-500")
 
@@ -1128,15 +1165,29 @@
 
      [ClipboardCopy (str "0x" object)]]]])
 
-(defn ObjectRenderer [object type]
-  (case type
-    "Address"
-    [AddressRenderer object]
-
-    "Blob"
-    [BlobRenderer object]
-
-    [Highlight (prn-str object)]))
+(defn ResultRenderer [result]
+  (let [{result-type :convex-web.result/type
+         result-value :convex-web.result/value} result]
+    (case result-type
+      "Address"
+      [AddressRenderer result-value]
+      
+      "Blob"
+      [BlobRenderer result-value]
+      
+      "Function"
+      (let [{result-value :convex-web.result/value
+             result-metadata :convex-web.result/metadata} result]
+        (if result-metadata
+          [:div.flex.flex-1.bg-white.rounded.shadow
+           [SymbolMeta2 
+            {:symbol result-value
+             :metadata result-metadata
+             :show-examples? false}]]
+          [Highlight result-value]))
+      
+      ;; Default.
+      [Highlight result-value])))
 
 
 (defn CallableFunctions [account]

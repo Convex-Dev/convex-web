@@ -173,14 +173,13 @@
           [:div.flex.space-x-1
            [gui/CaptionMono (if result-error-code "Error" "Result")]
 
-           ;; -- Meta/Kind
            (when-not result-error-code
              (when result-value-type
                [gui/InfoTooltip result-value-type]))]
 
           (if result-error-code
             [:span.font-mono.text-sm.text-red-500 result-error-code ": " result-value]
-            [gui/ObjectRenderer result-value result-value-type])])
+            [gui/ResultRenderer result])])
 
        :convex-web.transaction.type/transfer
        [:div])

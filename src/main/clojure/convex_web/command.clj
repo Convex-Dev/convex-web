@@ -216,9 +216,6 @@
         result-value (some-> result .getValue)
         result-error-code (some-> result .getErrorCode)
         result-trace (some-> result .getTrace)
-        result-value-data (sandbox-result result-value)
-        result-value-metadata (result-metadata result-value {:source (source command)
-                                                             :lang (language command)})
         
         _ (when result-error-code
             (log/error "Command returned an error:" result-error-code result-value))
@@ -228,9 +225,7 @@
                    (merge 
                      #:convex-web.command 
                      {:id (convex/datafy result-id)
-                      :object result-value-data
                       :result (convex/result-data result)
-                      :metadata result-value-metadata
                       :status
                       (if result-error-code
                         :convex-web.command.status/error

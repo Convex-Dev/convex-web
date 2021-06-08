@@ -53,94 +53,113 @@
                                                                 :type :convex-web.transaction.type/invoke
                                                                 :language :convex-lisp}})]
 
-      (is (= 1 (:convex-web.command/object command1)))
-      (is (= :abort (:convex-web.command/object command2)))
-      (is (= 1 (:convex-web.command/object command3))))))
+      (is (= "1" (get-in command1 [:convex-web.command/result :convex-web.result/value])))
+      (is (= ":abort" (get-in command2 [:convex-web.command/result :convex-web.result/value])))
+      (is (= "1" (get-in command3 [:convex-web.command/result :convex-web.result/value]))))))
 
 (deftest query-mode-test
   (testing "Simple Commands"
-    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
-                                     ::c/address 9
-                                     ::c/query
-                                     {:convex-web.query/source "1"
-                                      :convex-web.query/language :convex-lisp}})]
-
-      (is (= {::c/status :convex-web.command.status/success
-              ::c/object 1}
-            (select-keys command [::c/status ::c/object]))))
-
-    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
-                                     ::c/address 9
-                                     ::c/query
-                                     {:convex-web.query/source "1.0"
-                                      :convex-web.query/language :convex-lisp}})]
-
-      (is (= {::c/status :convex-web.command.status/success
-              ::c/object 1.0}
-            (select-keys command [::c/status ::c/object]))))
-
-    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
-                                     ::c/address 9
-                                     ::c/query
-                                     {:convex-web.query/source "\"Hello\""
-                                      :convex-web.query/language :convex-lisp}})]
-
-      (is (= {::c/status :convex-web.command.status/success
-              ::c/object "Hello"}
-            (select-keys command [::c/status ::c/object])))))
-
+    (let [{::c/keys [status result]} 
+          (c/execute system {::c/mode :convex-web.command.mode/query
+                             ::c/address 9
+                             ::c/query
+                             {:convex-web.query/source "1"
+                              :convex-web.query/language :convex-lisp}})]
+      
+      (is (= :convex-web.command.status/success status))
+      (is (= {:convex-web.result/type "Long", 
+              :convex-web.result/value "1"}
+            (select-keys result [:convex-web.result/type
+                                 :convex-web.result/value]))))
+    
+    (let [{::c/keys [status result]}
+          (c/execute system {::c/mode :convex-web.command.mode/query
+                             ::c/address 9
+                             ::c/query
+                             {:convex-web.query/source "1.0"
+                              :convex-web.query/language :convex-lisp}})]
+      
+      (is (= :convex-web.command.status/success status))
+      (is (= {:convex-web.result/type "Double", 
+              :convex-web.result/value "1.0"}
+            (select-keys result [:convex-web.result/type
+                                 :convex-web.result/value]))))
+    
+    (let [{::c/keys [status result]}
+          (c/execute system {::c/mode :convex-web.command.mode/query
+                             ::c/address 9
+                             ::c/query
+                             {:convex-web.query/source "\"Hello\""
+                              :convex-web.query/language :convex-lisp}})]
+      
+      (is (= :convex-web.command.status/success status))
+      (is (= {:convex-web.result/type "String", 
+              :convex-web.result/value "Hello"}
+            (select-keys result [:convex-web.result/type
+                                 :convex-web.result/value])))))
+  
   (testing "Symbol lookup"
-    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
-                                     ::c/address 9
-                                     ::c/query
-                                     {:convex-web.query/source "inc"
-                                      :convex-web.query/language :convex-lisp}})]
-
-      (is (= {::c/status :convex-web.command.status/success
-              ::c/object "inc"}
-            (select-keys command [::c/status ::c/object])))))
-
+    (let [{::c/keys [status result]}
+          (c/execute system {::c/mode :convex-web.command.mode/query
+                             ::c/address 9
+                             ::c/query
+                             {:convex-web.query/source "inc"
+                              :convex-web.query/language :convex-lisp}})]
+      
+      (is (= :convex-web.command.status/success status))
+      (is (= {:convex-web.result/type "Function", 
+              :convex-web.result/value "inc"}
+            (select-keys result [:convex-web.result/type
+                                 :convex-web.result/value])))))
+  
   (testing "Lookup doc"
-    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
-                                     ::c/address 9
-                                     ::c/query
-                                     {:convex-web.query/source "(doc inc)"
-                                      :convex-web.query/language :convex-lisp}})]
-
-      (is (= '#:convex-web.command{:object
-                                   {:description "Increments the given number by 1. Converts to Long if necessary."
-                                    :errors {:CAST "If the actor argument is not a Number."}
-                                    :examples [{:code "(inc 10)"}]
-                                    :signature [{:params [num]
-                                                 :return Long}]
-                                    :type :function}
-                                   :status :convex-web.command.status/success}
-            (select-keys command [::c/status ::c/object])))))
-
+    (let [{::c/keys [status result]}
+          (c/execute system {::c/mode :convex-web.command.mode/query
+                             ::c/address 9
+                             ::c/query
+                             {:convex-web.query/source "(doc inc)"
+                              :convex-web.query/language :convex-lisp}})]
+      
+      (is (= :convex-web.command.status/success status))
+      (is (= {:convex-web.result/type "Map",
+              :convex-web.result/value
+              "{:description \"Increments the given number by 1. Converts to Long if necessary.\",:signature [{:return Long,:params [num]}],:type :function,:errors {:CAST \"If the actor argument is not a Number.\"},:examples [{:code \"(inc 10)\"}]}"}
+            (select-keys result [:convex-web.result/type
+                                 :convex-web.result/value])))))
+  
   (testing "Syntax error"
     (let [command (c/execute system {::c/mode :convex-web.command.mode/query
                                      ::c/query
                                      {:convex-web.query/source "("
                                       :convex-web.query/language :convex-lisp}})]
-
+      
       (is (= {::c/status :convex-web.command.status/error
               ::c/error {:message "Error while parsing action 'Input/ExpressionList/ZeroOrMore/Sequence/Expression/FirstOf/DelimitedExpression/DataStructure/List/FirstOf/Sequence/List_Action1' at input position (line 1, pos 3):\n(\n  ^\n\nconvex.core.exceptions.ParseException: Expected closing ')'"}}
-            (select-keys command [::c/status ::c/object ::c/error])))))
-
+            (select-keys command [::c/status ::c/error])))))
+  
   (testing "Cast error"
-    (let [command (c/execute system {::c/mode :convex-web.command.mode/query
-                                     ::c/address 9
-                                     ::c/query
-                                     {:convex-web.query/source "(map inc 1)"
-                                      :convex-web.query/language :convex-lisp}})]
-
-      (is (= {::c/status :convex-web.command.status/error
-              ::c/object "Can't convert value of type Long to type Sequence"
-              ::c/error
-              {:code :CAST
-               :message "Can't convert value of type Long to type Sequence"
-               :trace nil}}
-            (select-keys command [::c/status ::c/object ::c/error]))))))
+    (let [{::c/keys [status result error]} 
+          (c/execute system {::c/mode :convex-web.command.mode/query
+                             ::c/address 9
+                             ::c/query
+                             {:convex-web.query/source "(map inc 1)"
+                              :convex-web.query/language :convex-lisp}})]
+      
+      (is (= :convex-web.command.status/error status))
+      
+      (is (= {:code :CAST, 
+              :message "Can't convert value of type Long to type Sequence", 
+              :trace nil}
+            error))
+      
+      (is (= {:convex-web.result/error-code :CAST,
+              :convex-web.result/trace nil,
+              :convex-web.result/type "String",
+              :convex-web.result/value "Can't convert value of type Long to type Sequence"}
+            (select-keys result [:convex-web.result/type
+                                 :convex-web.result/value
+                                 :convex-web.result/error-code
+                                 :convex-web.result/trace]))))))
 
 (deftest sandbox-result-test
   (testing "Long"

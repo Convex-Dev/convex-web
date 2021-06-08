@@ -117,12 +117,10 @@
 
 (s/def :convex-web.syntax/source string?)
 (s/def :convex-web.syntax/value any?)
-(s/def :convex-web.syntax/value-kind keyword?)
 (s/def :convex-web.syntax/meta map?)
 
 (s/def :convex-web/syntax (s/keys :req [:convex-web.syntax/value]
-                                  :opt [:convex-web.syntax/value-kind
-                                        :convex-web.syntax/source
+                                  :opt [:convex-web.syntax/source
                                         :convex-web.syntax/meta]))
 
 ;; -- Signed Data

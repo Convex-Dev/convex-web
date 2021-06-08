@@ -267,13 +267,10 @@
         ^AVector result-trace (.getTrace result)]
     (merge #:convex-web.result {:id (datafy result-id)
                                 :type (or (some-> result-value .getType .toString) "Nil")
-                                :value (.toString result-value)}
+                                :value (or (some-> result-value .toString) "nil")}
       
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol result-value)))})
-      
-      (when-let [kind (value-kind result-value)]
-        {:convex-web.result/value-kind kind})
       
       (when result-error-code
         {:convex-web.result/error-code (datafy result-error-code)
