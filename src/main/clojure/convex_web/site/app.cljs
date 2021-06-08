@@ -14,7 +14,6 @@
             [convex-web.site.account :as account]
             [convex-web.site.store]
             [convex-web.site.format :as format]
-            [convex-web.site.environment :as environment]
             [convex-web.site.markdown :as markdown]
 
             [cljs.spec.test.alpha :as stest]
@@ -105,10 +104,6 @@
    ;; ---
 
    documentation/reference-page
-
-   ;; ---
-
-   environment/entry-page
 
    ;; ---
 
