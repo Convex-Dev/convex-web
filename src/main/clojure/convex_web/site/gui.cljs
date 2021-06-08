@@ -3,11 +3,9 @@
             [convex-web.site.backend :as backend]
 
             [clojure.string :as str]
+            
             [goog.string :as gstring]
             [goog.string.format]
-            
-            [codemirror-reagent.core :as codemirror]
-
             [reagent.core :as r]
             [re-frame.core :as rf]
             [reitit.frontend.easy :as rfe]
@@ -1137,6 +1135,19 @@
     [BlobRenderer object]
 
     [Highlight (prn-str object)]))
+
+
+(defn ResultRenderer [result]
+  (let [{result-type :convex-web.result/type
+         result-value :convex-web.result/value} result]
+    (case result-type
+      "Address"
+      [AddressRenderer result-value]
+      
+      "Blob"
+      [BlobRenderer result-value]
+      
+      [Highlight (prn-str result-value)])))
 
 
 (defn CallableFunctions [account]

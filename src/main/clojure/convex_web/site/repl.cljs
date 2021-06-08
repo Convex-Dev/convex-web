@@ -388,107 +388,100 @@
         [:code.text-xs t])])])
 
 (defmulti Output (fn [command]
-                   (get-in command [:convex-web.command/metadata :type])))
+                   (get-in command [:convex-web.command/result
+                                    :convex-web.result/type])))
 
-(defmethod Output :default [{:convex-web.command/keys [object]}]
-  (if (some? object)
-    [gui/Highlight object]
-    [:pre.bg-white.m-0.p-2.rounded.shadow
-     [:code.text-xs "nil"]]))
+(defmethod Output :default [command]
+  [gui/Highlight 
+   (get-in command  [:convex-web.command/result 
+                     :convex-web.result/value])])
 
-(defmethod Output :string [{:convex-web.command/keys [object]}]
-  [gui/Highlight (prn-str object)])
+(defmethod Output "Function" [command]
+  [:div.flex.flex-1.bg-white.rounded.shadow
+   [gui/SymbolMeta (merge 
+                     (get-in command [:convex-web.command/result :convex-web.result/metadata]) 
+                     output-symbol-metadata-options)]])
 
-(defmethod Output :double [{:convex-web.command/keys [object]}]
-  [gui/Highlight (if (js/Number.isInteger object)
-                   (.toFixed object 1)
-                   object)])
-
-(defmethod Output :function [{:convex-web.command/keys [metadata]}]
+(defmethod Output "Special" [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
    [gui/SymbolMeta (merge metadata output-symbol-metadata-options)]])
 
-(defmethod Output :special [{:convex-web.command/keys [metadata]}]
+(defmethod Output "Macro" [{:convex-web.command/keys [metadata]}]
   [:div.flex.flex-1.bg-white.rounded.shadow
    [gui/SymbolMeta (merge metadata output-symbol-metadata-options)]])
 
-(defmethod Output :macro [{:convex-web.command/keys [metadata]}]
-  [:div.flex.flex-1.bg-white.rounded.shadow
-   [gui/SymbolMeta (merge metadata output-symbol-metadata-options)]])
+(defmethod Output "Blob" [command]
+  [gui/ResultRenderer (:convex-web.command/result command)])
 
-;; TODO: Delete
-(defmethod Output :blob [{:convex-web.command/keys [object]}]
-  [gui/ObjectRenderer (get object :hex-string) :blob])
-
-;; TODO: Delete
-(defmethod Output :address [{:convex-web.command/keys [object]}]
-  [gui/ObjectRenderer (:address object) :address])
+(defmethod Output "Address" [command]
+  [gui/ResultRenderer (:convex-web.command/result command)])
 
 (defn Commands [commands]
-  (into [:div] (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
-                 ^{:key id}
-                 [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
-                  {:ref
-                   (fn [el]
-                     (when el
-                       (.scrollIntoView el #js {"behavior" "smooth"
-                                                "block" "center"})))
-                   :class
-                   (case status
-                     :convex-web.command.status/running
-                     "bg-yellow-100"
-                     :convex-web.command.status/success
-                     ""
-                     :convex-web.command.status/error
-                     "bg-red-100"
-
-                     "")}
-
-                  ;; -- Input
-                  [:div.flex.flex-col.items-start
-                   [:span.text-xs.uppercase.text-gray-600.block.mb-1
-                    "Source"]
-
-                   (let [source (or (get query :convex-web.query/source)
-                                    (get transaction :convex-web.transaction/source))]
-                     [:div.flex.items-center
-                      [gui/Highlight source {:pretty? true}]
-                      [gui/ClipboardCopy source {:margin "ml-2"}]])]
-
-                  [:div.my-3]
-
-                  ;; -- Output
-                  [:div.flex.flex-col
-                   (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
-                     [:div.flex.mb-1
-                      [:span.text-xs.uppercase.text-gray-600
-                       (cond
-                         error?
-                         (let [code (get-in command [:convex-web.command/error :code])]
-                           (apply str (if (keyword? code)
-                                        ["Error " (str "(" (error-code-string code) ")")]
-                                        ["Unrecognised Non-Keyword Error Code"])))
-
-                         :else
-                         "Result")]
-
-                      ;; Don't display result type for errors.
-                      (when-not error?
-                        (when-let [type (get-in command [:convex-web.command/metadata :type])]
-                          [gui/Tooltip
-                           (str/capitalize (name type))
-                           [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
-
-                   [:div.flex
-                    (case status
-                      :convex-web.command.status/running
-                      [gui/SpinnerSmall]
-
-                      :convex-web.command.status/success
-                      [Output command]
-
-                      :convex-web.command.status/error
-                      [ErrorOutput command])]]])))
+  (into [:div] 
+    (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
+      ^{:key id}
+      [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
+       {:ref
+        (fn [el]
+          (when el
+            (.scrollIntoView el #js {"behavior" "smooth"
+                                     "block" "center"})))
+        :class
+        (case status
+          :convex-web.command.status/running
+          "bg-yellow-100"
+          :convex-web.command.status/success
+          ""
+          :convex-web.command.status/error
+          "bg-red-100"
+          
+          "")}
+       
+       ;; -- Input
+       [:div.flex.flex-col.items-start
+        [:span.text-xs.uppercase.text-gray-600.block.mb-1
+         "Source"]
+        
+        (let [source (or (get query :convex-web.query/source)
+                       (get transaction :convex-web.transaction/source))]
+          [:div.flex.items-center
+           [gui/Highlight source {:pretty? true}]
+           [gui/ClipboardCopy source {:margin "ml-2"}]])]
+       
+       [:div.my-3]
+       
+       ;; -- Output
+       [:div.flex.flex-col
+        (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
+          [:div.flex.mb-1
+           [:span.text-xs.uppercase.text-gray-600
+            (cond
+              error?
+              (let [code (get-in command [:convex-web.command/error :code])]
+                (apply str (if (keyword? code)
+                             ["Error " (str "(" (error-code-string code) ")")]
+                             ["Unrecognised Non-Keyword Error Code"])))
+              
+              :else
+              "Result")]
+           
+           ;; Don't display result type for errors.
+           (when-not error?
+             (when-let [type (get-in command [:convex-web.command/metadata :type])]
+               [gui/Tooltip
+                (str/capitalize (name type))
+                [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
+        
+        [:div.flex
+         (case status
+           :convex-web.command.status/running
+           [gui/SpinnerSmall]
+           
+           :convex-web.command.status/success
+           [Output command]
+           
+           :convex-web.command.status/error
+           [ErrorOutput command])]]])))
 
 ;; --
 
