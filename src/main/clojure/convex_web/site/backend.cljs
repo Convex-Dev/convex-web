@@ -24,7 +24,7 @@
                                            {:params params})))))
 
 (defn GET-account [address {:keys [handler error-handler]}]
-  (let [address (str/replace address "#" "")]
+  (let [address (str/replace (str address) #"#" "")]
     (GET (str "/api/internal/accounts/" address)
       (merge {:handler handler}
         (when error-handler
