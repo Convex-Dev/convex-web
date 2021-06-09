@@ -1,5 +1,6 @@
 (ns convex-web.site.backend
-  (:require [ajax.core :refer [GET POST]]))
+  (:require [clojure.string :as str]
+            [ajax.core :refer [GET POST]]))
 
 (defn csrf-header []
   {"x-csrf-token" (.-value (.getElementById js/document "__anti-forgery-token"))})
@@ -23,9 +24,11 @@
                                            {:params params})))))
 
 (defn GET-account [address {:keys [handler error-handler]}]
-  (GET (str "/api/internal/accounts/" address) (merge {:handler handler}
-                                                      (when error-handler
-                                                        {:error-handler error-handler}))))
+  (let [address (str/replace address "#" "")]
+    (GET (str "/api/internal/accounts/" address)
+      (merge {:handler handler}
+        (when error-handler
+          {:error-handler error-handler})))))
 
 (defn GET-blocks
   "Gets the latest `n` Blocks, or start from `i` and take `n`."
