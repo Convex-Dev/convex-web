@@ -133,8 +133,11 @@
                                      {:convex-web.query/source "("
                                       :convex-web.query/language :convex-lisp}})]
       
-      (is (= {::c/status :convex-web.command.status/error
-              ::c/error {:message "Error while parsing action 'Input/ExpressionList/ZeroOrMore/Sequence/Expression/FirstOf/DelimitedExpression/DataStructure/List/FirstOf/Sequence/List_Action1' at input position (line 1, pos 3):\n(\n  ^\n\nconvex.core.exceptions.ParseException: Expected closing ')'"}}
+      (is (= {:convex-web.command/error
+              {:message
+               "Error while parsing action 'Input/ExpressionList/ZeroOrMore/Sequence/Expression/FirstOf/ExpressionElement/DataStructure/List/FirstOf/Sequence/List_Action1' at input position (line 1, pos 3):\n(\n  ^\n\nconvex.core.exceptions.ParseException: Expected closing ')'"},
+              :convex-web.command/status :convex-web.command.status/error}
+            
             (select-keys command [::c/status ::c/error])))))
   
   (testing "Cast error"

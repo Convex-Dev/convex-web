@@ -146,9 +146,7 @@
     (keyword (.toString (.getName ^Keyword x)))
 
     (instance? Symbol x)
-    (symbol
-      (some-> ^Symbol x (.getPath) (.toString))
-      (.toString (.getName ^Symbol x)))
+    (symbol (.getName ^Symbol x))
 
     (instance? AList x)
     (map datafy x)
@@ -179,7 +177,7 @@
     (.toHexString ^ABlob x)
     
     (instance? CVMByte x)
-    (.longValue x)
+    (.longValue ^CVMByte x)
 
     (instance? Syntax x)
     (datafy (.getValue ^Syntax x))
@@ -270,7 +268,7 @@
                                 :value (or (some-> result-value .toString) "nil")}
       
       (when (instance? CoreFn result-value)
-        {:convex-web.result/metadata (datafy (metadata (.getSymbol result-value)))})
+        {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})
       
       (when result-error-code
         {:convex-web.result/error-code (datafy result-error-code)
@@ -369,7 +367,7 @@
                                           (fn [^Syntax param]
                                             ;; Syntax `param` wraps a Symbol - Syntax<Symbol>.
                                             (datafy (.getValue param)))
-                                          (.getParams f))
+                                          (.getParams ^Fn f))
                                         
                                         ;; TODO: Handle MultiFn.
                                         :else

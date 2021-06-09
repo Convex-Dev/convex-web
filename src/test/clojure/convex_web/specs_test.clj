@@ -97,3 +97,9 @@
                                   :query q
                                   :error {:message "Error"}}]
       (is (s/assert :convex-web/command c)))))
+
+(comment
+  (require 'convex-web.specs-test)
+  (in-ns 'convex-web.specs-test)
+
+  (run-tests))

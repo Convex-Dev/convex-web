@@ -73,9 +73,9 @@
 
     (testing "Symbol"
              (is (= 's (convex/datafy (convex/execute-string context "'s"))))
-             (is (= (symbol "a" "b")
+             (is (= '(lookup a b)
                     (convex/datafy (convex/execute-string context "'a/b"))))
-             (is (= (symbol "#8" "inc")
+             (is (= '(lookup 8 inc)
                     (convex/datafy (convex/execute-string context "'#8/inc")))))
 
     (testing "List" (is (= '() (convex/datafy (convex/execute context '())))))
