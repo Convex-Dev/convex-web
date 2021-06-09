@@ -52,11 +52,11 @@
          (for [[k metas] reference-grouped-by]
            ^{:key k}
            [:div.flex.flex-wrap.items-end.mb-1
-            [:code.text-blue-400.text-xs.font-bold.mr-2 k]
+            [:code.text-blue-500.text-xs.font-bold.mr-2 k]
             (for [meta metas]
               (let [symbol (get-in meta [:doc :symbol])]
                 ^{:key symbol}
-                [:a.underline.mr-2
+                [:a.mr-2
                  {:on-click #(some-> (.getElementById js/document (str "ref-" symbol))
                                      (.scrollIntoView))}
                  [:code.text-xs.hover:underline.cursor-pointer symbol]]))]))]]]
