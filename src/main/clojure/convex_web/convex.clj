@@ -364,9 +364,8 @@
                             arglists  (cond                              
                                         (instance? Fn f)
                                         (map 
-                                          (fn [^Syntax param]
-                                            ;; Syntax `param` wraps a Symbol - Syntax<Symbol>.
-                                            (datafy (.getValue param)))
+                                          (fn [^Symbol param]
+                                            (.getName param))
                                           (.getParams ^Fn f))
                                         
                                         ;; TODO: Handle MultiFn.

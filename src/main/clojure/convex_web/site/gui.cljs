@@ -1360,12 +1360,8 @@
               
               (= :ajax.status/success ajax-status)
               [:div
-               (let [result-object (:convex-web.command/object result)
-                     result-object-str (try
-                                         (zprint/zprint-str result-object {:width 60})
-                                         (catch js/Error _
-                                           (pr-str result-object)))]
-                 [Highlight result-object-str])])]]])])))
+               [Highlight
+                (get-in result [:convex-web.command/result :convex-web.result/value])]])]]])])))
 
 (defn Account [account]
   (let [{:convex-web.account/keys [address status]} account
