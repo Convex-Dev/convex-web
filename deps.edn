@@ -1,45 +1,45 @@
 {:paths ["src/main/clojure" "src/main/resources"]
-
+ 
  :deps
  {org.clojure/clojure {:mvn/version "1.10.3"}
   org.clojure/tools.logging {:mvn/version "1.1.0"}
   org.clojure/data.json {:mvn/version "2.3.1"}
-
+  
   com.cognitect/transit-clj {:mvn/version "1.0.324"}
   com.cognitect/transit-cljs {:mvn/version "0.8.269"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
-
+  
   world.convex/convex {:local/root "convex.jar"}
-
+  
   ;; Required by Convex but it seems to have some
   ;; odd classpath conflict going on, that's why it's added here.
   org.apache.commons/commons-text {:mvn/version "1.9"}
-
+  
   com.stuartsierra/component {:mvn/version "1.0.0"}
-
-
+  
+  
   ;; -- Logging
-
+  
   ch.qos.logback/logback-classic {:mvn/version "1.2.3"}
-
+  
   ;; Logback implements the SLF4J API
   org.slf4j/slf4j-api {:mvn/version "1.7.30"}
-
+  
   ;; Redirect Apache Commons Logging to Logback via the SLF4J API
   org.slf4j/jcl-over-slf4j {:mvn/version "1.7.30"}
-
+  
   ;; Redirect Log4j 1.x to Logback via the SLF4J API
   org.slf4j/log4j-over-slf4j {:mvn/version "1.7.30"}
-
+  
   ;; Redirect Log4j 2.x to Logback via the SLF4J API
   org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.14.1"}
-
+  
   ;; Redirect java.util.logging to Logback via the SLF4J API.
   org.slf4j/jul-to-slf4j {:mvn/version "1.7.30"}
-
+  
   ;; Google Cloud Logging appender
   com.google.cloud/google-cloud-logging-logback {:mvn/version "0.119.0-alpha"}
-
+  
   ;; IMPORTANT
   ;; `com.google.cloud/google-cloud-logging-logback` has a transitive
   ;; dependency with `com.google.guava/guava` version `30.0-android`.
@@ -52,14 +52,14 @@
   ;; com.google.common.collect.Streams
   ;; ```
   com.google.guava/guava {:mvn/version "30.0-jre"}
-
+  
   com.brunobonacci/mulog {:mvn/version "0.6.5"}
-
+  
   lambdaisland/glogi {:mvn/version "1.0.106"}
-
+  
   ;; -- End-of-Logging
-
-
+  
+  
   aero/aero {:mvn/version "1.1.6"}
   ring/ring-core {:mvn/version "1.9.3"}
   ring/ring-defaults {:mvn/version "0.3.2"}
@@ -74,23 +74,26 @@
                                   cljsjs/react-dom-server]}
   metosin/reitit-frontend {:mvn/version "0.5.13"}
   datalevin/datalevin {:mvn/version "0.4.34"}
-
+  
   nano-id/nano-id {:mvn/version "1.0.0"}
   expound/expound {:mvn/version "0.8.9"}
   fipp/fipp {:mvn/version "0.6.23"}
   zprint/zprint {:mvn/version "1.1.2"}
   cljs-ajax/cljs-ajax {:mvn/version "0.8.3"}
   borkdude/sci {:mvn/version "0.2.5"}}
-
+ 
  :aliases
  {;; -- Server dev
   :dev
   {:extra-paths ["src/dev/clojure"]
-
+   
    :extra-deps {com.stuartsierra/component.repl {:mvn/version "0.2.0"
                                                  :exclusions [org.clojure/tools.namespace]}
-
-                org.clojure/tools.namespace {:mvn/version "1.1.0"}}}
+                
+                org.clojure/tools.namespace {:mvn/version "1.1.0"}
+                
+                helins/convex.cljc {:git/url "git@github.com:helins/convex.cljc.git"
+                                    :sha "bd2e8a8d882fc9521f6a7d415801c9c7ed8e53df"}}}
   
   
   ;; -- Site dev
@@ -99,8 +102,8 @@
                 thheller/shadow-cljs {:mvn/version "2.14.3"}
                 binaryage/devtools {:mvn/version "1.0.3"}
                 re-frisk/re-frisk {:mvn/version "1.5.1"}}}
-
-
+  
+  
   ;; -- Test
   :test
   {:extra-paths ["src/test/clojure"]
@@ -111,37 +114,37 @@
   ;; -- Socket REPL
   :repl
   {:jvm-opts ["-Dclojure.server.repl={:port,5555,:accept,clojure.core.server/repl}"]}
-
+  
   
   ;; -- Kaocha test runner
   :kaocha
   {:extra-deps {lambdaisland/kaocha {:mvn/version "1.0.861"}}}
-
-
+  
+  
   ;; -- Cognitect test runner
   :test-runner
   {:extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
                                            :sha "62ef1de18e076903374306060ac0e8a752e57c86"}}
-
+   
    :exec-fn cognitect.test-runner.api/test
    :exec-args {:dirs ["src/test"]}}
-
-
+  
+  
   ;; -- Run server
   :main
   {:main-opts ["-m" "convex-web.core"]}
-
-
+  
+  
   ;; -- Logback configuration
   :logback-site
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-site.xml"]}
-
+  
   :logback-dev
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-dev.xml"]}
-
+  
   :logback-test
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-test.xml"]}
-
+  
   :logback-prod
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-prod.xml"]}
   
@@ -153,7 +156,7 @@
    :ns-default vlaaad.reveal
    :exec-fn repl}
   
-
+  
   ;; -- Check outdated dependencies
   ;; clj -M:outdated:logback-dev
   :outdated
