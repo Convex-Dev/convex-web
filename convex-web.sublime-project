@@ -1,6 +1,6 @@
 {
     "pep": {
-        "classpath": ["clojure", "-A:dev:test", "-Spath"]
+        "classpath_subprocess_args": ["clojure", "-A:dev:test", "-Spath"]
     },
     "folders": [
         {
