@@ -12,7 +12,9 @@
             [codemirror-reagent.core :as codemirror]
             [reagent.core :as reagent]
             [reitit.frontend.easy :as rfe]
-            [zprint.core :as zprint]))
+            [zprint.core :as zprint]
+            
+            ["react-resizable" :refer [ResizableBox]]))
 
 (defn mode [state]
   (:convex-web.repl/mode state))
@@ -163,43 +165,43 @@
                      source-ref (atom "")
                      history-index (atom nil)]
     (let [active-address (session/?active-address)
-
+          
           execute (fn []
                     (when-let [editor @editor-ref]
                       ;; Reset history navigation index.
                       (reset! history-index nil)
-
+                      
                       (let [source (codemirror/cm-get-value editor)
-
+                            
                             transaction #:convex-web.transaction {:type :convex-web.transaction.type/invoke
                                                                   :source source
                                                                   :language (language state)}
-
+                            
                             query #:convex-web.query {:source source
                                                       :language (language state)}
-
+                            
                             command (merge #:convex-web.command {:mode (mode state)}
-                                           (case (mode state)
-                                             :convex-web.command.mode/query
-                                             (merge #:convex-web.command {:query query}
-                                                    ;; Address is optional in query mode.
-                                                    (when active-address
-                                                      #:convex-web.command {:address active-address}))
-
-                                             :convex-web.command.mode/transaction
-                                             #:convex-web.command {:address active-address
-                                                                   :transaction transaction}))]
-
+                                      (case (mode state)
+                                        :convex-web.command.mode/query
+                                        (merge #:convex-web.command {:query query}
+                                          ;; Address is optional in query mode.
+                                          (when active-address
+                                            #:convex-web.command {:address active-address}))
+                                        
+                                        :convex-web.command.mode/transaction
+                                        #:convex-web.command {:address active-address
+                                                              :transaction transaction}))]
+                        
                         (when-not (str/blank? (codemirror/cm-get-value editor))
                           (codemirror/cm-set-value editor "")
-
+                          
                           (command/execute command (fn [command-previous-state command-new-state]
                                                      (set-state
                                                        (fn [state]
                                                          (let [{:convex-web.command/keys [id] :as command'} (merge command-previous-state command-new-state)
-
+                                                               
                                                                commands (or (commands state) [])
-
+                                                               
                                                                ;; Without checking for the ID a Command without an ID
                                                                ;; would be flagged since both values are nil.
                                                                should-update? (when id
@@ -207,7 +209,7 @@
                                                                                   (fn [{this-id :convex-web.command/id}]
                                                                                     (= id this-id))
                                                                                   commands))
-
+                                                               
                                                                commands' (if should-update?
                                                                            ;; Map over the existing Commands to update the matching one.
                                                                            (mapv
@@ -218,128 +220,155 @@
                                                                              commands)
                                                                            ;; Don't need to update so we simply add the Command to the list.
                                                                            (conj commands command'))]
-
+                                                           
                                                            (assoc state :convex-web.repl/commands commands'))))))))))
-
+          
           input-disabled? (and (nil? active-address) (= :convex-web.command.mode/transaction (mode state)))]
       (if input-disabled?
+        ;; Without an active Account
         [:div.bg-gray-200.rounded.flex.items-center.justify-center
+         ;; Height must match resizable box (see below).
          {:style
-          {:height "100px"}}
+          {:height "120px"}}
          [gui/Tooltip
           {:title "You need an Account to use transactions"}
           [gui/DefaultButton
            {:on-click #(stack/push :page.id/create-account {:modal? true})}
            [:span.text-xs.uppercase "Create Account"]]]]
-        [:div.flex.border.rounded
-         (let [enter-extra-key (fn []
-                                 (if-let [editor @editor-ref]
-                                   (let [^js pos (-> editor
-                                                     (codemirror/cm-get-doc)
-                                                     (codemirror/cm-get-cursor))
-
-                                         last-line (-> editor
-                                                       (codemirror/cm-get-doc)
-                                                       (codemirror/cm-last-line))
-
-                                         line (-> editor
-                                                  (codemirror/cm-get-doc)
-                                                  (codemirror/cm-get-line last-line))
-
-                                         last-line? (= last-line (.-line pos))
-                                         last-ch? (= (count line) (.-ch pos))]
-
-                                     (if (and last-line? last-ch?)
-                                       (execute)
-                                       codemirror/pass))
-                                   codemirror/pass))
-
-               history-up (fn [cm]
-                            (let [c (vec (commands state))
-                                  ;; Do nothing if there are no Commands.
-                                  i (or @history-index (some-> (seq c) count))
-                                  ;; Max '0' to fallback to first Command.
-                                  i (some-> i (dec) (max 0))]
-                              (when i
-                                (codemirror/cm-set-value cm (command-source (get c i)))
-                                (codemirror/set-cursor-at-the-end cm)
-
-                                (reset! history-index i))))
-
-               history-down (fn [cm]
-                              (let [c (vec (commands state))
-                                    ;; Do nothing if there's no index set.
-                                    ;; Min 'count' to fallback to last Command.
-                                    i (some-> @history-index (inc) (min (dec (count c))))]
-                                (when i
-                                  (codemirror/cm-set-value cm (command-source (get c i)))
-                                  (codemirror/set-cursor-at-the-end cm)
-
-                                  (reset! history-index i))))
-
-               clear-all (fn [cm]
-                           (codemirror/cm-set-value cm ""))]
-           [codemirror/CodeMirror
-            [:div.relative.flex-shrink-0.flex-1.overflow-auto
-             {:style {:max-height "300px"}}]
-            {:configuration {:lineNumbers false
-                             :value @source-ref
-                             :mode (case (language state)
-                                     :convex-lisp
-                                     "clojure"
-
-                                     :convex-scrypt
-                                     "javascript"
-
-                                     "clojure")}
-
-             :on-mount (fn [_ editor]
-                         (->> (codemirror/extra-keys {:enter enter-extra-key
-                                                      :shift-enter execute
-                                                      :ctrl-up history-up
-                                                      :ctrl-down history-down
-                                                      :ctrl-backspace clear-all})
-                              (codemirror/set-extra-keys editor))
-
-                         (reset! editor-ref editor)
-
-                         (codemirror/cm-focus editor))
-             :on-update (fn [_ editor]
+        
+        ;; With an active Account
+        [:> ResizableBox
+         {:width "100%"
+          :height 120
+          :axis "y"
+          :handle
+          (reagent/as-element 
+            [:div.absolute.inset-x-0.top-0.flex.justify-center.text-gray-500
+             {:class "-my-2"
+              :style
+              {:cursor "row-resize"}}
+             [:svg {:class "h-5 w-5" :viewBox"0 0 20 20" :fill"currentColor"}
+              [:path {:fill-rule "evenodd", :d "M3 7a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 13a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z", :clip-rule "evenodd"}]]])
+          :resizeHandles #js ["n"]
+          :onResizeStop
+          (fn [event data]
+            ;; Move focus to editor.
+            (codemirror/cm-focus @editor-ref))}
+         
+         ;; Pretending to be Codemirror.
+         ;; This div's height is bigger than Codemirror's, so we change its cursor to text
+         ;; to pretend to be the editor and focus Codemirror on click.
+         [:div.h-full.flex.mt-2.space-x-1.cursor-text
+          {:on-click #(codemirror/cm-focus @editor-ref)}
+          (let [enter-extra-key 
+                (fn []
+                  (if-let [editor @editor-ref]
+                    (let [^js pos (-> editor
+                                    (codemirror/cm-get-doc)
+                                    (codemirror/cm-get-cursor))
+                          
+                          last-line (-> editor
+                                      (codemirror/cm-get-doc)
+                                      (codemirror/cm-last-line))
+                          
+                          line (-> editor
+                                 (codemirror/cm-get-doc)
+                                 (codemirror/cm-get-line last-line))
+                          
+                          last-line? (= last-line (.-line pos))
+                          last-ch? (= (count line) (.-ch pos))]
+                      
+                      (if (and last-line? last-ch?)
+                        (execute)
+                        codemirror/pass))
+                    codemirror/pass))
+                
+                history-up (fn [cm]
+                             (let [c (vec (commands state))
+                                   ;; Do nothing if there are no Commands.
+                                   i (or @history-index (some-> (seq c) count))
+                                   ;; Max '0' to fallback to first Command.
+                                   i (some-> i (dec) (max 0))]
+                               (when i
+                                 (codemirror/cm-set-value cm (command-source (get c i)))
+                                 (codemirror/set-cursor-at-the-end cm)
+                                 
+                                 (reset! history-index i))))
+                
+                history-down (fn [cm]
+                               (let [c (vec (commands state))
+                                     ;; Do nothing if there's no index set.
+                                     ;; Min 'count' to fallback to last Command.
+                                     i (some-> @history-index (inc) (min (dec (count c))))]
+                                 (when i
+                                   (codemirror/cm-set-value cm (command-source (get c i)))
+                                   (codemirror/set-cursor-at-the-end cm)
+                                   
+                                   (reset! history-index i))))
+                
+                clear-all (fn [cm]
+                            (codemirror/cm-set-value cm ""))]
+            [codemirror/CodeMirror
+             [:div.relative.flex-shrink-0.flex-1.overflow-auto.border.rounded]
+             {:configuration {:lineNumbers false
+                              :value @source-ref
+                              :mode (case (language state)
+                                      :convex-lisp
+                                      "clojure"
+                                      
+                                      :convex-scrypt
+                                      "javascript"
+                                      
+                                      "clojure")}
+              
+              :on-mount (fn [_ editor]
                           (->> (codemirror/extra-keys {:enter enter-extra-key
                                                        :shift-enter execute
                                                        :ctrl-up history-up
                                                        :ctrl-down history-down
                                                        :ctrl-backspace clear-all})
-                               (codemirror/set-extra-keys editor))
-
+                            (codemirror/set-extra-keys editor))
+                          
+                          (reset! editor-ref editor)
+                          
                           (codemirror/cm-focus editor))
-
-             :events {:editor {"change" (fn [editor _]
-                                          (reset! source-ref (codemirror/cm-get-value editor)))
-
-                               ;; -- Example of format on paste.
-                               ;;"paste" (fn [editor event]
-                               ;;          ;; Convex Lisp source if formated on paste.
-                               ;;          (when (= :convex-lisp (language state))
-                               ;;            (let [source (.getData (.-clipboardData event) "Text")
-                               ;;                  source-pretty (zprint/zprint-str source {:parse-string? true})]
-                               ;;              (codemirror/cm-set-value editor source-pretty)
-                               ;;
-                               ;;              (.preventDefault event))))
-
-                               }}}])
-
-         [:div.flex.flex-col.justify-center.p-1.bg-gray-100
-          [gui/Tooltip
-           "Run"
-           [gui/PlayIcon
-            {:class
-             ["w-6 h-6"
-              "text-green-500"
-              "hover:shadow-lg hover:text-green-600 hover:bg-green-100"
-              "rounded-full"
-              "cursor-pointer"]
-             :on-click execute}]]]]))))
+              :on-update (fn [_ editor]
+                           (->> (codemirror/extra-keys {:enter enter-extra-key
+                                                        :shift-enter execute
+                                                        :ctrl-up history-up
+                                                        :ctrl-down history-down
+                                                        :ctrl-backspace clear-all})
+                             (codemirror/set-extra-keys editor))
+                           
+                           (codemirror/cm-focus editor))
+              
+              :events {:editor {"change" (fn [editor _]
+                                           (reset! source-ref (codemirror/cm-get-value editor)))
+                                
+                                ;; -- Example of format on paste.
+                                ;;"paste" (fn [editor event]
+                                ;;          ;; Convex Lisp source if formated on paste.
+                                ;;          (when (= :convex-lisp (language state))
+                                ;;            (let [source (.getData (.-clipboardData event) "Text")
+                                ;;                  source-pretty (zprint/zprint-str source {:parse-string? true})]
+                                ;;              (codemirror/cm-set-value editor source-pretty)
+                                ;;
+                                ;;              (.preventDefault event))))
+                                
+                                }}}])
+          
+          [:div.flex.flex-col.justify-center.p-1.bg-gray-100.rounded
+           [gui/Tooltip
+            {:title "Run"
+             :size "small"}
+            [gui/PlayIcon
+             {:class
+              ["w-6 h-6"
+               "text-green-500"
+               "hover:shadow-lg hover:text-green-600 hover:bg-green-100"
+               "rounded-full"
+               "cursor-pointer"]
+              :on-click execute}]]]]]))))
 
 (def output-symbol-metadata-options
   {:show-examples? false})
@@ -458,7 +487,7 @@
 
 (defn SandboxPage [_ {:convex-web.repl/keys [reference] :as state} _]
   (let [active-address (session/?active-address)
-
+        
         ;; It's better if we store our REPL's state somewhere in the db
         ;; that it isn't ephemeral as the frame's state - since we want
         ;; to keep the state between page changes.
@@ -475,10 +504,10 @@
                                          (update-in state [:page.id/repl active-address] (fn [repl-state]
                                                                                            (apply f repl-state args))))))]
     [:div.flex.flex-1.space-x-8.overflow-auto
-
+     
      ;; -- REPL
      [:div.w-screen.flex.flex-col.mb-6.space-y-1
-
+      
       [:div.flex.justify-end
        [gui/Tooltip
         {:title "Show Examples & Reference"
@@ -487,46 +516,47 @@
          {:on-click #(toggle-sidebar set-state)}
          [gui/MenuAlt3Icon
           {:class "h-5 w-5"}]]]]
-
+      
       ;; -- Commands
       [:div.flex.flex-1.bg-gray-100.border.rounded.overflow-auto
        [:div.flex.flex-col.flex-1
         [Commands (commands state)]]]
-
-      [:div.flex.space-x-2
-       [:span.text-xs.text-gray-700 "Press " [:code.font-bold "Shift+Return"] " to run."]
-
+      
+      ;; -- Input
+      [Input state set-state]
+      
+      ;; -- Help
+      [:div.flex.space-x-2.pt-1.pb-4.text-gray-500
+       [:span.text-xs "Press " [:code.font-bold "Shift+Return"] " to run."]
+       
        ;; Keymaps.
        [gui/Tooltip
         {:html
          (reagent/as-element
            [:div.flex.flex-col.text-xs.font-mono.space-y-1
             [:span.font-bold.text-sm.mb-2 "Keymaps"]
-
+            
             [:div.flex.items-center.space-x-2
              [:span.font-bold "Run: "]
              [:span.bg-gray-500.p-1.rounded-md "Shift+Return"]]
-
+            
             [:div.flex.items-center.space-x-2
              [:span.font-bold "Clear: "]
              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Backspace"]]
-
+            
             [:div.flex.items-center.space-x-2
              [:span.font-bold "Navigate history up: "]
              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Up"]]
-
+            
             [:div.flex.items-center.space-x-2
              [:span.font-bold "Navigate history down: "]
              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Down"]]])}
-
+        
         [gui/QuestionMarkCircle {:class "h-4 w-4"}]]]
-
-      ;; -- Input
-      [Input state set-state]
-
+      
       ;; -- Options
       [:div.flex.flex-col.space-y-4.mt-1.cursor-default
-
+       
        [:div.flex.space-x-6
         [:div.flex.items-center
          [:span.text-xs.text-gray-700.mr-1
@@ -536,13 +566,13 @@
           {:href (rfe/href :route-name/account-explorer {:address active-address})}
           [:span.font-mono.text-xs.block.ml-1
            (format/prefix-# active-address)]]]
-
+        
         ;; -- Mode
         [:div.flex.items-center
-
+         
          [:span.text-xs.text-gray-700.mr-1
           "Mode"]
-
+         
          [:div.flex.items-center.space-x-1
           [gui/Select2
            {:selected (mode state)
@@ -552,15 +582,15 @@
              {:id :convex-web.command.mode/query
               :value "Query"}]
             :on-change #(set-state assoc :convex-web.repl/mode %)}]
-
+          
           [gui/InfoTooltip "Select \"Transaction\" to execute code as a transaction on the Convex Network. Select \"Query\" to execute code just to compute the result (No on-chain effects will be applied)."]]]
-
+        
         ;; -- Language
         [:div.flex.items-center
-
+         
          [:span.text-xs.text-gray-700.mr-1
           "Language"]
-
+         
          [:div.flex.items-center.space-x-1
           [gui/Select2
            {:selected (language state)
@@ -570,19 +600,19 @@
              {:id :convex-lisp
               :value "Convex Lisp"}]
             :on-change #(set-state assoc :convex-web.repl/language %)}]
-
+          
           [gui/InfoTooltip "Select the programming language to use."]]]]]]
-
+     
      ;; -- Sidebar
      [gui/SlideOver
       {:open? (sidebar-open? state)
        :on-close #(toggle-sidebar set-state)}
       (let [selected-tab (selected-tab state)]
         [:div.flex.flex-col
-
+         
          ;; -- Tabs
          [:div.flex.mb-5
-
+          
           ;; -- Examples Tab
           [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer
            {:class
@@ -591,7 +621,7 @@
               "text-black text-opacity-50")
             :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :examples)}
            "Examples"]
-
+          
           ;; -- Reference Tab
           [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer.ml-4
            {:class
@@ -600,11 +630,11 @@
               "text-black text-opacity-50")
             :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :reference)}
            "Reference"]]
-
+         
          (case selected-tab
            :examples
            [Examples (language state)]
-
+           
            :reference
            [Reference reference])])]]))
 

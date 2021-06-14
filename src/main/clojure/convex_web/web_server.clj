@@ -105,6 +105,7 @@
        (stylesheet (str asset-prefix-url "/css/styles.css"))
        (stylesheet (str asset-prefix-url "/css/tippy.css"))
        (stylesheet (str asset-prefix-url "/css/spinner.css"))
+       (stylesheet (str asset-prefix-url "/css/react-resizable.css"))
 
        [:title "Convex"]
 
