@@ -235,10 +235,10 @@
            [:span.text-xs.uppercase "Create Account"]]]]
         [:> ResizableBox
          {:width "100%"
-          :height 40
+          :height 120
           :axis "y"
           :resizeHandles #js ["n"]}
-         [:div.flex.mt-2
+         [:div.h-full.flex.mt-2.space-x-1
           (let [enter-extra-key 
                 (fn []
                   (if-let [editor @editor-ref]
@@ -288,8 +288,7 @@
                 clear-all (fn [cm]
                             (codemirror/cm-set-value cm ""))]
             [codemirror/CodeMirror
-             [:div.relative.flex-shrink-0.flex-1.overflow-auto.border.rounded
-              {:style {:max-height "300px"}}]
+             [:div.relative.flex-shrink-0.flex-1.overflow-auto.border.rounded]
              {:configuration {:lineNumbers false
                               :value @source-ref
                               :mode (case (language state)
@@ -337,9 +336,10 @@
                                 
                                 }}}])
           
-          [:div.flex.flex-col.justify-center.p-1.bg-gray-100
+          [:div.flex.flex-col.justify-center.p-1.bg-gray-100.rounded
            [gui/Tooltip
-            "Run"
+            {:title "Run"
+             :size "small"}
             [gui/PlayIcon
              {:class
               ["w-6 h-6"
