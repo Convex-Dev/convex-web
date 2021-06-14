@@ -225,19 +225,27 @@
           
           input-disabled? (and (nil? active-address) (= :convex-web.command.mode/transaction (mode state)))]
       (if input-disabled?
+        ;; Without an active Account
         [:div.bg-gray-200.rounded.flex.items-center.justify-center
+         ;; Height must match resizable box (see below).
          {:style
-          {:height "100px"}}
+          {:height "120px"}}
          [gui/Tooltip
           {:title "You need an Account to use transactions"}
           [gui/DefaultButton
            {:on-click #(stack/push :page.id/create-account {:modal? true})}
            [:span.text-xs.uppercase "Create Account"]]]]
+        
+        ;; With an active Account
         [:> ResizableBox
          {:width "100%"
           :height 120
           :axis "y"
-          :resizeHandles #js ["n"]}
+          :resizeHandles #js ["n"]
+          :onResizeStop
+          (fn [event data]
+            ;; Move focus to editor.
+            (codemirror/cm-focus @editor-ref))}
          [:div.h-full.flex.mt-2.space-x-1
           (let [enter-extra-key 
                 (fn []
