@@ -241,6 +241,14 @@
          {:width "100%"
           :height 120
           :axis "y"
+          :handle
+          (reagent/as-element 
+            [:div.absolute.inset-x-0.top-0.flex.justify-center.text-gray-500
+             {:class "-my-2"
+              :style
+              {:cursor "row-resize"}}
+             [:svg {:class "h-5 w-5" :viewBox"0 0 20 20" :fill"currentColor"}
+              [:path {:fill-rule "evenodd", :d "M3 7a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 13a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z", :clip-rule "evenodd"}]]])
           :resizeHandles #js ["n"]
           :onResizeStop
           (fn [event data]
