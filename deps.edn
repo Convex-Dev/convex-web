@@ -90,10 +90,7 @@
    :extra-deps {com.stuartsierra/component.repl {:mvn/version "0.2.0"
                                                  :exclusions [org.clojure/tools.namespace]}
                 
-                org.clojure/tools.namespace {:mvn/version "1.1.0"}
-                
-                helins/convex.cljc {:git/url "git@github.com:helins/convex.cljc.git"
-                                    :sha "bd2e8a8d882fc9521f6a7d415801c9c7ed8e53df"}}}
+                org.clojure/tools.namespace {:mvn/version "1.1.0"}}}
   
   
   ;; -- Site dev
