@@ -246,7 +246,12 @@
           (fn [event data]
             ;; Move focus to editor.
             (codemirror/cm-focus @editor-ref))}
-         [:div.h-full.flex.mt-2.space-x-1
+         
+         ;; Pretending to be Codemirror.
+         ;; This div's height is bigger than Codemirror's, so we change its cursor to text
+         ;; to pretend to be the editor and focus Codemirror on click.
+         [:div.h-full.flex.mt-2.space-x-1.cursor-text
+          {:on-click #(codemirror/cm-focus @editor-ref)}
           (let [enter-extra-key 
                 (fn []
                   (if-let [editor @editor-ref]
