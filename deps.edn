@@ -73,7 +73,7 @@
                                   cljsjs/react-dom
                                   cljsjs/react-dom-server]}
   metosin/reitit-frontend {:mvn/version "0.5.13"}
-  datalevin/datalevin {:mvn/version "0.4.34"}
+  datalevin/datalevin {:mvn/version "0.4.39"}
   
   nano-id/nano-id {:mvn/version "1.0.0"}
   expound/expound {:mvn/version "0.8.9"}
