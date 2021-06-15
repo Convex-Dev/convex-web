@@ -118,6 +118,34 @@
   (instance? convex.core.lang.impl.Fn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "(fn [x] x)"))
   
+  
+  (def libraries
+    (into {}
+      (map 
+        (fn [library-name]
+          [library-name (execute-string (str "(account (call *registry* (cns-resolve '" library-name ")))"))]))
+      ["convex.asset"
+       "asset.box"
+       "convex.fungible"
+       "convex.nft-tokens"
+       "torus.exchange"]))
+  
+  (keys libraries)
+  
+  (into {}
+    (map
+      (fn [[library-name library-account]]
+        (let [exported (.getExports library-account)
+              
+              metadata (.getMetadata library-account)]
+          
+          [library-name (into {}
+                          (map
+                            (fn [sym]
+                              [(convex/datafy sym) (convex/datafy (.get metadata sym))]))
+                          exported)])))
+    libraries)
+  
   ;; `convex.core.lang.impl.Fn/getParams` returns AVector<Syntax>
   (def params (.getParams (execute-string "(fn [x y] (+ x y))")))
   
