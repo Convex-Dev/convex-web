@@ -590,3 +590,16 @@
   (let [address (convex-web.convex/address address)]
     (swap! sequence-number-ref (fn [m]
                                  (assoc m address next)))))
+
+
+(defn library-metadata [^Context context library-name]
+  (let [source (str "(account (call *registry* (cns-resolve '" library-name ")))")
+        
+        ^AccountStatus account-status (execute-string context source)
+        
+        ^AHashMap metadata (.getMetadata account-status)]
+    (into {}
+      (map
+        (fn [[sym _]]
+          [(datafy sym) (datafy (.get metadata sym))]))
+      (.getEnvironment account-status))))
