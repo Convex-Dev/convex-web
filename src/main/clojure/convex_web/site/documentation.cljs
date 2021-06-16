@@ -21,16 +21,20 @@
           selected-library-reference (sort-by first (get reference selected-library))]
       [:div.flex.flex-col.flex-1.space-y-3.overflow-auto
        
-       ;; Libraries.
-       [:div.flex.space-x-4
-        (for [library-name libraries]
-          ^{:key library-name}
-          [:span.font-mono.text-sm.cursor-pointer
-           {:class (if (= library-name selected-library)
-                     "text-blue-500 font-bold"
-                     "text-gray-600")
-            :on-click #(set-state assoc :selected-library library-name)}
-           library-name])]
+       ;; Libraries select.
+       [:div.flex.items-center.space-x-3
+        [:span.font-mono.text-sm.text-gray-500
+         "Library"]
+        
+        [gui/Select2
+         {:selected selected-library
+          :options
+          (map 
+            (fn [library-name]
+              {:id library-name
+               :value library-name})
+            libraries)
+          :on-change #(set-state assoc :selected-library %)}]]
        
        ;; Content.
        [:div.flex.flex-1.overflow-auto
