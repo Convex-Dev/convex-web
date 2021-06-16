@@ -46,10 +46,11 @@
            [:div.flex.flex-col.flex-1
             {:id (str "ref-" symbol)
              :ref (fn [el]
-                    (when (and el (= symbol (:symbol state)))
+                    (when (and el (= (name symbol) (:symbol state)))
                       (.scrollIntoView el)))}
             [gui/SymbolMeta
-             {:symbol symbol
+             {:library selected-library
+              :symbol symbol
               :metadata metadata
               :show-examples? true}]
             
