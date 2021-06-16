@@ -46,7 +46,8 @@
                       (.scrollIntoView el)))}
             [gui/SymbolMeta2 
              {:symbol symbol
-              :metadata metadata}]
+              :metadata metadata
+              :show-examples? true}]
             
             [:hr.my-2]])]
         
