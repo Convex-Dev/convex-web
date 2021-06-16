@@ -16,7 +16,7 @@
   (:import (convex.core Init Peer)
            (convex.core.lang Core Reader Context)
            (convex.core.crypto AKeyPair)
-           (convex.core.data Hash AccountKey Symbol)))
+           (convex.core.data Hash AccountKey ASet AHashMap Symbol AccountStatus)))
 
 ;; -- Logging
 (set-init
@@ -130,8 +130,6 @@
        "convex.nft-tokens"
        "torus.exchange"]))
   
-  (keys libraries)
-  
   (into {}
     (map
       (fn [[library-name library-account]]
@@ -145,6 +143,22 @@
                               [(convex/datafy sym) (convex/datafy (.get metadata sym))]))
                           exported)])))
     libraries)
+  
+  
+  (defn library-metadata [context library-name]
+    (let [source (str "(account (call *registry* (cns-resolve '" library-name ")))")
+          
+          ^AccountStatus account-status (convex/execute-string context source)
+         
+          ^AHashMap metadata (.getMetadata account-status)]
+      (into {}
+        (map
+          (fn [sym]
+            [(convex/datafy sym) (convex/datafy (.get metadata sym))]))
+        (.getExports account-status))))
+  
+  (library-metadata context "torus.exchange")
+  
   
   ;; `convex.core.lang.impl.Fn/getParams` returns AVector<Syntax>
   (def params (.getParams (execute-string "(fn [x y] (+ x y))")))
