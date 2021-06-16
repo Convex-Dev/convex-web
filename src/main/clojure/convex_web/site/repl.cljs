@@ -133,29 +133,33 @@
 
 (defn Reference [reference]
   (reagent/with-let [search-string-ref (reagent/atom nil)]
-    (let [search-string @search-string-ref
-
+    ;; TODO: UI to select library.
+    (let [reference (get reference "convex.core")
+          
+          search-string @search-string-ref
+          
           filtered-reference (if (str/blank? search-string)
                                reference
                                (filter
-                                 (fn [m]
-                                   (str/includes? (get-in m [:doc :symbol]) search-string))
+                                 (fn [[sym _]]
+                                   (str/includes? (name sym) search-string))
                                  reference))]
       [:div.flex.flex-col.overflow-auto
-
+       
        [:input.font-mono.mb-2.px-1.border.rounded
         {:type "text"
          :placeholder "Search"
          :value (or search-string "")
          :on-change #(reset! search-string-ref (gui/event-target-value %))}]
-
-       (for [metadata filtered-reference]
-         (let [symbol (get-in metadata [:doc :symbol])]
-           ^{:key symbol}
-           [:<>
-            [gui/SymbolMeta metadata]
-
-            [:hr.my-2]]))])))
+       
+       (for [[sym metadata] filtered-reference]
+         ^{:key symbol}
+         [:<>
+          [gui/SymbolMeta
+           {:symbol sym
+            :metadata metadata}]
+          
+          [:hr.my-2]])])))
 
 (defn Input [state set-state]
   ;; `source-ref` is a regular Atom

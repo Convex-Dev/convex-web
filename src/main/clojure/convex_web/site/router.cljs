@@ -78,7 +78,7 @@
                (when-not goog.DEBUG
                  (js/gtag "event" "page_view" #js {:page_path path
                                                    :send_to "UA-179518463-1"})))}]}
-
+   
    ;; Welcome
    ;; ==============
    [""
@@ -87,8 +87,8 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/welcome {:reset? true}))}]}]
-
-
+   
+   
    ;; Concepts
    ;; ==============
    ["concepts"
@@ -98,8 +98,8 @@
                 (stack/push :page.id/markdown {:title "Concepts"
                                                :state {:id :concepts}
                                                :reset? true}))}]}]
-
-
+   
+   
    ;; Vision
    ;; ==============
    ["vision"
@@ -109,7 +109,7 @@
                 (stack/push :page.id/markdown {:title "Vision"
                                                :state {:id :vision}
                                                :reset? true}))}]}]
-
+   
    ;; Glossary
    ;; ==============
    ["glossary"
@@ -120,7 +120,7 @@
                 (stack/push :page.id/markdown {:title "Glossary"
                                                :state {:id :glossary}
                                                :reset? true}))}]}]
-
+   
    ;; FAQ
    ;; ==============
    ["faq"
@@ -130,8 +130,8 @@
                 (stack/push :page.id/markdown {:title "FAQ"
                                                :state {:id :faq}
                                                :reset? true}))}]}]
-
-
+   
+   
    ;; Create account
    ;; ==============
    ["create-account"
@@ -140,8 +140,8 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/create-account {:reset? true}))}]}]
-
-
+   
+   
    ;; Sandbox
    ;; ==============
    ["sandbox"
@@ -150,8 +150,8 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/repl {:reset? true}))}]}]
-
-
+   
+   
    ;; My Account (account details)
    ;; ==============
    ["account-details"
@@ -160,8 +160,8 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/my-account {:reset? true}))}]}]
-
-
+   
+   
    ;; Tools
    ;; ==============
    ["tools"
@@ -172,7 +172,7 @@
                 (stack/push :page.id/markdown {:title "Tools"
                                                :state {:id :tools}
                                                :reset? true}))}]}]
-
+   
    ;; Wallet
    ;; ==============
    ["wallet"
@@ -181,8 +181,8 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/wallet {:reset? true}))}]}]
-
-
+   
+   
    ;; Faucet
    ;; ==============
    ["faucet"
@@ -193,8 +193,8 @@
                 (stack/push :page.id/faucet {:reset? true
                                              :state {:convex-web/faucet {:convex-web.faucet/amount 100000000}
                                                      :faucet-page/config {:faucet-page.config/my-accounts? true}}}))}]}]
-
-
+   
+   
    ;; Transfer
    ;; ==============
    ["transfer"
@@ -203,8 +203,8 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/transfer {:reset? true}))}]}]
-
-
+   
+   
    ;; Explorer
    ;; ==============
    ["explorer"
@@ -215,23 +215,23 @@
                  (stack/push :page.id/markdown {:title "Explorer"
                                                 :state {:id :explorer}
                                                 :reset? true}))}]}]
-
+    
     ["/state"
      {:name :route-name/state
       :controllers
       [{:identity identity
         :start (fn [_]
                  (stack/push :page.id/state {:reset? true}))}]}]
-
+    
     ["/accounts"
      {:name :route-name/accounts-explorer
       :controllers
       [{:identity identity
         :start (fn [match]
                  (stack/push :page.id/accounts-range-explorer (merge {:reset? true}
-                                                                     (when-let [range (query-range match)]
-                                                                       {:state range}))))}]}]
-
+                                                                (when-let [range (query-range match)]
+                                                                  {:state range}))))}]}]
+    
     ["/accounts/:address"
      {:name :route-name/account-explorer
       :controllers
@@ -242,16 +242,16 @@
                                                           :state
                                                           {:ajax/status :ajax.status/pending
                                                            :convex-web/account {:convex-web.account/address address}}})))}]}]
-
+    
     ["/blocks"
      {:name :route-name/blocks
       :controllers
       [{:identity identity
         :start (fn [match]
                  (stack/push :page.id/blocks-range-explorer (merge {:reset? true}
-                                                                   (when-let [range (query-range match)]
-                                                                     {:state range}))))}]}]
-
+                                                              (when-let [range (query-range match)]
+                                                                {:state range}))))}]}]
+    
     ["/blocks/:index"
      {:name :route-name/block-explorer
       :controllers
@@ -260,23 +260,23 @@
                  (let [index (js/parseInt (get-in match [:parameters :path :index]))]
                    (stack/push :page.id/block-explorer {:reset? true
                                                         :state {:convex-web/block {:convex-web.block/index index}}})))}]}]
-
+    
     ["/peers"
      {:name :route-name/peers-explorer
       :controllers
       [{:start (fn [_]
                  (stack/push :page.id/peers-explorer {:reset? true}))}]}]
-
+    
     ["/transactions"
      {:name :route-name/transactions
       :controllers
       [{:identity identity
         :start (fn [match]
                  (stack/push :page.id/transactions-range-explorer (merge {:reset? true}
-                                                                         (when-let [range (query-range match)]
-                                                                           {:state range}))))}]}]]
-
-
+                                                                    (when-let [range (query-range match)]
+                                                                      {:state range}))))}]}]]
+   
+   
    ;; Documentation
    ;; ==============
    ["documentation"
@@ -287,18 +287,22 @@
                  (stack/push :page.id/markdown {:title "Documentation"
                                                 :state {:id :documentation}
                                                 :reset? true}))}]}]
-
-
+    
+    
     ["/reference"
      {:name :route-name/documentation-reference
       :controllers
       [{:identity identity
         :start (fn [match]
-                 (let [symbol (get-in match [:parameters :query :symbol])]
-                   (stack/push :page.id/documentation-reference (merge {:reset? true}
-                                                                       (when symbol
-                                                                         {:state {:symbol symbol}})))))}]}]
-
+                 (let [library (get-in match [:parameters :query :library] "convex.core")
+                       symbol (get-in match [:parameters :query :symbol])]
+                   (stack/push :page.id/documentation-reference 
+                     (merge {:reset? true}
+                       (when symbol
+                         {:state 
+                          {:selected-library library
+                           :symbol symbol}})))))}]}]
+    
     ["/getting-started"
      {:name :route-name/documentation-getting-started
       :controllers
@@ -306,7 +310,7 @@
                  (stack/push :page.id/markdown {:title "Getting Started"
                                                 :state {:id :getting-started}
                                                 :reset? true}))}]}]
-
+    
     ["/tutorial"
      {:name :route-name/documentation-tutorial
       :controllers
@@ -314,7 +318,7 @@
                  (stack/push :page.id/markdown {:title "Lisp Guide"
                                                 :state {:id :tutorials}
                                                 :reset? true}))}]}]
-
+    
     ["/advanced-topics"
      {:name :route-name/advanced-topics
       :controllers
@@ -322,7 +326,7 @@
                  (stack/push :page.id/markdown {:title "Advanced Topics"
                                                 :state {:id :advanced-topics}
                                                 :reset? true}))}]}]
-
+    
     ["/client-api"
      {:name :route-name/client-api
       :controllers
@@ -330,8 +334,8 @@
                  (stack/push :page.id/markdown {:title "Client API"
                                                 :state {:id :client-api}
                                                 :reset? true}))}]}]]
-
-
+   
+   
    ;; About
    ;; ==============
    ["about"
@@ -341,14 +345,14 @@
       [{:start (fn [_]
                  (stack/push :page.id/markdown {:state {:id :under-construction}
                                                 :reset? true}))}]}]
-
+    
     ["/white-paper"
      {:name :route-name/white-paper
       :controllers
       [{:start (fn [_]
                  (stack/push :page.id/markdown {:state {:id :white-paper}
                                                 :reset? true}))}]}]
-
+    
     ["/get-involved"
      {:name :route-name/get-involved
       :controllers
@@ -356,14 +360,14 @@
                  (stack/push :page.id/markdown {:title "Get Involved"
                                                 :state {:id :get-involved}
                                                 :reset? true}))}]}]
-
+    
     ["/roadmap"
      {:name :route-name/roadmap
       :controllers
       [{:start (fn [_]
                  (stack/push :page.id/markdown {:state {:id :under-construction}
                                                 :reset? true}))}]}]
-
+    
     ["/convex-foundation"
      {:name :route-name/convex-foundation
       :controllers

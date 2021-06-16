@@ -590,3 +590,38 @@
   (let [address (convex-web.convex/address address)]
     (swap! sequence-number-ref (fn [m]
                                  (assoc m address next)))))
+
+
+(defn library-metadata [^Context context library-name]
+  (let [source (str "(account (call *registry* (cns-resolve '" library-name ")))")
+        
+        ^AccountStatus account-status (execute-string context source)
+        
+        ^AHashMap metadata (.getMetadata account-status)]
+    (into {}
+      (map
+        (fn [[sym _]]
+          [(datafy sym) (datafy (.get metadata sym))]))
+      (.getEnvironment account-status))))
+
+(defn library-reference
+  "Metadata for Convex core libraries.
+  
+   It's a mapping of library name to its metadata."
+  [^Context context]
+  (let [libraries ["asset.box"
+                   "asset.nft-tokens"
+                   "asset.simple-nft"
+                   "convex.asset"
+                   "convex.core"
+                   "convex.fungible"
+                   "convex.nft-tokens"
+                   "convex.registry"
+                   "convex.trust"
+                   "convex.trusted-oracle"
+                   "torus.exchange"]]
+    (->> libraries
+      (map
+        (fn [library-name]
+          [library-name (library-metadata context library-name)]))
+      (into {}))))

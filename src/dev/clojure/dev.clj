@@ -116,50 +116,13 @@
   
   (instance? convex.core.lang.AFn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "inc"))
-  (instance? convex.core.lang.impl.Fn (execute-string "(fn [x] x)"))
+  (instance? convex.core.lang.impl.Fn (execute-string "(fn [x] x)")) 
+ 
   
+  ;; Library metadata.
+  (convex/library-metadata context "convex.trust")
   
-  (def libraries
-    (into {}
-      (map 
-        (fn [library-name]
-          [library-name (execute-string (str "(account (call *registry* (cns-resolve '" library-name ")))"))]))
-      ["convex.asset"
-       "asset.box"
-       "convex.fungible"
-       "convex.nft-tokens"
-       "torus.exchange"]))
-  
-  (into {}
-    (map
-      (fn [[library-name library-account]]
-        (let [exported (.getExports library-account)
-              
-              metadata (.getMetadata library-account)]
-          
-          [library-name (into {}
-                          (map
-                            (fn [sym]
-                              [(convex/datafy sym) (convex/datafy (.get metadata sym))]))
-                          exported)])))
-    libraries)
-  
-  
-  (defn library-metadata [context library-name]
-    (let [source (str "(account (call *registry* (cns-resolve '" library-name ")))")
-          
-          ^AccountStatus account-status (convex/execute-string context source)
-         
-          ^AHashMap metadata (.getMetadata account-status)]
-      (into {}
-        (map
-          (fn [sym]
-            [(convex/datafy sym) (convex/datafy (.get metadata sym))]))
-        (.getExports account-status))))
-  
-  (library-metadata context "torus.exchange")
-  
-  
+ 
   ;; `convex.core.lang.impl.Fn/getParams` returns AVector<Syntax>
   (def params (.getParams (execute-string "(fn [x y] (+ x y))")))
   
