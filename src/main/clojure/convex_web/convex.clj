@@ -603,3 +603,17 @@
         (fn [[sym _]]
           [(datafy sym) (datafy (.get metadata sym))]))
       (.getEnvironment account-status))))
+
+(defn library-reference
+  "Metadata for Convex core libraries.
+  
+   It's a mapping of library name to its metadata."
+  [^Context context]
+  (let [libraries ["convex.core"
+                   "convex.registry"
+                   "convex.trust"]]
+    (->> libraries
+      (map
+        (fn [library-name]
+          [library-name (library-metadata context library-name)]))
+      (into {}))))

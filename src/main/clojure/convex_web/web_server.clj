@@ -977,7 +977,7 @@
 
 (defn -GET-reference [_ _]
   (try
-    (-successful-response (convex/convex-core-reference))
+    (-successful-response (convex/library-reference (convex/hero-fake-context)))
     (catch Exception ex
       (u/log :logging.event/system-error
              :severity :error
