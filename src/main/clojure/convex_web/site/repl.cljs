@@ -155,7 +155,7 @@
        (for [[sym metadata] filtered-reference]
          ^{:key symbol}
          [:<>
-          [gui/SymbolMeta2 
+          [gui/SymbolMeta
            {:symbol sym
             :metadata metadata}]
           

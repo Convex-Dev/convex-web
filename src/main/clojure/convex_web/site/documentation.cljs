@@ -48,7 +48,7 @@
              :ref (fn [el]
                     (when (and el (= symbol (:symbol state)))
                       (.scrollIntoView el)))}
-            [gui/SymbolMeta2 
+            [gui/SymbolMeta
              {:symbol symbol
               :metadata metadata
               :show-examples? true}]

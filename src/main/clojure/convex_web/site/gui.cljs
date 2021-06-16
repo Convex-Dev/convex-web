@@ -555,7 +555,7 @@
       (when-let [description (get-in syntax-meta [:doc :description])]
         [:p.text-sm.text-gray-800.ml-10 description])]]))
 
-(defn SymbolMeta2 [{:keys [symbol metadata show-examples?]}]
+(defn SymbolMeta [{:keys [symbol metadata show-examples?]}]
   (let [{:keys [examples type description signature]} (:doc metadata)]
     [:div.flex.flex-col.flex-1.text-sm.p-2
      [:div.flex.items-center
@@ -1140,7 +1140,7 @@
              result-metadata :convex-web.result/metadata} result]
         (if result-metadata
           [:div.flex.flex-1.bg-white.rounded.shadow
-           [SymbolMeta2 
+           [SymbolMeta
             {:symbol result-value
              :metadata result-metadata
              :show-examples? false}]]
