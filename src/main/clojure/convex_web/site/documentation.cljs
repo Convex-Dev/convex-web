@@ -66,8 +66,9 @@
             
             (for [[k reference] reference-grouped-by]
               ^{:key k}
-              [:div.flex.flex-wrap.items-end.mb-1
-               [:code.text-blue-500.text-xs.font-bold.mr-2 k]
+              [:div.flex.flex-wrap.mb-1
+               [:div 
+                [:code.text-blue-500.text-xs.font-bold.mr-2 k]]
                (for [[symbol _] reference]
                  ^{:key symbol}
                  [:a.mr-2
