@@ -3,10 +3,7 @@
             [convex-web.site.backend :as backend]
             
             [clojure.string :as str]
-            [cljs.spec.alpha :as s]
-
-            ["highlight.js/lib/core" :as hljs]
-            ["highlight.js/lib/languages/clojure" :as hljs-clojure]))
+            [cljs.spec.alpha :as s]))
 
 (defn ReferencePage [_ {:keys [ajax/status reference] :as state} _]
   (case status
