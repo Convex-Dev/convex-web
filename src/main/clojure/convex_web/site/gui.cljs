@@ -233,10 +233,10 @@
 
           [:> headlessui-react/Transition.Child
            {:as react/Fragment
-            :enter "transform transition ease-in-out duration-500 sm:duration-700"
+            :enter "transform transition ease-in-out duration-500"
             :enterFrom "translate-x-full"
             :enterTo "translate-x-0"
-            :leave "transform transition ease-in-out duration-500 sm:duration-700"
+            :leave "transform transition ease-in-out duration-500"
             :leaveFrom "translate-x-0"
             :leaveTo "translate-x-full"}
 
