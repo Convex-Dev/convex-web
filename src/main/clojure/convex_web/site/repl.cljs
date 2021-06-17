@@ -42,7 +42,7 @@
   (= :convex-web.command.mode/transaction (:convex-web.command/mode command)))
 
 (defn selected-tab [state]
-  (get-in state [:convex-web.repl/sidebar :sidebar/tab] :examples))
+  (get-in state [:convex-web.repl/sidebar :sidebar/tab] :reference))
 
 (defn sidebar-open? [state]
   (get-in state [:convex-web.repl/sidebar :sidebar/open?] false))
@@ -637,7 +637,16 @@
         [:div.flex.flex-col.h-full
          
          ;; -- Tabs
-         [:div.flex.mb-5
+         [:div.flex.mb-5.space-x-4
+          
+          ;; -- Reference Tab
+          [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer
+           {:class
+            (if (= :reference selected-tab)
+              "border-b border-indigo-500"
+              "text-black text-opacity-50")
+            :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :reference)}
+           "Reference"]
           
           ;; -- Examples Tab
           [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer
@@ -646,16 +655,7 @@
               "border-b border-indigo-500"
               "text-black text-opacity-50")
             :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :examples)}
-           "Examples"]
-          
-          ;; -- Reference Tab
-          [:span.text-sm.font-bold.leading-none.uppercase.p-1.cursor-pointer.ml-4
-           {:class
-            (if (= :reference selected-tab)
-              "border-b border-indigo-500"
-              "text-black text-opacity-50")
-            :on-click #(set-state assoc-in [:convex-web.repl/sidebar :sidebar/tab] :reference)}
-           "Reference"]]
+           "Examples"]]
          
          (case selected-tab
            :examples
