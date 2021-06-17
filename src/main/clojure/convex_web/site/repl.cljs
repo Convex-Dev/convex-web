@@ -136,11 +136,11 @@
                      selected-library-ref (reagent/atom "convex.core")]
     (let [libraries (keys reference)
           
+          search-string @search-string-ref
+          
           selected-library @selected-library-ref
           
           reference (get reference selected-library)
-          
-          search-string @search-string-ref
           
           filtered-reference (if (str/blank? search-string)
                                reference
@@ -149,7 +149,7 @@
                                    (str/includes? (name sym) search-string))
                                  reference))]
       
-      [:div.h-full.flex.flex-col.space-y-3.overflow-auto
+      [:div.h-full.flex.flex-col.p-1.space-y-3.overflow-auto
        
        ;; Select library.
        [:div.flex.items-center.space-x-3
@@ -166,7 +166,7 @@
             libraries)
           :on-change #(reset! selected-library-ref %)}]]
        
-       [:input.font-mono.mb-2.px-1.border.rounded
+       [:input.text-sm.font-mono.mb-2.px-1.border.rounded
         {:type "text"
          :placeholder "Search"
          :value (or search-string "")
