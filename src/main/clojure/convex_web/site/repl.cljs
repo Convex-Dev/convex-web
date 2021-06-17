@@ -132,9 +132,13 @@
          examples))]))
 
 (defn Reference [reference]
-  (reagent/with-let [search-string-ref (reagent/atom nil)]
-    ;; TODO: UI to select library.
-    (let [reference (get reference "convex.core")
+  (reagent/with-let [search-string-ref (reagent/atom nil)
+                     selected-library-ref (reagent/atom "convex.core")]
+    (let [libraries (keys reference)
+          
+          selected-library @selected-library-ref
+          
+          reference (get reference selected-library)
           
           search-string @search-string-ref
           
@@ -144,7 +148,23 @@
                                  (fn [[sym _]]
                                    (str/includes? (name sym) search-string))
                                  reference))]
-      [:div.flex.flex-col.overflow-auto
+      
+      [:div.flex.flex-col.space-y-3.overflow-auto
+       
+       ;; Select library.
+       [:div.flex.space-x-2
+        [:span.font-mono.text-sm.text-gray-500
+         "Library"]
+        
+        [gui/Select2
+         {:selected selected-library
+          :options
+          (map 
+            (fn [library-name]
+              {:id library-name
+               :value library-name})
+            libraries)
+          :on-change #(reset! selected-library-ref %)}]]
        
        [:input.font-mono.mb-2.px-1.border.rounded
         {:type "text"
@@ -153,7 +173,7 @@
          :on-change #(reset! search-string-ref (gui/event-target-value %))}]
        
        (for [[sym metadata] filtered-reference]
-         ^{:key symbol}
+         ^{:key sym}
          [:<>
           [gui/SymbolMeta
            {:symbol sym
