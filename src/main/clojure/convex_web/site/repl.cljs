@@ -149,10 +149,10 @@
                                    (str/includes? (name sym) search-string))
                                  reference))]
       
-      [:div.flex.flex-col.space-y-3.overflow-auto
+      [:div.h-full.flex.flex-col.space-y-3.overflow-auto
        
        ;; Select library.
-       [:div.flex.space-x-2
+       [:div.flex.items-center.space-x-3
         [:span.font-mono.text-sm.text-gray-500
          "Library"]
         
@@ -172,14 +172,16 @@
          :value (or search-string "")
          :on-change #(reset! search-string-ref (gui/event-target-value %))}]
        
-       (for [[sym metadata] filtered-reference]
-         ^{:key sym}
-         [:<>
-          [gui/SymbolMeta
-           {:symbol sym
-            :metadata metadata}]
-          
-          [:hr.my-2]])])))
+       [:div.h-full.flex.flex-col.space-y-2.overflow-auto
+        (for [[sym metadata] filtered-reference]
+          ^{:key sym}
+          [:<>
+           [gui/SymbolMeta
+            {:library selected-library
+             :symbol sym
+             :metadata metadata}]
+           
+           [:hr.my-2]])]])))
 
 (defn Input [state set-state]
   ;; `source-ref` is a regular Atom
@@ -632,7 +634,7 @@
       {:open? (sidebar-open? state)
        :on-close #(toggle-sidebar set-state)}
       (let [selected-tab (selected-tab state)]
-        [:div.flex.flex-col
+        [:div.flex.flex-col.h-full
          
          ;; -- Tabs
          [:div.flex.mb-5
