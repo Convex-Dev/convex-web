@@ -1,6 +1,7 @@
 {
     "pep": {
-        "classpath": ["clojure", "-A:dev:site-dev:test", "-Spath"]
+        "classpath": ["clojure", "-A:dev:site-dev:test", "-Spath"],
+        "paths": ["src"]
     },
     "folders": [
         {
