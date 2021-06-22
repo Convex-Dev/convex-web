@@ -10,7 +10,7 @@
     "styles-dev": "npx tailwindcss build -o src/main/resources/public/css/styles.css"
   },
   "dependencies": {
-    "@headlessui/react": "^1.2.0",
+    "@headlessui/react": "^1.3.0",
     "@heroicons/react": "^1.0.1",
     "@tailwindcss/typography": "^0.4.1",
     "@tailwindcss/ui": "^0.7.2",
