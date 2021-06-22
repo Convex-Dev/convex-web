@@ -815,7 +815,7 @@
        :aria-hidden true
        :style {:left "-999em"}
        :on-change identity}]
-
+     
      [Tooltip
       {:title "Copy"
        :size "small"}
@@ -827,8 +827,7 @@
          (or (some->> hover (apply str)) "hover:text-black")]
         :on-click
         (fn []
-          (.select (.getElementById js/document id))
-          (.execCommand js/document "copy"))}]]]))
+          (.writeText (.-clipboard js/navigator) text))}]]]))
 
 (defn RangeNavigation [{:keys [page-count
                                page-num
