@@ -1124,9 +1124,9 @@
      "Blob"]
     [:div.flex
      [:code.text-xs.mr-2
-      (str "0x" object)]
+      object]
 
-     [ClipboardCopy (str "0x" object)]]]])
+     [ClipboardCopy object]]]])
 
 (defn ResultRenderer [result]
   (let [{result-type :convex-web.result/type
