@@ -467,7 +467,7 @@
           [:a
            {:href (rfe/href :route-name/my-account)}
            [:span {:class link-style}
-            "Details"]]
+            "Account"]]
 
           ;; -- Select account
           [AccountSelect]]
