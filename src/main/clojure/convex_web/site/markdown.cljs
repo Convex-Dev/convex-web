@@ -18,7 +18,7 @@
          :ajax.status/success
          [:<>
           ;; -- Markdown
-          [:div.overflow-auto
+          [:div.overflow-auto.flex-1
            {:ref
             (fn [el]
               (when (and el smart-toc?)
@@ -40,7 +40,7 @@
           ;; -- On this page
           (when toc?
             (let [item-style "text-gray-600 hover:text-gray-900 cursor-pointer"]
-              [:div.flex.flex-col.ml-10
+              [:div.flex.flex-col.mx-10
                [:span.text-xs.text-gray-500.font-bold.uppercase "On this Page"]
 
                [:ul.list-none.text-sm.mt-4.space-y-2.overflow-auto
