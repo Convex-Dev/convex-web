@@ -33,7 +33,7 @@
 
            (for [{:keys [name content]} contents]
              ^{:key name}
-             [:article.prose.mb-10
+             [:article.prose.prose-sm.mb-10
               {:id name}
               [gui/Markdown content]])]
 
