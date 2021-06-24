@@ -214,7 +214,7 @@
        :route-name :route-name/explorer
        :href (rfe/href :route-name/explorer)
        :children
-       (->> [{:text "State"
+       (->> [{:text "Status"
               :route-name :route-name/state
               :href (rfe/href :route-name/state)}
 

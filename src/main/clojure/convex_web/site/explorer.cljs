@@ -1068,7 +1068,7 @@
 
 (def state-page
   #:page {:id :page.id/state
-          :title "State"
+          :title "Status"
           :component #'StatePage
           :initial-state {:ajax/status :ajax.status/pending}
           :state-spec (s/merge :ajax/statuses (s/keys :opt [:convex-web/state]))
