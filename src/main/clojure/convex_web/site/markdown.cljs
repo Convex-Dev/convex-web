@@ -43,7 +43,7 @@
               [:div.flex.flex-col.ml-10
                [:span.text-xs.text-gray-500.font-bold.uppercase "On this Page"]
 
-               [:ul.list-none.text-sm.mt-4.space-y-2
+               [:ul.list-none.text-sm.mt-4.space-y-2.overflow-auto
                 (if smart-toc?
                   ;; Smart ToC
                   (for [node @*nodes]
