@@ -13,7 +13,7 @@ The `def` special form can be used to create bindings for a symbol in the curren
 
 ### Accounts and environments
 
-Every Account in Convex gets it's own dynamic environment. As a result, defining a binding with `def` affects the environment of the Account currently executing (which may be either a User or Actor account).
+Every Account in Convex gets its own dynamic environment. As a result, defining a binding with `def` affects the environment of the Account currently executing (which may be either a User or Actor account).
 
 ```clojure
 ;; ============
@@ -33,7 +33,7 @@ This is a good and important property: Accounts should never have the ability to
 Of course, sometimes you need to pass information between Accounts, so Convex provides a number of facilities for doing this:
 
 - You can (read-only) access another environment via an alias library using `import`. This allows access to definitions in another environment using a Symbol of the form `alias/symbol-name`
-- Actors can update their own environment when an exported function is `call`ed by another User / Actor. The `call` operation switches the security context, and hence the environment, for the duration of the `call` so that an Actor can update it's own environment (and importantly *cannot* update the environment of the `*caller*`)
+- Actors can update their own environment when an exported function is `call`ed by another User / Actor. The `call` operation switches the security context, and hence the environment, for the duration of the `call` so that an Actor can update its own environment (and importantly *cannot* update the environment of the `*caller*`)
 - You can read values from arbitrary environments off-chain, and feed this the results of processing this information back in via new transactions. This is usually recommended if you want to do computationally heavy processing of data.
 
 ### Libraries and aliases
@@ -42,7 +42,7 @@ Good programming practice suggests the important of structuring programs in modu
 
 Convex provides an easy way to implement libraries that takes advantage of the dynamic environment model:
 
-- Each library receives its own Account and hence it's own Environment for library definitions
+- Each library receives its own Account and hence its own Environment for library definitions
 - Libraries can be deployed using the `deploy` capability, just like any other Actors
 - Other Accounts may `import` definitions for their own use
 

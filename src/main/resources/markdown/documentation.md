@@ -1,6 +1,6 @@
 This section of `convex.world` is dedicated to helping people learn about and build solutions using Convex.
 
-If you are new, and want to get a taste of using Convex, we recommend starting off with the [Getting Started Guide](https://convex.world/#/documentation/getting-started). This guide will take you from the very basics of how Convex works through to launching your own Token!
+If you are new and want to get a taste of using Convex, we recommend starting with the [Getting Started Guide](https://convex.world/#/documentation/getting-started). This guide will take you from the very basics of how Convex works through to launching your own Token!
 
 If you are a more experienced developer and want to learn more about Convex Lisp and the CVM, check out the [Lisp Guide](https://convex.world/#/documentation/tutorial). This guide introduces the Lisp language, and how to use it to access the advanced features of Convex.
 

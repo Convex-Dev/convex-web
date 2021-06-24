@@ -146,8 +146,8 @@ HTTP 400 if the request is incorrectly formatted.
 
 ## Prepare Transaction
 
-When executing a Transaction, the user must sign the hash of the Transaction in order to provide a valid digital signature.
-This endpoint can be used to get the hash of Transaction from the server prior to signing.
+When executing a Transaction, the user must sign the hash of the Transaction to provide a valid digital signature.
+This endpoint can be used to get the hash of Transaction from the server before signing.
 
 The user is expected to follow up the Prepare with a Submit including the valid signature.
 

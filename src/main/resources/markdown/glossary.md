@@ -3,7 +3,7 @@
 An Account is a record of identification and ownership within Convex. Accounts may be either:
 
 * **User Accounts**: Accounts that are controlled by external users, where access is controlled by digital signatures on transactions.
-* **Actor Accounts**: Accounts that are managed by an autonomous Actor, where behavior is 100% deterministic according the associated CVM code.
+* **Actor Accounts**: Accounts that are managed by an autonomous Actor, where behaviour is 100% deterministic according to the associated CVM code.
 
 ## Actor
 
@@ -19,12 +19,12 @@ An Address is usually presented as a 64-character hexadecimal string, looking so
 
 `0x8506cc53f9b7dD152C9BB5386d50C360ff85EFD043049aea55B44362D92C0E1C`
 
-Technically, the Address of a User Account is an `Ed25519` Public Key. You must be in possession of the corresponding private key in order to digitally sign transactions for that Account. Actor Accounts have Addresses that are generated via SHA3-256 hash functions (and therefore do not have a corresponding private key, and no transactions can be submitted for them).
+Technically, the Address of a User Account is an `Ed25519` Public Key. You must have the corresponding private key in to digitally sign transactions for that Account. Actor Accounts have Addresses that are generated via SHA3-256 hash functions (and therefore do not have a corresponding private key, and no transactions can be submitted for them).
 
 
 ## Belief
 
-A Belief is a specialised data structure containing a Peer's combined view of what other Peers are communicating with respected to the Consensus Algorithm.
+A Belief is a specialised data structure containing a Peer's combined view of what other Peers are communicating for the Consensus Algorithm.
 
 ## Belief Merge Function
 
@@ -46,19 +46,19 @@ A Block must be digitally signed by the proposing Peer to be valid for inclusion
 
 ## Blockchain
 
-A system that maintains an appendable sequence of Blocks where each block contains a cryptographic hash of the previous block (and hence its integrity can be validated recursively all the way back to the original block).
+A system that maintains an append-only sequence of Blocks where each block contains a cryptographic hash of the previous block (and hence its integrity can be validated recursively back to the original block).
 
 Technically, Convex is not a blockchain because Blocks are not required to contain a hash of any previous Block. This gives Convex a technical advantage because Blocks can therefore be handled in parallel and re-ordered by the higher level Consensus Algorithm after creation.
 
 ## Consensus Algorithm
 
-In general, a consensus algorithm is a procedure or protocol achieve agreement on a single data value among distributed processes or systems or the current state of a distributed system.
+In general, a consensus algorithm is a procedure or protocol that achieve agreement on a single data value among distributed processes or systems or the current state of a distributed system.
 
 In the context of Convex, the Consensus Algorithm is the specific algorithm used to obtain consensus through the use of a convergent Belief Merge Function. This algorithm is called Convergent Proof of Stake (CPoS)
 
 ## Consensus Point
 
-The greatest position in the Ordering of Blocks produced by the Consensus Algorithm which has been confirmed as being in Consensus. Each Peer maintains it's own view of the Consensus Point based on observed consensus proposals from other Peers.
+The greatest position in the Ordering of Blocks produced by the Consensus Algorithm which has been confirmed as being in Consensus. Each Peer maintains its own view of the Consensus Point based on observed consensus proposals from other Peers.
 
 The Consensus Point cannot be rolled back according to the rules of the Protocol (any attempt to do so would therefore constitute a Fork). However, some Peers may advance their Consensus Point slightly before others.
 
@@ -86,13 +86,13 @@ The Consensus Algorithm makes use of what is effectively a CRDT (of Beliefs) to 
 
 ## CVM
 
-Acronym for Convex Virtual Machine. This is a general purpose computational environment that can be used to implement the state transitions triggered by transactions in the Convex Network.
+Acronym for Convex Virtual Machine. This is a general-purpose computational environment that can be used to implement the state transitions triggered by transactions in the Convex Network.
 
 ## CVM Code
 
 A representation of computer code that can be executed natively on the CVM. CVM code is based on a small number of core primitives that map to the Lambda Calculus, which can be composed in a tree data structure to represent arbitrary Turing-complete code.
 
-Different languages may be compiled to CVM code.
+Different languages may be compiled into CVM code.
 
 ## Data Object
 
@@ -114,7 +114,7 @@ A Dapp is a decentralised application.
 We can distinguish between two forms of Dapp:
 
 - **Pure Dapp** - the Dapp consists only of client code and on-chain implementation (i.e. the Dapp depends on the Convex network and nothing else). Such Dapps are simple to build and maintain, and minimise the risk of relying on centralised systems
-- **Hybrid Dapp** - the Dapp uses client code, on-chain-implementation and one or more off-chain servers. This is more complex to build and maintain, but is necessary if additional servers are required (e.g. to store private information, or to integrate with external systems)
+- **Hybrid Dapp** - the Dapp uses client code, on-chain implementation and one or more off-chain servers. This is more complex to build and maintain, but is necessary if additional servers are required (e.g. to store private information, or to integrate with external systems)
 
 ## Digital Signature
 
@@ -132,7 +132,7 @@ Encodings are designed to be:
 - Efficient for serialisation and deserialisation
 - Canonical (i.e. any Data Object has one and only one valid Encoding)
 
-The maximum Encoding size is 8191 byes. Larger Data Objects are broken down into multiple Cells which each have their individual Encoding - however this is handled automatically by Convex and not usually a relevant concern for users or developers.
+The maximum Encoding size is 8191 bytes. Larger Data Objects are broken down into multiple Cells which each have their individual Encoding - however, this is handled automatically by Convex and not usually a relevant concern for users or developers.
 
 ## Environment
 
@@ -140,7 +140,7 @@ An Environment on the CVM is a mapping from Symbols to defined values.
 
 The Convex environment should be familiar to those who study the formal semantics of programming languages. It is implemented as a functional, immutable map, where new definitions result in the creation and usage of a new Environment.
 
-Each Account receives it's own independent Environment for programmatic usage. If the Account is an Actor, exported definitions in the environment define the behavior of the Actor.
+Each Account receives its own independent Environment for programmatic usage. If the Account is an Actor, exported definitions in the environment define the behaviour of the Actor.
 
 ## Etch
 
@@ -150,9 +150,9 @@ Etch implements Converge Immutable Storage for Data Objects.
 
 ## Fork
 
-A Fork in a consensus system is, in general, where two or more different groups diverge in agreement on the value of shared Global State.
+A Fork in a consensus system is, in general, where two or more different groups diverge in agreement on the value of a shared Global State.
 
-This creates significant problems with a system of value exchange because assets may have different ownership in different forks - which in some cases could cause major economic loss (e.g. the infamous "double spend problem")
+This creates significant problems with a system of a value exchange because assets may have different ownership in different forks - which in some cases could cause major economic loss (e.g. the infamous "double-spend problem")
 
 Convex is designed to prevent forks. In the unlikely event of a fork created by malicious actors or software / network failures, the Convex Network will follow the largest majority among known, trusted Peers (this is a governance decision outside the scope of the Protocol).
 
@@ -160,7 +160,7 @@ Convex is designed to prevent forks. In the unlikely event of a fork created by 
 
 A Function is a Data Object that represents a first-class function on the CVM.
 
-Functions may be passed as arguments to other functions, and invoked with arbitrary arguments. They may be anonymous, or given a name within an Environment. They may also be closures, i.e. capture lexical values from the point of creation.
+Functions may be passed as arguments to other functions and invoked with arbitrary arguments. They may be anonymous or given a name within an Environment. They may also be closures, i.e. capture lexical values from the point of creation.
 
 Functions can support multiple arities on the CVM (e.g. `+`, although many functions only support a specific arity.)
 
@@ -176,7 +176,7 @@ Memory in Convex is the amount of on-chain storage allocated as part of the Glob
 
 Memory Accounting is the process by which changes in Memory usage are attributed and charged to Users.
 
-This is a necessary feature of Convex to create the right incentives to utilise on-chain memory efficiently. Without a system of Memory Accounting, there would be a risk of careless usage of Memory leading to ever-increasing size of the Global State (sometimes termed the "state growth problem" in Blockchains).
+This is a necessary feature of Convex to create the right incentives to utilise on-chain memory efficiently. Without a system of Memory Accounting, there would be a risk of careless usage of Memory leading to the ever-increasing size of the Global State (sometimes termed the "state growth problem" in Blockchains).
 
 ## On-chain
 
@@ -205,7 +205,7 @@ Peers are required to use a private key (corresponding to the Peer's Account) to
 
 A cryptographic key that can be used to digitally sign transactions.
 
-Private Keys must be kept secure in order to prevent unauthorised access to Accounts and Digital Assets controlled by that Account.
+Private Keys must be kept secure to prevent unauthorised access to Accounts and Digital Assets controlled by that Account.
 
 ## Public Key
 
@@ -215,19 +215,19 @@ Public Keys may be safely shared with others, as they do not allow digital signa
 
 ## Schedule
 
-The Schedule is a feature in the CVM enabling CVM code to be scheduled for future execution. Once included in the Schedule, such code is *unstoppable* - it's execution is guaranteed by the protocol.
+The Schedule is a feature in the CVM enabling CVM code to be scheduled for future execution. Once included in the Schedule, such code is *unstoppable* - its execution is guaranteed by the protocol.
 
-Scheduled code may be used to implement actors that take periodic actions, smart contracts that have defined behavior after a certain period of time etc.
+Scheduled code may be used to implement actors that take periodic actions, smart contracts that have defined behaviour after a certain time, etc.
 
 ## Smart Contract
 
 A Smart Contract is a self-executing economic contract with the terms of the agreement written into lines of code that are executed deterministically on the CVM. Buyer and sellers can predict exactly how the Smart Contract will behave, and can therefore trust it to enforce contract terms and conditions effectively.
 
-Typically a Smart Contract would be implemented using an Actor, but it is possible for a single Actor to manage many smart contracts, and likewise for a single Smart Contract to be executed across multiple Actors. It may be helpful to think of Smart Contracts as secure economic constructs, and Actors as a lower level implementation mechanism.
+Typically a Smart Contract would be implemented using an Actor, but it is also possible a single Actor can  manage many smart contracts, and likewise for a single Smart Contract to be executed across multiple Actors. It may be helpful to think of Smart Contracts as secure economic constructs, and Actors as a lower-level implementation mechanism.
 
 ## Stake
 
-A Stake is an asset with economic value put at risk by some entity in order to prove commitment to its participation in some economic transaction and / or good future behavior.
+A Stake is an asset with economic value put at risk by some entity to prove commitment to its participation in some economic transaction and / or good future behaviour.
 
 Convex uses a mechanism called Delegated Proof of Stake to admit Peers for participation in the Consensus algorithm. Other forms of stakes may be used in Smart Contracts.
 
@@ -240,7 +240,7 @@ Benefits for a Peer having a higher effective voting stake are:
 * Slightly more influence over which Blocks get ordered first, if two blocks are simultaneously submitted for consensus
 * They may also benefit from slightly improved overall latency for Blocks that they submit.
 
-While good Peers are expected to be content neutral, they may legitimately wish to offer better QoS to their partners or customers, and having a higher voting stake can help them to achieve this.
+While good Peers are expected to be content-neutral, they may legitimately wish to offer better QoS to their partners or customers, and having a higher voting stake can help them to achieve this.
 
 The protocol does not allow Peers to reverse a confirmed consensus, or prevent (censor) a Block from being included in consensus. Their stake may be at risk if they attempt this.
 
@@ -262,16 +262,16 @@ S[n+1] = f(S[n],B[n])
 
 where:
   f is the State Transition Function
-  S[n] is the sate after n Blocks have been processed
-  B[n] is the Block at position n in the cordering
+  S[n] is the state after n Blocks have been processed
+  B[n] is the Block at position n in the ordering
   S[0] is the pre-defined initial State
 ```
 
 ## Transaction
 
-A Transaction is an indivisible operation that can be executed on the Convex Network. A Transaction must be linked to a User Account, and must be signed by the corresponding Private Key in order to be valid.
+A Transaction is an indivisible operation that can be executed on the Convex Network. A Transaction must be linked to a User Account, and must be signed by the corresponding Private Key to be valid.
 
-Transactions must be digitally signed by the owner of the Account in order to be valid.
+Transactions must be digitally signed by the owner of the Account to be valid.
 
 ## Wallet
 

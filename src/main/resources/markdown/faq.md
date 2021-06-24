@@ -1,4 +1,4 @@
-We've collated some answers to common questions here.
+We have gathered some answers to common questions here.
 
 
 ## Is Convex Free?
@@ -18,7 +18,7 @@ Our constant goal is to keep transaction fees small, so that it is never a signi
 
 Convex can comfortably process many thousands of transactions per second (e.g. transfers and smart contract calls). The CVM itself has been benchmarked at over 200,000 transactions per second on a regular laptop. And as we continue making performance improvements it is getting faster by the day.
 
-But it's important to note that performance and scalability is not just about raw throughput of transactions. Convex is designed to offer a good overall combination of:
+But it's important to note that performance and scalability are not just about the raw throughput of transactions. Convex is designed to offer a good overall combination of:
 
 - Low latency to stable consensus (~1-2 seconds on a global network)
 - High execution throughput (e.g. 10,000+ token-based smart contract transactions per second)
@@ -32,9 +32,9 @@ We achieve all this *without* resorting to over-complicated scaling solutions th
 
 ## How do I integrate my application with Convex?
 
-Convex provides a number of mechanisms for integration.
+Convex provides several mechanisms for integration.
 
-For most decentralised apps, it is easy to build a client-side application which makes use of the **Client API**. This is a convenient REST API using JSON that is ideal for web and mobile applications developers.
+For most decentralised apps, it is easy to build a client-side application that makes use of the **Client API**. This is a convenient REST API using JSON that is ideal for web and mobile applications developers.
 
 Advanced applications can use the **Binary API** and construct messages directly to communicate with Peers. This is currently only possible for JVM-based languages (Java, Clojure, Scala etc.), but more may be supported in the future.
 
@@ -76,7 +76,7 @@ Technically however it's not actually implemented as a blockchain (at least in t
 It's complex! But here are some of the most important points:
 
 - The consensus algorithm (Convergent Proof of Stake, or CPoS) is extremely fast. It can confirm blocks in a few milliseconds between peers running on a local network. The main latency delay in the global network is signal transmission over the Internet: the speed of light is a tricky problem.
-- The CVM execution model is designed for performance: CVM operations are themselves relatively high level, but are implemented using very efficient low-level code.
+- The CVM execution model is designed for performance: CVM operations are relatively high level, but are implemented using very efficient low-level code.
 - We wrote a custom database (Etch) from scratch, specifically to support the performance needs of Convex. Having a database perfectly designed and tuned for the specific workload is a huge advantage and is faster than more generic alternatives (e.g. LevelDB)
 - We exploit a lot of advanced features of the JVM, which is a very powerful platform backed by thousand man-years of engineering effort. We especially appreciate the JIT compiler, concurrency, asynchronous IO and advanced memory management features. It probably wouldn't be feasible to build something as fast as Convex without these.
 - Some of our team have been performance-oriented hackers for many years, with experience in game coding, embedded systems, distributed computing etc. We enjoy and take pride in writing fast, efficient code!
@@ -88,14 +88,14 @@ A variant of Lisp was chosen as the initial language for the CVM for a few reaso
 
 - Lisp expressions are essentially a direct encoding of the [Lambda Calculus](https://en.wikipedia.org/wiki/Lambda_calculus). This means that we are based on fundamentally sound computation theory.
 - Lisp macros are a powerful tool for generating code, which is an ideal solution for building sophisticated smart contract capabilities with an on-chain compiler.
-- Lisp is a highly expressive language for interactive development, with a long history of REPL-based usage. We feel this is ideal for a platform where we want developers to be instantly productive and able to interact directly with the system in real time.
+- Lisp is a highly expressive language for interactive development, with a long history of REPL-based usage. We feel this is ideal for a platform where we want developers to be instantly productive and able to interact directly with the system in real-time.
 
 Paul Graham's essay [Beating the Averages](http://www.paulgraham.com/avg.html) is an interesting perspective on the advantages of Lisp for building a business. Despite dating from 2001, we feel many of these points still stand today and are very relevant for people wanting to build applications using Convex.
 
 
 ## What is Memory Accounting?
 
-Memory Accounting is the system in Convex used to track the usage of on-chain memory. Every time a user executes a transaction, the amount of memory used is calculated and deducted from the user's memory allowance. If the user has insufficient memory allowance, it is possible to automatically buy more on demand.
+Memory Accounting is the system in Convex used to track the usage of on-chain memory. Every time a user executes a transaction, the amount of memory used is calculated and deducted from the user's memory allowance. If the user has an insufficient memory allowance, it is possible to automatically buy more on-demand.
 
 If a user executes a transaction that releases memory, the amount of released memory is credited back to the user's allowance. This creates a good incentive to "clean up after yourself". Actors and smart contracts should also be designed with the option to clean up memory after it is no longer required.
 
@@ -108,7 +108,7 @@ Actors are virtual agents that live their whole existence inside the Convex Virt
 
 Smart Contracts are a concept: the idea of having real-world contracts or agreements that can be automatically executed and enforced by software, eliminating risk and the need to trust fallible humans.
 
-You can use Convex Actors to implement smart contracts. Not every Actor needs to be a smart contract however: an Actor that simply stores on-chain information on your behalf isn't really a contract with anyone else.
+You can use Convex Actors to implement smart contracts. Not every Actor needs to be a smart contract, however: an Actor that simply stores on-chain information on your behalf isn't really a contract with anyone else.
 
 
 ## When will the Main Network go live?
@@ -124,7 +124,7 @@ People will depend on Convex to be a secure, reliable platform for decentralised
 
 Not yet, but soon!
 
-We are establishing the Convex Foundation a non-profit organisation which will facilitate the initial sale of Convex native coins in the near future. Initially, this will be only to institutional investors. Funds raised will be invested in building Convex and the ecosystem.
+We are establishing the Convex Foundation a non-profit organisation that will facilitate the initial sale of Convex native coins in the near future. Initially, this will be only open to institutional investors. Funds raised will be invested in building Convex and the ecosystem.
 
 
 ## Who is building Convex?

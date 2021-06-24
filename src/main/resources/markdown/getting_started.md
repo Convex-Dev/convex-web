@@ -22,9 +22,9 @@ Every Account has a **Balance** denominated in Convex Coins. Coins can be used i
 - To pay a small transaction fee when actions are performed on the Convex Network
 - To participate in running the network, e.g. staking on a Peer
 
-Your coin balance *cannot be spent* by anyone who doesn't have access to your Account. The Convex system keeps it safe through extremely strong cryptographic protections that make it impossible to access the account without a Ed25519 digital signature, signed using your private key. 
+Your coin balance *cannot be spent* by anyone who doesn't have access to your Account. The Convex system keeps it safe through extremely strong cryptographic protections that make it impossible to access the account without an Ed25519 digital signature, signed using your private key. 
 
-You can have multiple Accounts: the collection of accounts that you use is a **Wallet**. In the current Convex test network, the `convex.world` server looks after your wallet for you for convenience.
+You can have multiple Accounts: the collection of accounts that you use is a **Wallet**. In the current Convex test network, the `convex.world` server manages the wallet's keys for your for convenience.
 
 Every new account on the network gets an initial balance `100,000,000` (100 silver coins) which is more than enough to try out everything in all the tutorials! But if you need more you can top up with the `Faucet` tool.
 
@@ -54,7 +54,7 @@ There are two modes for the Sandbox:
 - **Transaction** : the command will be executed, a result will be returned and you will pay any transaction costs required. This will update the state of the Convex Network.
 - **Query** : the command will be executed, a result will be returned by the Convex Network state will be left unchanged. Queries are not transmitted to the network and do not cost any coins.
 
-The basic rule is to use queries when you only want to read information from Convex and make no changes. For all other actions, you will want to use transactions so that your changes will have effect.
+The basic rule is to use queries when you only want to read information from Convex and make no changes. For all other actions, you will want to use transactions so that your changes will take effect.
 
 ### Language Selection
 
@@ -68,18 +68,18 @@ For this guide, we will use Convex Lisp. For more details on how to use Scrypt, 
 
 ## Moving Funds
 
-As a medium of exchange, it is important that it is easy (but also secure!) to move funds around between your accounts (or also to your friends or business partners).
+As a medium of exchange, it should be very easy (but also secure!) to move funds around between your accounts (or also to your friends or business partners).
 
 To test this out we will need **two Accounts**. You can either make a second account yourself (it's easy to switch between them with the widget at the top of the `convex.world` web application), or get a friend to also create an account at the same time (more fun!).
 
-To transfer funds, we use the `transfer` function, which we supply with the Address of the account we want to transfer to, and the amount of coins we want to transfer.
+To transfer funds, we use the `transfer` function, which we supply with the Address of the account we want to transfer to, and the amount we want to transfer.
 
 ```clojure
 (transfer 0x8506cc53f9b7dD152C9BB5386d50C360ff85EFD043049aea55B44362D92C0E1C 10000)
 => 10000
 ```
 
-Make sure you get the destination Address correct! If you make a transfer to an Account that you don't have access to or use the wrong recipient Address, then you will probably lose your coins....
+Make sure you get the destination Address correct! If you make a transfer to an Account that you don't have access to or use the wrong recipient Address, then you will probably lose your coins.
 
 Check that funds have gone out of your Account, and into the destination Account. **TOP TIP** - if it looks like the coins haven't been moved, make sure you are in "Transaction" mode rather than "Query" mode.
 
@@ -90,7 +90,7 @@ If you try to transfer a particularly large amount, you will get an error saying
 => ERROR(FUNDS): Insufficient funds in account
 ```
 
-**NOTE** Error in transactions don't really do any harm. When they occur, everything in the transaction is "rolled back" to the state it was at the start of the transaction, e.g. any coins you transferred early in the transaction (before the error) will be put back in your Account. All you will lose is a small amount of transaction fees.
+**NOTE** Error in transactions doesn't really do any harm. When they occur, everything in the transaction is "rolled back" to the state it was at the start of the transaction, e.g. any coins you transferred early in the transaction (before the error) will be put back in your Account. All you will lose is a small amount of transaction fees.
 
 ## The Environment
 
@@ -126,7 +126,7 @@ If you want to delete a definition, you can use `undef`
 
 Deleting definitions once you no longer need them is a good idea to keep your Environment tidy. It can also get earn you refunds for releasing memory!
 
-The Environment is **secure** in the sense that only your Account can **change** your definitions. However it is technically possible to **observe** definitions in the Environment of anyone else's Account. So you should not use the Environment for any information you want to keep private.
+The Environment is **secure** in the sense that only your Account can **change** your definitions. However, it is technically possible to **observe** definitions in the Environment of anyone else's Account. So you should not use the Environment for any information you want to keep private.
 
 
 ## Building simple applications
@@ -174,9 +174,9 @@ Some points to note:
 
 So far we've looked mainly at Accounts with coin balances and secure Environments controlled by each User on the Convex system. 
 
-This is a powerful solution if you want to build apps where you have exclusive control, however it presents a problem if we want to build apps to support digital assets more generally - we would have to trust the Account owner to run the app honestly without making modifications (e.g. if you stored balances for a digital token in the Account of User A, then User A would be able to unilaterally transfer tokens to himself by modifying the token balances....). This might work for tracking digital assets among a small group or friends or collaborating companies who trust each other, but would not scale to a digital economy with millions of participants, of which many could be unknown and/or untrusted.
+This is a powerful solution if you want to build apps where you have exclusive control. However, it presents a problem if we want to build apps to support digital assets more generally - we would have to trust the Account owner to run the app honestly without making modifications (e.g. if you stored balances for a digital token in the Account of User A, then User A would be able to unilaterally transfer tokens to himself by modifying the token balances....). This might work for tracking digital assets among a small group of friends or collaborating companies who trust each other, but it would not scale to a digital economy with millions of participants, of which many could be unknown and/or untrusted.
 
-Hence we need **Actors**. Actors are Accounts that are **independent of any User** and operate autonomously on the Convex Network. They can be used a trusted parties to manage digital assets and enforce Smart Contracts.
+Hence we need **Actors**. Actors are Accounts that are **independent of any User** and operate autonomously on the Convex Network. They can be used as trusted parties to manage digital assets and enforce Smart Contracts.
 
 Actors have many similarities with User Accounts:
 
@@ -197,7 +197,7 @@ The simplest Actor you can build is an empty Actor:
 => #1234
 ```
 
-This Actor does nothing. It contains no useful information. It has no exported functions, and therefore can never do anything. This is useless, but reassuring! Security is all about the confidence of knowing what harmful things *can't* be done.
+This Actor does nothing. It contains no useful information. It has no exported functions, and therefore can never do anything. This is a bit useless, but reassuring! Security is all about the confidence of knowing what harmful things *can't* be done.
 
 Although not useful, this empty Actor still exists on the Convex Network. You can confirm it is an Actor, and inspect its balance for example:
 
@@ -211,7 +211,7 @@ Although not useful, this empty Actor still exists on the Convex Network. You ca
 
 ### Exported functions
 
-To interact with an Actor, users can `call` special functions which are exported by the Actor. Exported functions are like regular functions, except that the execute in the security context of the Actor itself rather than the user that called them.
+To interact with an Actor, users can `call` special functions which are exported by the Actor. Exported functions are like regular functions, except that they execute in the security context of the Actor itself rather than the user that called them.
 
 A simple example is an Actor that simply counts how many times an `increment` function is called:
 
@@ -284,7 +284,7 @@ You can deploy a new Fungible token in one line!
 
 This will create and deploy a new Actor which represents your token, and `my-token` is set to hold the Address of the new Actor.
 
-The `:supply` configuration parameter determines how may tokens will exist. Initially, the Account that deployed the token (i.e. your User Account) will control all the tokens.
+The `:supply` configuration parameter determines how many tokens will exist. Initially, the Account that deployed the token (i.e. your User Account) will control all the tokens.
 
 ### Using tokens
 
@@ -331,11 +331,11 @@ Where you go from here is up to you. Some ideas:
 - Learn more about Convex from the other documentation and guides here at `convex.world`
 - Build a mobile dApp that talks to your Convex Actors with the Client API
 
-We're excited to see what people are able to build using Convex! But most importantly, please let us know your feedback and what you think of Convex so far. You can join the [Convex Discord Server](https://discord.gg/fsnCxEM) to get involved with the discussions:
+We're excited to see what people can build using Convex! But most importantly, please let us know your feedback and what you think of Convex so far. You can join the [Convex Discord Server](https://discord.gg/fsnCxEM) to get involved with the discussions:
 
 - [Convex Discord](https://discord.gg/fsnCxEM) 
 
-And also please check out the Convex-Dev discord if you would like to get involved with the open source development and bounty program!
+And also please check out the Convex-Dev discord if you would like to get involved with the open-source development and bounty program!
 
 - [Convex-Dev GitHub](https://github.com/orgs/Convex-Dev)
 

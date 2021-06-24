@@ -18,7 +18,7 @@ Some examples:
 
 ### Convex is Fast
 
-With a novel consensus algorithm, Convex is able to execute decentralised applications at internet scale. Using normal consumer grade hardware and network bandwidth the network can achieve:
+With a novel consensus algorithm, Convex can execute decentralised applications at internet scale. Using normal consumer-grade hardware and network bandwidth the network can achieve:
 
 - Thousands of digitally signed transactions per second (more than the 1,700 transactions per second typically handled by the VISA network)
 - Ability to execute over a million operations per second on the CVM
