@@ -10,25 +10,37 @@
 
 (defn WalletPage [_ _ _]
   [:div.flex.flex-col.items-start.space-y-12
-   [:div.flex.flex-col.space-y-2
-    (doall
-      (for [{:convex-web.account/keys [address]} (session/?accounts)]
-        ^{:key address}
-        [:div.flex.items-center
-         [gui/AIdenticon {:value address :size gui/identicon-size-large}]
-
-         [gui/Tooltip
-          {:title "Address"}
-          [:a.hover:underline.ml-2
-           {:href (rfe/href :route-name/account-explorer {:address address})}
-           [:code.text-xs (format/prefix-# address)]]]
-
-         [gui/Tooltip
-          {:title "Balance"}
-          [:code.text-xs.font-bold.text-indigo-500.ml-4
-           (let [account (store/?account address)]
-             (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance])))]]]))]
-
+   [:table.text-left.table-auto
+    [:thead
+     (let [th-class "text-xs uppercase text-gray-600 sticky top-0"]
+       [:tr.select-none
+        [:th {:class th-class}
+         "Address"]
+        
+        [:th
+         {:class th-class}
+         "Balance"]])]
+    
+    [:tbody
+     (doall
+       (for [{:convex-web.account/keys [address]} (session/?accounts)]
+         ^{:key address}
+         (let [td-class ["text-xs text-gray-700 whitespace-no-wrap px-2"]]
+           [:tr.cursor-default
+            
+            [:td {:class td-class}
+             [:div.flex.items-center
+              [gui/AIdenticon {:value address :size gui/identicon-size-large}]
+              
+              [:a.hover:underline.ml-2
+               {:href (rfe/href :route-name/account-explorer {:address address})}
+               [:code.text-xs (format/prefix-# address)]]]]
+            
+            [:td {:class td-class}
+             [:code.text-xs.font-bold.text-indigo-500
+              (let [account (store/?account address)]
+                (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance])))]]])))]]
+   
    [gui/PrimaryButton
     {:on-click #(stack/push :page.id/session {:modal? true
                                               :title "Restore Wallet Key"})}
