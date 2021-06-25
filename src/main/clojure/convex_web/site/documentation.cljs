@@ -1,6 +1,7 @@
 (ns convex-web.site.documentation
   (:require [convex-web.site.gui :as gui]
             [convex-web.site.backend :as backend]
+            [convex-web.convex :as convex]
             
             [clojure.string :as str]
             [cljs.spec.alpha :as s]))
@@ -41,6 +42,10 @@
         
         ;; Documentation
         [:div.flex.flex-col.overflow-auto {:class "w-1/2"}
+         
+         [:p.prose.prose-sm.mb-5
+          (convex/library-documentation selected-library "")]
+         
          (for [[symbol metadata] selected-library-reference]
            ^{:key symbol}
            [:div.flex.flex-col.flex-1
