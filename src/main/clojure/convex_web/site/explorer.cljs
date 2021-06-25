@@ -9,7 +9,6 @@
             [convex-web.glossary :as glossary]
             [convex-web.config :as config]
 
-            [clojure.string :as str]
             [cljs.spec.alpha :as s]
 
             [reitit.frontend.easy :as rfe]
@@ -1026,7 +1025,22 @@
     [:dt.text-sm.font-medium.text-gray-500.truncate label]
     [:dd.mt-1.text-3xl.font-semibold.text-gray-900 value]]])
 
-(defn StatePage [_ state _]
+(defn GET-state [set-state]
+  (set-state #(assoc % :ajax/status :ajax.status/pending))
+  
+  (backend/GET-state
+    {:handler
+     (fn [state]
+       (set-state #(assoc % 
+                     :ajax/status :ajax.status/success
+                     :convex-web/state state)))
+     :error-handler
+     (fn [error]
+       (set-state #(assoc % 
+                     :ajax/status :ajax.status/error
+                     :ajax/error error)))}))
+
+(defn StatePage [_ state set-state]
   (let [{status :ajax/status
          error :ajax/error
          state :convex-web/state} state]
@@ -1037,31 +1051,44 @@
       
       (= :ajax.status/success status)
       (let [[timestamp _ juice-price] (:convex-web.state/globals state)]
-        [:dl.mt-5.grid.grid-cols-1.gap-5.sm:grid-cols-4.p-2
-         [StateStats
-          "Timestamp"
-          [:span.text-sm.font-normal
-           (.toString (js/Date. timestamp))]]
+        [:div.flex.flex-col.space-y-5.p-2
          
-         [StateStats
-          "Juice Price"
-          juice-price]
+         [:div.flex.justify-end
+          [gui/Tooltip
+           {:title "Refresh"
+            :size "small"}
+           [gui/DefaultButton
+            {:on-click
+             (fn []
+               (GET-state set-state))}
+            [gui/RefreshIcon 
+             {:class "w-4 h-4"}]]]]
          
-         [StateStats
-          "Number of Peers"
-          (:convex-web.state/peers-count state)]
-         
-         [StateStats
-          "Number of Accounts"
-          (:convex-web.state/accounts-count state)]
-         
-         [StateStats
-          "Memory Size"
-          (format/format-number (:convex-web.state/memory-size state))]
-         
-         [StateStats
-          "Schedule Count"
-          (format/format-number (:convex-web.state/schedule-count state))]])
+         [:dl.mt-5.grid.grid-cols-1.gap-5.sm:grid-cols-4
+          [StateStats
+           "Timestamp"
+           [:span.text-sm.font-normal
+            (.toString (js/Date. timestamp))]]
+          
+          [StateStats
+           "Juice Price"
+           juice-price]
+          
+          [StateStats
+           "Number of Peers"
+           (:convex-web.state/peers-count state)]
+          
+          [StateStats
+           "Number of Accounts"
+           (:convex-web.state/accounts-count state)]
+          
+          [StateStats
+           "Memory Size"
+           (format/format-number (:convex-web.state/memory-size state))]
+          
+          [StateStats
+           "Schedule Count"
+           (format/format-number (:convex-web.state/schedule-count state))]]])
       
       (= :ajax.status/error status)
       [:span (get-in error [:response :error :message])])))
@@ -1074,12 +1101,4 @@
           :state-spec (s/merge :ajax/statuses (s/keys :opt [:convex-web/state]))
           :on-push
           (fn [_ _ set-state]
-            (backend/GET-state
-              {:handler
-               (fn [state]
-                 (set-state #(assoc % :ajax/status :ajax.status/success
-                                      :convex-web/state state)))
-               :error-handler
-               (fn [error]
-                 (set-state #(assoc % :ajax/status :ajax.status/error
-                                      :ajax/error error)))}))})
+            (GET-state set-state))})
