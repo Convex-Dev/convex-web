@@ -844,7 +844,7 @@
                 [:td {:class td-class}
                  [:div.flex.items-center.space-x-1
                   [gui/Jdenticon {:value peer :size gui/identicon-size-small}]
-                  [:span (format/prefix-# peer)]]]]))]]]))))
+                  [:span (format/prefix-0x peer)]]]]))]]]))))
 
 (defn BlocksPage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks]} _]
   (case status

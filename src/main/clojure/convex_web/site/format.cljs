@@ -35,6 +35,11 @@
         s
         (str "#" s)))))
 
+(defn prefix-0x [s]
+  (if (str/starts-with? s "0x")
+    s
+    (str "0x" s)))
+
 (defn trim-0x [s]
   (when-not (str/blank? s)
     (str/replace s #"^0x" "")))
