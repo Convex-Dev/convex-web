@@ -1,5 +1,12 @@
 # Changes
 
+## 0.16.0 --
+
+- [Table fixed header](https://github.com/Convex-Dev/convex-web/issues/112)
+- [Rename State to Status](https://github.com/Convex-Dev/convex-web/issues/119)
+- [Status page tweaks](https://github.com/Convex-Dev/convex-web/issues/113)
+- [Add 0x prefix](https://github.com/Convex-Dev/convex-web/issues/111)
+
 ## 0.15.0 -- 2021-06-28
 
 - [Smaller text in markdown pages](https://github.com/Convex-Dev/convex-web/issues/116)

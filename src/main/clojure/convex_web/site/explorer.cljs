@@ -204,7 +204,7 @@
   [:div
    [:table.text-left.table-auto
     [:thead
-     (let [th-style "text-xs uppercase text-gray-600 sticky top-0 cursor-default"
+     (let [th-style "text-xs uppercase text-gray-600 sticky top-0 bg-white cursor-default"
            th-div-style "py-2 mr-8"]
        [:tr
         ;; -- 0. Block
@@ -533,16 +533,19 @@
 
 (defn AccountsTable [accounts & [{:keys [modal?]}]]
   [:div
-   [:table.text-left.table-auto
+   [:table.relative.text-left.table-auto
     [:thead
-     (let [th-class "text-xs uppercase text-gray-600 sticky top-0 pr-2"]
+     (let [sticky-column "sticky top-0 bg-white"
+           th-class "text-xs uppercase text-gray-600 sticky top-0 pr-2"]
        [:tr
-        [:th
+        [:th.sticky.top-0
+         {:class sticky-column}
          [:div.flex.space-x-1
           {:class th-class}
           [:span "Address"]]]
         
         [:th
+         {:class sticky-column}
          [:div.flex.space-x-1
           {:class th-class}
           [:span "Type"]
@@ -550,6 +553,7 @@
            "The Type of Account, may be User, Actor or Library"]]]
         
         [:th
+         {:class sticky-column}
          [:div.flex.space-x-1
           {:class th-class}
           [:span "Balance"]
@@ -557,6 +561,7 @@
            "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"]]]
         
         [:th
+         {:class sticky-column}
          [:div.flex.space-x-1
           {:class th-class}
           [:span "Memory Size"]
@@ -565,6 +570,7 @@
             have created in your Enviornment."]]]
         
         [:th
+         {:class sticky-column}
          [:div.flex.space-x-1
           {:class th-class}
           [:span "Memory Allowance"]
@@ -792,7 +798,7 @@
         [:div
          [:table.text-left.table-auto
           [:thead
-           (let [th-class "text-xs uppercase text-gray-600 sticky top-0"]
+           (let [th-class "text-xs uppercase text-gray-600 sticky top-0 bg-white"]
              [:tr.select-none
               [:th {:class th-class}
                [SortableColumn
