@@ -71,6 +71,9 @@
      #_{:text "White Paper"
         :href (rfe/href :route-name/white-paper)}
 
+     {:text "Team"
+      :href (rfe/href :route-name/team)}
+     
      {:text "Get Involved"
       :href (rfe/href :route-name/get-involved)}
 

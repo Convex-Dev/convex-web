@@ -346,6 +346,13 @@
                  (stack/push :page.id/markdown {:state {:id :under-construction}
                                                 :reset? true}))}]}]
     
+    ["/team"
+     {:name :route-name/team
+      :controllers
+      [{:start (fn [_]
+                 (stack/push :page.id/team {:reset? true}))}]}]
+    
+    
     ["/white-paper"
      {:name :route-name/white-paper
       :controllers

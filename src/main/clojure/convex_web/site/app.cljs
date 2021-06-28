@@ -43,6 +43,17 @@
   #:page {:id :page.id/blank
           :component #'BlankPage})
 
+
+(defn TeamPage [_ _ _]
+  [:div
+   [:span "Team"]])
+
+(def team-page
+  #:page {:id :page.id/team
+          :component #'TeamPage
+          :scaffolding? false})
+
+
 (defn NotFoundPage [_ _ _]
   [:div.h-screen.flex.justify-center
    [:div.flex.flex-col.items-center.mt-6.space-y-10
@@ -62,6 +73,7 @@
 (def pages
   [blank-page
    not-found-page
+   team-page
 
    ;; ---
 
@@ -244,6 +256,10 @@
        [#_{:text "White Paper"
            :route-name :route-name/white-paper
            :href (rfe/href :route-name/white-paper)}
+        
+        {:text "Team"
+         :route-name :route-name/team
+         :href (rfe/href :route-name/team)}
 
         {:text "Get Involved"
          :route-name :route-name/get-involved
