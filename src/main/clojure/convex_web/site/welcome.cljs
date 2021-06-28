@@ -56,7 +56,7 @@
      {:text "Blocks"
       :href (rfe/href :route-name/blocks)}
 
-     {:text "State"
+     {:text "Status"
       :href (rfe/href :route-name/state)}
 
      {:text "Transactions"
