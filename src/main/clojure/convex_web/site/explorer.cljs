@@ -1073,8 +1073,21 @@
          [:dl.mt-5.grid.grid-cols-1.gap-5.sm:grid-cols-4
           [StateStats
            "Timestamp"
-           [:span.text-sm.font-normal
-            (.toString (js/Date. timestamp))]]
+           
+           [:div.flex.flex-col.space-y-2
+            ;; UTC
+            [:div.flex.flex-col
+             [:span.text-xs.text-gray-400.font-normal
+              "UTC"]
+             [:span.text-xs.font-normal
+              (.toISOString (js/Date. timestamp))]]
+            
+            ;; Local
+            [:div.flex.flex-col
+             [:span.text-xs.text-gray-400.font-normal
+              "Local"]
+             [:span.text-xs.font-normal
+              (.toString (js/Date. timestamp))]]]]
           
           [StateStats
            "Juice Price"
