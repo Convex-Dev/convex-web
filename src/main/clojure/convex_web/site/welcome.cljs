@@ -300,14 +300,14 @@
 
         [:div {:class marketing-bullets}
          [Item
-          "Thousands of digitally signed transactions per second (more than the
+          "Tens of thousands of digitally signed transactions per second (far more than the
            1,700 transactions per second typically handled by the VISA network)"]
 
          [Item
           "Millions of smart contract operations per second"]
 
          [Item
-          "Low latency (2-3 seconds for global consensus)"]]
+          "Low latency (less than a second for global consensus)"]]
 
         [:p {:class marketing-copy}
          "This already is enough to enable consumer applications for the Internet of Value. In the future, 
