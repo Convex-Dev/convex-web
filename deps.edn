@@ -53,7 +53,7 @@
   ;; ```
   com.google.guava/guava {:mvn/version "30.0-jre"}
   
-  com.brunobonacci/mulog {:mvn/version "0.6.5"}
+  com.brunobonacci/mulog {:mvn/version "0.7.1"}
   
   lambdaisland/glogi {:mvn/version "1.0.106"}
   
