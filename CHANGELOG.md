@@ -1,6 +1,6 @@
 # Changes
 
-## 0.16.0 --
+## 0.16.0 -- 2021-06-28
 
 - [Table fixed header](https://github.com/Convex-Dev/convex-web/issues/112)
 - [Rename State to Status](https://github.com/Convex-Dev/convex-web/issues/119)
