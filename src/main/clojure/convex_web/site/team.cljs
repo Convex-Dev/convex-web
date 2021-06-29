@@ -105,31 +105,29 @@
                   [:p 
                    "Extensive skillset in computer languages and operating systems, especially with open source technologies. Interest in electronics and hacking computer hardware."]]}]]
       
-      [:div.grid.grid-cols-1.sm:grid-cols-3.lg:grid-cols-4.gap-6
+      [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6
        
        (for [{:keys [name title bio image]} team]
          ^{:key name}
-         [:div.h-64.p-4.bg-gray-50.rounded-lg.shadow.overflow-auto
-          [:div.flex.flex-col.space-y-2
+         [:div.p-4.bg-gray-50.rounded-lg.shadow.overflow-auto.flex-shrink-0
+          [:div.flex.flex-col.flex-shrink-0.space-y-2
            
-           ;; Name & title
-           [:div.flex.flex-col
+           ;; -- Avatar
+           [:img.self-center.shadow
+            {:class "rounded-full object-contain w-44 h-44"
+             :src image}]
+           
+           ;; -- Name & title
+           [:div.flex.flex-col.items-center
             
-            [:span name]
+            [:p name]
             
-            [:span.text-blue-600.text-sm.font-bold.font-mono
+            [:p.text-blue-600.text-sm.text-center.font-bold.font-mono
              title]]
            
-           ;; Bio
-           [:div
-            {:class "relative overflow-hidden"}
-            [:div.overflow-hidden
-             [:img
-              {:class "float-right object-contain h-32 w-1/2"
-               :src image}]
-             
-             [:article.prose.prose-sm
-              bio]]]]])])]])
+           ;; -- Bio
+           [:article.prose.prose-sm
+            bio]]])])]])
 
 (def team-page
   #:page {:id :page.id/team
