@@ -113,8 +113,8 @@
           [:div.flex.flex-col.flex-shrink-0.space-y-2
            
            ;; -- Avatar
-           [:img.self-center.shadow
-            {:class "rounded-full object-contain w-44 h-44"
+           [:img.self-center.shadow-md
+            {:class "rounded-full object-cover w-44 h-44"
              :src image}]
            
            ;; -- Name & title
