@@ -126,8 +126,8 @@
              title]]
            
            ;; -- Bio
-           [:article.prose.prose-sm
-            bio]]])])]])
+           #_[:article.prose.prose-sm
+              bio]]])])]])
 
 (def team-page
   #:page {:id :page.id/team
