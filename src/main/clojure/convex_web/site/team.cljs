@@ -8,88 +8,128 @@
    
    [:div.px-10.py-6
     
-    [:div.flex.flex-col.space-y-4.mb-10
+    ;; Team
+    [:div.flex.flex-col.space-y-4
      [:span.font-mono.text-gray-900
       {:class ["text-2xl" "leading-none"]}
       "Team"]
      
-     [:div.w-32.h-2.bg-blue-500.mb-8]]
+     [:div.w-32.h-2.bg-blue-500]]
     
-    (let [team [{:name "Mike Anderson"
+    
+    [:p.mt-6.mb-10
+     "Convex is developed by a diverse international team using an open source model. Some of the people building Convex are highlighted below."]
+    
+    
+    (let [team [;; -- Mike
+                {:name "Mike Anderson"
                  :title "Founder"
+                 :image "/images/team/mike.jpg"
                  :bio 
                  [:<>
                   [:p 
-                   "Inventor of the Convergent Proof of Stake consensus algorithm and lead architect of Convex. Previously held multiple CTO roles and worked at McKinsey & Company."]
+                   "Inventor of the Convergent Proof of Stake consensus algorithm, lead architect of Convex, and Managing Director of the Convex Foundation."]
                   
                   [:p
-                   "Passionate about open source and dancing."]]}
+                   "Previously held multiple CTO roles. Leader at McKinsey & Company. UK team for International Informatics Olympiad. Passionate about open source technology and dancing."]]}
                 
+                
+                ;; -- Miguel
                 {:name "Miguel Depaz"
                  :title "Marketing and Partnerships"
+                 :image "/images/team/miguel.jpg"
                  :bio 
                  [:<>
                   [:p 
-                   "Founder and Director of Fashion Luxury Brand. Previously led, created and commercialised Tech-driven products in Telecom corporations such as AT&T, France Telecom, Orange Group, where he held Product marketing and Strategic business positions."]
+                   "Founder and Director of a Fashion Brand. Previously led and commercialised Tech products in Telecom corporations such as AT&T, TIM, Orange Group."]
                   
                   [:p 
-                   "Miguel is passionate about Marketing, Technology and Travelling. He speaks 6 languages and enjoys making Technology products simple and accessible to wider audiences"]]}
+                   "Passionate about Marketing and Technology, Miguel speaks six languages and enjoys making Technology products simple. He builds Convex to create decentralised next-generation businesses."]]}
                 
+                
+                ;; -- Dr Leonard
                 {:name "Dr Leonard Anderson"
                  :title "Advisor"
-                 :bio "Serial innovator and entrepreneur with experience from multi-national, finance and public sector organisations.  His mission is to minimise carbon sourced electricity in as many ways as possible.  One company, Lilli, holds his patent for energy management capsules that could reduced global demand for powering domestic refrigeration. Over £6million has been raised. He advised on the patent application for convergent proof of stake algorithm for efficient, energy saving, decentalised ledger technology.  Historic clients include Shell, BP, Visa, Ford, Nationwide Building Society, Home Office, Pfizer and Regional Electricity Companies.  He also has the patience to grow bonsai trees."}
+                 :image "/images/team/leonard.jpg"
+                 :bio 
+                 [:<>
+                  [:p "Serial innovator and entrepreneur with experience from multi-national, finance and public sector organisations. His mission is to minimise carbon sourced electricity in as many ways as possible."]
+                  
+                  [:p "He also has the patience to grow Bonsai trees."]]}
                 
+                
+                ;; -- Adam
                 {:name "Adam Helins"
                  :title "Developer"
+                 :image "/images/team/adam.png"
                  :bio 
                  [:<>
                   [:p 
-                   "Challenge-driven software engineer with a record in IoT, music software, and various open-source projects. Holder of a Master's degree in neuroscience, Adam maintains a keen interest for psychology and human interactions. Currently, he focuses on producing sustainable, simpler, and genuinely useful tech. The uniqueness of Convex has driven him to actively join the project.Hacker from the age of six, amateur pianist and illusionist, never short of ideas."]
+                   "Challenge-driven software engineer with a record in IoT, music software, and various open-source projects."]
                   
                   [:p 
-                   "Hacker from the age of six, amateur pianist and illusionist, never short of ideas."]]}
+                   "Hacker from the age of six ; holder of a Master's degree in neurocience ; amateur pianist and illusionist ; never short of ideas."]
+                  
+                  [:p 
+                   "Builds Convex for empowering the green revolution."]]}
                 
+                
+                ;; -- Pedro
                 {:name "Pedro Girardi"
                  :title "Developer"
+                 :image "/images/team/pedro.jpg"
                  :bio 
                  [:<>
-                  [:p "Creator of human-computer experiences. He is constantly trying to simplify things and make software more accessible for people."]
-                  [:p "Despite spending most of the time crafting user interfaces, he believes excellent technology is usually the ones we can not see, working behind the scenes without demanding our time and attention."]]}
+                  [:p "Human-computer interaction."]
+                  [:p "Building software for people."]]}
                 
+                
+                ;; -- Mark
                 {:name "Mark Engelberg"
                  :title "Developer"
+                 :image "/images/team/mark.jpg"
                  :bio
                  [:<>
                   [:p "Developer of several popular mathematical and combinatorial open-source libraries, Mark was drawn to Convex by the power of Convex Lisp, which makes it possible to express complex smart contracts elegantly and succinctly."]]}
                 
+                
+                ;; -- Bill
                 {:name "Bill Barman"
                  :title "Developer"
+                 :image "/images/team/bill.jpg"
                  :bio
                  [:<>
                   [:p
-                   "Bill has many years experience in the information technology industry, offering consulting services to large financial and educational institutions and also to SMEs and startups."]
+                   "Experienced professional in the IT industry, offering consulting services to large financial and educational institutions and also to SMEs and startups."]
                   
                   [:p 
-                   "Bill’s skillset in computer languages and operating systems is expansive, especially in open source technologies."]
-                  
-                  [:p 
-                   "This breadth of experience allows Bill to offer fresh and unique insights into any development project, because he can confidently work across platforms, systems and technologies. Furthermore, his interest in electronics and hacking computer hardware has been a particular strength when creating embedded system solutions."] 
-                  
-                  ]}]]
+                   "Extensive skillset in computer languages and operating systems, especially with open source technologies. Interest in electronics and hacking computer hardware."]]}]]
       
       [:div.grid.grid-cols-1.sm:grid-cols-3.lg:grid-cols-4.gap-6
        
-       (for [{:keys [name title bio]} team]
+       (for [{:keys [name title bio image]} team]
          ^{:key name}
-         [:div.h-64.p-4.bg-gray-50.rounded-md.shadow.overflow-auto
+         [:div.h-64.p-4.bg-gray-50.rounded-lg.shadow.overflow-auto
           [:div.flex.flex-col.space-y-2
-           [:span name]
            
-           [:span.text-gray-700.text-sm.font-bold.font-mono
-            title]
+           ;; Name & title
+           [:div.flex.flex-col
+            
+            [:span name]
+            
+            [:span.text-blue-600.text-sm.font-bold.font-mono
+             title]]
            
-           [:article.prose.prose-sm
-            bio]]])])]])
+           ;; Bio
+           [:div
+            {:class "relative overflow-hidden"}
+            [:div.overflow-hidden
+             [:img
+              {:class "float-right object-contain h-32 w-1/2"
+               :src image}]
+             
+             [:article.prose.prose-sm
+              bio]]]]])])]])
 
 (def team-page
   #:page {:id :page.id/team

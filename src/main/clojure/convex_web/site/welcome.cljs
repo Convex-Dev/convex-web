@@ -205,7 +205,7 @@
         [gui/GitHubIcon]]]
 
       [:span.block.text-gray-500.text-sm
-       "© Copyright 2020 The Convex Foundation."]]]))
+       "© Copyright 2021 The Convex Foundation."]]]))
 
 (def welcome-page
   #:page {:id :page.id/welcome
