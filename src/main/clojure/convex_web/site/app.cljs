@@ -15,6 +15,7 @@
             [convex-web.site.store]
             [convex-web.site.format :as format]
             [convex-web.site.markdown :as markdown]
+            [convex-web.site.team :as team]
 
             [cljs.spec.test.alpha :as stest]
 
@@ -44,16 +45,6 @@
           :component #'BlankPage})
 
 
-(defn TeamPage [_ _ _]
-  [:div
-   [:span "Team"]])
-
-(def team-page
-  #:page {:id :page.id/team
-          :component #'TeamPage
-          :scaffolding? false})
-
-
 (defn NotFoundPage [_ _ _]
   [:div.h-screen.flex.justify-center
    [:div.flex.flex-col.items-center.mt-6.space-y-10
@@ -73,7 +64,8 @@
 (def pages
   [blank-page
    not-found-page
-   team-page
+   
+   team/team-page
 
    ;; ---
 
