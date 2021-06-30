@@ -1,5 +1,9 @@
 # Changes
 
+## 0.17.0 -- 2021-06-30
+
+- [Core Team page](https://github.com/Convex-Dev/convex-web/issues/118)
+
 ## 0.16.0 -- 2021-06-28
 
 - [Table fixed header](https://github.com/Convex-Dev/convex-web/issues/112)
