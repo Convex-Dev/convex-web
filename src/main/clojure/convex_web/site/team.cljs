@@ -58,6 +58,13 @@
                   [:p "He also has the patience to grow Bonsai trees."]]}
                 
                 
+                ;; -- Alex
+                {:name "Alexandra Au Yong"
+                 :title "Design and UX"
+                 :image "/images/team/alex.png"
+                 :bio ""}
+                
+                
                 ;; -- Adam
                 {:name "Adam Helins"
                  :title "Developer"
