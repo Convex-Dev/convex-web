@@ -25,6 +25,7 @@
                 {:name "Mike Anderson"
                  :title "Founder"
                  :image "/images/team/mike.jpg"
+                 :github "https://github.com/mikera"
                  :bio 
                  [:<>
                   [:p 
@@ -69,6 +70,7 @@
                 {:name "Adam Helins"
                  :title "Developer"
                  :image "/images/team/adam.png"
+                 :github "https://github.com/helins"
                  :bio 
                  [:<>
                   [:p 
@@ -85,6 +87,7 @@
                 {:name "Pedro Girardi"
                  :title "Developer"
                  :image "/images/team/pedro.jpg"
+                 :github "https://github.com/pedrorgirardi"
                  :bio 
                  [:<>
                   [:p "Human-computer interaction."]
@@ -95,6 +98,7 @@
                 {:name "Mark Engelberg"
                  :title "Developer"
                  :image "/images/team/mark.jpg"
+                 :github "https://github.com/Engelberg"
                  :bio
                  [:<>
                   [:p "Developer of several popular mathematical and combinatorial open-source libraries, Mark was drawn to Convex by the power of Convex Lisp, which makes it possible to express complex smart contracts elegantly and succinctly."]]}
@@ -104,6 +108,7 @@
                 {:name "Bill Barman"
                  :title "Developer"
                  :image "/images/team/bill.jpg"
+                 :github "https://github.com/billbsing"
                  :bio
                  [:<>
                   [:p
@@ -114,7 +119,7 @@
       
       [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6
        
-       (for [{:keys [name title bio image]} team]
+       (for [{:keys [name title bio image github]} team]
          ^{:key name}
          [:div.p-4.rounded-lg.shadow.overflow-auto.flex-shrink-0
           [:div.flex.flex-col.flex-shrink-0.space-y-2
@@ -134,7 +139,17 @@
            
            ;; -- Bio
            #_[:article.prose.prose-sm
-              bio]]])])]])
+              bio]
+           
+           [:div.flex.justify-center
+            (when github
+              [:a 
+               {:href github
+                :target "_blank"}
+               [:img
+                {:src "/GitHub-Mark-32px.png"}]])]
+           
+           ]])])]])
 
 (def team-page
   #:page {:id :page.id/team
