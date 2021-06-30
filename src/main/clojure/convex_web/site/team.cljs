@@ -116,7 +116,7 @@
        
        (for [{:keys [name title bio image]} team]
          ^{:key name}
-         [:div.p-4.bg-gray-50.rounded-lg.shadow.overflow-auto.flex-shrink-0
+         [:div.p-4.rounded-lg.shadow.overflow-auto.flex-shrink-0
           [:div.flex.flex-col.flex-shrink-0.space-y-2
            
            ;; -- Avatar
