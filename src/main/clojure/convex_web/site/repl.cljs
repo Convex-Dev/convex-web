@@ -247,17 +247,18 @@
                                                                            ;; Don't need to update so we simply add the Command to the list.
                                                                            (conj commands command'))]
                                                            
-                                                           (assoc state :convex-web.repl/commands commands'))))))))))
-          
-          input-disabled? (and (nil? active-address) (= :convex-web.command.mode/transaction (mode state)))]
-      (if input-disabled?
+                                                           (assoc state :convex-web.repl/commands commands'))))))))))]
+      
+      ;; Don't allow queries or transactions without an account.
+      (if (nil? active-address)
         ;; Without an active Account
         [:div.bg-gray-200.rounded.flex.items-center.justify-center
          ;; Height must match resizable box (see below).
          {:style
           {:height "120px"}}
          [gui/Tooltip
-          {:title "You need an Account to use transactions"}
+          {:title "Creat an account to get started"
+           :size "small"}
           [gui/DefaultButton
            {:on-click #(stack/push :page.id/create-account {:modal? true})}
            [:span.text-xs.uppercase "Create Account"]]]]
