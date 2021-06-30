@@ -15,6 +15,7 @@
             [convex-web.site.store]
             [convex-web.site.format :as format]
             [convex-web.site.markdown :as markdown]
+            [convex-web.site.team :as team]
 
             [cljs.spec.test.alpha :as stest]
 
@@ -43,6 +44,7 @@
   #:page {:id :page.id/blank
           :component #'BlankPage})
 
+
 (defn NotFoundPage [_ _ _]
   [:div.h-screen.flex.justify-center
    [:div.flex.flex-col.items-center.mt-6.space-y-10
@@ -62,6 +64,8 @@
 (def pages
   [blank-page
    not-found-page
+   
+   team/team-page
 
    ;; ---
 
@@ -244,6 +248,10 @@
        [#_{:text "White Paper"
            :route-name :route-name/white-paper
            :href (rfe/href :route-name/white-paper)}
+        
+        {:text "Team"
+         :route-name :route-name/team
+         :href (rfe/href :route-name/team)}
 
         {:text "Get Involved"
          :route-name :route-name/get-involved
@@ -276,7 +284,7 @@
 
              text-color (cond
                           top-level?
-                          "text-blue-500"
+                          "text-blue-800"
 
                           active?
                           "text-gray-800"
