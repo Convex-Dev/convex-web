@@ -24,7 +24,7 @@
     (let [team [;; -- Mike
                 {:name "Mike Anderson"
                  :title "Founder"
-                 :areas "Consensus algorithm, CVM execution engine, overall Convex architecture"
+                 :areas "Consensus algorithm, CVM execution engine, Overall Convex architecture"
                  :image "/images/team/mike.jpg"
                  :linkedin "https://www.linkedin.com/in/mike-anderson-7a9412/"
                  :github "https://github.com/mikera"}
@@ -41,7 +41,7 @@
                 ;; -- Dr Leonard
                 {:name "Dr Leonard Anderson"
                  :title "Advisor"
-                 :areas "Patent, investment and marketing"
+                 :areas "Patent, Investment and Marketing"
                  :image "/images/team/leonard.jpg"
                  :linkedin "https://www.linkedin.com/in/kemuri/"}
                 
@@ -57,7 +57,7 @@
                 ;; -- Adam
                 {:name "Adam Helins"
                  :title "Developer"
-                 :areas "Developer tools, language design, CVM testing"
+                 :areas "Developer tools, Language design, CVM testing"
                  :image "/images/team/adam.png"
                  :linkedin "https://www.linkedin.com/in/adam-helins-b81b23215/"
                  :github "https://github.com/helins"}
@@ -66,7 +66,7 @@
                 ;; -- Pedro
                 {:name "Pedro Girardi"
                  :title "Developer"
-                 :areas "Client applications, developer tools"
+                 :areas "Client applications, Developer tools"
                  :image "/images/team/pedro.jpg"
                  :linkedin "https://www.linkedin.com/in/pedrorgirardi/"
                  :github "https://github.com/pedrorgirardi"}
@@ -75,7 +75,7 @@
                 ;; -- Mark
                 {:name "Mark Engelberg"
                  :title "Developer"
-                 :areas "Smart contracts, digital assets"
+                 :areas "Smart contracts, Digital assets"
                  :image "/images/team/mark.jpg"
                  :linkedin "https://www.linkedin.com/in/mark-engelberg-0a09a88a/"
                  :github "https://github.com/Engelberg"}
