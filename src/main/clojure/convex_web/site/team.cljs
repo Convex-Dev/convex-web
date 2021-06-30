@@ -25,101 +25,65 @@
                 {:name "Mike Anderson"
                  :title "Founder"
                  :image "/images/team/mike.jpg"
-                 :github "https://github.com/mikera"
-                 :bio 
-                 [:<>
-                  [:p 
-                   "Inventor of the Convergent Proof of Stake consensus algorithm, lead architect of Convex, and Managing Director of the Convex Foundation."]
-                  
-                  [:p
-                   "Previously held multiple CTO roles. Leader at McKinsey & Company. UK team for International Informatics Olympiad. Passionate about open source technology and dancing."]]}
+                 :linkedin "https://www.linkedin.com/in/mike-anderson-7a9412/"
+                 :github "https://github.com/mikera"}
                 
                 
                 ;; -- Miguel
                 {:name "Miguel Depaz"
                  :title "Marketing and Partnerships"
                  :image "/images/team/miguel.jpg"
-                 :bio 
-                 [:<>
-                  [:p 
-                   "Founder and Director of a Fashion Brand. Previously led and commercialised Tech products in Telecom corporations such as AT&T, TIM, Orange Group."]
-                  
-                  [:p 
-                   "Passionate about Marketing and Technology, Miguel speaks six languages and enjoys making Technology products simple. He builds Convex to create decentralised next-generation businesses."]]}
+                 :linkedin "https://www.linkedin.com/in/miguel-depaz/"}
                 
                 
                 ;; -- Dr Leonard
                 {:name "Dr Leonard Anderson"
                  :title "Advisor"
                  :image "/images/team/leonard.jpg"
-                 :bio 
-                 [:<>
-                  [:p "Serial innovator and entrepreneur with experience from multi-national, finance and public sector organisations. His mission is to minimise carbon sourced electricity in as many ways as possible."]
-                  
-                  [:p "He also has the patience to grow Bonsai trees."]]}
+                 :linkedin "https://www.linkedin.com/in/kemuri/"}
                 
                 
                 ;; -- Alex
                 {:name "Alexandra Au Yong"
                  :title "Design and UX"
                  :image "/images/team/alex.png"
-                 :bio ""}
+                 :linkedin "https://www.linkedin.com/in/alexandraauyong/"}
                 
                 
                 ;; -- Adam
                 {:name "Adam Helins"
                  :title "Developer"
                  :image "/images/team/adam.png"
-                 :github "https://github.com/helins"
-                 :bio 
-                 [:<>
-                  [:p 
-                   "Challenge-driven software engineer with a record in IoT, music software, and various open-source projects."]
-                  
-                  [:p 
-                   "Hacker from the age of six ; holder of a Master's degree in neurocience ; amateur pianist and illusionist ; never short of ideas."]
-                  
-                  [:p 
-                   "Builds Convex for empowering the green revolution."]]}
+                 :linkedin "https://www.linkedin.com/in/adam-helins-b81b23215/"
+                 :github "https://github.com/helins"}
                 
                 
                 ;; -- Pedro
                 {:name "Pedro Girardi"
                  :title "Developer"
                  :image "/images/team/pedro.jpg"
-                 :github "https://github.com/pedrorgirardi"
-                 :bio 
-                 [:<>
-                  [:p "Human-computer interaction."]
-                  [:p "Building software for people."]]}
+                 :linkedin "https://www.linkedin.com/in/pedrorgirardi/"
+                 :github "https://github.com/pedrorgirardi"}
                 
                 
                 ;; -- Mark
                 {:name "Mark Engelberg"
                  :title "Developer"
                  :image "/images/team/mark.jpg"
-                 :github "https://github.com/Engelberg"
-                 :bio
-                 [:<>
-                  [:p "Developer of several popular mathematical and combinatorial open-source libraries, Mark was drawn to Convex by the power of Convex Lisp, which makes it possible to express complex smart contracts elegantly and succinctly."]]}
+                 :linkedin "https://www.linkedin.com/in/mark-engelberg-0a09a88a/"
+                 :github "https://github.com/Engelberg"}
                 
                 
                 ;; -- Bill
                 {:name "Bill Barman"
                  :title "Developer"
                  :image "/images/team/bill.jpg"
-                 :github "https://github.com/billbsing"
-                 :bio
-                 [:<>
-                  [:p
-                   "Experienced professional in the IT industry, offering consulting services to large financial and educational institutions and also to SMEs and startups."]
-                  
-                  [:p 
-                   "Extensive skillset in computer languages and operating systems, especially with open source technologies. Interest in electronics and hacking computer hardware."]]}]]
+                 :linkedin "https://www.linkedin.com/in/billbarman/"
+                 :github "https://github.com/billbsing"}]]
       
       [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6
        
-       (for [{:keys [name title bio image github]} team]
+       (for [{:keys [name title image github linkedin]} team]
          ^{:key name}
          [:div.p-4.rounded-lg.shadow.overflow-auto.flex-shrink-0
           [:div.flex.flex-col.flex-shrink-0.space-y-2
@@ -137,19 +101,21 @@
             [:p.text-blue-600.text-sm.text-center.font-bold.font-mono
              title]]
            
-           ;; -- Bio
-           #_[:article.prose.prose-sm
-              bio]
-           
-           [:div.flex.justify-center
+           ;; -- Linkedin & GitHub
+           [:div.flex.justify-center.space-x-2
+            (when linkedin
+              [:a
+               {:href linkedin
+                :target "_blank"}
+               [:img.object-contain.h-8.w-8
+                {:src "/LI-In-Bug.png"}]])
+            
             (when github
               [:a 
                {:href github
                 :target "_blank"}
                [:img
-                {:src "/GitHub-Mark-32px.png"}]])]
-           
-           ]])])]])
+                {:src "/GitHub-Mark-32px.png"}]])]]])])]])
 
 (def team-page
   #:page {:id :page.id/team
