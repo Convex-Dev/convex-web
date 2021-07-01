@@ -16,8 +16,7 @@
      
      [:div.w-32.h-2.bg-blue-500]]
     
-    
-    [:p.mt-6.mb-10
+    [:p.mt-6.mb-10.text-gray-700.font-light
      "Convex is developed by a diverse international team using an open source model. Some of the people building Convex are highlighted below."]
     
     
