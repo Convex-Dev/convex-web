@@ -2,30 +2,7 @@
   (:require [convex-web.site.gui :as gui]
             [convex-web.site.gui.marketing :as marketing]
             
-
-            [reagent.core :as reagent]
             [reitit.frontend.easy :as rfe]))
-
-(defn BottomNavMenu [{:keys [text items]}]
-  [:div.flex.flex-col.space-y-6
-
-   [:span.font-mono.text-base.text-black text]
-
-   (for [{:keys [text href]} items]
-     ^{:key text}
-     [:a {:href href}
-      [:span.text-sm.text-gray-600.hover:text-gray-400.active:text-gray-800 text]])])
-
-(defn BottomNav []
-  [:div.flex.space-x-32
-
-   (let [{:keys [concepts documentation tools explorer about]} (marketing/nav)]
-     [:<>
-      [BottomNavMenu concepts]
-      [BottomNavMenu documentation]
-      [BottomNavMenu tools]
-      [BottomNavMenu explorer]
-      [BottomNavMenu about]])])
 
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["w-1/2 flex flex-col justify-center space-y-8"]
@@ -38,7 +15,7 @@
                 [:span.font-mono.ml-4 s]])]
     [:div
 
-     [marketing/Nav]
+     [marketing/Nav (marketing/nav)]
 
      [:div.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12
       {:style
@@ -188,24 +165,13 @@
       ;; Bottom nav
       ;; =========================
       [:div.mb-20
-       [BottomNav]]]
-
+       [marketing/BottomNav (marketing/nav)]]]
 
      [:hr.border-gray-200.mb-8]
 
-
      ;; Copyright
      ;; =========================
-     [:div.flex.flex-col.items-center.space-y-4.mb-8
-
-      [:a
-       {:href "https://github.com/Convex-Dev"
-        :target "_blank"}
-       [:div.p-2.bg-gray-100.hover:bg-opacity-50.active:bg-gray-200.rounded-md
-        [gui/GitHubIcon]]]
-
-      [:span.block.text-gray-500.text-sm
-       "© Copyright 2021 The Convex Foundation."]]]))
+     [marketing/Copyrigth]]))
 
 (def welcome-page
   #:page {:id :page.id/welcome

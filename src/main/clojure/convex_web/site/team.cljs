@@ -4,9 +4,9 @@
 (defn TeamPage [_ _ _]
   [:div
    
-   [marketing/Nav]
+   [marketing/Nav (marketing/nav)]
    
-   [:div.px-10.py-6
+   [:div.px-10.py-6.w-full.max-w-screen-xl.mx-auto
     
     ;; Team
     [:div.flex.flex-col.space-y-4
@@ -98,7 +98,7 @@
                  :linkedin "https://www.linkedin.com/in/johnmichaelnewman/"
                  :github "https://github.com/johnmn3"}]]
       
-      [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6
+      [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mb-40
        
        (for [{:keys [name title areas image github linkedin]} team]
          ^{:key name}
@@ -135,7 +135,14 @@
                {:href github
                 :target "_blank"}
                [:img
-                {:src "/GitHub-Mark-32px.png"}]])]]])])]])
+                {:src "/GitHub-Mark-32px.png"}]])]]])])
+    
+    [:div.mb-20
+     [marketing/BottomNav (marketing/nav)]]]
+   
+   [:hr.border-gray-200.mb-8]
+   
+   [marketing/Copyrigth]])
 
 (def team-page
   #:page {:id :page.id/team

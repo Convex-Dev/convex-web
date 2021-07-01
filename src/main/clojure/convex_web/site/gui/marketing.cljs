@@ -139,35 +139,69 @@
                 {:href href}
                 text])]]]]]]])))
 
-(defn Nav []
+(defn Nav [nav]
   [:div.h-16.flex.items-center.justify-between.px-10.border-b.border-gray-100
-
+   
    ;; -- Logo
    [:a {:href (rfe/href :route-name/welcome)}
     [:div.flex.items-center
      [gui/ConvexLogo {:width "28px" :height "32px"}]
      [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
-
+   
    [:div.flex.items-center.space-x-4
     ;; -- Concepts
     [Dropdown
-     (:concepts (nav))]
-
+     (:concepts nav)]
+    
     ;; -- Documentation
     [Dropdown
-     (:documentation (nav))]
-
+     (:documentation nav)]
+    
     ;; -- Sandbox
     [NavButton "Sandbox" (rfe/href :route-name/sandbox)]
-
+    
     ;; -- Tools
     [Dropdown
-     (:tools (nav))]
-
+     (:tools nav)]
+    
     ;; -- Explorer
     [Dropdown
-     (:explorer (nav))]
-
+     (:explorer nav)]
+    
     ;; -- About
     [Dropdown
-     (:about (nav))]]])
+     (:about nav)]]])
+
+(defn BottomNavMenu [{:keys [text items]}]
+  [:div.flex.flex-col.space-y-3
+   
+   [:span.font-mono.text-base.text-black text]
+   
+   [:div.flex.flex-col.space-y-2
+    (for [{:keys [text href]} items]
+      ^{:key text}
+      [:a {:href href}
+       [:span.text-sm.text-gray-600.hover:text-gray-400.active:text-gray-800 text]])]])
+
+(defn BottomNav [nav]
+  [:div.flex.space-x-32
+
+   (let [{:keys [concepts documentation tools explorer about]} nav]
+     [:<>
+      [BottomNavMenu concepts]
+      [BottomNavMenu documentation]
+      [BottomNavMenu tools]
+      [BottomNavMenu explorer]
+      [BottomNavMenu about]])])
+
+(defn Copyrigth []
+  [:div.flex.flex-col.items-center.space-y-4.mb-8
+   
+   [:a
+    {:href "https://github.com/Convex-Dev"
+     :target "_blank"}
+    [:div.p-2.bg-gray-100.hover:bg-opacity-50.active:bg-gray-200.rounded-md
+     [gui/GitHubIcon]]]
+   
+   [:span.block.text-gray-500.text-sm
+    "© Copyright 2021 The Convex Foundation."]])
