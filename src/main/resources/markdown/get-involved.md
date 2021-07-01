@@ -18,7 +18,7 @@ Some repositories are still private - but we'll be opening up everything for com
 
 You can join us on Twitter:
 
-- Luther (CVM engineering and Convex Lisp)  - [https://twitter.com/luther_kroe](https://twitter.com/luther_kroe)
+- Mike Anderson (Founder)  - [https://twitter.com/mikera](https://twitter.com/mikera)
 
 ## Web Links
 
