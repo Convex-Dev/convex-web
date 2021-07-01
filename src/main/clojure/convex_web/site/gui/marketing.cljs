@@ -173,7 +173,7 @@
      (:about nav)]]])
 
 (defn BottomNavMenu [{:keys [text items]}]
-  [:div.flex.flex-col.space-y-3
+  [:div.flex.flex-col.space-y-3.mb-10
    
    [:span.font-mono.text-base.text-black text]
    
@@ -184,7 +184,7 @@
        [:span.text-sm.text-gray-600.hover:text-gray-400.active:text-gray-800 text]])]])
 
 (defn BottomNav [nav]
-  [:div.flex.space-x-32
+  [:div.lg:flex.lg:space-x-32
 
    (let [{:keys [concepts documentation tools explorer about]} nav]
      [:<>
