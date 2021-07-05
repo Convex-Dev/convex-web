@@ -3,6 +3,7 @@
             [convex-web.web-server :as web-server]
             [convex-web.store :as store]
             [convex-web.db :as db]
+            [convex-web.convex :as convex]
 
             [clojure.spec.alpha :as s]
             [clojure.spec.test.alpha :as stest]
@@ -17,7 +18,7 @@
             [com.stuartsierra.component :as component])
   (:import (convex.peer Server API)
            (org.slf4j.bridge SLF4JBridgeHandler)
-           (convex.core Init)
+           (convex.core.init Init)
            (convex.core.data Keywords)
            (etch EtchStore)
            (java.io File)
@@ -102,28 +103,39 @@
 
 (defrecord Convex [config server client store]
   component/Lifecycle
-
+  
   (start [component]
     (let [peer-config (get-in config [:config :peer])
-
+          
           ^EtchStore store (store/create! (:store peer-config))
-
+          
           ^Server server (API/launchPeer {Keywords/STORE store
                                           Keywords/PORT (:port peer-config)})
-
-          ^convex.api.Convex client (convex.api.Convex/connect (.getHostAddress server) Init/HERO Init/HERO_KP)]
-
+          
+          convex-world-host-address (.getHostAddress server) 
+          
+          convex-world-key-pair-data (convex/convex-world-key-pair-data)
+          
+          ^AKeyPair convex-world-key-pair (convex/create-key-pair convex-world-key-pair-data)
+          
+          convex-world-address (convex/key-pair-data-address convex-world-key-pair-data)
+          
+          ^convex.api.Convex client (convex.api.Convex/connect
+                                      convex-world-host-address 
+                                      convex-world-address 
+                                      convex-world-key-pair)]
+      
       (assoc component
         :server server
         :client client
         :store store)))
-
+  
   (stop [component]
     (when-let [^Server server (:server component)]
       (log/info "Close Server")
-
+      
       (.close server))
-
+    
     (assoc component
       :server nil
       :client nil

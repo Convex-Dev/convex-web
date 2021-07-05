@@ -13,10 +13,11 @@
             [com.stuartsierra.component.repl :refer [set-init reset system]]
             [ring.mock.request :as mock]
             [datalevin.core :as d])
-  (:import (convex.core Init Peer)
+  (:import (convex.core Peer)
+           (convex.core.init Init InitConfig)
            (convex.core.lang Core Reader Context)
            (convex.core.crypto AKeyPair)
-           (convex.core.data Hash AccountKey ASet AHashMap Symbol AccountStatus)))
+           (convex.core.data Address Hash AccountKey ASet AHashMap Symbol AccountStatus)))
 
 ;; -- Logging
 (set-init
@@ -24,7 +25,9 @@
     (component/system :dev)))
 
 
-(def context (Context/createFake (Init/createState) Init/HERO))
+(def context 
+  (Context/createFake 
+    (Init/createState (InitConfig/create)) Init/RESERVED_ADDRESS))
 
 (defn ^Peer peer []
   (system/convex-peer system))

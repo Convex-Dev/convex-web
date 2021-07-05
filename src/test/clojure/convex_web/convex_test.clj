@@ -4,10 +4,20 @@
             [convex-web.convex :as convex]
             [convex-web.test :refer [catch-throwable make-convex-context]])
   (:import (convex.core.data Address Blob Syntax Maps Symbol Keyword Vectors)
-           (convex.core Init Result)
+           (convex.core Result)
+           (convex.core.init Init)
            (convex.core.lang Core Context)
            (convex.core.data.prim CVMLong)
+           (convex.core.crypto AKeyPair)
            (clojure.lang ExceptionInfo)))
+
+(deftest key-pair-data-test
+  (testing "Roundtrip"
+    (let [^AKeyPair generated (convex/generate-key-pair)]
+      (is (= (.getAccountKey generated)
+            (.getAccountKey (-> generated
+                              convex/key-pair-data
+                              convex/create-key-pair)))))))
 
 (deftest read-source-test
   (is (= [] (convex/read-source "()" :convex-lisp)))
@@ -90,14 +100,15 @@
     (testing "Set" 
       (is (= #{} (convex/datafy (convex/execute context #{})))))
     
-    (testing "AccountKey"
+    #_(testing "AccountKey"
       (is (= (-> Init/HERO_KP
                .getAccountKey
                .toChecksumHex)
             (convex/datafy (.getAccountKey Init/HERO_KP)))))
     
     (testing "Address"
-      (is (= (.longValue Init/HERO) (convex/datafy Init/HERO))))
+      (is (= (.longValue Init/RESERVED_ADDRESS) 
+            (convex/datafy Init/RESERVED_ADDRESS))))
     
     (testing "Blob"
       (is (= (.toHexString (Blob/create (.getBytes "Text")))

@@ -3,6 +3,7 @@
             [convex-web.client :as client]
             [convex-web.config :as config]
             [convex-web.web-server :as web-server]
+            [convex-web.convex :as convex]
             [convex-web.test :as test]
 
             [clojure.test :refer [deftest is testing use-fixtures]]
@@ -11,13 +12,21 @@
             [ring.mock.request :as mock]
             [com.stuartsierra.component]
             [org.httpkit.client :as http])
-  (:import (convex.core Init)
+  (:import (convex.core.init Init)
            (convex.core.crypto AKeyPair)
            (convex.core.data Hash AccountKey)))
 
 (def system nil)
 
 (use-fixtures :once (test/make-system-fixture #'system))
+
+(def TEST_ADDRESS
+  (convex/key-pair-data-address 
+    (convex/convex-world-key-pair-data)))
+
+(def TEST_KEY_PAIR
+  (convex/create-key-pair
+    (convex/convex-world-key-pair-data)))
 
 (defn public-api-handler []
   (web-server/public-api-handler system))
@@ -124,7 +133,7 @@
 
 (deftest address-test
   (testing "Get Account by Address"
-    (let [response @(client/GET-public-v1-account (server-url) (.longValue Init/HERO))
+    (let [response @(client/GET-public-v1-account (server-url) (.longValue TEST_ADDRESS))
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= #{:account-key
@@ -158,31 +167,31 @@
 
 (deftest query-test
   (testing "Set"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "#{1}"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS) :source "#{1}"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       ;; JSON does not have sets, so the encoder uses a vector instead.
       (is (= {:value [1]} response-body))))
   
   (testing "List"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "(list 1 2 3)"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS) :source "(list 1 2 3)"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value [1 2 3]} response-body))))
   
   (testing "Valid"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "1"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS) :source "1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value 1} response-body)))
     
-    (let [response @(client/POST-public-v1-query (server-url) {:address (str "#" (.longValue Init/HERO)) :source "1"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (str "#" (.longValue TEST_ADDRESS)) :source "1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value 1} response-body))))
   
   (testing "Scrypt"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO)
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS)
                                                                :source "inc(1)"
                                                                :lang :convex-scrypt})
           response-body (json/read-str (get response :body) :key-fn keyword)]
@@ -190,7 +199,7 @@
       (is (= 200 (get response :status)))
       (is (= {:value 2} response-body)))
     
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO)
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS)
                                                                :source "reduce(+, 0, [1, 2, 3])"
                                                                :lang :convex-scrypt})
           response-body (json/read-str (get response :body) :key-fn keyword)]
@@ -198,13 +207,13 @@
       (is (= 200 (get response :status)))
       (is (= {:value 6} response-body)))
     
-    (let [response1 @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO)
-                                                                :source (str "balance(address(" (.longValue Init/HERO) "))")
+    (let [response1 @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS)
+                                                                :source (str "balance(address(" (.longValue TEST_ADDRESS) "))")
                                                                 :lang :convex-scrypt})
           response-body1 (json/read-str (get response1 :body) :key-fn keyword)
           
-          response2 @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO)
-                                                                :source (str "balance(address(" (.longValue Init/HERO) "))")
+          response2 @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS)
+                                                                :source (str "balance(address(" (.longValue TEST_ADDRESS) "))")
                                                                 :lang :convex-scrypt})
           response-body2 (json/read-str (get response2 :body) :key-fn keyword)]
       
@@ -214,7 +223,7 @@
       (is (= response-body1 response-body2)))
     
     (testing "Syntax error"
-      (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO)
+      (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS)
                                                                  :source "map(inc [1, 2, 3, 4, 5])"
                                                                  :lang :convex-scrypt})
             response-body (json/read-str (get response :body) :key-fn keyword)]
@@ -226,7 +235,7 @@
               response-body)))))
   
   (testing "Syntax error"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "(inc 1"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS) :source "(inc 1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       
       (is (= 400 (get response :status)))
@@ -249,7 +258,7 @@
             response-body))))
   
   (testing "Type error"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue Init/HERO) :source "(map inc 1)"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS) :source "(map inc 1)"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       
       (is (= 200 (get response :status)))
@@ -260,14 +269,14 @@
 
 (deftest prepare-test
   (testing "Convex Scrypt"
-    (let [response @(client/POST-public-v1-transaction-prepare (server-url) {:address (.longValue Init/HERO)
+    (let [response @(client/POST-public-v1-transaction-prepare (server-url) {:address (.longValue TEST_ADDRESS)
                                                                              :source "inc(1)"
                                                                              :lang :convex-scrypt})]
       (is (= 200 (get response :status))))
 
     (testing "Syntax error"
       (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
-            prepare-body (json/write-str {:address (.longValue Init/HERO)
+            prepare-body (json/write-str {:address (.longValue TEST_ADDRESS)
                                           :source "map(inc [1, 2, 3, 4, 5])"
                                           :lang :convex-scrypt})
             response @(http/post prepare-url {:body prepare-body})]
@@ -305,7 +314,7 @@
 
     (testing "Missing Source"
       (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
-            prepare-body (json/write-str {:address (.longValue Init/HERO) :source ""})
+            prepare-body (json/write-str {:address (.longValue TEST_ADDRESS) :source ""})
             prepare-response @(http/post prepare-url {:body prepare-body})
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
@@ -331,7 +340,7 @@
 
     (testing "Invalid Hash"
       (let [prepare-url (str (server-url) "/api/v1/transaction/submit")
-            prepare-body (json/write-str {:address (.longValue Init/HERO) :hash ""})
+            prepare-body (json/write-str {:address (.longValue TEST_ADDRESS) :hash ""})
             prepare-response @(http/post prepare-url {:body prepare-body})
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
@@ -343,7 +352,7 @@
 
     (testing "Invalid Signature"
       (let [prepare-url (str (server-url) "/api/v1/transaction/submit")
-            prepare-body (json/write-str {:address (.longValue Init/HERO) :hash "ABC" :sig ""})
+            prepare-body (json/write-str {:address (.longValue TEST_ADDRESS) :hash "ABC" :sig ""})
             prepare-response @(http/post prepare-url {:body prepare-body})
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
@@ -356,10 +365,10 @@
     (testing "Missing Data"
       (let [response @(client/POST-public-v1-transaction-submit
                         (server-url)
-                        {:address (.longValue Init/HERO)
-                         :accountKey (.toChecksumHex (.getAccountKey Init/HERO_KP))
+                        {:address (.longValue TEST_ADDRESS)
+                         :accountKey (.toChecksumHex (.getAccountKey TEST_KEY_PAIR))
                          :hash "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b"
-                         :sig (client/sig Init/HERO_KP "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
+                         :sig (client/sig TEST_KEY_PAIR "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
             response-body (json/read-str (get response :body) :key-fn keyword)]
 
         (is (= 400 (get response :status)))
@@ -371,9 +380,9 @@
 (deftest prepare-submit-transaction-test
   (testing "Prepare & submit transaction"
     (testing "Simple inc"
-      (let [test-key-pair Init/VILLAIN_KP
-            test-address (.longValue Init/VILLAIN)
-            test-account-key (.toChecksumHex (.getAccountKey Init/VILLAIN_KP))
+      (let [test-key-pair TEST_KEY_PAIR
+            test-address (.longValue TEST_ADDRESS)
+            test-account-key (.toChecksumHex (.getAccountKey TEST_KEY_PAIR))
 
             handler (public-api-handler)
 
@@ -429,9 +438,9 @@
         (is (= {:value 2} (select-keys submit-response-body [:value])))))
 
     (testing "Cast error"
-      (let [test-key-pair Init/VILLAIN_KP
-            test-address (.longValue Init/VILLAIN)
-            test-account-key (.toChecksumHex (.getAccountKey Init/VILLAIN_KP))
+      (let [test-key-pair TEST_KEY_PAIR
+            test-address (.longValue TEST_ADDRESS)
+            test-account-key (.toChecksumHex (.getAccountKey TEST_KEY_PAIR))
 
             handler (public-api-handler)
 
@@ -488,7 +497,7 @@
 
 (deftest faucet-test
   (let [handler (public-api-handler)
-        address (.longValue Init/HERO)]
+        address (.longValue TEST_ADDRESS)]
     (testing "Success"
       (let [amount 1000
 
@@ -527,7 +536,7 @@
                  response-body))))
 
       (testing "Invalid amount"
-        (let [address (.longValue Init/HERO)
+        (let [address (.longValue TEST_ADDRESS)
 
               amount -1
 
@@ -541,7 +550,7 @@
                  response-body))))
 
       (testing "Requested amount is greater than allowed"
-        (let [address (.longValue Init/HERO)
+        (let [address (.longValue TEST_ADDRESS)
 
               amount (inc config/max-faucet-amount)
 

@@ -3,13 +3,14 @@
             [clojure.spec.alpha :as s]
 
             [convex-web.specs]
+            [convex-web.convex :as convex]
             [convex-web.lang :as lang]
             [convex-web.test :refer :all]
             [convex-web.web-server :as web-server]
             [convex-web.encoding :as encoding]
 
             [ring.mock.request :as mock])
-  (:import (convex.core Init)))
+  (:import (convex.core.init Init)))
 
 (def system nil)
 
@@ -24,9 +25,14 @@
 
 (defn execute-query [source]
   (execute-command #:convex-web.command {:mode :convex-web.command.mode/query
-                                         :address (.longValue Init/HERO)
-                                         :query {:convex-web.query/source source
-                                                 :convex-web.query/language :convex-lisp}}))
+                                         
+                                         :address 
+                                         (convex/key-pair-data-address 
+                                           (convex/convex-world-key-pair-data))
+                                         
+                                         :query 
+                                         {:convex-web.query/source source
+                                          :convex-web.query/language :convex-lisp}}))
 
 (deftest session-test
   (let [handler (web-server/site system)
@@ -85,10 +91,16 @@
                                      (mock/request :post "/api/internal/commands")
                                      (transit-body body))))]
     (testing "Query"
-      (let [response (execute-command #:convex-web.command {:mode :convex-web.command.mode/query
-                                                            :address (.longValue Init/HERO)
-                                                            :query {:convex-web.query/source "(inc 1)"
-                                                                    :convex-web.query/language :convex-lisp}})
+      (let [response (execute-command 
+                       #:convex-web.command {:mode :convex-web.command.mode/query
+                                             
+                                             :address 
+                                             (convex/key-pair-data-address 
+                                               (convex/convex-world-key-pair-data))
+                                             
+                                             :query 
+                                             {:convex-web.query/source "(inc 1)"
+                                              :convex-web.query/language :convex-lisp}})
             
             {:convex-web.command/keys [result] :as body}
             (encoding/transit-decode-string (get response :body))]
@@ -110,10 +122,15 @@
     
     (testing "Transaction"
       (let [response (execute-command #:convex-web.command {:mode :convex-web.command.mode/transaction
-                                                            :address (.longValue Init/HERO)
-                                                            :transaction {:convex-web.transaction/type :convex-web.transaction.type/invoke
-                                                                          :convex-web.transaction/source "(inc 1)"
-                                                                          :convex-web.transaction/language :convex-lisp}})]
+                                                            
+                                                            :address 
+                                                            (convex/key-pair-data-address 
+                                                              (convex/convex-world-key-pair-data))
+                                                            
+                                                            :transaction 
+                                                            {:convex-web.transaction/type :convex-web.transaction.type/invoke
+                                                             :convex-web.transaction/source "(inc 1)"
+                                                             :convex-web.transaction/language :convex-lisp}})]
         
         (is (= 403 (get response :status)))))))
 

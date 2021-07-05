@@ -33,7 +33,8 @@
   (:import (java.io InputStream)
            (convex.core.crypto ASignature AKeyPair)
            (convex.core.data Ref SignedData AccountKey ACell Hash)
-           (convex.core Init Peer State Result Order)
+           (convex.core Peer State Result Order)
+           (convex.core.init Init)
            (java.time Instant)
            (java.util Date)
            (convex.core.lang.impl AExceptional)
@@ -464,68 +465,70 @@
 
 (defn POST-v1-faucet [system {:keys [body]}]
   (let [{:keys [address amount]} (json-decode body)
-
+        
         address (try
                   (convex/address address)
                   (catch Exception _
                     (throw (ex-info (str "Invalid address: " address)
-                                    (anomaly-incorrect
-                                      (error-body error-code-INCORRECT
-                                                  (str "Invalid address: " address)
-                                                  error-source-server))))))]
-
-
+                             (anomaly-incorrect
+                               (error-body error-code-INCORRECT
+                                 (str "Invalid address: " address)
+                                 error-source-server))))))]
+    
+    
     (cond
       (not (s/valid? :convex-web/amount amount))
       (throw (ex-info (str "Invalid amount: " amount)
-                      (anomaly-incorrect
-                        (error-body error-code-INCORRECT
-                                    (str "Invalid amount: " amount)
-                                    error-source-server))))
-
+               (anomaly-incorrect
+                 (error-body error-code-INCORRECT
+                   (str "Invalid amount: " amount)
+                   error-source-server))))
+      
       (> amount config/max-faucet-amount)
       (let [message (str "You can't request more than " (pprint/cl-format nil "~:d" config/max-faucet-amount) ".")]
         (throw (ex-info message
-                        (anomaly-incorrect
-                          (error-body error-code-INCORRECT
-                                      message
-                                      error-source-server)))))
-
+                 (anomaly-incorrect
+                   (error-body error-code-INCORRECT
+                     message
+                     error-source-server)))))
+      
       :else
       (let [client (system/convex-client system)
-
-            transfer (convex/transfer-transaction {:address Init/HERO
+            
+            transfer (convex/transfer-transaction {:address 
+                                                   (convex/key-pair-data-address 
+                                                     (convex/convex-world-key-pair-data))
                                                    :nonce 0
                                                    :target address
                                                    :amount amount})
-
+            
             result (try
                      (convex/transact client transfer)
                      (catch Exception ex
                        (throw (ex-info (ex-message ex)
-                                       (anomaly-incorrect
-                                         (error-body error-code-INCORRECT
-                                                     (ex-message ex)
-                                                     error-source-cvm))))))
-
+                                (anomaly-incorrect
+                                  (error-body error-code-INCORRECT
+                                    (ex-message ex)
+                                    error-source-cvm))))))
+            
             result-value (.getValue result)
-
+            
             result-response (merge {:value
                                     (try
                                       (convex/datafy result-value)
                                       (catch Exception ex
                                         (log/warn ex "Can't datafy Faucet result. Will fallback to `(str result)`.")
                                         (str result-value)))}
-                                   (when-let [error-code (.getErrorCode result)]
-                                     {:error-code (convex/datafy error-code)}))
-
+                              (when-let [error-code (.getErrorCode result)]
+                                {:error-code (convex/datafy error-code)}))
+            
             faucet (merge {:address (convex/datafy address) :amount amount} result-response)]
-
+        
         (u/log :logging.event/faucet
-               :severity :info
-               :target address
-               :amount amount)
-
+          :severity :info
+          :target address
+          :amount amount)
+        
         (successful-response faucet)))))
 
 (defn POST-v1-query [system {:keys [body]}]
@@ -691,45 +694,46 @@
 (defn -POST-confirm-account [system {:keys [body] :as req}]
   (try
     (let [^Long address-long (transit-decode body)
-
+          
           account (account/find-by-address (system/db system) address-long)]
       (cond
         (nil? account)
         (do
           (u/log :logging.event/user-error :severity :error :message (str "Failed to confirm account; Account " address-long " not found."))
           (-not-found-response (error (str "Account " address-long " not found."))))
-
+        
         :else
         (let [client (system/convex-client system)
-
+              
               tx-data {:nonce 0
-                       :address Init/HERO
+                       :address (convex/key-pair-data-address 
+                                  (convex/convex-world-key-pair-data))
                        :target address-long
                        :amount 100000000}
-
+              
               result (->> (convex/transfer-transaction tx-data)
-                          (convex/transact client))]
-
+                       (convex/transact client))]
+          
           (if (.isError result)
             (throw (ex-info "Failed to transfer funds." {:error-code (.getErrorCode result)}))
             (do
               (u/log :logging.event/confirm-account
-                     :severity :info
-                     :address address-long
-                     :message (str "Confirmed Address " address-long "."))
-
+                :severity :info
+                :address address-long
+                :message (str "Confirmed Address " address-long "."))
+              
               (d/transact! (system/db-conn system) [{:convex-web.session/id (ring-session req)
                                                      :convex-web.session/accounts
                                                      [{:convex-web.account/address address-long}]}])
-
+              
               (-successful-response (select-keys account [::account/address
                                                           ::account/created-at])))))))
     (catch Exception ex
       (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
+        :severity :error
+        :message handler-exception-message
+        :exception ex)
+      
       -server-error-response)))
 
 (defn -POST-faucet [context {:keys [body]}]

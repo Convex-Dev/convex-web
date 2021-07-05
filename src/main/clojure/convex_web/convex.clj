@@ -7,14 +7,49 @@
   (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey ACell AHashMap)
            (convex.core.lang Core Reader ScryptNext RT Context AFn)
            (convex.core.lang.impl Fn CoreFn)
-           (convex.core Order Block Peer State Init Result)
+           (convex.core Order Block Peer State Result)
            (convex.core.crypto AKeyPair)
+           (convex.core.init Init InitConfig)
            (convex.core.transactions Transfer ATransaction Invoke Call)
            (convex.api Convex)
            (java.util.concurrent TimeoutException)
            (convex.core.data.prim CVMByte CVMBool CVMLong CVMDouble)))
 
 (set! *warn-on-reflection* true)
+
+(defn ^AKeyPair generate-key-pair []
+  (AKeyPair/generate))
+
+(defn key-pair-data 
+  "Returns AKeyPair as a map."
+  [^AKeyPair key-pair]
+  {:convex-web.key-pair/account-key (.toChecksumHex (.getAccountKey key-pair))
+   :convex-web.key-pair/private-key (.toHexString (.getEncodedPrivateKey key-pair))})
+
+(defn ^AKeyPair create-key-pair 
+  "Creates AKeyPair from a map."
+  [{:convex-web.key-pair/keys [account-key private-key]}]
+  (AKeyPair/create 
+    (AccountKey/fromChecksumHex account-key)
+    (Blob/fromHex private-key)))
+
+(s/fdef create-key-pair
+  :args (s/cat :key-pair :convex-web/key-pair)
+  :ret #(instance? AKeyPair %))
+
+(defn ^Address key-pair-data-address [{:convex-web.key-pair/keys [account-key]}]
+  (Address/fromHex account-key))
+
+(s/fdef key-pair-data-address
+  :args (s/cat :key-pair :convex-web/key-pair)
+  :ret #(instance? Address %))
+
+(defn convex-world-key-pair-data
+  "convex.world key pair data. 
+  
+  See keys spec :convex-web/key-pair."
+  [& [{:keys [f] :or {f "convex.world.key-pair.edn"}}]]
+  (read-string (slurp f)))
 
 (defn read-source [source lang]
   (try
@@ -58,7 +93,9 @@
       (.getResult context))))
 
 (defn hero-fake-context []
-  (Context/createFake (Init/createState) Init/HERO))
+  (Context/createFake 
+    (Init/createState (InitConfig/create)) 
+    Init/RESERVED_ADDRESS))
 
 (defn fake-context [^State state]
   (Context/createFake state))
@@ -509,7 +546,7 @@
   (let [command (read-source (str "(create-account 0x" account-public-key ")") :convex-lisp)
 
         tx-data {:nonce 0
-                 :address Init/HERO
+                 :address (key-pair-data-address (convex-world-key-pair-data))
                  :command command}
 
         ^Result result (->> (invoke-transaction tx-data)
@@ -528,7 +565,7 @@
   "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
   [^Convex client target amount]
   (->> (transfer-transaction
-         {:address (.longValue Init/HERO)
+         {:address (.longValue (key-pair-data-address (convex-world-key-pair-data)))
           :nonce 0
           :target target
           :amount amount})
@@ -550,17 +587,6 @@
                        {:type (keyword type)}))})))
        (sort-by (comp :symbol :doc))))
 
-
-(defn key-pair-data [^AKeyPair key-pair]
-  {:convex-web.key-pair/account-key (.toChecksumHex (.getAccountKey key-pair))
-   :convex-web.key-pair/private-key (.toHexString (.getEncodedPrivateKey key-pair))})
-
-(defn ^AKeyPair create-key-pair [{:convex-web.key-pair/keys [account-key private-key]}]
-  (AKeyPair/create (AccountKey/fromChecksumHex account-key) (Blob/fromHex private-key)))
-
-(s/fdef create-key-pair
-  :args (s/cat :key-pair :convex-web/key-pair)
-  :ret #(instance? AKeyPair %))
 
 (def addresses-lock-ref (atom {}))
 
