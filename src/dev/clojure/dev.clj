@@ -1,23 +1,30 @@
 (ns dev
-  (:require [convex-web.system :as system]
-            [convex-web.component :as component]
-            [convex-web.convex :as convex]
-            [convex-web.session :as session]
-            [convex-web.account :as account]
-            [convex-web.web-server :as web-server]
-            [convex-web.client :as client]
-
-            [clojure.java.io :as io]
-            [clojure.stacktrace :as stacktrace]
-
-            [com.stuartsierra.component.repl :refer [set-init reset system]]
-            [ring.mock.request :as mock]
-            [datalevin.core :as d])
-  (:import (convex.core Peer)
-           (convex.core.init Init InitConfig)
-           (convex.core.lang Core Reader Context)
-           (convex.core.crypto AKeyPair)
-           (convex.core.data Address Hash AccountKey ASet AHashMap Symbol AccountStatus)))
+  (:require 
+   [convex-web.system :as system]
+   [convex-web.component :as component]
+   [convex-web.convex :as convex]
+   [convex-web.session :as session]
+   [convex-web.account :as account]
+   [convex-web.web-server :as web-server]
+   [convex-web.client :as client]
+   [convex-web.store :as store]
+   
+   [clojure.java.io :as io]
+   [clojure.stacktrace :as stacktrace]
+   
+   [com.stuartsierra.component.repl :refer [set-init reset stop system]]
+   [aero.core :as aero]
+   [ring.mock.request :as mock]
+   [datalevin.core :as d])
+  
+  (:import 
+   (etch EtchStore)
+   (convex.peer Server API)
+   (convex.core Peer)
+   (convex.core.init Init InitConfig)
+   (convex.core.lang Core Reader Context)
+   (convex.core.crypto AKeyPair)
+   (convex.core.data Keywords Address Hash AccountKey ASet AHashMap Symbol AccountStatus)))
 
 ;; -- Logging
 (set-init
@@ -46,8 +53,48 @@
   
   (reset)
   
+  (stop)
   
-  ;;; -- Create Account
+  
+  ;; -- Bootstrap Peer
+  
+  (.getUserAddress (InitConfig/create) 0)
+  (.getPeerKeyPair (InitConfig/create) 0)
+  
+  
+  (let [{peer-config :peer} (aero/read-config "convex-web.edn" {:profile :test})
+        
+        {peer-port :port
+         peer-store-config :store} peer-config
+        
+        ^EtchStore peer-store (store/create! peer-store-config)
+        
+        ^InitConfig init-config (InitConfig/create)
+        
+        ^Address address-11 (.getUserAddress init-config 0)
+        ^AKeyPair address-11-keypair (.getUserKeyPair init-config 0)]
+    
+    (with-open [^Server server (API/launchPeer {Keywords/PORT peer-port
+                                                Keywords/STORE peer-store
+                                                Keywords/KEYPAIR address-11-keypair})
+                
+                ^convex.api.Convex client (convex.api.Convex/connect
+                                            (.getHostAddress server)
+                                            address-11
+                                            address-11-keypair)]
+      
+      (let [^AKeyPair convex-world-key-pair (convex/generate-key-pair)
+            
+            ^Address convex-world-address (.createAccount client (.getAccountKey convex-world-key-pair))]
+        
+        (println convex-world-address))))
+  
+  
+  *e
+  
+  
+  
+  ;; -- Create Account
   (let [^AKeyPair generated-key-pair (AKeyPair/generate)
         ^AccountKey account-key (.getAccountKey generated-key-pair)
         ^String account-public-key (.toChecksumHex account-key)]
@@ -120,12 +167,12 @@
   (instance? convex.core.lang.AFn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "(fn [x] x)")) 
- 
+  
   
   ;; Library metadata.
   (convex/library-metadata context "convex.trust")
   
- 
+  
   ;; `convex.core.lang.impl.Fn/getParams` returns AVector<Syntax>
   (def params (.getParams (execute-string "(fn [x y] (+ x y))")))
   

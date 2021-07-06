@@ -11,6 +11,8 @@
   
   world.convex/convex {:local/root "convex.jar"}
   
+  prestancedesign/get-port {:mvn/version "0.1.1"}
+  
   ;; Required by Convex but it seems to have some
   ;; odd classpath conflict going on, that's why it's added here.
   org.apache.commons/commons-text {:mvn/version "1.9"}

@@ -107,16 +107,21 @@
   (start [component]
     (let [peer-config (get-in config [:config :peer])
           
-          ^EtchStore store (store/create! (:store peer-config))
+          {convex-world-peer-port :port
+           convex-world-peer-store-config :store} peer-config
           
-          ^Server server (API/launchPeer {Keywords/STORE store
-                                          Keywords/PORT (:port peer-config)})
+          ^EtchStore convex-world-peer-store (store/create! convex-world-peer-store-config)
+          
+          ;; TODO: Read existing key pair.
+          ^AKeyPair convex-world-key-pair (convex/generate-key-pair)
+          
+          ^Server server (API/launchPeer {Keywords/PORT convex-world-peer-port
+                                          Keywords/STORE convex-world-peer-store
+                                          Keywords/KEYPAIR convex-world-key-pair})
           
           convex-world-host-address (.getHostAddress server) 
           
           convex-world-key-pair-data (convex/convex-world-key-pair-data)
-          
-          ^AKeyPair convex-world-key-pair (convex/create-key-pair convex-world-key-pair-data)
           
           convex-world-address (convex/key-pair-data-address convex-world-key-pair-data)
           
@@ -128,7 +133,7 @@
       (assoc component
         :server server
         :client client
-        :store store)))
+        :store convex-world-peer-store)))
   
   (stop [component]
     (when-let [^Server server (:server component)]
