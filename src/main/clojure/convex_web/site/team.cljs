@@ -134,16 +134,16 @@
                {:href github
                 :target "_blank"}
                [:img
-                {:src "/GitHub-Mark-32px.png"}]])]]])])
-    
-    ;; Bottom nav
-      ;; =========================
-    [:div.bg-gray-900
-     [:div.max-w-screen-xl.mx-auto
-      [marketing/BottomNav (marketing/nav)]]]]
+                {:src "/GitHub-Mark-32px.png"}]])]]])])]
+   
+   ;; Bottom nav
+   ;; =========================
+   [:div.bg-gray-900
+    [:div.max-w-screen-xl.mx-auto
+     [marketing/BottomNav (marketing/nav)]]]
    
    ;; Copyright
-     ;; =========================
+   ;; =========================
    [marketing/Copyrigth]])
 
 (def team-page

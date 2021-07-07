@@ -28,7 +28,7 @@
        "What is Convex?"]
       
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
-       [:div.prose
+       [:div.prose.prose-xl
         [:p "Convex is an open, decentralised, and efficient technology platform built in the spirit of the original Internet."]
         [:p "Create your own digital assets, smart contracts and powerful decentralised applications for the Digital Economy of tomorrow."]]]
       

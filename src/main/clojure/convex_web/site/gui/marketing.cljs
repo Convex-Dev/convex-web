@@ -181,7 +181,7 @@
     (for [{:keys [text href]} items]
       ^{:key text}
       [:a {:href href}
-       [:span.text-sm.text-gray-400.hover:text-gray-400.active:text-gray-800 text]])]])
+       [:span.text-sm.text-gray-400.hover:text-gray-200.active:text-gray-600 text]])]])
 
 (defn BottomNav [nav]
   [:div.lg:flex.lg:space-x-32.py-12.bg-gray-900
