@@ -18,11 +18,13 @@
      
      [marketing/Nav (marketing/nav)]
      
-     [:div.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12
+     [:div.relative.w-full.max-w-screen-xl.mx-auto.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12
       {:style
        {:height "640px"}}
       
-      [gui/ConvexLogo {:width "56px" :height "64px"}]
+      [:div.absolute.top-0.right-0.w-40.mr-32.mt-10
+       [:img.self-center
+        {:src "images/convex.png"}]]
       
       [:h1.font-mono.text-6xl.text-blue-800
        "What is Convex?"]
