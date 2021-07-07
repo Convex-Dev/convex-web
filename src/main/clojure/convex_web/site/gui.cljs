@@ -654,6 +654,36 @@
             attrs)
      child]))
 
+(defn TealButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge {:class
+             ["px-4 py-3"
+              "bg-teal-500 hover:bg-teal-400 active:bg-teal-700"
+              "rounded"
+              "shadow-md"
+              "focus:outline-none"
+              (when disabled?
+                "pointer-events-none")]
+             :on-click identity}
+            attrs)
+     child]))
+
+(defn BlueButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge {:class
+             ["px-4 py-3"
+              "bg-blue-500 hover:bg-blue-400 active:bg-blue-700"
+              "rounded"
+              "shadow-md"
+              "focus:outline-none"
+              (when disabled?
+                "pointer-events-none")]
+             :on-click identity}
+            attrs)
+     child]))
+
 (defn PrimaryButton [attrs child]
   (let [disabled? (get attrs :disabled)]
     [:button

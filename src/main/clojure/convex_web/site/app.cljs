@@ -284,7 +284,7 @@
 
              text-color (cond
                           top-level?
-                          "text-blue-800"
+                          "text-blue-500"
 
                           active?
                           "text-gray-800"
