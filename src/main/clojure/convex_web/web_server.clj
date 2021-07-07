@@ -83,6 +83,10 @@
    (let [asset-prefix-url (system/site-asset-prefix-url system)]
      (page/html5
 
+       [:meta
+        {:name "description"
+         :content "Convex is an open, decentralised, and efficient technology platform built in the spirit of the original Internet."}]
+       
        ;; -- Google Analytics
 
        [:script {:async "true" :src "https://www.googletagmanager.com/gtag/js?id=UA-179518463-1"}]
