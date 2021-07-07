@@ -69,6 +69,7 @@
         
         ^EtchStore peer-store (store/create! peer-store-config)
         
+        ;; Create key pair and pass to config.
         ^InitConfig init-config (InitConfig/create)
         
         ^Address address-11 (.getUserAddress init-config 0)
