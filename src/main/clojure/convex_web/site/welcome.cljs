@@ -55,11 +55,11 @@
       
       ;; Convex is flexible
       ;; =========================
-      [:div.max-w-screen-xl.mx-auto.flex.items-center.space-x-8.py-16
+      [:div.max-w-screen-xl.mx-auto.flex.items-center.space-x-12.py-16
        
        ;; -- Image
        [:div {:class "w-1/2"}
-        [:img {:src "images/convex_flexible.png"}]]
+        [:img {:src "images/convex_flexible_2.png"}]]
        
        ;; -- Copy
        [:div {:class marketing-vertical}
@@ -91,7 +91,7 @@
       ;; =========================
       [:div.py-16.text-white
        {:style {:background-color "#2E3192"}}
-       [:div.max-w-screen-xl.mx-auto.flex.space-x-8
+       [:div.max-w-screen-xl.mx-auto.flex.space-x-12
         
         ;; -- Copy
         [:div {:class marketing-vertical}
@@ -120,17 +120,17 @@
         
         ;; -- Image
         [:div {:class "w-1/2"}
-         [:img {:src "images/convex_fast.png"}]]]]
+         [:img {:src "images/convex_fast_2.png"}]]]]
       
       ;; Convex is fun
       ;; =========================
       [:div.py-16.text-white
        {:style {:background-color "#1C2951"}}
-       [:div.max-w-screen-xl.mx-auto.flex
+       [:div.max-w-screen-xl.mx-auto.flex.space-x-12
         
         ;; -- Image
         [:div {:class "w-1/2"}
-         [:img {:src "images/convex_fun.png"}]]
+         [:img {:src "images/convex_fun_2.png"}]]
         
         ;; -- Copy
         [:div {:class marketing-vertical}
