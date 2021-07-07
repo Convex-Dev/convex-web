@@ -82,42 +82,43 @@
    :body
    (let [asset-prefix-url (system/site-asset-prefix-url system)]
      (page/html5
-
+       {:lang "en"}
+       
        [:meta
         {:name "description"
          :content "Convex is an open, decentralised, and efficient technology platform built in the spirit of the original Internet."}]
        
        ;; -- Google Analytics
-
+       
        [:script {:async "true" :src "https://www.googletagmanager.com/gtag/js?id=UA-179518463-1"}]
-
+       
        [:script
         "window.dataLayer = window.dataLayer || [];
          function gtag(){dataLayer.push(arguments);}
          gtag('js', new Date());
 
          gtag('config', 'UA-179518463-1', { send_page_view: false });"]
-
+       
        ;; -- End Google Analytics
-
-
+       
+       
        (stylesheet "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap")
        (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap")
-
+       
        (stylesheet (str asset-prefix-url "/css/highlight/idea.css"))
        (stylesheet (str asset-prefix-url "/css/codemirror.css"))
        (stylesheet (str asset-prefix-url "/css/styles.css"))
        (stylesheet (str asset-prefix-url "/css/tippy.css"))
        (stylesheet (str asset-prefix-url "/css/spinner.css"))
        (stylesheet (str asset-prefix-url "/css/react-resizable.css"))
-
+       
        [:title "Convex"]
-
+       
        [:body
         (ring.util.anti-forgery/anti-forgery-field)
-
+        
         [:div#app]
-
+        
         (page/include-js (str asset-prefix-url "/js/main.js"))]))})
 
 (defn transit-decode [^InputStream x]
