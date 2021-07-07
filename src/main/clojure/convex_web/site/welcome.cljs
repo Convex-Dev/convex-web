@@ -13,6 +13,7 @@
                [:div.flex.items-center
                 [gui/BulletIcon {:style {:min-width "40px" :min-height "40px"}}]
                 [:span.font-mono.ml-4 s]])]
+    
     [:div
      
      [marketing/Nav (marketing/nav)]
@@ -54,7 +55,7 @@
       
       ;; Convex is flexible
       ;; =========================
-      [:div.max-w-screen-xl.mx-auto.flex.items-center.mb-40.space-x-8
+      [:div.max-w-screen-xl.mx-auto.flex.items-center.space-x-8.py-16
        
        ;; -- Image
        [:div {:class "w-1/2"}
@@ -88,9 +89,9 @@
       
       ;; Convex is fast
       ;; =========================
-      [:div.py-10.text-white
+      [:div.py-16.text-white
        {:style {:background-color "#2E3192"}}
-       [:div.max-w-screen-xl.mx-auto.flex.mb-40.space-x-8
+       [:div.max-w-screen-xl.mx-auto.flex.space-x-8
         
         ;; -- Copy
         [:div {:class marketing-vertical}
@@ -123,9 +124,9 @@
       
       ;; Convex is fun
       ;; =========================
-      [:div.py-10.text-white
+      [:div.py-16.text-white
        {:style {:background-color "#1C2951"}}
-       [:div.max-w-screen-xl.mx-auto.flex.mb-40
+       [:div.max-w-screen-xl.mx-auto.flex
         
         ;; -- Image
         [:div {:class "w-1/2"}
@@ -143,7 +144,7 @@
          
          [:p {:class marketing-copy}
           "convex.world provides an interactive REPL allowing users to code directly
-          on the Convex platform using Convex Lisp or Scrypt."]
+          on the Convex platform using Convex Lisp."]
          
          [:a
           {:href (rfe/href :route-name/documentation-getting-started)}
@@ -156,10 +157,9 @@
       
       ;; Bottom nav
       ;; =========================
-      [:div.mb-20
-       [marketing/BottomNav (marketing/nav)]]]
-     
-     [:hr.border-gray-200.mb-8]
+      [:div.bg-gray-900
+       [:div.max-w-screen-xl.mx-auto
+        [marketing/BottomNav (marketing/nav)]]]]
      
      ;; Copyright
      ;; =========================

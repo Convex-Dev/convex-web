@@ -175,16 +175,16 @@
 (defn BottomNavMenu [{:keys [text items]}]
   [:div.flex.flex-col.space-y-3.mb-10
    
-   [:span.font-mono.text-base.text-black text]
+   [:span.font-mono.text-base.text-blue-200.uppercase text]
    
    [:div.flex.flex-col.space-y-2
     (for [{:keys [text href]} items]
       ^{:key text}
       [:a {:href href}
-       [:span.text-sm.text-gray-600.hover:text-gray-400.active:text-gray-800 text]])]])
+       [:span.text-sm.text-gray-400.hover:text-gray-400.active:text-gray-800 text]])]])
 
 (defn BottomNav [nav]
-  [:div.lg:flex.lg:space-x-32
+  [:div.lg:flex.lg:space-x-32.py-12.bg-gray-900
 
    (let [{:keys [concepts documentation tools explorer about]} nav]
      [:<>
@@ -195,7 +195,7 @@
       [BottomNavMenu about]])])
 
 (defn Copyrigth []
-  [:div.flex.flex-col.items-center.space-y-4.mb-8
+  [:div.flex.flex-col.items-center.space-y-4.bg-gray-900.p-2
    
    [:a
     {:href "https://github.com/Convex-Dev"

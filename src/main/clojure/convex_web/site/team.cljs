@@ -136,11 +136,14 @@
                [:img
                 {:src "/GitHub-Mark-32px.png"}]])]]])])
     
-    [:div.mb-20
-     [marketing/BottomNav (marketing/nav)]]]
+    ;; Bottom nav
+      ;; =========================
+    [:div.bg-gray-900
+     [:div.max-w-screen-xl.mx-auto
+      [marketing/BottomNav (marketing/nav)]]]]
    
-   [:hr.border-gray-200.mb-8]
-   
+   ;; Copyright
+     ;; =========================
    [marketing/Copyrigth]])
 
 (def team-page
