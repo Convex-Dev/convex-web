@@ -24,7 +24,7 @@
 
       [gui/ConvexLogo {:width "56px" :height "64px"}]
 
-      [:span.font-mono.text-6xl
+      [:h1.font-mono.text-6xl
        "The Internet of Value"]
 
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
@@ -57,7 +57,7 @@
      [:div.w-full.max-w-screen-xl.mx-auto
 
       [:div#how.flex.flex-1.justify-center.my-14
-       [:span.inline-block.font-mono.text-center.text-4xl
+       [:h2.inline-block.font-mono.text-center.text-4xl
         {:class "w-4/5"
          :style
          {:color "#62A6E1"}}
@@ -75,7 +75,7 @@
        ;; -- Copy
        [:div {:class marketing-vertical}
 
-        [:span.font-mono.text-4xl "Convex is Flexible"]
+        [:h2.font-mono.text-4xl "Convex is Flexible"]
 
         [:p.text-xl.leading-8
          "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be
@@ -105,7 +105,7 @@
        ;; -- Copy
        [:div {:class marketing-vertical}
 
-        [:span.font-mono.text-4xl "Convex is Fast"]
+        [:h2.font-mono.text-4xl "Convex is Fast"]
 
         [:p {:class marketing-copy}
          "Using Convergent Proof of Stake, a completely new consensus algorithm, the Convex network is able to execute
@@ -142,7 +142,7 @@
        ;; -- Copy
        [:div {:class marketing-vertical}
 
-        [:span.font-mono.text-4xl "Convex is Fun"]
+        [:h2.font-mono.text-4xl "Convex is Fun"]
 
         [:p {:class marketing-copy}
          "We provide a powerful, interactive environment for
