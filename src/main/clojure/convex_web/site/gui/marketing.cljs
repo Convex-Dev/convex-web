@@ -6,7 +6,7 @@
 
 (defn nav []
   {:concepts
-   {:text "Concepts"
+   {:text "CONCEPTS"
     :items
     [{:text "Vision"
       :href (rfe/href :route-name/vision)}
@@ -18,7 +18,7 @@
       :href (rfe/href :route-name/faq)}]}
 
    :documentation
-   {:text "Documentation"
+   {:text "DOCUMENTATION"
     :items
     [{:text "Getting Started"
       :href (rfe/href :route-name/documentation-getting-started)}
@@ -36,7 +36,7 @@
       :href (rfe/href :route-name/client-api)}]}
 
    :tools
-   {:text "Tools"
+   {:text "TOOLS"
     :items
     [{:text "Wallet"
       :href (rfe/href :route-name/wallet)}
@@ -48,7 +48,7 @@
       :href (rfe/href :route-name/transfer)}]}
 
    :explorer
-   {:text "Explorer"
+   {:text "EXPLORER"
     :items
     [{:text "Accounts"
       :href (rfe/href :route-name/accounts-explorer)}
@@ -63,7 +63,7 @@
       :href (rfe/href :route-name/transactions)}]}
 
    :about
-   {:text "About"
+   {:text "ABOUT"
     :items
     [#_{:text "Concepts"
         :href (rfe/href :route-name/concepts)}
@@ -158,7 +158,7 @@
      (:documentation nav)]
     
     ;; -- Sandbox
-    [NavButton "Sandbox" (rfe/href :route-name/sandbox)]
+    [NavButton "SANDBOX" (rfe/href :route-name/sandbox)]
     
     ;; -- Tools
     [Dropdown
