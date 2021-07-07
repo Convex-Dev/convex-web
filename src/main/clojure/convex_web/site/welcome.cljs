@@ -28,7 +28,7 @@
        "What is Convex?"]
       
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
-       [:div.prose.prose-xl
+       [:div.prose.prose-2xl
         [:p "Convex is an open, decentralised, and efficient technology platform built in the spirit of the original Internet."]
         [:p "Create your own digital assets, smart contracts and powerful decentralised applications for the Digital Economy of tomorrow."]]]
       
@@ -66,7 +66,7 @@
         
         [:h3.font-mono.text-4xl "Convex is Flexible"]
         
-        [:p.text-xl.leading-8
+        [:p.prose.prose-2xl.leading-8.prose.prose-2xl
          "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be
           100% secure and publicly verifiable (both in terms of data and
           application behaviour), such as:"]
