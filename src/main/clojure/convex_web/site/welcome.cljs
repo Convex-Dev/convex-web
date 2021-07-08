@@ -9,10 +9,15 @@
         marketing-bullets ["flex flex-col space-y-3 text-white"]
         marketing-copy ["text-xl text-white leading-8"]
         
-        Item (fn [s]
-               [:div.flex.items-center.text-lg
-                [gui/BulletIcon {:style {:min-width "40px" :min-height "40px"}}]
-                [:span.ml-4 s]])]
+        ItemTeal (fn [s]
+                   [:div.flex.items-center.flex-shrink-0.text-lg.space-x-3
+                    [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-teal-500]
+                    [:span s]])
+        
+        ItemBlue (fn [s]
+                   [:div.flex.items-center.text-lg.space-x-3
+                    [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-blue-500]
+                    [:span s]])]
     
     [:div
      
@@ -74,11 +79,11 @@
           application behaviour), such as:"]
         
         [:div.text-gray-600 {:class marketing-bullets}
-         [Item "Public registries and databases"]
-         [Item "Digital currencies"]
-         [Item "Prediction markets"]
-         [Item "Smart contracts for managing digital assets"]
-         [Item "Immutable provenance records"]]
+         [ItemTeal "Public registries and databases"]
+         [ItemTeal "Digital currencies"]
+         [ItemTeal "Prediction markets"]
+         [ItemTeal "Smart contracts for managing digital assets"]
+         [ItemTeal "Immutable provenance records"]]
         
         [:a
          {:href (rfe/href :route-name/vision)}
@@ -106,14 +111,14 @@
           grade hardware and network bandwidth the Convex Virtual Machine can achieve:"]
          
          [:div {:class marketing-bullets}
-          [Item
+          [ItemBlue
            "Tens of thousands of digitally signed transactions per second (far more than the
            1,700 transactions per second typically handled by the VISA network)"]
           
-          [Item
+          [ItemBlue
            "Millions of smart contract operations per second"]
           
-          [Item
+          [ItemBlue
            "Low latency (less than a second for global consensus)"]]
          
          [:p {:class marketing-copy}
