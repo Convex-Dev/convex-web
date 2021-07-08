@@ -85,7 +85,7 @@
 
 
 (defn NavButton [text href]
-  [:a.font-mono.text-base.hover:text-gray-500.px-4.py-2
+  [:a.text-base.hover:text-gray-500.px-4.py-2
    {:href href}
    text])
 
@@ -97,7 +97,7 @@
      px-4 py-2
      bg-white
      leading-5
-     font-mono font-medium hover:text-gray-500
+     font-medium hover:text-gray-500
      focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
      active:bg-gray-50 active:text-gray-800
      transition ease-in-out duration-150"
@@ -126,9 +126,9 @@
         [gui/Transition
          (merge gui/dropdown-transition {:show? @show?})
          [gui/Dismissible {:on-dismiss #(reset! show? false)}
-          [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg
+          [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg.z-10
            [:div.rounded-md.bg-white.shadow-xs
-            [:div.py-1.font-mono
+            [:div.py-1
              {:role "menu"
               :aria-orientation "vertical"
               :aria-labelledby "options-menu"}
@@ -144,9 +144,9 @@
    
    ;; -- Logo
    [:a {:href (rfe/href :route-name/welcome)}
-    [:div.flex.items-center
-     [gui/ConvexLogo {:width "28px" :height "32px"}]
-     [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
+    [:div.flex.items-center.space-x-4
+     [:span.text-xl.leading-none.text-blue-800 "CONVEX"]
+     [gui/ConvexLogo {:width "28px" :height "32px"}]]]
    
    [:div.flex.items-center.space-x-4
     ;; -- Concepts

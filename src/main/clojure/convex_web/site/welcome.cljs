@@ -6,13 +6,13 @@
 
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["w-1/2 flex flex-col justify-center space-y-8"]
-        marketing-bullets ["flex flex-col space-y-3 text-base"]
+        marketing-bullets ["flex flex-col space-y-3 text-white"]
         marketing-copy ["text-xl text-white leading-8"]
         
         Item (fn [s]
-               [:div.flex.items-center
+               [:div.flex.items-center.text-lg
                 [gui/BulletIcon {:style {:min-width "40px" :min-height "40px"}}]
-                [:span.font-mono.ml-4 s]])]
+                [:span.ml-4 s]])]
     
     [:div
      
@@ -26,7 +26,7 @@
        [:img.self-center
         {:src "images/convex.png"}]]
       
-      [:h1.font-mono.text-6xl.text-blue-800
+      [:h1.text-6xl.text-blue-800
        "What is Convex?"]
       
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
@@ -41,7 +41,7 @@
         [gui/TealButton
          {}
          [:div.w-40
-          [:span.font-mono.text-sm.text-white.uppercase
+          [:span.text-sm.text-white.uppercase
            "Our Vision"]]]]
        
        [:a
@@ -49,7 +49,7 @@
         [gui/BlueButton
          {}
          [:div.w-40
-          [:span.font-mono.text-sm.text-white.uppercase
+          [:span.text-sm.text-white.uppercase
            "Start Building"]]]]]]
      
      
@@ -66,14 +66,14 @@
        ;; -- Copy
        [:div {:class marketing-vertical}
         
-        [:h3.font-mono.text-4xl "Convex is Flexible"]
+        [:h3.text-4xl "Convex is Flexible"]
         
         [:p.prose.prose-2xl.leading-8.prose.prose-2xl
          "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be
           100% secure and publicly verifiable (both in terms of data and
           application behaviour), such as:"]
         
-        [:div {:class marketing-bullets}
+        [:div.text-gray-600 {:class marketing-bullets}
          [Item "Public registries and databases"]
          [Item "Digital currencies"]
          [Item "Prediction markets"]
@@ -85,7 +85,7 @@
          [gui/TealButton
           {}
           [:div.w-40
-           [:span.font-mono.text-sm.text-white.uppercase
+           [:span.text-sm.text-white.uppercase
             "Our Vision"]]]]]]
       
       
@@ -98,7 +98,7 @@
         ;; -- Copy
         [:div {:class marketing-vertical}
          
-         [:h3.font-mono.text-4xl "Convex is Fast"]
+         [:h3.text-4xl "Convex is Fast"]
          
          [:p {:class marketing-copy}
           "Using Convergent Proof of Stake, a completely new consensus algorithm, the Convex network is able to execute
@@ -137,7 +137,7 @@
         ;; -- Copy
         [:div {:class marketing-vertical}
          
-         [:h3.font-mono.text-4xl "Convex is Fun"]
+         [:h3.text-4xl "Convex is Fun"]
          
          [:p {:class marketing-copy}
           "We provide a powerful, interactive environment for
@@ -153,7 +153,7 @@
           [gui/TealButton
            {}
            [:div.w-40
-            [:span.font-mono.text-sm.text-white.uppercase
+            [:span.text-sm.text-white.uppercase
              "Try It Now"]]]]]]]
       
       
