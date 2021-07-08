@@ -178,7 +178,7 @@
 (defn BottomNavMenu [{:keys [text items]}]
   [:div.flex.flex-col.space-y-3.mb-10
    
-   [:span.font-mono.text-xl.text-blue-200.uppercase text]
+   [:span.text-xl.text-blue-200.uppercase text]
    
    [:div.flex.flex-col.space-y-2
     (for [{:keys [text href]} items]
@@ -189,7 +189,7 @@
 (defn BottomNavMenuSocial []
   [:div.flex.flex-col.space-y-3.mb-10
    
-   [:span.font-mono.text-xl.text-blue-200.uppercase "Community"]
+   [:span.text-xl.text-blue-200.uppercase "Community"]
    
    [:div.flex.space-x-2
     (for [{:keys [href src]} [{:src "/social_discord.png"
