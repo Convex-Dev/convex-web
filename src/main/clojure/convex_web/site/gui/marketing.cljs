@@ -186,6 +186,31 @@
       [:a {:href href}
        [:span.text-lg.text-gray-400.hover:text-gray-200.active:text-gray-600 text]])]])
 
+(defn BottomNavMenuSocial []
+  [:div.flex.flex-col.space-y-3.mb-10
+   
+   [:span.font-mono.text-xl.text-blue-200.uppercase "Community"]
+   
+   [:div.flex.space-x-2
+    (for [{:keys [href src]} [{:src "/social_discord.png"
+                               :href "https://discord.gg/fsnCxEM"}
+                              
+                              {:src "/social_github.png"
+                               :href "https://github.com/Convex-Dev"}
+                              
+                              {:src "/social_twitter.png"
+                               :href "https://twitter.com/convex_world"}
+                              
+                              {:src "/social_linkedin.png"
+                               :href "https://www.linkedin.com/company/convex-foundation/"}
+                              
+                              {:src "/social_youtube.png"
+                               :href "https://www.youtube.com/channel/UCrasexr20HzFZS-xgnYcoug/featured"}]]
+      ^{:key href}
+      [:a {:href href}
+       [:img.object-scale-down.w-10.h-10
+        {:src src}]])]])
+
 (defn BottomNav [nav]
   [:div.lg:flex.lg:space-x-32.p-12.bg-gray-900
 
@@ -195,16 +220,11 @@
       [BottomNavMenu documentation]
       [BottomNavMenu tools]
       [BottomNavMenu explorer]
-      [BottomNavMenu about]])])
+      [BottomNavMenu about]
+      [BottomNavMenuSocial]])])
 
 (defn Copyrigth []
   [:div.flex.flex-col.items-center.space-y-4.bg-gray-900.p-2
    
-   [:a
-    {:href "https://github.com/Convex-Dev"
-     :target "_blank"}
-    [:div.p-2.bg-gray-100.hover:bg-opacity-50.active:bg-gray-200.rounded-md
-     [gui/GitHubIcon]]]
-   
    [:span.block.text-gray-500.text-sm
-    "© Copyright 2021 The Convex Foundation."]])
+    "© Copyright 2021 CONVEX FOUNDATION"]])

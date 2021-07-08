@@ -164,9 +164,8 @@
       
       ;; Bottom nav
       ;; =========================
-      [:div.bg-gray-900
-       [:div.max-w-screen-xl.mx-auto
-        [marketing/BottomNav (marketing/nav)]]]]
+      [:div.w-full.flex.justify-center.bg-gray-900
+       [marketing/BottomNav (marketing/nav)]]]
      
      ;; Copyright
      ;; =========================
