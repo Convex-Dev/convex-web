@@ -144,9 +144,12 @@
    
    ;; -- Logo
    [:a {:href (rfe/href :route-name/welcome)}
-    [:div.flex.items-center.space-x-4
-     [:span.text-xl.leading-none.text-blue-800 "CONVEX"]
-     [gui/ConvexLogo {:width "28px" :height "32px"}]]]
+    [:div.flex.flex-col.space-y-3
+     [:div.flex.items-center.space-x-4
+      [:span.text-xl.leading-none.text-blue-800 "CONVEX"]
+      [gui/ConvexLogo {:width "28px" :height "32px"}]]
+     
+     [:div.w-32.h-1.bg-blue-800]]]
    
    [:div.flex.items-center.space-x-4
     ;; -- Concepts

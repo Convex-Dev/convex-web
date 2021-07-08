@@ -66,7 +66,7 @@
        ;; -- Copy
        [:div {:class marketing-vertical}
         
-        [:h3.text-4xl "Convex is Flexible"]
+        [:h3.text-4xl.font-semibold "Convex is Flexible"]
         
         [:p.prose.prose-2xl.leading-8.prose.prose-2xl
          "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be
@@ -98,7 +98,7 @@
         ;; -- Copy
         [:div {:class marketing-vertical}
          
-         [:h3.text-4xl "Convex is Fast"]
+         [:h3.text-4xl.font-semibold "Convex is Fast"]
          
          [:p {:class marketing-copy}
           "Using Convergent Proof of Stake, a completely new consensus algorithm, the Convex network is able to execute
@@ -137,7 +137,7 @@
         ;; -- Copy
         [:div {:class marketing-vertical}
          
-         [:h3.text-4xl "Convex is Fun"]
+         [:h3.text-4xl.font-semibold "Convex is Fun"]
          
          [:p {:class marketing-copy}
           "We provide a powerful, interactive environment for
