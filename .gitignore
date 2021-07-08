@@ -3,7 +3,6 @@ node_modules/
 .cpcache/
 .shadow-cljs/
 src/main/resources/public/js/
-src/main/resources/public/css/styles.css
 .nrepl-port
 *.iml
 .DS_Store
