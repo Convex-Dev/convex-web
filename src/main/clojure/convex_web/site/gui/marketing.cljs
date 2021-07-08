@@ -6,7 +6,7 @@
 
 (defn nav []
   {:concepts
-   {:text "Concepts"
+   {:text "CONCEPTS"
     :items
     [{:text "Vision"
       :href (rfe/href :route-name/vision)}
@@ -18,7 +18,7 @@
       :href (rfe/href :route-name/faq)}]}
 
    :documentation
-   {:text "Documentation"
+   {:text "DOCUMENTATION"
     :items
     [{:text "Getting Started"
       :href (rfe/href :route-name/documentation-getting-started)}
@@ -36,7 +36,7 @@
       :href (rfe/href :route-name/client-api)}]}
 
    :tools
-   {:text "Tools"
+   {:text "TOOLS"
     :items
     [{:text "Wallet"
       :href (rfe/href :route-name/wallet)}
@@ -48,7 +48,7 @@
       :href (rfe/href :route-name/transfer)}]}
 
    :explorer
-   {:text "Explorer"
+   {:text "EXPLORER"
     :items
     [{:text "Accounts"
       :href (rfe/href :route-name/accounts-explorer)}
@@ -63,7 +63,7 @@
       :href (rfe/href :route-name/transactions)}]}
 
    :about
-   {:text "About"
+   {:text "ABOUT"
     :items
     [#_{:text "Concepts"
         :href (rfe/href :route-name/concepts)}
@@ -85,7 +85,7 @@
 
 
 (defn NavButton [text href]
-  [:a.font-mono.text-base.hover:text-gray-500.px-4.py-2
+  [:a.text-base.hover:text-gray-500.px-4.py-2
    {:href href}
    text])
 
@@ -97,7 +97,7 @@
      px-4 py-2
      bg-white
      leading-5
-     font-mono font-medium hover:text-gray-500
+     font-medium hover:text-gray-500
      focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
      active:bg-gray-50 active:text-gray-800
      transition ease-in-out duration-150"
@@ -116,7 +116,7 @@
 (defn Dropdown [{:keys [text items]}]
   (let [show? (reagent/atom false)]
     (fn [{:keys [text items]}]
-      [:div.relative.inline-block.text-left.text-base.text-black
+      [:div.relative.inline-block.text-left.text-base.text-black.z-10
        [:div
 
         [DropdownButton
@@ -126,9 +126,9 @@
         [gui/Transition
          (merge gui/dropdown-transition {:show? @show?})
          [gui/Dismissible {:on-dismiss #(reset! show? false)}
-          [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg
+          [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg.z-10
            [:div.rounded-md.bg-white.shadow-xs
-            [:div.py-1.font-mono
+            [:div.py-1
              {:role "menu"
               :aria-orientation "vertical"
               :aria-labelledby "options-menu"}
@@ -144,9 +144,12 @@
    
    ;; -- Logo
    [:a {:href (rfe/href :route-name/welcome)}
-    [:div.flex.items-center
-     [gui/ConvexLogo {:width "28px" :height "32px"}]
-     [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
+    [:div.flex.flex-col.space-y-3
+     [:div.flex.items-center.space-x-4
+      [:span.text-xl.leading-none.text-blue-800 "CONVEX"]
+      [gui/ConvexLogo {:width "28px" :height "32px"}]]
+     
+     [:div.w-32.h-1.bg-blue-800]]]
    
    [:div.flex.items-center.space-x-4
     ;; -- Concepts
@@ -158,7 +161,7 @@
      (:documentation nav)]
     
     ;; -- Sandbox
-    [NavButton "Sandbox" (rfe/href :route-name/sandbox)]
+    [NavButton "SANDBOX" (rfe/href :route-name/sandbox)]
     
     ;; -- Tools
     [Dropdown
@@ -175,16 +178,41 @@
 (defn BottomNavMenu [{:keys [text items]}]
   [:div.flex.flex-col.space-y-3.mb-10
    
-   [:span.font-mono.text-base.text-black text]
+   [:span.font-mono.text-xl.text-blue-200.uppercase text]
    
    [:div.flex.flex-col.space-y-2
     (for [{:keys [text href]} items]
       ^{:key text}
       [:a {:href href}
-       [:span.text-sm.text-gray-600.hover:text-gray-400.active:text-gray-800 text]])]])
+       [:span.text-lg.text-gray-400.hover:text-gray-200.active:text-gray-600 text]])]])
+
+(defn BottomNavMenuSocial []
+  [:div.flex.flex-col.space-y-3.mb-10
+   
+   [:span.font-mono.text-xl.text-blue-200.uppercase "Community"]
+   
+   [:div.flex.space-x-2
+    (for [{:keys [href src]} [{:src "/social_discord.png"
+                               :href "https://discord.gg/fsnCxEM"}
+                              
+                              {:src "/social_github.png"
+                               :href "https://github.com/Convex-Dev"}
+                              
+                              {:src "/social_twitter.png"
+                               :href "https://twitter.com/convex_world"}
+                              
+                              {:src "/social_linkedin.png"
+                               :href "https://www.linkedin.com/company/convex-foundation/"}
+                              
+                              {:src "/social_youtube.png"
+                               :href "https://www.youtube.com/channel/UCrasexr20HzFZS-xgnYcoug/featured"}]]
+      ^{:key href}
+      [:a {:href href}
+       [:img.object-scale-down.w-10.h-10
+        {:src src}]])]])
 
 (defn BottomNav [nav]
-  [:div.lg:flex.lg:space-x-32
+  [:div.lg:flex.lg:space-x-32.p-12.bg-gray-900
 
    (let [{:keys [concepts documentation tools explorer about]} nav]
      [:<>
@@ -192,16 +220,11 @@
       [BottomNavMenu documentation]
       [BottomNavMenu tools]
       [BottomNavMenu explorer]
-      [BottomNavMenu about]])])
+      [BottomNavMenu about]
+      [BottomNavMenuSocial]])])
 
 (defn Copyrigth []
-  [:div.flex.flex-col.items-center.space-y-4.mb-8
-   
-   [:a
-    {:href "https://github.com/Convex-Dev"
-     :target "_blank"}
-    [:div.p-2.bg-gray-100.hover:bg-opacity-50.active:bg-gray-200.rounded-md
-     [gui/GitHubIcon]]]
+  [:div.flex.flex-col.items-center.space-y-4.bg-gray-900.p-2
    
    [:span.block.text-gray-500.text-sm
-    "© Copyright 2021 The Convex Foundation."]])
+    "© Copyright 2021 CONVEX FOUNDATION"]])

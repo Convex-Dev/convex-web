@@ -284,7 +284,7 @@
 
              text-color (cond
                           top-level?
-                          "text-blue-800"
+                          "text-blue-500"
 
                           active?
                           "text-gray-800"
@@ -438,18 +438,21 @@
   (let [link-style "font-mono text-gray-800 hover:text-gray-500 active:text-black"]
     [:div.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
      [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-10
-
+      
       ;; Logo
       ;; ===================
       [:a {:href (rfe/href :route-name/welcome)}
-       [:div.flex.items-center
-        [gui/ConvexLogo {:width "28px" :height "32px"}]
-        [:span.font-mono.text-xl.ml-4.leading-none "Convex"]]]
-
+       [:div.flex.flex-col.space-y-3
+        [:div.flex.items-center.space-x-4
+         [:span.text-xl.leading-none.text-blue-800 "CONVEX"]
+         [gui/ConvexLogo {:width "28px" :height "32px"}]]
+        
+        [:div.w-32.h-1.bg-blue-800]]]
+      
       ;; Items
       ;; ===================
       [:div.flex.items-center.justify-end.space-x-8
-
+       
        (cond
          (session/?active-address)
          [:<>
@@ -458,31 +461,31 @@
            {:href (rfe/href :route-name/wallet)}
            [:span {:class link-style}
             "Wallet"]]
-
+          
           ;; -- Faucet
           [:a
            {:href (rfe/href :route-name/faucet)}
            [:span {:class link-style}
             "Faucet"]]
-
+          
           ;; -- Transfer
           [:a
            {:href (rfe/href :route-name/transfer)}
            [:span {:class link-style}
             "Transfer"]]
-
+          
           ;; -- Details
           [:a
            {:href (rfe/href :route-name/my-account)}
            [:span {:class link-style}
             "Account"]]
-
+          
           ;; -- Select account
           [AccountSelect]]
-
+         
          (= :ajax.status/pending (session/?status))
          [gui/Spinner]
-
+         
          :else
          ;; -- Create Account
          [gui/PrimaryButton
@@ -496,24 +499,24 @@
          title :page/title
          description :page/description
          style :page/style} page
-
+        
         set-state (stack/make-set-state uuid)]
     [:<>
      [TopNav]
-
+     
      ;; Main
      ;; ================
-     [:div.w-full.mx-auto.px-6
+     [:div.w-full.mx-auto.px-10
       [:div.h-screen.flex.pt-24.space-x-10
-
+       
        ;; -- Nav
        [SideNav (:route/match (router/?route))]
-
+       
        ;; -- Page
        [:div.relative.flex.flex-col.flex-1.space-y-4.overflow-auto
         (when active-page-frame
           [:<>
-
+           
            [:div.flex.flex-col.space-y-4
             (when title
               (let [title-size (case (get style :page-style/title-size)
@@ -524,13 +527,13 @@
                 [:span.font-mono.text-gray-900
                  {:class [title-size "leading-none"]}
                  title]))
-
+            
             (when description
               [:p.text-gray-500.text-base.max-w-screen-sm description])
-
+            
             (when title
               [:div.w-32.h-2.bg-blue-500.mb-8])]
-
+           
            [Component active-page-frame state set-state]])]]]]))
 
 (defn Page [{:frame/keys [uuid page state] :as active-page-frame}]
