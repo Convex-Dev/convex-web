@@ -7,15 +7,15 @@
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["w-1/2 flex flex-col justify-center space-y-8"]
         marketing-bullets ["flex flex-col space-y-3 text-white"]
-        marketing-copy ["text-xl text-white leading-8"]
+        marketing-copy ["text-base lg:text-xl text-white leading-8"]
         
         ItemTeal (fn [s]
-                   [:div.flex.items-center.flex-shrink-0.text-lg.space-x-3
+                   [:div.flex.items-center.flex-shrink-0.text-base.lg:text-lg.space-x-3
                     [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-teal-500]
                     [:span s]])
         
         ItemBlue (fn [s]
-                   [:div.flex.items-center.text-lg.space-x-3
+                   [:div.flex.items-center.text-base.lg:text-lg.space-x-3
                     [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-blue-500]
                     [:span s]])]
     
@@ -28,11 +28,11 @@
        {:height "640px"}}
       
       ;; Show only on large screens.
-      [:div.absolute.top-0.right-0.w-40.mr-32.mt-10.invisible.lg:visible
+      [:div.absolute.top-0.right-0.w-40.mr-32.mt-10.invisible.xl:visible
        [:img.self-center
         {:src "images/convex.png"}]]
       
-      [:h1.text-5xl.md:text-7xl.font-extrabold.text-blue-800
+      [:h1.text-5xl.lg:text-7xl.font-extrabold.text-blue-800
        "What is Convex?"]
       
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
@@ -63,7 +63,7 @@
       
       ;; Convex is flexible
       ;; =========================
-      [:div.max-w-screen-xl.mx-auto.flex.items-center.space-x-12.py-16
+      [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-x-12.py-16
        
        ;; -- Image
        [:div {:class "w-1/2"}
@@ -72,9 +72,9 @@
        ;; -- Copy
        [:div {:class marketing-vertical}
         
-        [:h3.text-5xl.md:text-7xl.font-extrabold "Convex is Flexible"]
+        [:h3.text-5xl.lg:text-7xl.font-extrabold "Convex is Flexible"]
         
-        [:p.prose.prose-2xl.leading-8.prose.prose-2xl
+        [:p.prose.lg:prose-2xl
          "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be
           100% secure and publicly verifiable (both in terms of data and
           application behaviour), such as:"]
@@ -104,7 +104,7 @@
         ;; -- Copy
         [:div {:class marketing-vertical}
          
-         [:h3.text-5xl.md:text-7xl.font-extrabold "Convex is Fast"]
+         [:h3.text-5xl.lg:text-7xl.font-extrabold "Convex is Fast"]
          
          [:p {:class marketing-copy}
           "Using Convergent Proof of Stake, a completely new consensus algorithm, the Convex network is able to execute
@@ -132,9 +132,9 @@
       
       ;; Convex is fun
       ;; =========================
-      [:div.py-52.text-white
+      [:div.py-52.px-12.lg:px-0.text-white
        {:style {:background-color "#1C2951"}}
-       [:div.max-w-screen-xl.mx-auto.flex.space-x-12
+       [:div.max-w-screen-xl.mx-auto.lg:flex.space-y-12.lg:space-x-12
         
         ;; -- Image
         [:div {:class "w-1/2"}
@@ -143,7 +143,7 @@
         ;; -- Copy
         [:div {:class marketing-vertical}
          
-         [:h3.text-5xl.md:text-7xl.font-extrabold "Convex is Fun"]
+         [:h3.text-5xl.lg:text-7xl.font-extrabold "Convex is Fun"]
          
          [:p {:class marketing-copy}
           "We provide a powerful, interactive environment for
