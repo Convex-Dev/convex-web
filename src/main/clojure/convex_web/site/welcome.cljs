@@ -32,11 +32,11 @@
        [:img.self-center
         {:src "images/convex.png"}]]
       
-      [:h1.text-7xl.font-extrabold.text-blue-800
+      [:h1.text-5xl.md:text-7xl.font-extrabold.text-blue-800
        "What is Convex?"]
       
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
-       [:div.prose.prose-2xl
+       [:div.prose.lg:prose-2xl
         [:p "Convex is an open, decentralised, and efficient technology platform built in the spirit of the original Internet."]
         [:p "Create your own digital assets, smart contracts and powerful decentralised applications for the Digital Economy of tomorrow."]]]
       
@@ -72,7 +72,7 @@
        ;; -- Copy
        [:div {:class marketing-vertical}
         
-        [:h3.text-7xl.font-extrabold "Convex is Flexible"]
+        [:h3.text-5xl.md:text-7xl.font-extrabold "Convex is Flexible"]
         
         [:p.prose.prose-2xl.leading-8.prose.prose-2xl
          "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be
@@ -104,7 +104,7 @@
         ;; -- Copy
         [:div {:class marketing-vertical}
          
-         [:h3.text-7xl.font-extrabold "Convex is Fast"]
+         [:h3.text-5xl.md:text-7xl.font-extrabold "Convex is Fast"]
          
          [:p {:class marketing-copy}
           "Using Convergent Proof of Stake, a completely new consensus algorithm, the Convex network is able to execute
@@ -143,7 +143,7 @@
         ;; -- Copy
         [:div {:class marketing-vertical}
          
-         [:h3.text-7xl.font-extrabold "Convex is Fun"]
+         [:h3.text-5xl.md:text-7xl.font-extrabold "Convex is Fun"]
          
          [:p {:class marketing-copy}
           "We provide a powerful, interactive environment for
