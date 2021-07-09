@@ -27,7 +27,8 @@
       {:style
        {:height "640px"}}
       
-      [:div.absolute.top-0.right-0.w-40.mr-32.mt-10
+      ;; Show only on large screens.
+      [:div.absolute.top-0.right-0.w-40.mr-32.mt-10.invisible.lg:visible
        [:img.self-center
         {:src "images/convex.png"}]]
       
