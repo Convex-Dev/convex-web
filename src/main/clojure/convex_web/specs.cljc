@@ -18,7 +18,7 @@
 
 (s/def :convex-web/sequence int?)
 
-(s/def :convex-web/language #{:convex-lisp :convex-scrypt})
+(s/def :convex-web/language #{:convex-lisp})
 
 (s/def :convex-web/system map?)
 

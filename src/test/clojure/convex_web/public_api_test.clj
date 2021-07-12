@@ -190,50 +190,6 @@
       (is (= 200 (get response :status)))
       (is (= {:value 1} response-body))))
   
-  (testing "Scrypt"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS)
-                                                               :source "inc(1)"
-                                                               :lang :convex-scrypt})
-          response-body (json/read-str (get response :body) :key-fn keyword)]
-      
-      (is (= 200 (get response :status)))
-      (is (= {:value 2} response-body)))
-    
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS)
-                                                               :source "reduce(+, 0, [1, 2, 3])"
-                                                               :lang :convex-scrypt})
-          response-body (json/read-str (get response :body) :key-fn keyword)]
-      
-      (is (= 200 (get response :status)))
-      (is (= {:value 6} response-body)))
-    
-    (let [response1 @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS)
-                                                                :source (str "balance(address(" (.longValue TEST_ADDRESS) "))")
-                                                                :lang :convex-scrypt})
-          response-body1 (json/read-str (get response1 :body) :key-fn keyword)
-          
-          response2 @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS)
-                                                                :source (str "balance(address(" (.longValue TEST_ADDRESS) "))")
-                                                                :lang :convex-scrypt})
-          response-body2 (json/read-str (get response2 :body) :key-fn keyword)]
-      
-      (is (= 200 (get response1 :status)))
-      (is (= 200 (get response2 :status)))
-      
-      (is (= response-body1 response-body2)))
-    
-    (testing "Syntax error"
-      (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS)
-                                                                 :source "map(inc [1, 2, 3, 4, 5])"
-                                                                 :lang :convex-scrypt})
-            response-body (json/read-str (get response :body) :key-fn keyword)]
-        
-        (is (= 400 (get response :status)))
-        (is (= {:errorCode "INCORRECT"
-                :source "Server"
-                :value "Reader error: Error while parsing action 'CompilationUnit/CompilationUnit_Action2' at input position (line 1, pos 1):\nmap(inc [1, 2, 3, 4, 5])\n^\n\nconvex.core.exceptions.ParseException: Invalid program."}
-              response-body)))))
-  
   (testing "Syntax error"
     (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS) :source "(inc 1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
@@ -268,20 +224,6 @@
             response-body)))))
 
 (deftest prepare-test
-  (testing "Convex Scrypt"
-    (let [response @(client/POST-public-v1-transaction-prepare (server-url) {:address (.longValue TEST_ADDRESS)
-                                                                             :source "inc(1)"
-                                                                             :lang :convex-scrypt})]
-      (is (= 200 (get response :status))))
-
-    (testing "Syntax error"
-      (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
-            prepare-body (json/write-str {:address (.longValue TEST_ADDRESS)
-                                          :source "map(inc [1, 2, 3, 4, 5])"
-                                          :lang :convex-scrypt})
-            response @(http/post prepare-url {:body prepare-body})]
-        (is (= 400 (get response :status))))))
-
   (testing "Address doesn't exist"
     (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
           prepare-body (json/write-str {:address 999 :source "(inc 1)"})

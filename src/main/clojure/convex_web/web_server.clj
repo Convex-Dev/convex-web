@@ -261,10 +261,7 @@
 
 (defn parse-lang [lang]
   ({:convexLisp :convex-lisp
-    :convexScrypt :convex-scrypt
-
-    :convex-lisp :convex-lisp
-    :convex-scrypt :convex-scrypt} (or (some-> lang keyword) :convex-lisp)))
+    :convex-lisp :convex-lisp} (or (some-> lang keyword) :convex-lisp)))
 
 
 ;; Public APIs
@@ -295,7 +292,7 @@
 
         lang (parse-lang lang)
 
-        _ (when-not (contains? #{:convex-scrypt :convex-lisp} lang)
+        _ (when-not (contains? #{:convex-lisp} lang)
             (throw (ex-info "Incorrect lang."
                             (anomaly-incorrect
                               (error-body error-code-INCORRECT
@@ -542,7 +539,7 @@
                  :source source
                  :lang lang)
 
-        _ (when-not (contains? #{:convex-scrypt :convex-lisp} lang)
+        _ (when-not (contains? #{:convex-lisp} lang)
             (throw (ex-info "Invalid lang."
                             (anomaly-incorrect
                               (error-body error-code-INCORRECT
