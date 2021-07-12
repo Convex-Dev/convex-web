@@ -19,7 +19,8 @@
            (convex.core.crypto AKeyPair)
            (convex.core.data Keywords Address)
            (etch EtchStore)
-           (org.slf4j.bridge SLF4JBridgeHandler)))
+           (org.slf4j.bridge SLF4JBridgeHandler)
+           (java.net InetSocketAddress)))
 
 (defrecord Config [profile config]
   component/Lifecycle
@@ -118,9 +119,9 @@
                                           Keywords/STORE convex-world-peer-store
                                           Keywords/KEYPAIR convex-world-key-pair})
           
-          convex-world-host-address (.getHostAddress server)
+          ^InetSocketAddress convex-world-host-address (convex/server-address server)
          
-          ^Address convex-world-address nil
+          ^Address convex-world-address (convex/server-peer-controller server)
           
           ^convex.api.Convex client (convex.api.Convex/connect
                                       convex-world-host-address 

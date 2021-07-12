@@ -8,12 +8,14 @@
             [ring.mock.request :as mock]
             [com.stuartsierra.component])
   (:import (convex.core.lang Context)
-           (convex.core.init Init InitConfig)))
+           (convex.core.init Init AInitConfig)))
 
 (defn make-convex-context [& [{:keys [address]}]]
-  (Context/createFake 
-    (Init/createState (InitConfig/create)) 
-    (or address Init/RESERVED_ADDRESS)))
+  nil
+  ;; FIXME
+  #_(Context/createFake 
+    (Init/createState (AInitConfig/create)) 
+    (or address Init/BASE_FIRST_ADDRESS)))
 
 (defmacro catch-throwable [& body]
   `(try

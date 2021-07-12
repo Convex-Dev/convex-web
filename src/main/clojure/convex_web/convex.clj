@@ -1,19 +1,23 @@
 (ns convex-web.convex
-  (:require [clojure.string :as str]
-            [clojure.spec.alpha :as s]
-            [clojure.tools.logging :as log]
-
-            [cognitect.anomalies :as anomalies])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey ACell AHashMap)
-           (convex.core.lang Core Reader RT Context AFn)
-           (convex.core.lang.impl Fn CoreFn)
-           (convex.core Order Block Peer State Result)
-           (convex.core.crypto AKeyPair)
-           (convex.core.init Init InitConfig)
-           (convex.core.transactions Transfer ATransaction Invoke Call)
-           (convex.api Convex)
-           (java.util.concurrent TimeoutException)
-           (convex.core.data.prim CVMByte CVMBool CVMLong CVMDouble)))
+  (:require 
+   [clojure.string :as str]
+   [clojure.spec.alpha :as s]
+   [clojure.tools.logging :as log]
+   
+   [cognitect.anomalies :as anomalies])
+  (:import 
+   (convex.peer Server)
+   (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey ACell AHashMap)
+   (convex.core.lang Core Reader RT Context AFn)
+   (convex.core.lang.impl Fn CoreFn)
+   (convex.core Order Block Peer State Result)
+   (convex.core.crypto AKeyPair)
+   (convex.core.init Init AInitConfig)
+   (convex.core.transactions Transfer ATransaction Invoke Call)
+   (convex.api Convex)
+   (convex.core.data.prim CVMByte)
+   (java.util.concurrent TimeoutException)
+   (java.net InetSocketAddress)))
 
 (set! *warn-on-reflection* true)
 
@@ -81,9 +85,11 @@
       (.getExceptional new-context)
       (.getResult new-context))))
 
+;; FIXME
 (defn hero-fake-context []
-  (Context/createFake 
-    (Init/createState (InitConfig/create)) 
+  nil
+  #_(Context/createFake 
+    (Init/createState (AInitConfig/create)) 
     Init/RESERVED_ADDRESS))
 
 (defn fake-context [^State state]
@@ -91,6 +97,21 @@
 
 (defn peer-context [^Peer peer]
   (fake-context (.getState peer)))
+
+(defn server-peer-controller
+  "Gets the Peer controller Address."
+  ^Address [^Server server]
+  (.getPeerController server))
+
+(defn server-address 
+  "Gets the host address for this Server (including port), or null if closed."
+  ^InetSocketAddress [^Server server]
+  (.getHostAddress server))
+
+(defn server-key-pair
+  "Returns the Keypair for this peer server."
+  ^AKeyPair [^Server server]
+  (.getKeyPair server))
 
 (defn lookup-metadata
   ([^Context context ^Symbol sym]

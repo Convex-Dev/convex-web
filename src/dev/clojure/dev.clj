@@ -21,7 +21,7 @@
    (etch EtchStore)
    (convex.peer Server API)
    (convex.core Peer)
-   (convex.core.init Init InitConfig)
+   (convex.core.init Init AInitConfig)
    (convex.core.lang Core Reader Context)
    (convex.core.crypto AKeyPair)
    (convex.core.data Keywords Address Hash AccountKey ASet AHashMap Symbol AccountStatus)))
@@ -32,9 +32,11 @@
     (component/system :dev)))
 
 
+;; FIXME
 (def context 
-  (Context/createFake 
-    (Init/createState (InitConfig/create)) Init/RESERVED_ADDRESS))
+  nil
+  #_(Context/createFake 
+    (Init/createState (AInitConfig/create)) Init/RESERVED_ADDRESS))
 
 (defn ^Peer peer []
   (system/convex-peer system))
