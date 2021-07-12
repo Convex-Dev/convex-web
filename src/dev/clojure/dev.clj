@@ -196,21 +196,6 @@
       (.lookupMeta context Init/HERO (Symbol/create "map"))
       (.lookupMeta context (Symbol/create "map"))))
   
-  
-  (convex/execute-scrypt context "def x = 1;")
-  (convex/execute-scrypt context "do { inc(1); }")
-  
-  (convex/execute-scrypt context "when (true) {}")
-  (convex/execute-scrypt context "when (true) { 1; }")
-  (convex/execute-scrypt context "if (true) 1;")
-  (convex/execute-scrypt context "if (true) { 1; 2; }")
-  (convex/execute-scrypt context "if (true) 1; else 2;")
-  (convex/execute-scrypt context "if (false) 1; else 2;")
-  (convex/execute-scrypt context "do { def x? = true; if (x?) { 1; 2; } 1; }")
-  (convex/execute-scrypt context "{ def f = fn (x, y) { map(inc, [x, y]); }; f(1, 2); }")
-  (convex/execute-scrypt context "map(fn(x){ inc(x); }, [1, 2])")
-  
-  
   (try
     (Reader/read "(]")
     (catch Throwable e

@@ -20,8 +20,8 @@
                               convex/create-key-pair)))))))
 
 (deftest read-source-test
-  (is (= [] (convex/read-source "()" :convex-lisp)))
-  (is (= [] (convex/read-source "[]" :convex-lisp)))
+  (is (= [] (convex/read-source "()")))
+  (is (= [] (convex/read-source "[]")))
 
   (testing
     "Blob literal"
@@ -29,10 +29,9 @@
       (= (Blob/fromHex
            "Fd0cfE9EDf767823b927a25D6840ae2367455c29A7B77CBBF146Be3EeF270356")
          (convex/read-source
-           "0xFd0cfE9EDf767823b927a25D6840ae2367455c29A7B77CBBF146Be3EeF270356"
-           :convex-lisp)))
+           "0xFd0cfE9EDf767823b927a25D6840ae2367455c29A7B77CBBF146Be3EeF270356")))
 
-    (let [e (try (convex/read-source "0xABC" :convex-lisp)
+    (let [e (try (convex/read-source "0xABC")
                  (catch ExceptionInfo ex ex))]
       (is
         (=
@@ -43,11 +42,11 @@
              (ex-data e)))))
 
   (testing "Address literal"
-           (is (= (Address/create 8) (convex/read-source "#8" :convex-lisp))))
+           (is (= (Address/create 8) (convex/read-source "#8"))))
 
   (testing "Read all with do"
            (is (= [(Symbol/create "do") (CVMLong/create 1) (CVMLong/create 2)]
-                  (convex/read-source "1 2" :convex-lisp)))))
+                  (convex/read-source "1 2")))))
 
 (deftest lookup-metadata-test
   (is

@@ -5,7 +5,7 @@
 
             [cognitect.anomalies :as anomalies])
   (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey ACell AHashMap)
-           (convex.core.lang Core Reader ScryptNext RT Context AFn)
+           (convex.core.lang Core Reader RT Context AFn)
            (convex.core.lang.impl Fn CoreFn)
            (convex.core Order Block Peer State Result)
            (convex.core.crypto AKeyPair)
@@ -51,19 +51,14 @@
   [& [{:keys [f] :or {f "convex.world.key-pair.edn"}}]]
   (read-string (slurp f)))
 
-(defn read-source [source lang]
+(defn read-source [source]
   (try
-    (case lang
-      :convex-lisp
-      (let [^AList l (Reader/readAll source)
-            form1 (first l)
-            form2 (second l)]
-        (if form2
-          (.cons l (Symbol/create "do"))
-          form1))
-      
-      :convex-scrypt
-      (ScryptNext/readSyntax source))
+    (let [^AList l (Reader/readAll source)
+          form1 (first l)
+          form2 (second l)]
+      (if form2
+        (.cons l (Symbol/create "do"))
+        form1))
     (catch Throwable ex
       (throw (ex-info (str "Reader error: " (ex-message ex)) {::anomalies/category ::anomalies/incorrect
                                                               :convex-web.result/error-code :READER})))))
@@ -85,12 +80,6 @@
     (if (.isExceptional new-context)
       (.getExceptional new-context)
       (.getResult new-context))))
-
-(defn execute-scrypt [^Context context source]
-  (let [context (.execute context (.getResult ^Context (.expandCompile context (ScryptNext/readSyntax source))))]
-    (if (.isExceptional context)
-      (.getExceptional context)
-      (.getResult context))))
 
 (defn hero-fake-context []
   (Context/createFake 
@@ -475,30 +464,21 @@
     (.getValue context)))
 
 (defn ^Result query [^Convex client {:keys [source address lang] :as q}]
-  (let [^ACell acell (try
-                       (case lang
-                         :convex-lisp
-                         (wrap-do (Reader/readAll source))
-
-                         :convex-scrypt
-                         (ScryptNext/readSyntax source))
-                       (catch Throwable ex
-                         (throw (ex-info (ex-message ex) {::anomalies/message (ex-message ex)
-                                                          ::anomalies/category ::anomalies/incorrect}))))
-
+  (let [^ACell acell (read-source source)
+        
         ^Address address (convex-web.convex/address address)]
     (try
       (log/debug "Query sync" q)
-
+      
       (.querySync client ^ACell acell ^Address address)
       (catch Exception ex
         (let [message "Failed to get Query result."
               category (or (throwable-category ex) ::anomalies/fault)]
           (log/error ex message)
           (throw (ex-info message
-                          (merge q {::anomalies/message (ex-message ex)
-                                    ::anomalies/category category})
-                          ex)))))))
+                   (merge q {::anomalies/message (ex-message ex)
+                             ::anomalies/category category})
+                   ex)))))))
 
 (defn ^Result transact-signed
   "Transact-sync a SignedData with a default timeout.
@@ -543,7 +523,7 @@
 
    Throws ExceptionInfo if the transaction fails."
   [^Convex client ^String account-public-key]
-  (let [command (read-source (str "(create-account 0x" account-public-key ")") :convex-lisp)
+  (let [command (read-source (str "(create-account 0x" account-public-key ")"))
 
         tx-data {:nonce 0
                  :address (key-pair-data-address (convex-world-key-pair-data))

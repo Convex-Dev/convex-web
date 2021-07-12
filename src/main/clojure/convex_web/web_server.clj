@@ -326,7 +326,7 @@
 
             tx (convex/invoke-transaction {:nonce next-sequence-number
                                            :address address
-                                           :command (convex/read-source source lang)})
+                                           :command (convex/read-source source)})
 
             tx-ref (.toHexString (.getHash tx))]
 
@@ -566,7 +566,7 @@
                                           error-source-server)))))
 
         form (try
-               (convex/read-source source lang)
+               (convex/read-source source)
                (catch ExceptionInfo ex
                  (throw (ex-info (ex-message ex)
                                  (anomaly-incorrect
