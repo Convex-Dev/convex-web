@@ -117,6 +117,7 @@
           ^Server server (API/launchPeer {Keywords/URL convex-world-peer-url
                                           Keywords/PORT convex-world-peer-port
                                           Keywords/STORE convex-world-peer-store
+                                          Keywords/RESTORE true
                                           Keywords/KEYPAIR convex-world-key-pair})
           
           ^InetSocketAddress convex-world-host-address (convex/server-address server)

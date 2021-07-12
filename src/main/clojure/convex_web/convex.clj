@@ -480,11 +480,13 @@
    Returns Address.
 
    Throws ExceptionInfo if the transaction fails."
-  [^Convex client ^String account-public-key]
-  (let [command (read-source (str "(create-account 0x" account-public-key ")"))
+  [^Convex client ^Address peer-controller ^AccountKey account-key]
+  (let [^String account-public-key (.toChecksumHex account-key)
+        
+        command (read-source (str "(create-account 0x" account-public-key ")"))
 
         tx-data {:nonce 0
-                 :address (key-pair-data-address (convex-world-key-pair-data))
+                 :address peer-controller
                  :command command}
 
         ^Result result (->> (invoke-transaction tx-data)

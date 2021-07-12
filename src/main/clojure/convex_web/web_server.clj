@@ -31,13 +31,15 @@
             [ring.util.anti-forgery]
             [ring.middleware.cors :refer [wrap-cors]])
   (:import (java.io InputStream)
+           
+           (convex.peer Server)
            (convex.core.crypto ASignature AKeyPair)
-           (convex.core.data Ref SignedData AccountKey ACell Hash)
+           (convex.core.data Ref SignedData AccountKey ACell Hash Address)
+           (convex.core.lang.impl AExceptional)
            (convex.core Peer State Result Order)
-           (convex.core.init Init)
+           
            (java.time Instant)
            (java.util Date)
-           (convex.core.lang.impl AExceptional)
            (clojure.lang ExceptionInfo)))
 
 (defn ring-session [request]
@@ -659,33 +661,35 @@
 (defn -POST-create-account [system _]
   (try
     (u/log :logging.event/new-account :severity :info)
-
-    (let [client (system/convex-client system)
-
+    
+    (let [^Convex client (system/convex-client system)
+          
+          ^Server server (system/convex-server system)
+          
+          ^Address peer-controller (convex/server-peer-controller server)
+          
           ^AKeyPair generated-key-pair (AKeyPair/generate)
-
+          
           ^AccountKey account-key (.getAccountKey generated-key-pair)
-
-          ^String public-key-str (.toChecksumHex account-key)
-
-          generated-address (convex/create-account client public-key-str)
-
+          
+          ^Address generated-address (convex/create-account client peer-controller account-key)
+          
           account #:convex-web.account {:address (.longValue generated-address)
                                         :created-at (inst-ms (Instant/now))
                                         :key-pair (convex/key-pair-data generated-key-pair)}]
-
+      
       ;; Accounts created on Convex Web are persisted into the database.
       ;; NOTE: Not all Accounts in Convex are persisted in the Convex Web database.
       (d/transact! (system/db-conn system) [account])
-
+      
       (-successful-response (select-keys account [::account/address
                                                   ::account/created-at])))
     (catch Exception ex
       (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
+        :severity :error
+        :message handler-exception-message
+        :exception ex)
+      
       -server-error-response)))
 
 (defn -POST-confirm-account [system {:keys [body] :as req}]
@@ -700,11 +704,14 @@
           (-not-found-response (error (str "Account " address-long " not found."))))
         
         :else
-        (let [client (system/convex-client system)
+        (let [^Convex client (system/convex-client system)
+              
+              ^Server server (system/convex-server system)
+              
+              ^Address peer-controller (convex/server-peer-controller server)
               
               tx-data {:nonce 0
-                       :address (convex/key-pair-data-address 
-                                  (convex/convex-world-key-pair-data))
+                       :address peer-controller
                        :target address-long
                        :amount 100000000}
               
