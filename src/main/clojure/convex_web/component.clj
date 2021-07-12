@@ -1,6 +1,5 @@
 (ns convex-web.component
-  (:require [convex-web.system :as system]
-            [convex-web.web-server :as web-server]
+  (:require [convex-web.web-server :as web-server]
             [convex-web.store :as store]
             [convex-web.db :as db]
             [convex-web.convex :as convex]
@@ -17,12 +16,10 @@
             [datalevin.core :as d]
             [com.stuartsierra.component :as component])
   (:import (convex.peer Server API)
-           (org.slf4j.bridge SLF4JBridgeHandler)
-           (convex.core.init Init)
-           (convex.core.data Keywords)
+           (convex.core.crypto AKeyPair)
+           (convex.core.data Keywords Address)
            (etch EtchStore)
-           (java.io File)
-           (convex.core.store Stores)))
+           (org.slf4j.bridge SLF4JBridgeHandler)))
 
 (defrecord Config [profile config]
   component/Lifecycle
@@ -107,7 +104,8 @@
   (start [component]
     (let [peer-config (get-in config [:config :peer])
           
-          {convex-world-peer-port :port
+          {convex-world-peer-url :url
+           convex-world-peer-port :port
            convex-world-peer-store-config :store} peer-config
           
           ^EtchStore convex-world-peer-store (store/create! convex-world-peer-store-config)
@@ -115,15 +113,14 @@
           ;; TODO: Read existing key pair.
           ^AKeyPair convex-world-key-pair (convex/generate-key-pair)
           
-          ^Server server (API/launchPeer {Keywords/PORT convex-world-peer-port
+          ^Server server (API/launchPeer {Keywords/URL convex-world-peer-url
+                                          Keywords/PORT convex-world-peer-port
                                           Keywords/STORE convex-world-peer-store
                                           Keywords/KEYPAIR convex-world-key-pair})
           
-          convex-world-host-address (.getHostAddress server) 
-          
-          convex-world-key-pair-data (convex/convex-world-key-pair-data)
-          
-          convex-world-address (convex/key-pair-data-address convex-world-key-pair-data)
+          convex-world-host-address (.getHostAddress server)
+         
+          ^Address convex-world-address nil
           
           ^convex.api.Convex client (convex.api.Convex/connect
                                       convex-world-host-address 

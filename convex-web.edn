@@ -54,13 +54,16 @@
  ;; -- CONVEX PEER
  ;; ==========================
  :peer
- #profile {:dev {:port 43577
+ #profile {:dev {:url "localhost"
+                 :port 43577
                  :store {:temp? true}}
 
-           :test {:port 43578
+           :test {:url "localhost"
+                  :port 43578
                   :store {:temp? true}}
 
-           :prod {:port 43579
+           :prod {:url "convex.world"
+                  :port 43579
                   :store {:temp? false}}}
 
 
