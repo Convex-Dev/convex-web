@@ -521,39 +521,6 @@
              "bg-gray-100")}
    [:code.text-xs.text-gray-700 type]])
 
-(defn SymbolStrip [{:keys [symbol syntax on-click]}]
-  (let [{syntax-value :convex-web.syntax/value
-         syntax-value-kind :convex-web.syntax/value-kind
-         syntax-meta :convex-web.syntax/meta} syntax]
-    [:div.flex.justify-between.items-center
-
-     [:div
-      {:class "flex flex-col w-1/2"}
-
-      [:div.flex.items-center.space-x-2.py-1
-       ;; -- Symbol
-       [:code.font-bold.text-sm.text-indigo-500.hover:text-indigo-400.active:text-indigo-600
-        {:class
-         (if on-click
-           "cursor-pointer"
-           "cursor-default")
-         :on-click (or on-click identity)}
-        symbol]
-
-       ;; -- Type
-       (when syntax-value-kind
-         [SymbolType syntax-value-kind])]
-
-      ;; -- Value
-      (when-not (str/blank? syntax-value)
-        [:div.w-full [Highlight syntax-value]])]
-
-     ;; -- Description
-     [:div
-      {:class "flex justify-between w-1/2"}
-      (when-let [description (get-in syntax-meta [:doc :description])]
-        [:p.text-sm.text-gray-800.ml-10 description])]]))
-
 (defn SymbolMeta [{:keys [library symbol metadata show-examples?]}]
   (let [{:keys [examples type description signature]} (:doc metadata)]
     [:div.flex.flex-col.flex-1.text-sm.p-2

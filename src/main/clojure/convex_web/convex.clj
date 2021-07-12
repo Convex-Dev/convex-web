@@ -115,50 +115,6 @@
     {}
     Core/METADATA))
 
-(defn value-kind [x]
-  (cond
-    (instance? CVMBool x)
-    :boolean
-
-    (instance? CVMLong x)
-    :long
-    
-    (instance? CVMByte x)
-    :byte
-
-    (instance? CVMDouble x)
-    :double
-
-    (instance? AString x)
-    :string
-
-    (instance? Keyword x)
-    :keyword
-
-    (instance? AMap x)
-    :map
-
-    (instance? AList x)
-    :list
-
-    (instance? AVector x)
-    :vector
-
-    (instance? ASet x)
-    :set
-
-    (instance? Address x)
-    :address
-
-    (instance? ABlob x)
-    :blob
-
-    (instance? AFn x)
-    :function
-
-    (instance? Symbol x)
-    :symbol))
-
 (defn datafy
   "Datafy a Convex object `x` to Clojure.
 
@@ -347,22 +303,6 @@
         (conj blocks (block-data peer index (.getBlock order index))))
       []
       (range start end))))
-
-(defn syntax-data [^Syntax syn]
-  (merge 
-    #:convex-web.syntax 
-    {:source (.getSource syn)
-     :value
-     (try
-       (datafy (.getValue syn))
-       (catch Exception _
-         (str (.getValue syn))))}
-    
-    (when-let [meta (datafy-safe (.getMeta syn))]
-      {:convex-web.syntax/meta meta})
-    
-    (when-let [kind (value-kind (.getValue syn))]
-      {:convex-web.syntax/value-kind kind})))
 
 (defn environment-data
   "Account Status' environment data.
