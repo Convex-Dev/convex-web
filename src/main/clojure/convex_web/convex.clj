@@ -454,16 +454,13 @@
 (defn ^SignedData sign [^AKeyPair signer ^ATransaction transaction]
   (SignedData/create signer transaction))
 
-(defn wrap-do [^AList x]
-  (.cons x (Symbol/create "do")))
-
 (defn execute-query [^Peer peer ^Object form & [{:keys [address]}]]
   (let [^Context context (if address
                            (.executeQuery peer form (convex-web.convex/address address))
                            (.executeQuery peer form))]
     (.getValue context)))
 
-(defn ^Result query [^Convex client {:keys [source address lang] :as q}]
+(defn ^Result query [^Convex client {:keys [source address] :as q}]
   (let [^ACell acell (read-source source)
         
         ^Address address (convex-web.convex/address address)]
