@@ -1,46 +1,50 @@
 (ns convex-web.web-server
-  (:require [convex-web.specs]
-            [convex-web.convex :as convex]
-            [convex-web.system :as system]
-            [convex-web.account :as account]
-            [convex-web.session :as session]
-            [convex-web.command :as command]
-            [convex-web.config :as config]
-            [convex-web.encoding :as encoding]
-
-            [clojure.set :refer [rename-keys]]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.spec.alpha :as s]
-            [clojure.tools.logging :as log]
-            [clojure.pprint :as pprint]
-            [clojure.stacktrace :as stacktrace]
-            [clojure.data.json :as json]
-
-            [cognitect.anomalies :as anomalies]
-
-            [com.brunobonacci.mulog :as u]
-            [expound.alpha :as expound]
-            [datalevin.core :as d]
-            [cognitect.transit :as t]
-            [ring.middleware.defaults :refer [wrap-defaults api-defaults site-defaults]]
-            [org.httpkit.server :as http-kit]
-            [compojure.core :refer [routes GET POST]]
-            [compojure.route :as route]
-            [hiccup.page :as page]
-            [ring.util.anti-forgery]
-            [ring.middleware.cors :refer [wrap-cors]])
-  (:import (java.io InputStream)
-           
-           (convex.peer Server)
-           (convex.core.crypto ASignature AKeyPair)
-           (convex.core.data Ref SignedData AccountKey ACell Hash Address)
-           (convex.core.lang.impl AExceptional)
-           (convex.core Peer State Result Order)
-           
-           (java.time Instant)
-           (java.util Date)
-           (clojure.lang ExceptionInfo)))
+  (:require 
+   [convex-web.specs]
+   [convex-web.convex :as convex]
+   [convex-web.system :as system]
+   [convex-web.account :as account]
+   [convex-web.session :as session]
+   [convex-web.command :as command]
+   [convex-web.config :as config]
+   [convex-web.encoding :as encoding]
+   
+   [clojure.set :refer [rename-keys]]
+   [clojure.edn :as edn]
+   [clojure.java.io :as io]
+   [clojure.spec.alpha :as s]
+   [clojure.tools.logging :as log]
+   [clojure.pprint :as pprint]
+   [clojure.stacktrace :as stacktrace]
+   [clojure.data.json :as json]
+   
+   [cognitect.anomalies :as anomalies]
+   
+   [com.brunobonacci.mulog :as u]
+   [expound.alpha :as expound]
+   [datalevin.core :as d]
+   [cognitect.transit :as t]
+   [ring.middleware.defaults :refer [wrap-defaults api-defaults site-defaults]]
+   [org.httpkit.server :as http-kit]
+   [compojure.core :refer [routes GET POST]]
+   [compojure.route :as route]
+   [hiccup.page :as page]
+   [ring.util.anti-forgery]
+   [ring.middleware.cors :refer [wrap-cors]])
+  (:import 
+   (java.io InputStream)
+   
+   (convex.api Convex)           
+   (convex.peer Server)
+   (convex.core.crypto ASignature AKeyPair)
+   (convex.core.data Ref SignedData AccountKey ACell Hash Address)
+   (convex.core.lang Context)
+   (convex.core.lang.impl AExceptional)
+   (convex.core Peer State Result Order)
+   
+   (java.time Instant)
+   (java.util Date)
+   (clojure.lang ExceptionInfo)))
 
 (defn ring-session [request]
   (get-in request [:cookies "ring-session" :value]))
@@ -169,10 +173,23 @@
 (def error-source-cvm "CVM")
 (def error-source-peer "Peer")
 
-(defn error-body [code value source]
-  {:errorCode code
-   :value value
-   :source source})
+(defn error-body
+  "Code is one of:
+  - error-code-NOBODY
+  - error-code-MISSING
+  - error-code-INCORRECT
+  - error-code-FORBIDDEN
+  
+  Source is one of:
+  - error-source-server
+  - error-source-cvm
+  - error-source-peer"
+  ([{:keys [code value source]}]
+   (error-body code value source))
+  ([code value source]
+   {:errorCode code
+    :value value
+    :source source}))
 
 (defn anomaly-incorrect [error-body]
   {::anomalies/category ::anomalies/incorrect
@@ -440,9 +457,9 @@
                                     (catch Exception _
                                       (throw (ex-info "Invalid Account Key."
                                                (anomaly-incorrect
-                                                 (error-body error-code-INCORRECT
-                                                   "Invalid Account Key."
-                                                   error-source-server))))))
+                                                 (error-body {:code error-code-INCORRECT
+                                                              :value "Invalid Account Key."
+                                                              :source error-source-server}))))))
           
           client (system/convex-client system)
           
