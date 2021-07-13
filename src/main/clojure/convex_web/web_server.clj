@@ -432,34 +432,45 @@
   (let [{:keys [accountKey]} (json-decode body)]
     (when-not (s/valid? :convex-web/non-empty-string accountKey)
       (throw (ex-info "Missing account key."
-                      (anomaly-incorrect
-                        (error-body "MISSING" "Missing account key." error-source-server)))))
-
-    (let [client (system/convex-client system)
-
+               (anomaly-incorrect
+                 (error-body "MISSING" "Missing account key." error-source-server)))))
+    
+    (let [^AccountKey account-key (try 
+                                    (convex/account-key accountKey)
+                                    (catch Exception _
+                                      (throw (ex-info "Invalid Account Key."
+                                               (anomaly-incorrect
+                                                 (error-body error-code-INCORRECT
+                                                   "Invalid Account Key."
+                                                   error-source-server))))))
+          
+          client (system/convex-client system)
+          
+          ^Address peer-controller (system/convex-world-address system)
+          
           generated-address (try
-                              (convex/create-account client accountKey)
+                              (convex/create-account client peer-controller account-key)
                               (catch ExceptionInfo ex
                                 (let [{:keys [result] ::anomalies/keys [category]} (ex-data ex)
-
+                                      
                                       error-code (or (some-> ^Result result
-                                                             (.getErrorCode)
-                                                             (convex/datafy-safe))
-                                                     error-code-INCORRECT)
-
+                                                       (.getErrorCode)
+                                                       (convex/datafy-safe))
+                                                   error-code-INCORRECT)
+                                      
                                       error-message (ex-message ex)
-
+                                      
                                       error-source (cond
                                                      (= ::anomalies/incorrect category)
                                                      error-source-server
-
+                                                     
                                                      :else
                                                      error-source-cvm)]
                                   (throw
                                     (ex-info error-message
-                                             (anomaly-incorrect
-                                               (error-body error-code error-message error-source)))))))]
-
+                                      (anomaly-incorrect
+                                        (error-body error-code error-message error-source)))))))]
+      
       (successful-response {:address (.longValue generated-address)}))))
 
 (defn POST-v1-faucet [system {:keys [body]}]
@@ -992,15 +1003,17 @@
 
       -server-error-response)))
 
-(defn -GET-reference [_ _]
+(defn -GET-reference [context _]
   (try
-    (-successful-response (convex/library-reference (convex/hero-fake-context)))
+    (let [^Context server-context (system/convex-world-context context)]
+      (-successful-response 
+        (convex/library-reference server-context)))
     (catch Exception ex
       (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
+        :severity :error
+        :message handler-exception-message
+        :exception ex)
+      
       -server-error-response)))
 
 (defn -GET-markdown-page [_ request]

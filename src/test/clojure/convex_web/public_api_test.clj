@@ -1,32 +1,39 @@
 (ns convex-web.public-api-test
-  (:require [convex-web.component]
-            [convex-web.client :as client]
-            [convex-web.config :as config]
-            [convex-web.web-server :as web-server]
-            [convex-web.convex :as convex]
-            [convex-web.test :as test]
-
-            [clojure.test :refer [deftest is testing use-fixtures]]
-            [clojure.data.json :as json]
-
-            [ring.mock.request :as mock]
-            [com.stuartsierra.component]
-            [org.httpkit.client :as http])
-  (:import (convex.core.init Init)
-           (convex.core.crypto AKeyPair)
-           (convex.core.data Hash AccountKey)))
+  (:require 
+   [convex-web.component]
+   [convex-web.client :as client]
+   [convex-web.config :as config]
+   [convex-web.web-server :as web-server]
+   [convex-web.convex :as convex]
+   [convex-web.system :as sys]
+   [convex-web.test :as test]
+   
+   [clojure.test :refer [deftest is testing use-fixtures]]
+   [clojure.data.json :as json]
+   
+   [ring.mock.request :as mock]
+   [com.stuartsierra.component]
+   [org.httpkit.client :as http])
+  
+  (:import 
+   (convex.core.crypto AKeyPair)
+   (convex.core.data Hash AccountKey)))
 
 (def system nil)
 
 (use-fixtures :once (test/make-system-fixture #'system))
 
-(def TEST_ADDRESS
-  (convex/key-pair-data-address 
-    (convex/convex-world-key-pair-data)))
+(defn convex-world-address []
+  (sys/convex-world-address system))
 
-(def TEST_KEY_PAIR
-  (convex/create-key-pair
-    (convex/convex-world-key-pair-data)))
+(defn convex-world-address-long []
+  (.longValue (convex-world-address)))
+
+(defn convex-world-key-pair ^String []
+  (sys/convex-world-key-pair system))
+
+(defn convex-world-account-checksum-hex ^String []
+  (sys/convex-world-account-checksum-hex system))
 
 (defn public-api-handler []
   (web-server/public-api-handler system))
@@ -39,69 +46,69 @@
     (let [^AKeyPair generated-key-pair (AKeyPair/generate)
           ^AccountKey account-key (.getAccountKey generated-key-pair)
           ^String account-public-key (.toChecksumHex account-key)
-
+          
           handler (public-api-handler)]
-
+      
       (testing "Create a new Account with Public Key"
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:accountKey account-public-key})))
-
+                                  (mock/json-body {:accountKey account-public-key})))
+              
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 200 (:status response)))
           (is (int? (:address body-decoded)))))
-
-
+      
+      
       (testing "Bad request"
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {})))
-
+                                  (mock/json-body {})))
+              
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
                   :value "Missing account key."}
-                 body-decoded)))
-
+                body-decoded)))
+        
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body nil)))
-
+                                  (mock/json-body nil)))
+              
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
                   :value "Missing account key."}
-                 body-decoded)))
-
+                body-decoded)))
+        
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:accountKey nil})))
-
+                                  (mock/json-body {:accountKey nil})))
+              
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
                   :value "Missing account key."}
-                 body-decoded)))
-
+                body-decoded)))
+        
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:accountKey "      "})))
-
+                                  (mock/json-body {:accountKey "      "})))
+              
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
                   :value "Missing account key."}
-                 body-decoded))))
-
+                body-decoded))))
+      
       (testing "Incorrect Account Key"
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
-                                    (mock/json-body {:accountKey "123"})))
-
+                                  (mock/json-body {:accountKey "123"})))
+              
               body-decoded (json/read-str (get response :body) :key-fn keyword)]
           (is (= 400 (:status response)))
           (is (= {:errorCode "INCORRECT"
                   :source "Server"
-                  :value "Reader error: Parse error at Position{line=1, column=22}\n Source: <)>\n Message: null"}
-                 body-decoded)))))))
+                  :value "Invalid Account Key."}
+                body-decoded)))))))
 
 (deftest create-account-and-topup-test
   (testing "Create new Account and top up"
@@ -133,7 +140,7 @@
 
 (deftest address-test
   (testing "Get Account by Address"
-    (let [response @(client/GET-public-v1-account (server-url) (.longValue TEST_ADDRESS))
+    (let [response @(client/GET-public-v1-account (server-url) (convex-world-address-long))
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= #{:account-key
@@ -167,38 +174,37 @@
 
 (deftest query-test
   (testing "Set"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS) :source "#{1}"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (convex-world-address-long) :source "#{1}"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       ;; JSON does not have sets, so the encoder uses a vector instead.
       (is (= {:value [1]} response-body))))
   
   (testing "List"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS) :source "(list 1 2 3)"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (convex-world-address-long) :source "(list 1 2 3)"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value [1 2 3]} response-body))))
   
   (testing "Valid"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS) :source "1"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (convex-world-address-long) :source "1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value 1} response-body)))
     
-    (let [response @(client/POST-public-v1-query (server-url) {:address (str "#" (.longValue TEST_ADDRESS)) :source "1"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (str "#" (convex-world-address-long)) :source "1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value 1} response-body))))
   
   (testing "Syntax error"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS) :source "(inc 1"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (convex-world-address-long) :source "(inc 1"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       
       (is (= 400 (get response :status)))
       (is (= {:errorCode "INCORRECT",
               :source "Server",
-              :value
-              "Reader error: Error while parsing action 'Input/ExpressionList/ZeroOrMore/Sequence/Expression/FirstOf/ExpressionElement/DataStructure/List/FirstOf/Sequence/List_Action1' at input position (line 1, pos 8):\n(inc 1\n       ^\n\nconvex.core.exceptions.ParseException: Expected closing ')'"}
+              :value "Reader error: -1..-1 <missing ')'>"}
             
             response-body))))
   
@@ -214,7 +220,7 @@
             response-body))))
   
   (testing "Type error"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (.longValue TEST_ADDRESS) :source "(map inc 1)"})
+    (let [response @(client/POST-public-v1-query (server-url) {:address (convex-world-address-long) :source "(map inc 1)"})
           response-body (json/read-str (get response :body) :key-fn keyword)]
       
       (is (= 200 (get response :status)))
@@ -256,7 +262,7 @@
 
     (testing "Missing Source"
       (let [prepare-url (str (server-url) "/api/v1/transaction/prepare")
-            prepare-body (json/write-str {:address (.longValue TEST_ADDRESS) :source ""})
+            prepare-body (json/write-str {:address (convex-world-address-long) :source ""})
             prepare-response @(http/post prepare-url {:body prepare-body})
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
@@ -282,7 +288,7 @@
 
     (testing "Invalid Hash"
       (let [prepare-url (str (server-url) "/api/v1/transaction/submit")
-            prepare-body (json/write-str {:address (.longValue TEST_ADDRESS) :hash ""})
+            prepare-body (json/write-str {:address (convex-world-address-long) :hash ""})
             prepare-response @(http/post prepare-url {:body prepare-body})
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
@@ -294,7 +300,7 @@
 
     (testing "Invalid Signature"
       (let [prepare-url (str (server-url) "/api/v1/transaction/submit")
-            prepare-body (json/write-str {:address (.longValue TEST_ADDRESS) :hash "ABC" :sig ""})
+            prepare-body (json/write-str {:address (convex-world-address-long) :hash "ABC" :sig ""})
             prepare-response @(http/post prepare-url {:body prepare-body})
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
 
@@ -307,10 +313,10 @@
     (testing "Missing Data"
       (let [response @(client/POST-public-v1-transaction-submit
                         (server-url)
-                        {:address (.longValue TEST_ADDRESS)
-                         :accountKey (.toChecksumHex (.getAccountKey TEST_KEY_PAIR))
+                        {:address (convex-world-address-long)
+                         :accountKey (convex-world-account-checksum-hex)
                          :hash "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b"
-                         :sig (client/sig TEST_KEY_PAIR "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
+                         :sig (client/sig (convex-world-key-pair) "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
             response-body (json/read-str (get response :body) :key-fn keyword)]
 
         (is (= 400 (get response :status)))
@@ -322,9 +328,9 @@
 (deftest prepare-submit-transaction-test
   (testing "Prepare & submit transaction"
     (testing "Simple inc"
-      (let [test-key-pair TEST_KEY_PAIR
-            test-address (.longValue TEST_ADDRESS)
-            test-account-key (.toChecksumHex (.getAccountKey TEST_KEY_PAIR))
+      (let [test-key-pair (convex-world-key-pair)
+            test-address (convex-world-address-long)
+            test-account-key (convex-world-account-checksum-hex)
 
             handler (public-api-handler)
 
@@ -380,9 +386,9 @@
         (is (= {:value 2} (select-keys submit-response-body [:value])))))
 
     (testing "Cast error"
-      (let [test-key-pair TEST_KEY_PAIR
-            test-address (.longValue TEST_ADDRESS)
-            test-account-key (.toChecksumHex (.getAccountKey TEST_KEY_PAIR))
+      (let [test-key-pair (convex-world-key-pair)
+            test-address (convex-world-address-long)
+            test-account-key (convex-world-account-checksum-hex)
 
             handler (public-api-handler)
 
@@ -439,7 +445,7 @@
 
 (deftest faucet-test
   (let [handler (public-api-handler)
-        address (.longValue TEST_ADDRESS)]
+        address (convex-world-address-long)]
     (testing "Success"
       (let [amount 1000
 
@@ -478,7 +484,7 @@
                  response-body))))
 
       (testing "Invalid amount"
-        (let [address (.longValue TEST_ADDRESS)
+        (let [address (convex-world-address-long)
 
               amount -1
 
@@ -492,7 +498,7 @@
                  response-body))))
 
       (testing "Requested amount is greater than allowed"
-        (let [address (.longValue TEST_ADDRESS)
+        (let [address (convex-world-address-long)
 
               amount (inc config/max-faucet-amount)
 

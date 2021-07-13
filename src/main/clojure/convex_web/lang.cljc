@@ -8,10 +8,10 @@
    {:source "*address*"}
 
    :check-balance
-   {:source "(balance #9)"}
+   {:source "(balance #11)"}
 
    :transfer
-   {:source "(transfer #9 1000)"}
+   {:source "(transfer #11 1000)"}
 
    :simple-storage-actor
    {:source "(def storage-example-address

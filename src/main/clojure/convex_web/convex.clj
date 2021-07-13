@@ -24,6 +24,9 @@
 (defn ^AKeyPair generate-key-pair []
   (AKeyPair/generate))
 
+(defn account-key ^AccountKey [^String checksum-hex]
+  (AccountKey/fromChecksumHex checksum-hex))
+
 (defn key-pair-data 
   "Returns AKeyPair as a map."
   [^AKeyPair key-pair]
@@ -85,19 +88,6 @@
       (.getExceptional new-context)
       (.getResult new-context))))
 
-;; FIXME
-(defn hero-fake-context []
-  nil
-  #_(Context/createFake 
-    (Init/createState (AInitConfig/create)) 
-    Init/RESERVED_ADDRESS))
-
-(defn fake-context [^State state]
-  (Context/createFake state))
-
-(defn peer-context [^Peer peer]
-  (fake-context (.getState peer)))
-
 (defn server-peer-controller
   "Gets the Peer controller Address."
   ^Address [^Server server]
@@ -112,6 +102,20 @@
   "Returns the Keypair for this peer server."
   ^AKeyPair [^Server server]
   (.getKeyPair server))
+
+(defn server-account-key
+  ^AccountKey [^Server server]
+  (.getAccountKey (server-key-pair server)))
+
+(defn server-account-checksum-hex 
+  ^String [^Server server]
+  (.toChecksumHex (server-account-key server)))
+
+(defn server-state ^State [^Server server]
+  (Init/createState [(server-account-key server)]))
+
+(defn server-context ^Context [^Server server]
+  (Context/createFake (server-state server) (server-peer-controller server)))
 
 (defn lookup-metadata
   ([^Context context ^Symbol sym]

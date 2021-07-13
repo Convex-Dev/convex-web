@@ -8,6 +8,7 @@
             [convex-web.test :refer :all]
             [convex-web.web-server :as web-server]
             [convex-web.encoding :as encoding]
+            [convex-web.system :as sys]
 
             [ring.mock.request :as mock])
   (:import (convex.core.init Init)))
@@ -26,9 +27,8 @@
 (defn execute-query [source]
   (execute-command #:convex-web.command {:mode :convex-web.command.mode/query
                                          
-                                         :address 
-                                         (convex/key-pair-data-address 
-                                           (convex/convex-world-key-pair-data))
+                                         :address
+                                         (.longValue (sys/convex-world-address system))
                                          
                                          :query 
                                          {:convex-web.query/source source
@@ -84,7 +84,10 @@
         (is (= "The Account for this Address does not exist." (get-in body [:error :message])))))))
 
 (deftest command-test
-  (let [handler (site-handler)
+  (let [convex-world-address (sys/convex-world-address system)
+        convex-world-address-long (.longValue convex-world-address)
+        
+        handler (site-handler)
         
         execute-command (fn [body]
                           (handler (-> 
@@ -93,11 +96,7 @@
     (testing "Query"
       (let [response (execute-command 
                        #:convex-web.command {:mode :convex-web.command.mode/query
-                                             
-                                             :address 
-                                             (convex/key-pair-data-address 
-                                               (convex/convex-world-key-pair-data))
-                                             
+                                             :address convex-world-address-long
                                              :query 
                                              {:convex-web.query/source "(inc 1)"
                                               :convex-web.query/language :convex-lisp}})
@@ -122,11 +121,7 @@
     
     (testing "Transaction"
       (let [response (execute-command #:convex-web.command {:mode :convex-web.command.mode/transaction
-                                                            
-                                                            :address 
-                                                            (convex/key-pair-data-address 
-                                                              (convex/convex-world-key-pair-data))
-                                                            
+                                                            :address convex-world-address-long
                                                             :transaction 
                                                             {:convex-web.transaction/type :convex-web.transaction.type/invoke
                                                              :convex-web.transaction/source "(inc 1)"
@@ -179,7 +174,7 @@
       
       (is (= {:convex-web.command/mode :convex-web.command.mode/query,
               :convex-web.command/query
-              {:convex-web.query/language :convex-lisp, :convex-web.query/source "(balance #9)"},
+              {:convex-web.query/language :convex-lisp, :convex-web.query/source "(balance #11)"},
               :convex-web.command/status :convex-web.command.status/success}
             
             (select-keys body [:convex-web.command/mode
@@ -193,10 +188,11 @@
           
           body (encoding/transit-decode-string (get response :body))]
       
-      (is (= {:convex-web.command/mode :convex-web.command.mode/query,
+      (is (= {:convex-web.command/status :convex-web.command.status/success
+              :convex-web.command/mode :convex-web.command.mode/query
               :convex-web.command/query
-              {:convex-web.query/language :convex-lisp, :convex-web.query/source "(transfer #9 1000)"},
-              :convex-web.command/status :convex-web.command.status/success}
+              {:convex-web.query/language :convex-lisp, 
+               :convex-web.query/source "(transfer #11 1000)"}}
             
             (select-keys body [:convex-web.command/metadata
                                :convex-web.command/mode
@@ -240,9 +236,3 @@
                                :convex-web.command/mode
                                :convex-web.command/query
                                :convex-web.command/status]))))))
-
-(comment
-  (require 'convex-web.internal-api-test)
-  (in-ns 'convex-web.internal-api-test)
-  
-  (run-tests))
