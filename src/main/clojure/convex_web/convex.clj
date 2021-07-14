@@ -87,20 +87,6 @@
   :args (s/cat :key-pair :convex-web/key-pair)
   :ret #(instance? AKeyPair %))
 
-(defn ^Address key-pair-data-address [{:convex-web.key-pair/keys [account-key]}]
-  (Address/fromHex account-key))
-
-(s/fdef key-pair-data-address
-  :args (s/cat :key-pair :convex-web/key-pair)
-  :ret #(instance? Address %))
-
-(defn convex-world-key-pair-data
-  "convex.world key pair data. 
-  
-  See keys spec :convex-web/key-pair."
-  [& [{:keys [f] :or {f "convex.world.key-pair.edn"}}]]
-  (read-string (slurp f)))
-
 (defn read-source [source]
   (try
     (let [^AList l (Reader/readAll source)
@@ -561,9 +547,9 @@
 
 (defn ^Result faucet
   "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
-  [^Convex client target amount]
+  [^Convex client {:keys [address target amount]}]
   (->> (transfer-transaction
-         {:address (.longValue (key-pair-data-address (convex-world-key-pair-data)))
+         {:address address
           :nonce 0
           :target target
           :amount amount})

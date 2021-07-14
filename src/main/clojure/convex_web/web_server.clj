@@ -361,88 +361,88 @@
 
 (defn POST-v1-transaction-submit [system {:keys [body]}]
   (let [{:keys [address sig hash accountKey] :as body} (json-decode body)
-
+        
         _ (log/debug "Submit transaction" body)
-
+        
         address (try
                   (convex/address address)
                   (catch Exception _
                     (throw (ex-info (str "Invalid address: " address)
-                                    (anomaly-incorrect
-                                      (error-body error-code-INCORRECT
-                                                  (str "Invalid address: " address)
-                                                  error-source-server))))))
-
+                             (anomaly-incorrect
+                               (error-body error-code-INCORRECT
+                                 (str "Invalid address: " address)
+                                 error-source-server))))))
+        
         _ (when-not (s/valid? :convex-web/non-empty-string hash)
             (throw (ex-info "Invalid hash."
-                            (anomaly-incorrect
-                              (error-body error-code-INCORRECT
-                                          "Invalid hash."
-                                          error-source-server)))))
-
+                     (anomaly-incorrect
+                       (error-body error-code-INCORRECT
+                         "Invalid hash."
+                         error-source-server)))))
+        
         _ (when-not (s/valid? :convex-web/sig sig)
             (throw (ex-info "Invalid signature."
-                            (anomaly-incorrect
-                              (error-body error-code-INCORRECT
-                                          "Invalid signature."
-                                          error-source-server)))))
-
+                     (anomaly-incorrect
+                       (error-body error-code-INCORRECT
+                         "Invalid signature."
+                         error-source-server)))))
+        
         sig (ASignature/fromHex sig)
-
+        
         tx-ref (Ref/forHash (Hash/fromHex hash))
-
+        
         _ (log/debug (str "Ref for hash " hash) tx-ref)
-
+        
         accountKey (AccountKey/fromHex accountKey)
-
+        
         signed-data (SignedData/create accountKey sig tx-ref)
-
-        _ (when-not (.isValid signed-data)
+        
+        _ (when-not (.checkSignature signed-data)
             (throw (ex-info "Invalid signature."
-                            (anomaly-forbidden
-                              (error-body error-code-FORBIDDEN
-                                          "Invalid signature."
-                                          error-source-peer)))))
-
+                     (anomaly-forbidden
+                       (error-body error-code-FORBIDDEN
+                         "Invalid signature."
+                         error-source-peer)))))
+        
         client (system/convex-client system)
-
+        
         _ (log/debug "Transact signed data" signed-data)
-
+        
         result (try
                  (convex/transact-signed client signed-data)
                  (catch ExceptionInfo ex
                    ;; Reset sequence number for Address, because we don't know the Peer's state.
                    (convex/reset-sequence-number! address)
-
+                   
                    (throw (ex-info (ex-message ex)
-                                   (anomaly-incorrect
-                                     (error-body error-code-INCORRECT
-                                                 (ex-message ex)
-                                                 error-source-cvm))))))
-
+                            (anomaly-incorrect
+                              (error-body error-code-INCORRECT
+                                (ex-message ex)
+                                error-source-cvm))))))
+        
         bad-sequence-number? (when-let [error-code (.getErrorCode result)]
                                (= :SEQUENCE (convex/datafy error-code)))
-
+        
         ;; Reset sequence number for Address, if we got it wrong.
         _ (when bad-sequence-number?
             (log/error "Result error: Bad sequence number.")
-
+            
             (convex/reset-sequence-number! address))
-
+        
         result-value (.getValue result)
-
+        
         result-response (merge {:value
                                 (try
                                   (convex/datafy result-value)
                                   (catch Exception ex
                                     (log/warn ex "Can't datafy Transaction result. Will fallback to `(str result)`.")
                                     (str result-value)))}
-                               (when-let [error-code (.getErrorCode result)]
-                                 {:errorCode (convex/datafy-safe error-code)
-                                  :source error-source-cvm}))
-
+                          (when-let [error-code (.getErrorCode result)]
+                            {:errorCode (convex/datafy-safe error-code)
+                             :source error-source-cvm}))
+        
         _ (log/debug "Transaction result" result)]
-
+    
     (successful-response result-response)))
 
 (defn POST-v1-create-account [system {:keys [body]}]
@@ -522,9 +522,11 @@
       :else
       (let [client (system/convex-client system)
             
-            transfer (convex/transfer-transaction {:address 
-                                                   (convex/key-pair-data-address 
-                                                     (convex/convex-world-key-pair-data))
+            ^Server server (system/convex-server system)
+            
+            ^Address peer-controller (convex/server-peer-controller server)
+            
+            transfer (convex/transfer-transaction {:address peer-controller
                                                    :nonce 0
                                                    :target address
                                                    :amount amount})
@@ -771,9 +773,9 @@
 (defn -POST-faucet [context {:keys [body]}]
   (try
     (let [{:convex-web.faucet/keys [target amount] :as faucet} (transit-decode body)
-
+          
           account (account/find-by-address (system/db context) target)
-
+          
           [last-faucet & _] (sort-by :convex-web.faucet/timestamp #(compare %2 %1) (get account ::account/faucets))
           last-faucet-timestamp (get last-faucet :convex-web.faucet/timestamp 0)
           last-faucet-millis-ago (- (.getTime (Date.)) last-faucet-timestamp)]
@@ -781,53 +783,59 @@
         (not (s/valid? :convex-web/faucet faucet))
         (let [message "Invalid request."]
           (u/log :logging.event/user-error
-                 :severity :error
-                 :message (str message " Expound: " (expound/expound-str :convex-web/faucet faucet)))
+            :severity :error
+            :message (str message " Expound: " (expound/expound-str :convex-web/faucet faucet)))
           (-bad-request-response (error message)))
-
+        
         (< last-faucet-millis-ago config/faucet-wait-millis)
         (let [message (str "You need to wait "
-                           (-> config/faucet-wait-millis
-                               (/ 1000)
-                               (/ 60))
-                           " minutes to submit a new request.")]
+                        (-> config/faucet-wait-millis
+                          (/ 1000)
+                          (/ 60))
+                        " minutes to submit a new request.")]
           (u/log :logging.event/user-error
-                 :severity :error
-                 :message message)
+            :severity :error
+            :message message)
           (-bad-request-response (error message)))
-
+        
         (> amount config/max-faucet-amount)
         (let [message (str "You can't request more than " (pprint/cl-format nil "~:d" config/max-faucet-amount) ".")]
           (u/log :logging.event/user-error
-                 :severity :error
-                 :message message)
+            :severity :error
+            :message message)
           (-bad-request-response (error message)))
-
+        
         :else
         (let [client (system/convex-client context)
-
-              result (convex/faucet client target amount)
-
+              
+              ^Server server (system/convex-server context)
+              
+              ^Address peer-controller (convex/server-peer-controller server)
+              
+              result (convex/faucet client {:address peer-controller
+                                            :target target
+                                            :amount amount})
+              
               faucet {:convex-web.faucet/id (convex/datafy (.getID result))
                       :convex-web.faucet/target target
                       :convex-web.faucet/amount amount
                       :convex-web.faucet/timestamp (.getTime (Date.))}]
-
+          
           (d/transact! (system/db-conn context) [{::account/address target
                                                   ::account/faucets faucet}])
-
+          
           (u/log :logging.event/faucet
-                 :severity :info
-                 :target target
-                 :amount amount)
-
+            :severity :info
+            :target target
+            :amount amount)
+          
           (-successful-response faucet))))
     (catch Exception ex
       (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
+        :severity :error
+        :message handler-exception-message
+        :exception ex)
+      
       -server-error-response)))
 
 (defn -GET-session [system req]
