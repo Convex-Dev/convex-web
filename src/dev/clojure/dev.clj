@@ -11,6 +11,7 @@
    
    [clojure.java.io :as io]
    [clojure.stacktrace :as stacktrace]
+   [clojure.tools.logging :as log]
    
    [com.stuartsierra.component.repl :refer [set-init reset stop system]]
    [aero.core :as aero]
@@ -23,7 +24,7 @@
    (convex.core Peer)
    (convex.core.init Init AInitConfig)
    (convex.core.lang Core Reader Context)
-   (convex.core.crypto AKeyPair)
+   (convex.core.crypto AKeyPair PFXTools)
    (convex.core.data Keywords Address Hash AccountKey ASet AHashMap Symbol AccountStatus)))
 
 ;; -- Logging
@@ -55,13 +56,40 @@
   
   (reset)
   
-  (stop)
-  
+  (stop) 
   
   ;; -- Bootstrap Peer
   
   (.getUserAddress (InitConfig/create) 0)
   (.getPeerKeyPair (InitConfig/create) 0)
+  
+  (def key-store-path "convex.world.dev.pfx")
+  
+  (def key-pair (convex/generate-key-pair))
+  
+  (def key-store (convex/key-store key-store-path "convex"))
+  
+  (PFXTools/loadStore (io/file "convex.world.dev.pfx") "convex")
+  
+  (convex/save-key-pair 
+    {:key-store key-store
+     :key-store-passphrase "convex"
+     :key-store-file key-store-path 
+     :key-pair key-pair
+     :key-pair-passphrase "secret"})
+  
+  (convex/key-store-aliases key-store)
+  
+  
+  (map 
+    (juxt identity #(.getCertificate key-store %))
+    (convex/key-store-aliases key-store))
+  
+  (convex/restore-key-pair
+    {:key-store key-store
+     :alias "48533863f0e14bcb0b5c83098042e6522cda74e1b1b6702fcf7089f023782643"
+     :passphrase "secret"})
+  
   
   
   (let [{peer-config :peer} (aero/read-config "convex-web.edn" {:profile :test})

@@ -107,12 +107,47 @@
           
           {convex-world-peer-url :url
            convex-world-peer-port :port
+           convex-world-peer-key-store-path :key-store
            convex-world-peer-store-config :store} peer-config
           
           ^EtchStore convex-world-peer-store (store/create! convex-world-peer-store-config)
           
-          ;; TODO: Read existing key pair.
-          ^AKeyPair convex-world-key-pair (convex/generate-key-pair)
+          convex-world-key-store (convex/key-store convex-world-peer-key-store-path "convex.world")
+          
+          ^AKeyPair convex-world-key-pair (let [restored-key-pair 
+                                                (reduce
+                                                  (fn [_ alias]
+                                                    (log/debug "Attempt to restore key pair for alias" alias)
+                                                    
+                                                    (let [key-pair (try 
+                                                                     (convex/restore-key-pair
+                                                                       {:key-store convex-world-key-store
+                                                                        :alias alias
+                                                                        :passphrase "secret"})
+                                                                     (catch Exception ex
+                                                                       (log/error ex "Can't restore key pair for alias" alias)))]
+                                                      (when key-pair
+                                                        (log/debug "Successfully restored key pair for alias" alias)
+                                                        
+                                                        (reduced key-pair))))
+                                                  nil
+                                                  (convex/key-store-aliases convex-world-key-store))]
+                                            (or restored-key-pair
+                                              (do 
+                                                (log/error "Can't restore convex.world key pair. It's okay, a new one will be generated.")
+                                                
+                                                (let [generated-key-pair (convex/generate-key-pair)]
+                                                  
+                                                  (convex/save-key-pair 
+                                                    {:key-store convex-world-key-store
+                                                     :key-store-passphrase "convex.world"
+                                                     :key-store-file convex-world-peer-key-store-path
+                                                     :key-pair generated-key-pair
+                                                     :key-pair-passphrase "secret"})
+                                                  
+                                                  (log/info "Generated a new key pair for convex.world:" (.toHexString (.getAccountKey generated-key-pair)))
+                                                  
+                                                  generated-key-pair))))
           
           ^Server server (API/launchPeer {Keywords/URL convex-world-peer-url
                                           Keywords/PORT convex-world-peer-port
@@ -121,8 +156,10 @@
                                           Keywords/KEYPAIR convex-world-key-pair})
           
           ^InetSocketAddress convex-world-host-address (convex/server-address server)
-         
+          _ (log/debug "convex-world-host-address" convex-world-host-address)
+          
           ^Address convex-world-address (convex/server-peer-controller server)
+          _ (log/debug "convex-world-address" convex-world-address)
           
           ^convex.api.Convex client (convex.api.Convex/connect
                                       convex-world-host-address 

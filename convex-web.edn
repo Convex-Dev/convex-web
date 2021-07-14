@@ -56,14 +56,17 @@
  :peer
  #profile {:dev {:url "localhost"
                  :port 43577
+                 :key-store "convex.world.dev.pfx"
                  :store {:temp? true}}
 
            :test {:url "localhost"
                   :port 43578
+                  :key-store "convex.world.test.pfx"
                   :store {:temp? true}}
 
            :prod {:url "convex.world"
                   :port 43579
+                  :key-store "convex.world.pfx"
                   :store {:temp? false}}}
 
 
