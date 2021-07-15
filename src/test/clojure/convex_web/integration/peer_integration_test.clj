@@ -9,7 +9,10 @@
 
 (def system nil)
 
-(use-fixtures :once (join-fixtures [(make-system-fixture #'system) spec-fixture]))
+(use-fixtures :each (join-fixtures [(make-system-fixture #'system) spec-fixture]))
+
+(deftest convex-world-address-test
+  (is (= (convex/address 11) (sys/convex-world-address system))))
 
 (deftest result-data-test
   (let [convex-world-address (sys/convex-world-address system)]

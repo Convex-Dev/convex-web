@@ -60,6 +60,10 @@
   
   ;; -- Bootstrap Peer
   
+  ;; Address for convex.world
+  (convex/server-peer-controller (system/convex-server system))
+  
+  
   (.getUserAddress (InitConfig/create) 0)
   (.getPeerKeyPair (InitConfig/create) 0)
   
@@ -89,39 +93,6 @@
     {:key-store key-store
      :alias "48533863f0e14bcb0b5c83098042e6522cda74e1b1b6702fcf7089f023782643"
      :passphrase "secret"})
-  
-  
-  
-  (let [{peer-config :peer} (aero/read-config "convex-web.edn" {:profile :test})
-        
-        {peer-port :port
-         peer-store-config :store} peer-config
-        
-        ^EtchStore peer-store (store/create! peer-store-config)
-        
-        ;; Create key pair and pass to config.
-        ^InitConfig init-config (InitConfig/create)
-        
-        ^Address address-11 (.getUserAddress init-config 0)
-        ^AKeyPair address-11-keypair (.getUserKeyPair init-config 0)]
-    
-    (with-open [^Server server (API/launchPeer {Keywords/PORT peer-port
-                                                Keywords/STORE peer-store
-                                                Keywords/KEYPAIR address-11-keypair})
-                
-                ^convex.api.Convex client (convex.api.Convex/connect
-                                            (.getHostAddress server)
-                                            address-11
-                                            address-11-keypair)]
-      
-      (let [^AKeyPair convex-world-key-pair (convex/generate-key-pair)
-            
-            ^Address convex-world-address (.createAccount client (.getAccountKey convex-world-key-pair))]
-        
-        (println convex-world-address))))
-  
-  
-  *e
   
   
   
