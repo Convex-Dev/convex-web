@@ -1,19 +1,22 @@
-{;; -- SPEC & INSTRUMENTATION
+{;; -- SECRETS
+ :secrets #include "secrets.edn"
+ 
+ ;; -- SPEC & INSTRUMENTATION
  ;; ==========================
  :spec
  #profile {:dev
            {:check-asserts? true
             :instrument? true}
-
+           
            :test
            {:check-asserts? true
             :instrument? true}
-
+           
            :prod
            {:check-asserts? true
             :instrument? false}}
-
-
+ 
+ 
  ;; -- SITE
  ;; ==========================
  :site
@@ -25,13 +28,13 @@
   #profile {:dev ""
             :test ""
             :prod "https://storage.googleapis.com/convex-world-site"}
-
+  
   :security
   #profile {:dev {:anti-forgery true}
             :test {:anti-forgery false}
             :prod {:anti-forgery true}}}
-
-
+ 
+ 
  ;; -- DATALEVIN
  ;; Datalevin is embedded in our application to store its state.
  ;; Created accounts via the site, session, commands are all stored
@@ -43,33 +46,39 @@
  :datalevin
  #profile {:dev {:dir "db-dev"
                  :reset? true}
-
+           
            :test {:dir "db-test"
                   :reset? true}
-
+           
            :prod {:dir "db"
                   :reset? false}}
-
-
+ 
+ 
  ;; -- CONVEX PEER
  ;; ==========================
  :peer
  #profile {:dev {:url "localhost"
                  :port 43577
                  :key-store "convex.world.dev.pfx"
+                 :key-store-passphrase #ref [:secrets :key-store-passphrase]
+                 :key-passphrase #ref [:secrets :key-passphrase]
                  :store {:temp? true}}
-
+           
            :test {:url "localhost"
                   :port 43578
                   :key-store "convex.world.test.pfx"
+                  :key-store-passphrase #ref [:secrets :key-store-passphrase]
+                  :key-passphrase #ref [:secrets :key-passphrase]
                   :store {:temp? true}}
-
+           
            :prod {:url "convex.world"
                   :port 43579
                   :key-store "convex.world.pfx"
+                  :key-store-passphrase #ref [:secrets :key-store-passphrase]
+                  :key-passphrase #ref [:secrets :key-passphrase]
                   :store {:temp? false}}}
-
-
+ 
+ 
  ;; -- WEB SERVER
  ;; ==========================
  :web-server
@@ -77,8 +86,8 @@
   #profile {:dev 8080
             :prod 8080
             :test 8090}}
-
-
+ 
+ 
  ;; -- LOGGING U/LOG
  ;; ==========================
  :logging
@@ -86,11 +95,11 @@
   #profile {:dev
             {:type :custom
              :fqn-function "convex-web.logging/dev-logging-publisher"}
-
+            
             :test
             {:type :custom
              :fqn-function "convex-web.logging/dev-logging-publisher"}
-
+            
             :prod
             {:type :custom
              :fqn-function "convex-web.logging/google-cloud-logging-publisher"}}}}

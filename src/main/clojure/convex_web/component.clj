@@ -108,11 +108,15 @@
           {convex-world-peer-url :url
            convex-world-peer-port :port
            convex-world-peer-key-store-path :key-store
+           convex-world-peer-key-store-passphrase :key-store-passphrase
+           convex-world-peer-key-passphrase :key-passphrase
            convex-world-peer-store-config :store} peer-config
           
           ^EtchStore convex-world-peer-store (store/create! convex-world-peer-store-config)
           
-          convex-world-key-store (convex/key-store convex-world-peer-key-store-path "convex.world")
+          convex-world-key-store (convex/key-store
+                                   convex-world-peer-key-store-path 
+                                   convex-world-peer-key-store-passphrase)
           
           ^AKeyPair convex-world-key-pair (let [restored-key-pair 
                                                 (reduce
@@ -123,7 +127,7 @@
                                                                      (convex/restore-key-pair
                                                                        {:key-store convex-world-key-store
                                                                         :alias alias
-                                                                        :passphrase "secret"})
+                                                                        :passphrase convex-world-peer-key-passphrase})
                                                                      (catch Exception ex
                                                                        (log/error ex "Can't restore key pair for alias" alias)))]
                                                       (when key-pair
@@ -140,10 +144,10 @@
                                                   
                                                   (convex/save-key-pair 
                                                     {:key-store convex-world-key-store
-                                                     :key-store-passphrase "convex.world"
+                                                     :key-store-passphrase convex-world-peer-key-store-passphrase
                                                      :key-store-file convex-world-peer-key-store-path
                                                      :key-pair generated-key-pair
-                                                     :key-pair-passphrase "secret"})
+                                                     :key-pair-passphrase convex-world-peer-key-passphrase})
                                                   
                                                   (log/info "Generated a new key pair for convex.world:" (.toHexString (.getAccountKey generated-key-pair)))
                                                   
@@ -158,12 +162,12 @@
           ^InetSocketAddress convex-world-host-address (convex/server-address server)
           _ (log/debug "convex-world-host-address" convex-world-host-address)
           
-          ^Address convex-world-address (convex/server-peer-controller server)
-          _ (log/debug "convex-world-address" convex-world-address)
+          ^Address convex-world-peer-controller (convex/server-peer-controller server)
+          _ (log/debug "convex-world-peer-controller" convex-world-peer-controller)
           
           ^convex.api.Convex client (convex.api.Convex/connect
                                       convex-world-host-address 
-                                      convex-world-address 
+                                      convex-world-peer-controller 
                                       convex-world-key-pair)]
       
       (assoc component
