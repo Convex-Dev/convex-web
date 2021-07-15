@@ -165,6 +165,9 @@
           ^Address convex-world-peer-controller (convex/server-peer-controller server)
           _ (log/debug "convex-world-peer-controller" convex-world-peer-controller)
           
+          #_#_s (str "(set-peer-data " (.getAccountKey convex-world-key-pair) " {:url " convex-world-peer-url ":" convex-world-peer-port "})") 
+          
+          
           ^convex.api.Convex client (convex.api.Convex/connect
                                       convex-world-host-address 
                                       convex-world-peer-controller 
