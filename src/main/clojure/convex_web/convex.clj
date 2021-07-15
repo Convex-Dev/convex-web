@@ -40,7 +40,7 @@
 
 (defn key-store-aliases 
   "Returns a seq of aliases (as string) of key-store."
-  [key-store]
+  [^java.security.KeyStore key-store]
   (iterator-seq (.asIterator (.aliases key-store))))
 
 (defn save-key-pair
