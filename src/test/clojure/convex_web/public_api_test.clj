@@ -279,37 +279,37 @@
             prepare-body (json/write-str {:address ""})
             prepare-response @(http/post prepare-url {:body prepare-body})
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
-
+        
         (is (= 400 (get prepare-response :status)))
         (is (= {:errorCode "INCORRECT"
                 :source "Server"
                 :value "Invalid address: "}
-               prepare-response-body))))
-
+              prepare-response-body))))
+    
     (testing "Invalid Hash"
       (let [prepare-url (str (server-url) "/api/v1/transaction/submit")
             prepare-body (json/write-str {:address (convex-world-address-long) :hash ""})
             prepare-response @(http/post prepare-url {:body prepare-body})
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
-
+        
         (is (= 400 (get prepare-response :status)))
         (is (= {:errorCode "INCORRECT"
                 :source "Server"
                 :value "Invalid hash."}
-               prepare-response-body))))
-
+              prepare-response-body))))
+    
     (testing "Invalid Signature"
       (let [prepare-url (str (server-url) "/api/v1/transaction/submit")
             prepare-body (json/write-str {:address (convex-world-address-long) :hash "ABC" :sig ""})
             prepare-response @(http/post prepare-url {:body prepare-body})
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)]
-
+        
         (is (= 400 (get prepare-response :status)))
         (is (= {:errorCode "INCORRECT"
                 :source "Server"
                 :value "Invalid signature."}
-               prepare-response-body))))
-
+              prepare-response-body))))
+    
     (testing "Missing Data"
       (let [response @(client/POST-public-v1-transaction-submit
                         (server-url)
@@ -318,12 +318,11 @@
                          :hash "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b"
                          :sig (client/sig (convex-world-key-pair) "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
             response-body (json/read-str (get response :body) :key-fn keyword)]
-
-        (is (= 400 (get response :status)))
-        (is (= {:errorCode "INCORRECT"
-                :source "CVM"
-                :value "Failed to get Transaction result."}
-               response-body))))))
+        
+        (is (= 404 (get response :status)))
+        (is (= {:errorCode "MISSING"
+                :source "Peer"}
+              (select-keys response-body [:errorCode :source])))))))
 
 (deftest prepare-submit-transaction-test
   (testing "Prepare & submit transaction"

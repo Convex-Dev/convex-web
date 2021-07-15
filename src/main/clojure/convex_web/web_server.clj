@@ -41,6 +41,7 @@
    (convex.core.lang Context)
    (convex.core.lang.impl AExceptional)
    (convex.core Peer State Result Order)
+   (convex.core.exceptions MissingDataException)
    
    (java.time Instant)
    (java.util Date)
@@ -403,6 +404,16 @@
                        (error-body error-code-FORBIDDEN
                          "Invalid signature."
                          error-source-peer)))))
+        
+        ;; Get value to check for a missing exception.
+        _ (try
+            (.getValue signed-data)
+            (catch MissingDataException ex              
+              (throw (ex-info (ex-message ex)
+                       (anomaly-not-found
+                         (error-body error-code-MISSING
+                           (ex-message ex)
+                           error-source-peer))))))
         
         client (system/convex-client system)
         
