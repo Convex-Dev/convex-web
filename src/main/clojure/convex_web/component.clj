@@ -3,6 +3,7 @@
             [convex-web.store :as store]
             [convex-web.db :as db]
             [convex-web.convex :as convex]
+            [convex-web.config :as config]
 
             [clojure.spec.alpha :as s]
             [clojure.spec.test.alpha :as stest]
@@ -24,38 +25,40 @@
 
 (defrecord Config [profile config]
   component/Lifecycle
-
+  
   (start [component]
-    (let [config (aero/read-config "convex-web.edn" {:profile profile})]
-
+    (let [config (config/read-config profile)]
+      
       (println (str "\n==============\n"
-                    (str/upper-case (name profile)) " SYSTEM"
-                    "\n==============\n\n"
-
-                    "logback.configurationFile: "
-                    (System/getProperty "logback.configurationFile")
-                    "\n\n"
-
-                    (with-out-str (pprint/pprint config))))
-
+                 (str/upper-case (name profile)) " SYSTEM"
+                 "\n==============\n\n"
+                 
+                 "logback.configurationFile: "
+                 (System/getProperty "logback.configurationFile")
+                 "\n\n"
+                 
+                 ;; ATTENTION
+                 ;; We can't log secrets.
+                 (with-out-str (pprint/pprint (dissoc config :secrets)))))
+      
       (SLF4JBridgeHandler/removeHandlersForRootLogger)
       (SLF4JBridgeHandler/install)
-
+      
       ;; Spec configuration
-
+      
       (when-let [spec-config (get config :spec)]
         (require 'convex-web.specs)
-
+        
         (when (:check-asserts? spec-config)
           (s/check-asserts true))
-
+        
         (when (:instrument? spec-config)
           (stest/instrument)))
-
+      
       ;; -----------------------------------------
-
+      
       (assoc component :config config)))
-
+  
   (stop [component]
     (assoc component :config nil)))
 

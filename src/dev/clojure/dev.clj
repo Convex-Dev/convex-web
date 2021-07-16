@@ -8,6 +8,7 @@
    [convex-web.web-server :as web-server]
    [convex-web.client :as client]
    [convex-web.store :as store]
+   [convex-web.config :as config]
    
    [clojure.java.io :as io]
    [clojure.stacktrace :as stacktrace]
@@ -53,6 +54,8 @@
 
 
 (comment
+  
+  (config/read-config :dev)
   
   (reset)
   
