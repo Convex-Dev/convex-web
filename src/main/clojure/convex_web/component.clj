@@ -17,6 +17,7 @@
             [datalevin.core :as d]
             [com.stuartsierra.component :as component])
   (:import (convex.peer Server API)
+           (convex.core Result)
            (convex.core.crypto AKeyPair)
            (convex.core.data Keywords Address)
            (etch EtchStore)
@@ -168,13 +169,24 @@
           ^Address convex-world-peer-controller (convex/server-peer-controller server)
           _ (log/debug "convex-world-peer-controller" convex-world-peer-controller)
           
-          #_#_s (str "(set-peer-data " (.getAccountKey convex-world-key-pair) " {:url " convex-world-peer-url ":" convex-world-peer-port "})") 
-          
-          
           ^convex.api.Convex client (convex.api.Convex/connect
                                       convex-world-host-address 
                                       convex-world-peer-controller 
-                                      convex-world-key-pair)]
+                                      convex-world-key-pair)
+          
+          peer-data {:url (str convex-world-peer-url":" convex-world-peer-port)}
+          peer-data-str (pr-str peer-data)
+          peer-data-source (str "(set-peer-data " (.getAccountKey convex-world-key-pair) " " peer-data-str ")")
+          
+          ^Result result (convex/transact client 
+                           (convex/invoke-transaction 
+                             {:nonce 0
+                              :address convex-world-peer-controller
+                              :command (convex/read-source peer-data-source)}))]
+      
+      (if (.isError result)
+        (log/error "Error setting convex.world Peer data" result)
+        (log/info "Successfully set convex.world Peer data" result))
       
       (assoc component
         :server server
