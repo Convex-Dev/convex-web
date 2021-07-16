@@ -41,6 +41,29 @@
 (defn server-url []
   (str "http://localhost:" (get-in system [:config :config :web-server :port])))
 
+(defn create-account []
+  (let [^AKeyPair generated-key-pair (AKeyPair/generate)
+        ^AccountKey account-key (.getAccountKey generated-key-pair)
+        ^String account-public-key (.toChecksumHex account-key)
+        
+        handler (public-api-handler)
+        
+        response (handler (-> (mock/request :post "/api/v1/createAccount")
+                            (mock/json-body {:accountKey account-public-key})))
+        
+        {generated-address :address} (json/read-str (get response :body) :key-fn keyword)
+        
+        response (handler (-> (mock/request :post "/api/v1/faucet")
+                            (mock/json-body {:address generated-address
+                                             :amount 1000000})))
+        
+        response-body (json/read-str (get response :body) :key-fn keyword)]
+    
+    {:generated-key-pair generated-key-pair
+     :generated-address generated-address
+     :account-key account-key
+     :account-public-key account-public-key}))
+
 (deftest create-account-test
   (testing "Create new Account"
     (let [^AKeyPair generated-key-pair (AKeyPair/generate)
@@ -139,66 +162,82 @@
               (is (= {:address generated-address :amount amount :value amount} response-body)))))))))
 
 (deftest address-test
-  (testing "Get Account by Address"
-    (let [response @(client/GET-public-v1-account (server-url) (convex-world-address-long))
-          response-body (json/read-str (get response :body) :key-fn keyword)]
-      (is (= 200 (get response :status)))
-      (is (= #{:account-key
-               :controller
-               :address
-               :allowance
-               :balance
-               :environment
-               :isActor
-               :isLibrary
-               :memorySize
-               :sequence
-               :type
-               :exports}
-             (set (keys response-body)))))
-
-    (let [response @(client/GET-public-v1-account (server-url) 1267650600228229401496703205376)
-          response-body (json/read-str (get response :body) :key-fn keyword)]
-      (is (= 400 (get response :status)))
-      (is (= {:errorCode "INCORRECT"
-              :source "Server"
-              :value "Can't coerce \"1267650600228229401496703205376\" to convex.core.data.Address."}
-             response-body)))
-
-    (let [response @(client/GET-public-v1-account (server-url) -100)
-          response-body (json/read-str (get response :body) :key-fn keyword)]
-      (is (= 404 (get response :status)))
-      (is (= {:errorCode "NOBODY"
-              :value "The Account for this Address does not exist."
-              :source "Server"} response-body)))))
+  (let [handler (public-api-handler)]
+    (testing "Get Account by Address"
+      (let [response (handler (mock/request :get (str "/api/v1/accounts/" (convex-world-address-long))))
+            response-body (json/read-str (get response :body) :key-fn keyword)]
+        (is (= 200 (get response :status)))
+        (is (= #{:account-key
+                 :controller
+                 :address
+                 :allowance
+                 :balance
+                 :environment
+                 :isActor
+                 :isLibrary
+                 :memorySize
+                 :sequence
+                 :type
+                 :exports}
+              (set (keys response-body)))))
+      
+      (let [response (handler (mock/request :get "/api/v1/accounts/1267650600228229401496703205376"))
+            response-body (json/read-str (get response :body) :key-fn keyword)]
+        (is (= 400 (get response :status)))
+        (is (= {:errorCode "INCORRECT"
+                :source "Server"
+                :value "Can't coerce \"1267650600228229401496703205376\" to convex.core.data.Address."}
+              response-body)))
+      
+      (let [response (handler (mock/request :get "/api/v1/accounts/-100"))
+            response-body (json/read-str (get response :body) :key-fn keyword)]
+        (is (= 404 (get response :status)))
+        (is (= {:errorCode "NOBODY"
+                :value "The Account for this Address does not exist."
+                :source "Server"} response-body))))))
 
 (deftest query-test
   (testing "Set"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (convex-world-address-long) :source "#{1}"})
+    (let [response ((public-api-handler) (-> (mock/request :post "/api/v1/query")
+                                           (mock/json-body {:address (convex-world-address-long) 
+                                                            :source "#{1}"})))
+          
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       ;; JSON does not have sets, so the encoder uses a vector instead.
       (is (= {:value [1]} response-body))))
   
   (testing "List"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (convex-world-address-long) :source "(list 1 2 3)"})
+    (let [response ((public-api-handler) (-> (mock/request :post "/api/v1/query")
+                                           (mock/json-body {:address (convex-world-address-long) 
+                                                            :source "(list 1 2 3)"})))
+          
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value [1 2 3]} response-body))))
   
   (testing "Valid"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (convex-world-address-long) :source "1"})
+    (let [response ((public-api-handler) (-> (mock/request :post "/api/v1/query")
+                                           (mock/json-body {:address (convex-world-address-long) 
+                                                            :source "1"})))
+          
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value 1} response-body)))
     
-    (let [response @(client/POST-public-v1-query (server-url) {:address (str "#" (convex-world-address-long)) :source "1"})
+    (let [response ((public-api-handler) (-> (mock/request :post "/api/v1/query")
+                                           (mock/json-body {:address (str "#" (convex-world-address-long)) 
+                                                            :source "1"})))
+          
           response-body (json/read-str (get response :body) :key-fn keyword)]
       (is (= 200 (get response :status)))
       (is (= {:value 1} response-body))))
   
   (testing "Syntax error"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (convex-world-address-long) :source "(inc 1"})
+    (let [response ((public-api-handler) (-> (mock/request :post "/api/v1/query")
+                                           (mock/json-body {:address (convex-world-address-long) 
+                                                            :source "(inc 1"})))
+          
           response-body (json/read-str (get response :body) :key-fn keyword)]
       
       (is (= 400 (get response :status)))
@@ -209,8 +248,10 @@
             response-body))))
   
   (testing "Non-existent address"
-    (let [response @(client/POST-public-v1-query (server-url) {:address 1000
-                                                               :source "(map inc 1)"})
+    (let [response ((public-api-handler) (-> (mock/request :post "/api/v1/query")
+                                           (mock/json-body {:address 1000 
+                                                            :source "(map inc 1)"})))
+          
           response-body (json/read-str (get response :body) :key-fn keyword)]
       
       (is (= 200 (get response :status)))
@@ -220,7 +261,10 @@
             response-body))))
   
   (testing "Type error"
-    (let [response @(client/POST-public-v1-query (server-url) {:address (convex-world-address-long) :source "(map inc 1)"})
+    (let [response ((public-api-handler) (-> (mock/request :post "/api/v1/query")
+                                           (mock/json-body {:address (convex-world-address-long) 
+                                                            :source "(map inc 1)"})))
+          
           response-body (json/read-str (get response :body) :key-fn keyword)]
       
       (is (= 200 (get response :status)))
@@ -327,120 +371,122 @@
 (deftest prepare-submit-transaction-test
   (testing "Prepare & submit transaction"
     (testing "Simple inc"
-      (let [test-key-pair (convex-world-key-pair)
-            test-address (convex-world-address-long)
-            test-account-key (convex-world-account-checksum-hex)
-
+      (let [{test-key-pair :generated-key-pair
+             test-address :generated-address
+             test-account-public-key :account-public-key} (create-account)
+            
             handler (public-api-handler)
-
+            
+            
+            
             ;; 1. Prepare
             ;; ==========
-
+            
             prepare-uri "/api/v1/transaction/prepare"
-
+            
             prepare-body {:address test-address :source "(inc 1)"}
-
+            
             prepare-response (handler (-> (mock/request :post prepare-uri)
-                                          (mock/json-body prepare-body)))
-
+                                        (mock/json-body prepare-body)))
+            
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)
-
-
+            
+            
             ;; 2. Submit
             ;; ==========
-
+            
             submit-uri "/api/v1/transaction/submit"
-
+            
             submit-body {:address test-address
-                         :accountKey test-account-key
+                         :accountKey test-account-public-key
                          :hash (get prepare-response-body :hash)
                          :sig (try
                                 (.toHexString (.sign test-key-pair (Hash/fromHex (get prepare-response-body :hash))))
                                 (catch Exception _
                                   nil))}
-
+            
             submit-response (handler (-> (mock/request :post submit-uri)
-                                         (mock/json-body submit-body)))
-
+                                       (mock/json-body submit-body)))
+            
             submit-response-body (json/read-str (get submit-response :body) :key-fn keyword)]
-
+        
         ;; Prepare is successful
         (is (= 200 (get prepare-response :status)))
-
+        
         ;; Prepare response must contain these keys
         (is (= #{:sequence
                  :address
                  :source
                  :lang
                  :hash}
-               (set (keys prepare-response-body))))
-
+              (set (keys prepare-response-body))))
+        
         ;; Submit is successful
         (is (= 200 (get submit-response :status)))
-
+        
         ;; Submit response must contain these keys
         (is (= {:value 2} submit-response-body))
-
+        
         ;; Submit response result value
         (is (= {:value 2} (select-keys submit-response-body [:value])))))
-
+    
     (testing "Cast error"
-      (let [test-key-pair (convex-world-key-pair)
-            test-address (convex-world-address-long)
-            test-account-key (convex-world-account-checksum-hex)
-
+      (let [{test-key-pair :generated-key-pair
+             test-address :generated-address
+             test-account-public-key :account-public-key} (create-account)
+            
             handler (public-api-handler)
-
+            
             ;; 1. Prepare
             ;; ==========
-
+            
             prepare-uri "/api/v1/transaction/prepare"
-
+            
             prepare-body {:address test-address :source "(map inc 1)"}
-
+            
             prepare-response (handler (-> (mock/request :post prepare-uri)
-                                          (mock/json-body prepare-body)))
-
+                                        (mock/json-body prepare-body)))
+            
             prepare-response-body (json/read-str (get prepare-response :body) :key-fn keyword)
-
-
+            
+            
             ;; 2. Submit
             ;; ==========
-
+            
             submit-uri "/api/v1/transaction/submit"
-
+            
             submit-body {:address test-address
                          :hash (get prepare-response-body :hash)
-                         :accountKey test-account-key
+                         :accountKey test-account-public-key
                          :sig (try
                                 (.toHexString (.sign test-key-pair (Hash/fromHex (get prepare-response-body :hash))))
                                 (catch Exception _
                                   nil))}
-
+            
             submit-response (handler (-> (mock/request :post submit-uri)
-                                         (mock/json-body submit-body)))
-
+                                       (mock/json-body submit-body)))
+            
             submit-response-body (json/read-str (get submit-response :body) :key-fn keyword)]
-
+        
         ;; Prepare is successful, but transaction should fail.
         (is (= 200 (get prepare-response :status)))
-
+        
         ;; Prepare response must contain these keys.
         (is (= #{:sequence
                  :address
                  :source
                  :lang
                  :hash}
-               (set (keys prepare-response-body))))
-
+              (set (keys prepare-response-body))))
+        
         ;; Submit is successful, but the execution failed.
         (is (= 200 (get submit-response :status)))
-
+        
         ;; Submit response with error code.
         (is (= {:errorCode "CAST"
                 :source "CVM"
                 :value "Can't convert value of type Long to type Sequence"}
-               submit-response-body))))))
+              submit-response-body))))))
 
 (deftest faucet-test
   (let [handler (public-api-handler)
