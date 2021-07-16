@@ -66,9 +66,9 @@
            
            :test {:url "localhost"
                   :port 43578
-                  :key-store #join [#env HOME "/.convex/convex-world-test.pfx"]
-                  :key-store-passphrase #ref [:secrets :key-store-passphrase]
-                  :key-passphrase #ref [:secrets :key-passphrase]
+                  :key-store "convex-world-test.pfx"
+                  :key-store-passphrase "convex-world-test"
+                  :key-passphrase "convex-world-test"
                   :store {:temp? true}}
            
            :prod {:url "convex.world"
