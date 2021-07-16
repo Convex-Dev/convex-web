@@ -16,7 +16,5 @@ db-test/
 convex-db
 convex-web.sublime-workspace
 .clj-kondo
-convex.world.dev.pfx
-convex.world.test.pfx
-convex.world.pfx
+*.pfx
 secrets.edn

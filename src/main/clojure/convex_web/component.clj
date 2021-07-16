@@ -178,6 +178,7 @@
           peer-data-str (pr-str peer-data)
           peer-data-source (str "(set-peer-data " (.getAccountKey convex-world-key-pair) " " peer-data-str ")")
           
+          ;; Transaction to set convex.world Peer data on the network.
           ^Result result (convex/transact client 
                            (convex/invoke-transaction 
                              {:nonce 0
