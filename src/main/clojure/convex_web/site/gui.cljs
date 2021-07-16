@@ -480,8 +480,7 @@
    [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"}]])
 
 (defn Highlight [source & [{:keys [language pretty?]}]]
-  (let [languages {:convex-lisp "language-clojure"
-                   :convex-scrypt "language-javascript"}
+  (let [languages {:convex-lisp "language-clojure"}
 
         language (get languages language "language-clojure")
 
@@ -521,39 +520,6 @@
 
              "bg-gray-100")}
    [:code.text-xs.text-gray-700 type]])
-
-(defn SymbolStrip [{:keys [symbol syntax on-click]}]
-  (let [{syntax-value :convex-web.syntax/value
-         syntax-value-kind :convex-web.syntax/value-kind
-         syntax-meta :convex-web.syntax/meta} syntax]
-    [:div.flex.justify-between.items-center
-
-     [:div
-      {:class "flex flex-col w-1/2"}
-
-      [:div.flex.items-center.space-x-2.py-1
-       ;; -- Symbol
-       [:code.font-bold.text-sm.text-indigo-500.hover:text-indigo-400.active:text-indigo-600
-        {:class
-         (if on-click
-           "cursor-pointer"
-           "cursor-default")
-         :on-click (or on-click identity)}
-        symbol]
-
-       ;; -- Type
-       (when syntax-value-kind
-         [SymbolType syntax-value-kind])]
-
-      ;; -- Value
-      (when-not (str/blank? syntax-value)
-        [:div.w-full [Highlight syntax-value]])]
-
-     ;; -- Description
-     [:div
-      {:class "flex justify-between w-1/2"}
-      (when-let [description (get-in syntax-meta [:doc :description])]
-        [:p.text-sm.text-gray-800.ml-10 description])]]))
 
 (defn SymbolMeta [{:keys [library symbol metadata show-examples?]}]
   (let [{:keys [examples type description signature]} (:doc metadata)]

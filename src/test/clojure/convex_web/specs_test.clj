@@ -1,17 +1,18 @@
 (ns convex-web.specs-test
   (:require [convex-web.specs]
+            [convex-web.convex :as convex]
 
             [clojure.test :refer :all]
             [clojure.spec.alpha :as s]
 
             [expound.alpha :as expound])
-  (:import (convex.core Init)))
+  (:import (convex.core.init Init)))
 
 (set! s/*explain-out* expound/printer)
 
 (s/check-asserts true)
 
-(def HERO-address (.longValue Init/HERO))
+(def TEST_ADDRESS 1)
 
 (deftest command-specs
   (testing "Incoming Query"
@@ -24,7 +25,7 @@
 
     (let [q #:convex-web.query {:source "1"
                                 :language :convex-lisp
-                                :address HERO-address}
+                                :address TEST_ADDRESS}
 
           c #:convex-web.command {:mode :convex-web.command.mode/query
                                   :query q}]
@@ -36,7 +37,7 @@
                                      :language :convex-lisp
                                      :target 1}
 
-          c #:convex-web.command {:address HERO-address
+          c #:convex-web.command {:address TEST_ADDRESS
                                   :mode :convex-web.command.mode/transaction
                                   :transaction t}]
       (is (s/assert :convex-web/command c)))
@@ -45,7 +46,7 @@
                                      :amount 1
                                      :target 1}
 
-          c #:convex-web.command {:address HERO-address
+          c #:convex-web.command {:address TEST_ADDRESS
                                   :mode :convex-web.command.mode/transaction
                                   :transaction t}]
       (is (s/assert :convex-web/command c))))
@@ -57,7 +58,7 @@
                                       :target 1}
 
           c #:convex-web.command {:id 1
-                                  :address HERO-address
+                                  :address TEST_ADDRESS
                                   :status :convex-web.command.status/running
                                   :mode :convex-web.command.mode/transaction
                                   :transaction t}]
@@ -66,7 +67,7 @@
   (testing "Running Query"
     (let [q #:convex-web.query {:source "1"
                                 :language :convex-lisp
-                                :address HERO-address}
+                                :address TEST_ADDRESS}
 
           c #:convex-web.command {:id 1
                                   :status :convex-web.command.status/running
@@ -77,7 +78,7 @@
   (testing "Successful Query"
     (let [q #:convex-web.query {:source "1"
                                 :language :convex-lisp
-                                :address HERO-address}
+                                :address TEST_ADDRESS}
 
           c #:convex-web.command {:id 1
                                   :status :convex-web.command.status/success
@@ -89,7 +90,7 @@
   (testing "Error Query"
     (let [q #:convex-web.query {:source "1"
                                 :language :convex-lisp
-                                :address HERO-address}
+                                :address TEST_ADDRESS}
 
           c #:convex-web.command {:id 1
                                   :status :convex-web.command.status/error

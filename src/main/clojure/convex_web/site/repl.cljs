@@ -52,20 +52,6 @@
 
 ;; ---
 
-
-(def convex-scrypt-examples
-  [["Self Balance"
-    "_balance_"]
-
-   ["Self Address"
-    "_address_"]
-
-   ["Check Balance"
-    "balance(\"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\")"]
-
-   ["Transfer"
-    "transfer(\"7e66429ca9c10e68efae2dcbf1804f0f6b3369c7164a3187d6233683c258710f\", 1000)"]])
-
 (def convex-lisp-examples
   (let [make-example (fn [& examples]
                        (str/join "\n\n" examples))]
@@ -105,31 +91,23 @@
 
 (defn Examples [language]
   (let [Title (fn [title]
-                [:span.text-sm title])
-
-        convex-scrypt? (= :convex-scrypt language)]
-
+                [:span.text-sm title])]
+    
     [:div.flex.flex-col.flex-1.pl-1.pr-4.overflow-auto
-     (let [examples (if convex-scrypt?
-                      convex-scrypt-examples
-                      convex-lisp-examples)]
-       (map
-         (fn [[title source-code]]
-           (let [source-code (try
-                               (if convex-scrypt?
-                                 source-code
-                                 (zprint/zprint-str source-code {:parse-string? true
-                                                                 :width 60}))
-                               (catch js/Error _
-                                 source-code))]
-             ^{:key title}
-             [:div.flex.flex-col.py-2
-              [:div.flex.justify-between.items-center
-               [Title title]
-               [gui/ClipboardCopy source-code]]
-
-              [gui/Highlight source-code {:language language}]]))
-         examples))]))
+     (map
+       (fn [[title source-code]]
+         (let [source-code (try
+                             (zprint/zprint-str source-code {:parse-string? true :width 60})
+                             (catch js/Error _
+                               source-code))]
+           ^{:key title}
+           [:div.flex.flex-col.py-2
+            [:div.flex.justify-between.items-center
+             [Title title]
+             [gui/ClipboardCopy source-code]]
+            
+            [gui/Highlight source-code {:language language}]]))
+       convex-lisp-examples)]))
 
 (defn Reference [reference]
   (reagent/with-let [search-string-ref (reagent/atom nil)
@@ -342,9 +320,6 @@
                               :mode (case (language state)
                                       :convex-lisp
                                       "clojure"
-                                      
-                                      :convex-scrypt
-                                      "javascript"
                                       
                                       "clojure")}
               
@@ -622,9 +597,7 @@
           [gui/Select2
            {:selected (language state)
             :options
-            [{:id :convex-scrypt
-              :value "Convex Scrypt"}
-             {:id :convex-lisp
+            [{:id :convex-lisp
               :value "Convex Lisp"}]
             :on-change #(set-state assoc :convex-web.repl/language %)}]
           

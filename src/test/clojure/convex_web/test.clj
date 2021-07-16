@@ -1,17 +1,20 @@
 (ns convex-web.test
-  (:require [convex-web.component]
-            [convex-web.encoding :as encoding]
+  (:require 
+   [convex-web.component]
+   [convex-web.encoding :as encoding]
+   
+   [clojure.spec.alpha :as s]
+   [clojure.spec.test.alpha :as stest]
+   
+   [ring.mock.request :as mock]
+   [com.stuartsierra.component])
+  (:import 
+   (convex.core State)
+   (convex.core.lang Context)
+   (convex.core.init Init AInitConfig)))
 
-            [clojure.spec.alpha :as s]
-            [clojure.spec.test.alpha :as stest]
-
-            [ring.mock.request :as mock]
-            [com.stuartsierra.component])
-  (:import (convex.core.lang Context)
-           (convex.core Init)))
-
-(defn make-convex-context [& [{:keys [address]}]]
-  (Context/createFake (Init/createState) (or address Init/HERO)))
+(defn make-convex-context [system]
+  )
 
 (defmacro catch-throwable [& body]
   `(try

@@ -42,9 +42,3 @@
     (is (= 2 (pagination/page-num 20 n)))
     (is (= 3 (pagination/page-num 21 n)))
     (is (= 3 (pagination/page-num 30 n)))))
-
-(comment
-  (require 'convex-web.pagination-test)
-  (in-ns 'convex-web.pagination-test)
-  
-  (run-tests))

@@ -1,34 +1,100 @@
 (ns convex-web.convex
-  (:require [clojure.string :as str]
-            [clojure.spec.alpha :as s]
-            [clojure.tools.logging :as log]
-
-            [cognitect.anomalies :as anomalies])
-  (:import (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AString AccountKey ACell AHashMap)
-           (convex.core.lang Core Reader ScryptNext RT Context AFn)
-           (convex.core.lang.impl Fn CoreFn)
-           (convex.core Order Block Peer State Init Result)
-           (convex.core.crypto AKeyPair)
-           (convex.core.transactions Transfer ATransaction Invoke Call)
-           (convex.api Convex)
-           (java.util.concurrent TimeoutException)
-           (convex.core.data.prim CVMByte CVMBool CVMLong CVMDouble)))
+  (:require 
+   [clojure.string :as str]
+   [clojure.spec.alpha :as s]
+   [clojure.tools.logging :as log]
+   [clojure.java.io :as io]
+   
+   [cognitect.anomalies :as anomalies])
+  (:import 
+   (convex.peer Server)
+   (convex.core.init Init)
+   (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AccountKey ACell AHashMap)
+   (convex.core.lang Core Reader RT Context AFn)
+   (convex.core.lang.impl Fn CoreFn)
+   (convex.core Order Block Peer State Result)
+   (convex.core.crypto AKeyPair PFXTools)
+   (convex.core.transactions Transfer ATransaction Invoke Call)
+   (convex.api Convex)
+   (convex.core.data.prim CVMByte)
+   (java.util.concurrent TimeoutException)
+   (java.net InetSocketAddress)))
 
 (set! *warn-on-reflection* true)
 
-(defn read-source [source lang]
+(defn key-store
+  "Returns a java.security.KeyStore for f.
+  
+  Where f can be a string or a file.
+  
+  Creates keystore if it doesn't exit."
+  (^java.security.KeyStore [f]
+   (key-store f nil))
+  
+  (^java.security.KeyStore [f passphrase]
+   (let [f (io/file f)]
+     (try
+       (PFXTools/loadStore f passphrase)
+       (catch java.io.FileNotFoundException _
+         (PFXTools/createStore f passphrase))))))
+
+(defn key-store-aliases 
+  "Returns a seq of aliases (as string) of key-store."
+  [^java.security.KeyStore key-store]
+  (iterator-seq (.asIterator (.aliases key-store))))
+
+(defn save-key-pair
+  "Save AKeyPair to disk.
+  
+  key-store-file can be a string or a file.
+  
+  key-pair-passphrase is required."
+  [{:keys [key-store
+           key-store-passphrase
+           key-store-file
+           key-pair 
+           key-pair-passphrase]}]
+  (let [key-store-file (io/file key-store-file)]
+    
+    ;; Saves key-pair in-memory.
+    (PFXTools/saveKey key-store key-pair key-pair-passphrase)
+    
+    ;; Persist modified key store to disk.
+    (PFXTools/saveStore key-store key-store-file key-store-passphrase)
+    
+    nil))
+
+(defn ^AKeyPair generate-key-pair []
+  (AKeyPair/generate))
+
+(defn account-key ^AccountKey [^String checksum-hex]
+  (AccountKey/fromChecksumHex checksum-hex))
+
+(defn key-pair-data 
+  "Returns AKeyPair as a map."
+  [^AKeyPair key-pair]
+  {:convex-web.key-pair/account-key (.toChecksumHex (.getAccountKey key-pair))
+   :convex-web.key-pair/private-key (.toHexString (.getEncodedPrivateKey key-pair))})
+
+(defn ^AKeyPair create-key-pair 
+  "Creates AKeyPair from a map."
+  [{:convex-web.key-pair/keys [account-key private-key]}]
+  (AKeyPair/create 
+    (AccountKey/fromChecksumHex account-key)
+    (Blob/fromHex private-key)))
+
+(s/fdef create-key-pair
+  :args (s/cat :key-pair :convex-web/key-pair)
+  :ret #(instance? AKeyPair %))
+
+(defn read-source [source]
   (try
-    (case lang
-      :convex-lisp
-      (let [^AList l (Reader/readAll source)
-            form1 (first l)
-            form2 (second l)]
-        (if form2
-          (.cons l (Symbol/create "do"))
-          form1))
-      
-      :convex-scrypt
-      (ScryptNext/readSyntax source))
+    (let [^AList l (Reader/readAll source)
+          form1 (first l)
+          form2 (second l)]
+      (if form2
+        (.cons l (Symbol/create "do"))
+        form1))
     (catch Throwable ex
       (throw (ex-info (str "Reader error: " (ex-message ex)) {::anomalies/category ::anomalies/incorrect
                                                               :convex-web.result/error-code :READER})))))
@@ -51,20 +117,45 @@
       (.getExceptional new-context)
       (.getResult new-context))))
 
-(defn execute-scrypt [^Context context source]
-  (let [context (.execute context (.getResult ^Context (.expandCompile context (ScryptNext/readSyntax source))))]
-    (if (.isExceptional context)
-      (.getExceptional context)
-      (.getResult context))))
+(defn server-peer-controller
+  "Gets the Peer controller Address."
+  ^Address [^Server server]
+  (.getPeerController server))
 
-(defn hero-fake-context []
-  (Context/createFake (Init/createState) Init/HERO))
+(defn server-address 
+  "Gets the host address for this Server (including port), or null if closed."
+  ^InetSocketAddress [^Server server]
+  (.getHostAddress server))
 
-(defn fake-context [^State state]
-  (Context/createFake state))
+(defn server-key-pair
+  "Returns the Keypair for this peer server."
+  ^AKeyPair [^Server server]
+  (.getKeyPair server))
 
-(defn peer-context [^Peer peer]
-  (fake-context (.getState peer)))
+(defn server-account-key
+  ^AccountKey [^Server server]
+  (.getAccountKey (server-key-pair server)))
+
+(defn server-account-checksum-hex 
+  ^String [^Server server]
+  (.toChecksumHex (server-account-key server)))
+
+(defn server-state ^State [^Server server]
+  (Init/createState [(server-account-key server)]))
+
+(defn server-context ^Context [^Server server]
+  (Context/createFake (server-state server) (server-peer-controller server)))
+
+(defn restore-key-pair
+  ^AKeyPair [{:keys [^java.security.KeyStore key-store
+                     ^String alias 
+                     ^String passphrase]}]
+  (try 
+    (PFXTools/getKeyPair key-store alias passphrase)
+    (catch Exception ex
+      (throw (ex-info (ex-message ex)
+               {::anomalies/message (ex-message ex)
+                ::anomalies/category ::anomalies/incorrect})))))
 
 (defn lookup-metadata
   ([^Context context ^Symbol sym]
@@ -88,50 +179,6 @@
       (assoc m sym metadata))
     {}
     Core/METADATA))
-
-(defn value-kind [x]
-  (cond
-    (instance? CVMBool x)
-    :boolean
-
-    (instance? CVMLong x)
-    :long
-    
-    (instance? CVMByte x)
-    :byte
-
-    (instance? CVMDouble x)
-    :double
-
-    (instance? AString x)
-    :string
-
-    (instance? Keyword x)
-    :keyword
-
-    (instance? AMap x)
-    :map
-
-    (instance? AList x)
-    :list
-
-    (instance? AVector x)
-    :vector
-
-    (instance? ASet x)
-    :set
-
-    (instance? Address x)
-    :address
-
-    (instance? ABlob x)
-    :blob
-
-    (instance? AFn x)
-    :function
-
-    (instance? Symbol x)
-    :symbol))
 
 (defn datafy
   "Datafy a Convex object `x` to Clojure.
@@ -322,22 +369,6 @@
       []
       (range start end))))
 
-(defn syntax-data [^Syntax syn]
-  (merge 
-    #:convex-web.syntax 
-    {:source (.getSource syn)
-     :value
-     (try
-       (datafy (.getValue syn))
-       (catch Exception _
-         (str (.getValue syn))))}
-    
-    (when-let [meta (datafy-safe (.getMeta syn))]
-      {:convex-web.syntax/meta meta})
-    
-    (when-let [kind (value-kind (.getValue syn))]
-      {:convex-web.syntax/value-kind kind})))
-
 (defn environment-data
   "Account Status' environment data.
 
@@ -428,40 +459,28 @@
 (defn ^SignedData sign [^AKeyPair signer ^ATransaction transaction]
   (SignedData/create signer transaction))
 
-(defn wrap-do [^AList x]
-  (.cons x (Symbol/create "do")))
-
 (defn execute-query [^Peer peer ^Object form & [{:keys [address]}]]
   (let [^Context context (if address
                            (.executeQuery peer form (convex-web.convex/address address))
                            (.executeQuery peer form))]
     (.getValue context)))
 
-(defn ^Result query [^Convex client {:keys [source address lang] :as q}]
-  (let [^ACell acell (try
-                       (case lang
-                         :convex-lisp
-                         (wrap-do (Reader/readAll source))
-
-                         :convex-scrypt
-                         (ScryptNext/readSyntax source))
-                       (catch Throwable ex
-                         (throw (ex-info (ex-message ex) {::anomalies/message (ex-message ex)
-                                                          ::anomalies/category ::anomalies/incorrect}))))
-
+(defn ^Result query [^Convex client {:keys [source address] :as q}]
+  (let [^ACell acell (read-source source)
+        
         ^Address address (convex-web.convex/address address)]
     (try
       (log/debug "Query sync" q)
-
+      
       (.querySync client ^ACell acell ^Address address)
       (catch Exception ex
         (let [message "Failed to get Query result."
               category (or (throwable-category ex) ::anomalies/fault)]
           (log/error ex message)
           (throw (ex-info message
-                          (merge q {::anomalies/message (ex-message ex)
-                                    ::anomalies/category category})
-                          ex)))))))
+                   (merge q {::anomalies/message (ex-message ex)
+                             ::anomalies/category category})
+                   ex)))))))
 
 (defn ^Result transact-signed
   "Transact-sync a SignedData with a default timeout.
@@ -505,11 +524,13 @@
    Returns Address.
 
    Throws ExceptionInfo if the transaction fails."
-  [^Convex client ^String account-public-key]
-  (let [command (read-source (str "(create-account 0x" account-public-key ")") :convex-lisp)
+  [^Convex client ^Address peer-controller ^AccountKey account-key]
+  (let [^String account-public-key (.toChecksumHex account-key)
+        
+        command (read-source (str "(create-account 0x" account-public-key ")"))
 
         tx-data {:nonce 0
-                 :address Init/HERO
+                 :address peer-controller
                  :command command}
 
         ^Result result (->> (invoke-transaction tx-data)
@@ -526,9 +547,9 @@
 
 (defn ^Result faucet
   "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
-  [^Convex client target amount]
+  [^Convex client {:keys [address target amount]}]
   (->> (transfer-transaction
-         {:address (.longValue Init/HERO)
+         {:address address
           :nonce 0
           :target target
           :amount amount})
@@ -550,17 +571,6 @@
                        {:type (keyword type)}))})))
        (sort-by (comp :symbol :doc))))
 
-
-(defn key-pair-data [^AKeyPair key-pair]
-  {:convex-web.key-pair/account-key (.toChecksumHex (.getAccountKey key-pair))
-   :convex-web.key-pair/private-key (.toHexString (.getEncodedPrivateKey key-pair))})
-
-(defn ^AKeyPair create-key-pair [{:convex-web.key-pair/keys [account-key private-key]}]
-  (AKeyPair/create (AccountKey/fromChecksumHex account-key) (Blob/fromHex private-key)))
-
-(s/fdef create-key-pair
-  :args (s/cat :key-pair :convex-web/key-pair)
-  :ret #(instance? AKeyPair %))
 
 (def addresses-lock-ref (atom {}))
 

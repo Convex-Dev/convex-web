@@ -1,7 +1,11 @@
 (ns convex-web.system
-  (:import (convex.peer Server)
-           (convex.net Connection)
-           (convex.api Convex)))
+  (:require [convex-web.convex :as convex])
+  (:import 
+   (convex.peer Server)
+   (convex.api Convex)
+   (convex.core State)
+   (convex.core.data Address)
+   (convex.core.crypto AKeyPair)))
 
 (defn convex
   "Convex Component."
@@ -40,6 +44,18 @@
 
 (defn ^Convex convex-client [system]
   (-convex-client (convex system)))
+
+(defn ^Address convex-world-address [system]
+  (convex/server-peer-controller (convex-server system)))
+
+(defn ^State convex-world-context [system]
+  (convex/server-context (convex-server system)))
+
+(defn ^AKeyPair convex-world-key-pair [system]
+  (convex/server-key-pair (convex-server system)))
+
+(defn ^String convex-world-account-checksum-hex [system]
+  (convex/server-account-checksum-hex (convex-server system)))
 
 
 ;; -- DB

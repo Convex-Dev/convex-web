@@ -162,7 +162,7 @@
                            :convex-web.transaction.type/invoke
                            (convex/invoke-transaction {:nonce next-sequence-number
                                                        :address caller-address
-                                                       :command (convex/read-source source language)} )
+                                                       :command (convex/read-source source)} )
 
                            :convex-web.transaction.type/transfer
                            (convex/transfer-transaction {:address caller-address

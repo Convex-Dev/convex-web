@@ -1,22 +1,32 @@
 (ns dev
-  (:require [convex-web.system :as system]
-            [convex-web.component :as component]
-            [convex-web.convex :as convex]
-            [convex-web.session :as session]
-            [convex-web.account :as account]
-            [convex-web.web-server :as web-server]
-            [convex-web.client :as client]
-
-            [clojure.java.io :as io]
-            [clojure.stacktrace :as stacktrace]
-
-            [com.stuartsierra.component.repl :refer [set-init reset system]]
-            [ring.mock.request :as mock]
-            [datalevin.core :as d])
-  (:import (convex.core Init Peer)
-           (convex.core.lang Core Reader Context)
-           (convex.core.crypto AKeyPair)
-           (convex.core.data Hash AccountKey ASet AHashMap Symbol AccountStatus)))
+  (:require 
+   [convex-web.system :as system]
+   [convex-web.component :as component]
+   [convex-web.convex :as convex]
+   [convex-web.session :as session]
+   [convex-web.account :as account]
+   [convex-web.web-server :as web-server]
+   [convex-web.client :as client]
+   [convex-web.store :as store]
+   [convex-web.config :as config]
+   
+   [clojure.java.io :as io]
+   [clojure.stacktrace :as stacktrace]
+   [clojure.tools.logging :as log]
+   
+   [com.stuartsierra.component.repl :refer [set-init reset stop system]]
+   [aero.core :as aero]
+   [ring.mock.request :as mock]
+   [datalevin.core :as d])
+  
+  (:import 
+   (etch EtchStore)
+   (convex.peer Server API)
+   (convex.core Peer)
+   (convex.core.init Init AInitConfig)
+   (convex.core.lang Core Reader Context)
+   (convex.core.crypto AKeyPair PFXTools)
+   (convex.core.data Keywords Address Hash AccountKey ASet AHashMap Symbol AccountStatus)))
 
 ;; -- Logging
 (set-init
@@ -24,7 +34,11 @@
     (component/system :dev)))
 
 
-(def context (Context/createFake (Init/createState) Init/HERO))
+;; FIXME
+(def context 
+  nil
+  #_(Context/createFake 
+    (Init/createState (AInitConfig/create)) Init/RESERVED_ADDRESS))
 
 (defn ^Peer peer []
   (system/convex-peer system))
@@ -41,10 +55,51 @@
 
 (comment
   
+  (config/read-config :dev)
+  
   (reset)
   
+  (stop) 
   
-  ;;; -- Create Account
+  ;; -- Bootstrap Peer
+  
+  ;; Address for convex.world
+  (convex/server-peer-controller (system/convex-server system))
+  
+  
+  (.getUserAddress (InitConfig/create) 0)
+  (.getPeerKeyPair (InitConfig/create) 0)
+  
+  (def key-store-path "convex.world.dev.pfx")
+  
+  (def key-pair (convex/generate-key-pair))
+  
+  (def key-store (convex/key-store key-store-path "convex"))
+  
+  (PFXTools/loadStore (io/file "convex.world.dev.pfx") "convex")
+  
+  (convex/save-key-pair 
+    {:key-store key-store
+     :key-store-passphrase "convex"
+     :key-store-file key-store-path 
+     :key-pair key-pair
+     :key-pair-passphrase "secret"})
+  
+  (convex/key-store-aliases key-store)
+  
+  
+  (map 
+    (juxt identity #(.getCertificate key-store %))
+    (convex/key-store-aliases key-store))
+  
+  (convex/restore-key-pair
+    {:key-store key-store
+     :alias "48533863f0e14bcb0b5c83098042e6522cda74e1b1b6702fcf7089f023782643"
+     :passphrase "secret"})
+  
+  
+  
+  ;; -- Create Account
   (let [^AKeyPair generated-key-pair (AKeyPair/generate)
         ^AccountKey account-key (.getAccountKey generated-key-pair)
         ^String account-public-key (.toChecksumHex account-key)]
@@ -117,12 +172,12 @@
   (instance? convex.core.lang.AFn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "(fn [x] x)")) 
- 
+  
   
   ;; Library metadata.
   (convex/library-metadata context "convex.trust")
   
- 
+  
   ;; `convex.core.lang.impl.Fn/getParams` returns AVector<Syntax>
   (def params (.getParams (execute-string "(fn [x y] (+ x y))")))
   
@@ -144,21 +199,6 @@
     (or 
       (.lookupMeta context Init/HERO (Symbol/create "map"))
       (.lookupMeta context (Symbol/create "map"))))
-  
-  
-  (convex/execute-scrypt context "def x = 1;")
-  (convex/execute-scrypt context "do { inc(1); }")
-  
-  (convex/execute-scrypt context "when (true) {}")
-  (convex/execute-scrypt context "when (true) { 1; }")
-  (convex/execute-scrypt context "if (true) 1;")
-  (convex/execute-scrypt context "if (true) { 1; 2; }")
-  (convex/execute-scrypt context "if (true) 1; else 2;")
-  (convex/execute-scrypt context "if (false) 1; else 2;")
-  (convex/execute-scrypt context "do { def x? = true; if (x?) { 1; 2; } 1; }")
-  (convex/execute-scrypt context "{ def f = fn (x, y) { map(inc, [x, y]); }; f(1, 2); }")
-  (convex/execute-scrypt context "map(fn(x){ inc(x); }, [1, 2])")
-  
   
   (try
     (Reader/read "(]")

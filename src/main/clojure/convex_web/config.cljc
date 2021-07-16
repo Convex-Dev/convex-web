@@ -1,4 +1,6 @@
-(ns convex-web.config)
+(ns convex-web.config
+  #?(:clj
+     (:require [aero.core :as aero])))
 
 (def default-range 15)
 
@@ -9,3 +11,7 @@
 (def faucet-wait-millis
   "Milliseconds a user has to wait, since last request, to submit a Faucet."
   (* 1000 60 5))
+
+#?(:clj 
+   (defn read-config [profile]
+     (aero/read-config "convex-web.edn" {:profile profile})))

@@ -1,17 +1,35 @@
 (ns convex-web.convex-test
-  (:require [clojure.test :refer [deftest is run-tests testing]]
+  (:require 
+   [clojure.test :refer [deftest is run-tests testing use-fixtures]]
+   
+   [convex-web.convex :as convex]
+   [convex-web.system :as sys]
+   [convex-web.test :refer [catch-throwable make-convex-context make-system-fixture]])
+  
+  (:import 
+   (convex.core.data Address Blob Syntax Maps Symbol Keyword Vectors)
+   (convex.core Result)
+   (convex.core.init Init)
+   (convex.core.lang Core Context)
+   (convex.core.data.prim CVMLong)
+   (convex.core.crypto AKeyPair)
+   (clojure.lang ExceptionInfo)))
 
-            [convex-web.convex :as convex]
-            [convex-web.test :refer [catch-throwable make-convex-context]])
-  (:import (convex.core.data Address Blob Syntax Maps Symbol Keyword Vectors)
-           (convex.core Init Result)
-           (convex.core.lang Core Context)
-           (convex.core.data.prim CVMLong)
-           (clojure.lang ExceptionInfo)))
+(def system nil)
+
+(use-fixtures :once (make-system-fixture #'system))
+
+(deftest key-pair-data-test
+  (testing "Roundtrip"
+    (let [^AKeyPair generated (convex/generate-key-pair)]
+      (is (= (.getAccountKey generated)
+            (.getAccountKey (-> generated
+                              convex/key-pair-data
+                              convex/create-key-pair)))))))
 
 (deftest read-source-test
-  (is (= [] (convex/read-source "()" :convex-lisp)))
-  (is (= [] (convex/read-source "[]" :convex-lisp)))
+  (is (= [] (convex/read-source "()")))
+  (is (= [] (convex/read-source "[]")))
 
   (testing
     "Blob literal"
@@ -19,41 +37,37 @@
       (= (Blob/fromHex
            "Fd0cfE9EDf767823b927a25D6840ae2367455c29A7B77CBBF146Be3EeF270356")
          (convex/read-source
-           "0xFd0cfE9EDf767823b927a25D6840ae2367455c29A7B77CBBF146Be3EeF270356"
-           :convex-lisp)))
+           "0xFd0cfE9EDf767823b927a25D6840ae2367455c29A7B77CBBF146Be3EeF270356")))
 
-    (let [e (try (convex/read-source "0xABC" :convex-lisp)
+    (let [e (try (convex/read-source "0xABC")
                  (catch ExceptionInfo ex ex))]
       (is
-        (=
-          "Reader error: Parse error at Position{line=1, column=6}\n Source: <>\n Message: null"
+        (= "Reader error: Invalid Blob syntax: 0xABC"
           (ex-message e)))
       (is (= {:cognitect.anomalies/category :cognitect.anomalies/incorrect,
               :convex-web.result/error-code :READER}
              (ex-data e)))))
 
   (testing "Address literal"
-           (is (= (Address/create 8) (convex/read-source "#8" :convex-lisp))))
+           (is (= (Address/create 8) (convex/read-source "#8"))))
 
   (testing "Read all with do"
            (is (= [(Symbol/create "do") (CVMLong/create 1) (CVMLong/create 2)]
-                  (convex/read-source "1 2" :convex-lisp)))))
+                  (convex/read-source "1 2")))))
 
 (deftest lookup-metadata-test
-  (is
-    (=
-      '{:doc
-          {:description
-             "Applies a function to each element of a data structure in sequence, and returns a vector of results. Additional collection may be provided to call a function with higher arity.",
-           :examples [{:code "(map inc [1 2 3])"}],
-           :signature [{:params [f coll]}
-                       {:params [f coll1 coll2 & more-colls]}],
-           :type :function}}
-      (convex/datafy (convex/lookup-metadata (convex/hero-fake-context)
-                                             (Symbol/create "map"))))))
+  (let [context (sys/convex-world-context system)]
+    (is
+      (= '{:doc
+           {:type :function
+            :description "Applies a function to each element of a data structure in sequence, and returns a vector of results. Additional collection may be provided to call a function with higher arity.",
+            :examples [{:code "(map inc [1 2 3])"}],
+            :signature [{:params [f coll]}
+                        {:params [f coll1 coll2 & more-colls]}]}}
+        (convex/datafy (convex/lookup-metadata context (Symbol/create "map")))))))
 
 (deftest datafy-test
-  (let [context (make-convex-context)]
+  (let [context (sys/convex-world-context system)]
     (testing "nil" (is (= nil (convex/datafy nil))))
     
     (testing "Byte"
@@ -90,14 +104,15 @@
     (testing "Set" 
       (is (= #{} (convex/datafy (convex/execute context #{})))))
     
-    (testing "AccountKey"
-      (is (= (-> Init/HERO_KP
-               .getAccountKey
-               .toChecksumHex)
-            (convex/datafy (.getAccountKey Init/HERO_KP)))))
+    #_(testing "AccountKey"
+        (is (= (-> Init/HERO_KP
+                 .getAccountKey
+                 .toChecksumHex)
+              (convex/datafy (.getAccountKey Init/HERO_KP)))))
     
     (testing "Address"
-      (is (= (.longValue Init/HERO) (convex/datafy Init/HERO))))
+      (is (= (.longValue Init/RESERVED_ADDRESS) 
+            (convex/datafy Init/RESERVED_ADDRESS))))
     
     (testing "Blob"
       (is (= (.toHexString (Blob/create (.getBytes "Text")))
@@ -143,15 +158,15 @@
 (deftest rollback-test
   (testing
     "Rollback exceptional value"
-    (let [context1 (make-convex-context)
-
+    (let [context1 (sys/convex-world-context system)
+          
           context2 (convex/execute-string* context1 "(def x 1)")
-
+          
           context3 (convex/execute-string* context2
-                                           "(do (def x 2) (rollback :abort))")]
-
+                     "(do (def x 2) (rollback :abort))")]
+      
       (is (= (Keyword/create "abort")
-             (.getValue (.getExceptional context3)))))))
+            (.getValue (.getExceptional context3)))))))
 
 (deftest result-data-test
   (testing "Long"
@@ -206,10 +221,3 @@
           :convex-web.result/value "map"}
 
         (convex/result-data (Result/create (CVMLong/create 1) Core/MAP))))))
-
-
-(comment
-  (require 'convex-web.convex-test)
-  (in-ns 'convex-web.convex-test)
-
-  (run-tests))

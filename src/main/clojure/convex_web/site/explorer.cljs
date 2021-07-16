@@ -274,8 +274,8 @@
           {:class th-div-style}
           [:span "Result"]
           [gui/InfoTooltip
-           "Transfer: Amount and destination Address; Invoke: Convex Lisp or
-            Scrypt code executed on the CVM for the transaction."]]]])]
+           "Transfer: Amount and destination Address; Invoke: Convex Lisp
+            code executed on the CVM for the transaction."]]]])]
     
     [:tbody
      (for [m (flatten-transactions blocks)]
