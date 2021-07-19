@@ -77,7 +77,6 @@
   metosin/reitit-frontend {:mvn/version "0.5.13"}
   datalevin/datalevin {:mvn/version "0.4.39"}
   
-  nano-id/nano-id {:mvn/version "1.0.0"}
   expound/expound {:mvn/version "0.8.9"}
   zprint/zprint {:mvn/version "1.1.2"}
   cljs-ajax/cljs-ajax {:mvn/version "0.8.3"}
