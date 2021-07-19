@@ -101,5 +101,5 @@
              :fqn-function "convex-web.logging/dev-logging-publisher"}
             
             :prod
-            {:type :custom
-             :fqn-function "convex-web.logging/dev-logging-publisher"}}}}
+            {:type :simple-file
+             :filename "log/events.edn"}}}}
