@@ -3,6 +3,7 @@
 ## 0.18.0 -- 2021-07-19
 
 - [Launch convex-web with a trusted private key](https://github.com/Convex-Dev/convex-web/issues/82)
+- Update dependencies
 
 ## 0.17.0 -- 2021-06-30
 
