@@ -12,6 +12,10 @@
   "Milliseconds a user has to wait, since last request, to submit a Faucet."
   (* 1000 60 5))
 
+#?(:clj
+   (defmethod aero/reader 'jvm-prop [_ _ value]
+     (System/getProperty value)))
+
 #?(:clj 
    (defn read-config [profile]
      (aero/read-config "convex-web.edn" {:profile profile})))
