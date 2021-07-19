@@ -1,5 +1,5 @@
 {;; -- SECRETS
- :secrets #include #join [#env HOME "/.convex/secrets.edn"]
+ :secrets #include #join [#jvm-prop "user.home" "/.convex/secrets.edn"]
  
  ;; -- SPEC & INSTRUMENTATION
  ;; ==========================
@@ -59,7 +59,7 @@
  :peer
  #profile {:dev {:url "localhost"
                  :port 43577
-                 :key-store #join [#env HOME "/.convex/convex-world-dev.pfx"]
+                 :key-store #join [#jvm-prop "user.home" "/.convex/convex-world-dev.pfx"]
                  :key-store-passphrase #ref [:secrets :key-store-passphrase]
                  :key-passphrase #ref [:secrets :key-passphrase]
                  :store {:temp? true}}
@@ -73,7 +73,7 @@
            
            :prod {:url "convex.world"
                   :port 43579
-                  :key-store #join [#env HOME "/.convex/convex-world.pfx"]
+                  :key-store #join [#jvm-prop "user.home" "/.convex/convex-world.pfx"]
                   :key-store-passphrase #ref [:secrets :key-store-passphrase]
                   :key-passphrase #ref [:secrets :key-passphrase]
                   :store {:temp? false}}}
