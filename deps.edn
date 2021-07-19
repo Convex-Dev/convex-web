@@ -122,7 +122,7 @@
   ;; -- Cognitect test runner
   :test-runner
   {:extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                           :sha "62ef1de18e076903374306060ac0e8a752e57c86"}}
+                                           :sha "4e7e1c0dfd5291fa2134df052443dc29695d8cbe"}}
    
    :exec-fn cognitect.test-runner.api/test
    :exec-args {:dirs ["src/test"]}}
