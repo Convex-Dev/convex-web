@@ -102,4 +102,4 @@
             
             :prod
             {:type :custom
-             :fqn-function "convex-web.logging/google-cloud-logging-publisher"}}}}
+             :fqn-function "convex-web.logging/dev-logging-publisher"}}}}
