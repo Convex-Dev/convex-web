@@ -30,17 +30,21 @@
   (start [component]
     (let [config (config/read-config profile)]
       
-      (println (str "\n==============\n"
-                 (str/upper-case (name profile)) " SYSTEM"
-                 "\n==============\n\n"
-                 
-                 "logback.configurationFile: "
-                 (System/getProperty "logback.configurationFile")
-                 "\n\n"
-                 
-                 ;; ATTENTION
-                 ;; We can't log secrets.
-                 (with-out-str (pprint/pprint (dissoc config :secrets)))))
+      (log/info 
+        (str "\n==============\n"
+          (str/upper-case (name profile)) " SYSTEM"
+          "\n==============\n\n"
+          
+          "logback.configurationFile: "
+          (System/getProperty "logback.configurationFile")
+          "\n\n"
+          
+          ;; ATTENTION
+          ;; We can't log secrets.
+          (with-out-str (pprint/pprint 
+                          (-> config 
+                            (dissoc :secrets)
+                            (update :peer dissoc :key-store-passphrase :key-passphrase))))))
       
       (SLF4JBridgeHandler/removeHandlersForRootLogger)
       (SLF4JBridgeHandler/install)
@@ -79,27 +83,27 @@
 
 (defrecord Datalevin [config conn]
   component/Lifecycle
-
+  
   (start [component]
     (let [{:keys [dir reset?]} (get-in config [:config :datalevin])
-
+          
           _ (when reset?
-              (println (str "\n** ATTENTION **\nDatabase " dir " will be deleted!\n"))
-
+              (log/info (str "\n** ATTENTION **\nDatabase " dir " will be deleted!\n"))
+              
               (doseq [f (reverse (file-seq (io/file dir)))]
                 (io/delete-file f true)))
-
+          
           conn (d/create-conn dir db/schema)]
-
+      
       (assoc component
         :conn conn)))
-
+  
   (stop [component]
     (try
       (d/close conn)
       (catch Exception _
         nil))
-
+    
     (assoc component
       :conn nil)))
 
