@@ -13,7 +13,7 @@
   (* 1000 60 5))
 
 #?(:clj
-   (defmethod aero/reader 'jvm-prop [_ _ value]
+   (defmethod aero/reader 'system/property [_ _ value]
      (System/getProperty value)))
 
 #?(:clj 
