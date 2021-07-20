@@ -17,4 +17,3 @@ convex-db
 convex-web.sublime-workspace
 .clj-kondo
 *.pfx
-secrets.edn

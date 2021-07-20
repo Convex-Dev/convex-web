@@ -2,7 +2,7 @@
  :secrets 
  #profile {:default #include #join [#system/property "user.home" "/.convex/secrets.edn"]
            
-           :test "secrets.example.edn"}
+           :test #include "src/test/resources/secrets.edn"}
  
  ;; -- SPEC & INSTRUMENTATION
  ;; ==========================
