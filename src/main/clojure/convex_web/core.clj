@@ -1,7 +1,10 @@
 (ns convex-web.core
   (:require [convex-web.component]
             [com.stuartsierra.component]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log])
+  
+  (:import 
+   (convex.api Shutdown)))
 
 (defn -main
   "Start Convex Web."
@@ -10,16 +13,16 @@
         
         system (com.stuartsierra.component/start (convex-web.component/system :prod))
         
-        shutdown-hook (Thread. ^Runnable (fn []
-                                           (try
-                                             (log/info "Stopping system...")
-                                             
-                                             (com.stuartsierra.component/stop system)
-                                             
-                                             (catch Exception ex
-                                               (log/error ex "There was an error while stopping system in shutdown hook.")))))]
+        shutdown-hook (fn []
+                        (try
+                          (log/info "Stopping system...")
+                          
+                          (com.stuartsierra.component/stop system)
+                          
+                          (catch Exception ex
+                            (log/error ex "There was an error while stopping system in shutdown hook."))))]
     
-    (.addShutdownHook (Runtime/getRuntime) shutdown-hook)
+    (Shutdown/addHook Shutdown/SERVER ^Runnable shutdown-hook)
     
     (Thread/setDefaultUncaughtExceptionHandler
       (reify
