@@ -1,5 +1,8 @@
 {;; -- SECRETS
- :secrets #include #join [#system/property "user.home" "/.convex/secrets.edn"]
+ :secrets 
+ #profile {:default #include #join [#system/property "user.home" "/.convex/secrets.edn"]
+           
+           :test "secrets.example.edn"}
  
  ;; -- SPEC & INSTRUMENTATION
  ;; ==========================
