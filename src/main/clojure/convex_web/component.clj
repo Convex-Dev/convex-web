@@ -135,45 +135,46 @@
                                    convex-world-peer-key-store-path 
                                    convex-world-peer-key-store-passphrase)
           
-          ^AKeyPair convex-world-key-pair (let [restored-key-pair 
-                                                (reduce
-                                                  (fn [_ alias]
-                                                    (log/debug "Attempt to restore key pair for alias" alias)
-                                                    
-                                                    (let [key-pair (try 
-                                                                     (convex/restore-key-pair
-                                                                       {:key-store convex-world-key-store
-                                                                        :alias alias
-                                                                        :passphrase convex-world-peer-key-passphrase})
-                                                                     (catch Exception ex
-                                                                       (log/error ex "Can't restore key pair for alias" alias)))]
-                                                      (when key-pair
-                                                        (log/debug "Successfully restored key pair for alias" alias)
-                                                        
-                                                        (reduced key-pair))))
-                                                  nil
-                                                  (convex/key-store-aliases convex-world-key-store))]
-                                            (or restored-key-pair
-                                              (do 
-                                                (log/error "Can't restore convex.world key pair. It's okay, a new one will be generated.")
-                                                
-                                                (let [generated-key-pair (convex/generate-key-pair)]
-                                                  
-                                                  (convex/save-key-pair 
-                                                    {:key-store convex-world-key-store
-                                                     :key-store-passphrase convex-world-peer-key-store-passphrase
-                                                     :key-store-file convex-world-peer-key-store-path
-                                                     :key-pair generated-key-pair
-                                                     :key-pair-passphrase convex-world-peer-key-passphrase})
-                                                  
-                                                  (log/info "Generated a new key pair for convex.world:" (.toHexString (.getAccountKey generated-key-pair)))
-                                                  
-                                                  generated-key-pair))))
+          [^AKeyPair convex-world-key-pair restore?] 
+          (let [restored-key-pair 
+                (reduce
+                  (fn [_ alias]
+                    (log/debug "Attempt to restore key pair for alias" alias)
+                    
+                    (let [key-pair (try 
+                                     (convex/restore-key-pair
+                                       {:key-store convex-world-key-store
+                                        :alias alias
+                                        :passphrase convex-world-peer-key-passphrase})
+                                     (catch Exception ex
+                                       (log/error ex "Can't restore key pair for alias" alias)))]
+                      (when key-pair
+                        (log/debug "Successfully restored key pair for alias" alias)
+                        
+                        (reduced [key-pair true]))))
+                  nil
+                  (convex/key-store-aliases convex-world-key-store))]
+            (or restored-key-pair
+              (do 
+                (log/error "Can't restore convex.world key pair. It's okay, a new one will be generated.")
+                
+                (let [generated-key-pair (convex/generate-key-pair)]
+                  
+                  (convex/save-key-pair 
+                    {:key-store convex-world-key-store
+                     :key-store-passphrase convex-world-peer-key-store-passphrase
+                     :key-store-file convex-world-peer-key-store-path
+                     :key-pair generated-key-pair
+                     :key-pair-passphrase convex-world-peer-key-passphrase})
+                  
+                  (log/info "Generated a new key pair for convex.world:" (.toHexString (.getAccountKey generated-key-pair)))
+                  
+                  [generated-key-pair false]))))
           
           ^Server server (API/launchPeer {Keywords/URL convex-world-peer-url
                                           Keywords/PORT convex-world-peer-port
                                           Keywords/STORE convex-world-peer-store
-                                          Keywords/RESTORE true
+                                          Keywords/RESTORE restore?
                                           Keywords/KEYPAIR convex-world-key-pair})
           
           ^InetSocketAddress convex-world-host-address (convex/server-address server)
