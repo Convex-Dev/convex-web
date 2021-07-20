@@ -101,11 +101,5 @@
       (is (s/assert :convex-web/command c)))))
 
 (deftest config-test
-  (testing "Dev configuration"
-    (is (s/valid? :convex-web/config (config/read-config :dev))))
-  
   (testing "Test configuration"
-    (is (s/valid? :convex-web/config (config/read-config :test))))
-  
-  (testing "Prod configuration"
     (is (s/valid? :convex-web/config (config/read-config :test)))))
