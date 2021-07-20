@@ -44,13 +44,13 @@
  ;; `:dir`  Database directory.
  ;; ==========================
  :datalevin
- #profile {:dev {:dir "db-dev"
+ #profile {:dev {:dir #join [#system/property "user.home" "/.convex/datalevin-dev"]
                  :reset? true}
            
            :test {:dir "db-test"
                   :reset? true}
            
-           :prod {:dir "db"
+           :prod {:dir #join [#system/property "user.home" "/.convex/datalevin"]
                   :reset? false}}
  
  

@@ -1,14 +1,15 @@
 (ns convex-web.specs-test
-  (:require [convex-web.specs]
-            [convex-web.convex :as convex]
-
-            [clojure.test :refer :all]
-            [clojure.spec.alpha :as s]
-
-            [expound.alpha :as expound])
+  (:require 
+   [convex-web.specs]
+   [convex-web.convex :as convex]
+   [convex-web.config :as config]
+   
+   [clojure.test :refer :all]
+   [clojure.spec.alpha :as s]
+   
+   [expound.alpha :as expound])
+  
   (:import (convex.core.init Init)))
-
-(set! s/*explain-out* expound/printer)
 
 (s/check-asserts true)
 
@@ -99,8 +100,12 @@
                                   :error {:message "Error"}}]
       (is (s/assert :convex-web/command c)))))
 
-(comment
-  (require 'convex-web.specs-test)
-  (in-ns 'convex-web.specs-test)
-
-  (run-tests))
+(deftest config-test
+  (testing "Dev configuration"
+    (is (s/valid? :convex-web/config (config/read-config :dev))))
+  
+  (testing "Test configuration"
+    (is (s/valid? :convex-web/config (config/read-config :test))))
+  
+  (testing "Prod configuration"
+    (is (s/valid? :convex-web/config (config/read-config :test)))))

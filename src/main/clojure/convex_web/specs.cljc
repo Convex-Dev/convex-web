@@ -4,6 +4,7 @@
 
             [reitit.core]))
 
+
 (s/def :convex-web/non-empty-string (s/and string? (complement str/blank?)))
 
 (s/def :convex-web/blob-string (s/and :convex-web/non-empty-string #(str/starts-with? % "0x")))
@@ -21,6 +22,60 @@
 (s/def :convex-web/language #{:convex-lisp})
 
 (s/def :convex-web/system map?)
+
+
+;; -- Config Secrets
+
+(s/def :config.secrets/key-store-passphrase :convex-web/non-empty-string)
+
+(s/def :config.secrets/key-passphrase :convex-web/non-empty-string)
+
+(s/def :config/secrets 
+  (s/keys :req-un [:config.secrets/key-store-passphrase
+                   :config.secrets/key-passphrase]))
+
+
+;; -- Config Datalevin
+
+(s/def :config.datalevin/dir :convex-web/non-empty-string)
+
+(s/def :config/datalevin
+  (s/keys :req-un [:config.datalevin/dir]))
+
+
+;; -- Config Peer
+
+(s/def :config.peer/url :convex-web/non-empty-string)
+
+(s/def :config.peer/port pos-int?)
+
+(s/def :config.peer/key-store :convex-web/non-empty-string)
+
+(s/def :config.peer/key-passphrase :convex-web/non-empty-string)
+
+(s/def :config/peer
+  (s/keys :req-un [:config.peer/url
+                   :config.peer/port
+                   :config.peer/key-store
+                   :config.peer/key-passphrase]))
+
+
+;; -- Config Web Server
+
+(s/def :config.web-server/port pos-int?)
+
+(s/def :config/web-server
+  (s/keys :req-un [:config.web-server/port]))
+
+
+;; -- Config
+
+(s/def :convex-web/config 
+  (s/keys :req-un [:config/secrets
+                   :config/datalevin
+                   :config/peer
+                   :config/web-server]))
+
 
 ;; -- Runtime
 

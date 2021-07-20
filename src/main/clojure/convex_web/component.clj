@@ -13,6 +13,7 @@
             [clojure.java.io :as io]
 
             [aero.core :as aero]
+            [expound.alpha :as expound]
             [com.brunobonacci.mulog :as u]
             [datalevin.core :as d]
             [com.stuartsierra.component :as component])
@@ -29,6 +30,14 @@
   
   (start [component]
     (let [config (config/read-config profile)]
+      
+      (when-not (s/valid? :convex-web/config config)
+        (let [message (str "convex-web.edn:\n" 
+                        (expound/expound-str :convex-web/config config))]
+          
+          (log/error message)
+          
+          (throw (ex-info message {:config config}))))
       
       (log/info 
         (str "\n==============\n"
