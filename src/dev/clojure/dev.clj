@@ -65,46 +65,7 @@
   
   ;; Address for convex.world
   (convex/server-peer-controller (system/convex-server system))
-  
-  
-  (.getUserAddress (InitConfig/create) 0)
-  (.getPeerKeyPair (InitConfig/create) 0)
-  
-  (def key-store-path "convex.world.dev.pfx")
-  
-  (def key-pair (convex/generate-key-pair))
-  
-  (def key-store (convex/key-store key-store-path "convex"))
-  
-  (PFXTools/loadStore (io/file "convex.world.dev.pfx") "convex")
-  
-  (convex/save-key-pair 
-    {:key-store key-store
-     :key-store-passphrase "convex"
-     :key-store-file key-store-path 
-     :key-pair key-pair
-     :key-pair-passphrase "secret"})
-  
-  (convex/key-store-aliases key-store)
-  
-  
-  (map 
-    (juxt identity #(.getCertificate key-store %))
-    (convex/key-store-aliases key-store))
-  
-  (convex/restore-key-pair
-    {:key-store key-store
-     :alias "48533863f0e14bcb0b5c83098042e6522cda74e1b1b6702fcf7089f023782643"
-     :passphrase "secret"})
-  
-  
-  
-  ;; -- Create Account
-  (let [^AKeyPair generated-key-pair (AKeyPair/generate)
-        ^AccountKey account-key (.getAccountKey generated-key-pair)
-        ^String account-public-key (.toChecksumHex account-key)]
-    (convex/create-account (system/convex-client system) account-public-key))
-  
+    
   
   ;; -- Reset database
   (let [dir (get-in system [:config :config :datalevin :dir])]
