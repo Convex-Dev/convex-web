@@ -1,5 +1,8 @@
 {:paths ["src/main/clojure" "src/main/resources"]
  
+ :mvn/repos
+ {"ossrh" {:url "https://s01.oss.sonatype.org/content/repositories/snapshots"}}
+ 
  :deps
  {org.clojure/clojure {:mvn/version "1.10.3"}
   org.clojure/tools.logging {:mvn/version "1.1.0"}
@@ -9,7 +12,8 @@
   com.cognitect/transit-cljs {:mvn/version "0.8.269"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
   
-  world.convex/convex {:local/root "convex.jar"}
+  world.convex/convex-core {:mvn/version "0.7.0-SNAPSHOT"}
+  world.convex/convex-peer {:mvn/version "0.7.0-SNAPSHOT"}
   
   prestancedesign/get-port {:mvn/version "0.1.1"}
   
