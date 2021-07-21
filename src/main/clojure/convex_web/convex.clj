@@ -56,6 +56,13 @@
            key-pair-passphrase]}]
   (let [key-store-file (io/file key-store-file)]
     
+    ;; Creates the directory named by this abstract pathname, 
+    ;; including any necessary but nonexistent parent directories.
+    ;; https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/File.html
+    (when-let [parent (.getParentFile key-store-file)]
+      (when-not (.exists parent)
+        (.mkdirs parent)))
+    
     ;; Saves key-pair in-memory.
     (PFXTools/saveKey key-store key-pair key-pair-passphrase)
     
