@@ -7,14 +7,7 @@
    [clojure.spec.test.alpha :as stest]
    
    [ring.mock.request :as mock]
-   [com.stuartsierra.component])
-  (:import 
-   (convex.core State)
-   (convex.core.lang Context)
-   (convex.core.init Init AInitConfig)))
-
-(defn make-convex-context [system]
-  )
+   [com.stuartsierra.component]))
 
 (defmacro catch-throwable [& body]
   `(try
@@ -36,11 +29,11 @@
   (fn [f]
     (let [system (com.stuartsierra.component/start
                    (convex-web.component/system :test))]
-
+      
       (alter-var-root system-var (constantly system))
-
+      
       (f)
-
+      
       (com.stuartsierra.component/stop system))))
 
 (defn transit-body [request body]

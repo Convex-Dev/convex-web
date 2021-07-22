@@ -1,16 +1,16 @@
 (ns convex-web.convex-test
   (:require 
-   [clojure.test :refer [deftest is run-tests testing use-fixtures]]
+   [clojure.test :refer [deftest is testing use-fixtures]]
    
    [convex-web.convex :as convex]
    [convex-web.system :as sys]
-   [convex-web.test :refer [catch-throwable make-convex-context make-system-fixture]])
+   [convex-web.test :refer [catch-throwable make-system-fixture]])
   
   (:import 
    (convex.core.data Address Blob Syntax Maps Symbol Keyword Vectors)
    (convex.core Result)
    (convex.core.init Init)
-   (convex.core.lang Core Context)
+   (convex.core.lang Core)
    (convex.core.data.prim CVMLong)
    (convex.core.crypto AKeyPair)
    (clojure.lang ExceptionInfo)))
