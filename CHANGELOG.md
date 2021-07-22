@@ -4,7 +4,7 @@
 
 - [Launch convex-web with a trusted private key](https://github.com/Convex-Dev/convex-web/issues/82)
 - Update dependencies
-- Change Eth Store config
+- Change Etch Store config
 - Change Peer config
 - Fix a Peer state bug for new key pairs
 
