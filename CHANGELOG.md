@@ -1,9 +1,12 @@
 # Changes
 
-## 0.18.0 -- 2021-07-19
+## 0.18.0 -- 2021-07-22
 
 - [Launch convex-web with a trusted private key](https://github.com/Convex-Dev/convex-web/issues/82)
 - Update dependencies
+- Change Eth Store config
+- Change Peer config
+- Fix a Peer state bug for new key pairs
 
 ## 0.17.0 -- 2021-06-30
 
