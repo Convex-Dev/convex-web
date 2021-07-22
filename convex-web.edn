@@ -65,21 +65,23 @@
                  :key-store #join [#system/property "user.home" "/.convex/convex-world-dev.pfx"]
                  :key-store-passphrase #ref [:secrets :key-store-passphrase]
                  :key-passphrase #ref [:secrets :key-passphrase]
-                 :store {:temp? true}}
+                 :etch-store-temp? true
+                 :etch-store-temp-prefix "convex-world-dev"}
            
            :test {:url "localhost"
                   :port 43578
                   :key-store "convex-world-test.pfx"
                   :key-store-passphrase "convex-world-test"
                   :key-passphrase "convex-world-test"
-                  :store {:temp? true}}
+                  :etch-store-temp? true
+                  :etch-store-temp-prefix "convex-world-test"}
            
            :prod {:url "convex.world"
                   :port 43579
                   :key-store #join [#system/property "user.home" "/.convex/convex-world.pfx"]
                   :key-store-passphrase #ref [:secrets :key-store-passphrase]
                   :key-passphrase #ref [:secrets :key-passphrase]
-                  :store {:temp? false}}}
+                  :etch-store #join [#system/property "user.home" "/.convex/etch/data.etch"]}}
  
  
  ;; -- WEB SERVER

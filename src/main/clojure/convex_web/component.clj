@@ -126,10 +126,9 @@
            convex-world-peer-port :port
            convex-world-peer-key-store-path :key-store
            convex-world-peer-key-store-passphrase :key-store-passphrase
-           convex-world-peer-key-passphrase :key-passphrase
-           convex-world-peer-store-config :store} peer-config
+           convex-world-peer-key-passphrase :key-passphrase} peer-config
           
-          ^EtchStore convex-world-peer-store (store/create! convex-world-peer-store-config)
+          ^EtchStore convex-world-peer-store (store/create! peer-config)
           
           convex-world-key-store (convex/key-store
                                    convex-world-peer-key-store-path 
