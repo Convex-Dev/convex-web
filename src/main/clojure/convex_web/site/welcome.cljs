@@ -99,7 +99,7 @@
       ;; =========================
       [:div.py-28.text-white
        {:style {:background-color "#2E3192"}}
-       [:div.max-w-screen-xl.mx-auto.flex.space-x-12
+       [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-y-12.md:space-y-0.md:space-x-12.py-16.px-10
         
         ;; -- Copy
         [:div {:class marketing-vertical}
@@ -127,7 +127,7 @@
           it will be possible to extend scalability even further."]]
         
         ;; -- Image
-        [:div {:class "w-1/2"}
+        [:div {:class "md:w-1/2"}
          [:img {:src "images/convex_fast_2.png"}]]]]
       
       ;; Convex is fun
