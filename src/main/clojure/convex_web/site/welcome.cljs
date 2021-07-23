@@ -5,7 +5,7 @@
             [reitit.frontend.easy :as rfe]))
 
 (defn WelcomePage [_ _ _]
-  (let [marketing-vertical ["w-1/2 flex flex-col justify-center space-y-8"]
+  (let [marketing-vertical ["md:w-1/2 flex flex-col justify-center space-y-8"]
         marketing-bullets ["flex flex-col space-y-3 text-white"]
         marketing-copy ["text-base lg:text-xl text-white leading-8"]
         
@@ -63,10 +63,10 @@
       
       ;; Convex is flexible
       ;; =========================
-      [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-x-12.py-16
+      [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.md:space-x-12.py-16.px-10
        
        ;; -- Image
-       [:div {:class "w-1/2"}
+       [:div {:class "md:w-1/2"}
         [:img {:src "images/convex_flexible_2.png"}]]
        
        ;; -- Copy
