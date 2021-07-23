@@ -140,7 +140,7 @@
                 text])]]]]]]])))
 
 (defn Nav [nav]
-  [:div.h-16.flex.items-center.justify-between.px-10.border-b.border-gray-100
+  [:div.invisible.lg:visible.h-16.flex.items-center.justify-between.px-10.border-b.border-gray-100
    
    ;; -- Logo
    [:a {:href (rfe/href :route-name/welcome)}

@@ -3105,6 +3105,10 @@ video {
     margin-bottom: 0;
   }
 
+  .lg\:visible {
+    visibility: visible;
+  }
+
   .lg\:flex {
     display: flex;
   }
