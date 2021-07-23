@@ -23,12 +23,12 @@
      
      [marketing/Nav (marketing/nav)]
      
-     [:div.relative.w-full.max-w-screen-xl.mx-auto.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12
+     [:div.relative.w-full.max-w-screen-xl.mx-auto.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12.px-10
       {:style
        {:height "640px"}}
       
       ;; Show only on large screens.
-      [:div.absolute.top-0.right-0.w-40.mr-32.mt-10.invisible.xl:visible
+      [:div.absolute.top-0.right-0.w-40.mr-32.mt-10.hidden.xl:visible
        [:img.self-center
         {:src "images/convex.png"}]]
       
@@ -41,21 +41,21 @@
         [:p "Create your own digital assets, smart contracts and powerful decentralised applications for the Digital Economy of tomorrow."]]]
       
       
-      [:div.flex.space-x-12
+      [:div.flex.space-x-6.md:space-x-12
        [:a
         {:href (rfe/href :route-name/vision)}
         [gui/TealButton
          {}
-         [:div.w-40
-          [:span.text-sm.text-white.uppercase
+         [:div.w-28.md:w-40
+          [:span.text-xs.md:text-sm.text-white.uppercase
            "Our Vision"]]]]
        
        [:a
         {:href (rfe/href :route-name/documentation-getting-started)}
         [gui/BlueButton
          {}
-         [:div.w-40
-          [:span.text-sm.text-white.uppercase
+         [:div.w-28.md:w-40
+          [:span.text-xs.md:text-sm.text-white.uppercase
            "Start Building"]]]]]]
      
      
