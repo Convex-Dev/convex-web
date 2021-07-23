@@ -140,7 +140,7 @@
                 text])]]]]]]])))
 
 (defn Nav [nav]
-  [:div.invisible.lg:visible.h-16.flex.items-center.justify-between.px-10.border-b.border-gray-100
+  [:div.h-16.flex.items-center.justify-between.px-10.border-b.border-gray-100
    
    ;; -- Logo
    [:a {:href (rfe/href :route-name/welcome)}
@@ -151,7 +151,7 @@
      
      [:div.w-32.h-1.bg-blue-800]]]
    
-   [:div.flex.items-center.space-x-4
+   [:div.invisible.lg:visible.flex.items-center.space-x-4
     ;; -- Concepts
     [Dropdown
      (:concepts nav)]
