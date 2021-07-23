@@ -5,7 +5,7 @@
             [reitit.frontend.easy :as rfe]))
 
 (defn WelcomePage [_ _ _]
-  (let [marketing-vertical ["w-1/2 flex flex-col justify-center space-y-8"]
+  (let [marketing-vertical ["md:w-1/2 flex flex-col justify-center space-y-8"]
         marketing-bullets ["flex flex-col space-y-3 text-white"]
         marketing-copy ["text-base lg:text-xl text-white leading-8"]
         
@@ -23,7 +23,7 @@
      
      [marketing/Nav (marketing/nav)]
      
-     [:div.relative.w-full.max-w-screen-xl.mx-auto.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12
+     [:div.relative.w-full.max-w-screen-xl.mx-auto.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12.px-10
       {:style
        {:height "640px"}}
       
@@ -41,21 +41,21 @@
         [:p "Create your own digital assets, smart contracts and powerful decentralised applications for the Digital Economy of tomorrow."]]]
       
       
-      [:div.flex.space-x-12
-       [:a
+      [:div.flex.space-x-6.md:space-x-12
+       [:a.invisible.md:visible
         {:href (rfe/href :route-name/vision)}
         [gui/TealButton
          {}
-         [:div.w-40
-          [:span.text-sm.text-white.uppercase
+         [:div.w-28.md:w-40
+          [:span.text-xs.md:text-sm.text-white.uppercase
            "Our Vision"]]]]
        
-       [:a
+       [:a.invisible.md:visible
         {:href (rfe/href :route-name/documentation-getting-started)}
         [gui/BlueButton
          {}
-         [:div.w-40
-          [:span.text-sm.text-white.uppercase
+         [:div.w-28.md:w-40
+          [:span.text-xs.md:text-sm.text-white.uppercase
            "Start Building"]]]]]]
      
      
@@ -63,10 +63,10 @@
       
       ;; Convex is flexible
       ;; =========================
-      [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-x-12.py-16
+      [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.md:space-x-12.py-16.px-10
        
        ;; -- Image
-       [:div {:class "w-1/2"}
+       [:div {:class "md:w-1/2"}
         [:img {:src "images/convex_flexible_2.png"}]]
        
        ;; -- Copy
@@ -86,7 +86,7 @@
          [ItemTeal "Smart contracts for managing digital assets"]
          [ItemTeal "Immutable provenance records"]]
         
-        [:a
+        [:a.invisible.md:visible
          {:href (rfe/href :route-name/vision)}
          [gui/TealButton
           {}
@@ -99,7 +99,7 @@
       ;; =========================
       [:div.py-28.text-white
        {:style {:background-color "#2E3192"}}
-       [:div.max-w-screen-xl.mx-auto.flex.space-x-12
+       [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-y-12.md:space-y-0.md:space-x-12.py-16.px-10
         
         ;; -- Copy
         [:div {:class marketing-vertical}
@@ -127,17 +127,17 @@
           it will be possible to extend scalability even further."]]
         
         ;; -- Image
-        [:div {:class "w-1/2"}
+        [:div {:class "md:w-1/2"}
          [:img {:src "images/convex_fast_2.png"}]]]]
       
       ;; Convex is fun
       ;; =========================
-      [:div.py-52.px-12.lg:px-0.text-white
+      [:div.md:py-52.lg:px-0.text-white
        {:style {:background-color "#1C2951"}}
-       [:div.max-w-screen-xl.mx-auto.lg:flex.space-y-12.lg:space-x-12
+       [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-y-12.md:space-y-0.md:space-x-12.py-16.px-10
         
         ;; -- Image
-        [:div {:class "w-1/2"}
+        [:div {:class "md:w-1/2"}
          [:img {:src "images/convex_fun_2.png"}]]
         
         ;; -- Copy
@@ -154,7 +154,7 @@
           "convex.world provides an interactive REPL allowing users to code directly
           on the Convex platform using Convex Lisp."]
          
-         [:a
+         [:a.invisible.md:visible
           {:href (rfe/href :route-name/documentation-getting-started)}
           [gui/TealButton
            {}
