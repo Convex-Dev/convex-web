@@ -151,7 +151,7 @@
      
      [:div.w-32.h-1.bg-blue-800]]]
    
-   [:div.invisible.lg:visible.flex.items-center.space-x-4
+   [:div.hidden.lg:visible.flex.items-center.space-x-4
     ;; -- Concepts
     [Dropdown
      (:concepts nav)]
