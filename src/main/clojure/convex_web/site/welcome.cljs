@@ -132,12 +132,12 @@
       
       ;; Convex is fun
       ;; =========================
-      [:div.py-52.px-12.lg:px-0.text-white
+      [:div.md:py-52.lg:px-0.text-white
        {:style {:background-color "#1C2951"}}
-       [:div.max-w-screen-xl.mx-auto.lg:flex.space-y-12.lg:space-x-12
+       [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-y-12.md:space-y-0.md:space-x-12.py-16.px-10
         
         ;; -- Image
-        [:div {:class "w-1/2"}
+        [:div {:class "md:w-1/2"}
          [:img {:src "images/convex_fun_2.png"}]]
         
         ;; -- Copy
