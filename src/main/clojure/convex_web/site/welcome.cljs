@@ -28,7 +28,7 @@
        {:height "640px"}}
       
       ;; Show only on large screens.
-      [:div.absolute.top-0.right-0.w-40.mr-32.mt-10.hidden.xl:visible
+      [:div.absolute.top-0.right-0.w-40.mr-32.mt-10.invisible.xl:visible
        [:img.self-center
         {:src "images/convex.png"}]]
       
@@ -42,7 +42,7 @@
       
       
       [:div.flex.space-x-6.md:space-x-12
-       [:a
+       [:a.invisible.md:visible
         {:href (rfe/href :route-name/vision)}
         [gui/TealButton
          {}
@@ -50,7 +50,7 @@
           [:span.text-xs.md:text-sm.text-white.uppercase
            "Our Vision"]]]]
        
-       [:a
+       [:a.invisible.md:visible
         {:href (rfe/href :route-name/documentation-getting-started)}
         [gui/BlueButton
          {}
@@ -86,7 +86,7 @@
          [ItemTeal "Smart contracts for managing digital assets"]
          [ItemTeal "Immutable provenance records"]]
         
-        [:a
+        [:a.invisible.md:visible
          {:href (rfe/href :route-name/vision)}
          [gui/TealButton
           {}
@@ -154,7 +154,7 @@
           "convex.world provides an interactive REPL allowing users to code directly
           on the Convex platform using Convex Lisp."]
          
-         [:a
+         [:a.invisible.md:visible
           {:href (rfe/href :route-name/documentation-getting-started)}
           [gui/TealButton
            {}
