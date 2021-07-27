@@ -31,6 +31,6 @@
     "autoprefixer": "^10.3.1",
     "postcss": "^8.3.6",
     "shadow-cljs": "^2.14.6",
-    "tailwindcss": "^2.2.4"
+    "tailwindcss": "^2.2.7"
   }
 }
