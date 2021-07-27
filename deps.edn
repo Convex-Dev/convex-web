@@ -148,14 +148,6 @@
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-prod.xml"]}
   
   
-  ;; -- Reveal: Read Eval Visualize Loop for Clojure
-  ;; https://vlaaad.github.io/reveal/
-  :reveal
-  {:extra-deps {vlaaad/reveal {:mvn/version "1.3.209"}}
-   :ns-default vlaaad.reveal
-   :exec-fn repl}
-  
-  
   ;; -- Check outdated dependencies
   ;; clj -M:outdated:logback-dev
   :outdated
