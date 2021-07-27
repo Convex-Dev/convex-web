@@ -2637,6 +2637,11 @@ video {
   color: rgba(63, 131, 248, var(--tw-text-opacity));
 }
 
+.hover\:text-blue-900:hover {
+  --tw-text-opacity: 1;
+  color: rgba(35, 56, 118, var(--tw-text-opacity));
+}
+
 .focus\:text-gray-900:focus {
   --tw-text-opacity: 1;
   color: rgba(22, 30, 46, var(--tw-text-opacity));

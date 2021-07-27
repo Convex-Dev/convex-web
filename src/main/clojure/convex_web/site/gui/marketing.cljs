@@ -88,7 +88,7 @@
 
 
 (defn NavButton [text href]
-  [:a.text-base.hover:text-gray-500.px-4.py-2
+  [:a.text-base.text-blue-800.hover:text-blue-900.px-4.py-2
    {:href href}
    text])
 
@@ -100,7 +100,7 @@
      px-4 py-2
      bg-white
      leading-5
-     font-medium hover:text-gray-500
+     font-medium text-blue-800 hover:text-blue-900
      focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
      active:bg-gray-50 active:text-gray-800
      transition ease-in-out duration-150"
