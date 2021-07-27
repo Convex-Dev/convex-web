@@ -1,8 +1,11 @@
 (ns convex-web.site.gui.marketing
-  (:require [reitit.frontend.easy :as rfe]
-            [reagent.core :as reagent]
-            
-            [convex-web.site.gui :as gui]))
+  (:require 
+   [reitit.frontend.easy :as rfe]
+   [reagent.core :as reagent]
+   
+   [convex-web.site.gui :as gui]
+   
+   ["@heroicons/react/solid" :refer [MenuIcon]]))
 
 (defn nav []
   {:concepts
@@ -85,7 +88,7 @@
 
 
 (defn NavButton [text href]
-  [:a.text-base.hover:text-gray-500.px-4.py-2
+  [:a.text-base.text-blue-800.hover:text-blue-900.px-4.py-2
    {:href href}
    text])
 
@@ -97,7 +100,7 @@
      px-4 py-2
      bg-white
      leading-5
-     font-medium hover:text-gray-500
+     font-medium text-blue-800 hover:text-blue-900
      focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
      active:bg-gray-50 active:text-gray-800
      transition ease-in-out duration-150"
@@ -139,41 +142,72 @@
                 {:href href}
                 text])]]]]]]])))
 
+(defn NavDesktop [nav]
+  [:div.hidden.md:flex.items-center.space-x-4
+   ;; -- Concepts
+   [Dropdown
+    (:concepts nav)]
+   
+   ;; -- Documentation
+   [Dropdown
+    (:documentation nav)]
+   
+   ;; -- Sandbox
+   [NavButton "SANDBOX" (rfe/href :route-name/sandbox)]
+   
+   ;; -- Tools
+   [Dropdown
+    (:tools nav)]
+   
+   ;; -- Explorer
+   [Dropdown
+    (:explorer nav)]
+   
+   ;; -- About
+   [Dropdown
+    (:about nav)]])
+
 (defn Nav [nav]
-  [:div.h-16.flex.items-center.justify-between.px-10.border-b.border-gray-100
-   
-   ;; -- Logo
-   [:a {:href (rfe/href :route-name/welcome)}
-    [:div.flex.flex-col.space-y-3
-     [:div.flex.items-center.space-x-4
-      [:span.text-xl.leading-none.text-blue-800 "CONVEX"]
-      [gui/ConvexLogo {:width "28px" :height "32px"}]]
+  (reagent/with-let [show?-ref (reagent/atom false)]
+    [:nav.h-16.flex.items-center.justify-between.pl-10.pr-4
      
-     [:div.w-32.h-1.bg-blue-800]]]
-   
-   [:div.hidden.lg:flex.items-center.space-x-4
-    ;; -- Concepts
-    [Dropdown
-     (:concepts nav)]
-    
-    ;; -- Documentation
-    [Dropdown
-     (:documentation nav)]
-    
-    ;; -- Sandbox
-    [NavButton "SANDBOX" (rfe/href :route-name/sandbox)]
-    
-    ;; -- Tools
-    [Dropdown
-     (:tools nav)]
-    
-    ;; -- Explorer
-    [Dropdown
-     (:explorer nav)]
-    
-    ;; -- About
-    [Dropdown
-     (:about nav)]]])
+     [:div.flex.flex-row.justify-between.items-center.flex-1
+      
+      ;; -- Logo
+      [:a {:href (rfe/href :route-name/welcome)}
+       [:div.flex.items-center.space-x-4.border-b-4.border-blue-800.pb-2
+         [:span.text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]
+         [gui/ConvexLogo {:width "28px" :height "32px"}]]]
+      
+      ;; -- Menu (mobile only)
+      [:div.relative.inline-block.text-left.text-base.text-black.z-10
+       [:button.md:hidden.rounded.p-2.shadow-md.transition.ease-in-out.duration-150
+        {:class
+         (if @show?-ref 
+           "bg-blue-200"
+           "bg-blue-50")}
+        [:> MenuIcon 
+         {:className "h-5 w-5 text-blue-800"
+          :on-click #(swap! show?-ref not)}]]
+       
+       [gui/Transition
+        (merge gui/dropdown-transition {:show? @show?-ref})
+        [gui/Dismissible {:on-dismiss #(reset! show?-ref false)}
+         [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg.z-10
+          [:div.rounded-md.bg-white.shadow-xs
+           [:div.py-1
+            {:role "menu"
+             :aria-orientation "vertical"
+             :aria-labelledby "options-menu"}
+            
+            (for [{:keys [text href]} (get-in nav [:about :items])]
+              ^{:key text}
+              [:a.block.px-4.py-2.leading-5.hover:bg-blue-100.hover:bg-opacity-50.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
+               {:href href}
+               text])]]]]]]]
+     
+     ;; -- Nav (desktop only)
+     [NavDesktop nav]]))
 
 (defn BottomNavMenu [{:keys [text items]}]
   [:div.flex.flex-col.space-y-3.mb-10
