@@ -1901,6 +1901,10 @@ video {
   border-bottom-width: 2px;
 }
 
+.border-b-4 {
+  border-bottom-width: 4px;
+}
+
 .border-b {
   border-bottom-width: 1px;
 }
@@ -1965,6 +1969,11 @@ video {
 .border-blue-400 {
   --tw-border-opacity: 1;
   border-color: rgba(118, 169, 250, var(--tw-border-opacity));
+}
+
+.border-blue-800 {
+  --tw-border-opacity: 1;
+  border-color: rgba(30, 66, 159, var(--tw-border-opacity));
 }
 
 .border-indigo-500 {
