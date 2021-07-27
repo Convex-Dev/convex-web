@@ -74,10 +74,8 @@
   http-kit/http-kit {:mvn/version "2.5.3"}
   compojure/compojure {:mvn/version "1.6.2"}
   hiccup/hiccup {:mvn/version "1.0.5"}
-  re-frame/re-frame {:mvn/version "1.2.0"
-                     :exclusions [cljsjs/react
-                                  cljsjs/react-dom
-                                  cljsjs/react-dom-server]}
+  reagent/reagent {:mvn/version "1.1.0"}
+  re-frame/re-frame {:mvn/version "1.2.0"}
   metosin/reitit-frontend {:mvn/version "0.5.13"}
   datalevin/datalevin {:mvn/version "0.4.39"}
   
