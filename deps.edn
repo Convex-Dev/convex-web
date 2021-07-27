@@ -29,16 +29,16 @@
   ch.qos.logback/logback-classic {:mvn/version "1.2.3"}
   
   ;; Logback implements the SLF4J API
-  org.slf4j/slf4j-api {:mvn/version "1.7.31"}
+  org.slf4j/slf4j-api {:mvn/version "1.7.32"}
   
   ;; Redirect Apache Commons Logging to Logback via the SLF4J API
-  org.slf4j/jcl-over-slf4j {:mvn/version "1.7.31"}
+  org.slf4j/jcl-over-slf4j {:mvn/version "1.7.32"}
   
   ;; Redirect Log4j 1.x to Logback via the SLF4J API
-  org.slf4j/log4j-over-slf4j {:mvn/version "1.7.31"}
+  org.slf4j/log4j-over-slf4j {:mvn/version "1.7.32"}
   
   ;; Redirect java.util.logging to Logback via the SLF4J API.
-  org.slf4j/jul-to-slf4j {:mvn/version "1.7.31"}
+  org.slf4j/jul-to-slf4j {:mvn/version "1.7.32"}
   
   ;; Redirect Log4j 2.x to Logback via the SLF4J API
   org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.14.1"}
