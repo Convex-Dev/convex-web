@@ -15,6 +15,7 @@
    (convex.core Order Block Peer State Result)
    (convex.core.crypto AKeyPair PFXTools)
    (convex.core.transactions Transfer ATransaction Invoke Call)
+   (convex.core.util Utils)
    (convex.api Convex)
    (convex.core.data.prim CVMByte)
    (java.util.concurrent TimeoutException)
@@ -319,7 +320,7 @@
         ^AVector result-trace (.getTrace result)]
     (merge #:convex-web.result {:id (datafy result-id)
                                 :type (or (some-> result-value .getType .toString) "Nil")
-                                :value (or (some-> result-value .toString) "nil")}
+                                :value (or (some-> result-value Utils/print) "nil")}
       
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})

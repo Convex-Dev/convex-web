@@ -1128,6 +1128,10 @@
   (let [{result-type :convex-web.result/type
          result-value :convex-web.result/value} result]
     (case result-type
+      ;; "Syntax"
+      ;; Syntax can be a tutorial or not.
+      ;; Check metadata to see if it's a tutorial.
+      
       "Address"
       [AddressRenderer result-value]
       

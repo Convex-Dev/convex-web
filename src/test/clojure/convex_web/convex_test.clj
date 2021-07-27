@@ -7,7 +7,7 @@
    [convex-web.test :refer [catch-throwable make-system-fixture]])
   
   (:import 
-   (convex.core.data Address Blob Syntax Maps Symbol Keyword Vectors)
+   (convex.core.data Address Blob Syntax Maps Symbol Keyword Vectors AString Strings)
    (convex.core Result)
    (convex.core.init Init)
    (convex.core.lang Core)
@@ -169,55 +169,62 @@
             (.getValue (.getExceptional context3)))))))
 
 (deftest result-data-test
+  (testing "String"
+    (is (= {:convex-web.result/id 1,
+            :convex-web.result/type "String",
+            :convex-web.result/value "\"1\""}
+          (convex/result-data (Result/create (CVMLong/create 1)
+                                (Strings/create "1"))))))
+  
   (testing "Long"
-           (is (= {:convex-web.result/id 1,
-                   :convex-web.result/type "Long",
-                   :convex-web.result/value "1"}
-                  (convex/result-data (Result/create (CVMLong/create 1)
-                                                     (CVMLong/create 1))))))
-
+    (is (= {:convex-web.result/id 1,
+            :convex-web.result/type "Long",
+            :convex-web.result/value "1"}
+          (convex/result-data (Result/create (CVMLong/create 1)
+                                (CVMLong/create 1))))))
+  
   (testing "Keyword"
-           (is (= {:convex-web.result/id 1,
-                   :convex-web.result/type "Keyword",
-                   :convex-web.result/value ":a"}
-                  (convex/result-data (Result/create (CVMLong/create 1)
-                                                     (Keyword/create "a"))))))
-
+    (is (= {:convex-web.result/id 1,
+            :convex-web.result/type "Keyword",
+            :convex-web.result/value ":a"}
+          (convex/result-data (Result/create (CVMLong/create 1)
+                                (Keyword/create "a"))))))
+  
   (testing "Address"
-           (is (= {:convex-web.result/id 1,
-                   :convex-web.result/type "Address",
-                   :convex-web.result/value "#1"}
-                  (convex/result-data (Result/create (CVMLong/create 1)
-                                                     (Address/create 1))))))
-
+    (is (= {:convex-web.result/id 1,
+            :convex-web.result/type "Address",
+            :convex-web.result/value "#1"}
+          (convex/result-data (Result/create (CVMLong/create 1)
+                                (Address/create 1))))))
+  
   (testing "Vector"
-           (is (= {:convex-web.result/id 1,
-                   :convex-web.result/type "Vector",
-                   :convex-web.result/value "[]"}
-                  (convex/result-data (Result/create (CVMLong/create 1)
-                                                     (Vectors/empty))))))
-
+    (is (= {:convex-web.result/id 1,
+            :convex-web.result/type "Vector",
+            :convex-web.result/value "[]"}
+          (convex/result-data (Result/create (CVMLong/create 1)
+                                (Vectors/empty))))))
+  
   (testing "Map"
-           (is (= {:convex-web.result/id 1,
-                   :convex-web.result/type "Map",
-                   :convex-web.result/value "{}"}
-                  (convex/result-data (Result/create (CVMLong/create 1)
-                                                     (Maps/empty))))))
-
+    (is (= {:convex-web.result/id 1,
+            :convex-web.result/type "Map",
+            :convex-web.result/value "{}"}
+          (convex/result-data (Result/create (CVMLong/create 1)
+                                (Maps/empty))))))
+  
   (testing
     "Core function"
     (is
       (=
         '{:convex-web.result/id 1,
           :convex-web.result/metadata
-            {:doc
-               {:description
-                  "Applies a function to each element of a data structure in sequence, and returns a vector of results. Additional collection may be provided to call a function with higher arity.",
-                :examples [{:code "(map inc [1 2 3])"}],
-                :signature [{:params [f coll]}
-                            {:params [f coll1 coll2 & more-colls]}],
-                :type :function}},
+          {:doc
+           {:description
+            "Applies a function to each element of a data structure in sequence, and returns a vector of results. Additional collection may be provided to call a function with higher arity.",
+            :examples [{:code "(map inc [1 2 3])"}],
+            :signature [{:params [f coll]}
+                        {:params [f coll1 coll2 & more-colls]}],
+            :type :function}},
           :convex-web.result/type "Function",
           :convex-web.result/value "map"}
-
+        
         (convex/result-data (Result/create (CVMLong/create 1) Core/MAP))))))

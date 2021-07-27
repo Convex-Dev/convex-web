@@ -94,7 +94,7 @@
       
       (is (= :convex-web.command.status/success status))
       (is (= {:convex-web.result/type "String", 
-              :convex-web.result/value "Hello"}
+              :convex-web.result/value "\"Hello\""}
             (select-keys result [:convex-web.result/type
                                  :convex-web.result/value])))))
   
@@ -156,7 +156,7 @@
       (is (= {:convex-web.result/error-code :CAST,
               :convex-web.result/trace nil,
               :convex-web.result/type "String",
-              :convex-web.result/value "Can't convert value of type Long to type Sequence"}
+              :convex-web.result/value "\"Can't convert value of type Long to type Sequence\""}
             (select-keys result [:convex-web.result/type
                                  :convex-web.result/value
                                  :convex-web.result/error-code
