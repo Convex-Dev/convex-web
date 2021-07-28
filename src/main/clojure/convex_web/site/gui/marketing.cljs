@@ -214,7 +214,8 @@
                                         :href (rfe/href :route-name/about)}]]
               ^{:key text}
               [:a.block.px-4.py-2.leading-5.hover:bg-blue-100.hover:bg-opacity-50.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
-               {:href href}
+               {:href href
+                :on-click #(reset! show?-ref false)}
                text])]]]]]]]
      
      ;; -- Nav (desktop only)
