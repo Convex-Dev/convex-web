@@ -99,9 +99,9 @@
     {:name :route-name/technology
      :controllers
      [{:start (fn [_]
-                (stack/push :page.id/markdown {:title "Technology"
-                                               :state {:id :technology}
-                                               :reset? true}))}]}]
+                (stack/push :page.id/markdown-marketing {:title "Technology"
+                                                         :state {:id :technology}
+                                                         :reset? true}))}]}]
    
    ;; Concepts
    ;; ==============

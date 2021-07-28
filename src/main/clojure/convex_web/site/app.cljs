@@ -71,6 +71,7 @@
    ;; ---
 
    markdown/markdown-page
+   markdown/markdown-marketing-page
 
    ;; ---
 
@@ -551,17 +552,17 @@
      (when active-page-frame
        [:div.px-10.py-6.w-full.max-w-screen-xl.mx-auto
         
-        [:div.flex.flex-col.space-y-4
-         (when title
-           [:span.font-mono.text-gray-900
-            {:class "text-2xl leading-none"}
-            title])
-         
-         (when description
-           [:p.text-gray-500.text-base.max-w-screen-sm description])
-         
-         (when title
-           [:div.w-32.h-2.bg-blue-500.mb-8])]
+        (when (or title description)
+          [:div.flex.flex-col.space-y-4.mb-8
+           (when title
+             [:span.font-mono.text-gray-900
+              {:class "text-2xl leading-none"}
+              title])
+           
+           (when description
+             [:p.text-gray-500.text-base.max-w-screen-sm description])
+           
+           [:div.w-32.h-2.bg-blue-500]])
         
         [Component active-page-frame state set-state]])
      
