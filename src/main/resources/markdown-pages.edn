@@ -34,6 +34,13 @@
   [{:name "Ecosystem"
     :path "markdown/ecosystem.md"}]}
  
+ :about
+ {:toc? true
+  :smart-toc? true
+  :contents
+  [{:name "Ecosystem"
+    :path "markdown/about.md"}]}
+ 
  :explorer
  {:toc? false
   :contents

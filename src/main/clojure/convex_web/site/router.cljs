@@ -123,6 +123,16 @@
                                                          :state {:id :ecosystem}
                                                          :reset? true}))}]}]
    
+   ;; About
+   ;; ==============
+   ["about"
+    {:name :route-name/about
+     :controllers
+     [{:start (fn [_]
+                (stack/push :page.id/markdown-marketing {:title "About"
+                                                         :state {:id :about}
+                                                         :reset? true}))}]}]
+   
    ;; Concepts
    ;; ==============
    ["concepts"
@@ -373,12 +383,6 @@
    ;; About
    ;; ==============
    ["about"
-    [""
-     {:name :route-name/about
-      :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/markdown {:state {:id :under-construction}
-                                                :reset? true}))}]}]
     
     ["/team"
      {:name :route-name/team
