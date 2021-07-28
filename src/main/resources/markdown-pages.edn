@@ -15,6 +15,7 @@
  
  :technology
  {:toc? true
+  :smart-toc? true
   :contents
   [{:name "Technology"
     :path "markdown/technology.md"}]}
