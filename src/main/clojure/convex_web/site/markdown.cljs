@@ -6,7 +6,7 @@
 (defn MarkdownPage [_ {:keys [markdown]} _]
   (reagent/with-let [*nodes (reagent/atom nil)]
     (let [{:keys [ajax/status contents toc? smart-toc?] :or {toc? true}} markdown]
-      [:div.flex.flex-1.overflow-auto
+      [:div.flex.flex-1
        (case status
          :ajax.status/pending
          [:div.flex.flex-1.items-center.justify-center
@@ -18,7 +18,7 @@
          :ajax.status/success
          [:<>
           ;; -- Markdown
-          [:div.overflow-auto.flex-1
+          [:div.flex-1
            {:ref
             (fn [el]
               (when (and el smart-toc?)
