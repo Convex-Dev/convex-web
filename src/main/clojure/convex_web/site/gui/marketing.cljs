@@ -177,8 +177,8 @@
       ;; -- Logo
       [:a {:href (rfe/href :route-name/welcome)}
        [:div.flex.items-center.space-x-4.border-b-4.border-blue-800.pb-2
-         [:span.text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]
-         [gui/ConvexLogo {:width "28px" :height "32px"}]]]
+        [:span.text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]
+        [gui/ConvexLogo {:width "28px" :height "32px"}]]]
       
       ;; -- Menu (mobile only)
       [:div.relative.inline-block.text-left.text-base.text-black.z-10
@@ -201,7 +201,17 @@
              :aria-orientation "vertical"
              :aria-labelledby "options-menu"}
             
-            (for [{:keys [text href]} (get-in nav [:about :items])]
+            (for [{:keys [text href]} [{:text "Technology"
+                                        :href (rfe/href :route-name/technology)}
+                                       
+                                       {:text "Use Cases"
+                                        :href (rfe/href :route-name/use-cases)}
+                                       
+                                       {:text "Ecosystem"
+                                        :href (rfe/href :route-name/ecosystem)}
+                                       
+                                       {:text "About"
+                                        :href (rfe/href :route-name/about)}]]
               ^{:key text}
               [:a.block.px-4.py-2.leading-5.hover:bg-blue-100.hover:bg-opacity-50.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
                {:href href}
