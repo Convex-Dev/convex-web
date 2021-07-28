@@ -93,6 +93,16 @@
                 (stack/push :page.id/welcome {:reset? true}))}]}]
    
    
+   ;; Technology
+   ;; ==============
+   ["technology"
+    {:name :route-name/technology
+     :controllers
+     [{:start (fn [_]
+                (stack/push :page.id/markdown {:title "Technology"
+                                               :state {:id :technology}
+                                               :reset? true}))}]}]
+   
    ;; Concepts
    ;; ==============
    ["concepts"

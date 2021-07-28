@@ -12,6 +12,12 @@
   :contents
   [{:name "Under Construction"
     :path "markdown/under_construction.md"}]}
+ 
+ :technology
+ {:toc? true
+  :contents
+  [{:name "Technology"
+    :path "markdown/technology.md"}]}
 
  :explorer
  {:toc? false
