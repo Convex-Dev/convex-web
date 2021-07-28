@@ -352,6 +352,7 @@
 (s/def :page/id keyword?)
 (s/def :page/title string?)
 (s/def :page/description string?)
+(s/def :page/template #{:dev :marketing})
 (s/def :page/style (s/keys :opt [:page-style/title-size]))
 (s/def :page/component var?)
 (s/def :page/initial-state any?)
@@ -367,6 +368,7 @@
                                 :page/component]
                           :opt [:page/title
                                 :page/description
+                                :page/template
                                 :page/style
                                 :page/initial-state
                                 :page/state-spec

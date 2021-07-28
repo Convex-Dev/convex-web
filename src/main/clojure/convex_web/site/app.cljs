@@ -5,6 +5,7 @@
             [convex-web.site.stack :as stack]
             [convex-web.site.runtime :refer [disp sub]]
             [convex-web.site.gui :as gui]
+            [convex-web.site.gui.marketing :as marketing]
             [convex-web.site.wallet :as wallet]
             [convex-web.site.explorer :as explorer]
             [convex-web.site.documentation :as documentation]
@@ -491,7 +492,7 @@
            {:class gui/button-child-small-padding}
            "Create Account"]])]]]))
 
-(defn Scaffolding [{:frame/keys [uuid page state] :as active-page-frame}]
+(defn DeveloperPage [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component
          title :page/title
          description :page/description
@@ -533,6 +534,46 @@
            
            [Component active-page-frame state set-state]])]]]]))
 
+(defn MarketingPage [{:frame/keys [uuid page state] :as active-page-frame}]
+  (let [{Component :page/component
+         title :page/title
+         description :page/description} page
+        
+        set-state (stack/make-set-state uuid)]
+    [:<>
+     
+     ;; Top nav
+     ;; =========================
+     [marketing/Nav (marketing/nav)]
+     
+     ;; Page
+     ;; =========================
+     (when active-page-frame
+       [:div.px-10.py-6.w-full.max-w-screen-xl.mx-auto
+        
+        [:div.flex.flex-col.space-y-4
+         (when title
+           [:span.font-mono.text-gray-900
+            {:class "text-2xl leading-none"}
+            title])
+         
+         (when description
+           [:p.text-gray-500.text-base.max-w-screen-sm description])
+         
+         (when title
+           [:div.w-32.h-2.bg-blue-500.mb-8])]
+        
+        [Component active-page-frame state set-state]])
+     
+     ;; Bottom nav
+     ;; =========================
+     [:div.w-full.flex.justify-center.bg-gray-900
+      [marketing/BottomNav (marketing/nav)]]
+     
+     ;; Copyright
+     ;; =========================
+     [marketing/Copyrigth]]))
+
 (defn Page [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component} page
 
@@ -541,7 +582,7 @@
 
 (defn Root []
   [:<>
-
+   
    ;; Site
    ;; ================
    (when-let [active-page-frame (stack/?active-page-frame)]
@@ -550,33 +591,43 @@
      ;; will be rendered on its own.
      ;;
      ;; Scaffolding is enabled by default, but it can be explicitly set in the page metadata.
-     (if (get-in active-page-frame [:frame/page :page/scaffolding?] true)
-       [Scaffolding active-page-frame]
+     (cond 
+       (= :marketing (get-in active-page-frame [:frame/page :page/template]))
+       [MarketingPage active-page-frame]
+       
+       (= :developer (get-in active-page-frame [:frame/page :page/template]))
+       [DeveloperPage active-page-frame]
+       
+       ;; Deprecated. We need to update pages manifest to use template instead.
+       (get-in active-page-frame [:frame/page :page/scaffolding?] true)
+       [DeveloperPage active-page-frame]
+       
+       :else
        [Page active-page-frame]))
-
-
+   
+   
    ;; Modal
    ;; ================
    (let [{:frame/keys [modal?] :as frame} (stack/?active-frame)]
      (when modal?
        [Modal frame]))
-
-
+   
+   
    ;; Devtools
    ;; ================
    (when goog.DEBUG
      [:div.fixed.bottom-0.left-0.flex.items-center.ml-6.mb-4.p-2.shadow-md.rounded.bg-yellow-300.z-50
-
+      
       [gui/IconAdjustments
        (let [bg-color (if (and (sub :devtools/?valid-db?) (sub :devtools/?stack-state-valid?))
                         "text-green-500"
                         "text-red-500")]
          {:class [bg-color "w-6 h-6"]})]
-
+      
       [:input.ml-2 {:type "checkbox"
                     :checked (sub :devtools/?enabled?)
                     :on-change #(disp :devtools/!toggle)}]])
-
+   
    (when (sub :devtools/?enabled?)
      [devtools/Inspect])])
 

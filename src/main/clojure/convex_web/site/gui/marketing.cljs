@@ -3,6 +3,7 @@
    [reitit.frontend.easy :as rfe]
    [reagent.core :as reagent]
    
+   [convex-web.site.stack :as stack]   
    [convex-web.site.gui :as gui]
    
    ["@heroicons/react/solid" :refer [MenuIcon]]))
