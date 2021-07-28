@@ -20,6 +20,13 @@
   [{:name "Technology"
     :path "markdown/technology.md"}]}
 
+ :use-cases
+ {:toc? true
+  :smart-toc? true
+  :contents
+  [{:name "Use Cases"
+    :path "markdown/use-cases.md"}]}
+ 
  :explorer
  {:toc? false
   :contents
