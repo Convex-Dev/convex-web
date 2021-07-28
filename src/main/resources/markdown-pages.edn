@@ -27,6 +27,13 @@
   [{:name "Use Cases"
     :path "markdown/use-cases.md"}]}
  
+ :ecosystem
+ {:toc? true
+  :smart-toc? true
+  :contents
+  [{:name "Ecosystem"
+    :path "markdown/ecosystem.md"}]}
+ 
  :explorer
  {:toc? false
   :contents
