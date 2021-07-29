@@ -250,10 +250,6 @@
        [#_{:text "White Paper"
            :route-name :route-name/white-paper
            :href (rfe/href :route-name/white-paper)}
-        
-        {:text "Team"
-         :route-name :route-name/team
-         :href (rfe/href :route-name/team)}
 
         {:text "Get Involved"
          :route-name :route-name/get-involved
@@ -319,7 +315,7 @@
 
 (defn SideNav [active-route]
   (let [{:keys [others]} (nav)]
-    [:nav.flex.flex-col.flex-shrink-0.font-mono.text-sm.overflow-auto
+    [:nav.flex.flex-col.flex-shrink-0.text-sm.overflow-auto
 
      (for [{:keys [text] :as item} others]
        ^{:key text}
@@ -384,7 +380,7 @@
 
             [:div.flex.items-center.space-x-2
              [gui/AIdenticon {:value selected :size 40}]
-             [:span.font-mono.block.ml-2
+             [:span.block.ml-2
               (format/prefix-# selected)]]
 
             [:span.absolute.inset-y-0.right-0.flex.items-center.pr-2.pointer-events-none
@@ -411,7 +407,7 @@
                 [:div.h-5.w-5.mr-2
                  [gui/PlusIcon {:class "h-5 w-5"}]]
 
-                [:span.font-mono.text-base.block
+                [:span.text-base.block
                  "Create Account"]]]
 
               ;; -- Accounts
@@ -432,21 +428,23 @@
 
                   [gui/AIdenticon {:value address :size 40}]
 
-                  [:span.font-mono.block.ml-2
+                  [:span.block.ml-2
                    (format/prefix-# address)]]])]]]]]]))))
 
 
 (defn TopNav []
-  (let [link-style "font-mono text-gray-800 hover:text-gray-500 active:text-black"]
-    [:div.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
+  (let [link-style "text-gray-800 hover:text-gray-500 active:text-black"]
+    [:nav.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
      [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-10
       
       ;; Logo
       ;; ===================
       [:a {:href (rfe/href :route-name/welcome)}
-       [:div.flex.items-center.space-x-4.border-b-4.border-blue-800.pb-2
-        [:span.text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]
-        [gui/ConvexLogo {:width "28px" :height "32px"}]]]
+       [:div.flex.items-center.space-x-4
+        
+        [gui/ConvexLogo {:width "28px" :height "32px"}]
+        
+        [:span.text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]]
       
       ;; Items
       ;; ===================
@@ -512,28 +510,18 @@
        [SideNav (:route/match (router/?route))]
        
        ;; -- Page
-       [:div.relative.flex.flex-col.flex-1.space-y-4.overflow-auto
-        (when active-page-frame
-          [:<>
-           
-           [:div.flex.flex-col.space-y-4
-            (when title
-              (let [title-size (case (get style :page-style/title-size)
-                                 :large "text-2xl"
-                                 :small "text-base"
-                                 ;; Default
-                                 "text-2xl")]
-                [:span.font-mono.text-gray-900
-                 {:class [title-size "leading-none"]}
-                 title]))
-            
-            (when description
-              [:p.text-gray-500.text-base.max-w-screen-sm description])
-            
-            (when title
-              [:div.w-32.h-2.bg-blue-500.mb-8])]
-           
-           [Component active-page-frame state set-state]])]]]]))
+       (when active-page-frame
+         [:div.relative.flex.flex-col.flex-1.space-y-10.overflow-auto
+          
+          (when title
+            [:div
+             [:span.text-gray-900.border-b-2.border-blue-500.pb-2.text-3xl.leading-none
+              title]])
+          
+          (when description
+            [:p.text-gray-500.text-base.max-w-screen-sm description])
+          
+          [Component active-page-frame state set-state]])]]]))
 
 (defn MarketingPage [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component
@@ -550,19 +538,14 @@
      ;; Page
      ;; =========================
      (when active-page-frame
-       [:div.px-10.py-6.w-full.max-w-screen-xl.mx-auto
+       [:div.px-10.py-6.w-full.max-w-screen-xl.mx-auto.space-y-10
         
-        (when (or title description)
-          [:div.flex.flex-col.space-y-4.mb-8
-           (when title
-             [:span.font-mono.text-gray-900
-              {:class "text-2xl leading-none"}
-              title])
-           
-           (when description
-             [:p.text-gray-500.text-base.max-w-screen-sm description])
-           
-           [:div.w-32.h-2.bg-blue-500]])
+        (when title
+          [:span.text-gray-900.border-b-2.border-blue-500.pb-2.text-3xl.leading-none
+           title])
+        
+        (when description
+          [:p.text-gray-500.text-base.max-w-screen-sm description])
         
         [Component active-page-frame state set-state]])
      

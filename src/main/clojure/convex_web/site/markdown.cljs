@@ -25,9 +25,7 @@
                 (reset! *nodes (.querySelectorAll el "h2"))))
 
             :class
-            (if toc?
-              ;; Add right padding to have some spacing between the markdown and the TOC.
-              "pr-10"
+            (when toc?
               ;; Without a TOC the markdown must have a full width.
               "flex-1")}
 

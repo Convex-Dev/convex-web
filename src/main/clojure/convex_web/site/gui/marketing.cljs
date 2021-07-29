@@ -166,15 +166,17 @@
                  
                  {:text "About"
                   :href (rfe/href :route-name/about)}]]
-      [:nav.h-16.flex.items-center.justify-between.pl-10.pr-4
+      [:nav.h-16.flex.items-center.justify-between.pl-10.pr-4.border-b.border-gray-100
        
        [:div.flex.flex-row.justify-between.items-center.flex-1
         
         ;; -- Logo
         [:a {:href (rfe/href :route-name/welcome)}
-         [:div.flex.items-center.space-x-4.border-b-4.border-blue-800.pb-2
-          [:span.text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]
-          [gui/ConvexLogo {:width "28px" :height "32px"}]]]
+         [:div.flex.items-center.space-x-4
+          
+          [gui/ConvexLogo {:width "28px" :height "32px"}]
+          
+          [:span.text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]]
         
         ;; -- Menu (mobile only)
         [:div.relative.inline-block.text-left.text-base.text-black.z-10
