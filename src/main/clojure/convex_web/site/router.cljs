@@ -133,6 +133,16 @@
                                                          :state {:id :about}
                                                          :reset? true}))}]}]
    
+   ;; Developer
+   ;; ==============
+   ["developer"
+    {:name :route-name/developer
+     :controllers
+     [{:start (fn [_]
+                (stack/push :page.id/markdown {:title "Welcome"
+                                               :state {:id :developer}
+                                               :reset? true}))}]}]
+   
    ;; Concepts
    ;; ==============
    ["concepts"

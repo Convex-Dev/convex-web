@@ -165,7 +165,10 @@
                   :href (rfe/href :route-name/team)}
                  
                  {:text "About"
-                  :href (rfe/href :route-name/about)}]]
+                  :href (rfe/href :route-name/about)}
+                 
+                 {:text "Developer"
+                  :href (rfe/href :route-name/developer)}]]
       [:nav.h-16.flex.items-center.justify-between.pl-10.pr-4.border-b.border-gray-100
        
        [:div.flex.flex-row.justify-between.items-center.flex-1

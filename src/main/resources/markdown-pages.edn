@@ -38,8 +38,14 @@
  {:toc? true
   :smart-toc? true
   :contents
-  [{:name "Ecosystem"
+  [{:name "About"
     :path "markdown/about.md"}]}
+ 
+ :developer
+ {:toc? false
+  :contents
+  [{:name "Developer"
+    :path "markdown/developer.md"}]}
  
  :explorer
  {:toc? false

@@ -132,13 +132,16 @@
     {:welcome
      {:text "Welcome"
       :top-level? true
-      :route-name :route-name/welcome
-      :href (rfe/href :route-name/welcome)
-      :active? (active #{:route-name/welcome
-                         :route-name/create-account})}
-
+      :route-name :route-name/developer
+      :href (rfe/href :route-name/developer)}
+     
      :others
-     [;; Concepts
+     [{:text "Welcome"
+       :top-level? true
+       :route-name :route-name/developer
+       :href (rfe/href :route-name/developer)}
+      
+      ;; Concepts
       ;; ==============
       {:text "Concepts"
        :top-level? true
@@ -148,15 +151,15 @@
        [{:text "Vision"
          :route-name :route-name/vision
          :href (rfe/href :route-name/vision)}
-
+        
         {:text "Glossary"
          :route-name :route-name/glossary
          :href (rfe/href :route-name/glossary)}
-
+        
         {:text "FAQ"
          :route-name :route-name/faq
          :href (rfe/href :route-name/faq)}]}
-
+      
       ;; Documentation
       ;; ==============
       {:text "Documentation"
@@ -167,32 +170,32 @@
        [{:text "Getting Started"
          :route-name :route-name/documentation-getting-started
          :href (rfe/href :route-name/documentation-getting-started)}
-
+        
         {:text "Lisp Guide"
          :route-name :route-name/documentation-tutorial
          :href (rfe/href :route-name/documentation-tutorial)}
-
+        
         {:text "Advanced Topics"
          :route-name :route-name/advanced-topics
          :href (rfe/href :route-name/advanced-topics)}
-
+        
         {:text "Reference"
          :route-name :route-name/documentation-reference
          :href (rfe/href :route-name/documentation-reference)}
-
+        
         {:text "Client API"
          :route-name :route-name/client-api
          :href (rfe/href :route-name/client-api)}]}
-
-
+      
+      
       ;; Sandbox
       ;; ==============
       {:text "Sandbox"
        :top-level? true
        :route-name :route-name/sandbox
        :href (rfe/href :route-name/sandbox)}
-
-
+      
+      
       ;; Tools
       ;; ==============
       {:text "Tools"
@@ -203,16 +206,16 @@
        [{:text "Wallet"
          :route-name :route-name/wallet
          :href (rfe/href :route-name/wallet)}
-
+        
         {:text "Faucet"
          :route-name :route-name/faucet
          :href (rfe/href :route-name/faucet)}
-
+        
         {:text "Transfer"
          :route-name :route-name/transfer
          :href (rfe/href :route-name/transfer)}]}
-
-
+      
+      
       ;; Explorer
       ;; ==============
       {:text "Explorer"
@@ -223,25 +226,25 @@
        (->> [{:text "Status"
               :route-name :route-name/state
               :href (rfe/href :route-name/state)}
-
+             
              {:text "Accounts"
               :route-name :route-name/accounts-explorer
               :href (rfe/href :route-name/accounts-explorer)
               :active? (active #{:route-name/accounts-explorer
                                  :route-name/account-explorer})}
-
+             
              {:text "Blocks"
               :route-name :route-name/blocks
               :href (rfe/href :route-name/blocks)
               :active? (active #{:route-name/blocks
                                  :route-name/block-explorer})}
-
+             
              {:text "Transactions"
               :route-name :route-name/transactions
               :href (rfe/href :route-name/transactions)}]
-            (sort-by first))}
-
-
+         (sort-by first))}
+      
+      
       ;; About
       ;; ==============
       {:text "About"
@@ -250,15 +253,15 @@
        [#_{:text "White Paper"
            :route-name :route-name/white-paper
            :href (rfe/href :route-name/white-paper)}
-
+        
         {:text "Get Involved"
          :route-name :route-name/get-involved
          :href (rfe/href :route-name/get-involved)}
-
+        
         #_{:text "Roadmap"
            :route-name :route-name/roadmap
            :href (rfe/href :route-name/roadmap)}
-
+        
         #_{:text "Convex Foundation"
            :route-name :route-name/convex-foundation
            :href (rfe/href :route-name/convex-foundation)}]}]}))
