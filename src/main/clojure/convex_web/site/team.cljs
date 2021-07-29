@@ -75,6 +75,13 @@
                 :linkedin "https://www.linkedin.com/in/billbarman/"
                 :github "https://github.com/billbsing"}
                
+               ;; -- Isaac
+               {:name "Isaac Johnston"
+                :title "Developer"
+                :areas "Commercial Use Case Design, Implementation and Integration"
+                :image "/images/team/isaac.png"
+                :linkedin "https://www.linkedin.com/in/superstructor/"
+                :github "https://github.com/superstructor"}
                
                ;; -- John
                {:name "John Newman"
