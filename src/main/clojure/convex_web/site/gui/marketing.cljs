@@ -3,6 +3,7 @@
    [reitit.frontend.easy :as rfe]
    [reagent.core :as reagent]
    
+   [convex-web.site.stack :as stack]   
    [convex-web.site.gui :as gui]
    
    ["@heroicons/react/solid" :refer [MenuIcon]]))
@@ -88,7 +89,7 @@
 
 
 (defn NavButton [text href]
-  [:a.text-base.text-blue-800.hover:text-blue-900.px-4.py-2
+  [:a.text-base.text-blue-800.uppercase.hover:text-blue-900.px-4.py-2
    {:href href}
    text])
 
@@ -144,70 +145,72 @@
 
 (defn NavDesktop [nav]
   [:div.hidden.md:flex.items-center.space-x-4
-   ;; -- Concepts
-   [Dropdown
-    (:concepts nav)]
    
-   ;; -- Documentation
-   [Dropdown
-    (:documentation nav)]
-   
-   ;; -- Sandbox
-   [NavButton "SANDBOX" (rfe/href :route-name/sandbox)]
-   
-   ;; -- Tools
-   [Dropdown
-    (:tools nav)]
-   
-   ;; -- Explorer
-   [Dropdown
-    (:explorer nav)]
-   
-   ;; -- About
-   [Dropdown
-    (:about nav)]])
+   (for [{:keys [text href]} nav]
+     ^{:key text}
+     [NavButton text href])])
 
-(defn Nav [nav]
+(defn Nav []
   (reagent/with-let [show?-ref (reagent/atom false)]
-    [:nav.h-16.flex.items-center.justify-between.pl-10.pr-4
-     
-     [:div.flex.flex-row.justify-between.items-center.flex-1
-      
-      ;; -- Logo
-      [:a {:href (rfe/href :route-name/welcome)}
-       [:div.flex.items-center.space-x-4.border-b-4.border-blue-800.pb-2
-         [:span.text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]
-         [gui/ConvexLogo {:width "28px" :height "32px"}]]]
-      
-      ;; -- Menu (mobile only)
-      [:div.relative.inline-block.text-left.text-base.text-black.z-10
-       [:button.md:hidden.rounded.p-2.shadow-md.transition.ease-in-out.duration-150
-        {:class
-         (if @show?-ref 
-           "bg-blue-200"
-           "bg-blue-50")}
-        [:> MenuIcon 
-         {:className "h-5 w-5 text-blue-800"
-          :on-click #(swap! show?-ref not)}]]
+    (let [items [{:text "Technology"
+                  :href (rfe/href :route-name/technology)}
+                 
+                 {:text "Use Cases"
+                  :href (rfe/href :route-name/use-cases)}
+                 
+                 {:text "Ecosystem"
+                  :href (rfe/href :route-name/ecosystem)}
+                 
+                 {:text "Team"
+                  :href (rfe/href :route-name/team)}
+                 
+                 {:text "About"
+                  :href (rfe/href :route-name/about)}
+                 
+                 {:text "Developer"
+                  :href (rfe/href :route-name/developer)}]]
+      [:nav.h-16.flex.items-center.justify-between.pl-10.pr-4.border-b.border-gray-100
        
-       [gui/Transition
-        (merge gui/dropdown-transition {:show? @show?-ref})
-        [gui/Dismissible {:on-dismiss #(reset! show?-ref false)}
-         [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg.z-10
-          [:div.rounded-md.bg-white.shadow-xs
-           [:div.py-1
-            {:role "menu"
-             :aria-orientation "vertical"
-             :aria-labelledby "options-menu"}
-            
-            (for [{:keys [text href]} (get-in nav [:about :items])]
-              ^{:key text}
-              [:a.block.px-4.py-2.leading-5.hover:bg-blue-100.hover:bg-opacity-50.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
-               {:href href}
-               text])]]]]]]]
-     
-     ;; -- Nav (desktop only)
-     [NavDesktop nav]]))
+       [:div.flex.flex-row.justify-between.items-center.flex-1
+        
+        ;; -- Logo
+        [:a {:href (rfe/href :route-name/welcome)}
+         [:div.flex.items-center.space-x-4
+          
+          [gui/ConvexLogo {:width "28px" :height "32px"}]
+          
+          [:span.text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]]
+        
+        ;; -- Menu (mobile only)
+        [:div.relative.inline-block.text-left.text-base.text-black.z-10
+         [:button.md:hidden.rounded.p-2.shadow-md.transition.ease-in-out.duration-150
+          {:class
+           (if @show?-ref 
+             "bg-blue-200"
+             "bg-blue-50")}
+          [:> MenuIcon 
+           {:className "h-5 w-5 text-blue-800"
+            :on-click #(swap! show?-ref not)}]]
+         
+         [gui/Transition
+          (merge gui/dropdown-transition {:show? @show?-ref})
+          [gui/Dismissible {:on-dismiss #(reset! show?-ref false)}
+           [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg.z-10
+            [:div.rounded-md.bg-white.shadow-xs
+             [:div.py-1
+              {:role "menu"
+               :aria-orientation "vertical"
+               :aria-labelledby "options-menu"}
+              
+              (for [{:keys [text href]} items]
+                ^{:key text}
+                [:a.block.px-4.py-2.leading-5.hover:bg-blue-100.hover:bg-opacity-50.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
+                 {:href href
+                  :on-click #(reset! show?-ref false)}
+                 text])]]]]]]]
+       
+       ;; -- Nav (desktop only)
+       [NavDesktop items]])))
 
 (defn BottomNavMenu [{:keys [text items]}]
   [:div.flex.flex-col.space-y-3.mb-10

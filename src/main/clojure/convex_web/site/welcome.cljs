@@ -21,7 +21,7 @@
     
     [:div
      
-     [marketing/Nav (marketing/nav)]
+     [marketing/Nav]
      
      [:div.relative.w-full.max-w-screen-xl.mx-auto.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12.px-10
       {:style

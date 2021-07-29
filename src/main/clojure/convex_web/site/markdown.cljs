@@ -6,7 +6,7 @@
 (defn MarkdownPage [_ {:keys [markdown]} _]
   (reagent/with-let [*nodes (reagent/atom nil)]
     (let [{:keys [ajax/status contents toc? smart-toc?] :or {toc? true}} markdown]
-      [:div.flex.flex-1.overflow-auto
+      [:div.flex.flex-1
        (case status
          :ajax.status/pending
          [:div.flex.flex-1.items-center.justify-center
@@ -18,16 +18,14 @@
          :ajax.status/success
          [:<>
           ;; -- Markdown
-          [:div.overflow-auto.flex-1
+          [:div.flex-1
            {:ref
             (fn [el]
               (when (and el smart-toc?)
                 (reset! *nodes (.querySelectorAll el "h2"))))
 
             :class
-            (if toc?
-              ;; Add right padding to have some spacing between the markdown and the TOC.
-              "pr-10"
+            (when toc?
               ;; Without a TOC the markdown must have a full width.
               "flex-1")}
 
@@ -40,7 +38,7 @@
           ;; -- On this page
           (when toc?
             (let [item-style "text-gray-600 hover:text-gray-900 cursor-pointer"]
-              [:div.flex.flex-col.mx-10
+              [:div.hidden.md:flex.md:flex-col.md:mx-10
                [:span.text-xs.text-gray-500.font-bold.uppercase "On this Page"]
 
                [:ul.list-none.text-sm.mt-4.space-y-2.overflow-auto
@@ -63,19 +61,28 @@
 
          [:div])])))
 
+(defn markdown-on-push
+  [_ {:keys [id]} set-state]
+  (set-state update :markdown assoc :ajax/status :ajax.status/pending)
+  
+  (backend/GET-markdown-page
+    id
+    {:handler
+     (fn [markdown-page]
+       (set-state update :markdown merge {:ajax/status :ajax.status/success} markdown-page))
+     
+     :error-handler
+     (fn [error]
+       (set-state update :markdown assoc :ajax/status :ajax.status/error :ajax/error error))}))
+
 (def markdown-page
   #:page {:id :page.id/markdown
           :component #'MarkdownPage
-          :on-push
-          (fn [_ {:keys [id]} set-state]
-            (set-state update :markdown assoc :ajax/status :ajax.status/pending)
+          :template :developer
+          :on-push markdown-on-push})
 
-            (backend/GET-markdown-page
-              id
-              {:handler
-               (fn [markdown-page]
-                 (set-state update :markdown merge {:ajax/status :ajax.status/success} markdown-page))
-
-               :error-handler
-               (fn [error]
-                 (set-state update :markdown assoc :ajax/status :ajax.status/error :ajax/error error))}))})
+(def markdown-marketing-page
+  #:page {:id :page.id/markdown-marketing
+          :component #'MarkdownPage
+          :template :marketing
+          :on-push markdown-on-push})

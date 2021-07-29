@@ -1,5 +1,3 @@
-## Welcome
-
 `convex.world` provides many tools to help you explore the state of the Convex network and perform basic actions.
 
 The [Wallet](https://convex.world/#/wallet) contains several Accounts that you control. The private keys for these Accounts are at present managed by the `convex.world` server for your convenience while using the test network. 

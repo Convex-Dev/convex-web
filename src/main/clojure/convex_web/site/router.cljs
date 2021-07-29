@@ -93,6 +93,56 @@
                 (stack/push :page.id/welcome {:reset? true}))}]}]
    
    
+   ;; Technology
+   ;; ==============
+   ["technology"
+    {:name :route-name/technology
+     :controllers
+     [{:start (fn [_]
+                (stack/push :page.id/markdown-marketing {:title "Technology"
+                                                         :state {:id :technology}
+                                                         :reset? true}))}]}]
+   
+   ;; Use Cases
+   ;; ==============
+   ["use-cases"
+    {:name :route-name/use-cases
+     :controllers
+     [{:start (fn [_]
+                (stack/push :page.id/markdown-marketing {:title "Use Cases"
+                                                         :state {:id :use-cases}
+                                                         :reset? true}))}]}]
+   
+   ;; Ecosystem
+   ;; ==============
+   ["ecosystem"
+    {:name :route-name/ecosystem
+     :controllers
+     [{:start (fn [_]
+                (stack/push :page.id/markdown-marketing {:title "Ecosystem"
+                                                         :state {:id :ecosystem}
+                                                         :reset? true}))}]}]
+   
+   ;; About
+   ;; ==============
+   ["about"
+    {:name :route-name/about
+     :controllers
+     [{:start (fn [_]
+                (stack/push :page.id/markdown-marketing {:title "About"
+                                                         :state {:id :about}
+                                                         :reset? true}))}]}]
+   
+   ;; Developer
+   ;; ==============
+   ["developer"
+    {:name :route-name/developer
+     :controllers
+     [{:start (fn [_]
+                (stack/push :page.id/markdown {:title "Welcome"
+                                               :state {:id :developer}
+                                               :reset? true}))}]}]
+   
    ;; Concepts
    ;; ==============
    ["concepts"
@@ -343,12 +393,6 @@
    ;; About
    ;; ==============
    ["about"
-    [""
-     {:name :route-name/about
-      :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/markdown {:state {:id :under-construction}
-                                                :reset? true}))}]}]
     
     ["/team"
      {:name :route-name/team

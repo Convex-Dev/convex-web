@@ -12,7 +12,41 @@
   :contents
   [{:name "Under Construction"
     :path "markdown/under_construction.md"}]}
+ 
+ :technology
+ {:toc? true
+  :smart-toc? true
+  :contents
+  [{:name "Technology"
+    :path "markdown/technology.md"}]}
 
+ :use-cases
+ {:toc? true
+  :smart-toc? true
+  :contents
+  [{:name "Use Cases"
+    :path "markdown/use-cases.md"}]}
+ 
+ :ecosystem
+ {:toc? true
+  :smart-toc? true
+  :contents
+  [{:name "Ecosystem"
+    :path "markdown/ecosystem.md"}]}
+ 
+ :about
+ {:toc? true
+  :smart-toc? true
+  :contents
+  [{:name "About"
+    :path "markdown/about.md"}]}
+ 
+ :developer
+ {:toc? false
+  :contents
+  [{:name "Developer"
+    :path "markdown/developer.md"}]}
+ 
  :explorer
  {:toc? false
   :contents
