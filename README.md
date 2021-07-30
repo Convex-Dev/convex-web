@@ -70,24 +70,3 @@ bin/run
     `sudo systemctl enable convex_web`
 - Start:
     `sudo systemctlm start convex_web`
-    
-## Logging
-
-Google Cloud Logging is used for log storage, and there are two types of logs in Convex Web:
-- SLF4J/Logback for Convex and libraries,
-- and u/Log events for structured logs.
-
-### u/Log Events
-
-| Event | Description |
-|:--|:--|
-| `:logging.event/endpoint` | Logged for every request |
-| `:logging.event/system-error` | Whenever an unexpected Exception is raised  |
-| `:logging.event/user-error` | User errors e.g.: Faucet amount above limit  |
-| `:logging.event/repl-user` | What users type in the REPL  |
-| `:logging.event/repl-error` | Errors users make in the REPL  |
-| `:logging.event/faucet` | Faucet request  |
-| `:logging.event/new-account` | User created a new account |
-| `:logging.event/confirm-account` | User confirmed the account  |
-
-There's a Google Cloud Logging Sink set up to send events log to Big Query. Once our events log are in Big Query we can use SQL to query all different sort of things. (There are some saved queries in project)
