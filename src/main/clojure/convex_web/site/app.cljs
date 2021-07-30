@@ -506,8 +506,8 @@
      
      ;; Main
      ;; ================
-     [:div.w-full.mx-auto.px-10
-      [:div.h-screen.flex.pt-24.space-x-10
+     [:div.w-full.max-w-7xl.mx-auto
+      [:div.h-screen.flex.pt-24.space-x-24
        
        ;; -- Nav
        [SideNav (:route/match (router/?route))]
