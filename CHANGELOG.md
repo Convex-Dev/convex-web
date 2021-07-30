@@ -1,5 +1,9 @@
 # Changes
 
+## 0.20.0 -- 2021-07-30
+
+- [Center core text #134](https://github.com/Convex-Dev/convex-web/issues/134)
+
 ## 0.19.0 -- 2021-07-30
 
 - [Anchor footer to the bottom #135](https://github.com/Convex-Dev/convex-web/issues/135)
