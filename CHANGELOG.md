@@ -1,5 +1,9 @@
 # Changes
 
+## 0.19.0 -- 2021-07-30
+
+- [Anchor footer to the bottom #135](https://github.com/Convex-Dev/convex-web/issues/135)
+
 ## 0.18.0 -- 2021-07-22
 
 - [Launch convex-web with a trusted private key](https://github.com/Convex-Dev/convex-web/issues/82)
