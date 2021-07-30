@@ -541,7 +541,7 @@
      ;; Page
      ;; =========================
      (when active-page-frame
-       [:div.px-10.py-6.w-full.max-w-screen-xl.mx-auto.space-y-10
+       [:div.px-10.py-6.w-full.max-w-screen-xl.mx-auto.space-y-10.mb-20
         {:style {:min-height "100vh"}}
         
         (when title
