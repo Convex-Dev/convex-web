@@ -541,7 +541,7 @@
      ;; Page
      ;; =========================
      (when active-page-frame
-       [:div.px-10.py-6.w-full.max-w-screen-xl.mx-auto.space-y-10
+       [:div.px-10.py-6.h-screen.w-full.max-w-screen-xl.mx-auto.space-y-10
         
         (when title
           [:span.text-gray-900.border-b-2.border-blue-500.pb-2.text-3xl.leading-none
