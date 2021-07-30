@@ -38,25 +38,7 @@
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
        [:div.prose.lg:prose-2xl
         [:p "Convex is the next generation of blockchain technology, with web-scale performance, flexibility and energy efficiency."]
-        [:p "We're an open source, non-profit foundation enabling new decentralised ecosystems in finance, gaming virtual worlds and the enterprise."]]]
-      
-      
-      [:div.flex.space-x-6.md:space-x-12
-       [:a.invisible.md:visible
-        {:href (rfe/href :route-name/vision)}
-        [gui/TealButton
-         {}
-         [:div.w-28.md:w-40
-          [:span.text-xs.md:text-sm.text-white.uppercase
-           "Our Vision"]]]]
-       
-       [:a.invisible.md:visible
-        {:href (rfe/href :route-name/documentation-getting-started)}
-        [gui/BlueButton
-         {}
-         [:div.w-28.md:w-40
-          [:span.text-xs.md:text-sm.text-white.uppercase
-           "Start Building"]]]]]]
+        [:p "We're an open source, non-profit foundation enabling new decentralised ecosystems in finance, gaming virtual worlds and the enterprise."]]]]
      
      
      [:div.w-full
