@@ -37,8 +37,8 @@
       
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
        [:div.prose.lg:prose-2xl
-        [:p "Convex is an open, decentralised, and efficient technology platform built in the spirit of the original Internet."]
-        [:p "Create your own digital assets, smart contracts and powerful decentralised applications for the Digital Economy of tomorrow."]]]
+        [:p "Convex is the next generation of blockchain technology, with web-scale performance, flexibility and energy efficiency."]
+        [:p "We're an open source, non-profit foundation enabling new decentralised ecosystems in finance, gaming virtual worlds and the enterprise."]]]
       
       
       [:div.flex.space-x-6.md:space-x-12
