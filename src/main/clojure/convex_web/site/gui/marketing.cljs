@@ -89,8 +89,12 @@
 
 
 (defn NavButton [text href]
-  [:a.text-base.text-blue-800.uppercase.hover:text-blue-900.px-4.py-2
-   {:href href}
+  [:a
+   {:class ["text-base text-blue-800 hover:text-blue-900 uppercase"
+            "hover:bg-gray-100 active:bg-gray-200"
+            "transition duration-150 ease-in-out"
+            "px-4 py-2 rounded"]
+    :href href}
    text])
 
 (defn DropdownButton [{:keys [text on-click]}]
