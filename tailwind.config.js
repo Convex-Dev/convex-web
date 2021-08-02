@@ -31,21 +31,21 @@ module.exports = {
       },
       colors: {
         teal: colors.teal
-      },
-      typography: {
-        default: {
-          css: {
-            pre: {
-              color: false,
-              backgroundColor: false
-            },
-            a: {
-              fontWeight: '500',
-              textDecoration: 'no-underline',
-              color: colors.blue['500']
-            },
+      }
+    },
+    typography: {
+      default: {
+        css: {
+          pre: {
+            color: false,
+            backgroundColor: false
           },
-        }
+          a: {
+            fontWeight: '500',
+            textDecoration: 'underline',
+            color: colors.blue['500']
+          },
+        },
       }
     }
   },
