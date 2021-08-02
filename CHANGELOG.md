@@ -1,5 +1,9 @@
 # Changes
 
+## 0.21.0 -- 2021-08-02
+
+- [Change markdown links style #136](https://github.com/Convex-Dev/convex-web/issues/136)
+
 ## 0.20.0 -- 2021-07-30
 
 - [Center core text #134](https://github.com/Convex-Dev/convex-web/issues/134)
