@@ -318,8 +318,13 @@
 
 (defn SideNav [active-route]
   (let [{:keys [others]} (nav)]
-    [:nav.flex.flex-col.flex-shrink-0.text-sm.overflow-auto
-
+    [:nav.text-sm.overflow-auto
+     {:class [;; Mobile
+              "hidden"
+              
+              ;; Desktop
+              "md:flex flex-col flex-shrink-0"]}
+     
      (for [{:keys [text] :as item} others]
        ^{:key text}
        [:div.mb-2
@@ -451,7 +456,7 @@
       
       ;; Items
       ;; ===================
-      [:div.flex.items-center.justify-end.space-x-8
+      [:div.hidden.md:flex.items-center.justify-end.space-x-8
        
        (cond
          (session/?active-address)
@@ -507,7 +512,13 @@
      ;; Main
      ;; ================
      [:div.w-full.max-w-7xl.mx-auto
-      [:div.h-screen.flex.pt-24.space-x-24
+      [:div.h-screen.flex.pt-24
+       {:class 
+        [;; Mobile
+         "px-10"
+         
+         ;; Desktop
+         "md:space-x-24 md:px-0"]}
        
        ;; -- Nav
        [SideNav (:route/match (router/?route))]
