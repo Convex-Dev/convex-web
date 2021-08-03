@@ -173,7 +173,7 @@
                  
                  {:text "Developer"
                   :href (rfe/href :route-name/developer)}]]
-      [:nav.h-16.flex.items-center.justify-between.pl-10.pr-4.border-b.border-gray-100
+      [:nav.h-16.flex.items-center.justify-between.pl-10.pr-4.md:pr-10.border-b.border-gray-100
        
        [:div.flex.flex-row.justify-between.items-center.flex-1
         
