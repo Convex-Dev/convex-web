@@ -388,7 +388,7 @@
 
             [:div.flex.items-center.space-x-2
              [gui/AIdenticon {:value selected :size 40}]
-             [:span.block.ml-2
+             [:span.block.ml-2.text-sm
               (format/prefix-# selected)]]
 
             [:span.absolute.inset-y-0.right-0.flex.items-center.pr-2.pointer-events-none
@@ -456,13 +456,12 @@
       
       ;; Items
       ;; ===================
-      [:div.hidden.md:flex.items-center.justify-end.space-x-8
+      [:div.flex.items-center.justify-end.space-x-8
        
        (cond
          (session/?active-address)
-         [:<>
-          ;; -- Select account
-          [AccountSelect]]
+         ;; -- Select account
+         [AccountSelect]
          
          (= :ajax.status/pending (session/?status))
          [gui/Spinner]
