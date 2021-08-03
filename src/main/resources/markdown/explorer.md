@@ -1,4 +1,4 @@
-The [Explorer](/explorer) contains utilities to help you examine and analyse the state of the Convex network. We need utilities to help us do this because Convex is at its heart a large decentralised database. This immutable database supports complex data structures that would be extremely hard to inspect manually!
+The Explorer contains utilities to help you examine and analyse the state of the Convex network. We need utilities to help us do this because Convex is at its heart a large decentralised database. This immutable database supports complex data structures that would be extremely hard to inspect manually!
 
 The key utilities implemented so far are listed below:
 
