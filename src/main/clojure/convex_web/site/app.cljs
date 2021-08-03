@@ -461,30 +461,6 @@
        (cond
          (session/?active-address)
          [:<>
-          ;; -- Wallet
-          [:a
-           {:href (rfe/href :route-name/wallet)}
-           [:span {:class link-style}
-            "Wallet"]]
-          
-          ;; -- Faucet
-          [:a
-           {:href (rfe/href :route-name/faucet)}
-           [:span {:class link-style}
-            "Faucet"]]
-          
-          ;; -- Transfer
-          [:a
-           {:href (rfe/href :route-name/transfer)}
-           [:span {:class link-style}
-            "Transfer"]]
-          
-          ;; -- Details
-          [:a
-           {:href (rfe/href :route-name/my-account)}
-           [:span {:class link-style}
-            "Account"]]
-          
           ;; -- Select account
           [AccountSelect]]
          
