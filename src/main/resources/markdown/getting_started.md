@@ -56,15 +56,6 @@ There are two modes for the Sandbox:
 
 The basic rule is to use queries when you only want to read information from Convex and make no changes. For all other actions, you will want to use transactions so that your changes will take effect.
 
-### Language Selection
-
-You can also currently choose two different languages for entering commands:
-
-- **Convex Lisp (default)** : A variant of the Lisp language
-- **Convex Scrypt** : a simple scripting language based on JavaScript syntax
-
-For this guide, we will use Convex Lisp. For more details on how to use Scrypt, see **TODO Add Link**. In the future, Convex may support a wider range of languages on the CVM.
-
 
 ## Moving Funds
 
