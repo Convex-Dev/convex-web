@@ -36,7 +36,7 @@ In the third phase, Syntax Objects are *compiled* into *Ops*, which are the low-
 <Syntax Object> -> <Op>
 ```
 
-There are only a small number of Op types on the CVM, which are roughly based on the fundamental operations required to implement the [Lambda Calculus](https://en.wikipedia.org/wiki/Lambda_calculus). Currently, these are:
+There are only a small number of Op types on the CVM, which are roughly based on the fundamental operations required to implement the [**Lambda Calculus**](https://en.wikipedia.org/wiki/Lambda_calculus). Currently, these are:
 
 - **Cond** - Performs a conditional branch
 - **Constant** - Loads a constant value
@@ -64,7 +64,7 @@ Results from Op execution must be either:
 - A valid CVM data object
 - An exceptional result (e.g. an error or early return value)
 
-Convex Ops are technically a form of [p-code](https://en.wikipedia.org/wiki/P-code_machine), analogous in many ways to Java bytecode. Using Ops gives a few big advantages:
+Convex Ops are technically a form of [**p-code**](https://en.wikipedia.org/wiki/P-code_machine), analogous in many ways to Java bytecode. Using Ops gives a few big advantages:
 
 - Ops can be executed very efficiently many times (avoiding the more expensive phases of parsing, expansion and compilation).
 - Ops are very compact in terms of memory used - making them ideal for network transmission and efficient usage of on-chain storage.

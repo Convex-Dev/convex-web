@@ -12,6 +12,6 @@ Grants, bounties and awards are given by the Foundation to those who contribute 
 ## Open Source
 
 Open source contribtutions are welcome. To get involved:
-- Discuss your ideas on the [Convex Discord](https://discord.com/invite/fsnCxEM)
-- Clone our open source repos and file issues and PRs at [GitHub](https://github.com/Convex-Dev)
+- Discuss your ideas on the [**Convex Discord**](https://discord.com/invite/fsnCxEM)
+- Clone our open source repos and file issues and PRs at [**GitHub**](https://github.com/Convex-Dev)
 - Work with our repo maintainers to get your changes approved

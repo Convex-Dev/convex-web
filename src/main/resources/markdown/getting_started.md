@@ -1,6 +1,6 @@
 This page provides a quick guided tour of Convex. We'll take you through everything from creating your first Account to launching your very own digital token!
 
-You don't need any particular programming language experience to follow this guide, but if you want to follow using the Sandbox you will need to *precisely* enter some commands in Convex Lisp. If you want to learn more about Convex Lisp as a programming language, check out the [Convex Lisp Tutorial](https://convex.world/#/documentation/convex-lisp).
+You don't need any particular programming language experience to follow this guide, but if you want to follow using the Sandbox you will need to *precisely* enter some commands in Convex Lisp. If you want to learn more about Convex Lisp as a programming language, check out the [**Convex Lisp Tutorial**](https://convex.world/#/documentation/convex-lisp).
 
 ## Making an Account
 
@@ -331,12 +331,12 @@ Where you go from here is up to you. Some ideas:
 - Learn more about Convex from the other documentation and guides here at `convex.world`
 - Build a mobile dApp that talks to your Convex Actors with the Client API
 
-We're excited to see what people can build using Convex! But most importantly, please let us know your feedback and what you think of Convex so far. You can join the [Convex Discord Server](https://discord.gg/fsnCxEM) to get involved with the discussions:
+We're excited to see what people can build using Convex! But most importantly, please let us know your feedback and what you think of Convex so far. You can join the [**Convex Discord Server**](https://discord.gg/fsnCxEM) to get involved with the discussions:
 
-- [Convex Discord](https://discord.gg/fsnCxEM) 
+- [**Convex Discord**](https://discord.gg/fsnCxEM) 
 
 And also please check out the Convex-Dev discord if you would like to get involved with the open-source development and bounty program!
 
-- [Convex-Dev GitHub](https://github.com/orgs/Convex-Dev)
+- [**Convex-Dev GitHub**](https://github.com/orgs/Convex-Dev)
 
 Happy Building!

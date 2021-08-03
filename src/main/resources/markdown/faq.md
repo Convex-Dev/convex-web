@@ -86,11 +86,11 @@ It's complex! But here are some of the most important points:
 
 A variant of Lisp was chosen as the initial language for the CVM for a few reasons:
 
-- Lisp expressions are essentially a direct encoding of the [Lambda Calculus](https://en.wikipedia.org/wiki/Lambda_calculus). This means that we are based on fundamentally sound computation theory.
+- Lisp expressions are essentially a direct encoding of the [**Lambda Calculus**](https://en.wikipedia.org/wiki/Lambda_calculus). This means that we are based on fundamentally sound computation theory.
 - Lisp macros are a powerful tool for generating code, which is an ideal solution for building sophisticated smart contract capabilities with an on-chain compiler.
 - Lisp is a highly expressive language for interactive development, with a long history of REPL-based usage. We feel this is ideal for a platform where we want developers to be instantly productive and able to interact directly with the system in real-time.
 
-Paul Graham's essay [Beating the Averages](http://www.paulgraham.com/avg.html) is an interesting perspective on the advantages of Lisp for building a business. Despite dating from 2001, we feel many of these points still stand today and are very relevant for people wanting to build applications using Convex.
+Paul Graham's essay [**Beating the Averages**](http://www.paulgraham.com/avg.html) is an interesting perspective on the advantages of Lisp for building a business. Despite dating from 2001, we feel many of these points still stand today and are very relevant for people wanting to build applications using Convex.
 
 
 ## What is Memory Accounting?

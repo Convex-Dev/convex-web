@@ -2,7 +2,7 @@ This guide is intended for developers interested in learning about Convex Lisp. 
 
 ## Setup
 
-Using the [Sandbox](https://convex.world/#/sandbox) is the easiest way to experience Convex Lisp. We recommend that you try it out as you go through this guide: It's more fun to get instant feedback and try out new ideas quickly! To do this:
+Using the [**Sandbox**](https://convex.world/#/sandbox) is the easiest way to experience Convex Lisp. We recommend that you try it out as you go through this guide: It's more fun to get instant feedback and try out new ideas quickly! To do this:
 
 - Open the Sandbox (you can create a free, anonymous temporary account with one just one click!)
 - Select "Convex Lisp" as the language, if not already selected 
@@ -158,7 +158,7 @@ Why do we do this? It turns out that being able to express the whole function ap
 
 #### The Core library
 
-The Convex core runtime library provides a wide variety of useful functions that you can see in the [Reference](https://convex.world/#/documentation/reference). Some simple examples to try out:
+The Convex core runtime library provides a wide variety of useful functions that you can see in the [**Reference**](https://convex.world/#/documentation/reference). Some simple examples to try out:
 
 ```clojure
 ;; Addition: '+' is a variable arity function that cab take multiple arguments
