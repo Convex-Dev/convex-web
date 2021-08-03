@@ -108,6 +108,4 @@ We are committed to:
 
 It is important to note, however, that the Convex Foundation does not "own" Convex. While the Foundation plays an important governance role and acts as a responsible steward of network integrity, ultimately Convex is an open technology that everyone is free to use, in the spirit of the original Internet.
 
-To get involved with the community, the primary hub right now is the [Convex Discord Server](https://discord.gg/fsnCxEM) which hosts public discussion forums and live events:
-
-- [Convex Discord](https://discord.gg/fsnCxEM) 
+To get involved with the community, the primary hub right now is the [Convex Discord Server](https://discord.gg/fsnCxEM) which hosts public discussion forums and live events.
