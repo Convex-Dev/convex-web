@@ -4,7 +4,7 @@ If you are looking for the best platform to build your decentralised application
 
 ## Community
 
-We are a diverse, international, open community and welcome anyone who wants to participate in the Convex ecosystem. Discussions happen primarily on the [Convex Discord] and technology development is fully open source on [GitHub](https://github.com/Convex-Dev).
+We are a diverse, international, open community and welcome anyone who wants to participate in the Convex ecosystem. Discussions happen primarily on the [Convex Discord](https://discord.com/invite/fsnCxEM) and technology development is fully open source on [GitHub](https://github.com/Convex-Dev).
 
 ## Investors
 
