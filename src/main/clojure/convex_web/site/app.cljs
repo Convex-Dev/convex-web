@@ -518,7 +518,12 @@
           
           (when title
             [:div
-             [:h1.inline.text-gray-900.border-b-2.border-blue-500.pb-2.text-3xl.leading-none
+             [:h1
+              {:class ["inline"
+                       "text-gray-900 text-3xl md:text-4xl"
+                       "leading-none"
+                       "border-b-2 border-blue-500"
+                       "pb-2"]}
               title]])
           
           (when description
@@ -545,7 +550,12 @@
         {:style {:min-height "100vh"}}
         
         (when title
-          [:h1.inline.text-gray-900.border-b-2.border-blue-500.pb-2.text-3xl.leading-none
+          [:h1
+           {:class ["inline"
+                    "text-gray-900 text-3xl md:text-4xl"
+                    "leading-none"
+                    "border-b-2 border-blue-500"
+                    "pb-2"]}
            title])
         
         (when description
