@@ -585,23 +585,7 @@
               :value "Query"}]
             :on-change #(set-state assoc :convex-web.repl/mode %)}]
           
-          [gui/InfoTooltip "Select \"Transaction\" to execute code as a transaction on the Convex Network. Select \"Query\" to execute code just to compute the result (No on-chain effects will be applied)."]]]
-        
-        ;; -- Language
-        [:div.flex.items-center
-         
-         [:span.text-xs.text-gray-700.mr-1
-          "Language"]
-         
-         [:div.flex.items-center.space-x-1
-          [gui/Select2
-           {:selected (language state)
-            :options
-            [{:id :convex-lisp
-              :value "Convex Lisp"}]
-            :on-change #(set-state assoc :convex-web.repl/language %)}]
-          
-          [gui/InfoTooltip "Select the programming language to use."]]]]]]
+          [gui/InfoTooltip "Select \"Transaction\" to execute code as a transaction on the Convex Network. Select \"Query\" to execute code just to compute the result (No on-chain effects will be applied)."]]]]]]
      
      ;; -- Sidebar
      [gui/SlideOver
