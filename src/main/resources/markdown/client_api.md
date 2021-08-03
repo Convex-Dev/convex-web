@@ -74,7 +74,7 @@ Request for an amount of free Convex coins on an existing Account.
 
 ### Payload
 - `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1".
-- `amount`: The requested amount in Convex Coins.
+- `amount`: The requested amount in Convex Copper Coins.
 
 Examples:
 ```json
@@ -87,7 +87,7 @@ Examples:
 ### Response
 
 - `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1".
-- `amount`: The requested amount in Convex Coins.
+- `amount`: The requested amount in Convex Copper Coins.
 - `value`: Actual value returned by the Transaction - it can be less than `amount`.
 
 Examples:
