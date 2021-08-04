@@ -74,7 +74,7 @@ Request for an amount of free Convex coins on an existing Account.
 
 ### Payload
 - `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1".
-- `amount`: The requested amount in Convex Copper Coins.
+- `amount`: The requested amount in Convex Copper Coins - max allowed is 100,000,000.
 
 Examples:
 ```json
@@ -98,6 +98,30 @@ Examples:
   "value": 10000
 }
 ```
+
+### Error cases
+
+If the value requested is above 100,000,000, an HTTP status 400 with the following body is returned:
+
+```json
+{
+  "errorCode": "INCORRECT",
+  "value": "You can't request more than 100,000,000.",
+  "source": "Server"
+}
+```
+
+If the value requested is negative, an HTTP status 400 with the following body is returned:
+
+```json
+{
+  "errorCode": "INCORRECT",
+  "value": "Invalid amount: -1",
+  "source": "Server"
+}
+```
+
+Where amount is the value requested.
 
 ## Query
 
