@@ -7,7 +7,7 @@ You don't need any particular programming language experience to follow this gui
 To get started, you'll need to create an **Account**, if you don't have one already. Press `Create Account` to get a new free account. An account is your identity on the Convex system, and is named using a numeric **Address** which is looks something like this:
 
 ```
-#123
+#1234
 ```
 
 Conventionally, we display Addresses with a `#` to distinguish them from other numbers.
@@ -42,7 +42,7 @@ The box at the bottom centre is where you can enter commands to the convex syste
 
 ```
 *address*
-=> 0xC62f714fBCf8EcdF235aC6FB9da250343e566b669E622c85A8d755Dd162f764b
+=> #1234
 ```
 
 Run the command, and you should see your current Address returned. The results display also shows some helpful information about the values returned, such as the account balance if an Address refers to an Account.
@@ -66,7 +66,7 @@ To test this out we will need **two Accounts**. You can either make a second acc
 To transfer funds, we use the `transfer` function, which we supply with the Address of the account we want to transfer to, and the amount we want to transfer.
 
 ```clojure
-(transfer 0x8506cc53f9b7dD152C9BB5386d50C360ff85EFD043049aea55B44362D92C0E1C 10000)
+(transfer #1234 10000)
 => 10000
 ```
 
@@ -77,7 +77,7 @@ Check that funds have gone out of your Account, and into the destination Account
 If you try to transfer a particularly large amount, you will get an error saying that you don't have sufficient funds:
 
 ```clojure
-(transfer 0x8506cc53f9b7dD152C9BB5386d50C360ff85EFD043049aea55B44362D92C0E1C 999999999999999999)
+(transfer #1234 999999999999999999)
 => ERROR(FUNDS): Insufficient funds in account
 ```
 
@@ -140,18 +140,18 @@ Here's a simple TODO list application:
 
 Using the application is easy
 
-```
+```clojure
 ;; Check current TODOs
 todos
-=> []
+;; => []
 
 ;; Add a TODO
 (add-todo "Wash the car")
-=> :OK
+;; => :OK
 
 ;; Check current TODOs
 todos
-=> ["Wash the car"]
+;; => ["Wash the car"]
 ```
 
 Some points to note:
@@ -185,7 +185,7 @@ The simplest Actor you can build is an empty Actor:
 ```clojure
 ;; Deploy an empty Actor, with code defined by 'nil'
 (def actor (deploy nil))
-=> #1234
+;; => #1234
 ```
 
 This Actor does nothing. It contains no useful information. It has no exported functions, and therefore can never do anything. This is a bit useless, but reassuring! Security is all about the confidence of knowing what harmful things *can't* be done.
@@ -194,10 +194,10 @@ Although not useful, this empty Actor still exists on the Convex Network. You ca
 
 ```clojure
 (actor? #1234)
-=> true
+;; => true
 
 (balance #1234)
-=> 0
+;; => 0
 ```
 
 ### Exported functions
@@ -227,14 +227,14 @@ You can now `call` the actor to get and increment the counter freely:
 ```clojure
 ;; check the initial counter value
 (call actor (get))
-;;=> 0
+;; => 0
 
 ;; increment the counter
 (call actor (increment))
 
 ;; check the new counter value
 (call actor (get))
-;;=> 1
+;; => 1
 ```
 
 ### Actor security
@@ -283,14 +283,14 @@ You can check your token balance easily using another function in the Fungible l
 
 ```clojure
 (fungible/balance my-token *address*)
-=> 1000
+;; => 1000
 ```
 
 As expected, we are initially in possession of all 1000 tokens. Instead of using your current Address (`*address*`) you can equivalently check the token balance of any other Address, which by default will be 0.
 
 ```clojure
 (fungible/balance my-token #666)
-=> 0
+;; => 0
 ```
 
 If you want to transfer 100 Tokens to another Account:
@@ -303,14 +303,14 @@ Now you should be able to observe that your own token balance has been reduced:
 
 ```clojure
 (fungible/balance my-token *address*)
-=> 900
+;; => 900
 ```
 
 And you can also see that the recipient is not the proud owner of 100 tokens:
 
 ```clojure
 (fungible/balance my-token #666)
-=> 100
+;; => 100
 ```
 
 ## Summary and next steps
