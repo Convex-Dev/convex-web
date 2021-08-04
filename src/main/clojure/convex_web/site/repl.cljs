@@ -125,7 +125,9 @@
                                (filter
                                  (fn [[sym _]]
                                    (str/includes? (name sym) search-string))
-                                 reference))]
+                                 reference))
+          
+          filtered-reference (sort-by first filtered-reference)]
       
       [:div.h-full.flex.flex-col.p-1.space-y-3.overflow-auto
        
