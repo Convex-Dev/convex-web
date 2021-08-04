@@ -4,10 +4,10 @@ You don't need any particular programming language experience to follow this gui
 
 ## Making an Account
 
-To get started, you'll need to create an **Account**, if you don't have one already. Press `Create Account` to get a new free account. An account is your identity on the Convex system, and is named using a numeric **Address** which is looks something like this:
+To get started, you'll need to create an **Account**, if you don't have one already. Press **Create Account** to get a new free account. An account is your identity on the Convex system, and is named using a numeric **Address** which is looks something like this:
 
-```
-#123
+```clojure
+#1234
 ```
 
 Conventionally, we display Addresses with a `#` to distinguish them from other numbers.
@@ -30,19 +30,17 @@ Every new account on the network gets an initial balance `100,000,000` (100 silv
 
 ## Enter the Sandbox
 
-The sandbox is an interactive tool that lets you test and explore all the features of the Convex Network. Click on `Sandbox` on the left navigation bar and you should see a screen like this:
+The sandbox is an interactive tool that lets you test and explore all the features of the Convex Network. Click on **Sandbox** on the left navigation bar and you should see a screen like this:
 
-```
-TODO: Picture
-```
+![Sandbox](/images/sandbox.png)
 
 ### Running Commands
 
 The box at the bottom centre is where you can enter commands to the convex system. The large box in the centre is where the results are displayed after each command. To test it out, try entering the following command:
 
-```
+```clojure
 *address*
-=> 0xC62f714fBCf8EcdF235aC6FB9da250343e566b669E622c85A8d755Dd162f764b
+;; => #1234
 ```
 
 Run the command, and you should see your current Address returned. The results display also shows some helpful information about the values returned, such as the account balance if an Address refers to an Account.
@@ -66,8 +64,8 @@ To test this out we will need **two Accounts**. You can either make a second acc
 To transfer funds, we use the `transfer` function, which we supply with the Address of the account we want to transfer to, and the amount we want to transfer.
 
 ```clojure
-(transfer 0x8506cc53f9b7dD152C9BB5386d50C360ff85EFD043049aea55B44362D92C0E1C 10000)
-=> 10000
+(transfer #1234 10000)
+;; => 10000
 ```
 
 Make sure you get the destination Address correct! If you make a transfer to an Account that you don't have access to or use the wrong recipient Address, then you will probably lose your coins.
@@ -77,8 +75,8 @@ Check that funds have gone out of your Account, and into the destination Account
 If you try to transfer a particularly large amount, you will get an error saying that you don't have sufficient funds:
 
 ```clojure
-(transfer 0x8506cc53f9b7dD152C9BB5386d50C360ff85EFD043049aea55B44362D92C0E1C 999999999999999999)
-=> ERROR(FUNDS): Insufficient funds in account
+(transfer #1234 999999999999999999)
+;; => FUNDS: Insufficient funds in account [#1234] required=999999999999999999
 ```
 
 **NOTE** Error in transactions doesn't really do any harm. When they occur, everything in the transaction is "rolled back" to the state it was at the start of the transaction, e.g. any coins you transferred early in the transaction (before the error) will be put back in your Account. All you will lose is a small amount of transaction fees.
@@ -89,7 +87,7 @@ As well as a coin balance, every Account has its own **Environment**. This is a 
 
 ```clojure
 (def favorite-number 101)
-=> 101
+;; => 101
 ```
 
 The `def` command creates a **Definition** in the environment names with the Symbol `favorite-number`. Once created, this definition stays in the Environment forever (unless you remove it or change it). 
@@ -98,21 +96,21 @@ Once you have a value defined in the environment, you can use it freely in futur
 
 ```clojure
 favorite-number
-=> 101
+;; => 101
 ```
 
 Or if you want to use your defined values in other calculations or commands:
 
 ```clojure
 (* favorite-number 1000)
-=> 101000
+;; => 101000
 ```
 
 If you want to delete a definition, you can use `undef`
 
 ```clojure
 (undef favorite-number)
-=> nil
+;; => nil
 ```
 
 Deleting definitions once you no longer need them is a good idea to keep your Environment tidy. It can also get earn you refunds for releasing memory!
@@ -138,20 +136,20 @@ Here's a simple TODO list application:
   :OK)
 ```
 
-Using the application is easy
+Using the application is easy:
 
-```
+```clojure
 ;; Check current TODOs
 todos
-=> []
+;; => []
 
 ;; Add a TODO
 (add-todo "Wash the car")
-=> :OK
+;; => :OK
 
 ;; Check current TODOs
 todos
-=> ["Wash the car"]
+;; => ["Wash the car"]
 ```
 
 Some points to note:
@@ -185,7 +183,7 @@ The simplest Actor you can build is an empty Actor:
 ```clojure
 ;; Deploy an empty Actor, with code defined by 'nil'
 (def actor (deploy nil))
-=> #1234
+;; => #1234
 ```
 
 This Actor does nothing. It contains no useful information. It has no exported functions, and therefore can never do anything. This is a bit useless, but reassuring! Security is all about the confidence of knowing what harmful things *can't* be done.
@@ -194,10 +192,10 @@ Although not useful, this empty Actor still exists on the Convex Network. You ca
 
 ```clojure
 (actor? #1234)
-=> true
+;; => true
 
 (balance #1234)
-=> 0
+;; => 0
 ```
 
 ### Exported functions
@@ -227,14 +225,14 @@ You can now `call` the actor to get and increment the counter freely:
 ```clojure
 ;; check the initial counter value
 (call actor (get))
-;;=> 0
+;; => 0
 
 ;; increment the counter
 (call actor (increment))
 
 ;; check the new counter value
 (call actor (get))
-;;=> 1
+;; => 1
 ```
 
 ### Actor security
@@ -283,14 +281,14 @@ You can check your token balance easily using another function in the Fungible l
 
 ```clojure
 (fungible/balance my-token *address*)
-=> 1000
+;; => 1000
 ```
 
 As expected, we are initially in possession of all 1000 tokens. Instead of using your current Address (`*address*`) you can equivalently check the token balance of any other Address, which by default will be 0.
 
 ```clojure
 (fungible/balance my-token #666)
-=> 0
+;; => 0
 ```
 
 If you want to transfer 100 Tokens to another Account:
@@ -303,14 +301,14 @@ Now you should be able to observe that your own token balance has been reduced:
 
 ```clojure
 (fungible/balance my-token *address*)
-=> 900
+;; => 900
 ```
 
 And you can also see that the recipient is not the proud owner of 100 tokens:
 
 ```clojure
 (fungible/balance my-token #666)
-=> 100
+;; => 100
 ```
 
 ## Summary and next steps
