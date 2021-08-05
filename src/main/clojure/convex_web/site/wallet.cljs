@@ -24,8 +24,8 @@
     [:tbody
      (doall
        (for [{:convex-web.account/keys [address]} (session/?accounts)]
-         ^{:key address}
          (let [td-class ["text-xs text-gray-700 whitespace-no-wrap px-2"]]
+           ^{:key address}
            [:tr.cursor-default
             
             [:td {:class td-class}
