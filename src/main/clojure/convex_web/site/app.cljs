@@ -451,6 +451,13 @@
    [:> MenuIcon 
     {:className "h-5 w-5 text-blue-800"}]])
 
+(defn CloseButton
+  [{:keys [on-click]}]
+  [:button.bg-blue-50.active:bg-blue-200.rounded.p-2.shadow-md.transition.ease-in-out.duration-150
+   {:on-click on-click}
+   [:> XIcon 
+    {:className "h-5 w-5 text-blue-800"}]])
+
 (defn Menu
   "Hamburger menu used on mobile."
   []
@@ -478,7 +485,7 @@
            [:div.fixed.inset-y-0.w-full
             
             [:div.h-16.flex.justify-end.items-center.px-6
-             [MenuButton
+             [CloseButton
               {:on-click toggle-visibility}]]
             
             (let [{:keys [others]} (nav)]
