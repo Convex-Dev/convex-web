@@ -286,6 +286,16 @@
         [:polygon#Fill-3 {:fill "#62A6E1" :points "28.0008 -0.0008 28.0008 63.9992 55.9988 16.0032 55.9988 15.9992"}]
         [:polygon#Fill-4 {:fill "#C3EAFC" :points "28.0008 -0.0008 0.0008 15.9992 28.0008 63.9992"}]]]]]]])
 
+(defn Convex
+  "Convex logo and text."
+  []
+  [:a {:href (rfe/href :route-name/welcome)}
+   [:div.flex.items-center.space-x-4
+    
+    [ConvexLogo {:width "28px" :height "32px"}]
+    
+    [:span.text-base.md:text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]])
+
 (defn ArrowCircleRightIcon [& [attrs]]
   [:svg.w-6.h-6
    (merge {:fill "none"
