@@ -227,7 +227,7 @@
         [:div.absolute.inset-0.overflow-hidden
 
          [:> headlessui-react/Dialog.Overlay
-          {:className "absolute inset-0"}]
+          {:className "fixed inset-0"}]
 
          [:div.fixed.inset-y-0.right-0.pl-10.max-w-full.flex.sm:pl-16
 
