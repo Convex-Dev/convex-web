@@ -26,7 +26,7 @@
 
            (for [{:keys [name content]} contents]
              ^{:key name}
-             [:article.prose.prose-lg.mb-10
+             [:article.prose.prose-sm.md:prose-lg.mb-10
               {:id name}
               [gui/Markdown content]])]
 

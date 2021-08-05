@@ -173,7 +173,7 @@
                  
                  {:text "Developer"
                   :href (rfe/href :route-name/developer)}]]
-      [:nav.h-16.flex.items-center.justify-between.pl-10.pr-4.md:pr-10.border-b.border-gray-100
+      [:nav.h-16.flex.items-center.justify-between.px-6.border-b.border-gray-100
        
        [:div.flex.flex-row.justify-between.items-center.flex-1
         
@@ -183,7 +183,7 @@
           
           [gui/ConvexLogo {:width "28px" :height "32px"}]
           
-          [:span.text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]]
+          [:span.text-base.md:text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]]
         
         ;; -- Menu (mobile only)
         [:div.relative.inline-block.text-left.text-base.text-black.z-10

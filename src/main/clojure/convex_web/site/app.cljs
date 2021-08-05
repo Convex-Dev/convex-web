@@ -443,7 +443,7 @@
 (defn TopNav []
   (let [link-style "text-gray-800 hover:text-gray-500 active:text-black"]
     [:nav.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
-     [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-10
+     [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
       
       ;; Logo
       ;; ===================
@@ -452,7 +452,7 @@
         
         [gui/ConvexLogo {:width "28px" :height "32px"}]
         
-        [:span.text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]]
+        [:span.text-base.md:text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]]
       
       ;; Items
       ;; ===================
@@ -470,7 +470,7 @@
          ;; -- Create Account
          [gui/PrimaryButton
           {:on-click #(stack/push :page.id/create-account {:modal? true})}
-          [:span.block.font-mono.text-sm.text-white.uppercase
+          [:span.block.font-mono.text-xs.md:text-sm.text-white.uppercase
            {:class gui/button-child-small-padding}
            "Create Account"]])]]]))
 
@@ -490,7 +490,7 @@
       [:div.h-screen.flex.pt-24
        {:class 
         [;; Mobile
-         "px-10"
+         "px-6"
          
          ;; Desktop
          "md:space-x-24 md:px-0"]}
@@ -532,7 +532,7 @@
      ;; Page
      ;; =========================
      (when active-page-frame
-       [:div.px-10.py-6.w-full.max-w-screen-xl.mx-auto.space-y-10.mb-20
+       [:div.px-6.py-6.w-full.max-w-screen-xl.mx-auto.space-y-10.mb-20
         {:style {:min-height "100vh"}}
         
         (when title

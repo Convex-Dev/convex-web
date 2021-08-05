@@ -23,7 +23,7 @@
      
      [marketing/Nav]
      
-     [:div.relative.w-full.max-w-screen-xl.mx-auto.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12.px-10
+     [:div.relative.w-full.max-w-screen-xl.mx-auto.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12.px-6
       {:style
        {:height "640px"}}
       
@@ -45,7 +45,7 @@
       
       ;; Convex is flexible
       ;; =========================
-      [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.md:space-x-12.py-16.px-10
+      [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.md:space-x-12.py-16.px-6
        
        ;; -- Image
        [:div {:class "md:w-1/2"}
@@ -81,7 +81,7 @@
       ;; =========================
       [:div.py-28.text-white
        {:style {:background-color "#2E3192"}}
-       [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-y-12.md:space-y-0.md:space-x-12.py-16.px-10
+       [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-y-12.md:space-y-0.md:space-x-12.py-16.px-6
         
         ;; -- Copy
         [:div {:class marketing-vertical}
@@ -116,7 +116,7 @@
       ;; =========================
       [:div.md:py-52.lg:px-0.text-white
        {:style {:background-color "#1C2951"}}
-       [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-y-12.md:space-y-0.md:space-x-12.py-16.px-10
+       [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-y-12.md:space-y-0.md:space-x-12.py-16.px-6
         
         ;; -- Image
         [:div {:class "md:w-1/2"}

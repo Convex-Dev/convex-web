@@ -567,7 +567,7 @@
 
 (def hyperlink-hover-class "hover:underline hover:text-blue-500")
 
-(def button-child-small-padding "px-6 py-2")
+(def button-child-small-padding "px-3 md:px-6 py-2")
 (def button-child-large-padding "px-8 py-3")
 
 (defn ButtonText [{:keys [padding text-size text-color text-transform font-family]} text]
