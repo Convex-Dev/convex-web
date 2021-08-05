@@ -227,7 +227,7 @@
         [:div.absolute.inset-0.overflow-hidden
 
          [:> headlessui-react/Dialog.Overlay
-          {:className "absolute inset-0"}]
+          {:className "fixed inset-0"}]
 
          [:div.fixed.inset-y-0.right-0.pl-10.max-w-full.flex.sm:pl-16
 
@@ -285,6 +285,16 @@
         [:polygon#Fill-2 {:fill "#4B74CF" :points "0 47.9998 28 63.9998 0 15.9998"}]
         [:polygon#Fill-3 {:fill "#62A6E1" :points "28.0008 -0.0008 28.0008 63.9992 55.9988 16.0032 55.9988 15.9992"}]
         [:polygon#Fill-4 {:fill "#C3EAFC" :points "28.0008 -0.0008 0.0008 15.9992 28.0008 63.9992"}]]]]]]])
+
+(defn Convex
+  "Convex logo and text."
+  []
+  [:a {:href (rfe/href :route-name/welcome)}
+   [:div.flex.items-center.space-x-4
+    
+    [ConvexLogo {:width "28px" :height "32px"}]
+    
+    [:span.text-base.md:text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]])
 
 (defn ArrowCircleRightIcon [& [attrs]]
   [:svg.w-6.h-6

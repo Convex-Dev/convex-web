@@ -27,6 +27,9 @@
             [lambdaisland.glogi.console :as glogi-console]
             [reitit.frontend.easy :as rfe]
 
+            ["react" :as react]
+            ["@headlessui/react" :as headlessui-react]
+            ["@heroicons/react/solid" :refer [MenuIcon XIcon]]
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]
             ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
@@ -440,6 +443,53 @@
                    (format/prefix-# address)]]])]]]]]]))))
 
 
+(defn MenuButton
+  "Hamburger menu button."
+  [{:keys [on-click]}]
+  [:button.bg-blue-50.active:bg-blue-200.rounded.p-2.shadow-md.transition.ease-in-out.duration-150
+   {:on-click on-click}
+   [:> MenuIcon 
+    {:className "h-5 w-5 text-blue-800"}]])
+
+(defn Menu
+  "Hamburger menu used on mobile."
+  []
+  (reagent/with-let [open?-ref (reagent/atom false)
+                     
+                     toggle-visibility #(swap! open?-ref not)]
+    
+    (let [active-route (:route/match (router/?route))]
+      [:<> 
+       [MenuButton
+        {:on-click toggle-visibility}]
+       
+       [:> headlessui-react/Dialog
+        {:as "div"
+         :className "z-50 fixed inset-0 overflow-auto"
+         :open @open?-ref
+         :onClose toggle-visibility}
+        
+        (reagent/as-element
+          [:div.fixed.inset-0.overflow-auto
+           
+           [:> headlessui-react/Dialog.Overlay
+            {:className "fixed inset-0 bg-gray-100"}]
+           
+           [:div.fixed.inset-y-0.w-full
+            
+            [:div.h-16.flex.justify-end.items-center.px-6
+             [MenuButton
+              {:on-click toggle-visibility}]]
+            
+            (let [{:keys [others]} (nav)]
+              [:nav.text-sm.overflow-auto.px-6
+               {:class ["flex flex-col flex-shrink-0"]}
+               
+               (for [{:keys [text] :as item} others]
+                 ^{:key text}
+                 [:div.mb-2
+                  [NavItem active-route item]])])]])]])))
+
 (defn TopNav []
   (let [link-style "text-gray-800 hover:text-gray-500 active:text-black"]
     [:nav.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
@@ -447,12 +497,7 @@
       
       ;; Logo
       ;; ===================
-      [:a {:href (rfe/href :route-name/welcome)}
-       [:div.flex.items-center.space-x-4
-        
-        [gui/ConvexLogo {:width "28px" :height "32px"}]
-        
-        [:span.text-base.md:text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]]
+      [gui/Convex]
       
       ;; Items
       ;; ===================
@@ -461,7 +506,11 @@
        (cond
          (session/?active-address)
          ;; -- Select account
-         [AccountSelect]
+         [:div.flex.items-center.space-x-4
+          [AccountSelect]
+          
+          [:div.md:hidden
+           [Menu]]]
          
          (= :ajax.status/pending (session/?status))
          [gui/Spinner]

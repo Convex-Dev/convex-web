@@ -178,12 +178,7 @@
        [:div.flex.flex-row.justify-between.items-center.flex-1
         
         ;; -- Logo
-        [:a {:href (rfe/href :route-name/welcome)}
-         [:div.flex.items-center.space-x-4
-          
-          [gui/ConvexLogo {:width "28px" :height "32px"}]
-          
-          [:span.text-base.md:text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]]
+        [gui/Convex]
         
         ;; -- Menu (mobile only)
         [:div.relative.inline-block.text-left.text-base.text-black.z-10
