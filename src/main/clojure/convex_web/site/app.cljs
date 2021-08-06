@@ -502,33 +502,32 @@
     [:nav.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
      [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
       
-      ;; Logo
-      ;; ===================
       [gui/Convex]
       
-      ;; Items
-      ;; ===================
-      [:div.flex.items-center.justify-end.space-x-8
+      ;; -- Items
+      [:div.flex.items-center.justify-end.space-x-4
        
+       ;; -- Active account / Create Account
        (cond
-         (session/?active-address)
-         ;; -- Select account
-         [:div.flex.items-center.space-x-4
-          [AccountSelect]
-          
-          [:div.md:hidden
-           [Menu]]]
-         
          (= :ajax.status/pending (session/?status))
          [gui/Spinner]
          
+         (session/?active-address)
+         ;; -- Select account
+         [AccountSelect]
+         
          :else
          ;; -- Create Account
-         [gui/PrimaryButton
-          {:on-click #(stack/push :page.id/create-account {:modal? true})}
-          [:span.block.font-mono.text-xs.md:text-sm.text-white.uppercase
-           {:class gui/button-child-small-padding}
-           "Create Account"]])]]]))
+         [:div.hidden.md:block
+          [gui/PrimaryButton
+           {:on-click #(stack/push :page.id/create-account {:modal? true})}
+           [:span.block.font-mono.text-xs.md:text-sm.text-white.uppercase
+            {:class gui/button-child-small-padding}
+            "Create Account"]]])
+       
+       ;; -- Mobile menu
+       [:div.md:hidden
+        [Menu]]]]]))
 
 (defn DeveloperPage [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component
