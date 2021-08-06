@@ -41,7 +41,7 @@
        [:div.flex.flex-1.overflow-auto
         
         ;; Documentation
-        [:div.flex.flex-col.overflow-auto {:class "w-1/2"}
+        [:div.flex.flex-col.overflow-auto {:class "md:w-1/2"}
          
          [:p.prose.prose-sm.mb-5
           (convex/library-documentation selected-library "")]
@@ -62,7 +62,7 @@
             [:hr.my-2]])]
         
         ;; TOC
-        [:div.ml-16.mb-6.bg-yellow-100.rounded.shadow.overflow-auto
+        [:div.hidden.md:block.ml-16.mb-6.bg-yellow-100.rounded.shadow.overflow-auto
          {:class "w-1/2"
           :style {:min-width "220px"}}
          [:div.flex.flex-col.leading-snug.p-4
