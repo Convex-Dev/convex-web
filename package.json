@@ -6,8 +6,9 @@
     "server": "npx shadow-cljs server",
     "watch": "npx shadow-cljs watch :main",
     "release": "npx shadow-cljs release main",
-    "styles": "NODE_ENV=production npx tailwindcss build -o src/main/resources/public/css/styles.css",
-    "styles-dev": "npx tailwindcss build -o src/main/resources/public/css/styles.css"
+
+    "styles:watch": "npx postcss tailwind.css -o src/main/resources/public/css/styles.css --verbose -w",
+    "styles:release": "NODE_ENV=production npx postcss tailwind.css -o src/main/resources/public/css/styles.css --verbose"
   },
   "dependencies": {
     "@headlessui/react": "^1.4.0",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "autoprefixer": "^10.3.1",
     "postcss": "^8.3.6",
+    "postcss-cli": "^8.3.1",
     "shadow-cljs": "^2.15.2",
     "tailwindcss": "^2.2.7"
   }

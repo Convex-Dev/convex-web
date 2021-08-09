@@ -3,6 +3,7 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 const colors = require('tailwindcss/colors')
 
 module.exports = {
+  mode: 'jit',
   corePlugins: {
     preflight: true
   },
@@ -12,10 +13,7 @@ module.exports = {
     defaultLineHeights: true,
     standardFontWeights: true
   },
-  purge: [
-    './src/**/*.clj',
-    './src/**/*.cljs'
-  ],
+  purge: process.env.NODE_ENV == 'production' ? ["./src/main/resources/public/js/main.js"] : ["./src/main/resources/public/js/cljs-runtime/*.js"],
   theme: {
     extend: {
       fontFamily: {
