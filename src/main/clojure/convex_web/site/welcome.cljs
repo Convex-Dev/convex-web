@@ -4,6 +4,25 @@
             
             [reitit.frontend.easy :as rfe]))
 
+(defn KeyAdvantages []
+  [:div.grid.grid-cols-1.md:grid-cols-3.gap-4
+   
+   (for [{:keys [title image link copy]} [{:title "Instant Transactions"}
+                                          
+                                          {:title "Global State"}
+                                          
+                                          {:title "Maxium Secutiry"}
+                                          
+                                          {:title "Front Running Resistance"}
+                                          
+                                          {:title "100% Green"}
+                                          
+                                          {:title "Lambda Calculus"}]]
+     ^{:key title}
+     [:div.flex.flex-col.items-center.space-y-2
+      [:span.font-medium.underline
+       title]])])
+
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["md:w-1/2 flex flex-col justify-center space-y-8"]
         marketing-bullets ["flex flex-col space-y-3 text-white"]
