@@ -28,17 +28,12 @@
         },
         {
             "name": "Release app",
-            "shell_cmd": "npm run release",
+            "shell_cmd": "npm run app:release",
             "working_dir": "$project_path"
         },
         {
-            "name": "Build styles",
-            "shell_cmd": "npm run styles",
-            "working_dir": "$project_path"
-        },
-        {
-            "name": "Build dev styles",
-            "shell_cmd": "npm run styles-dev",
+            "name": "Release styles",
+            "shell_cmd": "npm run styles:release",
             "working_dir": "$project_path"
         }
     ]
