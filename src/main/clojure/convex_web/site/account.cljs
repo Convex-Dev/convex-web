@@ -295,7 +295,7 @@
                      state))))}]
 
            [:span.text-xs.text-gray-600.uppercase.ml-2
-            "Show My Accounts"]]]
+            "My Accounts"]]]
 
 
          ;; -- Select or Input text
@@ -309,7 +309,7 @@
                                            (dissoc :convex-web/command)
                                            (assoc-in [:convex-web/transfer :convex-web.transfer/to] address)))))}]
            [:input
-            {:class gui/input-style
+            {:class [gui/input-style "w-full"]
              :type "text"
              :value to
              :on-change
