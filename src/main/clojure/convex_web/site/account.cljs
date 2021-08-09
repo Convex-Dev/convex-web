@@ -321,17 +321,7 @@
                     (let [state' (dissoc state :convex-web/command)]
                       (if (js/isNaN to)
                         (update state' :convex-web/transfer dissoc :convex-web.transfer/to)
-                        (assoc-in state' [:convex-web/transfer :convex-web.transfer/to] to))))))}])
-
-         ;; -- Balance
-         (when (s/valid? :convex-web/address to)
-           (let [params {:frame/uuid (get frame :frame/uuid)
-                         :address to}]
-             [:div.flex.justify-end
-              [ShowBalance2 (sub ::?transfer-to-account params)
-               {:Pending CheckingBalance
-                :Error BalanceUnavailable
-                :Success BalanceIs}]]))])]
+                        (assoc-in state' [:convex-web/transfer :convex-web.transfer/to] to))))))}])])]
 
      ;; Amount
      ;; ===========
