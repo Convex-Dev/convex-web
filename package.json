@@ -8,7 +8,7 @@
     "app:watch": "npx shadow-cljs watch :main",
     "app:release": "npx shadow-cljs release main",
 
-    "styles:watch": "npx postcss tailwind.css -o src/main/resources/public/css/styles.css --verbose -w",
+    "styles:watch": "TAILWIND_MODE=watch npx postcss tailwind.css -o src/main/resources/public/css/styles.css --verbose -w",
     "styles:release": "NODE_ENV=production npx postcss tailwind.css -o src/main/resources/public/css/styles.css --verbose"
   },
   "dependencies": {
