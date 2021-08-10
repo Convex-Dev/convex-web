@@ -16,12 +16,12 @@ npm install
 
 Compile CSS:
 ```
-npm run styles-dev
+npm run styles:watch
 ```
 
 Run Shadow CLJS:
 ```
-npm run watch
+npm run app:watch
 ```
 
 ### Server
@@ -48,12 +48,12 @@ npm install
 
 Compile & bundle app:
 ```
-npm run release
+npm run app:release
 ```
 
 Compile CSS:
 ```
-npm run styles
+npm run styles:release
 ```
 
 ### Server
