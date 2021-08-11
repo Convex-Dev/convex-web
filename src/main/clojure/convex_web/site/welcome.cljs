@@ -42,6 +42,124 @@
      
      [marketing/Nav]
      
+     (let [container-style "flex flex-col items-center space-y-3"
+           
+           caption-style "text-white font-bold uppercase"
+           
+           image-style "object-cover rounded-lg w-20 h-20"
+           
+           copy-style "text-white"]
+       
+       [:div.flex.flex-col.justify-center.items-center.py-40
+        {:class "bg-[#001D49]"}
+        
+        [:div.grid.grid-cols-1.md:grid-cols-3.gap-x-12.gap-y-20.px-6.max-w-screen-xl
+         
+         ;; -- Instant Transaction
+         [:div
+          {:class container-style}
+          
+          [:span
+           {:class caption-style}
+           "Instant Transactions"]
+          
+          [:img
+           {:class image-style
+            :src "/images/instant.png"}]
+          
+          [:p
+           {:class copy-style}
+           "Confirmations of " 
+           [:span.font-bold "transactions in milliseconds"]
+           ", ideal for interactive apps and consumer usage."]]
+         
+         ;; -- Global Scale
+         [:div
+          {:class container-style}
+          
+          [:span
+           {:class caption-style}
+           "Global Scale"]
+          
+          [:img
+           {:class image-style
+            :src "/images/global.png"}]
+          
+          [:p
+           {:class copy-style}
+           [:span.font-bold "100,000+ TPS"] " – enough for the whole world to use the  Convex Network."]]
+         
+         ;; -- Maximum SecurIty
+         [:div
+          {:class container-style}
+          
+          [:span
+           {:class caption-style}
+           "Maximum SecurIty"]
+          
+          [:img
+           {:class image-style
+            :src "/images/security.png"}]
+          
+          [:p
+           {:class copy-style}
+           " Best in class cryptography and secure "
+           [:span.font-bold "BFT consensus algorithm"]
+           ", fully pseudonymised."]]
+         
+         ;; -- Low Cost
+         [:div
+          {:class container-style}
+          
+          [:span
+           {:class caption-style}
+           "Low Cost"]
+          
+          [:img
+           {:class image-style
+            :src "/images/cost.png"}]
+          
+          [:p
+           {:class copy-style}
+           "Transaction costs less than $0.0001 – "
+           [:span.font-bold "more than 10,000 times cheaper than Ethereum."]]]
+         
+         ;; -- 100% Green
+         [:div
+          {:class container-style}
+          
+          [:span
+           {:class caption-style}
+           "100% Green"]
+          
+          [:img
+           {:class image-style
+            :src "/images/green.png"}]
+          
+          [:p
+           {:class copy-style}
+           "No wastage of energy or computing resources."
+           [:span.font-bold " More than 1,000,000 times more efficient than Bitcoin."]]]
+         
+         ;; -- Smart Contracts
+         [:div
+          {:class container-style}
+          
+          [:span
+           {:class caption-style}
+           "Smart Contracts"]
+          
+          [:img
+           {:class image-style
+            :src "/images/contracts.png"}]
+          
+          [:p
+           {:class copy-style}
+           "Advanced virtual machine (CVM), that supports  execution of "
+           [:span.font-bold
+            "custom smart contracts and unlimited extensibility."]]]]])
+     
+     
      [:div.relative.w-full.max-w-screen-xl.mx-auto.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12.px-6
       {:style
        {:height "640px"}}
