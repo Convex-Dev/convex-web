@@ -31,7 +31,7 @@
         ItemTeal (fn [s]
                    [:div.flex.items-center.flex-shrink-0.text-base.lg:text-lg.space-x-3
                     [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-teal-500]
-                    [:span s]])
+                    [:span.text-gray-700 s]])
         
         ItemBlue (fn [s]
                    [:div.flex.items-center.text-base.lg:text-lg.space-x-3
@@ -82,11 +82,11 @@
      ;; -- Key advantages
      (let [container-style "flex flex-col items-center space-y-3"
            
-           caption-style "text-white font-bold uppercase"
+           caption-style "text-white text-base md:text-lg font-bold uppercase"
            
            image-style "object-cover rounded-lg w-48 h-48"
            
-           copy-style "text-white"]
+           copy-style "text-white text-base md:text-lg"]
        
        [:div.flex.flex-col.justify-center.items-center.py-40
         {:class "bg-[#001D49]"}
