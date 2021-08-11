@@ -46,7 +46,7 @@
      [:div.flex.flex-col.justify-center.items-center.space-y-32
       {:class ["bg-gradient-to-b from-[#01052A] to-[#000128]"]}
       
-      [:div.w-full.max-w-screen-lg.flex.flex-col.justify-center.items-center.space-y-14.pt-48.px-6
+      [:div.w-full.max-w-screen-xl.flex.flex-col.justify-center.items-center.space-y-14.pt-48.px-6
        
        [:h1.text-4xl.lg:text-6xl.font-extrabold.text-white
         "Building the Internet of Value for the business and consumer world"]
