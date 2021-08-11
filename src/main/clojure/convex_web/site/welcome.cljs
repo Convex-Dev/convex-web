@@ -84,7 +84,7 @@
            
            caption-style "text-white font-bold uppercase"
            
-           image-style "object-cover rounded-lg w-20 h-20"
+           image-style "object-cover rounded-lg w-48 h-48"
            
            copy-style "text-white"]
        
@@ -97,13 +97,13 @@
          [:div
           {:class container-style}
           
-          [:span
-           {:class caption-style}
-           "Instant Transactions"]
-          
           [:img
            {:class image-style
             :src "/images/instant.png"}]
+          
+          [:span
+           {:class caption-style}
+           "Instant Transactions"]
           
           [:p
            {:class copy-style}
@@ -115,13 +115,13 @@
          [:div
           {:class container-style}
           
-          [:span
-           {:class caption-style}
-           "Global Scale"]
-          
           [:img
            {:class image-style
             :src "/images/global.png"}]
+          
+          [:span
+           {:class caption-style}
+           "Global Scale"]
           
           [:p
            {:class copy-style}
@@ -131,13 +131,13 @@
          [:div
           {:class container-style}
           
-          [:span
-           {:class caption-style}
-           "Maximum SecurIty"]
-          
           [:img
            {:class image-style
             :src "/images/security.png"}]
+          
+          [:span
+           {:class caption-style}
+           "Maximum SecurIty"]
           
           [:p
            {:class copy-style}
@@ -149,13 +149,13 @@
          [:div
           {:class container-style}
           
-          [:span
-           {:class caption-style}
-           "Low Cost"]
-          
           [:img
            {:class image-style
             :src "/images/cost.png"}]
+          
+          [:span
+           {:class caption-style}
+           "Low Cost"]
           
           [:p
            {:class copy-style}
@@ -166,13 +166,13 @@
          [:div
           {:class container-style}
           
-          [:span
-           {:class caption-style}
-           "100% Green"]
-          
           [:img
            {:class image-style
             :src "/images/green.png"}]
+          
+          [:span
+           {:class caption-style}
+           "100% Green"]
           
           [:p
            {:class copy-style}
@@ -183,13 +183,13 @@
          [:div
           {:class container-style}
           
-          [:span
-           {:class caption-style}
-           "Smart Contracts"]
-          
           [:img
            {:class image-style
             :src "/images/contracts.png"}]
+          
+          [:span
+           {:class caption-style}
+           "Smart Contracts"]
           
           [:p
            {:class copy-style}
