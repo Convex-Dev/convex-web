@@ -90,7 +90,7 @@
 
 (defn NavButton [text href]
   [:a
-   {:class ["text-base text-blue-800 hover:text-blue-900 uppercase"
+   {:class ["text-base text-white hover:text-blue-900 uppercase"
             "hover:bg-gray-100 active:bg-gray-200"
             "transition duration-150 ease-in-out"
             "px-4 py-2 rounded"]
@@ -174,11 +174,12 @@
                  {:text "Developer"
                   :href (rfe/href :route-name/developer)}]]
       [:nav.h-16.flex.items-center.justify-between.px-6.border-b.border-gray-100
+       {:class "bg-[#01052A]"}
        
        [:div.flex.flex-row.justify-between.items-center.flex-1
         
         ;; -- Logo
-        [gui/Convex]
+        [gui/ConvexWhite]
         
         ;; -- Menu (mobile only)
         [:div.relative.inline-block.text-left.text-base.text-black.z-10

@@ -296,6 +296,16 @@
     
     [:span.text-base.md:text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]])
 
+(defn ConvexWhite
+  "Convex logo and text."
+  []
+  [:a {:href (rfe/href :route-name/welcome)}
+   [:div.flex.items-center.space-x-4
+    
+    [ConvexLogo {:width "28px" :height "32px"}]
+    
+    [:span.text-base.md:text-2xl.font-bold.leading-none.text-white "CONVEX"]]])
+
 (defn ArrowCircleRightIcon [& [attrs]]
   [:svg.w-6.h-6
    (merge {:fill "none"
