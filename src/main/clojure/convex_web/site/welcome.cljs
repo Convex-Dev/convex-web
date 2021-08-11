@@ -31,7 +31,7 @@
         ItemTeal (fn [s]
                    [:div.flex.items-center.flex-shrink-0.text-base.lg:text-lg.space-x-3
                     [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-teal-500]
-                    [:span s]])
+                    [:span.text-gray-700 s]])
         
         ItemBlue (fn [s]
                    [:div.flex.items-center.text-base.lg:text-lg.space-x-3
@@ -41,6 +41,162 @@
     [:div
      
      [marketing/Nav]
+     
+     ;; -- Building the Internet of Value
+     [:div.flex.flex-col.justify-center.items-center.space-y-32
+      {:class ["bg-gradient-to-b from-[#01052A] to-[#000128]"]}
+      
+      [:div.w-full.max-w-screen-xl.flex.flex-col.justify-center.items-center.space-y-14.pt-48.px-6
+       
+       [:h1.text-4xl.lg:text-6xl.font-extrabold.text-white
+        "Building the Internet of Value for the business and consumer world"]
+       
+       [:div.flex.flex-col.md:flex-row.space-y-10.md:space-x-10.md:space-y-0
+        [:p.text-white.text-2xl
+         "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]
+        
+        ;; -- Buttons
+        [:div.flex.flex-col.space-y-2
+         
+         [:a
+          {:href (rfe/href :route-name/sandbox)}
+          [gui/BlueButton
+           {}
+           [:div.w-40
+            [:span.text-sm.text-white.uppercase
+             "Try It Now"]]]]
+         
+         [:a
+          {:href "https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf"
+           :target "_blank"}
+          [gui/BlueOutlineButton
+           {}
+           [:div.w-40
+            [:span.text-sm.text-white.uppercase
+             "Whitepaper"]]]]]]]
+      
+      [:img
+       {:class "object-cover"
+        :src "/images/blockchain.png"}]]
+     
+     ;; -- Key advantages
+     (let [container-style "flex flex-col items-center space-y-3"
+           
+           caption-style "text-white text-base md:text-lg font-bold uppercase"
+           
+           image-style "object-cover rounded-lg w-48 h-48"
+           
+           copy-style "text-white text-base md:text-lg"]
+       
+       [:div.flex.flex-col.justify-center.items-center.py-40
+        {:class "bg-[#001D49]"}
+        
+        [:div.grid.grid-cols-1.md:grid-cols-3.gap-x-12.gap-y-20.px-6.max-w-screen-xl
+         
+         ;; -- Instant Transaction
+         [:div
+          {:class container-style}
+          
+          [:img
+           {:class image-style
+            :src "/images/instant.png"}]
+          
+          [:span
+           {:class caption-style}
+           "Instant Transactions"]
+          
+          [:p
+           {:class copy-style}
+           "Confirmations of " 
+           [:span.font-bold "transactions in milliseconds"]
+           ", ideal for interactive apps and consumer usage."]]
+         
+         ;; -- Global Scale
+         [:div
+          {:class container-style}
+          
+          [:img
+           {:class image-style
+            :src "/images/global.png"}]
+          
+          [:span
+           {:class caption-style}
+           "Global Scale"]
+          
+          [:p
+           {:class copy-style}
+           [:span.font-bold "100,000+ TPS"] " – enough for the whole world to use the  Convex Network."]]
+         
+         ;; -- Maximum SecurIty
+         [:div
+          {:class container-style}
+          
+          [:img
+           {:class image-style
+            :src "/images/security.png"}]
+          
+          [:span
+           {:class caption-style}
+           "Maximum SecurIty"]
+          
+          [:p
+           {:class copy-style}
+           " Best in class cryptography and secure "
+           [:span.font-bold "BFT consensus algorithm"]
+           ", fully pseudonymised."]]
+         
+         ;; -- Low Cost
+         [:div
+          {:class container-style}
+          
+          [:img
+           {:class image-style
+            :src "/images/cost.png"}]
+          
+          [:span
+           {:class caption-style}
+           "Low Cost"]
+          
+          [:p
+           {:class copy-style}
+           "Transaction costs less than $0.0001 – "
+           [:span.font-bold "more than 10,000 times cheaper than Ethereum."]]]
+         
+         ;; -- 100% Green
+         [:div
+          {:class container-style}
+          
+          [:img
+           {:class image-style
+            :src "/images/green.png"}]
+          
+          [:span
+           {:class caption-style}
+           "100% Green"]
+          
+          [:p
+           {:class copy-style}
+           "No wastage of energy or computing resources."
+           [:span.font-bold " More than 1,000,000 times more efficient than Bitcoin."]]]
+         
+         ;; -- Smart Contracts
+         [:div
+          {:class container-style}
+          
+          [:img
+           {:class image-style
+            :src "/images/contracts.png"}]
+          
+          [:span
+           {:class caption-style}
+           "Smart Contracts"]
+          
+          [:p
+           {:class copy-style}
+           "Advanced virtual machine (CVM), that supports  execution of "
+           [:span.font-bold
+            "custom smart contracts and unlimited extensibility."]]]]])
+     
      
      [:div.relative.w-full.max-w-screen-xl.mx-auto.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12.px-6
       {:style

@@ -173,7 +173,7 @@
                  
                  {:text "Developer"
                   :href (rfe/href :route-name/developer)}]]
-      [:nav.h-16.flex.items-center.justify-between.px-6.border-b.border-gray-100
+      [:nav.h-16.flex.items-center.justify-between.px-6
        {:class "bg-[#01052A]"}
        
        [:div.flex.flex-row.justify-between.items-center.flex-1
