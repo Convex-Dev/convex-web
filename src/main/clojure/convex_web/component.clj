@@ -153,6 +153,7 @@
                         (reduced [key-pair true]))))
                   nil
                   (convex/key-store-aliases convex-world-key-store))]
+            
             (or restored-key-pair
               (do 
                 (log/error "Can't restore convex.world key pair. It's okay, a new one will be generated.")

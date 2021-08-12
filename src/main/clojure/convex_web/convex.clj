@@ -125,6 +125,13 @@
       (.getExceptional new-context)
       (.getResult new-context))))
 
+(defn execute-string-unsafe [^Context context ^String source]
+  (let [new-context (.execute context (.getResult (.expandCompile context (Reader/read source))))]
+    (if (.isExceptional new-context)
+      (throw (ex-info (.toString (.getExceptional new-context))
+               {:exceptional (.getExceptional new-context)}))
+      (.getResult new-context))))
+
 (defn server-peer-controller
   "Gets the Peer controller Address."
   ^Address [^Server server]
@@ -412,7 +419,7 @@
                                         [])]
                         {:name (datafy sym)
                          :arglists arglists}))
-                    (.getExports account-status))]
+                    (.getCallableFunctions account-status))]
       
       (merge #:convex-web.account-status {:account-key (some-> account-status .getAccountKey .toChecksumHex)
                                           :controller (datafy (.getController account-status))
@@ -611,16 +618,18 @@
 
 
 (defn library-metadata [^Context context library-name]
-  (let [source (str "(account (call *registry* (cns-resolve '" library-name ")))")
-        
-        ^AccountStatus account-status (execute-string context source)
-        
-        ^AHashMap metadata (.getMetadata account-status)]
-    (into {}
-      (map
-        (fn [[sym _]]
-          [(datafy sym) (datafy (.get metadata sym))]))
-      (.getEnvironment account-status))))
+  (let [source (str "(account (call *registry* (cns-resolve '" library-name ")))")]
+    (try
+      (let [^AccountStatus account-status (execute-string-unsafe context source)
+            
+            ^AHashMap metadata (.getMetadata account-status)]
+        (into {}
+          (map
+            (fn [[sym _]]
+              [(datafy sym) (datafy (.get metadata sym))]))
+          (.getEnvironment account-status)))
+      (catch Exception ex
+        (throw (ex-info (ex-message ex) {:source source} ex))))))
 
 (defn library-reference
   "Metadata for Convex core libraries.
@@ -633,7 +642,7 @@
                    "convex.asset"
                    "convex.core"
                    "convex.fungible"
-                   "convex.nft-tokens"
+                   "asset.nft-tokens"
                    "convex.registry"
                    "convex.trust"
                    "convex.trusted-oracle"

@@ -134,9 +134,8 @@
   (instance? convex.core.lang.impl.Fn (execute-string "inc"))
   (instance? convex.core.lang.impl.Fn (execute-string "(fn [x] x)")) 
   
-  
   ;; Library metadata.
-  (convex/library-metadata context "convex.trust")
+  (convex/library-metadata (system/convex-world-context system) "convex.trust")
   
   
   ;; `convex.core.lang.impl.Fn/getParams` returns AVector<Syntax>

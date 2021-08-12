@@ -123,7 +123,7 @@
       (is (= :convex-web.command.status/success status))
       (is (= {:convex-web.result/type "Map",
               :convex-web.result/value
-              "{:description \"Increments the given number by 1. Converts to Long if necessary.\",:signature [{:return Long,:params [num]}],:type :function,:errors {:CAST \"If the actor argument is not a Number.\"},:examples [{:code \"(inc 10)\"}]}"}
+              "{:description \"Increments the given long by 1. Converts to Long if necessary.\",:signature [{:return Long,:params [num]}],:type :function,:errors {:CAST \"If the actor argument is not a Number.\"},:examples [{:code \"(inc 10)\"}]}"}
             (select-keys result [:convex-web.result/type
                                  :convex-web.result/value])))))
   
@@ -171,11 +171,11 @@
       (is (= 1.0 (c/sandbox-result (convex/execute-string context "1.0")))))
     
     (testing "Address"
-      (is (= {:address 11}
+      (is (= {:address 12}
             (c/sandbox-result (convex/execute-string context "*address*")))))
     
     (testing "Blob"
-      (is (= {:hex-string "000000000000000b"
+      (is (= {:hex-string "000000000000000c"
               :length 8}
             (c/sandbox-result (convex/execute-string context "(blob *address*)"))))))
   
@@ -225,7 +225,7 @@
     
     (testing "Function"
       (is (= {} (c/result-metadata (convex/execute context inc))))
-      (is (= '{:doc {:description "Increments the given number by 1. Converts to Long if necessary."
+      (is (= '{:doc {:description "Increments the given long by 1. Converts to Long if necessary."
                      :errors {:CAST "If the actor argument is not a Number."}
                      :examples [{:code "(inc 10)"}]
                      :signature [{:params [num]

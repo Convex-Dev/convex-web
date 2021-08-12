@@ -501,7 +501,7 @@
             response-body (json/read-str (get response :body) :key-fn keyword)]
 
         (is (= 200 (get response :status)))
-        (is (= {:address 11 :amount amount :value amount} response-body))))
+        (is (= {:address 12 :amount amount :value amount} response-body))))
 
     (testing "Bad request"
       (testing "No payload"

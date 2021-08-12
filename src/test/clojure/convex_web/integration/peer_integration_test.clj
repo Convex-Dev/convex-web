@@ -12,7 +12,7 @@
 (use-fixtures :each (join-fixtures [(make-system-fixture #'system) spec-fixture]))
 
 (deftest convex-world-address-test
-  (is (= (convex/address 11) (sys/convex-world-address system))))
+  (is (= (convex/address 12) (sys/convex-world-address system))))
 
 (deftest result-data-test
   (let [convex-world-address (sys/convex-world-address system)]
