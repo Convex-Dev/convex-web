@@ -46,47 +46,60 @@
      [:div.flex.flex-col.justify-center.items-center.space-y-32
       {:class ["bg-gradient-to-b from-[#01052A] to-[#000128]"]}
       
-      [:div.w-full.max-w-screen-xl.flex.flex-col.justify-center.items-center.space-y-14.pt-48.px-6
+      [:div.relative.flex.flex-col.justify-end
+       {:class "h-[calc(100vh-64px)]"}
        
-       [:h1.text-4xl.lg:text-6xl.font-extrabold.text-white
-        "Building the Internet of Value for the business and consumer world"]
-       
-       [:div.flex.flex-col.md:flex-row.space-y-10.md:space-x-10.md:space-y-0
-        [:p.text-white.text-2xl
-         "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]
+       ;; Background image
+       [:div.relative
+        [:img
+         {:class "object-cover"
+          :src "/images/blockchain.png"}]
         
-        ;; -- Buttons
-        [:div.flex.flex-col.space-y-2
+        [:div.absolute.inset-x-0.top-0.h-full.bg-opacity-75
+         {:class "bg-[#01052A]"}]]
+       
+       
+       ;; Building the Internet of Value...
+       [:div.absolute.inset-x-0.top-0.w-full.max-w-screen-xl.mx-auto
+        
+        [:div.flex.flex-col.justify-center.items-center.space-y-6.md:space-y-14.pt-20.md:pt-48.px-6
          
-         [:a
-          {:href (rfe/href :route-name/sandbox)}
-          [gui/BlueButton
-           {}
-           [:div.w-40
-            [:span.text-sm.text-white.uppercase
-             "Try It Now"]]]]
+         [:h1.text-4xl.lg:text-6xl.font-extrabold.text-white
+          "Building the Internet of Value for the business and consumer world"]
          
-         [:a
-          {:href "https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf"
-           :target "_blank"}
-          [gui/BlueOutlineButton
-           {}
-           [:div.w-40
-            [:span.text-sm.text-white.uppercase
-             "Whitepaper"]]]]]]]
-      
-      [:img
-       {:class "object-cover"
-        :src "/images/blockchain.png"}]]
+         [:div.flex.flex-col.md:flex-row.space-y-10.md:space-x-10.md:space-y-0
+          [:p.text-white.text-lg.md:text-2xl
+           "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]
+          
+          ;; -- Buttons
+          [:div.flex.flex-col.space-y-2
+           
+           [:a
+            {:href (rfe/href :route-name/sandbox)}
+            [gui/BlueButton
+             {}
+             [:div.w-40
+              [:span.text-sm.text-white.uppercase
+               "Try It Now"]]]]
+           
+           [:a
+            {:href "https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf"
+             :target "_blank"}
+            [gui/BlueOutlineButton
+             {}
+             [:div.w-40
+              [:span.text-sm.text-white.uppercase
+               "Whitepaper"]]]]]]]]]]
+     
      
      ;; -- Key advantages
      (let [container-style "flex flex-col items-center space-y-3"
            
-           caption-style "text-white text-base md:text-lg font-bold uppercase"
+           caption-style "text-white text-base md:text-2xl font-bold uppercase"
            
            image-style "object-cover rounded-lg w-48 h-48"
            
-           copy-style "text-white text-base md:text-lg"]
+           copy-style "text-white text-base md:text-lg text-center md:text-left"]
        
        [:div.flex.flex-col.justify-center.items-center.py-40
         {:class "bg-[#001D49]"}
