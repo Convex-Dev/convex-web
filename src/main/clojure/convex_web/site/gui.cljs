@@ -572,9 +572,10 @@
      ;; (It can be either a string or a collection of string)
      (if (string? description)
        [:p description]
-       [:<> (for [s description]
-              ^{:key s}
-              [:p s])])
+       [:div.flex.flex-col.space-y-2 
+        (for [s description]
+          ^{:key s}
+          [:p s])])
      
      ;; -- Examples
      (when show-examples?
