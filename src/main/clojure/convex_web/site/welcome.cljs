@@ -1,8 +1,10 @@
 (ns convex-web.site.welcome
-  (:require [convex-web.site.gui :as gui]
-            [convex-web.site.gui.marketing :as marketing]
-            
-            [reitit.frontend.easy :as rfe]))
+  (:require 
+   [convex-web.site.theme :as theme]
+   [convex-web.site.gui :as gui]
+   [convex-web.site.gui.marketing :as marketing]
+   
+   [reitit.frontend.easy :as rfe]))
 
 (defn KeyAdvantages []
   [:div.grid.grid-cols-1.md:grid-cols-3.gap-4
@@ -56,7 +58,7 @@
           :src "/images/blockchain.png"}]
         
         [:div.absolute.inset-x-0.top-0.h-full.bg-opacity-75
-         {:class "bg-[#01052A]"}]]
+         {:class theme/bg-blue-01052A}]]
        
        
        ;; Building the Internet of Value...

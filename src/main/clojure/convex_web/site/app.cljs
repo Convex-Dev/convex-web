@@ -17,6 +17,7 @@
             [convex-web.site.format :as format]
             [convex-web.site.markdown :as markdown]
             [convex-web.site.team :as team]
+            [convex-web.site.theme :as theme]
 
             [cljs.spec.test.alpha :as stest]
 
@@ -501,8 +502,9 @@
   (let [link-style "text-gray-800 hover:text-gray-500 active:text-black"]
     [:nav.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
      [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
+      {:class theme/bg-blue-01052A}
       
-      [gui/Convex]
+      [gui/ConvexWhite]
       
       ;; -- Items
       [:div.flex.items-center.justify-end.space-x-4
