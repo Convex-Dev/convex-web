@@ -68,7 +68,7 @@ Technically, Convex is not a blockchain because Blocks are not required to conta
 
 ## Consensus Algorithm
 
-The Convex Consensus Algorithm is obtains consensus through the use of a convergent Belief Merge Function. This algorithm is called Convergent Proof of Stake (CPoS), and is described in more detail in the [White Paper](convex-whitepaper.md).
+The Convex Consensus Algorithm is obtains consensus through the use of a convergent Belief Merge Function. This algorithm is called Convergent Proof of Stake (CPoS), and is described in more detail in the [White Paper](https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf).
 
 ## Consensus Point
 

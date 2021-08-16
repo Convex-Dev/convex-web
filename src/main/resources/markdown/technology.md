@@ -5,7 +5,7 @@ Convex utilises the revolutionary Convergent Proof of Stake consensus (CPoS) alg
 - Simple implementation - The only key operation is the Belief Merge Function. Minimising the number of "moving parts" in the consensus algorithm maximises performance and minimises the potential for defects.
 - Byzantine Fault Tolerance - We are able to offer the strongest possible security guarantees for any decentralised system
 
-For more information, read our [White Paper](https://github.com/Convex-Dev/design/blob/8bbcf6cb865ebdbc1d8d7c7442daae783bd44cc3/papers/convex-whitepaper.md)
+For more information, read our [White Paper](https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf)
 
 ## Convex Virtual Machine (CVM)
 
