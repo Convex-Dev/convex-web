@@ -264,17 +264,17 @@
       [BottomNavMenuSocial]])])
 
 (defn BottomNav2 []
-  [:div.flex.flex-col.md:flex-row.p-12.bg-gray-900
-   {:class ["space-y-6 md:space-y-0"
-            "space-x-0 md:space-x-32"]}
-   
-   (for [{:keys [text href]} (nav-items)]
-     ^{:key text}
-     [:a.text-xl.text-blue-200.uppercase
-      {:href href}
-      text])
-   
-   [BottomNavMenuSocial]])
+  [:div.w-full.max-w-screen-2xl.mx-auto
+   [:div.flex.flex-col.lg:flex-row.flex-1.justify-between.py-12.px-6.bg-gray-900
+    {:class ["space-y-6 lg:space-y-0"]}
+    
+    (for [{:keys [text href]} (nav-items)]
+      ^{:key text}
+      [:a.text-xl.text-blue-200.uppercase
+       {:href href}
+       text])
+    
+    [BottomNavMenuSocial]]])
 
 (defn Copyrigth []
   [:div.flex.flex-col.items-center.space-y-4.bg-gray-900.p-2
