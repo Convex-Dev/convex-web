@@ -99,11 +99,11 @@
            
            caption-style "text-white text-base md:text-2xl font-bold uppercase"
            
-           image-style "object-cover rounded-lg w-48 h-48"
+           image-style "object-cover rounded-lg w-36 md:w-48 h-26 md:h-48"
            
            copy-style "text-white text-base md:text-lg text-center md:text-left"]
        
-       [:div.flex.flex-col.justify-center.items-center.py-40
+       [:div.flex.flex-col.justify-center.items-center.py-16.md:py-40
         {:class "bg-[#001D49]"}
         
         [:div.grid.grid-cols-1.md:grid-cols-3.gap-x-12.gap-y-20.px-6.max-w-screen-xl
