@@ -48,7 +48,7 @@
      [:div.flex.flex-col.justify-center.items-center.space-y-32
       {:class ["bg-gradient-to-b from-[#01052A] to-[#000128]"]}
       
-      [:div.relative.flex.flex-col.justify-end
+      [:div.relative.flex.flex-col.justify-center.md:justify-end
        {:class "h-[calc(100vh-64px)]"}
        
        ;; Background image
