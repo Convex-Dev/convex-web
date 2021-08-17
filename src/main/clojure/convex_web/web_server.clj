@@ -673,29 +673,16 @@
 
       (cond
         invalid?
-        (do
-          (u/log :logging.event/user-error
-                 :severity :error
-                 :message "Invalid Command."
-                 :exception (ex-info (str "\n" (expound/expound-str :convex-web/command command)) {}))
-          (-bad-request-response (error "Invalid Command.")))
+        (-bad-request-response (error "Invalid Command."))
 
         forbidden?
-        (do
-          (u/log :logging.event/user-error
-                 :severity :error
-                 :message "Unauthorized."
-                 :exception (ex-info "Unauthorized." {}))
-          (-forbidden-response (error "Unauthorized.")))
+        (-forbidden-response (error "Unauthorized."))
 
         :else
         (let [command' (command/execute context command)]
           (-successful-response command'))))
     (catch Throwable ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
+      (log/error ex "Command error.")
 
       -server-error-response)))
 
@@ -740,9 +727,7 @@
           account (account/find-by-address (system/db system) address-long)]
       (cond
         (nil? account)
-        (do
-          (u/log :logging.event/user-error :severity :error :message (str "Failed to confirm account; Account " address-long " not found."))
-          (-not-found-response (error (str "Account " address-long " not found."))))
+        (-not-found-response (error (str "Account " address-long " not found.")))
         
         :else
         (let [^Convex client (system/convex-client system)
@@ -762,11 +747,6 @@
           (if (.isError result)
             (throw (ex-info "Failed to transfer funds." {:error-code (.getErrorCode result)}))
             (do
-              (u/log :logging.event/confirm-account
-                :severity :info
-                :address address-long
-                :message (str "Confirmed Address " address-long "."))
-              
               (d/transact! (system/db-conn system) [{:convex-web.session/id (ring-session req)
                                                      :convex-web.session/accounts
                                                      [{:convex-web.account/address address-long}]}])
@@ -774,10 +754,7 @@
               (-successful-response (select-keys account [::account/address
                                                           ::account/created-at])))))))
     (catch Exception ex
-      (u/log :logging.event/system-error
-        :severity :error
-        :message handler-exception-message
-        :exception ex)
+      (log/error ex "Account confirmation error.")
       
       -server-error-response)))
 

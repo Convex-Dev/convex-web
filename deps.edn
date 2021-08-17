@@ -138,6 +138,9 @@
   
   
   ;; -- Logback configuration
+  :logback-noop
+  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-noop.xml"]}
+
   :logback-site
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-site.xml"]}
   
