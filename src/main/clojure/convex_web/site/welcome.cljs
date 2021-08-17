@@ -64,7 +64,7 @@
        ;; Building the Internet of Value...
        [:div.absolute.inset-x-0.top-0.w-full.max-w-screen-xl.mx-auto
         
-        [:div.flex.flex-col.justify-center.items-center.space-y-6.md:space-y-14.pt-20.md:pt-48.px-6
+        [:div.flex.flex-col.justify-center.items-center.space-y-6.md:space-y-14.pt-14.md:pt-48.px-6
          
          [:h1.text-4xl.lg:text-6xl.font-extrabold.text-white
           "Building the Internet of Value for the business and consumer world"]
