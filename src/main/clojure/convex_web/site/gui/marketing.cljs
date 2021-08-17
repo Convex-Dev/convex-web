@@ -154,25 +154,28 @@
      ^{:key text}
      [NavButton text href])])
 
+(defn nav-items []
+  [{:text "Technology"
+    :href (rfe/href :route-name/technology)}
+   
+   {:text "Use Cases"
+    :href (rfe/href :route-name/use-cases)}
+   
+   {:text "Ecosystem"
+    :href (rfe/href :route-name/ecosystem)}
+   
+   {:text "Team"
+    :href (rfe/href :route-name/team)}
+   
+   {:text "About"
+    :href (rfe/href :route-name/about)}
+   
+   {:text "Developer"
+    :href (rfe/href :route-name/developer)}])
+
 (defn Nav []
   (reagent/with-let [show?-ref (reagent/atom false)]
-    (let [items [{:text "Technology"
-                  :href (rfe/href :route-name/technology)}
-                 
-                 {:text "Use Cases"
-                  :href (rfe/href :route-name/use-cases)}
-                 
-                 {:text "Ecosystem"
-                  :href (rfe/href :route-name/ecosystem)}
-                 
-                 {:text "Team"
-                  :href (rfe/href :route-name/team)}
-                 
-                 {:text "About"
-                  :href (rfe/href :route-name/about)}
-                 
-                 {:text "Developer"
-                  :href (rfe/href :route-name/developer)}]]
+    (let [items (nav-items)]
       [:nav.h-16.flex.items-center.justify-between.px-6
        {:class "bg-[#01052A]"}
        
@@ -259,6 +262,19 @@
       [BottomNavMenu explorer]
       [BottomNavMenu about]
       [BottomNavMenuSocial]])])
+
+(defn BottomNav2 []
+  [:div.flex.flex-col.md:flex-row.p-12.bg-gray-900
+   {:class ["space-y-6 md:space-y-0"
+            "space-x-0 md:space-x-32"]}
+   
+   (for [{:keys [text href]} (nav-items)]
+     ^{:key text}
+     [:a.text-xl.text-blue-200.uppercase
+      {:href href}
+      text])
+   
+   [BottomNavMenuSocial]])
 
 (defn Copyrigth []
   [:div.flex.flex-col.items-center.space-y-4.bg-gray-900.p-2
