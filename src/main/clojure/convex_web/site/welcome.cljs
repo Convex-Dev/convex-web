@@ -77,7 +77,7 @@
           [:div.flex.flex-col.space-y-2
            
            [:a
-            {:href (rfe/href :route-name/sandbox)}
+            {:href (rfe/href :route-name/developer)}
             [gui/BlueButton
              {}
              [:div.w-40
