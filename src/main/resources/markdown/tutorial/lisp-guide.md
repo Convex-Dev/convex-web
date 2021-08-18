@@ -5,7 +5,6 @@ This guide is intended for developers interested in learning about Convex Lisp. 
 Using the [Sandbox](/sandbox) is the easiest way to experience Convex Lisp. We recommend that you try it out as you go through this guide: It's more fun to get instant feedback and try out new ideas quickly! To do this:
 
 - Open the Sandbox (you can create a free, anonymous temporary account with one just one click!)
-- Select "Convex Lisp" as the language, if not already selected 
 - Type example code from this guide into the Sandbox input window as you progress
 - You will see outputs from Convex in the output window. we use `=>` to indicate expected outputs in the examples below.
 
