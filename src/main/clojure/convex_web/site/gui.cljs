@@ -667,7 +667,7 @@
      (merge {:class
              ["px-4 py-3"
               "bg-blue-500 hover:bg-blue-400 active:bg-blue-700"
-              "rounded"
+              "border-2 border-blue-500 rounded"
               "shadow-md"
               "focus:outline-none"
               (when disabled?
