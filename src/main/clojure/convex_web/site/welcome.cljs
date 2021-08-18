@@ -57,7 +57,7 @@
          {:class "object-cover"
           :src "/images/blockchain.png"}]
         
-        [:div.absolute.inset-x-0.top-0.h-full.bg-opacity-75
+        [:div.absolute.inset-x-0.top-0.h-full.bg-opacity-20
          {:class theme/bg-blue-01052A}]]
        
        
