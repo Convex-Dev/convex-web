@@ -253,6 +253,7 @@
       ;; ==============
       {:text "About"
        :top-level? true
+       :href (rfe/href :route-name/get-involved)
        :children
        [#_{:text "White Paper"
            :route-name :route-name/white-paper
