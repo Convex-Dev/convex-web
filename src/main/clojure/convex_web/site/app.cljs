@@ -29,7 +29,7 @@
             [reitit.frontend.easy :as rfe]
 
             ["react" :as react]
-            ["@headlessui/react" :as headlessui-react]
+            ["@headlessui/react" :as headlessui]
             ["@heroicons/react/solid" :refer [MenuIcon XIcon]]
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]
@@ -270,55 +270,70 @@
            :route-name :route-name/convex-foundation
            :href (rfe/href :route-name/convex-foundation)}]}]}))
 
-(defn NavItem [route {:keys [text top-level? active? href target route-name children]}]
-  (let [active? (or (= route-name (router/route-name route))
-                    (when active?
-                      (active? route)))
+(defn nav-item-selected? 
+  "Returns true if item's route match active route."
+  [route {:keys [active? route-name]}]
+  (or (= route-name (router/route-name route))
+    (when active?
+      (active? route))))
 
+(defn nav-item-expanded?
+  "Returns true if item or any of its children is selected."
+  [route {:keys [children] :as item}]
+  (or (nav-item-selected? route item)
+    (some #(nav-item-expanded? route %) children)))
+
+(defn NavItem [route {:keys [text top-level? active? href target route-name children] :as item}]
+  (let [active? (nav-item-selected? route item)
+        
+        expanded? (nav-item-expanded? route item)
+        
         leaf? (empty? children)]
-    [:div.flex.flex-col.justify-center
+    
+    [:div.flex.flex-col.justify-center.space-y-1
      (if leaf?
        {:class "h-6 xl:h-7"}
        {})
+     
      ;; -- Item
-     [:div.flex.justify-between
-      [:a.self-start.px-2.border-l-2.transition.duration-200.ease-in-out
-       (let [border (if active?
-                      "border-blue-400 hover:border-blue-400"
-                      "border-transparent hover:border-blue-200")
-
-             text-color (cond
-                          top-level?
-                          "text-blue-500"
-
-                          active?
-                          "text-gray-800"
-
-                          :else
-                          "text-gray-500")]
-         (merge {:href href
-                 :class [border text-color]}
-                (when target
-                  {:target target})))
-
+     [:a.py-1.px-2.transition.duration-200.ease-in-out.rounded
+      (let [border (if active?
+                     "bg-gray-200 hover:bg-gray-200"
+                     "hover:bg-gray-100")
+            
+            text-color (cond
+                         top-level?
+                         "text-blue-500"
+                         
+                         active?
+                         "text-gray-800"
+                         
+                         :else
+                         "text-gray-500")]
+        (merge {:href href
+                :class [border text-color]}
+          (when target
+            {:target target})))
+      
+      [:div.flex.justify-between
        (if target
-         [:div.flex.justify-between.items-center
-          [:span.mr-2 text]
-
+         [:div.space-x-2
+          [:span text]
           [gui/IconExternalLink {:class "w-6 h-6"}]]
-         [:span text])]
-
-      #_(when-not leaf?
-          [gui/IconChevronDown
-           {:class
-            ["w-6 h-6"
-             "text-blue-400"]}])]
-
+         [:span text])
+       
+       (when-not leaf?
+         [(if expanded? gui/IconChevronDown gui/IconChevronUp)
+          {:class
+           ["w-6 h-6"
+            "text-gray-400"]}])]]
+     
      ;; -- Children
-     (when (seq children)
-       [:div.flex.flex-col.ml-4
+     (when (and (seq children) expanded?)
+       [:div.flex.flex-col.space-y-1.ml-4
         (for [{:keys [text] :as child} children]
-          ^{:key text} [NavItem route child])])]))
+          ^{:key text}
+          [NavItem route child])])]))
 
 (defn SideNav [active-route]
   (let [{:keys [others]} (nav)]
@@ -327,7 +342,7 @@
               "hidden"
               
               ;; Desktop
-              "md:flex flex-col flex-shrink-0"]}
+              "md:flex flex-col flex-shrink-0 md:w-[200px]"]}
      
      (for [{:keys [text] :as item} others]
        ^{:key text}
@@ -471,7 +486,7 @@
        [MenuButton
         {:on-click toggle-visibility}]
        
-       [:> headlessui-react/Dialog
+       [:> headlessui/Dialog
         {:as "div"
          :className "z-50 fixed inset-0 overflow-auto"
          :open @open?-ref
@@ -480,7 +495,7 @@
         (reagent/as-element
           [:div.fixed.inset-0.overflow-auto
            
-           [:> headlessui-react/Dialog.Overlay
+           [:> headlessui/Dialog.Overlay
             {:className "fixed inset-0 bg-gray-100"}]
            
            [:div.fixed.inset-y-0.w-full

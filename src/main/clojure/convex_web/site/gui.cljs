@@ -20,7 +20,7 @@
             ["react-tippy" :as tippy]
             ["react-markdown" :as ReactMarkdown]
 
-            ["@headlessui/react" :as headlessui-react]
+            ["@headlessui/react" :as headlessui]
             ["@heroicons/react/solid" :refer [XIcon]]
             ["qrcode.react" :as QRCode]
 
@@ -198,7 +198,7 @@
            leave-from
            leave-to]}
    child]
-  [:> headlessui-react/Transition
+  [:> headlessui/Transition
    {:show show?
     :enter enter
     :enterFrom enter-from
@@ -212,11 +212,11 @@
 (defn SlideOver [{:keys [open? on-close]} child]
   ;; Coerce to boolean because nil is invalid.
   (let [open? (boolean open?)]
-    [:> headlessui-react/Transition.Root
+    [:> headlessui/Transition.Root
      {:show open?
       :as react/Fragment}
 
-     [:> headlessui-react/Dialog
+     [:> headlessui/Dialog
       {:as "div"
        :static true
        :className "z-50 fixed inset-0 overflow-hidden"
@@ -226,12 +226,12 @@
       (r/as-element
         [:div.absolute.inset-0.overflow-hidden
 
-         [:> headlessui-react/Dialog.Overlay
+         [:> headlessui/Dialog.Overlay
           {:className "fixed inset-0"}]
 
          [:div.fixed.inset-y-0.right-0.pl-10.max-w-full.flex.sm:pl-16
 
-          [:> headlessui-react/Transition.Child
+          [:> headlessui/Transition.Child
            {:as react/Fragment
             :enter "transform transition ease-in-out duration-500"
             :enterFrom "translate-x-full"
@@ -1011,11 +1011,11 @@
       "focus-visible:ring-%s-500"}))
 
 (defn disclosure-button 
-  "Returns a headlessui-react/Disclosure.Button 
+  "Returns a headlessui/Disclosure.Button 
    which can be used with the Disclosure component."
   [{:keys [text color]}]
   (fn [{:keys [open?]}]
-    [:> headlessui-react/Disclosure.Button
+    [:> headlessui/Disclosure.Button
      {:className
       (str/join " " (into disclosure-button-shared (disclosure-button-colors color)))}
      [:span.text-xs
@@ -1027,7 +1027,7 @@
         (when open? "transform rotate-180")]}]]))
 
 (defn Disclosure [{:keys [DisclosureButton]} children]  
-  [:> headlessui-react/Disclosure
+  [:> headlessui/Disclosure
    (fn [^js props]
      (r/as-element
        [:<>
@@ -1036,7 +1036,7 @@
          {:open? (.-open props)}]
 
         ;; Show children.
-        [:> headlessui-react/Disclosure.Panel
+        [:> headlessui/Disclosure.Panel
          {:className "px-4 pb-2 text-sm text-gray-500"}
 
          children]]))])
