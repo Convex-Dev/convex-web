@@ -419,7 +419,7 @@
                                         [])]
                         {:name (datafy sym)
                          :arglists arglists}))
-                    (.getCallableFunctions account-status))]
+                    (.getExports account-status))]
       
       (merge #:convex-web.account-status {:account-key (some-> account-status .getAccountKey .toChecksumHex)
                                           :controller (datafy (.getController account-status))
