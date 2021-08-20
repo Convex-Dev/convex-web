@@ -12,11 +12,10 @@
   com.cognitect/transit-cljs {:mvn/version "0.8.269"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
   
-  ;; world.convex/convex-core {:mvn/version "0.7.0-SNAPSHOT"}
-  ;; world.convex/convex-peer {:mvn/version "0.7.0-SNAPSHOT"}
+  world.convex/convex-peer {:mvn/version "0.7.0-rc1"}
   
-  world.convex/convex-core {:local/root "convex-core-0.7.0-SNAPSHOT.jar"}
-  world.convex/convex-peer {:local/root "convex-peer-0.7.0-SNAPSHOT.jar"}
+  ;; world.convex/convex-core {:local/root "convex-core-0.7.0-SNAPSHOT.jar"}
+  ;; world.convex/convex-peer {:local/root "convex-peer-0.7.0-SNAPSHOT.jar"}
   
   prestancedesign/get-port {:mvn/version "0.1.1"}
   
