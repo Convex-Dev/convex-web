@@ -95,7 +95,7 @@
               [:span.text-sm.text-white.uppercase
                "Whitepaper"]]]]]]]]
        
-       [:div.absolute.inset-x-0.bottom-0
+       [:div.hidden.md:block.absolute.inset-x-0.bottom-0
         [:div.flex.justify-center.py-10
          [:button.rounded.hover:bg-gray-900.transition.duration-500.ease-in-out
           {:on-click #(gui/scroll-into-view "advantages" {:behavior "smooth"})}
