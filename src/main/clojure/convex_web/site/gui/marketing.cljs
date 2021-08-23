@@ -3,7 +3,6 @@
    [reitit.frontend.easy :as rfe]
    [reagent.core :as reagent]
    
-   [convex-web.site.stack :as stack]   
    [convex-web.site.gui :as gui]
    
    ["@heroicons/react/solid" :refer [MenuIcon]]))
@@ -86,6 +85,60 @@
 
      #_{:text "Convex Foundation"
         :href (rfe/href :route-name/convex-foundation)}]}})
+
+(defn sitemap []
+  [{:text "TECHNOLOGY"
+    :items
+    [{:text "Convergent Proof of Stake"
+      :href (rfe/href :route-name/technology)}
+     
+     {:text "Convex Virtual Machine (CVM)"
+      :href (rfe/href :route-name/technology)}
+     
+     {:text "Immutable Storage"
+      :href (rfe/href :route-name/technology)}
+     
+     {:text "CADs"
+      :href (rfe/href :route-name/technology)}]}
+   
+   {:text "USE CASES"
+    :items
+    [{:text "NFTs"
+      :href (rfe/href :route-name/use-cases)}
+     
+     {:text "DeFi"
+      :href (rfe/href :route-name/use-cases)}
+     
+     {:text "Gaming"
+      :href (rfe/href :route-name/use-cases)}
+     
+     {:text "Metaverse"
+      :href (rfe/href :route-name/use-cases)}
+     
+     {:text "Retail CBDCs"
+      :href (rfe/href :route-name/use-cases)}]}
+   
+   {:text "ECOSYSTEM"
+    :items
+    [{:text "Builders"
+      :href (rfe/href :route-name/ecosystem)}
+     
+     {:text "Community"
+      :href (rfe/href :route-name/ecosystem)}
+     
+     {:text "Investors"
+      :href (rfe/href :route-name/ecosystem)}]}
+   
+   {:text "ABOUT"
+    :items
+    [{:text "Foundation"
+      :href (rfe/href :route-name/about)}
+     
+     {:text "Get rewarded"
+      :href (rfe/href :route-name/about)}
+     
+     {:text "Open Source"
+      :href (rfe/href :route-name/about)}]}])
 
 
 (defn NavButton [text href]
@@ -251,28 +304,12 @@
        [:img.object-scale-down.w-10.h-10
         {:src src}]])]])
 
-(defn BottomNav [nav]
+(defn Sitemap []
   [:div.lg:flex.lg:space-x-32.p-12.bg-gray-900
-
-   (let [{:keys [concepts documentation tools explorer about]} nav]
-     [:<>
-      [BottomNavMenu concepts]
-      [BottomNavMenu documentation]
-      [BottomNavMenu tools]
-      [BottomNavMenu explorer]
-      [BottomNavMenu about]
-      [BottomNavMenuSocial]])])
-
-(defn BottomNav2 []
-  [:div.w-full.max-w-screen-2xl.mx-auto
-   [:div.flex.flex-col.lg:flex-row.flex-1.justify-between.py-12.px-6.bg-gray-900
-    {:class ["space-y-6 lg:space-y-0"]}
-    
-    (for [{:keys [text href]} (nav-items)]
-      ^{:key text}
-      [:a.text-xl.text-blue-200.uppercase
-       {:href href}
-       text])
+   [:<>
+    (for [item (sitemap)]
+      ^{:key (:text item)}
+      [BottomNavMenu item])
     
     [BottomNavMenuSocial]]])
 

@@ -338,7 +338,7 @@
       ;; Bottom nav
       ;; =========================
       [:div.w-full.flex.justify-center.bg-gray-900
-       [marketing/BottomNav2]]]
+       [marketing/Sitemap (marketing/sitemap)]]]
      
      ;; Copyright
      ;; =========================
