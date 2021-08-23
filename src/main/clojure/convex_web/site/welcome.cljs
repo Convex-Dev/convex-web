@@ -4,7 +4,9 @@
    [convex-web.site.gui :as gui]
    [convex-web.site.gui.marketing :as marketing]
    
-   [reitit.frontend.easy :as rfe]))
+   [reitit.frontend.easy :as rfe]
+   
+   ["@heroicons/react/solid" :refer [ChevronDownIcon]]))
 
 (defn KeyAdvantages []
   [:div.grid.grid-cols-1.md:grid-cols-3.gap-4
@@ -91,7 +93,13 @@
              {}
              [:div.w-40
               [:span.text-sm.text-white.uppercase
-               "Whitepaper"]]]]]]]]]]
+               "Whitepaper"]]]]]]]]
+       
+       [:div.absolute.inset-x-0.bottom-0
+        [:div.flex.justify-center.py-10
+         [:button.rounded.hover:bg-gray-900.transition.duration-500.ease-in-out
+          {:on-click #(gui/scroll-into-view "advantages" {:behavior "smooth"})}
+          [:> ChevronDownIcon {:className "text-white h-10 w-10 animate-bounce"}]]]]]]
      
      
      ;; -- Key advantages
@@ -104,7 +112,8 @@
            copy-style "text-white text-base md:text-lg text-center md:text-left"]
        
        [:div.flex.flex-col.justify-center.items-center.py-16.md:py-40
-        {:class "bg-[#001D49]"}
+        {:id "advantages"
+         :class "bg-[#001D49]"}
         
         [:div.grid.grid-cols-1.md:grid-cols-3.gap-x-12.gap-y-20.px-6.max-w-screen-xl
          
