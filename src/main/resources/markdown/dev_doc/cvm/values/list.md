@@ -23,12 +23,23 @@ can be constructed using a dedicated function:
 ;; Without any further evaluation.
 
 
-(list? (list :a :b))
-
-;; True
+(list? (list :a :b))  :: True
+(coll? (list :a :b))  ;; True
 ```
 
-Alternatively, the [section about code as data](/cvm/code-as-data) describes **quoting** which prevent any evaluation at all:
+Generally, [vectors](/cvm/data-types/vector) are more flexible for grouping several values together. Lists are more commonly used in the context of
+[macros](/cvm/macros), an advanced topic.
+
+
+## Create a new list
+
+By using the `list` function:
+
+```clojure
+(list 1 2 3)
+```
+
+By using `quote` (explained in greater detail in the the [section about code as data](/cvm/code-as-data), which prevent evaluation:
 
 ```clojure
 (quote (1 2 (+ 1 3)))
@@ -38,13 +49,7 @@ Alternatively, the [section about code as data](/cvm/code-as-data) describes **q
 ;; Nothing is evaluated, not even the inner parens.
 ```
 
-Generally, [vectors](/cvm/data-types/vector) are more flexible for grouping several values together. Lists are more commonly used in the context of
-[macros](/cvm/macros), an advanced topic.
-
-
-## Key usage
-
-Create a new list by adding an element to an existing list:
+By adding an item to an existing list:
 
 ```clojure
 (conj (list :a :b)
@@ -52,11 +57,10 @@ Create a new list by adding an element to an existing list:
 
 ;; (42 :a :b)
 ;;
-;; Items are always added at the beginning of the new list.
+;; Items are always added at the beginning of the new list, old one is left intact.
 ```
 
-A new list can also be constructed by prepending an item to any other collection (a [map](/cvm/data-types/map), a [set](/cvm/data-types/set),
-a [vector](/cvm/data-types/vector), or another list):
+By prepending an item to any other collection (a [map](/cvm/data-types/map), a [set](/cvm/data-types/set), a [vector](/cvm/data-types/vector), or another list):
 
 ```clojure
 (cons 42
@@ -65,7 +69,29 @@ a [vector](/cvm/data-types/vector), or another list):
 ;; (42 :a :b)
 ```
 
-Retrieves the nthiest item (starting at 0):
+By replacing an item at a given position:
+
+```clojure
+(assoc (list :a :b :c)
+       1
+       "here")
+
+;; (:a "here" :c), old list left intact.
+
+
+(assoc-in (list :a
+                (list :b :c))
+          [1 0]
+          "here")
+
+;; (:a ("here" :c)), old list left intact.
+
+```
+
+
+## Access items
+
+By retrieving nthiest one (count starts at 0):
 
 ```clojure
 (nth (list :a :b :c)
@@ -99,6 +125,15 @@ a specific position. In practice, it means they can be used with the `get` funct
 ;; Behaves like `nth`.
 
 
+(get-in (list :a
+              (list :b :c))
+        [1 0])
+
+;; :b
+;;
+;; Nested `get`: item at 1 is (:b :c), then item at 0 is :b
+
+
 (get (list :a :b :c)
      42)
 
@@ -108,16 +143,32 @@ a specific position. In practice, it means they can be used with the `get` funct
 ;;
 ```
 
-Common collection functions:
+
+## Common collection functions
 
 ```clojure
-(empty? (list))            ;; True, there are no items
-(empty? (list :a :b))      ;; False, there are 2 items
-(empty (list :a :b))       ;; (), an empty list
+(count (list :a :b))            ;; 2
+(empty? (list))                 ;; True, there are no items
+(empty? (list :a :b))           ;; False, there are 2 items
+(empty (list :a :b))            ;; (), an empty list
 
-(first (list :a :b :c))    ;; :a
-(second (list :a :b :c)    ;; :b
-(last (list :a :b :c))     ;; :c
+(first (list :a :b :c))         ;; :a
+(second (list :a :b :c)         ;; :b
+(last (list :a :b :c))          ;; :c
 
-(reverse (list :a :b :c))  ;; (:c :b :a)
+(contains-key? (list :a :b :c)
+               1)               ;; True
+(contains-key? (list :a :b :c)
+               42)              ;; False
+
+(next (list :a :b :c))          ;; (:b :c)
+(next (list :a))                ;; nil
+
+(reverse (list :a :b :c))       ;; [:c :b :a], returns a vector for performance reasons
+
+(concat (list :a :b)
+        (list :c))              ;; (:a :b :c)
+
 ```
+
+Lists can be looped over as described in the [section about loops](/cvm/loops).
