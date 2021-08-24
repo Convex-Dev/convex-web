@@ -11,9 +11,7 @@
                      
                      pending-scroll?-ref (reagent/atom (boolean scroll-to))]
     
-    (let [scroll-to (js/decodeURIComponent (str/replace scroll-to "+" " "))
-          
-          {:keys [ajax/status contents toc? smart-toc?] :or {toc? true}} markdown]
+    (let [{:keys [ajax/status contents toc? smart-toc?] :or {toc? true}} markdown]
       [:div.flex.flex-1
        (case status
          :ajax.status/pending
@@ -35,15 +33,16 @@
                     (reset! *nodes nodes))
                   
                   (when @pending-scroll?-ref
-                    (when-let [el (reduce
-                                    (fn [_ node]
-                                      (when (= scroll-to (.-textContent node))
-                                        (reduced node)))
-                                    nodes)]
-                      
-                      (gui/scroll-element-into-view el {:behavior "smooth"})
-                      
-                      (reset! pending-scroll?-ref false))))))}
+                    (let [scroll-to (js/decodeURIComponent (str/replace scroll-to "+" " "))]
+                      (when-let [el (reduce
+                                      (fn [_ node]
+                                        (when (= scroll-to (.-textContent node))
+                                          (reduced node)))
+                                      nodes)]
+                        
+                        (gui/scroll-element-into-view el {:behavior "smooth"})
+                        
+                        (reset! pending-scroll?-ref false)))))))}
            
            (for [{:keys [name content]} contents]
              ^{:key name}
