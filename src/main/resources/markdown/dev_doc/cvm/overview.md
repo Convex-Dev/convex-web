@@ -9,4 +9,15 @@ While previous programming experience is desirable, it is not a prerogative. We 
 to understand how such systems work.
 
 All examples are written in Convex Lisp, the programming language used to encode transactions. Its unique design results in code that is concise, straight to the point,
-less error-prone than many other languages, and we believe it is a fun experience to learn it.
+less error-prone than many other languages, and we believe it is a fun experience to learn it. Snippets of code show pratical examples and results are often written as
+comments:
+
+```clojure
+(+ 2 2)
+
+;; -> 4
+
+;; Comments start with at least one ';'
+;; They are never executed, there are often used to provide explainations in human language.
+;; Everything writen after ';' until the end of the line effectively ignored.
+```
