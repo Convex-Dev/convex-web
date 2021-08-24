@@ -6,11 +6,11 @@ Developper documentation should be primarily split into the following top level 
         - Sandbox
         - Runner
     - Syntax
-    - Values
-        - Long
-        - Double
-        - Char
-        - String
+    - Data types
+        - Overview
+        - Booleans
+        - Numbers
+        - Text
         - Keyword
         - Symbol
         - Blob (keys, hashes)
@@ -23,6 +23,7 @@ Developper documentation should be primarily split into the following top level 
     - Environment and variables
         - Definitions (`def`)
         - Local variables (`let`)
+    - Exceptions
     - Conditionals
     - Functions
         - Call
@@ -33,6 +34,7 @@ Developper documentation should be primarily split into the following top level 
             - From functions
             - From `loop`
         - Reduce
+    - Control flow (halt, return, ...)
     - Code as data
         - Quote
         - Quasiquote and unquote
