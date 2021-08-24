@@ -8,6 +8,7 @@ Developper documentation should be primarily split into the following top level 
     - Syntax
     - Data types
         - Overview
+        - Nil
         - Boolean
         - Numbers
         - Text
