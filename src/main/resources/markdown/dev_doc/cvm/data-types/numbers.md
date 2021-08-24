@@ -9,6 +9,9 @@ A **long** is a [64-bit signed integer](https://en.wikipedia.org/wiki/Integer_(c
 0
 1
 42
+
+(long? 42)    ;; True
+(number? 42)  ;; True
 ```
 
 A **double** is a [double precision floating point number](https://en.wikipedia.org/wiki/Double-precision_floating-point_format]:
@@ -25,6 +28,9 @@ A **double** is a [double precision floating point number](https://en.wikipedia.
 ##Inf
 ##-Inf
 ##NaN
+
+(double? 42.0)  ;; True
+(number? 42.0)  ;; True
 ```
 
 Doubles are a smaller span than longs when it comes to representing whole-valued numbers. Unless a decimal part is needed or a function returns a double, it is advised using longs.

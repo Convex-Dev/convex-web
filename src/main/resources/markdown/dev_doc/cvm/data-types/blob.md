@@ -7,7 +7,9 @@ It is a sequence of bytes written in hexadecimal notation and prefixed with `0x`
 0x42
 0xff23789875
 
-0x ;; Legal, means an empty blob
+0x  ;; Legal, means an empty blob
+
+(blob? 0x42)  ;; True
 ```
 
 Such a sequence of bytes can represent many things and is opaque without any further context.

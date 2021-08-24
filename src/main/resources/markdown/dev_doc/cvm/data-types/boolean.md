@@ -1,5 +1,10 @@
 There are only 2 possible values for a boolean: `true` or `false`. While very basic, their role is crucial and users will often encounter booleans throughout the developer guides.
 
+```clojure
+(boolean? true)   ;; True
+(boolean? false)  ;; True
+```
+
 
 ## Casts
 

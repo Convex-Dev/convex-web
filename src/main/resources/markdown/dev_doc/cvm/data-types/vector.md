@@ -56,8 +56,14 @@ By replacing an item at a given position:
 By casting any other collection or pseudo-collection:
 
 ```clojure
-(vec (list :a :b))  ;; [:a :b]
-(vec "Convex")      ;; [\C \o \n \v \e \x]
+(vec (list :a :b))   ;; [:a :b]
+(vec "Convex")       ;; [\C \o \n \v \e \x]
+
+(into [:a]
+      (list :b :c))  ;; [:a :b :c]
+
+(into []
+      "Convex")      ;; [\C \o \n \v \e \x]
 ```
 
 

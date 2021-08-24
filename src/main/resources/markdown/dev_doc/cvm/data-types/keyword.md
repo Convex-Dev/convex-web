@@ -4,6 +4,8 @@ Keywords are composed of 1 to 64 characters prefixed by `:`, such as:
 :hello
 :hello-world
 :this-is-a-keyword
+
+(keyword? :my-keyword)  ;; True
 ```
 
 Unlike [strings](/cvm/data-types/text), they cannot contain spaces and are used as:

@@ -4,6 +4,8 @@ An address is a numerical value referring to an account. It is a whole-valued nu
 #42
 #100
 #123456789
+
+(address? #42)  ;; True
 ```
 
 Address of the account executing current transaction is retrivied via:

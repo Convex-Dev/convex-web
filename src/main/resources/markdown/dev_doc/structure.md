@@ -30,11 +30,14 @@ Developper documentation should be primarily split into the following top level 
         - Call
         - Defn
         - Lambdas, first-class citizen
-    - Looping
+    - Loops
         - Recursion
             - From functions
             - From `loop`
         - Reduce
+        - Map
+        - Filter
+        - For
     - Control flow (halt, return, ...)
     - Code as data
         - Quote
@@ -52,8 +55,10 @@ Developper documentation should be primarily split into the following top level 
     - Libraries
         - Similarity with actors
         - Security context
+    - Destructuring
     - Compiler phases
     - Macros
+    - Account control
 - Download
     - CLI
     - Runner

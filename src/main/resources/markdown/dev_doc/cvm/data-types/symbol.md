@@ -14,8 +14,10 @@ symbols are executed and must be defined in the environment, pointing to a value
 will provide a deeper explaination as to what symbols are and why they exist.
 
 ```clojure
-this-is-my-symbol         ;; Error, undefined in the environment
-(quote this-is-my-symbol) ;; Fine, does not try resolving to a value
+this-is-my-symbol            ;; Error, undefined in the environment
+(quote this-is-my-symbol)    ;; Fine, does not try resolving to a value
+
+(symbol? (quote my-symbol))  ;; True
 ```
 
 
