@@ -1,7 +1,7 @@
 (ns convex-web.site.router
   (:require [convex-web.site.runtime :refer [disp sub]]
             [convex-web.site.stack :as stack]
-
+            
             [reitit.frontend :as rf]
             [reitit.frontend.controllers :as rfc]
             [reitit.frontend.easy :as rfe]
@@ -68,6 +68,9 @@
               {:end end})]
     (merge start end)))
 
+(defn scroll-to [match]
+  (get-in match [:parameters :query :section]))
+
 ;; ----
 
 (defonce routes
@@ -98,9 +101,12 @@
    ["technology"
     {:name :route-name/technology
      :controllers
-     [{:start (fn [_]
+     [{:identity identity
+       :start (fn [match]
                 (stack/push :page.id/markdown-marketing {:title "Technology"
-                                                         :state {:id :technology}
+                                                         :state (merge {:id :technology}
+                                                                  (when-let [section (scroll-to match)]
+                                                                    {:scroll-to section}))
                                                          :reset? true}))}]}]
    
    ;; Use Cases
@@ -108,9 +114,12 @@
    ["use-cases"
     {:name :route-name/use-cases
      :controllers
-     [{:start (fn [_]
+     [{:identity identity
+       :start (fn [match]
                 (stack/push :page.id/markdown-marketing {:title "Use Cases"
-                                                         :state {:id :use-cases}
+                                                         :state (merge {:id :use-cases}
+                                                                  (when-let [section (scroll-to match)]
+                                                                    {:scroll-to section}))
                                                          :reset? true}))}]}]
    
    ;; Ecosystem
@@ -118,9 +127,12 @@
    ["ecosystem"
     {:name :route-name/ecosystem
      :controllers
-     [{:start (fn [_]
+     [{:identity identity
+       :start (fn [match]
                 (stack/push :page.id/markdown-marketing {:title "Ecosystem"
-                                                         :state {:id :ecosystem}
+                                                         :state (merge {:id :ecosystem}
+                                                                  (when-let [section (scroll-to match)]
+                                                                    {:scroll-to section}))
                                                          :reset? true}))}]}]
    
    ;; About
@@ -128,9 +140,12 @@
    ["about"
     {:name :route-name/about
      :controllers
-     [{:start (fn [_]
+     [{:identity identity
+       :start (fn [match]
                 (stack/push :page.id/markdown-marketing {:title "About"
-                                                         :state {:id :about}
+                                                         :state (merge {:id :about}
+                                                                  (when-let [section (scroll-to match)]
+                                                                    {:scroll-to section}))
                                                          :reset? true}))}]}]
    
    ;; Developer
@@ -148,9 +163,12 @@
    ["concepts"
     {:name :route-name/concepts
      :controllers
-     [{:start (fn [_]
+     [{:identity identity
+       :start (fn [match]
                 (stack/push :page.id/markdown {:title "Concepts"
-                                               :state {:id :concepts}
+                                               :state (merge {:id :concepts}
+                                                        (when-let [section (scroll-to match)]
+                                                          {:scroll-to section}))
                                                :reset? true}))}]}]
    
    
@@ -159,9 +177,12 @@
    ["vision"
     {:name :route-name/vision
      :controllers
-     [{:start (fn [_]
+     [{:identity identity
+       :start (fn [match]
                 (stack/push :page.id/markdown {:title "Vision"
-                                               :state {:id :vision}
+                                               :state (merge {:id :vision}
+                                                        (when-let [section (scroll-to match)]
+                                                          {:scroll-to section}))
                                                :reset? true}))}]}]
    
    ;; Glossary
@@ -170,9 +191,11 @@
     {:name :route-name/glossary
      :controllers
      [{:identity identity
-       :start (fn [_]
+       :start (fn [match]
                 (stack/push :page.id/markdown {:title "Glossary"
-                                               :state {:id :glossary}
+                                               :state (merge {:id :glossary}
+                                                        (when-let [section (scroll-to match)]
+                                                          {:scroll-to section}))
                                                :reset? true}))}]}]
    
    ;; FAQ
@@ -180,9 +203,11 @@
    ["faq"
     {:name :route-name/faq
      :controllers
-     [{:start (fn [_]
+     [{:start (fn [match]
                 (stack/push :page.id/markdown {:title "FAQ"
-                                               :state {:id :faq}
+                                               :state (merge {:id :faq}
+                                                        (when-let [section (scroll-to match)]
+                                                          {:scroll-to section}))
                                                :reset? true}))}]}]
    
    
@@ -222,9 +247,11 @@
     {:name :route-name/tools
      :controllers
      [{:identity identity
-       :start (fn [_]
+       :start (fn [match]
                 (stack/push :page.id/markdown {:title "Tools"
-                                               :state {:id :tools}
+                                               :state (merge {:id :tools}
+                                                        (when-let [section (scroll-to match)]
+                                                          {:scroll-to section}))
                                                :reset? true}))}]}]
    
    ;; Wallet
@@ -337,9 +364,12 @@
     [""
      {:name :route-name/documentation
       :controllers
-      [{:start (fn [_]
+      [{:identity identity
+        :start (fn [match]
                  (stack/push :page.id/markdown {:title "Documentation"
-                                                :state {:id :documentation}
+                                                :state (merge {:id :documentation}
+                                                         (when-let [section (scroll-to match)]
+                                                           {:scroll-to section}))
                                                 :reset? true}))}]}]
     
     
@@ -360,33 +390,45 @@
     ["/getting-started"
      {:name :route-name/documentation-getting-started
       :controllers
-      [{:start (fn [_]
+      [{:identity identity
+        :start (fn [match]
                  (stack/push :page.id/markdown {:title "Getting Started"
-                                                :state {:id :getting-started}
+                                                :state (merge {:id :getting-started}
+                                                         (when-let [section (scroll-to match)]
+                                                           {:scroll-to section}))
                                                 :reset? true}))}]}]
     
     ["/tutorial"
      {:name :route-name/documentation-tutorial
       :controllers
-      [{:start (fn [_]
+      [{:identity identity
+        :start (fn [match]
                  (stack/push :page.id/markdown {:title "Lisp Guide"
-                                                :state {:id :tutorials}
+                                                :state (merge {:id :tutorials}
+                                                         (when-let [section (scroll-to match)]
+                                                           {:scroll-to section}))
                                                 :reset? true}))}]}]
     
     ["/advanced-topics"
      {:name :route-name/advanced-topics
       :controllers
-      [{:start (fn [_]
+      [{:identity identity
+        :start (fn [match]
                  (stack/push :page.id/markdown {:title "Advanced Topics"
-                                                :state {:id :advanced-topics}
+                                                :state (merge {:id :advanced-topics}
+                                                         (when-let [section (scroll-to match)]
+                                                           {:scroll-to section}))
                                                 :reset? true}))}]}]
     
     ["/client-api"
      {:name :route-name/client-api
       :controllers
-      [{:start (fn [_]
+      [{:identity identity
+        :start (fn [match]
                  (stack/push :page.id/markdown {:title "Client API"
-                                                :state {:id :client-api}
+                                                :state (merge {:id :client-api}
+                                                         (when-let [section (scroll-to match)]
+                                                           {:scroll-to section}))
                                                 :reset? true}))}]}]]
    
    
@@ -404,30 +446,42 @@
     ["/white-paper"
      {:name :route-name/white-paper
       :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/markdown {:state {:id :white-paper}
+      [{:identity identity
+        :start (fn [match]
+                 (stack/push :page.id/markdown {:state (merge {:id :white-paper}
+                                                         (when-let [section (scroll-to match)]
+                                                           {:scroll-to section}))
                                                 :reset? true}))}]}]
     
     ["/get-involved"
      {:name :route-name/get-involved
       :controllers
-      [{:start (fn [_]
+      [{:identity identity
+        :start (fn [match]
                  (stack/push :page.id/markdown {:title "Get Involved"
-                                                :state {:id :get-involved}
+                                                :state (merge {:id :get-involved}
+                                                         (when-let [section (scroll-to match)]
+                                                           {:scroll-to section}))
                                                 :reset? true}))}]}]
     
     ["/roadmap"
      {:name :route-name/roadmap
       :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/markdown {:state {:id :under-construction}
+      [{:identity identity
+        :start (fn [match]
+                 (stack/push :page.id/markdown {:state (merge {:id :under-construction}
+                                                         (when-let [section (scroll-to match)]
+                                                           {:scroll-to section}))
                                                 :reset? true}))}]}]
     
     ["/convex-foundation"
      {:name :route-name/convex-foundation
       :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/markdown {:state {:id :under-construction}
+      [{:identity identity
+        :start (fn [match]
+                 (stack/push :page.id/markdown {:state (merge {:id :under-construction}
+                                                         (when-let [section (scroll-to match)]
+                                                           {:scroll-to section}))
                                                 :reset? true}))}]}]]])
 
 (def router

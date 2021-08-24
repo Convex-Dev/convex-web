@@ -39,9 +39,9 @@
 
 (defn scroll-element-into-view
   "https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView"
-  [el]
+  [el & [options]]
   (when el
-    (.scrollIntoView el)))
+    (.scrollIntoView el (or (clj->js options) #js {}))))
 
 (defn highlight-element [el]
   (when el
