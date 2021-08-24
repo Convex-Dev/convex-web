@@ -89,56 +89,71 @@
 (defn sitemap []
   [{:text "TECHNOLOGY"
     :items
-    [{:text "Convergent Proof of Stake"
-      :href (rfe/href :route-name/technology)}
+    [(let [section "Convergent Proof of Stake"]
+       {:text section
+        :href (rfe/href :route-name/technology {} {:section section})})
      
-     {:text "Convex Virtual Machine (CVM)"
-      :href (rfe/href :route-name/technology)}
+     (let [section "Convex Virtual Machine (CVM)"]
+       {:text section
+        :href (rfe/href :route-name/technology {} {:section section})})
      
-     {:text "Immutable Storage"
-      :href (rfe/href :route-name/technology)}
+     (let [section "Immutable Storage"]
+       {:text section
+        :href (rfe/href :route-name/technology {} {:section section})})
      
-     {:text "CADs"
-      :href (rfe/href :route-name/technology)}]}
+     (let [section "CADs"]
+       {:text section
+        :href (rfe/href :route-name/technology {} {:section section})})]}
    
    {:text "USE CASES"
     :items
-    [{:text "NFTs"
-      :href (rfe/href :route-name/use-cases)}
+    [(let [section "NFTs"]
+       {:text section
+        :href (rfe/href :route-name/use-cases {} {:section section})})
      
-     {:text "DeFi"
-      :href (rfe/href :route-name/use-cases)}
+     (let [section "DeFi"]
+       {:text section
+        :href (rfe/href :route-name/use-cases {} {:section section})})
      
-     {:text "Gaming"
-      :href (rfe/href :route-name/use-cases)}
+     (let [section "Gaming"]
+       {:text section
+        :href (rfe/href :route-name/use-cases {} {:section section})})
      
-     {:text "Metaverse"
-      :href (rfe/href :route-name/use-cases)}
+     (let [section "Metaverse"]
+       {:text section
+        :href (rfe/href :route-name/use-cases {} {:section section})})
      
-     {:text "Retail CBDCs"
-      :href (rfe/href :route-name/use-cases)}]}
+     (let [section "Retail CBDCs"]
+       {:text section
+        :href (rfe/href :route-name/use-cases {} {:section section})})]}
    
    {:text "ECOSYSTEM"
     :items
-    [{:text "Builders"
-      :href (rfe/href :route-name/ecosystem)}
+    [(let [section "Builders"]
+       {:text section
+        :href (rfe/href :route-name/ecosystem {} {:section section})})
      
-     {:text "Community"
-      :href (rfe/href :route-name/ecosystem)}
+     (let [section "Community"]
+       {:text section
+        :href (rfe/href :route-name/ecosystem {} {:section section})})
      
-     {:text "Investors"
-      :href (rfe/href :route-name/ecosystem)}]}
+     (let [section "Investors"]
+       {:text section
+        :href (rfe/href :route-name/ecosystem {} {:section section})})]}
    
    {:text "ABOUT"
     :items
-    [{:text "Foundation"
-      :href (rfe/href :route-name/about)}
+    [(let [section "Foundation"]
+       {:text section
+        :href (rfe/href :route-name/about {} {:section section})})
      
-     {:text "Get rewarded"
-      :href (rfe/href :route-name/about)}
+     (let [section "Get rewarded"]
+       {:text section
+        :href (rfe/href :route-name/about {} {:section section})})
      
-     {:text "Open Source"
-      :href (rfe/href :route-name/about)}]}])
+     (let [section "Open Source"]
+       {:text section
+        :href (rfe/href :route-name/about {} {:section section})})]}])
 
 
 (defn NavButton [text href]
