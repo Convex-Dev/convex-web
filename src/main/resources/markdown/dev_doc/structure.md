@@ -14,7 +14,7 @@ Developper documentation should be primarily split into the following top level 
         - Text
         - Keyword
         - Symbol
-        - Blob (keys, hashes)
+        - Blob
         - Address
         - List
         - Vector
