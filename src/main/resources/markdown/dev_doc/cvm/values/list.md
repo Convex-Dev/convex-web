@@ -33,7 +33,7 @@ Generally, [vectors](/cvm/data-types/vector) are more flexible for grouping seve
 
 ## Create a new list
 
-By using the `list` function:
+By using a function:
 
 ```clojure
 (list 1 2 3)
@@ -86,6 +86,23 @@ By replacing an item at a given position:
 
 ;; (:a ("here" :c)), old list left intact.
 
+```
+
+By casting any other collection or pseudo-collection:
+
+```clojure
+(into (list :a)
+      [:b :c])
+
+;; (:c :b :a)
+;;
+;; Seems upside-down but it makes sense, new items are always added at the beginning of the list.
+
+
+(into (list)
+      "Convex")
+
+;; (\x \e \v \n \o \C)
 ```
 
 
