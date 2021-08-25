@@ -19,7 +19,12 @@
     :ajax.status/success
     (let [libraries (sort (keys reference))
           
-          selected-library-reference (sort-by first (get reference selected-library))]
+          ;; Remove private and sort by symbol.
+          selected-library-reference (->> (get reference selected-library)
+                                       (remove
+                                         (fn [[_ {:keys [private?]}]]
+                                           private?))
+                                       (sort-by first))]
       [:div.flex.flex-col.flex-1.space-y-3.overflow-auto
        
        ;; Libraries select.
