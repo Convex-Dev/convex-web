@@ -1,5 +1,5 @@
 While [lists](/cvm/data-types/list) are more often used to describe code, vectors behave slightly different and have a broader usage.
-Written between square brackets, they are sequential and associative collections where containing items of any type:
+Written between `[ ]`, they are sequential and associative collections where containing items of any type:
 
 ```clojure
 []
@@ -8,6 +8,11 @@ Written between square brackets, they are sequential and associative collections
 (vector? [42])  ;; True
 (coll?   [42])  ;; True
 ```
+
+They are broadly used to group items together while preserving a known order, where items can have different types and be collections
+themselves.
+
+Unlike other programming languages, separating items with `,` is optional and rarely seen unless it makes an expression more readable.
 
 
 ## Create a new vector
@@ -81,7 +86,7 @@ By retrieving nthiest one (count starts at 0):
 (nth [:a :b :c]
      42)
 
-;; Error, requested position beyond the 
+;; Error, requested position beyond the limits of the vector.
 
 
 ([:a :b] 1)
