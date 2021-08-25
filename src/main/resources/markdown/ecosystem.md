@@ -8,4 +8,4 @@ We are a diverse, international, open community and welcome anyone who wants to 
 
 ## Investors
 
-Prior to the main network launch, we will not be selling Convex Coins to retail investors. Institutional investors willing and able to make a substantial investment in Convex are welcome to contact us at info@convex.world.
+Prior to the main network launch, we will not be selling Convex Coins to retail investors. Institutional investors willing and able to make a substantial investment in Convex are welcome to contact us at [info@convex.world](mailto:info@convex.world).
