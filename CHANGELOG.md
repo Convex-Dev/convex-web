@@ -1,5 +1,8 @@
 # Changes
 
+## 0.23.0 -- 2021-08-25
+- Fix Ecosystem contact us link
+
 ## 0.22.0 -- 2021-08-25
 - Sitemap
 
