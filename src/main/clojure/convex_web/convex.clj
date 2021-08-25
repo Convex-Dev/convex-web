@@ -637,16 +637,17 @@
    It's a mapping of library name to its metadata."
   [^Context context]
   (let [libraries ["asset.box"
-                   "asset.nft-tokens"
-                   "asset.simple-nft"
+                   "asset.box.actor"
+                   "asset.nft.simple"
+                   "asset.nft.tokens"
                    "convex.asset"
                    "convex.core"
                    "convex.fungible"
-                   "asset.nft-tokens"
+                   "convex.play"
                    "convex.registry"
                    "convex.trust"
                    "convex.trusted-oracle"
-                   "torus.exchange"]]
+                   "convex.trusted-oracle.actor"]]
     (->> libraries
       (map
         (fn [library-name]
