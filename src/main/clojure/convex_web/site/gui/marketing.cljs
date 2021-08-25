@@ -101,9 +101,8 @@
        {:text section
         :href (rfe/href :route-name/technology {} {:section section})})
      
-     (let [section "CADs"]
-       {:text section
-        :href (rfe/href :route-name/technology {} {:section section})})]}
+     {:text "Convex Architecture Documents (CAD)"
+      :href (rfe/href :route-name/technology {} {:section "CADs"})}]}
    
    {:text "USE CASES"
     :items
