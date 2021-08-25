@@ -21,11 +21,9 @@ Developper documentation should be primarily split into the following top level 
         - Map
         - BlobMap
         - Sets
-    - Environment and variables
-        - Definitions (`def`)
-        - Local variables (`let`)
-    - Errors
+    - Definitions (`def` and `let`)
     - Conditionals
+    - Errors
     - Functions
         - Call
         - Defn
