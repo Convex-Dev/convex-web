@@ -77,11 +77,7 @@
   ["/"
    {:controllers
     [{:identity identity
-      :start (fn [{:keys [path]}]
-               ;; A proper solution would be more elaborated than this,
-               ;; but it's okay, it can do for now.
-               (js/scrollTo 0 0)
-               
+      :start (fn [{:keys [path]}]               
                (when-not goog.DEBUG
                  (js/gtag "event" "page_view" #js {:page_path path
                                                    :send_to "UA-179518463-1"})))}]}
