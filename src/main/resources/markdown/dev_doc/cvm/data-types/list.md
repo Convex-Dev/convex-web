@@ -163,6 +163,19 @@ a specific position. In practice, it means they can be used with the `get` funct
 ```
 
 
+## Sequence functions
+
+Following functions can only be used with sequential collections (lists or [vectors](/cvm/data-types/vector)) where order is predictable:
+
+```clojure
+(reverse (list :a :b :c))       ;; [:c :b :a], returns a vector for performance reasons
+
+(concat (list :a :b)
+        (list :c))              ;; (:a :b :c)
+
+```
+
+
 ## Common collection functions
 
 ```clojure
@@ -182,12 +195,6 @@ a specific position. In practice, it means they can be used with the `get` funct
 
 (next (list :a :b :c))          ;; (:b :c)
 (next (list :a))                ;; nil
-
-(reverse (list :a :b :c))       ;; [:c :b :a], returns a vector for performance reasons
-
-(concat (list :a :b)
-        (list :c))              ;; (:a :b :c)
-
 ```
 
 Lists can be looped over as described in the [section about loops](/cvm/loops).

@@ -24,7 +24,7 @@ Developper documentation should be primarily split into the following top level 
     - Environment and variables
         - Definitions (`def`)
         - Local variables (`let`)
-    - Exceptions
+    - Errors
     - Conditionals
     - Functions
         - Call

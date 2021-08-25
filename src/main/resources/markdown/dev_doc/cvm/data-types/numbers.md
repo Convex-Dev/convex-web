@@ -47,7 +47,9 @@ Many mathematical functions from the CVM allow mixing longs and doubles:
 (* 4 3.5 )   ;; 14.0
 (/ 3 2)      ;; 1.5
 
-(pow 2 3)    ;; 8.0, exponentiation
+(pow 2 3)    ;; 8.0, exponentiation, 2 raised to the power of 3
+(exp 1)      ;; 2.7182818284590455, e raised to the power of 1
+(sqrt 4)     ;; 2.0, square root of 4.
 
 (signum -42) ;; -1, sign is negative
 (signum 0)   ;; 0

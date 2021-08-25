@@ -122,13 +122,25 @@ Similarly to what is described in [lists](/cvm/data-types/list), vectors can als
 ```
 
 
+## Sequence functions
+
+Following functions can only be used with sequential collections ([lists](/cvm/data-types/list) or vectors) where order is predictable:
+
+```clojure
+(reverse [:a :b :c])  ;; (:c :b :a), returns a list for performance reasons
+
+(concat [:a :b]
+        [:c])         ;; [:a :b :c]
+```
+
+
 ## Common collection functions
 
 ```clojure
 (count [:a :b])       ;; 2
 (empty? [])           ;; True, there are no items
 (empty? [:a :b])      ;; False, there are 2 items
-(empty [:a :b])       ;; (), an empty vector
+(empty [:a :b])       ;; [], an empty vector
 
 (first [:a :b :c])    ;; :a
 (second [:a :b :¢])   ;; :b
@@ -136,11 +148,6 @@ Similarly to what is described in [lists](/cvm/data-types/list), vectors can als
 
 (next [:a :b :c])     ;; (:b :c)
 (next [:a])           ;; nil
-
-(reverse [:a :b :c])  ;; (:c :b :a), returns a list for performance reasons
-
-(concat [:a :b]
-        [:c])         ;; [:a :b :c]
 ```
 
 Vectors can be looped over as described in the [section about loops](/cvm/loops).

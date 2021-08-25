@@ -46,7 +46,7 @@ By associating a value to a key (new or existing one):
        :status
        :cool)
 
-;; {:name "Convex", :status :cool}
+;; {:name "Convex", :status :cool}  ; old map is left intact.
 
 
 (assoc-in {:store {:apple {:quantity 10, :price 42}}}
@@ -85,6 +85,14 @@ By removing a key-value pair from an existing map:
         :name)
         
 ;; {:status :cool}
+
+
+(dissoc {:a "a", :b "b"}
+        :c)
+
+;; {:a "a", :b "b"}
+;;
+;; Removing a key which is not present in a map does nothing.
 ```
 
 
@@ -137,6 +145,26 @@ By requesting a key:
 ;; 60
 ;;
 ;; Nested `get`, follows a "path" of keys up to the price of an apple.
+
+
+({:x 42} :x)
+
+;; 42
+;;
+;; Maps can also behave like functions, which has the same effect as `get`.
+```
+
+
+## Map functions
+
+Following functions only works with maps:
+
+```clojure
+(keys m)        ;; [:blockchain? :name :status]
+(values m)      ;; [true "Convex" :cool]         ;; Order is consistent with `keys`
+
+(merge {:a :b}
+       {1 2}    ;; {:a :b, 1 2}
 ```
 
 
@@ -157,7 +185,7 @@ By requesting a key:
 
 (empty? {})     ;; True, there are no items
 (empty? m)      ;; False, there are 2 items
-(empty m)       ;; (), an empty vector
+(empty m)       ;; {}, an empty map
 
 ;; Order is unpredictable, but stable
 
@@ -168,9 +196,6 @@ By requesting a key:
 (next {})       ;; nil
 (next {:a :b})  ;; nil
 (next m)        ;; [[:name "Convex"], [:blockchain? true]]  ; remaining key-values after removing the first one
-
-(keys m)        ;; [:blockchain? :name :status]
-(values m)      ;; [true "Convex" :cool]         ;; Order is consistent with `keys`
 ```
 
 Maps can be looped over as described in the [section about loops](/cvm/loops).
