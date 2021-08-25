@@ -1095,36 +1095,36 @@
       (handler request)
       (catch Throwable ex
         (log/error "Web handler exception:" (with-out-str (stacktrace/print-stack-trace ex)))
-
+        
         ;; Mapping of anomalies category to HTTP status code.
         (let [{::keys [error-body] ::anomalies/keys [category]} (ex-data ex)]
           (case category
             ::anomalies/not-found
             (not-found-response error-body)
-
+            
             ::anomalies/forbidden
             (forbidden-response error-body)
-
+            
             ::anomalies/incorrect
             (bad-request-response error-body)
-
+            
             ::anomalies/busy
             (service-unavailable-response error-body)
-
+            
             ;; NOTE
             ;; Disclose error details to the client for debugging purposes - for the time being (2021-02-10).
-
+            
             ::anomalies/fault
             (server-error-response2
-              (error-body "SERVER"
-                          (with-out-str (stacktrace/print-stack-trace ex))
-                          error-source-server))
-
+              (convex-web.web-server/error-body "SERVER"
+                (with-out-str (stacktrace/print-stack-trace ex))
+                error-source-server))
+            
             ;; Default
-            (server-error-response2
-              (error-body "SERVER"
-                          (with-out-str (stacktrace/print-stack-trace ex))
-                          error-source-server))))))))
+            (convex-web.web-server/server-error-response2
+              (convex-web.web-server/error-body "SERVER"
+                (with-out-str (stacktrace/print-stack-trace ex))
+                error-source-server))))))))
 
 (defn public-api-handler [system]
   (-> (public-api system)
