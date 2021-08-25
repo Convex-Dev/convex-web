@@ -16,15 +16,13 @@
    :simple-storage-actor
    {:source "(def storage-example-address
               (deploy '(do (def stored-data nil)
-                           (defn get [] stored-data)
-                           (defn set [x] (def stored-data x))
-                           (export get set))))"}
+                           (defn get ^{:callable? true} [] stored-data)
+                           (defn set ^{:callable? true} [x] (def stored-data x)))))"}
 
    :subcurrency-actor
    {:source "(deploy '(do (def owner *caller*)
-                   (defn contract-transfer
+                   (defn contract-transfer ^{:callable? true}
                      [receiver amount]
                      (assert (= owner *caller*))
                      (transfer receiver amount))
-                   (defn contract-balance [] *balance*)
-                   (export contract-transfer contract-balance)))"}})
+                   (defn contract-balance ^{:callable? true} [] *balance*)))"}})

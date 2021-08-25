@@ -1,5 +1,9 @@
 # Changes
 
+## 0.24.0 -- 2021-08-25
+- Update convex-peer to version 0.7.0-rc2
+- Update libraries
+
 ## 0.23.0 -- 2021-08-25
 - Fix Ecosystem contact us link
 

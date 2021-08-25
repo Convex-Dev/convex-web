@@ -13,6 +13,7 @@
    [clojure.java.io :as io]
    [clojure.stacktrace :as stacktrace]
    [clojure.tools.logging :as log]
+   [clojure.string :as str]
    
    [com.stuartsierra.component.repl :refer [set-init reset stop system]]
    [aero.core :as aero]
@@ -65,7 +66,7 @@
   
   ;; Address for convex.world
   (convex/server-peer-controller (system/convex-server system))
-    
+  
   
   ;; -- Reset database
   (let [dir (get-in system [:config :config :datalevin :dir])]
@@ -233,5 +234,15 @@
      "http://localhost:8080"
      {:address "2ef2f47F5F6BC609B416512938bAc7e015788019326f50506beFE05527da2d71"
       :amount 500})
+  
+  
+  (def md (slurp (io/resource "markdown/glossary.md")))
+  
+  (def md-split-and-clean (remove str/blank? (str/split md #"##\s")))
+  
+  
+  (map #(re-find #"^\w+" %) md-split-and-clean)
+  (map #(str/split % #"^\w*\n*") md-split-and-clean)
+  
   
   )

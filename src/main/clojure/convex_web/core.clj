@@ -4,7 +4,7 @@
             [clojure.tools.logging :as log])
   
   (:import 
-   (convex.api Shutdown)))
+   (convex.core.util Shutdown)))
 
 (defn -main
   "Start Convex Web."

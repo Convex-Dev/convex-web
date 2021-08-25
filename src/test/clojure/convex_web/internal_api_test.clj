@@ -206,12 +206,12 @@
           
           body (encoding/transit-decode-string (get response :body))]
       
-      (is (= {:convex-web.command/mode :convex-web.command.mode/query,
-              :convex-web.command/query
-              {:convex-web.query/language :convex-lisp,
-               :convex-web.query/source
-               "(def storage-example-address\n              (deploy '(do (def stored-data nil)\n                           (defn get [] stored-data)\n                           (defn set [x] (def stored-data x))\n                           (export get set))))"},
-              :convex-web.command/status :convex-web.command.status/success}
+      (is (= #:convex-web.command{:mode :convex-web.command.mode/query,
+                                  :query
+                                  #:convex-web.query{:language :convex-lisp,
+                                                     :source
+                                                     "(def storage-example-address\n              (deploy '(do (def stored-data nil)\n                           (defn get ^{:callable? true} [] stored-data)\n                           (defn set ^{:callable? true} [x] (def stored-data x)))))"},
+                                  :status :convex-web.command.status/success}
             
             (select-keys body [:convex-web.command/metadata
                                :convex-web.command/mode
@@ -225,12 +225,12 @@
           
           body (encoding/transit-decode-string (get response :body))]
       
-      (is (= {:convex-web.command/mode :convex-web.command.mode/query,
-              :convex-web.command/query
-              {:convex-web.query/language :convex-lisp,
-               :convex-web.query/source
-               "(deploy '(do (def owner *caller*)\n                   (defn contract-transfer\n                     [receiver amount]\n                     (assert (= owner *caller*))\n                     (transfer receiver amount))\n                   (defn contract-balance [] *balance*)\n                   (export contract-transfer contract-balance)))"},
-              :convex-web.command/status :convex-web.command.status/success}
+      (is (= #:convex-web.command{:mode :convex-web.command.mode/query,
+                                  :query
+                                  #:convex-web.query{:language :convex-lisp,
+                                                     :source
+                                                     "(deploy '(do (def owner *caller*)\n                   (defn contract-transfer ^{:callable? true}\n                     [receiver amount]\n                     (assert (= owner *caller*))\n                     (transfer receiver amount))\n                   (defn contract-balance ^{:callable? true} [] *balance*)))"},
+                                  :status :convex-web.command.status/success}
             
             (select-keys body [:convex-web.command/metadata
                                :convex-web.command/mode

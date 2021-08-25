@@ -12,11 +12,10 @@
   com.cognitect/transit-cljs {:mvn/version "0.8.269"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
   
-  world.convex/convex {:local/root "convex.jar"}
+  world.convex/convex-peer {:mvn/version "0.7.0-rc2"}
   
   ;; world.convex/convex-core {:local/root "convex-core-0.7.0-SNAPSHOT.jar"}
   ;; world.convex/convex-peer {:local/root "convex-peer-0.7.0-SNAPSHOT.jar"}
-  ;; world.convex/convex-peer {:mvn/version "0.7.0-rc1"}
   
   prestancedesign/get-port {:mvn/version "0.1.1"}
   
@@ -75,12 +74,12 @@
   hiccup/hiccup {:mvn/version "1.0.5"}
   reagent/reagent {:mvn/version "1.1.0"}
   re-frame/re-frame {:mvn/version "1.2.0"}
-  metosin/reitit-frontend {:mvn/version "0.5.13"}
+  metosin/reitit-frontend {:mvn/version "0.5.15"}
   datalevin/datalevin {:mvn/version "0.4.40"}
   
   expound/expound {:mvn/version "0.8.9"}
   zprint/zprint {:mvn/version "1.1.2"}
-  cljs-ajax/cljs-ajax {:mvn/version "0.8.3"}
+  cljs-ajax/cljs-ajax {:mvn/version "0.8.4"}
   borkdude/sci {:mvn/version "0.2.5"}}
  
  :aliases
@@ -97,7 +96,7 @@
   ;; -- Site dev
   :site-dev
   {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.879"}
-                thheller/shadow-cljs {:mvn/version "2.15.2"}
+                thheller/shadow-cljs {:mvn/version "2.15.5"}
                 binaryage/devtools {:mvn/version "1.0.3"}
                 re-frisk/re-frisk {:mvn/version "1.5.1"}}}
   
@@ -136,7 +135,7 @@
   ;; -- Logback configuration
   :logback-noop
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-noop.xml"]}
-
+  
   :logback-site
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-site.xml"]}
   
