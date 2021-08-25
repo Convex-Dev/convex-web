@@ -1,0 +1,74 @@
+Developper documentation should be primarily split into the following top level sections:
+
+- Convex Virtual Machine
+    - Overview
+    - Running Convex Lisp
+        - Sandbox
+        - Runner
+    - Syntax
+    - Data types
+        - Overview
+        - Nil
+        - Boolean
+        - Numbers
+        - Text
+        - Keyword
+        - Symbol
+        - Blob
+        - Address
+        - List
+        - Vector
+        - Map
+        - BlobMap
+        - Sets
+    - Environment and variables
+        - Definitions (`def`)
+        - Local variables (`let`)
+    - Exceptions
+    - Conditionals
+    - Functions
+        - Call
+        - Defn
+        - Lambdas, first-class citizen
+    - Loops
+        - Recursion
+            - From functions
+            - From `loop`
+        - Reduce
+        - Map
+        - Filter
+        - For
+    - Control flow (halt, return, ...)
+    - Code as data
+        - Quote
+        - Quasiquote and unquote
+    - Actors, smart contracts
+        - Deployment
+            - Difference from a regular account (lack of key)
+        - Callable functions and state
+        - Security context
+        - Access control
+        - Receiving coins
+        - Registering in the CNS
+        - Import any actor
+        - Upgrades
+    - Libraries
+        - Similarity with actors
+        - Security context
+    - Destructuring
+    - Compiler phases
+    - Macros
+    - Account control
+- Download
+    - CLI
+    - Runner
+- TODO. Peer operations
+    - Overall description
+    - Pointing to Bill's CLI
+    - Related CVX functions
+    - ...
+- TODO. Cookbook, minimalistic recipes for building actors such as:
+    - An oracle
+    - A voting system
+    - An auction platform
+    - ...
