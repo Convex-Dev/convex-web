@@ -22,7 +22,7 @@ Developper documentation should be primarily split into the following top level 
         - BlobMap
         - Sets
     - Definitions (`def` and `let`)
-    - Conditionals
+    - Logic
     - Errors
     - Functions
         - Call

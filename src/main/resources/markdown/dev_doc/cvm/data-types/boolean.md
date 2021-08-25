@@ -25,7 +25,18 @@ While any other value is considered to be "truthy":
 (boolean "text")  ;; True
 ```
 
-The distinction between "falsey" and "truthy" becomes important in the [section about conditionals](/cvm/conditionals.md).
+The distinction between "falsey" and "truthy" becomes important in the [section about logic](/cvm/logic.md).
+
+All values can be negated to the opposite boolean value:
+
+```clojure
+(not false)   ;; True
+(not nil)     ;; True
+
+(not true)    ;; False
+(not 42)      ;; False
+(not "text")  ;; False
+```
 
 
 ## Predicates
