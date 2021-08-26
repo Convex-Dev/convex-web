@@ -93,3 +93,58 @@ Following example defines a [multi-function](/cvm/functions) for elegantly compu
 ;;
 ;; Try to mentally unfold how it works.
 ```
+
+
+## Reduce
+
+Looping is often about producing a result by traversing items in a collection. While `loop` can be used for such case, `reduce` is provided as a convenient
+and versatile alternative. It requires 3 elements:
+
+- A collection, such as a [vector](/cvm/data-types/vector) or [map](/cvm/data-types/map)
+- An initial result
+- A function which takes the initial result, the first item in the collection, and produces an intermediary result ; then the process is repeated with all remaining items
+
+```clojure
+(reduce +
+        0
+        [1 2 3 4 5])
+
+;; 15
+;;
+;; If we unfold the whole operation, here is what happens:
+;;
+;;   (+ 0 1)   ; 1
+;;   (+ 1 2)   ; 3
+;;   (+ 3 3)   ; 6
+;;   (+ 6 4)   ; 10
+;;   (+ 10 5)  ; 15
+```
+
+This variant sums only number greater than or equal to `0`, leaving the intermediary result intact otherwise:
+
+```clojure
+(reduce (fn [result item]
+          (if (>= item
+                  0)
+            (+ result
+               item)
+            result))
+        [-1 1 -10 2 3])
+
+;; 6
+```
+
+Sometimes, not all items in a collection need to be processed. At any time, `reduced` can be used to result a final result. Remaining items will never be processed.
+This variant stops summing numbers when it encounters `:stop`:
+
+```clojure
+(reduce (fn [result item]
+          (if (= item
+                 :stop)
+            (reduced result)
+            (+ result
+               item)))
+        [1 2 3 :stop 4 5])
+
+;; 6
+```

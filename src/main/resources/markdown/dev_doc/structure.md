@@ -21,17 +21,14 @@ Developper documentation should be primarily split into the following top level 
         - Map
         - BlobMap
         - Sets
-    - Definitions (`def` and `let`)
+    - Definitions
     - Logic
     - Errors
     - Functions
-        - Call
-        - Defn
-        - Lambdas, first-class citizen
     - Loops
         - Recursion
-            - From functions
             - From `loop`
+            - From functions
         - Reduce
         - Map
         - Filter
