@@ -123,7 +123,7 @@
       (is (= :convex-web.command.status/success status))
       (is (= {:convex-web.result/type "Map",
               :convex-web.result/value
-              "{:description \"Increments the given long by 1. Converts to Long if necessary.\",:signature [{:return Long,:params [num]}],:type :function,:errors {:CAST \"If the actor argument is not a Number.\"},:examples [{:code \"(inc 10)\"}]}"}
+              "{:description \"Increments the given `long` by 1.\",:signature [{:return Long,:params [num]}],:errors {:CAST \"If the actor argument is not a `long`.\"},:examples [{:code \"(inc 10)\"}]}"}
             (select-keys result [:convex-web.result/type
                                  :convex-web.result/value])))))
   
@@ -225,40 +225,37 @@
     
     (testing "Function"
       (is (= {} (c/result-metadata (convex/execute context inc))))
-      (is (= '{:doc {:description "Increments the given long by 1. Converts to Long if necessary."
-                     :errors {:CAST "If the actor argument is not a Number."}
-                     :examples [{:code "(inc 10)"}]
-                     :signature [{:params [num]
-                                  :return Long}]
-                     :symbol "inc"
-                     :type :function}
-               :type :function} (c/result-metadata (convex/execute context inc) {:source "inc" :lang :convex-lisp}))))
+      (is (= '{:doc
+               {:description "Increments the given `long` by 1.",
+                :errors {:CAST "If the actor argument is not a `long`."},
+                :examples [{:code "(inc 10)"}],
+                :signature [{:params [num], :return Long}],
+                :symbol "inc"},
+               :type nil} 
+            (c/result-metadata (convex/execute context inc) {:source "inc" :lang :convex-lisp}))))
     
     (testing "Macro"
       (is (= {} (c/result-metadata (convex/execute context defn))))
-      (is (= '{:doc {:description "Defines a function in the current environment."
-                     :examples [{:code "(defn my-square [x] (* x x))"}]
-                     :signature [{:params [name
-                                           params
-                                           &
-                                           body]}
-                                 {:params [name
-                                           &
-                                           fn-decls]}]
-                     :symbol "defn"
-                     :type :macro}
-               :expander true
-               :type :macro}
+      (is (= '{:doc
+               {:description "Defines a function in the current environment.",
+                :examples [{:code "(defn my-square [x] (* x x))"}],
+                :signature [{:params [name params & body]} {:params [name & fn-decls]}],
+                :symbol "defn"},
+               :expander? true,
+               :type nil}
             (c/result-metadata (convex/execute context defn) {:source "defn" :lang :convex-lisp}))))
     
     (testing "Special"
       (is (= {:type :symbol} (c/result-metadata (convex/execute context def))))
-      (is (= '{:doc {:description "Creates a definition in the current environment. This value will persist in the environment owned by the current account. The name argument must be a Symbol, or a Symbol wrapped in a Syntax Object with optional metadata."
-                     :errors {:CAST "If the argument is neither a valid Symbol name nor a Syntax containing a Symbol value."}
-                     :examples [{:code "(def a 10)"}]
-                     :signature [{:params [name
-                                           value]}]
-                     :symbol "def"
-                     :type :special}
-               :type :special}
+      (is (= '{:doc
+               {:description
+                ["Creates a definition in the current environment. This value will persist in the environment owned by the current account."
+                 "The name argument must be a symbol, or a Symbol wrapped in a syntax object with optional metadata."],
+                :errors
+                {:CAST "If the argument is neither a valid symbol name nor a syntax containing a symbol value."},
+                :examples [{:code "(def a 10)"}],
+                :signature [{:params [name value]}],
+                :symbol "def"},
+               :special? true,
+               :type nil}
             (c/result-metadata (convex/execute context def) {:source "def" :lang :convex-lisp}))))))
