@@ -42,8 +42,10 @@ A defined symbol can always be redefined:
 Alternatively, `lookup` can be used to resolve a symbol. It is primarily useful for accessing a definition defined in another account:
 
 ```clojure
-(lookup x)      ;; Resolving `x` in the account executing the transaction
-(lookup #42 x)  ;; Resolving `x` in account #42
+(lookup x)                ;; Resolving `x` in the account executing the transaction
+(lookup #42 x)            ;; Resolving `x` in account #42
+#42/x                     ;; Same, but shorter
+(lookup (get-address) x)  ;; Here, address is fetched by applying a supposedly defined function
 ```
 
 

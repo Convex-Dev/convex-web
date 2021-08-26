@@ -65,6 +65,24 @@ metadata can be found in [Convex Architecture Document 013](https://github.com/C
      x))
 ```
 
+A function from another account can be applied, as described in the [section about definitions](/cvm/definitions). Supposing `square` is
+defined in account `#42`:
+
+```clojure
+(#42/square 2)
+
+;; Or
+
+(def lib
+     #42)
+
+(lib/square 2)
+```
+
+**ATTENTION.** Applying functions from other accounts can be dangerous. For instance, such a foreign function could transfer all you coins
+and assets. It is of the greatest importance to only use well-known functions from trusted accounts only. Just like you would not sign a contract
+with a blank page, do not apply a function unless you know exactly what it does.
+
 
 ## Local definitions
 
