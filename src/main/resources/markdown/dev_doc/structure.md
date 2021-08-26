@@ -30,6 +30,7 @@ Developper documentation should be primarily split into the following top level 
     - Code is data
         - Quote
         - Quasiquote and unquote
+    - Accounts
     - Actors, smart contracts
         - Deployment
             - Difference from a regular account (lack of key)
