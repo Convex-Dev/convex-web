@@ -32,7 +32,7 @@
     (let [config (config/read-config profile)]
       
       (when-not (s/valid? :convex-web/config config)
-        (let [message (str "convex-web.edn:\n" 
+        (let [message (str "config.edn:\n" 
                         (expound/expound-str :convex-web/config config))]
           
           (log/error message)
