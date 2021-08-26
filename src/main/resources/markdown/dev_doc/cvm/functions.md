@@ -1,10 +1,10 @@
-At this point, functions have already been encountered many times. They form the basic building blocks of computation by taking values called **parameters** and returning
-a new value. However, up to now, they were blackboxes. This section reviews how user can create their own functions.
+At this point, functions have already been encountered many times. They form the basic building blocks of computation by taking values called **parameters**, executing
+its **body** (one or several expression), and returning a value. However, up to now, they were blackboxes. This section reviews how users can create their own functions.
 
 
 ## Anonymous functions
 
-Any function needs a [vector](/cvm/data-types/vector) of parameters and one or several expressions doing operations to produce a result:
+Any function needs a [vector](/cvm/data-types/vector) of parameters and a body:
 
 ```clojure
 (fn [x]
@@ -141,3 +141,26 @@ A good example is `filter`, a standard function which removes items from a colle
 ;;
 ;; From the given vector were only kept numbers greater than 0 as specified by the given function.
 ```
+
+
+## Multi-functions
+
+Albeit not obvious at first, it is sometimes useful for a single function to have more than one implementation, more than one pair of parameters-body.
+most of the time, such a multi-function is used to specify default values for optional parameters:
+
+```clojure
+(defn my-transfer
+
+  ([address]
+   (my-transfer address
+                1000))
+
+  ([address amount]
+   (transfer address
+             amount)))
+```
+
+Previous example specifies 2 implementations. Implementation with 2 arguments simply transfer some coins to an address. Implementation with 1 argument,
+taking only an address, calls itself by providing a default value of `1000` coins to transfer. Both implementations are encompassed between `( )`.
+
+In reality, it is as if 2 totally different functions were defined under the same name. Which is used depends solely on given parameters.
