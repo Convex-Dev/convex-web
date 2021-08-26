@@ -26,15 +26,8 @@ Developper documentation should be primarily split into the following top level 
     - Errors
     - Functions
     - Loops
-        - Recursion
-            - From `loop`
-            - From functions
-        - Reduce
-        - Map
-        - Filter
-        - For
     - Control flow (halt, return, ...)
-    - Code as data
+    - Code is data
         - Quote
         - Quasiquote and unquote
     - Actors, smart contracts
