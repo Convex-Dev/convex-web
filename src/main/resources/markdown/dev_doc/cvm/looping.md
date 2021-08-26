@@ -134,7 +134,7 @@ This variant sums only number greater than or equal to `0`, leaving the intermed
 ;; 6
 ```
 
-Sometimes, not all items in a collection need to be processed. At any time, `reduced` can be used to result a final result. Remaining items will never be processed.
+Sometimes, not all items in a collection need to be processed. At any time, `reduced` can be used to return a final result. Remaining items will never be processed.
 This variant stops summing numbers when it encounters `:stop`:
 
 ```clojure
@@ -147,4 +147,37 @@ This variant stops summing numbers when it encounters `:stop`:
         [1 2 3 :stop 4 5])
 
 ;; 6
+```
+
+
+## Transforming collections
+
+A few standard ways of transforming collections are provided for common use cases:
+
+Transforming all items in a collection:
+
+```clojure
+(map (fn [x]
+       (+ x
+          10))
+     [1 2 3])
+
+;; [11 12 13]
+;;
+;; Always returns a vector.
+;; Not to be confused with `hash-map` which creates a map data type.
+```
+
+Keeping only selected items:
+
+```clojure
+(filter (fn [x]
+          (> x
+             0))
+        [-10 -5 0 1 2 3 -500])
+
+;; [1 2 3]
+;;
+;; Always returns a vector.
+;; From the given vector were only kept numbers greater than 0 as specified by the given function.
 ```
