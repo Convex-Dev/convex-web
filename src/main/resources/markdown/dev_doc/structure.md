@@ -31,23 +31,20 @@ Developper documentation should be primarily split into the following top level 
         - Quote
         - Quasiquote and unquote
     - Accounts
+    - Smart contracts
     - Actors, smart contracts
         - Deployment
-            - Difference from a regular account (lack of key)
         - Callable functions and state
         - Security context
         - Access control
         - Receiving coins
         - Registering in the CNS
         - Import any actor
+        - Libraries
         - Upgrades
-    - Libraries
-        - Similarity with actors
-        - Security context
     - Destructuring
     - Compiler phases
     - Macros
-    - Account control
 - Download
     - CLI
     - Runner

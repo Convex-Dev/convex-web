@@ -181,6 +181,8 @@ the public key without owning the matching private key means you will get locked
 An account without a public key is an **actor**. Actors plays an important role on the Convex network since they can define smart contracts. A [whole section
 is dedicated to creating and managing them](/cvm/actors).
 
+Removing a key by running `(set-key nil)` turns a user account into an actor. Conversely, an actor setting a key becomes a user account.
+
 
 ## `:metadata`
 
