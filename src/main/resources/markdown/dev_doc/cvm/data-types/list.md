@@ -1,4 +1,4 @@
-At this point, lists have already been encountered many times. Written between parens, they are a sequential collection of items where an item can be
+At this point, lists have already been encountered many times. Written between `( )`, they are a sequential collection of items where an item can be
 a value of any type.
 
 Up to now, they were used to call functions:
@@ -28,7 +28,9 @@ can be constructed using a dedicated function:
 ```
 
 Generally, [vectors](/cvm/data-types/vector) are more flexible for grouping several values together. Lists are more commonly used in the context of
-[macros](/cvm/macros), an advanced topic.
+[code as data](/cvm/code-as-data) and [macros](/cvm/macros) (an advanced topic). Items can have different types and be collections themselves.
+
+Unlike other programming languages, separating items with `,` is optional and rarely seen unless it makes an expression more readable.
 
 
 ## Create a new list
@@ -161,6 +163,19 @@ a specific position. In practice, it means they can be used with the `get` funct
 ```
 
 
+## Sequence functions
+
+Following functions can only be used with sequential collections (lists or [vectors](/cvm/data-types/vector)) where order is predictable:
+
+```clojure
+(reverse (list :a :b :c))       ;; [:c :b :a], returns a vector for performance reasons
+
+(concat (list :a :b)
+        (list :c))              ;; (:a :b :c)
+
+```
+
+
 ## Common collection functions
 
 ```clojure
@@ -180,12 +195,6 @@ a specific position. In practice, it means they can be used with the `get` funct
 
 (next (list :a :b :c))          ;; (:b :c)
 (next (list :a))                ;; nil
-
-(reverse (list :a :b :c))       ;; [:c :b :a], returns a vector for performance reasons
-
-(concat (list :a :b)
-        (list :c))              ;; (:a :b :c)
-
 ```
 
 Lists can be looped over as described in the [section about loops](/cvm/loops).
