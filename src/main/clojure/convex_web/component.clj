@@ -196,7 +196,7 @@
           ^Result result (convex/transact client 
                            (convex/invoke-transaction 
                              {:nonce 0
-                              :address genesis-address
+                              :address (convex/server-peer-controller server)
                               :command (convex/read-source peer-data-source)}))]
       
       (if (.isError result)

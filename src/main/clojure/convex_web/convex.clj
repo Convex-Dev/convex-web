@@ -547,13 +547,13 @@
    Returns Address.
 
    Throws ExceptionInfo if the transaction fails."
-  [^Convex client ^Address peer-controller ^AccountKey account-key]
+  [^Convex client ^Address genesis-address ^AccountKey account-key]
   (let [^String account-public-key (.toChecksumHex account-key)
         
         command (read-source (str "(create-account 0x" account-public-key ")"))
 
         tx-data {:nonce 0
-                 :address peer-controller
+                 :address genesis-address
                  :command command}
 
         ^Result result (->> (invoke-transaction tx-data)
