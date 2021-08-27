@@ -163,6 +163,25 @@
         {:text "FAQ"
          :route-name :route-name/faq
          :href (rfe/href :route-name/faq)}]}
+
+      ;; CVM
+      ;; ===
+      {:text       "Convex Virtual Machine"
+       :top-level? true
+       :route-name :route-name/cvm
+       :href       (rfe/href :route-name/cvm)
+       :children   [{:text        "Running Convex Lisp"
+                     :route-name   :route-name/cvm.run-cvx
+                     :href        (rfe/href :route-name/cvm.run-cvx)
+                     :children    [{:text       "Sandbox"
+                                    :route-name :route-name/cvm.run-cvx.sandbox
+                                    :href       (rfe/href :route-name/cvm.run-cvx.sandbox)}
+                                   {:text       "Runner"
+                                    :route-name :route-name/cvm.run-cvx.runner
+                                    :href       (rfe/href :route-name/cvm.run-cvx.runner)}]}
+                    {:text       "Accounts"
+                     :route-name :route-name/cvm.accounts
+                     :href       (rfe/href :route-name/cvm.accounts)}]}
       
       ;; Documentation
       ;; ==============

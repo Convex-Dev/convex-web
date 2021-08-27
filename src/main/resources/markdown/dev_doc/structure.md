@@ -32,7 +32,7 @@ Developper documentation should be primarily split into the following top level 
         - Quasiquote and unquote
     - Accounts
     - Smart contracts
-    - Actors, smart contracts
+    - Actors
     - Destructuring
     - Compiler phases
     - Macros

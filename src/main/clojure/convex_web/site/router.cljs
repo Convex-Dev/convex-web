@@ -153,6 +153,54 @@
                 (stack/push :page.id/markdown {:title "Welcome"
                                                :state {:id :developer}
                                                :reset? true}))}]}]
+
+   ["cvm"
+
+    [""
+     {:controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm}
+                                              :title  "Convex Virtual Machine"}))}]
+      :name        :route-name/cvm}]
+   
+    ["/accounts"
+     {:name        :route-name/cvm.accounts
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.accounts}
+                                              :title  "Accounts"}))}]}]
+    
+    ["/running-convex-lisp"
+
+     [""
+      {:name        :route-name/cvm.run-cvx
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown {:reset? true
+                                                                 :state  {:id :cvm.run-cvx}
+                                                                 :title  "Running Convex Lisp"}))}]}]
+
+     ["/runner"
+      {:name        :route-name/cvm.run-cvx.runner
+       :controllers  [{:identity identity
+                       :start    (fn [_match]
+                                   (stack/push :page.id/markdown {:reset? true
+                                                                  :state  {:id :cvm.run-cvx.runner}
+                                                                  :title  "Convex Lisp Runner"}))}]}]
+
+     ["/sandbox"
+      {:name        :route-name/cvm.run-cvx.sandbox
+       :controllers  [{:identity identity
+                       :start    (fn [_match]
+                                   (stack/push :page.id/markdown {:reset? true
+                                                                  :state  {:id :cvm.run-cvx.sandbox}
+                                                                  :title  "Sandbox"}))}]}]]
+    ]
+   
    
    ;; Concepts
    ;; ==============
