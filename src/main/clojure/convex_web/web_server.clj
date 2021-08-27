@@ -17,7 +17,6 @@
    [clojure.pprint :as pprint]
    [clojure.stacktrace :as stacktrace]
    [clojure.data.json :as json]
-   [clojure.string :as str]
    
    [cognitect.anomalies :as anomalies]
    
@@ -459,10 +458,10 @@
 
 (defn POST-v1-create-account [system {:keys [body]}]
   (let [{:keys [accountKey]} (json-decode body)]
-    (when (str/blank? accountKey)
-      (throw (ex-info "Blank account key."
+    (when-not (s/valid? :convex-web/non-empty-string accountKey)
+      (throw (ex-info "Missing account key."
                (anomaly-incorrect
-                 (error-body "MISSING" "Blank account key." error-source-server)))))
+                 (error-body "MISSING" "Missing account key." error-source-server)))))
     
     (let [^AccountKey account-key (try 
                                     (convex/account-key-from-hex accountKey)

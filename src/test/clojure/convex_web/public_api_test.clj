@@ -89,7 +89,7 @@
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
-                  :value "Blank account key."}
+                  :value "Missing account key."}
                 body-decoded)))
         
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
@@ -99,7 +99,7 @@
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
-                  :value "Blank account key."}
+                  :value "Missing account key."}
                 body-decoded)))
         
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
@@ -109,7 +109,7 @@
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
-                  :value "Blank account key."}
+                  :value "Missing account key."}
                 body-decoded)))
         
         (let [response (handler (-> (mock/request :post "/api/v1/createAccount")
@@ -119,7 +119,7 @@
           (is (= 400 (:status response)))
           (is (= {:errorCode "MISSING"
                   :source "Server"
-                  :value "Blank account key."}
+                  :value "Missing account key."}
                 body-decoded))))
       
       (testing "Incorrect Account Key"
