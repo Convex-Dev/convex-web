@@ -20,7 +20,7 @@ All functions showcased for [regular maps](/cvm/data-types/map) can be applied:
 (get (blob-map #42 :some-value)
      #42)
 
-;; :some-vlaue
+;; :some-value
 
 
 (get (blob-map #42 :some-value)
