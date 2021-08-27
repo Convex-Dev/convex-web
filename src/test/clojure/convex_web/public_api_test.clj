@@ -44,7 +44,7 @@
 (defn create-account []
   (let [^AKeyPair generated-key-pair (AKeyPair/generate)
         ^AccountKey account-key (.getAccountKey generated-key-pair)
-        ^String account-public-key (.toChecksumHex account-key)
+        ^String account-public-key (.toHexString account-key)
         
         handler (public-api-handler)
         
@@ -376,8 +376,6 @@
              test-account-public-key :account-public-key} (create-account)
             
             handler (public-api-handler)
-            
-            
             
             ;; 1. Prepare
             ;; ==========

@@ -78,7 +78,9 @@
 (defn account-key ^AccountKey [^String checksum-hex]
   (AccountKey/fromChecksumHex checksum-hex))
 
-(defn account-key-from-hex ^AccountKey [^String hex]
+(defn ^AccountKey account-key-from-hex 
+  "Constructs an AccountKey object from a hex string."
+  [^String hex]
   (AccountKey/fromHex hex))
 
 (defn key-pair-data 
