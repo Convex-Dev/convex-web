@@ -2,6 +2,8 @@
 
 ## Configuration
 
+### Secrets
+
 The default configuration - config.edn - requires a `~/.convex/secrets.edn` file.
 
 You can copy the example `secrets.example.edn` and configure the passphrase.
