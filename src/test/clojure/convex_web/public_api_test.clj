@@ -68,7 +68,7 @@
   (testing "Create new Account"
     (let [^AKeyPair generated-key-pair (AKeyPair/generate)
           ^AccountKey account-key (.getAccountKey generated-key-pair)
-          ^String account-public-key (.toChecksumHex account-key)
+          ^String account-public-key (.toHexString account-key)
           
           handler (public-api-handler)]
       
@@ -130,7 +130,7 @@
           (is (= 400 (:status response)))
           (is (= {:errorCode "INCORRECT"
                   :source "Server"
-                  :value "Invalid Account Key."}
+                  :value "Invalid Address hex String [123]"}
                 body-decoded)))))))
 
 (deftest create-account-and-topup-test
@@ -501,7 +501,7 @@
             response-body (json/read-str (get response :body) :key-fn keyword)]
 
         (is (= 200 (get response :status)))
-        (is (= {:address 12 :amount amount :value amount} response-body))))
+        (is (= {:address 11 :amount amount :value amount} response-body))))
 
     (testing "Bad request"
       (testing "No payload"

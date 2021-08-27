@@ -180,12 +180,12 @@
           ^InetSocketAddress convex-world-host-address (convex/server-address server)
           _ (log/debug "convex-world-host-address" convex-world-host-address)
           
-          ^Address convex-world-peer-controller (convex/server-peer-controller server)
-          _ (log/debug "convex-world-peer-controller" convex-world-peer-controller)
+          ^Address genesis-address (convex/genesis-address)
+          _ (log/debug "convex-world-genesis-address" genesis-address)
           
           ^convex.api.Convex client (convex.api.Convex/connect
                                       convex-world-host-address 
-                                      convex-world-peer-controller 
+                                      genesis-address
                                       convex-world-key-pair)
           
           peer-data {:url (str convex-world-peer-url":" convex-world-peer-port)}
@@ -196,7 +196,7 @@
           ^Result result (convex/transact client 
                            (convex/invoke-transaction 
                              {:nonce 0
-                              :address convex-world-peer-controller
+                              :address genesis-address
                               :command (convex/read-source peer-data-source)}))]
       
       (if (.isError result)

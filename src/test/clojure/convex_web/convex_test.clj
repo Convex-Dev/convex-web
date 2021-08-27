@@ -226,3 +226,10 @@
           :convex-web.result/value "map"}
         
         (convex/result-data (Result/create (CVMLong/create 1) Core/MAP))))))
+
+(deftest account-key-from-hex-test
+  (is (= "Invalid Address hex String [123]" 
+        (try 
+          (convex/account-key-from-hex "123")
+          (catch Throwable ex
+            (ex-message ex))))))

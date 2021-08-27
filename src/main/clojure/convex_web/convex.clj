@@ -78,6 +78,9 @@
 (defn account-key ^AccountKey [^String checksum-hex]
   (AccountKey/fromChecksumHex checksum-hex))
 
+(defn account-key-from-hex ^AccountKey [^String hex]
+  (AccountKey/fromHex hex))
+
 (defn key-pair-data 
   "Returns AKeyPair as a map."
   [^AKeyPair key-pair]
@@ -131,6 +134,9 @@
       (throw (ex-info (.toString (.getExceptional new-context))
                {:exceptional (.getExceptional new-context)}))
       (.getResult new-context))))
+
+(defn ^Address genesis-address []
+  (Init/getGenesisAddress))
 
 (defn server-peer-controller
   "Gets the Peer controller Address."
