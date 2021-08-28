@@ -179,9 +179,79 @@
                                    {:text       "Runner"
                                     :route-name :route-name/cvm.run-cvx.runner
                                     :href       (rfe/href :route-name/cvm.run-cvx.runner)}]}
+                    {:text       "Syntax"
+                     :route-name :route-name/cvm.syntax
+                     :href       (rfe/href :route-name/cvm.syntax)}
+                    {:text       "Data types"
+                     :route-name :route-name/cvm.data-types
+                     :href       (rfe/href :route-name/cvm.data-types)
+                     :children   [{:text       "Nil"
+                                   :route-name :route-name/cvm.data-types.nil
+                                   :href       (rfe/href :route-name/cvm.data-types.nil)}
+                                  {:text       "Boolean"
+                                   :route-name :route-name/cvm.data-types.boolean
+                                   :href       (rfe/href :route-name/cvm.data-types.boolean)}
+                                  {:text       "Numbers"
+                                   :route-name :route-name/cvm.data-types.numbers
+                                   :href       (rfe/href :route-name/cvm.data-types.numbers)}
+                                  {:text       "Text"
+                                   :route-name :route-name/cvm.data-types.text
+                                   :href       (rfe/href :route-name/cvm.data-types.text)}
+                                  {:text       "Keyword"
+                                   :route-name :route-name/cvm.data-types.keyword
+                                   :href       (rfe/href :route-name/cvm.data-types.keyword)}
+                                  {:text       "Symbol"
+                                   :route-name :route-name/cvm.data-types.symbol
+                                   :href       (rfe/href :route-name/cvm.data-types.symbol)}
+                                  {:text       "Blob"
+                                   :route-name :route-name/cvm.data-types.blob
+                                   :href       (rfe/href :route-name/cvm.data-types.blob)}
+                                  {:text       "Address"
+                                   :route-name :route-name/cvm.data-types.address
+                                   :href       (rfe/href :route-name/cvm.data-types.address)}
+                                  {:text       "List"
+                                   :route-name :route-name/cvm.data-types.list
+                                   :href       (rfe/href :route-name/cvm.data-types.list)}
+                                  {:text       "Vector"
+                                   :route-name :route-name/cvm.data-types.vector
+                                   :href       (rfe/href :route-name/cvm.data-types.vector)}
+                                  {:text       "Map"
+                                   :route-name :route-name/cvm.data-types.map
+                                   :href       (rfe/href :route-name/cvm.data-types.map)}
+                                  {:text       "Blob map"
+                                   :route-name :route-name/cvm.data-types.blob-map
+                                   :href       (rfe/href :route-name/cvm.data-types.blob-map)}
+                                  {:text       "Set"
+                                   :route-name :route-name/cvm.data-types.set
+                                   :href       (rfe/href :route-name/cvm.data-types.set)}]}
+                    {:text       "Definitions"
+                     :route-name :route-name/cvm.definitions
+                     :href       (rfe/href :route-name/cvm.definitions)}
+                    {:text       "Logic"
+                     :route-name :route-name/cvm.logic
+                     :href       (rfe/href :route-name/cvm.logic)}
+                    {:text       "Errors"
+                     :route-name :route-name/cvm.errors
+                     :href       (rfe/href :route-name/cvm.errors)}
+                    {:text       "Functions"
+                     :route-name :route-name/cvm.functions
+                     :href       (rfe/href :route-name/cvm.functions)}
+                    {:text       "Looping"
+                     :route-name :route-name/cvm.looping
+                     :href       (rfe/href :route-name/cvm.looping)}
+                    {:text       "Code is data"
+                     :route-name :route-name/cvm.code-is-data
+                     :href       (rfe/href :route-name/cvm.code-is-data)}
                     {:text       "Accounts"
                      :route-name :route-name/cvm.accounts
-                     :href       (rfe/href :route-name/cvm.accounts)}]}
+                     :href       (rfe/href :route-name/cvm.accounts)}
+                    {:text       "Smart contracts"
+                     :route-name :route-name/cvm.smart-contracts
+                     :href       (rfe/href :route-name/cvm.smart-contracts)}
+                    {:text       "Actors"
+                     :route-name :route-name/cvm.actors
+                     :href       (rfe/href :route-name/cvm.actors)}
+                    ]}
       
       ;; Documentation
       ;; ==============
