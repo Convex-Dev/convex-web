@@ -193,13 +193,15 @@
           peer-data-source (str "(set-peer-data " (.getAccountKey convex-world-key-pair) " " peer-data-str ")")
           
           ;; Transaction to set convex.world Peer data on the network.
-          ^Result result (convex/transact client 
-                           (convex/invoke-transaction 
-                             {:nonce 0
-                              :address (convex/server-peer-controller server)
-                              :command (convex/read-source peer-data-source)}))]
+          ; ^Result result (convex/transact client 
+          ;                  (convex/invoke-transaction 
+          ;                    {:nonce 0
+          ;                     :address (convex/server-peer-controller server)
+          ;                     :command (convex/read-source peer-data-source)}))
+          
+          ]
       
-      (if (.isError result)
+      #_(if (.isError result)
         (log/error "Error setting convex.world Peer data" result)
         (log/info "Successfully set convex.world Peer data" result))
       
