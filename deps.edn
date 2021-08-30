@@ -14,8 +14,8 @@
   
   ;; world.convex/convex-peer {:mvn/version "0.7.0-rc2"}
   
-  world.convex/convex-core {:local/root "convex-core-0.7.0-rc2-e9410efa88f503bd0bbd65cb32fcbc7662d3d370.jar"}
-  world.convex/convex-peer {:local/root "convex-peer-0.7.0-rc2-e9410efa88f503bd0bbd65cb32fcbc7662d3d370.jar"}
+  world.convex/convex-core {:local/root "convex-core-0.7.0-rc2-3aa066bb760b44b1eaf6f884281013491a76547f.jar"}
+  world.convex/convex-peer {:local/root "convex-peer-0.7.0-rc2-3aa066bb760b44b1eaf6f884281013491a76547f.jar"}
   
   prestancedesign/get-port {:mvn/version "0.1.1"}
   
