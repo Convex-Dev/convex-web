@@ -30,7 +30,7 @@
 
             ["react" :as react]
             ["@headlessui/react" :as headlessui]
-            ["@heroicons/react/solid" :refer [MenuIcon XIcon]]
+            ["@heroicons/react/solid" :refer [MenuIcon XIcon ChevronRightIcon]]
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]
             ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
@@ -323,11 +323,14 @@
           [gui/IconExternalLink {:class "w-6 h-6"}]]
          [:span text])
        
+       ;; Chevron right & down
        (when-not leaf?
-         [(if expanded? gui/IconChevronDown gui/IconChevronUp)
-          {:class
-           ["w-6 h-6"
-            "text-gray-400"]}])]]
+         (let [style "w-6 h-6 text-gray-400"]
+           (if expanded?
+             [gui/IconChevronDown
+              {:class style}]
+             [:> ChevronRightIcon
+              {:className style}])))]]
      
      ;; -- Children
      (when (and (seq children) expanded?)
