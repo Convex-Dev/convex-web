@@ -2,6 +2,7 @@
 ;;
 ;; Options:
 ;; - `:toc?` if a table of contents, based on `:contents` items' name, should be visible.
+;; - `:smart-toc?` if table of contents should be derived from "##" headings.
 ;;
 ;; This is how a markdown gets rendered in the site:
 ;; - A page requests a markdown by it's name/key (see route '/api/internal/markdown-page');
