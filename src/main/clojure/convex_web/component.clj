@@ -178,33 +178,15 @@
                                           Keywords/KEYPAIR convex-world-key-pair})
           
           ^InetSocketAddress convex-world-host-address (convex/server-address server)
-          _ (log/debug "convex-world-host-address" convex-world-host-address)
+          _ (log/debug "convex.world host-address" convex-world-host-address)
           
           ^Address genesis-address (convex/genesis-address)
-          _ (log/debug "convex-world-genesis-address" genesis-address)
+          _ (log/debug "convex.world genesis-address" genesis-address)
           
           ^convex.api.Convex client (convex.api.Convex/connect
                                       convex-world-host-address 
                                       genesis-address
-                                      convex-world-key-pair)
-          
-          peer-data {:url (str convex-world-peer-url":" convex-world-peer-port)}
-          peer-data-str (pr-str peer-data)
-          peer-data-source (str "(set-peer-data " (.getAccountKey convex-world-key-pair) " " peer-data-str ")")
-          
-          ;; Transaction to set convex.world Peer data on the network.
-          ; ^Result result (convex/transact client 
-          ;                  (convex/invoke-transaction 
-          ;                    {:nonce 0
-          ;                     :address (convex/server-peer-controller server)
-          ;                     :command (convex/read-source peer-data-source)}))
-          
-          ]
-      
-      #_(if (.isError result)
-        (log/error "Error setting convex.world Peer data" result)
-        (log/info "Successfully set convex.world Peer data" result))
-      
+                                      convex-world-key-pair)]
       (assoc component
         :server server
         :client client
