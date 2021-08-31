@@ -139,7 +139,7 @@
  {:contents   [{:name "CVM"
                 :path "markdown/dev_doc/cvm.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.accounts
  {:contents   [{:name "Accounts"
@@ -155,9 +155,11 @@
 
  :cvm.basic-syntax
  {:contents   [{:name "Basic syntax"
-                :path "markdown/dev_doc/cvm/basic-syntax.md"}]}
+                :path "markdown/dev_doc/cvm/basic-syntax.md"}]
+  
   :smart-toc? true
   :toc?       false}
+  
 
  :cvm.code-is-data
  {:contents   [{:name "Code is data"
