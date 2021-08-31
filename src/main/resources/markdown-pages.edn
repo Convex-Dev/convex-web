@@ -152,6 +152,12 @@
   :smart-toc? true
   :toc?       true}
 
+ :cvm.basic-syntax
+ {:contents   [{:name "Basic syntax"
+                :path "markdown/dev_doc/cvm/basic-syntax.md"}]}
+  :smart-toc? true
+  :toc?       false}
+
  :cvm.code-is-data
  {:contents   [{:name "Code is data"
                 :path "markdown/dev_doc/cvm/code-is-data.md"}]
@@ -293,12 +299,6 @@
  :cvm.smart-contracts
  {:contents   [{:name "Smart contracts"
                 :path "markdown/dev_doc/cvm/smart-contracts.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :cvm.syntax
- {:contents   [{:name "Syntax"
-                :path "markdown/dev_doc/cvm/syntax.md"}]
   :smart-toc? true
   :toc?       true}
 

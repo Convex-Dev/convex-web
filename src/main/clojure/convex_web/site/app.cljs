@@ -179,9 +179,9 @@
                                    {:text       "Runner"
                                     :route-name :route-name/cvm.run-cvx.runner
                                     :href       (rfe/href :route-name/cvm.run-cvx.runner)}]}
-                    {:text       "Syntax"
-                     :route-name :route-name/cvm.syntax
-                     :href       (rfe/href :route-name/cvm.syntax)}
+                    {:text       "Basic syntax"
+                     :route-name :route-name/cvm.basic-syntax
+                     :href       (rfe/href :route-name/cvm.basic-syntax)}
                     {:text       "Data types"
                      :route-name :route-name/cvm.data-types
                      :href       (rfe/href :route-name/cvm.data-types)

@@ -185,6 +185,15 @@
                                               :state  {:id :cvm.actors}
                                               :title  "Actors"}))}]}] 
 
+    ["/basic-syntax"
+     {:name        :route-name/cvm.basic-syntax
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.basic-syntax}
+                                              :title  "Basic syntax"}))}]}]
+
     ["/code-is-data"
      {:name        :route-name/cvm.code-is-data
       :controllers [{:identity identity
@@ -405,18 +414,7 @@
                                              {:reset? true
                                               :state  {:id :cvm.smart-contracts}
                                               :title  "Smart contracts"}))}]}]
-    
-
-    ["/syntax"
-     {:name        :route-name/cvm.syntax
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :cvm.syntax}
-                                              :title  "Syntax"}))}]}]
-    
-
+  
     ]
    
    
