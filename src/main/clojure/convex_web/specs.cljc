@@ -45,7 +45,7 @@
 
 ;; -- Config Peer
 
-(s/def :config.peer/url :convex-web/non-empty-string)
+(s/def :config.peer/hostname :convex-web/non-empty-string)
 
 (s/def :config.peer/port nat-int?)
 
@@ -55,7 +55,7 @@
 
 (s/def :config/peer
   (s/keys 
-    :req-un [:config.peer/url
+    :req-un [:config.peer/hostname
              :config.peer/key-store
              :config.peer/key-passphrase]
     :opt-un [:config.peer/port]))

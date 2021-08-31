@@ -60,7 +60,7 @@
  ;; -- CONVEX PEER
  ;; ==========================
  :peer
- #profile {:dev {:url "localhost"
+ #profile {:dev {:hostname "localhost"
                  :port 43577
                  :key-store #join [#system/property "user.home" "/.convex/convex-world-dev.pfx"]
                  :key-store-passphrase #ref [:secrets :key-store-passphrase]
@@ -68,7 +68,7 @@
                  :etch-store-temp? true
                  :etch-store-temp-prefix "convex-world-dev"}
            
-           :test {:url "localhost"
+           :test {:hostname "localhost"
                   :port 0
                   :key-store "convex-world-test.pfx"
                   :key-store-passphrase "convex-world-test"
@@ -76,7 +76,7 @@
                   :etch-store-temp? true
                   :etch-store-temp-prefix "convex-world-test"}
            
-           :prod {:url "convex.world"
+           :prod {:hostname "convex.world"
                   :key-store #join [#system/property "user.home" "/.convex/convex-world.pfx"]
                   :key-store-passphrase #ref [:secrets :key-store-passphrase]
                   :key-passphrase #ref [:secrets :key-passphrase]

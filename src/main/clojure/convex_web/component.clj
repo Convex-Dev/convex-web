@@ -121,7 +121,7 @@
   (start [component]
     (let [peer-config (get-in config [:config :peer])
           
-          {convex-world-peer-url :url
+          {convex-world-peer-hostname :hostname
            convex-world-peer-port :port
            convex-world-peer-key-store-path :key-store
            convex-world-peer-key-store-passphrase :key-store-passphrase
@@ -183,12 +183,12 @@
                                    :else
                                    convex-world-peer-port)
           
-          ^Server server (doto (API/launchPeer {Keywords/URL convex-world-peer-url
+          ^Server server (doto (API/launchPeer {Keywords/URL convex-world-peer-hostname
                                                 Keywords/PORT convex-world-peer-port
                                                 Keywords/STORE convex-world-peer-store
                                                 Keywords/RESTORE restore?
                                                 Keywords/KEYPAIR convex-world-key-pair})
-                           (.setHostname (str convex-world-peer-url ":" convex-world-peer-port)))
+                           (.setHostname (str convex-world-peer-hostname ":" convex-world-peer-port)))
           
           _ (log/info "Started Peer on port" convex-world-peer-port)
           
