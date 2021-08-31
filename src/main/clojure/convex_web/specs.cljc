@@ -53,12 +53,18 @@
 
 (s/def :config.peer/key-passphrase :convex-web/non-empty-string)
 
+(s/def :config.peer/etch-store-temp? boolean?)
+
+(s/def :config.peer/etch-store-temp-prefix :convex-web/non-empty-string)
+
 (s/def :config/peer
   (s/keys 
     :req-un [:config.peer/hostname
              :config.peer/key-store
              :config.peer/key-passphrase]
-    :opt-un [:config.peer/port]))
+    :opt-un [:config.peer/port
+             :config.peer/etch-store-temp?
+             :config.peer/etch-store-temp-prefix]))
 
 
 ;; -- Config Web Server
