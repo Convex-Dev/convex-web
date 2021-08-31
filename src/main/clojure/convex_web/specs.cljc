@@ -54,10 +54,11 @@
 (s/def :config.peer/key-passphrase :convex-web/non-empty-string)
 
 (s/def :config/peer
-  (s/keys :req-un [:config.peer/url
-                   :config.peer/port
-                   :config.peer/key-store
-                   :config.peer/key-passphrase]))
+  (s/keys 
+    :req-un [:config.peer/url
+             :config.peer/key-store
+             :config.peer/key-passphrase]
+    :opt-un [:config.peer/port]))
 
 
 ;; -- Config Web Server
