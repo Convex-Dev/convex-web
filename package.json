@@ -10,7 +10,7 @@
     "styles:release": "NODE_ENV=production npx postcss tailwind.css -o src/main/resources/public/css/styles.css --verbose"
   },
   "dependencies": {
-    "@headlessui/react": "^1.4.0",
+    "@headlessui/react": "^1.4.1",
     "@heroicons/react": "^1.0.3",
     "@tailwindcss/typography": "^0.4.1",
     "@tailwindcss/ui": "^0.7.2",
