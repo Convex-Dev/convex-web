@@ -13,7 +13,7 @@
   :contents
   [{:name "Under Construction"
     :path "markdown/under_construction.md"}]}
- 
+  
  :technology
  {:toc? true
   :smart-toc? true
@@ -129,4 +129,179 @@
   :smart-toc? true
   :contents
   [{:name "Glossary"
-    :path "markdown/glossary.md"}]}}
+    :path "markdown/glossary.md"}]}
+
+
+ ;; DOC - CVM
+
+
+ :cvm
+ {:contents   [{:name "CVM"
+                :path "markdown/dev_doc/cvm.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.accounts
+ {:contents   [{:name "Accounts"
+                :path "markdown/dev_doc/cvm/accounts.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.actors
+ {:contents   [{:name "Actors"
+                :path "markdown/dev_doc/cvm/actors.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.basic-syntax
+ {:contents   [{:name "Basic syntax"
+                :path "markdown/dev_doc/cvm/basic-syntax.md"}]}
+  :smart-toc? true
+  :toc?       false}
+
+ :cvm.code-is-data
+ {:contents   [{:name "Code is data"
+                :path "markdown/dev_doc/cvm/code-is-data.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types
+ {:contents   [{:name "Data types"
+                :path "markdown/dev_doc/cvm/data-types.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.address
+ {:contents   [{:name "Address"
+                :path "markdown/dev_doc/cvm/data-types/address.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.blob-map
+ {:contents   [{:name "Blob map"
+                :path "markdown/dev_doc/cvm/data-types/blob-map.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.blob
+ {:contents   [{:name "Blob"
+                :path "markdown/dev_doc/cvm/data-types/blob.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.boolean
+ {:contents   [{:name "Boolean"
+                :path "markdown/dev_doc/cvm/data-types/boolean.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.keyword
+ {:contents   [{:name "Keyword"
+                :path "markdown/dev_doc/cvm/data-types/keyword.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.list
+ {:contents   [{:name "List"
+                :path "markdown/dev_doc/cvm/data-types/list.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.map
+ {:contents   [{:name "Map"
+                :path "markdown/dev_doc/cvm/data-types/map.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.nil
+ {:contents   [{:name "Nil"
+                :path "markdown/dev_doc/cvm/data-types/nil.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.numbers
+ {:contents   [{:name "Numbers"
+                :path "markdown/dev_doc/cvm/data-types/numbers.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.set
+ {:contents   [{:name "Set"
+                :path "markdown/dev_doc/cvm/data-types/set.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.symbol
+ {:contents   [{:name "Symbol"
+                :path "markdown/dev_doc/cvm/data-types/symbol.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.text
+ {:contents   [{:name "Text"
+                :path "markdown/dev_doc/cvm/data-types/text.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.data-types.vector
+ {:contents   [{:name "Vector"
+                :path "markdown/dev_doc/cvm/data-types/vector.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.definitions
+ {:contents   [{:name "Definitions"
+                :path "markdown/dev_doc/cvm/definitions.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.errors
+ {:contents   [{:name "Errors"
+                :path "markdown/dev_doc/cvm/errors.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.functions
+ {:contents   [{:name "Functions"
+                :path "markdown/dev_doc/cvm/functions.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.logic
+ {:contents   [{:name "Logic"
+                :path "markdown/dev_doc/cvm/logic.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.looping
+ {:contents   [{:name "Looping"
+                :path "markdown/dev_doc/cvm/looping.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.run-cvx
+ {:contents   [{:name "Running Convex Lisp"
+                :path "markdown/dev_doc/cvm/running-convex-lisp.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.run-cvx.runner
+ {:contents   [{:name "Runner"
+                :path "markdown/dev_doc/cvm/running-convex-lisp/runner.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.run-cvx.sandbox
+ {:contents   [{:name "Sandbox"
+                :path "markdown/dev_doc/cvm/running-convex-lisp/sandbox.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.smart-contracts
+ {:contents   [{:name "Smart contracts"
+                :path "markdown/dev_doc/cvm/smart-contracts.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+
+}

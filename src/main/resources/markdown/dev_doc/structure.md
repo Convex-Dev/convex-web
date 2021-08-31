@@ -1,13 +1,11 @@
-Developper documentation should be primarily split into the following top level sections:
+Developer documentation should be primarily split into the following top level sections:
 
 - Convex Virtual Machine
-    - Overview
     - Running Convex Lisp
         - Sandbox
         - Runner
     - Syntax
     - Data types
-        - Overview
         - Nil
         - Boolean
         - Numbers
@@ -28,11 +26,9 @@ Developper documentation should be primarily split into the following top level 
     - Loops
     - Control flow (halt, return, ...)
     - Code is data
-        - Quote
-        - Quasiquote and unquote
     - Accounts
     - Smart contracts
-    - Actors, smart contracts
+    - Actors
     - Destructuring
     - Compiler phases
     - Macros

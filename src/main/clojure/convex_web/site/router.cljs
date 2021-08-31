@@ -153,6 +153,270 @@
                 (stack/push :page.id/markdown {:title "Welcome"
                                                :state {:id :developer}
                                                :reset? true}))}]}]
+
+   ;; CVM
+   ;; ==============
+   ["cvm"
+
+    [""
+     {:controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm}
+                                              :title  "Convex Virtual Machine"}))}]
+      :name        :route-name/cvm}]
+   
+    ["/accounts"
+     {:name        :route-name/cvm.accounts
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.accounts}
+                                              :title  "Accounts"}))}]}]
+
+    ["/actors"
+     {:name        :route-name/cvm.actors
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.actors}
+                                              :title  "Actors"}))}]}] 
+
+    ["/basic-syntax"
+     {:name        :route-name/cvm.basic-syntax
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.basic-syntax}
+                                              :title  "Basic syntax"}))}]}]
+
+    ["/code-is-data"
+     {:name        :route-name/cvm.code-is-data
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.code-is-data}
+                                              :title  "Code is data"}))}]}]
+
+    ["/data-types"
+
+     [""
+      {:name        :route-name/cvm.data-types
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types}
+                                               :title  "Data types"}))}]}]
+
+     ["/address"
+      {:name        :route-name/cvm.data-types.address
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.address}
+                                               :title  "Address"}))}]}]
+     
+     ["/blob"
+      {:name        :route-name/cvm.data-types.blob
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.blob}
+                                               :title  "Blob"}))}]}]
+     
+     ["/blob-map"
+      {:name        :route-name/cvm.data-types.blob-map
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.blob-map}
+                                               :title  "Blob map"}))}]}]
+     
+     ["/boolean"
+      {:name        :route-name/cvm.data-types.boolean
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.boolean}
+                                               :title  "Boolean"}))}]}]
+     
+     ["/keyword"
+      {:name        :route-name/cvm.data-types.keyword
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.keyword}
+                                               :title  "Keyword"}))}]}]
+     
+     ["/list"
+      {:name        :route-name/cvm.data-types.list
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.list}
+                                               :title  "List"}))}]}]
+     
+     ["/map"
+      {:name        :route-name/cvm.data-types.map
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.map}
+                                               :title  "Map"}))}]}]
+     
+     ["/nil"
+      {:name        :route-name/cvm.data-types.nil
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.nil}
+                                               :title  "Nil"}))}]}]
+     
+     ["/numbers"
+      {:name        :route-name/cvm.data-types.numbers
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.numbers}
+                                               :title  "Numbers"}))}]}]
+
+     ["/symbol"
+      {:name        :route-name/cvm.data-types.symbol
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.symbol}
+                                               :title  "Symbol"}))}]}]
+     
+     ["/set"
+      {:name        :route-name/cvm.data-types.set
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.set}
+                                               :title  "Set"}))}]}]
+     
+     ["/text"
+      {:name        :route-name/cvm.data-types.text
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.text}
+                                               :title  "Text"}))}]}]
+     
+     ["/vector"
+      {:name        :route-name/cvm.data-types.vector
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.vector}
+                                               :title  "Vector"}))}]}]
+     ]
+
+    ["/definitions"
+     {:name        :route-name/cvm.definitions
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.definitions}
+                                              :title  "Definitions"}))}]}]
+
+    ["/errors"
+     {:name        :route-name/cvm.errors
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.errors}
+                                              :title  "Errors"}))}]}]
+    
+    ["/functions"
+     {:name        :route-name/cvm.functions
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.functions}
+                                              :title  "Functions"}))}]}]
+    
+
+
+    
+    ["/logic"
+     {:name        :route-name/cvm.logic
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.logic}
+                                              :title  "Logic"}))}]}]
+    
+    ["/looping"
+     {:name        :route-name/cvm.looping
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.looping}
+                                              :title  "Looping"}))}]}]
+
+    ["/running-convex-lisp"
+
+     [""
+      {:name        :route-name/cvm.run-cvx
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown {:reset? true
+                                                                 :state  {:id :cvm.run-cvx}
+                                                                 :title  "Running Convex Lisp"}))}]}]
+
+     ["/runner"
+      {:name        :route-name/cvm.run-cvx.runner
+       :controllers  [{:identity identity
+                       :start    (fn [_match]
+                                   (stack/push :page.id/markdown {:reset? true
+                                                                  :state  {:id :cvm.run-cvx.runner}
+                                                                  :title  "Convex Lisp Runner"}))}]}]
+
+     ["/sandbox"
+      {:name        :route-name/cvm.run-cvx.sandbox
+       :controllers  [{:identity identity
+                       :start    (fn [_match]
+                                   (stack/push :page.id/markdown {:reset? true
+                                                                  :state  {:id :cvm.run-cvx.sandbox}
+                                                                  :title  "Sandbox"}))}]}]]
+
+    ["/smart-contracts"
+     {:name        :route-name/cvm.smart-contracts
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.smart-contracts}
+                                              :title  "Smart contracts"}))}]}]
+  
+    ]
+   
    
    ;; Concepts
    ;; ==============
