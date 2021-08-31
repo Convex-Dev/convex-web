@@ -183,11 +183,12 @@
                                    :else
                                    convex-world-peer-port)
           
-          ^Server server (API/launchPeer {Keywords/URL convex-world-peer-url
-                                          Keywords/PORT convex-world-peer-port
-                                          Keywords/STORE convex-world-peer-store
-                                          Keywords/RESTORE restore?
-                                          Keywords/KEYPAIR convex-world-key-pair})
+          ^Server server (doto (API/launchPeer {Keywords/URL convex-world-peer-url
+                                                Keywords/PORT convex-world-peer-port
+                                                Keywords/STORE convex-world-peer-store
+                                                Keywords/RESTORE restore?
+                                                Keywords/KEYPAIR convex-world-key-pair})
+                           (.setHostname (str convex-world-peer-url ":" convex-world-peer-port)))
           
           _ (log/info "Started Peer on port" convex-world-peer-port)
           
