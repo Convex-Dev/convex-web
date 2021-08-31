@@ -13,13 +13,11 @@
             [clojure.java.io :as io]
 
             [prestancedesign.get-port :refer [get-port]]
-            [aero.core :as aero]
             [expound.alpha :as expound]
             [com.brunobonacci.mulog :as u]
             [datalevin.core :as d]
             [com.stuartsierra.component :as component])
   (:import (convex.peer Server API)
-           (convex.core Result)
            (convex.core.crypto AKeyPair)
            (convex.core.data Keywords Address)
            (etch EtchStore)
@@ -172,8 +170,17 @@
                   
                   [generated-key-pair false]))))
           
-          convex-world-peer-port (if (zero? convex-world-peer-port) 
+          convex-world-peer-port (cond
+                                   ;; Default
+                                   (nil? convex-world-peer-port)
+                                   Server/DEFAULT_PORT
+                                   
+                                   ;; Random
+                                   (zero? convex-world-peer-port) 
                                    (get-port)
+                                   
+                                   ;; Custom
+                                   :else
                                    convex-world-peer-port)
           
           ^Server server (API/launchPeer {Keywords/URL convex-world-peer-url

@@ -77,7 +77,6 @@
                   :etch-store-temp-prefix "convex-world-test"}
            
            :prod {:url "convex.world"
-                  :port 43579
                   :key-store #join [#system/property "user.home" "/.convex/convex-world.pfx"]
                   :key-store-passphrase #ref [:secrets :key-store-passphrase]
                   :key-passphrase #ref [:secrets :key-passphrase]
