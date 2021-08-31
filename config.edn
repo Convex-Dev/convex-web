@@ -69,7 +69,7 @@
                  :etch-store-temp-prefix "convex-world-dev"}
            
            :test {:url "localhost"
-                  :port 43578
+                  :port 0
                   :key-store "convex-world-test.pfx"
                   :key-store-passphrase "convex-world-test"
                   :key-passphrase "convex-world-test"
@@ -90,7 +90,7 @@
  {:port
   #profile {:dev 8080
             :prod 8080
-            :test 8090}}
+            :test 0}}
  
  
  ;; -- LOGGING U/LOG

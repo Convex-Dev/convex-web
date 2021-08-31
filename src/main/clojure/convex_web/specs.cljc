@@ -47,7 +47,7 @@
 
 (s/def :config.peer/url :convex-web/non-empty-string)
 
-(s/def :config.peer/port pos-int?)
+(s/def :config.peer/port nat-int?)
 
 (s/def :config.peer/key-store :convex-web/non-empty-string)
 
@@ -62,7 +62,7 @@
 
 ;; -- Config Web Server
 
-(s/def :config.web-server/port pos-int?)
+(s/def :config.web-server/port nat-int?)
 
 (s/def :config/web-server
   (s/keys :req-un [:config.web-server/port]))
