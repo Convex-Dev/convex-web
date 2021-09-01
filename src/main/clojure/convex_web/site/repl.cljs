@@ -510,7 +510,7 @@
     [:div.flex.flex-1.space-x-8.overflow-auto
      
      ;; -- REPL
-     [:div.w-screen.flex.flex-col.mb-6.space-y-1
+     [:div.w-screen.max-w-full.flex.flex-col.mb-6.space-y-1
       
       [:div.flex.justify-end
        [gui/Tooltip
