@@ -133,6 +133,8 @@
                                    convex-world-peer-key-store-path 
                                    convex-world-peer-key-store-passphrase)
           
+          ;; Generate or restore convex.world key pair.
+          ;; If a new key pair is generated, instead of restored, Peer's state is not restored.
           [^AKeyPair convex-world-key-pair restore?] 
           (let [restored-key-pair 
                 (reduce
@@ -155,7 +157,7 @@
             
             (or restored-key-pair
               (do 
-                (log/error "Can't restore convex.world key pair, so a new one will be generated.")
+                (log/error "Can't restore convex.world key pair; a new key pair will be generated")
                 
                 (let [generated-key-pair (convex/generate-key-pair)]
                   
