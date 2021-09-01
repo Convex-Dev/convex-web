@@ -30,7 +30,7 @@
 
             ["react" :as react]
             ["@headlessui/react" :as headlessui]
-            ["@heroicons/react/solid" :refer [MenuIcon XIcon ChevronRightIcon]]
+            ["@heroicons/react/solid" :refer [MenuIcon XIcon ChevronDownIcon ChevronRightIcon]]
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]
             ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
@@ -285,59 +285,80 @@
     (some #(nav-item-expanded? route %) children)))
 
 (defn NavItem [route {:keys [text top-level? active? href target route-name children] :as item}]
-  (let [active? (nav-item-selected? route item)
-        
-        expanded? (nav-item-expanded? route item)
-        
-        leaf? (empty? children)]
-    
-    [:div.flex.flex-col.justify-center.space-y-1
-     (if leaf?
-       {:class "h-6 xl:h-7"}
-       {})
-     
-     ;; -- Item
-     [:a.py-1.px-2.transition.duration-200.ease-in-out.rounded
-      (let [border (if active?
-                     "bg-gray-200 hover:bg-gray-200"
-                     "hover:bg-gray-100")
-            
-            text-color (cond
-                         top-level?
-                         "text-blue-500"
-                         
-                         active?
-                         "text-gray-800"
-                         
-                         :else
-                         "text-gray-500")]
-        (merge {:href href
-                :class [border text-color]}
-          (when target
-            {:target target})))
+  (reagent/with-let [toggle-ref (reagent/atom nil)]
+    (let [active? (nav-item-selected? route item)
+          
+          expanded? (cond
+                      (some? @toggle-ref)
+                      @toggle-ref
+                      
+                      :else
+                      (nav-item-expanded? route item))
+          
+          leaf? (empty? children)]
       
-      [:div.flex.justify-between
-       (if target
-         [:div.space-x-2
-          [:span text]
-          [gui/IconExternalLink {:class "w-6 h-6"}]]
-         [:span text])
+      [:div.flex.flex-col.justify-center.space-y-1
+       (if leaf?
+         {:class "h-6 xl:h-7"}
+         {})
        
-       ;; Chevron right & down
-       (when-not leaf?
-         (let [style "w-6 h-6 text-gray-400"]
-           (if expanded?
-             [gui/IconChevronDown
-              {:class style}]
-             [:> ChevronRightIcon
-              {:className style}])))]]
-     
-     ;; -- Children
-     (when (and (seq children) expanded?)
-       [:div.flex.flex-col.space-y-1.ml-4
-        (for [{:keys [text] :as child} children]
-          ^{:key text}
-          [NavItem route child])])]))
+       ;; -- Item
+       [:a.py-1.px-2.transition.duration-200.ease-in-out.rounded
+        (let [border (if active?
+                       "bg-gray-200 hover:bg-gray-200"
+                       "hover:bg-gray-100")
+              
+              text-color (cond
+                           top-level?
+                           "text-blue-500"
+                           
+                           active?
+                           "text-gray-800"
+                           
+                           :else
+                           "text-gray-500")]
+          (merge {:href href
+                  :class [border text-color]}
+            (when target
+              {:target target})))
+        
+        [:div.flex.justify-between.items-center
+         (if target
+           [:div.space-x-2
+            [:span text]
+            [gui/IconExternalLink {:class "w-6 h-6"}]]
+           [:span text])
+         
+         ;; Chevron right & down
+         (when-not leaf?
+           (let [style "w-6 h-6 text-gray-400 hover:bg-white rounded hover:shadow-md"
+                 
+                 Component (if expanded?
+                             ChevronDownIcon
+                             ChevronRightIcon)]
+             [:button
+              {:on-click
+               (fn [e]
+                 (swap! toggle-ref (fn [toggle]
+                                     (if (nil? toggle)
+                                       (not expanded?)
+                                       (not toggle))))
+                 
+                 (doto e
+                   (.preventDefault)
+                   (.stopPropagation)))}
+              [gui/Tooltip
+               {:title (if expanded? "Collapse" "Expand")
+                :size "small"}
+               [:> Component
+                {:className style}]]]))]]
+       
+       ;; -- Children
+       (when (and (seq children) expanded?)
+         [:div.flex.flex-col.space-y-1.ml-4
+          (for [{:keys [text] :as child} children]
+            ^{:key text}
+            [NavItem route child])])])))
 
 (defn SideNav [active-route]
   (let [{:keys [others]} (nav)]
