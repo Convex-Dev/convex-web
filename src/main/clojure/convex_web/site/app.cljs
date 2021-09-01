@@ -298,9 +298,13 @@
           leaf? (empty? children)]
       
       [:div.flex.flex-col.justify-center.space-y-1
-       (if leaf?
-         {:class "h-6 xl:h-7"}
-         {})
+       ;; Always expand on click.
+       (merge {:on-click
+               (fn []
+                 (reset! toggle-ref true))}
+         (if leaf?
+           {:class "h-6 xl:h-7"}
+           {}))
        
        ;; -- Item
        [:a.py-1.px-2.transition.duration-200.ease-in-out.rounded
