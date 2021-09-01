@@ -65,7 +65,7 @@
         (.mkdirs parent)))
     
     ;; Saves key-pair in-memory.
-    (PFXTools/saveKey key-store key-pair key-pair-passphrase)
+    (PFXTools/setKeyPair key-store key-pair key-pair-passphrase)
     
     ;; Persist modified key store to disk.
     (PFXTools/saveStore key-store key-store-file key-store-passphrase)

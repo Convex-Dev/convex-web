@@ -49,7 +49,7 @@
         
         (testing "Expected values"
           (is (= #:convex-web.result{:error-code :CAST
-                                     :trace nil
+                                     :trace ["In function: map"]
                                      :value "\"Can't convert value of type Long to type Sequence\""}
                 (select-keys result [:convex-web.result/value
                                      :convex-web.result/value-kind
