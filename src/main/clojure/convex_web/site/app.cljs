@@ -351,11 +351,8 @@
                  (doto e
                    (.preventDefault)
                    (.stopPropagation)))}
-              [gui/Tooltip
-               {:title (if expanded? "Collapse" "Expand")
-                :size "small"}
-               [:> Component
-                {:className style}]]]))]]
+              [:> Component
+               {:className style}]]))]]
        
        ;; -- Children
        (when (and (seq children) expanded?)
