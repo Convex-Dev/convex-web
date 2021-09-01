@@ -450,7 +450,9 @@
                        (get transaction :convex-web.transaction/source))]
           [:div.flex.items-center
            [gui/Highlight source {:pretty? true}]
-           [gui/ClipboardCopy source {:margin "ml-2"}]])]
+           
+           ;; This causes a strange overflow.
+           #_[gui/ClipboardCopy source {:margin "ml-2"}]])]
        
        [:div.my-3]
        
