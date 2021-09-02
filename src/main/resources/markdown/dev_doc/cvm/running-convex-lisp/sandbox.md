@@ -6,7 +6,7 @@ used for submitting transactions under a test account.
 
 ## Creating an account
 
-Any transaction submitted on the network must be signed by an [account](/glossary?section=Account). Hence the very first step is to create one and the sandbox will invitei you to do so by merely pressing a button.
+Any transaction submitted on the network must be [signed](/glossary?section=Digital%20Signature) by an [account](/glossary?section=Account). Hence the very first step is to create one and the sandbox will invitei you to do so by merely pressing a button.
 Accounts represent digital identities on the current test network. They are free and disposable, but also volatile since the test network is unstable and meant to be used for learning and prototyping only. Users
 must expect test accounts to be deleted periodically, after an important update for instance.
 
@@ -15,7 +15,7 @@ New accounts have a sufficient amount of Convex Coins for carrying out many oper
 
 ## Running transactions
 
-The bottom area is wehre transaction code is entered. All results are displayed in the upper area. To test it out, try entering the following piece of code:
+The bottom area is where transaction code is entered. All results are displayed in the upper area. To test it out, try entering the following piece of code:
 
 ```clojure
 (+ 2 2)

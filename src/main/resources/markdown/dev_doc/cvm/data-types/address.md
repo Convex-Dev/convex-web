@@ -1,11 +1,11 @@
-An address is a numerical value referring to an account. It is a whole-valued number prefixed with `#`:
+An address is a postiive whole-valued number prefixed with `#` referring to an account.
 
 ```clojure
 #42
 #100
 #123456789
 
-(address? #42)  ;; True
+(address? #42)  ;; -> true
 ```
 
 Address of the account executing current transaction is retrivied via:
@@ -14,26 +14,7 @@ Address of the account executing current transaction is retrivied via:
 *address*
 ```
 
-The account behind an address can be retrieved via:
+The section about [accounts](/cvm/accounts) showcases how they can be retrived from addresses, as well as typical account
+operations. Addresses also play a critical role in access control as described in the [section about actors](/cvm/actors).
 
-```clojure
-(account *address*)  ;; Or any other address ; returns nil if account does not exist
-```
-
-Convex Coins can be transfered from the current account to any other account, provided funds are sufficient:
-
-```clojure
-(transfer #42
-          10000)
-```
-
-Similarly, memory allowance can be transfered to another account:
-
-```clojure
-(transfer-memory #42
-                 100)
-```
-
-Addresses also play a critical role in access control as described in the [section about actors](/cvm/actors-and-smart-contracts).
-
-Internally, addresses are a specific type of [blob](/cvm/data-types/blob). Hence, they can be used as keys in [blob-maps](/cvm/data-types/blobmap).
+Internally, addresses are a specific type of [blob](/cvm/data-types/blob). Hence, they can be used as keys in [blob-maps](/cvm/data-types/blob-map).

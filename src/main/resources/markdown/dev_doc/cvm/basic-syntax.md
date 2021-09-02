@@ -6,8 +6,8 @@ Suppose this simple computation:
 
 Simple maths taught at elementary school dictates the answer is `10`, since the `*` operator has a higher precedence than the `+` operator. Hence, `2 * 3` is executed first,
 and then `4 + 6`. Beyond this simple example and those simple arithmetic operators, some languages have dozens of similar arbitrary rules, resulting in tremendous complexity.
-In contrast, Convex Lisp, the language used to write code for the Convex Virtual Machine, relies on one general rule. Understanding that single rule means understanding the core
-of the Convex Lisp syntax.
+In contrast, Convex Lisp, the language used to write transactions for the Convex Virtual Machine, relies on one general rule. Understanding that single rule means understanding
+the core of the Convex Lisp syntax.
 
 Once again, simple maths dictates that one can be fully explicit by using parens. Indeed, parens force the order of operations:
 
@@ -30,9 +30,10 @@ One of the advantages of using prefix notation is that it provides a standard wa
 used above has been designed to be **variadic**, meaning it accepts a variable number of parameters:
 
 ```clojure
-(+ 2)       ;; 4
-(+ 2 3)     ;; 5
-(+ 2 3 10)  ;; 15
+(+ 2)         ;; 4
+(+ 2 3)       ;; 5
+(+ 2 3 10)    ;; 15
+(+ 2 3 10 5)  ;; 20
 ```
 
-Examples in all developer guides heavily use functions for showcasing how to write code and handle values.
+Examples in all developer guides heavily use functions for showcasing how to write code and handle values given their central role in describing computation.

@@ -371,13 +371,13 @@
                                               :state  {:id :cvm.logic}
                                               :title  "Logic"}))}]}]
     
-    ["/looping"
-     {:name        :route-name/cvm.looping
+    ["/loops"
+     {:name        :route-name/cvm.loops
       :controllers [{:identity identity
                      :start    (fn [_match]
                                  (stack/push :page.id/markdown
                                              {:reset? true
-                                              :state  {:id :cvm.looping}
+                                              :state  {:id :cvm.loops}
                                               :title  "Looping"}))}]}]
 
     ["/running-convex-lisp"

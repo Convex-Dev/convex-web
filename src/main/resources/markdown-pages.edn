@@ -154,7 +154,7 @@
 
  :cvm.basic-syntax
  {:contents   [{:name "Basic syntax"
-                :path "markdown/dev_doc/cvm/basic-syntax.md"}]}
+                :path "markdown/dev_doc/cvm/basic-syntax.md"}]
   :smart-toc? true
   :toc?       false}
 
@@ -216,7 +216,7 @@
  {:contents   [{:name "Nil"
                 :path "markdown/dev_doc/cvm/data-types/nil.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.numbers
  {:contents   [{:name "Numbers"
@@ -272,9 +272,9 @@
   :smart-toc? true
   :toc?       true}
 
- :cvm.looping
- {:contents   [{:name "Looping"
-                :path "markdown/dev_doc/cvm/looping.md"}]
+ :cvm.loops
+ {:contents   [{:name "Loops"
+                :path "markdown/dev_doc/cvm/loops.md"}]
   :smart-toc? true
   :toc?       true}
 
@@ -282,7 +282,7 @@
  {:contents   [{:name "Running Convex Lisp"
                 :path "markdown/dev_doc/cvm/running-convex-lisp.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.run-cvx.runner
  {:contents   [{:name "Runner"

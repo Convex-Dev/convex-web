@@ -1,4 +1,4 @@
-A blob is a **binary large object** as known in other languages, large meaning size is arbitrary.
+A blob is a **binary large object** , large meaning size is arbitrary, anywhere in between small ang big.
 It is a sequence of bytes written in hexadecimal notation and prefixed with `0x`. Each byte requires
 2 digits:
 
@@ -9,7 +9,7 @@ It is a sequence of bytes written in hexadecimal notation and prefixed with `0x`
 
 0x  ;; Legal, means an empty blob
 
-(blob? 0x42)  ;; True
+(blob? 0x42)  ;; -> true
 ```
 
 Such a sequence of bytes can represent many things and is opaque without any further context.
@@ -23,7 +23,7 @@ also encoded in hexademical notation):
 (blob "ff23789875")
 ```
 
-Besides representing arbiratry binary data, such as a file, blos are typically used to represent cryptograpgic keys and hashes.
+Besides representing arbiratry binary data, such as a file, blobs are typically used to represent cryptographic hashes and keys.
 
 
 # Not quite a collection
@@ -34,9 +34,9 @@ Although blobs are collections of bytes in theory, they are not collections in t
 However, they are countable and it is possible to extract single bytes as longs:
 
 ```clojure
-(count 0x112233)  ;; 3
+(count 0x112233)  ;; -> 3
 
-(nth 0x112233 0)  ;; 17 (0x11 in hexadecimal)
-(nth 0x112233 1)  ;; 34 (0x22 in hexadecimal)
-(nth 0x112233 2)  ;; 51 (0x33 in hexadecimal)
+(nth 0x112233 0)  ;; -> 17 (0x11 in hexadecimal)
+(nth 0x112233 1)  ;; -> 34 (0x22 in hexadecimal)
+(nth 0x112233 2)  ;; -> 51 (0x33 in hexadecimal)
 ```

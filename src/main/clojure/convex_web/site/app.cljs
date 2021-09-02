@@ -236,9 +236,9 @@
                     {:text       "Functions"
                      :route-name :route-name/cvm.functions
                      :href       (rfe/href :route-name/cvm.functions)}
-                    {:text       "Looping"
-                     :route-name :route-name/cvm.looping
-                     :href       (rfe/href :route-name/cvm.looping)}
+                    {:text       "Loops"
+                     :route-name :route-name/cvm.loops
+                     :href       (rfe/href :route-name/cvm.loops)}
                     {:text       "Code is data"
                      :route-name :route-name/cvm.code-is-data
                      :href       (rfe/href :route-name/cvm.code-is-data)}

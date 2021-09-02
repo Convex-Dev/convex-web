@@ -7,14 +7,14 @@ addresses to some values, keeping in mind that an [address](/cvm/data-types/addr
 
 Overall, this is a more advanced feature that beginners will probably not need.
 
-Blob maps are created through a dedicated function:
+Blob maps are created through a dedicated function by providing a sequence of blob keys and arbitrary values:
 
 ```clojure
 (blob-map 0xff1234 "some value"
           #42      :another-value)
 ```
 
-All functions showcased for [regular maps](/cvm/data-types/map) can be applied:
+All functions showcased for regular [maps](/cvm/data-types/map) can be applied:
 
 ```clojure
 (get (blob-map #42 :some-value)

@@ -6,4 +6,4 @@ However, for writing smart contracts, prototypes of any kind using your own edit
 
 It is a terminal-based tool where transactions are executed locally, on your own machine. Furthermore, between transactions, users can request special operations not supported by the Convex
 Virtual Machine. Those extra operations, such as reading and writing files, turn Convex Lisp into more of a scripting language, providing a unique developing
-experience. It also provides utilities commonly used by developers such as a unit testing library.
+experience. It also provides utilities commonly used by developers such as a unit testing library as well as utilities seldom encountered, such as time travel.
