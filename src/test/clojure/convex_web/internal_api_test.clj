@@ -50,8 +50,6 @@
   (let [handler (web-server/site system)
         response (handler (mock/request :post "/api/internal/generate-account"))
         body (encoding/transit-decode-string (get response :body))]
-    (is (= "Success!\n" (s/explain-str :convex-web/account body)))
-
     ;; Test a closed set, which is helpful to "remind" us
     ;; to fix it whenever we add a new key to the response.
     (is (= #{:convex-web.account/created-at
