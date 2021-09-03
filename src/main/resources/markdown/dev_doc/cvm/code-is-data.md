@@ -86,7 +86,7 @@ for selectively evaluating and preparing bits of data where needed:
 ;; wrapped in `unquote` are.
 ```
 
-As a shorthand, `quasiquote` can be written as **backtick** and `unquote` as a **tilde**:
+As a shorthand, `quasiquote` can be written as a **backtick** and `unquote` as a **tilde**:
 
 ```clojure
 (let [x 2]
