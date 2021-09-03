@@ -1,10 +1,10 @@
-The [section about booleans](/cvm/data-types/boolean) introduced 2 values: `true` and `false`. Alongside, 2 concepts: being "truthy" of being "falsey". Those concepts
+The section about [booleans](/cvm/data-types/boolean) introduced 2 values: `true` and `false`. Alongside, 2 concepts: being **truthy** or being **falsey**. Those concepts
 are crucial when for executing code only when some condition appears to be true.
 
 
 ## Control flow
 
-Several ways are described for deciding which code to execute or which result to provide. In reality, they are all absed on `cond` which works with pairs of test-results.
+Several ways are described for deciding which code to execute or which result to provide. In reality, they are all based on `cond` which works with pairs of test-results.
 A **test** is an expression which must return a truthy value for its **result** to be executed and returned:
 
 ```clojure
@@ -15,11 +15,11 @@ A **test** is an expression which must return a truthy value for its **result** 
      1)
 
 (cond
-  (< a b)  :smaller
+  (< a b)  :lesser
   (== a b) :equal
   :else    :greater)
 
-;; :greater
+;; -> :greater, because `a` is neither :lesser than nor :equal to `b`
 ```
 
 If a test (formatted  on the left side for clarity) returns a truthy value, then its corresponding result is selected and returned right away. Other potential results
@@ -41,17 +41,17 @@ x
 
 x
 
-;; 2
+;; -> 2
 ```
 
-If no test returns a truthy value, then the value returned by `cond` is nil:
+If no test returns a truthy value, then the value returned by `cond` is [nil](/cvm/data-types/nil):
 
 ```clojure
 (cond
   (< 10 1) :a
   (> 1 42) :b)
 
-;; nil
+;; -> nil
 ```
 
 A default value can be provided in case no test passes:
@@ -62,7 +62,7 @@ A default value can be provided in case no test passes:
   (> 1 42) :b
   :my-default-value)
 
-;; :my-default-value
+;; -> :my-default-value
 ```
 
 Based on this idea is derived `if`, well-known in other programming languages:
@@ -72,14 +72,14 @@ Based on this idea is derived `if`, well-known in other programming languages:
   :okay
   :not-okay)
 
-;; :okay
+;; -> :okay
 
 
 (if (< 2 1)
   :okay
   :not-okay)
 
-;; :not-okay
+;; -> :not-okay
 ```
 
 As well as `when` which executes one or several expressions if its test passes:
@@ -90,38 +90,40 @@ As well as `when` which executes one or several expressions if its test passes:
        true)
   (+ 10 5))
 
-;; 15
+;; -> 15
 
 my-result
 
-;; true
+;; -> true
 
 
 (when (> 1 42)
   :passed)
 
-;; nil
+;; -> nil
 ;;
-;; When test returns false, nothing is executed in `when` and nil is returned
+;; When test returns false, nothing is executed in `when`
+;; and nil is returned.
 ```
 
 
 ## Combining tests
 
-`and` is used when several tests must return a truthy value. Any false value encountered is returned and there is no point in execution any other test:
+`and` is used when several tests must return a truthy value. Any falsey value encountered is returned and there is no point in executing any other test:
 
 ```clojure
 (and (< 1 2)
      (get {:a 42}
           :a))
 
-;; :a
+;; -> :a
 
 
-(and (> 1 42)
+(and (get {:a 42}
+          :b)
      :never-executed)
 
-;; False (the result of (> 1 42)
+;; -> nil, the result of that `get`, a falsey value
 
 
 (if (and (< 1 2)
@@ -129,19 +131,17 @@ my-result
   :okay
   :not-okay)
 
-;; :okay, both tests pass
+;; -> :okay, both tests pass
 ```
 
-`or` is used when at least one test among several must return a truthy value. It returns the first truthy value it finds:
+`or` is used when at least one test among several ones must return a truthy value. It returns the first truthy value it finds:
 
 ```clojure
 (or (get {:a 42}
          :b)
-    false
-    :not-found
-    false)
+    :not-found)
 
-;; :not-found
+;; -> :not-found, since `get` returns nil, a falsey value
 
 
 (if (or (< 1000 5)
@@ -149,5 +149,5 @@ my-result
   :okay
   :not-okay)
 
-;; :okay
+;; -> :okay, because (> 42 1) is true
 ```
