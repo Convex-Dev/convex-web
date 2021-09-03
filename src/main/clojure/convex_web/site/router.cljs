@@ -378,7 +378,7 @@
                                  (stack/push :page.id/markdown
                                              {:reset? true
                                               :state  {:id :cvm.loops}
-                                              :title  "Looping"}))}]}]
+                                              :title  "Loops"}))}]}]
 
     ["/running-convex-lisp"
 
