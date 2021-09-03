@@ -26,7 +26,7 @@ also encoded in hexademical notation):
 Besides representing arbiratry binary data, such as a file, blobs are typically used to represent cryptographic hashes and keys.
 
 
-# Not quite a collection
+## Not quite a collection
 
 Although blobs are collections of bytes in theory, they are not collections in the sense envisioned in further sections and data types such as [vectors](/cvm/data-types/vector) or
 [maps](/cvm/data-types/map).

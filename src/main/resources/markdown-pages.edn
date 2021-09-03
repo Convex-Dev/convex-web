@@ -176,19 +176,19 @@
  {:contents   [{:name "Address"
                 :path "markdown/dev_doc/cvm/data-types/address.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.blob-map
  {:contents   [{:name "Blob map"
                 :path "markdown/dev_doc/cvm/data-types/blob-map.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.blob
  {:contents   [{:name "Blob"
                 :path "markdown/dev_doc/cvm/data-types/blob.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.boolean
  {:contents   [{:name "Boolean"
@@ -200,7 +200,7 @@
  {:contents   [{:name "Keyword"
                 :path "markdown/dev_doc/cvm/data-types/keyword.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.list
  {:contents   [{:name "List"
@@ -236,7 +236,7 @@
  {:contents   [{:name "Symbol"
                 :path "markdown/dev_doc/cvm/data-types/symbol.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.text
  {:contents   [{:name "Text"
