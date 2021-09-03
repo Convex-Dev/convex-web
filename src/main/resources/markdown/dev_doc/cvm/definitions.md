@@ -1,8 +1,8 @@
-First and foremost, Convex can be understood as a decentralized database capable of storing [all data types described previously](/cvm/data-types/overview) as well
-as [functions](/cvm/functions). This section reviews how arbitrary values can be stored across transactions, as long as required.
+First and foremost, Convex can be understood as a decentralized database capable of storing **cells**. A cell can be any type of values encountered in these guides,
+from [data types](/cvm/data-types) to [functions](/cvm/function). This section reviews how arbitrary cells can be stored across transactions, as long as required.
 
-Each account has an **environment**. Conceptually, an environment can be understood as a [map](/cvm/data-types/map) where keys are symbols and values can be anything.
-A symbol pointing to an arbitrary value is called a **definition**.
+Each account has an **environment**. Conceptually, an environment can be understood as a [map](/cvm/data-types/map) where keys are [symbols](/cvm/data-types/symbol)
+and values can be anything. A symbol pointing to an arbitrary value is called a **definition**.
 
 
 ## Define a symbol
@@ -17,9 +17,9 @@ Creating a definition relies on using `def`:
 Once defined, a symbol can be used wherever relevant. During execution, any symbol encountered is resolved by looking in the environment of the executing account:
 
 ```clojure
-(+ x 10)                    ;; 52
+(+ x 10)                    ;; -> 52
 
-{:name "John Doe", :age x}  ;; {:name "John Doe", :age 42}
+{:name "John Doe", :age x}  ;; -> {:name "John Doe", :age 42}
 ```
 
 A defined symbol will be accessible across transactions as long as it is not undefined. When a symbol cannot be resolved in the environment, meaning it undefined,
@@ -36,52 +36,79 @@ A defined symbol can always be redefined:
 
 (+ x 1)
 
-;; 43
+;; -> 43
 ```
 
 Alternatively, `lookup` can be used to resolve a symbol. It is primarily useful for accessing a definition defined in another account:
 
 ```clojure
-(lookup x)                ;; Resolving `x` in the account executing the transaction
-(lookup #42 x)            ;; Resolving `x` in account #42
-#42/x                     ;; Same, but shorter
-(lookup (get-address) x)  ;; Here, address is fetched by applying a supposedly defined function
+(lookup x)
+
+;; Resolving `x` in the account executing the transaction
+
+
+(lookup #42 x)
+
+;; Resolving `x` in account #42
+
+
+#42/x
+
+;; Same, but shorter
+
+
+(def addr
+     #42)
+
+addr/x
+
+;; Addresses can be defined as well.
+
+
+(lookup (get-address) x)
+
+;; Here, address is fetched by applying a supposedly defined function
 ```
 
 
-## Undefine a symbol
+## Undefining a symbol
 
-Undefining a symbol means removing its definition from the environment:
+Undefining a symbol means removing its definition from the environment of the executing account:
 
 ```clojure
 (def x
      10)
 
-(* 2 x)    ;; 20
+(* 2 x)
+
+;; -> 20
+
 
 (undef x)
 
-(* 2 x)    ;; Error, `x` is now undefined.
+(* 2 x)
+
+;; Error! `x` is now undefined.
 ```
 
 
-## Attach metadata
+## Attaching metadata
 
 An arbitrary [map](/cvm/data-types/map) can be attached to a definition as metadata. The purpose of metadata is to provide extra information about a definition, one
-common example being documentation. It is done by providing a map prefixied with `^` before the defined value:
+common example being documentation. It is done by providing a map prefixed with `^` before the defined value:
 
 ```clojure
 (def mood
-
   ^{:doc {:description "Keyword defining my current mood."}}
-
   :happy)
 ```
 
-Metadata data for a definition can be retrieved by providing a quoted symbol. Quoting is described in the [section about code as data](/cvm/code-as-data).
+Metadata data for a definition can be retrieved by providing a quoted symbol. Quoting is described in the section about [code is data](/cvm/code-is-data).
 
 ```clojure
-(lookup-meta 'mood)  ;; {:doc {:description "Keyword defining my current mood."}}
+(lookup-meta 'mood)
+
+;; -> {:doc {:description "Keyword defining my current mood."}}
 ```
 
 Redefining a symbol do not erase its existing metadata unless a new map is provided explicitly:
@@ -92,22 +119,21 @@ Redefining a symbol do not erase its existing metadata unless a new map is provi
 
 (lookup-meta 'mood)
 
-;; {:doc {:description "Keyword defining my current mood."}}
+;; -> {:doc {:description "Keyword defining my current mood."}}
 
 
 (def mood
-
   ^{:foo :bar}
-
   mood)
 
 mood
 
-;; :super-happy
+;; -> :super-happy, we did not change the value
+
 
 (lookup-meta 'mood)
 
-;; {:foo :bar}
+;; -> {:foo :bar}, we did change the metadata
 ```
 
 
@@ -120,11 +146,12 @@ In a vector, values are provided for symbols which can be used in that local sco
 (let [x 10]
   (* x x))
 
-;; 100
+;; -> 100
+
 
 (* x x)
 
-;; Error, `x` is undefined now.
+;; Error! `x` is undefined now outside of its `let`.
 ```
 
 Several expressions can be executed in `let`:
@@ -135,11 +162,11 @@ Several expressions can be executed in `let`:
        x)
   (+ x 5))
 
-;; 15
+;; -> 15
 
 my-x
 
-;; 10
+;; -> 10
 ```
 
 Latter bindings can rely on former bindings:
@@ -149,5 +176,5 @@ Latter bindings can rely on former bindings:
       y (* x x)]
   (+ x y))
 
-;; 110
+;; -> 110
 ```
