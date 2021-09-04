@@ -358,6 +358,15 @@
                                              {:reset? true
                                               :state  {:id :cvm.errors}
                                               :title  "Errors"}))}]}]
+
+    ["/execution-phases"
+     {:name        :route-name/cvm.execution-phases
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.execution-phases}
+                                              :title  "Execution phases"}))}]}]
     
     ["/functions"
      {:name        :route-name/cvm.functions

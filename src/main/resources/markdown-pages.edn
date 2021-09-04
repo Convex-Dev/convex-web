@@ -267,6 +267,12 @@
   :smart-toc? true
   :toc?       true}
 
+ :cvm.execution-phases
+ {:contents   [{:name "Execution phases"
+                :path "markdown/dev_doc/cvm/execution-phases.md"}]
+  :smart-toc? true
+  :toc?       true}
+
  :cvm.functions
  {:contents   [{:name "Functions"
                 :path "markdown/dev_doc/cvm/functions.md"}]

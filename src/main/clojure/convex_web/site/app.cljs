@@ -251,6 +251,9 @@
                     {:text       "Actors"
                      :route-name :route-name/cvm.actors
                      :href       (rfe/href :route-name/cvm.actors)}
+                    {:text       "Execution phases"
+                     :route-name :route-name/cvm.execution-phases
+                     :href       (rfe/href :route-name/cvm.execution-phases)}
                     ]}
       
       ;; Documentation
