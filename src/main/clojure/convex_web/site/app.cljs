@@ -245,9 +245,9 @@
                     {:text       "Accounts"
                      :route-name :route-name/cvm.accounts
                      :href       (rfe/href :route-name/cvm.accounts)}
-                    {:text       "Smart contracts"
-                     :route-name :route-name/cvm.smart-contracts
-                     :href       (rfe/href :route-name/cvm.smart-contracts)}
+                    {:text       "Callable functions"
+                     :route-name :route-name/cvm.callable-functions
+                     :href       (rfe/href :route-name/cvm.callable-functions)}
                     {:text       "Actors"
                      :route-name :route-name/cvm.actors
                      :href       (rfe/href :route-name/cvm.actors)}

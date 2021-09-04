@@ -159,6 +159,11 @@
   :smart-toc? true
   :toc?       false}
   
+ :cvm.callable-functions
+ {:contents   [{:name "Callable functions"
+                :path "markdown/dev_doc/cvm/callable-functions.md"}]
+  :smart-toc? true
+  :toc?       true}
 
  :cvm.code-is-data
  {:contents   [{:name "Code is data"
@@ -295,12 +300,6 @@
  :cvm.run-cvx.sandbox
  {:contents   [{:name "Sandbox"
                 :path "markdown/dev_doc/cvm/running-convex-lisp/sandbox.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :cvm.smart-contracts
- {:contents   [{:name "Smart contracts"
-                :path "markdown/dev_doc/cvm/smart-contracts.md"}]
   :smart-toc? true
   :toc?       true}
 

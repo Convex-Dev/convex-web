@@ -194,6 +194,15 @@
                                               :state  {:id :cvm.basic-syntax}
                                               :title  "Basic syntax"}))}]}]
 
+    ["/callable-functions"
+     {:name        :route-name/cvm.callable-functions
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.callable-functions}
+                                              :title  "Callable functions"}))}]}]
+
     ["/code-is-data"
      {:name        :route-name/cvm.code-is-data
       :controllers [{:identity identity
@@ -405,15 +414,6 @@
                                    (stack/push :page.id/markdown {:reset? true
                                                                   :state  {:id :cvm.run-cvx.sandbox}
                                                                   :title  "Sandbox"}))}]}]]
-
-    ["/smart-contracts"
-     {:name        :route-name/cvm.smart-contracts
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :cvm.smart-contracts}
-                                              :title  "Smart contracts"}))}]}]
   
     ]
    
