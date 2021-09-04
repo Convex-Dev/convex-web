@@ -254,6 +254,9 @@
                     {:text       "Execution phases"
                      :route-name :route-name/cvm.execution-phases
                      :href       (rfe/href :route-name/cvm.execution-phases)}
+                    {:text       "Macros"
+                     :route-name :route-name/cvm.macros
+                     :href       (rfe/href :route-name/cvm.macros)}
                     ]}
       
       ;; Documentation

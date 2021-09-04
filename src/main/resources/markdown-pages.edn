@@ -291,6 +291,12 @@
   :smart-toc? true
   :toc?       true}
 
+ :cvm.macros
+ {:contents   [{:name "Macros"
+                :path "markdown/dev_doc/cvm/macros.md"}]
+  :smart-toc? true
+  :toc?       true}
+
  :cvm.run-cvx
  {:contents   [{:name "Running Convex Lisp"
                 :path "markdown/dev_doc/cvm/running-convex-lisp.md"}]

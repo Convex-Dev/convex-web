@@ -398,6 +398,15 @@
                                               :state  {:id :cvm.loops}
                                               :title  "Loops"}))}]}]
 
+    ["/macros"
+     {:name        :route-name/cvm.macros
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.macros}
+                                              :title  "Macros"}))}]}]
+
     ["/running-convex-lisp"
 
      [""
