@@ -95,6 +95,9 @@ The `eval` function takes care of expansion and compilation if required:
 ;; -> 4
 ```
 
+**Attention.** Evaluating any arbitrary code is dangerous for the same reasons as outlined in the section about [functions](/cvm/functions).
+In general, `eval` is only used in a limited set of circumstances by advanced users. It is not a common feature. 
+
 
 ## Learn more
 
