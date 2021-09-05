@@ -1,4 +1,4 @@
-Very often, some task needs to be repeated. Programming languages typically offer several ways of repeating a piece of code as long required.
+Very often, some task needs to be repeated. Programming languages typically offer several ways of repeating a piece of code as long as required.
 
 
 ## Recursion
@@ -21,7 +21,7 @@ The most basic but versatile form of repetition is [recursion](https://en.wikipe
 Starting from `5` and an empty [vector](/cvm/data-types/vector), previous example uses `loop` and `recur` to create an vector of numbers
 from `5` to `1`.
 
-First, local bindings are created exacly as described in [local definitions](/cvm/definitions?section=Local%20definitions). Initially, symbol
+First, local bindings are created exactly as described in [local definitions](/cvm/definitions?section=Local%20definitions). Initially, symbol
 `i` points to `5` while symbol `v` points to an empty vector. `if` at some point `i` becomes lesser than `1`, then `v` is returned and looping
 stops. Otherwise, `recur` is used to updates bindings with new values and start again.
 
@@ -82,7 +82,7 @@ Similarly, a defined [function](/cvm/functions) can apply itself:
 ;; -> [5 4 3 2 1]
 ```
 
-Previous example has a major drawback. At some point, it might provoke a stack overflow. In simpler terms, functions applying functions are like nested russian dolls.
+The previous example has a major drawback. At some point, it might provoke a stack overflow. In simpler terms, functions applying functions are like nested Russian dolls.
 At some point, we run out of dolls to nest. Fortunately, akin to `loop`, functions create a recursion point relative to their parameters. Previously example can
 be rewritten into this much more efficient version which uses `recur`:
 
@@ -134,12 +134,12 @@ Any examples in this section can be written in terms of `loop` and `recur`. Howe
 
 ## Reduce
 
-Looping is often about producing a result by traversing items in a collection. While `loop` can be used for such case, `reduce` is provided as a convenient
+Looping is often about producing a result by traversing items in a collection. While `loop` can be used for such cases, `reduce` is provided as a convenient
 and versatile alternative. It requires 3 elements:
 
 - A collection, such as a [vector](/cvm/data-types/vector) or [map](/cvm/data-types/map)
 - An initial result
-- A function which takes the initial result, the first item in the collection, and produces an intermediary result ; then the process is repeated with all remaining items
+- A function that takes the initial result, the first item in the collection, and produces an intermediary result; then the process is repeated with all remaining items
 
 ```clojure
 (reduce +
@@ -157,7 +157,7 @@ and versatile alternative. It requires 3 elements:
 ;;   (+ 10 5)  ; 15
 ```
 
-This variant sums only number greater than or equal to `0`, leaving the intermediary result intact otherwise:
+This variant sums only numbers greater than or equal to `0`, leaving the intermediary result intact otherwise:
 
 ```clojure
 (reduce (fn [result item]
@@ -171,7 +171,7 @@ This variant sums only number greater than or equal to `0`, leaving the intermed
 ;; -> 6
 ```
 
-Sometimes, not all items in a collection need to be processed. At any time, `reduced` can be used to return a final result. Remaining items will never be processed.
+Sometimes, not all items in a collection need to be processed. At any time, `reduced` can be used to return a final result. The remaining items will never be processed.
 This variant stops summing numbers when it encounters `:stop`:
 
 ```clojure

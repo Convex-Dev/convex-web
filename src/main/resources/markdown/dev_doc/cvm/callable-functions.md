@@ -1,19 +1,19 @@
 [Functions](/cvm/functions) have been encountered many times before and *applying a function* meant executing it by providing optional
 parameters. Applying a function is always executed in the account which signed the transaction. This section introduces the concept
-of a **callable function**, a crucial notion for understanding smart contracts.
+of a **callable function**, a crucial concept for understanding smart contracts.
 
-For terminology, **caller** is the account calling a callable function whereas **callee** is the account hosting it in its environment.
+For terminology, **caller** is the account calling a callable function whereas **callee** is the account hosting that callable function in its own environment.
 
 Executing a callable function temporarily switches the context from the caller to the callee which is typically an [actor](/cvm/actor).
-It is as if for the duration of the call, the callee was doing its own transaction within your transaction. While abstract at first,
+It is as if for the duration of the call, the callee was doing its own transaction within your transaction. While abstract at first sight,
 this provides the very basic building blocks of smart contracts since a callee, acting under its own account, can define and modify
 values in its own environment.
 
 As such, an account can host some data needed for the logic of a smart contract, while proposing callable functions which alter this
-data under specified conditions. There is a direct parallel between this principle and typical contracts where humans would manage
+data under specified conditions. There is a direct parallel between this principle and typical contracts. Those where humans would manage
 some assets and enforce rules around those assets. However, unlike humans, contracts on the Convex network are executed exactly
-as described, without ambiguity, without trusting anyone to carry on operations in your own best interest, and in a tamperproof
-manneer.
+as described, without ambiguity, without trusting anyone to carry on operations in your own best interest, and in a secure and tamper-proof
+manner.
 
 
 ## Addresses and relationship
@@ -32,7 +32,7 @@ Address of the account calling a contract (`nil` if no contract is being called)
 *caller*
 ```
 
-Address of the orginal account who signed the whole transaction:
+Address of the original account who signed the whole transaction:
 
 ```clojure
 *origin*
@@ -41,7 +41,7 @@ Address of the orginal account who signed the whole transaction:
 
 ## Defining and using callable functions
 
-Creating new accounts which host callable functions is explained in details in the section about [actors](/cvm/actors). For
+Creating new accounts which host callable functions is explained in detail in the section about [actors](/cvm/actors). For
 the time being, let us suppose the following fictitious accounts:
 
 ```clojure
@@ -144,6 +144,6 @@ Let us suppose this chain of calls:
 A -> B -> C
 ```
 
-Let us also suppose that `C` checks by `*origin*` and allows `A` only. In that configuration, `B` can successfully call `C`, because `*origin*` is `A`. This behavior
+Let us also suppose that `C` checks by `*origin*` and allows `A` only. In that configuration, `B` can successfully call `C`, because `*origin*` is `A`. This behaviour
 is sometimes desirable but most likely, the intention when writing `C` was to strictly restrict access to `A` only. If `B` happens to be a rogue contract (by mistake or by
 carelessness), it could have dire consequences.

@@ -22,7 +22,7 @@ Once defined, a symbol can be used wherever relevant. During execution, any symb
 {:name "John Doe", :age x}  ;; -> {:name "John Doe", :age 42}
 ```
 
-A defined symbol will be accessible across transactions as long as it is not undefined. When a symbol cannot be resolved in the environment, meaning it undefined,
+A defined symbol will be accessible across transactions as long as it is not undefined. When a symbol cannot be resolved in the environment, meaning it is undefined,
 an error occurs and the transaction is aborted.
 
 A defined symbol can always be redefined:
@@ -94,8 +94,7 @@ Undefining a symbol means removing its definition from the environment of the ex
 
 ## Attaching metadata
 
-An arbitrary [map](/cvm/data-types/map) can be attached to a definition as metadata. The purpose of metadata is to provide extra information about a definition, one
-common example being documentation. It is done by providing a map prefixed with `^` before the defined value:
+An arbitrary [map](/cvm/data-types/map) can be attached to a definition as metadata. The purpose of metadata is to provide extra information about a definition. For example, we can use metadata for documenting our code. This is done by providing a map prefixed with `^` before the defined value:
 
 ```clojure
 (def mood
@@ -111,7 +110,7 @@ Metadata data for a definition can be retrieved by providing a quoted symbol. Qu
 ;; -> {:doc {:description "Keyword defining my current mood."}}
 ```
 
-Redefining a symbol do not erase its existing metadata unless a new map is provided explicitly:
+Redefining a symbol does not erase its existing metadata unless a new map is provided explicitly:
 
 ```clojure
 (def mood
@@ -140,7 +139,7 @@ mood
 ## Local definitions
 
 Often, it is useful storing values only temporarily. Local definitions using `let` are not persisted in the database, they are only accessible within its scope.
-In a vector, values are provided for symbols which can be used in that local scope. Those are called **bindings**.
+In a vector, values are provided for symbols, which can be used in that local scope. Those are called **bindings**.
 
 ```clojure
 (let [x 10]
