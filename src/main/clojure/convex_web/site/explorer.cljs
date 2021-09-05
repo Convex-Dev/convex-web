@@ -744,7 +744,7 @@
       [gui/Tooltip
        "View all Accounts"
        [gui/DefaultButton
-        {:on-click #(stack/push :page.id/accounts-range-explorer {:modal? true})}
+        {:on-click #(stack/push :page.id/testnet.accounts {:modal? true})}
         [:span.text-xs.uppercase "View All"]]]]]))
 
 (s/def :accounts-page.state/pending (s/and (s/keys :req [:ajax/status])
