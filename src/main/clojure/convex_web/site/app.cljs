@@ -304,8 +304,8 @@
                      :active?    (active #{:route-name/testnet.block
                                            :route-name/testnet.blocks})}
                     {:text       "Request coins"
-                     :route-name :route-name/faucet
-                     :href       (rfe/href :route-name/faucet)}
+                     :route-name :route-name/testnet.request-coins
+                     :href       (rfe/href :route-name/testnet.request-coins)}
                     {:text       "Status"
                      :route-name :route-name/testnet.status
                      :href       (rfe/href :route-name/testnet.status)}
@@ -313,11 +313,11 @@
                      :route-name :route-name/testnet.transactions
                      :href       (rfe/href :route-name/testnet.transactions)}
                     {:text       "Transfer"
-                     :route-name :route-name/transfer
-                     :href       (rfe/href :route-name/transfer)}
+                     :route-name :route-name/testnet.transfer
+                     :href       (rfe/href :route-name/testnet.transfer)}
                     {:text       "Wallet"
-                     :route-name :route-name/wallet
-                     :href       (rfe/href :route-name/wallet)}
+                     :route-name :route-name/testnet.wallet
+                     :href       (rfe/href :route-name/testnet.wallet)}
                     ]}
 
       

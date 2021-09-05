@@ -42,13 +42,13 @@
    {:text "TOOLS"
     :items
     [{:text "Wallet"
-      :href (rfe/href :route-name/wallet)}
+      :href (rfe/href :route-name/testnet.wallet)}
 
      {:text "Faucet"
-      :href (rfe/href :route-name/faucet)}
+      :href (rfe/href :route-name/testnet.faucet)}
 
      {:text "Transfer"
-      :href (rfe/href :route-name/transfer)}]}
+      :href (rfe/href :route-name/testnet.transfer)}]}
 
    :explorer
    {:text "EXPLORER"

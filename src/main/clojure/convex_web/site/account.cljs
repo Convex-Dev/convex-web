@@ -443,7 +443,7 @@
                                           :transfer-page/config]))
 
 (def transfer-page
-  #:page {:id :page.id/transfer
+  #:page {:id :page.id/testnet.transfer
           :title "Transfer"
           :description "Use this tool to make transfers from your Accounts to any other Accounts."
           :component #'TransferPage
@@ -646,7 +646,7 @@
          [:div]))]))
 
 (def faucet-page
-  #:page {:id :page.id/faucet
+  #:page {:id :page.id/testnet.request-coins
           :title "Faucet"
           :description "The Faucet lets you request free Convex coins for your Accounts. You can make a request once every 5 minutes."
           :component #'FaucetPage})

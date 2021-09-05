@@ -529,6 +529,15 @@
                               (stack/push :page.id/testnet.peers
                                           {:reset? true}))}]}]
 
+    ["/request-coins"
+     {:name        :route-name/testnet.request-coins
+      :controllers [{:identity identity
+                     :start    (fn [_]
+                                 (stack/push :page.id/testnet.request-coins
+                                             {:reset? true
+                                              :state  {:convex-web/faucet {:convex-web.faucet/amount 100000000}
+                                                       :faucet-page/config {:faucet-page.config/my-accounts? true}}}))}]}]
+
     ["/status"
      {:name        :route-name/testnet.status
       :controllers [{:identity identity
@@ -543,6 +552,19 @@
                                              (merge {:reset? true}
                                                     (when-let [range (query-range match)]
                                                       {:state range}))))}]}]
+   ["/transfer"
+    {:name        :route-name/testnet.transfer
+     :controllers [{:identity identity
+                    :start    (fn [_]
+                                (stack/push :page.id/testnet.transfer
+                                            {:reset? true}))}]}]
+
+   ["/wallet"
+    {:name        :route-name/testnet.wallet
+     :controllers [{:identity identity
+                    :start    (fn [_]
+                                (stack/push :page.id/testnet.wallet
+                                            {:reset? true}))}]}]
     ]
 
 
@@ -630,39 +652,6 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/my-account {:reset? true}))}]}]
-   
-   
-   
-   ;; Wallet
-   ;; ==============
-   ["wallet"
-    {:name :route-name/wallet
-     :controllers
-     [{:identity identity
-       :start (fn [_]
-                (stack/push :page.id/wallet {:reset? true}))}]}]
-   
-   
-   ;; Faucet
-   ;; ==============
-   ["faucet"
-    {:name :route-name/faucet
-     :controllers
-     [{:identity identity
-       :start (fn [_]
-                (stack/push :page.id/faucet {:reset? true
-                                             :state {:convex-web/faucet {:convex-web.faucet/amount 100000000}
-                                                     :faucet-page/config {:faucet-page.config/my-accounts? true}}}))}]}]
-   
-   
-   ;; Transfer
-   ;; ==============
-   ["transfer"
-    {:name :route-name/transfer
-     :controllers
-     [{:identity identity
-       :start (fn [_]
-                (stack/push :page.id/transfer {:reset? true}))}]}]
    
    
    ;; About
