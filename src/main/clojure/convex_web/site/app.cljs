@@ -275,7 +275,27 @@
       {:text       "REST API"
        :top-level? true
        :route-name :route-name/rest-api
-       :href       (rfe/href :route-name/rest-api)}
+       :href       (rfe/href :route-name/rest-api)
+       :children   [{:text       "Create an account"
+                     :route-name :route-name/rest-api.create-account
+                     :href       (rfe/href :route-name/rest-api.create-account)}
+                    {:text       "Account details"
+                     :route-name :route-name/rest-api.account-details
+                     :href       (rfe/href :route-name/rest-api.account-details)}
+                    {:text       "Request coins"
+                     :route-name :route-name/rest-api.request-coins
+                     :href       (rfe/href :route-name/rest-api.request-coins)}
+                    {:text       "Query"
+                     :route-name :route-name/rest-api.query
+                     :href       (rfe/href :route-name/rest-api.query)}
+                    {:text       "Prepare transaction"
+                     :route-name :route-name/rest-api.prepare-transaction
+                     :href       (rfe/href :route-name/rest-api.prepare-transaction)}
+                    {:text       "Submit transaction"
+                     :route-name :route-name/rest-api.submit-transaction
+                     :href       (rfe/href :route-name/rest-api.submit-transaction)}
+                    ]}
+
       
       
       ;; Sandbox
@@ -292,8 +312,7 @@
        :top-level? true
        :route-name :route-name/testnet
        :href       (rfe/href :route-name/testnet)
-       :children   [
-                    {:text       "Accounts"
+       :children   [{:text       "Accounts"
                      :route-name :route-name/testnet.accounts
                      :href       (rfe/href :route-name/testnet.accounts)
                      :active?    (active #{:route-name/testnet.account
@@ -317,8 +336,7 @@
                      :href       (rfe/href :route-name/testnet.transfer)}
                     {:text       "Wallet"
                      :route-name :route-name/testnet.wallet
-                     :href       (rfe/href :route-name/testnet.wallet)}
-                    ]}
+                     :href       (rfe/href :route-name/testnet.wallet)}]}
 
       
       ;; About

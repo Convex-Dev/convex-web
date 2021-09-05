@@ -318,6 +318,42 @@
   :smart-toc? true
   :toc?       true}
 
+ :rest-api.account-details
+ {:contents   [{:name "Account details"
+                :path "markdown/dev_doc/rest-api/account-details.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :rest-api.create-account
+ {:contents   [{:name "Create an account"
+                :path "markdown/dev_doc/rest-api/create-an-account.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :rest-api.prepare-transaction
+ {:contents   [{:name "Prepare transaction"
+                :path "markdown/dev_doc/rest-api/prepare-transaction.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :rest-api.query
+ {:contents   [{:name "Query"
+                :path "markdown/dev_doc/rest-api/query.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :rest-api.request-coins
+ {:contents   [{:name "Request coins"
+                :path "markdown/dev_doc/rest-api/request-coins.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :rest-api.submit-transaction
+ {:contents   [{:name "Submit transaction"
+                :path "markdown/dev_doc/rest-api/submit-transaction.md"}]
+  :smart-toc? true
+  :toc?       false}
+
  :testnet
  {:contents   [{:name "Testnet"
                 :path "markdown/dev_doc/testnet.md"}]
