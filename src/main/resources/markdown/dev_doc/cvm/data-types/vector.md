@@ -79,7 +79,7 @@ By casting any other collection or pseudo-collection:
 
 ## Accessing items
 
-By retrieving nthiest one (count starts at 0):
+By retrieving the nthiest one (count starts at 0):
 
 ```clojure
 (nth [:a :b :c]
@@ -91,7 +91,7 @@ By retrieving nthiest one (count starts at 0):
 (nth [:a :b :c]
      42)
 
-;; Error! Rquested position beyond the limits of the vector.
+;; Error! Requested position beyond the limits of the vector.
 
 
 ([:a :b] 1)
@@ -99,7 +99,7 @@ By retrieving nthiest one (count starts at 0):
 ;; -> :a
 ;;
 ;; Vectors can also behave like functions, which has the
-;; same effect as `nth`.
+;; the same effect as `nth`.
 ```
 
 Similarly to what is described in [lists](/cvm/data-types/list), vectors also work with the `get` function.
@@ -126,7 +126,7 @@ The **key** of an item is also its position, explaining why `nth` and `get` are 
 
 ;; -> nil
 ;;
-;; Unlike `nth`, does not produce an error when accessed position
+;; Unlike `nth`, it does not produce an error when the accessed position
 ;; is beyond the limits of the vector.
 ```
 

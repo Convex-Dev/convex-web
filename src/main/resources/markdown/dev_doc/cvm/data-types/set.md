@@ -66,7 +66,7 @@ By removing an item from an existing set:
 
 ;; -> #{:a :b}
 ;;
-;; Removing an item which was not present in the set
+;; Removing an item that was not present in the set
 ;; does nothing.
 ```
 
@@ -116,7 +116,7 @@ By using the set as a function:
 
 Common set functions are available.
 
-Creates a set of all items in first set but not in others:
+Creates a set of all items in the first set but not in others:
 
 ```clojure
 (difference #{1 2 3 4}
@@ -158,7 +158,7 @@ Creates a set of all items found in all given sets:
 ;; -> #{2}
 ```
 
-Check whether a set is a subset of another one (all items in first set are present in second one):
+Check whether a set is a subset of another one (all items in the first set are present in the second one):
 
 ```clojure
 (subset? #{1 3}
@@ -183,7 +183,7 @@ Check whether a set is a subset of another one (all items in first set are prese
 (empty? #{:a :b})     ;; -> false, there are 2 items
 (empty #{:a :b})      ;; -> (), an empty vector
 
-;; Order is unpredictable, but stable
+;; Order is unpredictable, but it is stable
 
 (first #{:a :b :c})    ;; -> :c
 (second #{:a :b :c})  ;; -> :a

@@ -1,7 +1,7 @@
-Sometimes, data is missing or might not be available yet. Sometimes, a result cannot be produced. Overall, not every computation ought to necessarily return a concrete result.
+Sometimes, data is missing or might not be available yet. Sometimes, a result cannot be produced. Overall, not every computation should necessarily return a concrete result.
 
-For such case, `nil` is used and represents the absence of value. While abstract, it is heavily used in practice and going through
-the developper guides will make a clear case for it. Comparable ideas exist in most programming languages, often subject of debate. In Convex Lisp, `nil` is tightly integrated with
+For such a case, `nil` is used and represents the absence of value. While it appears abstract, it is heavily used in practice and going through
+the developer guides will make a clear case for it. Comparable ideas exist in most programming languages, often subject of debate. In Convex Lisp, `nil` is tightly integrated with
 the language and using it explicitly is commonly expected.
 
 ```clojure

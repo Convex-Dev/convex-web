@@ -10,7 +10,7 @@ There are only 2 possible values for a boolean: `true` or `false`. While very ba
 
 Any value can be cast to a boolean.
 
-`false` and `nil` are consided to be "falsey":
+`false` and `nil` are considered to be "falsey":
 
 ```clojure
 (boolean false)  ;; -> false
@@ -43,7 +43,7 @@ All values can be negated to the opposite boolean value:
 
 By convention, although this is not mandatory, names for booleans or functions that return a boolean end with `?`. Such functions are commonly called **predicates**.
 
-The following lists are an overview, actual examples are scattered throughout the developer guides.
+The following list shows an overview. The actual examples are scattered throughout the developer guides.
 
 Testing the type of a value:
 

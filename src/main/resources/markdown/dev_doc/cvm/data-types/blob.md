@@ -1,4 +1,4 @@
-A blob is a **binary large object** , large meaning size is arbitrary, anywhere in between small ang big.
+A blob is a **binary large object** , large meaning size is arbitrary, anywhere in between small and big.
 It is a sequence of bytes written in hexadecimal notation and prefixed with `0x`. Each byte requires
 2 digits:
 
@@ -12,7 +12,7 @@ It is a sequence of bytes written in hexadecimal notation and prefixed with `0x`
 (blob? 0x42)  ;; -> true
 ```
 
-Such a sequence of bytes can represent many things and is opaque without any further context.
+Such a sequence of bytes can represent many things. It is not very clear what it represents without providing any further context.
 
 Alternatively, it might be sometimes useful creating blobs from **hexstrings** (a [string](/cvm/data-types/text) where bytes are
 also encoded in hexademical notation):
@@ -23,15 +23,15 @@ also encoded in hexademical notation):
 (blob "ff23789875")
 ```
 
-Besides representing arbiratry binary data, such as a file, blobs are typically used to represent cryptographic hashes and keys.
+Besides representing arbitrary binary data such as a file. Blobs are typically used to represent cryptographic hashes and keys.
 
 
 ## Not quite a collection
 
-Although blobs are collections of bytes in theory, they are not collections in the sense envisioned in further sections and data types such as [vectors](/cvm/data-types/vector) or
+Although blobs are collections of bytes, in theory, they are not collections in the sense envisioned in further sections and data types such as [vectors](/cvm/data-types/vector) or
 [maps](/cvm/data-types/map).
 
-However, they are countable and it is possible to extract single bytes as longs:
+However, they are countable and it is possible to extract single bytes as longs data-type:
 
 ```clojure
 (count 0x112233)  ;; -> 3

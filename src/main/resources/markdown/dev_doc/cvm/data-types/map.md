@@ -1,4 +1,4 @@
-Maps associates a finite set of keys with a value for each. Written between `{ }`, they are associative collections formed by key-value pairs:
+Maps associate a finite set of keys with a value for each. Written between `{ }`, they are associative collections formed by key-value pairs:
 
 ```clojure
 {}
@@ -9,7 +9,7 @@ Maps associates a finite set of keys with a value for each. Written between `{ }
 (map? {:a "b"})  ;; -> true
 ```
 
-They are used abundantly due to their flexibility. When writing Convex Lisp, sooner than later appears the need to map a value to another value.
+They are used abundantly due to their flexibility. When writing Convex Lisp, sooner than later it appears the need to map a value to another value.
 Keys and values can be of any type, collections as well. However, as seen in the following examples, it is very common to use [keywords](/cvm/data-types/keyword)
 as keys.
 
@@ -102,13 +102,13 @@ By removing a key-value pair from an existing map:
 
 ;; -> {:a "a", :b "b"}
 ;;
-;; Removing a key which is not present in a map does nothing.
+;; Removing a key, which is not present in a map does nothing.
 ```
 
 
 # Accessing values
 
-By retrieving nthiest one (count starts at 0). Remember that order in maps is unpredictable. However it is stable.
+By retrieving the nthiest one (count starts at 0). Remember that order in maps is unpredictable. However, it is stable.
 Hence, `nth` can be used in [loops](/cvm/loops):
 
 ```clojure
@@ -162,7 +162,7 @@ By requesting a key:
 
 ## Map functions
 
-Following functions only works with maps:
+The following functions only works with maps:
 
 ```clojure
 (keys m)        ;; -> [:blockchain? :name :status]
@@ -177,7 +177,7 @@ Following functions only works with maps:
 ## Common collection functions
 
 ```clojure
-;; Defines a map under `m`, so that it is easier following examples.
+;; Defines a map under `m`, so that it is easier to follow the below examples.
 ;;
 (def m
      {:name        "Convex"
@@ -193,7 +193,7 @@ Following functions only works with maps:
 (empty? m)      ;; -> false, there are 2 items
 (empty m)       ;; -> {}, an empty map
 
-;; Order is unpredictable, but stable
+;; Order is unpredictable, but it is stable
 ;;
 (first m)        ;; -> [:blockchain? true]
 (second m)      ;; -> [:name "Convex"]

@@ -4,7 +4,7 @@ A single character is prefixed by `\`:
 \C \o \n \v \e \x
 ```
 
-Typically, single characters are scarcely used on chain. Most often, strings of characters are used, encompassed between `" "`, commonly known as "text":
+Typically, single characters are scarcely used on-chain. Most often, strings of characters are used, encompassed between `" "`, commonly known as "text":
 
 ```clojure
 "Convex"
@@ -15,7 +15,7 @@ Typically, single characters are scarcely used on chain. Most often, strings of 
 
 ## Casts
 
-Internally, chars are encoded as longs:
+Internally, chars are encoded as longs data-type:
 
 ```clojure
 (long \c)  ;; -> 99
@@ -42,7 +42,7 @@ Any value can be cast into a string representation and several values can be con
 
 ## Not quite a collection
 
-Although strings are collections of chars in theory, they are not collections in the sense envisioned in further sections and data types such as [vectors](/cvm/data-types/vector) or
+Although strings are collections of chars, in theory, they are not collections in the sense envisioned in further sections and data types such as [vectors](/cvm/data-types/vector) or
 [maps](/cvm/data-types/map).
 
 However, they are countable and it is possible to extract single chars:
