@@ -416,6 +416,13 @@
                                   (stack/push :page.id/markdown {:reset? true
                                                                  :state  {:id :cvm.run-cvx}
                                                                  :title  "Running Convex Lisp"}))}]}]
+     ["/clients"
+      {:name        :route-name/cvm.run-cvx.clients
+       :controllers  [{:identity identity
+                       :start    (fn [_match]
+                                   (stack/push :page.id/markdown {:reset? true
+                                                                  :state  {:id :cvm.run-cvx.clients}
+                                                                  :title  "Clients"}))}]}]
 
      ["/runner"
       {:name        :route-name/cvm.run-cvx.runner
@@ -432,8 +439,34 @@
                                    (stack/push :page.id/markdown {:reset? true
                                                                   :state  {:id :cvm.run-cvx.sandbox}
                                                                   :title  "Sandbox"}))}]}]]
-  
     ]
+
+
+
+   ["reference"
+     {:name        :route-name/reference
+      :controllers [{:identity identity
+                     :start    (fn [match]
+                                  (let [library (get-in match [:parameters :query :library] "convex.core")
+                                        symbol (get-in match [:parameters :query :symbol])]
+                                    (stack/push :page.id/reference 
+                                                (merge {:reset? true}
+                                                       (when symbol
+                                                         {:state {:selected-library library
+                                                                  :symbol symbol}})))))}]}]
+
+
+   ["rest-api"
+     {:name        :route-name/rest-api
+      :controllers [{:identity identity
+                     :start    (fn [match]
+                                 (stack/push :page.id/markdown {:reset? true
+                                                                :state  (merge {:id :rest-api}
+                                                                               (when-let [section (scroll-to match)]
+                                                                                 {:scroll-to section}))
+                                                                :title  "REST API"}))}]}]
+
+
    
    
    ;; Concepts
@@ -634,81 +667,6 @@
                  (stack/push :page.id/transactions-range-explorer (merge {:reset? true}
                                                                     (when-let [range (query-range match)]
                                                                       {:state range}))))}]}]]
-   
-   
-   ;; Documentation
-   ;; ==============
-   ["documentation"
-    [""
-     {:name :route-name/documentation
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/markdown {:title "Documentation"
-                                                :state (merge {:id :documentation}
-                                                         (when-let [section (scroll-to match)]
-                                                           {:scroll-to section}))
-                                                :reset? true}))}]}]
-    
-    
-    ["/reference"
-     {:name :route-name/documentation-reference
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (let [library (get-in match [:parameters :query :library] "convex.core")
-                       symbol (get-in match [:parameters :query :symbol])]
-                   (stack/push :page.id/documentation-reference 
-                     (merge {:reset? true}
-                       (when symbol
-                         {:state 
-                          {:selected-library library
-                           :symbol symbol}})))))}]}]
-    
-    ["/getting-started"
-     {:name :route-name/documentation-getting-started
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/markdown {:title "Getting Started"
-                                                :state (merge {:id :getting-started}
-                                                         (when-let [section (scroll-to match)]
-                                                           {:scroll-to section}))
-                                                :reset? true}))}]}]
-    
-    ["/tutorial"
-     {:name :route-name/documentation-tutorial
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/markdown {:title "Lisp Guide"
-                                                :state (merge {:id :tutorials}
-                                                         (when-let [section (scroll-to match)]
-                                                           {:scroll-to section}))
-                                                :reset? true}))}]}]
-    
-    ["/advanced-topics"
-     {:name :route-name/advanced-topics
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/markdown {:title "Advanced Topics"
-                                                :state (merge {:id :advanced-topics}
-                                                         (when-let [section (scroll-to match)]
-                                                           {:scroll-to section}))
-                                                :reset? true}))}]}]
-    
-    ["/client-api"
-     {:name :route-name/client-api
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/markdown {:title "Client API"
-                                                :state (merge {:id :client-api}
-                                                         (when-let [section (scroll-to match)]
-                                                           {:scroll-to section}))
-                                                :reset? true}))}]}]]
-   
    
    ;; About
    ;; ==============

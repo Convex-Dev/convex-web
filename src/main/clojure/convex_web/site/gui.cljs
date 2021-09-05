@@ -554,11 +554,12 @@
         [SymbolType type])
       
       [:a.ml-2
-       {:href (rfe/href :route-name/documentation-reference {} (merge {:symbol symbol}
-                                                                 ;; Router defaults to convex.core
-                                                                 ;; if there isn't a library parameter.
-                                                                 (when library
-                                                                   {:library library})))
+       {:href (rfe/href :route-name/reference {}
+                                              (merge {:symbol symbol}
+                                                     ;; Router defaults to convex.core
+                                                     ;; if there isn't a library parameter.
+                                                     (when library
+                                                       {:library library})))
         :target "_blank"}
        [IconExternalLink {:class "h-4 w-4 text-gray-500 hover:text-black"}]]]
      

@@ -176,6 +176,9 @@
                      :children    [{:text       "Sandbox"
                                     :route-name :route-name/cvm.run-cvx.sandbox
                                     :href       (rfe/href :route-name/cvm.run-cvx.sandbox)}
+                                   {:text       "Clients"
+                                    :route-name :route-name/cvm.run-cvx.clients
+                                    :href       (rfe/href :route-name/cvm.run-cvx.clients)}
                                    {:text       "Runner"
                                     :route-name :route-name/cvm.run-cvx.runner
                                     :href       (rfe/href :route-name/cvm.run-cvx.runner)}]}
@@ -258,33 +261,21 @@
                      :route-name :route-name/cvm.macros
                      :href       (rfe/href :route-name/cvm.macros)}
                     ]}
-      
-      ;; Documentation
-      ;; ==============
-      {:text "Documentation"
+
+      ;; Reference
+      ;; =============
+      {:text       "Reference"
        :top-level? true
-       :route-name :route-name/documentation
-       :href (rfe/href :route-name/documentation)
-       :children
-       [{:text "Getting Started"
-         :route-name :route-name/documentation-getting-started
-         :href (rfe/href :route-name/documentation-getting-started)}
-        
-        {:text "Lisp Guide"
-         :route-name :route-name/documentation-tutorial
-         :href (rfe/href :route-name/documentation-tutorial)}
-        
-        {:text "Advanced Topics"
-         :route-name :route-name/advanced-topics
-         :href (rfe/href :route-name/advanced-topics)}
-        
-        {:text "Reference"
-         :route-name :route-name/documentation-reference
-         :href (rfe/href :route-name/documentation-reference)}
-        
-        {:text "Client API"
-         :route-name :route-name/client-api
-         :href (rfe/href :route-name/client-api)}]}
+       :route-name :route-name/reference
+       :href       (rfe/href :route-name/reference)}
+
+  
+      ;; REST API
+      ;; ========
+      {:text       "REST API"
+       :top-level? true
+       :route-name :route-name/rest-api
+       :href       (rfe/href :route-name/rest-api)}
       
       
       ;; Sandbox

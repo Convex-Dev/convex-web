@@ -117,13 +117,6 @@
   [{:name "White Paper"
     :path "markdown/articles/convex-whitepaper.md"}]}
 
- :client-api
- {:toc? true
-  :smart-toc? true
-  :contents
-  [{:name "Client API"
-    :path "markdown/client_api.md"}]}
-
  :glossary
  {:toc? true
   :smart-toc? true
@@ -303,6 +296,12 @@
   :smart-toc? true
   :toc?       false}
 
+ :cvm.run-cvx.clients
+ {:contents   [{:name "Clients"
+                :path "markdown/dev_doc/cvm/running-convex-lisp/clients.md"}]
+  :smart-toc? true
+  :toc?       false}
+
  :cvm.run-cvx.runner
  {:contents   [{:name "Runner"
                 :path "markdown/dev_doc/cvm/running-convex-lisp/runner.md"}]
@@ -312,6 +311,15 @@
  :cvm.run-cvx.sandbox
  {:contents   [{:name "Sandbox"
                 :path "markdown/dev_doc/cvm/running-convex-lisp/sandbox.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+
+
+
+ :rest-api
+ {:contents   [{:name "REST API"
+                :path "markdown/dev_doc/rest-api.md"}]
   :smart-toc? true
   :toc?       true}
 

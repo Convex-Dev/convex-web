@@ -33,7 +33,7 @@
       :href (rfe/href :route-name/advanced-topics)}
 
      {:text "Reference"
-      :href (rfe/href :route-name/documentation-reference)}
+      :href (rfe/href :route-name/reference)}
 
      {:text "Client API"
       :href (rfe/href :route-name/client-api)}]}

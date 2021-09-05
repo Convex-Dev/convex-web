@@ -15,7 +15,7 @@ The most basic but versatile form of repetition is [recursion](https://en.wikipe
            (conj v
                  i))))
 
-;; [5 4 3 2 1]
+;; -> [5 4 3 2 1]
 ```
 
 Starting from `5` and an empty [vector](/cvm/data-types/vector), previous example uses `loop` and `recur` to create an vector of numbers
