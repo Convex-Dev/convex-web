@@ -3,8 +3,8 @@ At this point, accounts have already been mentioned several times. This section 
 An account:
 
 - Is bound to an [address](/cvm/data-types/address)
-- Is attached to a public key (which can be replaced)
-- Can execute transactions, any arbitrary code (signed by the private key), provided it has enough funds to cover executing fees
+- Can be related to a public key which can be removed or replaced
+- Can execute transactions if has a public key, any arbitrary code (signed by the private key), provided it has enough funds to cover executing fees
 - Can persist values in the [decentralized database via its environment](/cvm/definitions)
 - Can use [callable functions](/cvm/callable-functions) (special functions defined in other accounts)
 
