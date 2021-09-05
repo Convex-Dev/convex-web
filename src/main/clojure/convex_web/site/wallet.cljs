@@ -51,5 +51,5 @@
 (def wallet-page
   #:page {:id :page.id/testnet.wallet
           :title "Wallet"
-          :description "This is your Convex Wallet, managed for your convenience on the test network at convex.world."
+          :description "Your accounts on the current test network and their associated keys are managed for you in this wallet."
           :component #'WalletPage})

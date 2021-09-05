@@ -445,7 +445,7 @@
 (def transfer-page
   #:page {:id :page.id/testnet.transfer
           :title "Transfer"
-          :description "Use this tool to make transfers from your Accounts to any other Accounts."
+          :description "Use this tool to make Convex Coins transfers from one of your accounts to any other account on the current test network."
           :component #'TransferPage
           :state-spec :transfer-page/state})
 
@@ -647,6 +647,6 @@
 
 (def faucet-page
   #:page {:id :page.id/testnet.request-coins
-          :title "Faucet"
-          :description "The Faucet lets you request free Convex coins for your Accounts. You can make a request once every 5 minutes."
+          :title "Requests coins"
+          :description "Here you can request free Convex coins for your accounts on the current test network. You can make a request once every 5 minutes."
           :component #'FaucetPage})
