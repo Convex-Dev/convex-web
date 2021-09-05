@@ -140,7 +140,7 @@
       :href (rfe/href :route-name/developer)}
      
      :others
-     [{:text "Welcome"
+     [{:text "Introduction"
        :top-level? true
        :route-name :route-name/developer
        :href (rfe/href :route-name/developer)}

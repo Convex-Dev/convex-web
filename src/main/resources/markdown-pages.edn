@@ -46,7 +46,7 @@
  {:toc? false
   :contents
   [{:name "Developer"
-    :path "markdown/developer.md"}]}
+    :path "markdown/dev_doc/introduction.md"}]}
  
  :explorer
  {:toc? false

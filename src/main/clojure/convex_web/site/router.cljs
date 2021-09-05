@@ -147,12 +147,12 @@
    ;; Developer
    ;; ==============
    ["developer"
-    {:name :route-name/developer
-     :controllers
-     [{:start (fn [_]
-                (stack/push :page.id/markdown {:title "Welcome"
-                                               :state {:id :developer}
-                                               :reset? true}))}]}]
+    {:name        :route-name/developer
+     :controllers [{:start (fn [_]
+                             (stack/push :page.id/markdown
+                                         {:reset? true
+                                          :state  {:id :developer}
+                                          :title  "Introduction"}))}]}]
 
    ;; CVM
    ;; ==============
