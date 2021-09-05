@@ -1,11 +1,11 @@
 The section about [booleans](/cvm/data-types/boolean) introduced 2 values: `true` and `false`. Alongside, 2 concepts: being **truthy** or being **falsey**. Those concepts
-are crucial when for executing code only when some condition appears to be true.
+are crucial for executing code only when some condition appears to be true.
 
 
 ## Control flow
 
-Several ways are described for deciding which code to execute or which result to provide. In reality, they are all based on `cond` which works with pairs of test-results.
-A **test** is an expression which must return a truthy value for its **result** to be executed and returned:
+Several ways are described for deciding which code to execute or which result to provide. In reality, they are all based on `cond` which works with pairs of test results.
+A **test** is an expression that must return a truthy value for its **result** to be executed and returned:
 
 ```clojure
 (def a
@@ -22,7 +22,7 @@ A **test** is an expression which must return a truthy value for its **result** 
 ;; -> :greater, because `a` is neither :lesser than nor :equal to `b`
 ```
 
-If a test (formatted  on the left side for clarity) returns a truthy value, then its corresponding result is selected and returned right away. Other potential results
+If a test (formatted on the left side for clarity) returns a truthy value, then its corresponding result is selected and returned right away. Other potential results
 are not even considered nor executed, as proven by this experiment:
 
 ```clojure

@@ -1,7 +1,7 @@
 In Convex Lisp, code is first and foremost data. It can be composed of all the [data types described previously](/cvm/data-types/overview). The CVM takes data and
-evaluates it in order to produce a result, which is data as well.
+evaluates it to produce a result, which is data as well.
 
-The following section will seem abstract at first. However, concepts exposed here are of great importance for understanding [actors](/cvm/actors), as well as
+The following section might seem abstract at first. However, concepts exposed here are of great importance for understanding [actors](/cvm/actors), as well as
 [macros](/cvm/macros). For instance, they are needed for writing code that can be deployed later and executed in the context of a smart contract.
 
 
@@ -106,5 +106,5 @@ Alternatively, a simple example like that can be reproduced using the `list` fun
 ;; -> (+ 1 2 4)
 ```
 
-However, it can quickly become difficult to work with, to read, and any non-trivial case will usually benefit from being
+However, it can quickly become difficult to work with (to read and understand). Any non-trivial case will usually benefit from being
 written with `quasiquote`.

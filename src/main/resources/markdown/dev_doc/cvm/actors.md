@@ -1,11 +1,11 @@
-As stated in the section about [accounts](/cvm/accounts), an actor is an account which does not have a public key. As such, actors cannot submit
+As stated in the section about [accounts](/cvm/accounts), an actor is an account that does not have a public key. As such, actors cannot submit
 transactions autonomously. Code is executed when an actor is deployed and this code determines everything this actor hosts and offers. This section
 reviews common patterns.
 
 
 ## Deploying a new actor
 
-The section about [code is data](/cvm/code-is-data) describes into detail how to write code which is not evaluated by using `quote` and `quasiquote`.
+The section about [code is data](/cvm/code-is-data) describes in detail how to write code that is not evaluated by using `quote` and `quasiquote`.
 When deploying an actor, code is provided. A new account is created by the CVM and this code is executed in the context of that new account:
 
 ```clojure
@@ -23,7 +23,7 @@ When deploying an actor, code is provided. A new account is created by the CVM a
 
 x
 
-;; Error! `x` is not defined in original account.
+;; Error! `x` is not defined in the original account.
 
 
 my-actor/x
@@ -53,7 +53,7 @@ reusable functions:
 ```
 
 **Attention.** As stated in the section about [functions](/cvm/functions), users must only apply known functions from trusted accounts since they
-run under the control of the executing account and have access to all its funds and assets. Not knowing exactly what a function does is like giving
+run under the control of the executing account and have access to all its funds and other digital assets. Not knowing exactly what a function does, it is like giving
 your house keys to a shady stranger and walking away.
 
 
@@ -62,11 +62,11 @@ your house keys to a shady stranger and walking away.
 An actor, being an account, has an environment and can [define symbols](/cvm/definitions). In other words, it can manage state persisted in the
 decentralized database. [Callable functions](/cvm/callable-functions) provide access control and describe how this state is effectively managed.
 
-In Convex, the notion of a smart contract is tighly associated with this fact. An account, typically an actor, hosts some state in its environment
+In Convex, the concept of a smart contract is tightly associated with this fact. An account, typically an actor, hosts some state in its environment
 and callables functions that other accounts may call describe how this state can be altered and under which conditions. Some smart contracts are
-well-confined within the scope of a single actor whereas other schemes might rely on several actors involved in complex interactions.
+well-defined within the scope of a single actor whereas other schemes might rely on several actors involved in complex interactions.
 
-Here is an example of an actor implementing a minimalistic oracle. The creator of that actor only can deliver a value by adding it to the
+Here is an example of an actor implementing a minimalistic oracle. The creator of that actor can only deliver a value by adding it to the
 [vector](/cvm/data-types/vector) hosted by the actor:
 
 ```clojure
@@ -77,12 +77,12 @@ Here is an example of an actor implementing a minimalistic oracle. The creator o
           (def trust-addr
                *caller*)
 
-          ;; Vector of values, initally empty.
+          ;; Vector of values, initially empty.
           (def values
                [])
 
           ;; Smart contract for adding values.
-          ;; Can only be used by creator.
+          ;; Can only be used by the creator.
           ;; `*caller*` could be anyone!
           ;;
           (defn add-value
@@ -116,19 +116,19 @@ oracle-sc/values
 ;; -> [1 :b]
 ```
 
-Whether a smart contract is simple or complex, defining initial state and callable functions around it is staple.
+Whether a smart contract is simple or complex, defining the initial state and callable functions around it is the most important thing to do.
 
 
 ## Clean APIs over smart contracts
 
 Depending on the target users, interacting directly with smart contracts may appear as a [leaky abstraction](https://en.wikipedia.org/wiki/Leaky_abstraction).
-Sometimes, some features involves calling several functions, maybe even over several accounts. Overall, it is adviced deploying another actor, a pure one
+Sometimes, some features involve calling several functions, maybe even over several accounts. Overall, it is advised to deploy another actor, a pure one
 whose only job is to provide a clean and unified API.
 
 Although our previous example is extremely simple, a clean API could look like this:
 
 ```clojure
-;; Assuming `oracle-sc` is still defined from previous example.
+;; Assuming `oracle-sc` is still defined from the previous example.
 
 ;; New actor code is prepared using `quasiquote` so that `oracle-sc`
 ;; is embedded in the code using `unquote`.
@@ -159,7 +159,7 @@ Although our previous example is extremely simple, a clean API could look like t
 
 ## Repeated deployments
 
-The ability to use `quasiquote` for templating code means it is trivial creating functions which prepare code, notably meant for preparing actor code:
+The ability to use `quasiquote` for templating code means it is trivial creating functions that prepare code, notably meant for preparing actor code:
 
 ```clojure
 (defn multiplier-code
@@ -180,11 +180,11 @@ The ability to use `quasiquote` for templating code means it is trivial creating
 
 ## Upgradable actors
 
-By default, actor code is run when new account is initialized and they is no other way to potentially change anything within an actor but by calling
-a callable function which does exactly what its implementation describes. However, when needed, 2 generic solutions exist for keeping an actor under
+By default, actor code is run when a new account is initialized and there are no other ways to potentially change anything within an actor but by calling
+a callable function that does exactly what its implementation describes. However, when needed, 2 generic solutions exist for keeping an actor under
 total control.
 
-First solution is to set a controller at initialization, as described in the section about [accounts](/cvm/accounts):
+The first solution is to set a controller at initialization, as described in the section about [accounts](/cvm/accounts):
 
 ```clojure
 (def my-actor
@@ -204,12 +204,12 @@ my-actor/x
 
 ;; -> 42
 ;;
-;; At initiliazation, *caller* is set to the address of the creator.
+;; At initialization, *caller* is set to the address of the creator.
 ;; By being its controller, we can use `eval-as` and submit any code
 ;; we desire to be executed by our actor, like a puppet.
 ```
 
-Second solution is to write a callable function which explicitly evaluates code. The `eval` function is explained in greater details in the section
+The second solution is to write a callable function that explicitly evaluates code. The `eval` function is explained in greater detail in the section
 about [compiler phases](/cvm/compiler-phases). In short, it allows to execute any arbitrary piece of code provided as data:
 
 ```clojure
@@ -234,7 +234,7 @@ my-actor-2/x
 ;; -> 42
 ```
 
-**Attention.** Beware when interacting with upgradable actors. It means that at any time, someone can redefine behavior without notice. It is probably
+**Attention.** Beware when interacting with upgradable actors. It means that at any time, someone can redefine behaviour without notice. It is probably
 a very bad idea to interact with such actors unless accounts with that kind of powers are entirely trusted, beyond any doubt.
 
 
@@ -266,7 +266,7 @@ After taking precautions, a `receive-coin` callable function can be defined for 
           (def trust-addr
                *caller*)
 
-          ;; Contract allowing creator to transfer funds so that
+          ;; Contract allowing the creator to transfer funds so that
           ;; coins are not lost.
           ;;
           (defn transfer-funds
@@ -311,8 +311,8 @@ An actor could enforce a mandatory tip:
 
 ```clojure
 ;; Should also have a contract such as `transfer-funds` from
-;; previous example.
-;; Omitted for brievety.
+;; the previous example.
+;; Omitted for brevity.
 ;;
 (def my-actor
      (deploy '(defn set-x
@@ -330,21 +330,21 @@ An actor could enforce a mandatory tip:
 (call my-actor
       (set-x 42))
 
-;; Error! Rejected! We did not provide any coin.
+;; Error! Rejected! We did not provide any coins.
 
 
 (call my-actor
       50
       (set-x 42))
 
-;; Error! Rejected! Tip is not big enough.
+;; Error! Rejected! The tip is not big enough.
 
 
 (call my-actor
       100
       (set-x 42))
 
-;; Okay, tip was big enough.
+;; Okay, the tip was big enough.
 
 
 my-actor/x

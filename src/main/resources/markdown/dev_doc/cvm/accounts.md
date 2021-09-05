@@ -4,7 +4,7 @@ An account:
 
 - Is bound to an [address](/cvm/data-types/address)
 - Is attached to a public key (which can be replaced)
-- Can execute transactions, any arbitrary code (signed by the private key), provided it has enough funds to cover fees
+- Can execute transactions, any arbitrary code (signed by the private key), provided it has enough funds to cover executing fees
 - Can persist values in the [decentralized database via its environment](/cvm/definitions)
 - Can use [callable functions](/cvm/callable-functions) (special functions defined in other accounts)
 
@@ -27,19 +27,19 @@ more readily by using a special symbol:
 *memory*
 ```
 
-If a transaction implies storing more bytes than remaining, additional memory is automatically bought for Convex Coins (see `:balance`). If balance is insufficient,
-transaction is aborted. When a definition is removed using `undef`, memory is released and put back into the memory allowance of the account. Alternatively,
+If a transaction implies storing more bytes than remaining, additional memory is automatically bought for Convex Coins (see `:balance`). If the balance is insufficient,
+the transaction is aborted. When a definition is removed using `undef`, memory is released and put back into the memory allowance of the account. Alternatively,
 memory can be bought or sold for Convex Coins explicitly:
 
 ```clojure
 (set-memory (+ *memory* 1000))
 
-;; Buys a 1000 bytes.
+;; Buys 1000 bytes.
 
 
 (set-memory (- *memory* 1000))
 
-;; Sells a 1000 bytes (or error if current balance is insufficient).
+;; Sells a 1000 bytes (or error if the current balance is insufficient).
 ```
 
 Memory allowance is also transferable to other accounts:
@@ -48,19 +48,19 @@ Memory allowance is also transferable to other accounts:
 (transfer #42
           1000)
 
-;; Transferred a 1000 bytes to account under address #42.
+;; Transferred 1000 bytes to account under address #42.
 ```
 
-Thus, unlike in other decentralized technologies, memory becomes a tradable commodity. It is a scarce resource with an incentive to use only what is needed.
+Thus, unlike in other decentralized technologies, the memory becomes a tradable commodity. It is a scarce resource with an incentive to use only what is needed.
 For more details about the memory allowance model, see [Convex Architecture Document 006](https://github.com/Convex-Dev/design/tree/main/cad/006_memory).
 
 
 ## `:balance`
 
-Transactions ultimately incur fees which prevent flooding while rewarding peers (machines which carry out transactions). The native token used
+Transactions ultimately incur fees that prevent flooding while rewarding peers (machines that carry out transactions). The native token used
 on the Convex network is the Convex Coin. A balance is a positive [long](/cvm/data-types/numbers) indicating how much Convex Coins an account possess.
 
-Current balance of the account executing the transaction can be queried using a special symbol:
+The current balance of the account executing the transaction can be queried using a special symbol:
 
 ```clojure
 *balance*
@@ -78,16 +78,16 @@ Convex Coins are easily transferable:
 (transfer #42
           1000)
 
-;; Transferred a 1000 Convex Coins to account under address #42.
+;; Transferred 1000 Convex Coins to account under address #42.
 ```
 
 Fees are actually not paid directly in Convex Coins. While the following scheme is currently almost transparent on the test network, before a transaction
-is executed, an amount of **juice** must be bought using Convex Coins. Each operation in a transaction costs a certain amount of juice and transaction is
-aborted if there is not enough juice to carry it out to completion. This places a cap on how much can be ttttt on the transaction, avoiding nasty surprises.
-Remaining juice, if any, is refunded in Convex Coins after completion. More information on juice can be found in
+is executed, an amount of **juice** must be bought using Convex Coins. Each operation in a transaction costs a certain amount of juice and the transaction is
+aborted if there is not enough juice to carry it out to completion. This places a cap on how much can be executed on the transaction, avoiding bad surprises.
+The remaining juice, if any, is refunded in Convex Coins after completion. More information on juice can be found in
 [Convex Architecture Document 007](https://github.com/Convex-Dev/design/tree/main/cad/007_juice).
 
-Remaining juice at a particular point in a transaction can be queried using a special symbol:
+The remaining juice at a particular point in a transaction can be queried using a special symbol:
 
 ```clojure
 *juice*
@@ -98,7 +98,7 @@ Remaining juice at a particular point in a transaction can be queried using a sp
 
 The controller of an account is the address of another account. Effectively, a controller can execute any code on behalf of the account it controls.
 
-**Attention.** This is a dangerous feature. It is most useful with [actors](/cvm/actors) and only in some particular cases. Following example is both
+**Attention.** This is a dangerous feature. It is most useful with [actors](/cvm/actors) and only in some particular cases. The following example is both
 a demonstration and a warning:
 
 ```clojure
@@ -130,14 +130,14 @@ a demonstration and a warning:
 As simple as that, account `#100` stole all coins from account `#42`.
 
 `eval-as` executes quoted code in the context of the given account if and only if it is controlled by the currently executing account.
-It is as if given code was a transaction submitted by account `#42`, momentarily.
+It is as if the given code was a transaction submitted by account `#42`, momentarily.
 
 
 ## `:environment`
 
 Internally, the environment of an account is a [map](/cvm/data-types/map) where keys are [symbols](/cvm/data-types/symbol) and values can be of any type, as
 described in the section about [definitions](/cvm/definitions). Only an account can directly modify its environment. The section about
-[callable functions](/cvm/callable_functions) exposes how an account can allow some of its functions to be executed on his behalf under certain
+[callable functions](/cvm/callable_functions) exposes how an account can allow some of its functions to be executed on its behalf under certain
 conditions, leading the way to implementing smart contracts.
 
 
@@ -178,7 +178,7 @@ transactions and execute them in the context of that account. This is why creati
 (create-account 0x453F12D3BF453F12D3BF453F12D3BF453F12D3BF453F12D3BF453F12D3BF45DA)
 ```
 
-When a private key may have been compromised or user wishes to look more anonymous, a new keypair can be generated and the public key of an existing account
+When a private key may have been compromised or a user wishes to look more anonymous, a new keypair can be generated and the public key of an existing account
 replaced:
 
 ```clojure
@@ -188,11 +188,11 @@ replaced:
 **Attention.** Changing a public key means that any new transaction must be signed with the matching new private key. There is no other alternative. Changing
 the public key without owning the matching private key means you will get locked out of that account.
 
-An account without a public key is an **actor**. Actors plays an important role on the Convex network, especially when it comes to writing smart contracts.
+An account without a public key is an **actor**. Actors play an important role on the Convex network, especially when it comes to writing smart contracts.
 A [whole section is dedicated to creating and managing them](/cvm/actors).
 
-Removing a key by running `(set-key nil)` turns a user account into an actor. Conversely, setting a public key on an actor turns it out a user account since
-anyone with the matching private key can sign transactions on its behalf.
+Removing a key by running `(set-key nil)` turns a user account into an actor. Conversely, setting a public key on an actor converts it to a user account since
+anyone with the matching private key can sign transactions on their behalf.
 
 
 ## `:metadata`

@@ -6,10 +6,10 @@ exposes how to create and use macros which are specialized functions used during
 
 
 The section about [logic](/cvm/logic) exposed `cond` for executing code selectively based on whether some conditions are true or not. On top of `cond`,
-a series of features have been built to provide constructs found in other languages: `if`, `when`, `when-not`, etc. Those are perfect examples on how
+a series of features have been built to provide constructs found in other languages: `if`, `when`, `when-not`, etc. Those are perfect examples of how
 basic capabilities can be extended to higher-level ones since they are simply macros built on top of `cond`.
 
-A macro is written similarly to a function which takes some data and returns data representing code:
+A macro is written similarly to a function that takes some data and returns data representing code:
 
 ```clojure
 (defmacro my-macro
@@ -17,7 +17,7 @@ A macro is written similarly to a function which takes some data and returns dat
   data-2)
 ```
 
-To showcase how much flexbility they can provide and how much they can extend the basic language, let us write a macro which transforms a common
+To showcase how much flexibility they can provide and how much they can extend the basic language, let us write a macro that transforms a common
 expression written in **infix** notation to the **prefix** notation that Convex Lisp understands. For instance: `(a + b)` -> `(+ a b)`.
 
 ```clojure

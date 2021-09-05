@@ -13,7 +13,7 @@ This section reviews all steps involved in the process.
 ## Expansion
 
 As described in the section about [macros](/cvm/macros), before execution, data representing code can be modified. The first step
-is called **expansion** as it expands some data into another form of data by following defined macros.
+is called **expansion** as the macro expands some data into another form of data by following defined macros.
 
 This principle will remain opaque until more is learnt about macros but we can already notice that `when` is a macro and get a hint
 as to what macros and expansion are:
@@ -101,9 +101,9 @@ In general, `eval` is only used in a limited set of circumstances by advanced us
 
 ## Learn more
 
-For client application, understanding these steps can lead to cost savings. The CVM hosts an on-chain compiler, a unique feature.
+For the client application, understanding these steps can lead to cost savings. The CVM hosts an on-chain compiler, a unique feature.
 As such, a transaction can be submitted as pure data and the CVM can expand, compile, and ultimately execute that transaction.
-However, expansion and compilation incur additonal cost as they mean additional computation. Hence, by pre-compiling a transaction,
+However, expansion and compilation incur additional costs as they mean additional computation. Hence, by pre-compiling a transaction,
 cost of transaction can significantly drop.
 
 Additional technical documents for understanding thoroughly these steps:
