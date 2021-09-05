@@ -1,82 +1,89 @@
-Payload and Response are both JSON Objects. Depending on the API endpoint, this will contain different fields as described below.
+`convex.world` hosts a JSON REST API for clients who would like to interact with the test network but cannot
+use the Convex binary protocol that peers speak.
 
-## Create Account
+A selection of tailored libraries can be found within [Convex libraries](/cvm/running-convex-lisp/clients). However,
+any language/platform capable of producing an Ed25519 signature will be able to use this REST API directly.
 
-Create a new Account on the network. This does not require an existing Account on the Test Network because the server will pay for the cost of constructing the new Account.
+Payloads and responses are JSON maps as described below.
 
-**POST** https://convex.world/api/v1/createAccount
 
-### Payload
-- `accountKey`: Ed25519 public key HEX string - it should be 64 characters.
+## Create an account
 
-### Response
+Creates a new account associated with the given Ed25519 public key. The endpoint will pay for the fees incurred by
+creating an new account since fees are currently fictitious on the test network.
 
-- `address`: New Account Address encoded as a JSON number.
+**POST** *https://convex.world/api/v1/createAccount*
 
-Examples:
+Payload:
+- `accountKey`: Ed25519 public key (string of 64 hex characters)
+
+Reponse:
+
+- `address`: address of the new account encoded as a JSON number
+
+For example:
  ```json
 {
   "address": 10
 }
 ```
 
-## Account Details
+## Account details
 
-This endpoint returns general information about an Account on the Network according to the latest Consensus State.
+Returns general information about an account on the test network according to the latest consensus state.
 
-**GET** https://convex.world/api/v1/accounts/<address>
+**GET** *https://convex.world/api/v1/accounts/**<address>***
 
-Where `<address>` is the numeric value of the Address.
+Where **<address>** is the numeric value of the Address.
 
-### Response
+Response:
 
-- `address`: Account Address encoded as a JSON number.
-- `isLibrary`: `true` if Account is a library, or false otherwise.
-- `isActor`: `true` if Account is an Actor, or false otherwise.
-- `memorySize`: Storage Memory Size of the Account in bytes.
-- `allowance`: Unused Memory Allowance owned by this Account.
-- `type`: One of `"user"`, `"library"` or `"actor"`.
-- `balance`: Account's balance in Convex Coins.
-- `sequence`: Sequence number of the last Transaction executed on this Account, or zero for new Accounts.
+- `address`: account address encoded as a JSON number
+- `allowance`: unused memory allowance owned by this ccount
+- `balance`: account's balance in Convex Coins.
+- `isActor`: `true` if account is an actor, or `false` otherwise
+- `isLibrary`: `true` if account is a library, `false` otherwise.
+- `memorySize`: storage memory size of the account in bytes
+- `sequence`: sequence number of the last Transaction executed on this account, or zero for new accounts
+- `type`: one of `"user"`, `"library"`, or `"actor"`
 
-Examples:
+For example:
  ```json
 {
   "address": 9,
-  "isLibrary": false,
-  "isActor": false,
-  "memorySize": 75,
   "allowance": 10000000,
-  "type": "user",
   "balance": 10000000000,
+  "isActor": false,
+  "isLibrary": false,
+  "memorySize": 75,
   "sequence": 0,
-  "environment": {}
+  "type": "user"
 }
 ```
 
-### Error cases
-
-If the Account does not exist, an error status 404 with the following payload:
+Fails with an HTTP status **404** if the given account does not exist, carrying the following payload:
 
 ```json
 {
   "errorCode": "NOBODY",
-  "value": "The Account requested does not exist.",
-  "source": "Server"
+  "source": "Server",
+  "value": "The Account requested does not exist."
 }
 ```
 
-## Faucet
 
-Request for an amount of free Convex coins on an existing Account.
+## Request coins
 
-**POST** https://convex.world/api/v1/faucet
+Since Convex Coins does not have any real value on the test network, it is possible to request some
+for an account.
 
-### Payload
-- `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1".
-- `amount`: The requested amount in Convex Copper Coins - max allowed is 100,000,000.
+**POST** *https://convex.world/api/v1/faucet*
 
-Examples:
+Payload:
+
+- `address`: account address encoded as a JSON number
+- `amount`: requested amount in Convex Coins as a JSON number (maximum allowed is `100,000,000`)
+
 ```json
 {
   "address": 9,
@@ -84,13 +91,12 @@ Examples:
 }
 ```
 
-### Response
+Reponse:
 
-- `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1".
-- `amount`: The requested amount in Convex Copper Coins.
-- `value`: Actual value returned by the Transaction - it can be less than `amount`.
+- `address`: account address encoded as a JSON number
+- `amount`: requested amount in Convex Coins
+- `value`: actual value returned by the transaction (can be less than `amount`).
 
-Examples:
  ```json
 {
   "address": 9,
@@ -99,41 +105,44 @@ Examples:
 }
 ```
 
-### Error cases
-
-If the value requested is above 100,000,000, an HTTP status 400 with the following body is returned:
-
-```json
-{
-  "errorCode": "INCORRECT",
-  "value": "You can't request more than 100,000,000.",
-  "source": "Server"
-}
-```
-
-If the value requested is negative, an HTTP status 400 with the following body is returned:
+Fails with an HTTP status **400** if requested amount is negative, carrying the following payload
+(supposing an original amount of `-1`):
 
 ```json
 {
   "errorCode": "INCORRECT",
-  "value": "Invalid amount: -1",
-  "source": "Server"
+  "source": "Server",
+  "value": "Invalid amount: -1"
 }
 ```
 
-Where amount is the value requested.
+Fails with an HTTP status **404** if requested amount is abobe `100,000,000`, carrying the following
+payload:
+
+```json
+{
+  "errorCode": "INCORRECT",
+  "source": "Server",
+  "value": "You can't request more than 100,000,000."
+}
+```
+
 
 ## Query
 
-Execute a Query against the current state of the Convex Network. This requires no Transaction fees, or digital signature.
+Executes a query against the current state of the test network.
 
-**POST** https://convex.world/api/v1/query
+Unlike a transaction, a query does not require a digital signature and does not incur fees. It is run without consensus
+to produce a result which is not replicated among other peers. Hence, the state of the network is left intact.
 
-### Payload
-- `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1" - the Query will be executed 'as-if' this Account ran the Query.
-- `source`: Convex Lisp source that you want to execute as a Query.
+**POST** *https://convex.world/api/v1/query*
 
-Examples:
+Payload:
+- `address`: account address encoded as a JSON number (ownership of that account is not needed)
+- `source`: Convex Lisp source executed as a query (string)
+
+For example:
+
 ```json
 {
   "address": 9,
@@ -141,11 +150,12 @@ Examples:
 }
 ```
 
-### Response
+Response:
 
-- `value`: A CVM return value encoded as JSON - the result of evaluating `source`. In the case of a CVM error, this will contain the message.
+- `value`: CVM return value encoded as JSON - the result of evaluating `source`. In the case of a CVM error, this will contain the message.
 
-Examples:
+For example:
+
  ```json
 {
   "value": [2, 3, 4]
@@ -161,28 +171,26 @@ The `errorCode` key is present if the response is an error:
 }
 ```
 
-Whether or not there's a CVM error, the HTTP status will be 200 indicating that the Query was executed.
+Whether or not there is a CVM error, the HTTP status is always **200** indicating that the query was executed.
 
-### Error cases
 
-HTTP 500 if the server encounters an error.
-HTTP 400 if the request is incorrectly formatted.
+## Prepare a transaction
 
-## Prepare Transaction
+A transaction requires its hash to be digitally signed by the executing account prior to submission.
 
-When executing a Transaction, the user must sign the hash of the Transaction to provide a valid digital signature.
-This endpoint can be used to get the hash of Transaction from the server before signing.
+Given Convex Lisp source representing a transaction, this endpoint returns the hash to sign. Afterwards, the transaction
+can be submitted.
 
-The user is expected to follow up the Prepare with a Submit including the valid signature.
+**POST** *https://convex.world/api/v1/transaction/prepare*
 
-**POST** https://convex.world/api/v1/transaction/prepare
+Payload:
 
-### Payload
-- `address`: Account Address encoded as a JSON number or string e.g: 1, "1", "#1" - the Transaction will be constructed using this Address.
-- `source`: Convex Lisp source that you want to execute.
-- (Optional) `sequence`: The sequence number used to create the Transaction. If not provided, the server will attempt to determine the correct sequence number.
+- `address`: address of the executing account as a JSON number (will be hardcoded in the transaction)
+- `source`: Convex Lisp source representing the transaction
+- `sequence`: sequence number used to create the Transaction (optional, server will attempt to determine it if not provided)
 
-Examples:
+For example:
+
 ```json
 {
   "address": 9,
@@ -190,40 +198,41 @@ Examples:
 }
 ```
 
-### Response
+Response:
 
-- `sequence`: The sequence number assigned to the Transaction - this may be the one provided by the caller, or allocated by the server.
-- `address`: Address number of the Account that will execute the Transaction.
-- `source`: Convex Lisp source of the Transaction as originally provided.
-- `hash`: Unique hash of the Transaction as a 64 character HEX string - this must be used for the following Submit request.
+- `address`: same as in payload
+- `hash`: unique hash of the transaction (string of 64 hex characters)
+- `sequence`: same as is payload (orginally provided by the user or retrieved by the server)
+- `source`: same as in payload
 
-Examples:
+For example:
  ```json
 {
-  "sequence": 1,
   "address": 9,
   "hash": "badb861fc51d49e0212c0304b1890da42e4a4b54228986be17de8d7dccd845e2",
+  "sequence": 1,
   "source": "(map inc [1 2 3])"
 }
 ```
 
+
 ## Submit Transaction
 
-Submit a Transaction to the Convex Network by providing a valid digital signature.
+Submits a transaction to the current test network by providing an Ed25519 signature of its hash (see previous section).
 
-The signature must be the Ed25519 signature of the Transaction hash. This should be the hash returned from the server by a previous Prepare request.
+Signature must be performed with the private key matching the public key associated with the executing account.
 
-The digital signature must be valid for the Ed25519 public key associated with the Account.
+**POST** *https://convex.world/api/v1/transaction/submit*
 
-**POST** https://convex.world/api/v1/transaction/submit
+Payload:
 
-### Payload
-- `address`:  Account Address encoded as a JSON number or string e.g: 1, "1", "#1".
-- `accountKey`: Ed25519 public key HEX string encoded as a 64 character associated with Account.
-- `hash`: Hash of the Transaction encoded as a 64 character HEX string.
-- `sig`: Ed25519 signature of the hash using your key pair encoded as a 128 character HEX string.
+- `accountKey`: Ed25519 public key hew string encoded as a 64 character associated with Account.
+- `address`:  address of the executing account encoded as a JSON number
+- `hash`: hash of the transaction encoded (string of 64 hex characters)
+- `sig`: Ed25519 signature of the hash using your key pair encoded (string of 128 hex characters)
 
-Examples:
+For example:
+
 ```json
 {
   "address": 9,
@@ -233,17 +242,19 @@ Examples:
 }
 ```
 
-### Response
+Response:
 
-- `value`: A CVM return value encoded as JSON. In the case of a CVM error, this will contain the message.
+- `value`: CVM return value printed as a JSON string
 
-Examples:
+For example:
 
  ```json
 {
-  "value": [1, 2, 3]
+  "value": "[1, 2, 3]"
 }
 ```
+
+In case of error, `value` will contain an error message and payload will look similarly to:
 
  ```json
 {
@@ -252,10 +263,12 @@ Examples:
 }
 ```
 
-The `errorCode` key is present if the response is an error.
+Fails with an HTTP status **403** if the digital signature is invalid.
 
-### Error cases
 
-HTTP 500 if the server encounters an error.
-HTTP 400 if the request is incorrectly formatted.
-HTTP 403 if the digital signature is invalid.
+## Errors
+
+Besides aforementioned errors, the following HTTP statuses are returned in case of error:
+
+- **400**: request is incorrectly formatted
+- **500**: server encounters an error
