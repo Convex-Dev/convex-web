@@ -10,7 +10,7 @@ Up to now, they were used to represent [function](/cvm/function) application:
           10000)
 ```
 
-Indeed, by default, a list is evaluated, meaning the CVM considers its first item to represent a function to apply while remaining items are
+Indeed, by default, a list is evaluated, meaning the CVM considers its first item to represent a function to apply while the remaining items are
 parameters. To prevent evaluation, lists can be constructed using a dedicated function:
 
 ```clojure
@@ -31,7 +31,7 @@ Generally, [vectors](/cvm/data-types/vector) are more flexible for grouping seve
 [code is data](/cvm/code-is-data) and [macros](/cvm/macros) (an advanced topic). Items can have different types and even be collections themselves.
 
 Unlike other programming languages, separating items with `,` is optional and rarely seen unless it makes an expression more readable. Like any other
-value, a list can never directly be altered. All examples below return a new list in an efficient manner.
+value in Convex, a list can never directly be altered. All examples below efficiently return a new list.
 
 
 ## Create a new list
@@ -100,7 +100,7 @@ By casting any other collection or pseudo-collection:
 
 ;; -> (:c :b :a)
 ;;
-;; Seems upside-down but it makes sense, new items are always
+;; It seems upside-down but it makes sense, new items are always
 ;; added at the beginning of the list.
 
 
@@ -113,7 +113,7 @@ By casting any other collection or pseudo-collection:
 
 ## Access items
 
-By retrieving nthiest one (count starts at 0):
+By retrieving the nthiest one (count starts at 0):
 
 ```clojure
 (nth (list :a :b :c)
@@ -136,7 +136,7 @@ By retrieving nthiest one (count starts at 0):
 ;; effect as `nth`
 ```
 
-In Convex Lisp, besides being sequential (known order from first to last item), lists are also considered associative. Each item is mapped to
+In Convex Lisp, besides being sequential (known order from the first to the last item), lists are also considered associative. Each item is mapped to
 a specific **key**. It turns out that in the case of lists, the key of an item is also his position. Hence, the `get` function behaves similarly
 to `nth`, but not quite the same:
 

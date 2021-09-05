@@ -1,4 +1,4 @@
-Numbers are mostly used for mathematical operations. They can represent quantities, attributes such as age or price, and many other aspects.
+Numbers are mostly used for mathematical operations. They can represent quantities, attributes such as age, price and describe many other aspects.
 Currently, numbers are represented by 2 data types.
 
 A **long** is a [64-bit signed integer](https://en.wikipedia.org/wiki/Integer_(computer_science)):
@@ -16,9 +16,9 @@ A **long** is a [64-bit signed integer](https://en.wikipedia.org/wiki/Integer_(c
 
 A **double** is a [double precision floating point number](https://en.wikipedia.org/wiki/Double-precision_floating-point_format):
 - Has a decimal part
-- `##Inf` represents positive infinity
-- `##-Inf` represents negative infinity
-- `##NaN` represents failure in some cases (meaning "Not a Number")
+- `##Inf` it represents positive infinity
+- `##-Inf` it represents negative infinity
+- `##NaN` it represents a failure in some cases (meaning "Not a Number")
 
 ```clojure
 0.0
@@ -33,7 +33,7 @@ A **double** is a [double precision floating point number](https://en.wikipedia.
 (number? 42.0)  ;; -> true
 ```
 
-Doubles are a smaller span than longs when it comes to representing whole-valued numbers. Unless a decimal part is needed or a function returns a double, it is advised using longs.
+Doubles are a smaller span than longs data types when it comes to representing whole-valued numbers. Unless a decimal part is needed or a function returns a double, it is advised to use longs.
 
 
 ## Generic functions
@@ -128,7 +128,7 @@ These functions are predicates (returns a [boolean](/cvm/data-types/boolean) rel
 
 ## Casts
 
-A number type can be cast to a another number type if required:
+A number type can be cast to another number type if required:
 
 ```clojure
 (double 45.8)  ;; 45.8
