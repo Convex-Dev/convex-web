@@ -168,22 +168,32 @@
       :name        :route-name/cvm}]
    
     ["/accounts"
-     {:name        :route-name/cvm.accounts
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :cvm.accounts}
-                                              :title  "Accounts"}))}]}]
 
-    ["/actors"
-     {:name        :route-name/cvm.actors
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :cvm.actors}
-                                              :title  "Actors"}))}]}] 
+     [""
+      {:name        :route-name/cvm.accounts
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.accounts}
+                                               :title  "Accounts"}))}]}]
+     ["/actors"
+      {:name        :route-name/cvm.accounts.actors
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.accounts.actors}
+                                               :title  "Actors"}))}]}]
+     ["/callable-functions"
+      {:name        :route-name/cvm.accounts.callable-functions
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.accounts.callable-functions}
+                                               :title  "Callable functions"}))}]}]
+     ]
 
     ["/basic-syntax"
      {:name        :route-name/cvm.basic-syntax
@@ -193,7 +203,6 @@
                                              {:reset? true
                                               :state  {:id :cvm.basic-syntax}
                                               :title  "Basic syntax"}))}]}]
-
 
     ["/building-blocks"
 
@@ -257,20 +266,6 @@
                                                :state  {:id :cvm.building-blocks.loops}
                                                :title  "Loops"}))}]}]
      ]
-
-
-
-
-    ["/callable-functions"
-     {:name        :route-name/cvm.callable-functions
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :cvm.callable-functions}
-                                              :title  "Callable functions"}))}]}]
-
-    
 
     ["/data-types"
 

@@ -250,13 +250,13 @@
                                    :href       (rfe/href :route-name/cvm.building-blocks.code-is-data)}]}
                     {:text       "Accounts"
                      :route-name :route-name/cvm.accounts
-                     :href       (rfe/href :route-name/cvm.accounts)}
-                    {:text       "Callable functions"
-                     :route-name :route-name/cvm.callable-functions
-                     :href       (rfe/href :route-name/cvm.callable-functions)}
-                    {:text       "Actors"
-                     :route-name :route-name/cvm.actors
-                     :href       (rfe/href :route-name/cvm.actors)}
+                     :href       (rfe/href :route-name/cvm.accounts)
+                     :children   [{:text       "Callable functions"
+                                   :route-name :route-name/cvm.accounts.callable-functions
+                                   :href       (rfe/href :route-name/cvm.accounts.callable-functions)}
+                                  {:text       "Actors"
+                                   :route-name :route-name/cvm.accounts.actors
+                                   :href       (rfe/href :route-name/cvm.accounts.actors)}]}
                     {:text       "Execution phases"
                      :route-name :route-name/cvm.execution-phases
                      :href       (rfe/href :route-name/cvm.execution-phases)}

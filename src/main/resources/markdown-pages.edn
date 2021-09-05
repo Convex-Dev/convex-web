@@ -141,6 +141,12 @@
   :smart-toc? true
   :toc?       true}
 
+ :cvm.accounts.callable-functions
+ {:contents   [{:name "Callable functions"
+                :path "markdown/dev_doc/cvm/accounts/callable-functions.md"}]
+  :smart-toc? true
+  :toc?       true}
+
  :cvm.basic-syntax
  {:contents   [{:name "Basic syntax"
                 :path "markdown/dev_doc/cvm/basic-syntax.md"}]
@@ -189,12 +195,6 @@
                 :path "markdown/dev_doc/cvm/building-blocks/loops.md"}]
   :smart-toc? true
   :toc?       true}
-
-
-
-
-
-
 
  :cvm.data-types
  {:contents   [{:name "Data types"
