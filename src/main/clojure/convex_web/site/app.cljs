@@ -280,60 +280,46 @@
       
       ;; Sandbox
       ;; ==============
-      {:text "Sandbox"
+      {:text       "Sandbox"
        :top-level? true
        :route-name :route-name/sandbox
-       :href (rfe/href :route-name/sandbox)}
-      
-      
-      ;; Tools
+       :href       (rfe/href :route-name/sandbox)}
+
+
+      ;; Testnet
       ;; ==============
-      {:text "Tools"
+      {:text       "Testnet"
        :top-level? true
-       :route-name :route-name/tools
-       :href (rfe/href :route-name/tools)
-       :children
-       [{:text "Wallet"
-         :route-name :route-name/wallet
-         :href (rfe/href :route-name/wallet)}
-        
-        {:text "Faucet"
-         :route-name :route-name/faucet
-         :href (rfe/href :route-name/faucet)}
-        
-        {:text "Transfer"
-         :route-name :route-name/transfer
-         :href (rfe/href :route-name/transfer)}]}
-      
-      
-      ;; Explorer
-      ;; ==============
-      {:text "Explorer"
-       :top-level? true
-       :route-name :route-name/explorer
-       :href (rfe/href :route-name/explorer)
-       :children
-       (->> [{:text "Status"
-              :route-name :route-name/state
-              :href (rfe/href :route-name/state)}
-             
-             {:text "Accounts"
-              :route-name :route-name/accounts-explorer
-              :href (rfe/href :route-name/accounts-explorer)
-              :active? (active #{:route-name/accounts-explorer
-                                 :route-name/account-explorer})}
-             
-             {:text "Blocks"
-              :route-name :route-name/blocks
-              :href (rfe/href :route-name/blocks)
-              :active? (active #{:route-name/blocks
-                                 :route-name/block-explorer})}
-             
-             {:text "Transactions"
-              :route-name :route-name/transactions
-              :href (rfe/href :route-name/transactions)}]
-         (sort-by first))}
-      
+       :route-name :route-name/testnet
+       :href       (rfe/href :route-name/testnet)
+       :children   [
+                    {:text       "Accounts"
+                     :route-name :route-name/testnet.accounts
+                     :href       (rfe/href :route-name/testnet.accounts)
+                     :active?    (active #{:route-name/testnet.account
+                                           :route-name/testnet.accounts})}
+                    {:text       "Blocks"
+                     :route-name :route-name/testnet.blocks
+                     :href       (rfe/href :route-name/testnet.blocks)
+                     :active?    (active #{:route-name/testnet.block
+                                           :route-name/testnet.blocks})}
+                    {:text       "Request coins"
+                     :route-name :route-name/faucet
+                     :href       (rfe/href :route-name/faucet)}
+                    {:text       "Status"
+                     :route-name :route-name/testnet.status
+                     :href       (rfe/href :route-name/testnet.status)}
+                    {:text       "Transactions"
+                     :route-name :route-name/testnet.transactions
+                     :href       (rfe/href :route-name/testnet.transactions)}
+                    {:text       "Transfer"
+                     :route-name :route-name/transfer
+                     :href       (rfe/href :route-name/transfer)}
+                    {:text       "Wallet"
+                     :route-name :route-name/wallet
+                     :href       (rfe/href :route-name/wallet)}
+                    ]}
+
       
       ;; About
       ;; ==============

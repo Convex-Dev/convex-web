@@ -30,7 +30,7 @@
 (defn AddressUpdatedBalanceIs [address balance]
   [:span.inline-flex.text-gray-700.text-base.space-x-1
    [:a.inline-flex.items-center.space-x-1
-    {:href (rfe/href :route-name/account-explorer {:address address})}
+    {:href (rfe/href :route-name/testnet.account {:address address})}
     [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
     [:span.font-mono.text-sm.truncate
@@ -411,7 +411,7 @@
 
          (let [address (get transfer :convex-web.transfer/from)]
            [:a.inline-flex.items-center.space-x-1
-            {:href (rfe/href :route-name/account-explorer {:address address})}
+            {:href (rfe/href :route-name/testnet.account {:address address})}
             [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
             [:span.font-mono.text-sm.truncate
@@ -422,7 +422,7 @@
 
          (let [address (get transfer :convex-web.transfer/to)]
            [:a.inline-flex.items-center.space-x-1
-            {:href (rfe/href :route-name/account-explorer {:address address})}
+            {:href (rfe/href :route-name/testnet.account {:address address})}
             [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
             [:span.font-mono.text-sm.truncate

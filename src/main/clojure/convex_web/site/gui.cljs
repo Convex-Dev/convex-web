@@ -1105,7 +1105,7 @@
         ;; Address & Refresh.
         [:div.flex.justify-between
          [:a.inline-flex.items-center.space-x-1
-          {:href (rfe/href :route-name/account-explorer {:address address})}
+          {:href (rfe/href :route-name/testnet.account {:address address})}
           [AIdenticon {:value (str address) :size identicon-size-small}]
 
           [:span.font-mono.text-xs.truncate

@@ -567,7 +567,7 @@
           "Account"]
          [gui/AIdenticon {:value active-address :size gui/identicon-size-small}]
          [:a.hover:underline.hover:text-blue-500
-          {:href (rfe/href :route-name/account-explorer {:address active-address})}
+          {:href (rfe/href :route-name/testnet.account {:address active-address})}
           [:span.font-mono.text-xs.block.ml-1
            (format/prefix-# active-address)]]]
         

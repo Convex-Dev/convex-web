@@ -33,7 +33,7 @@
               [gui/AIdenticon {:value address :size gui/identicon-size-large}]
               
               [:a.hover:underline.ml-2
-               {:href (rfe/href :route-name/account-explorer {:address address})}
+               {:href (rfe/href :route-name/testnet.account {:address address})}
                [:code.text-xs (format/prefix-# address)]]]]
             
             [:td {:class td-class}

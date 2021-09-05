@@ -54,16 +54,16 @@
    {:text "EXPLORER"
     :items
     [{:text "Accounts"
-      :href (rfe/href :route-name/accounts-explorer)}
+      :href (rfe/href :route-name/testnet.accounts)}
 
      {:text "Blocks"
-      :href (rfe/href :route-name/blocks)}
+      :href (rfe/href :route-name/testnet.blocks)}
 
      {:text "Status"
-      :href (rfe/href :route-name/state)}
+      :href (rfe/href :route-name/testnet.status)}
 
      {:text "Transactions"
-      :href (rfe/href :route-name/transactions)}]}
+      :href (rfe/href :route-name/testnet.transactions)}]}
 
    :about
    {:text "ABOUT"

@@ -98,11 +98,6 @@
   [{:name "Concepts"
     :path "markdown/concepts.md"}]}
 
- :tools
- {:toc? false
-  :contents
-  [{:name "Tools"
-    :path "markdown/tools.md"}]}
 
  :get-involved
  {:toc? false
@@ -322,6 +317,13 @@
                 :path "markdown/dev_doc/rest-api.md"}]
   :smart-toc? true
   :toc?       true}
+
+ :testnet
+ {:contents   [{:name "Testnet"
+                :path "markdown/dev_doc/testnet.md"}]
+  :smart-toc? true
+  :toc?       false}
+
 
 
 }
