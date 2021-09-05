@@ -227,24 +227,27 @@
                                   {:text       "Set"
                                    :route-name :route-name/cvm.data-types.set
                                    :href       (rfe/href :route-name/cvm.data-types.set)}]}
-                    {:text       "Definitions"
-                     :route-name :route-name/cvm.definitions
-                     :href       (rfe/href :route-name/cvm.definitions)}
-                    {:text       "Logic"
-                     :route-name :route-name/cvm.logic
-                     :href       (rfe/href :route-name/cvm.logic)}
-                    {:text       "Errors"
-                     :route-name :route-name/cvm.errors
-                     :href       (rfe/href :route-name/cvm.errors)}
-                    {:text       "Functions"
-                     :route-name :route-name/cvm.functions
-                     :href       (rfe/href :route-name/cvm.functions)}
-                    {:text       "Loops"
-                     :route-name :route-name/cvm.loops
-                     :href       (rfe/href :route-name/cvm.loops)}
-                    {:text       "Code is data"
-                     :route-name :route-name/cvm.code-is-data
-                     :href       (rfe/href :route-name/cvm.code-is-data)}
+                    {:text       "Building blocks"
+                     :route-name :route-name/cvm.building-blocks
+                     :href       (rfe/href :route-name/cvm.building-blocks)
+                     :children   [{:text       "Definitions"
+                                   :route-name :route-name/cvm.building-blocks.definitions
+                                   :href       (rfe/href :route-name/cvm.building-blocks.definitions)}
+                                  {:text       "Logic"
+                                   :route-name :route-name/cvm.building-blocks.logic
+                                   :href       (rfe/href :route-name/cvm.building-blocks.logic)}
+                                  {:text       "Errors"
+                                   :route-name :route-name/cvm.building-blocks.errors
+                                   :href       (rfe/href :route-name/cvm.building-blocks.errors)}
+                                  {:text       "Functions"
+                                   :route-name :route-name/cvm.building-blocks.functions
+                                   :href       (rfe/href :route-name/cvm.building-blocks.functions)}
+                                  {:text       "Loops"
+                                   :route-name :route-name/cvm.building-blocks.loops
+                                   :href       (rfe/href :route-name/cvm.building-blocks.loops)}
+                                  {:text       "Code is data"
+                                   :route-name :route-name/cvm.building-blocks.code-is-data
+                                   :href       (rfe/href :route-name/cvm.building-blocks.code-is-data)}]}
                     {:text       "Accounts"
                      :route-name :route-name/cvm.accounts
                      :href       (rfe/href :route-name/cvm.accounts)}

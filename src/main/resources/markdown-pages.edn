@@ -135,9 +135,9 @@
   :smart-toc? true
   :toc?       true}
 
- :cvm.actors
+ :cvm.accounts.actors
  {:contents   [{:name "Actors"
-                :path "markdown/dev_doc/cvm/actors.md"}]
+                :path "markdown/dev_doc/cvm/accounts/actors.md"}]
   :smart-toc? true
   :toc?       true}
 
@@ -147,17 +147,54 @@
   :smart-toc? true
   :toc?       false}
   
- :cvm.callable-functions
- {:contents   [{:name "Callable functions"
-                :path "markdown/dev_doc/cvm/callable-functions.md"}]
+
+ :cvm.building-blocks
+ {:contents   [{:name "Building blocks"
+                :path "markdown/dev_doc/cvm/building-blocks.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :cvm.building-blocks.code-is-data
+ {:contents   [{:name "Code is data"
+                :path "markdown/dev_doc/cvm/building-blocks/code-is-data.md"}]
   :smart-toc? true
   :toc?       true}
 
- :cvm.code-is-data
- {:contents   [{:name "Code is data"
-                :path "markdown/dev_doc/cvm/code-is-data.md"}]
+ :cvm.building-blocks.definitions
+ {:contents   [{:name "Definitions"
+                :path "markdown/dev_doc/cvm/building-blocks/definitions.md"}]
   :smart-toc? true
   :toc?       true}
+
+ :cvm.building-blocks.errors
+ {:contents   [{:name "Errors"
+                :path "markdown/dev_doc/cvm/building-blocks/errors.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.building-blocks.functions
+ {:contents   [{:name "Functions"
+                :path "markdown/dev_doc/cvm/building-blocks/functions.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.building-blocks.logic
+ {:contents   [{:name "Logic"
+                :path "markdown/dev_doc/cvm/building-blocks/logic.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.building-blocks.loops
+ {:contents   [{:name "Loops"
+                :path "markdown/dev_doc/cvm/building-blocks/loops.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+
+
+
+
+
 
  :cvm.data-types
  {:contents   [{:name "Data types"
@@ -243,39 +280,9 @@
   :smart-toc? true
   :toc?       true}
 
- :cvm.definitions
- {:contents   [{:name "Definitions"
-                :path "markdown/dev_doc/cvm/definitions.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :cvm.errors
- {:contents   [{:name "Errors"
-                :path "markdown/dev_doc/cvm/errors.md"}]
-  :smart-toc? true
-  :toc?       true}
-
  :cvm.execution-phases
  {:contents   [{:name "Execution phases"
                 :path "markdown/dev_doc/cvm/execution-phases.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :cvm.functions
- {:contents   [{:name "Functions"
-                :path "markdown/dev_doc/cvm/functions.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :cvm.logic
- {:contents   [{:name "Logic"
-                :path "markdown/dev_doc/cvm/logic.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :cvm.loops
- {:contents   [{:name "Loops"
-                :path "markdown/dev_doc/cvm/loops.md"}]
   :smart-toc? true
   :toc?       true}
 

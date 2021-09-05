@@ -194,6 +194,73 @@
                                               :state  {:id :cvm.basic-syntax}
                                               :title  "Basic syntax"}))}]}]
 
+
+    ["/building-blocks"
+
+     [""
+      {:name        :route-name/cvm.building-blocks
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks}
+                                               :title  "Building blocks"}))}]}]
+     ["/code-is-data"
+      {:name        :route-name/cvm.building-blocks.code-is-data
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.code-is-data}
+                                               :title  "Code is data"}))}]}]
+     ["/definitions"
+      {:name        :route-name/cvm.building-blocks.definitions
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.definitions}
+                                               :title  "Definitions"}))}]}]
+     ["/errors"
+      {:name        :route-name/cvm.building-blocks.errors
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.errors}
+                                               :title  "Errors"}))}]}]
+
+     ["/functions"
+      {:name        :route-name/cvm.building-blocks.functions
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.functions}
+                                               :title  "Functions"}))}]}]
+
+     ["/logic"
+      {:name        :route-name/cvm.building-blocks.logic
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.logic}
+                                               :title  "Logic"}))}]}]
+
+     ["/loops"
+      {:name        :route-name/cvm.building-blocks.loops
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.loops}
+                                               :title  "Loops"}))}]}]
+     ]
+
+
+
+
     ["/callable-functions"
      {:name        :route-name/cvm.callable-functions
       :controllers [{:identity identity
@@ -203,14 +270,7 @@
                                               :state  {:id :cvm.callable-functions}
                                               :title  "Callable functions"}))}]}]
 
-    ["/code-is-data"
-     {:name        :route-name/cvm.code-is-data
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :cvm.code-is-data}
-                                              :title  "Code is data"}))}]}]
+    
 
     ["/data-types"
 
@@ -341,24 +401,6 @@
                                                :title  "Vector"}))}]}]
      ]
 
-    ["/definitions"
-     {:name        :route-name/cvm.definitions
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :cvm.definitions}
-                                              :title  "Definitions"}))}]}]
-
-    ["/errors"
-     {:name        :route-name/cvm.errors
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :cvm.errors}
-                                              :title  "Errors"}))}]}]
-
     ["/execution-phases"
      {:name        :route-name/cvm.execution-phases
       :controllers [{:identity identity
@@ -367,36 +409,6 @@
                                              {:reset? true
                                               :state  {:id :cvm.execution-phases}
                                               :title  "Execution phases"}))}]}]
-    
-    ["/functions"
-     {:name        :route-name/cvm.functions
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :cvm.functions}
-                                              :title  "Functions"}))}]}]
-    
-
-
-    
-    ["/logic"
-     {:name        :route-name/cvm.logic
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :cvm.logic}
-                                              :title  "Logic"}))}]}]
-    
-    ["/loops"
-     {:name        :route-name/cvm.loops
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :cvm.loops}
-                                              :title  "Loops"}))}]}]
 
     ["/macros"
      {:name        :route-name/cvm.macros

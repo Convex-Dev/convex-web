@@ -1,6 +1,6 @@
 **GET** *https://convex.world/api/v1/accounts/**<address>***
 
-Where **<address>** is the numeric value of the Address.
+Where **<address>** is the numeric value of the address.
 
 Returns general information about an account on the test network according to the latest consensus state.
 
