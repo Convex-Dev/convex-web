@@ -388,7 +388,7 @@
           
           leaf? (empty? children)]
       
-      [:div.flex.flex-col.justify-center.space-y-1
+      [:div.flex.flex-col.justify-center
        ;; Always expand on click.
        (merge {:on-click
                (fn []
@@ -447,7 +447,7 @@
        
        ;; -- Children
        (when (and (seq children) expanded?)
-         [:div.flex.flex-col.space-y-1.ml-4
+         [:div.flex.flex-col.space-y-1.ml-3.mt-1
           (for [{:keys [text] :as child} children]
             ^{:key text}
             [NavItem route child])])])))
@@ -459,11 +459,11 @@
               "hidden"
               
               ;; Desktop
-              "md:flex flex-col flex-shrink-0 md:w-[260px]"]}
+              "md:flex flex-col flex-shrink-0 md:w-[260px] pr-3"]}
      
      (for [{:keys [text] :as item} others]
        ^{:key text}
-       [:div.mb-2
+       [:div.mb-1
         [NavItem active-route item]])]))
 
 (defn Modal [{:frame/keys [uuid page state] :as frame}]
