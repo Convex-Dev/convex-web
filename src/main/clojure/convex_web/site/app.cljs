@@ -95,10 +95,8 @@
    ;; ---
 
    explorer/code-page
-   explorer/accounts-page
    explorer/accounts-range-page
    explorer/account-page
-   explorer/blocks-page
    explorer/blocks-range-page
    explorer/block-page
    explorer/peers-page

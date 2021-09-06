@@ -729,24 +729,6 @@
             (get-accounts-range state set-state))})
 
 
-;; -- Accounts
-
-(defn AccountsPage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/accounts]} _]
-  (case status
-    :ajax.status/pending
-    [:div.flex.flex-1.justify-center.items-center
-     [gui/Spinner]]
-
-    [:div.flex.flex-col
-     [AccountsTable accounts {:modal? modal?}]
-
-     [:div.my-4
-      [gui/Tooltip
-       "View all Accounts"
-       [gui/DefaultButton
-        {:on-click #(stack/push :page.id/testnet.accounts {:modal? true})}
-        [:span.text-xs.uppercase "View All"]]]]]))
-
 (s/def :accounts-page.state/pending (s/and (s/keys :req [:ajax/status])
                                            #(= :ajax.status/pending (:ajax/status %))))
 
@@ -759,20 +741,6 @@
 (s/def :accounts-page/state-spec (s/or :pending :accounts-page.state/pending
                                        :success :accounts-page.state/success
                                        :error :accounts-page.state/error))
-
-(def accounts-page
-  #:page {:id :page.id/testnet.accounts
-          :title "Accounts"
-          :state-spec :accounts-page/state-spec
-          :component #'AccountsPage
-          :on-push
-          (fn [_ state set-state]
-            (set-state assoc :ajax/status :ajax.status/pending)
-
-            (get-accounts-range state set-state))
-          :on-resume
-          (fn [_ state set-state]
-            (get-accounts-range state set-state))})
 
 ;; -- Blocks
 
@@ -856,30 +824,6 @@
                   [gui/Jdenticon {:value peer :size gui/identicon-size-small}]
                   [:span (format/prefix-0x peer)]]]]))]]]))))
 
-(defn BlocksPage [{:frame/keys [modal?]} {:keys [ajax/status convex-web/blocks]} _]
-  (case status
-    :ajax.status/pending
-    [:div.flex.flex-1.justify-center.items-center
-     [gui/Spinner]]
-
-    [:div.flex.flex-col.flex-1.items-start
-     [BlocksTable blocks {:modal? modal?}]
-
-     [:div.my-4
-      [gui/Tooltip
-       "View all Blocks"
-       [gui/DefaultButton
-        {:on-click #(stack/push :page.id/testnet.blocks {:modal? true})}
-        [:span.text-xs.uppercase "View All"]]]]]))
-
-(def blocks-page
-  #:page {:id :page.id/testnet.blocks
-          :title "Latest Blocks"
-          :component #'BlocksPage
-          :state-spec :explorer.blocks/state-spec
-          :on-push #'start-polling-blocks
-          :on-pop #'stop-polling-blocks})
-
 
 ;; -- Blocks Range
 
@@ -940,7 +884,7 @@
   (get-blocks-range (merge state {:set-state set-state})))
 
 (def blocks-range-page
-  #:page {:id :page.id/blocks-range-explorer
+  #:page {:id :page.id/testnet.blocks
           :title "Blocks"
           :description "These are the Blocks that have been published in the
                         Convex Network Consensus, numbered in consensus order
