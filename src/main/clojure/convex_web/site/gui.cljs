@@ -555,11 +555,11 @@
       
       [:a.ml-2
        {:href (rfe/href :route-name/reference {}
-                                              (merge {:symbol symbol}
-                                                     ;; Router defaults to convex.core
-                                                     ;; if there isn't a library parameter.
-                                                     (when library
-                                                       {:library library})))
+                (merge {:symbol symbol}
+                  ;; Router defaults to convex.core
+                  ;; if there isn't a library parameter.
+                  (when library
+                    {:library library})))
         :target "_blank"}
        [IconExternalLink {:class "h-4 w-4 text-gray-500 hover:text-black"}]]]
      
@@ -587,10 +587,11 @@
           
           (for [{:keys [code]} examples]
             ^{:key code}
-            [:pre.text-xs.mb-1
-             [:code.clojure.rounded
-              {:ref highlight-element}
-              code]])]))]))
+            [:div.w-full.overflow-auto
+             [:pre.text-xs.mb-1
+              [:code.clojure.rounded
+               {:ref highlight-element}
+               code]]])]))]))
 
 (def hyperlink-hover-class "hover:underline hover:text-blue-500")
 
