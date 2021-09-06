@@ -866,10 +866,10 @@
      [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
                     :page-num (pagination/page-num-reverse start total)
-                    :first-href (rfe/href :route-name/blocks)
-                    :last-href (rfe/href :route-name/blocks {} pagination/min-range)
-                    :previous-href (rfe/href :route-name/blocks {} previous-query)
-                    :next-href (rfe/href :route-name/blocks {} next-query)
+                    :first-href (rfe/href :route-name/testnet.blocks)
+                    :last-href (rfe/href :route-name/testnet.blocks {} pagination/min-range)
+                    :previous-href (rfe/href :route-name/testnet.blocks {} previous-query)
+                    :next-href (rfe/href :route-name/testnet.blocks {} next-query)
                     :ajax/status status})])
 
    ;; -- Body
