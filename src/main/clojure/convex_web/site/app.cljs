@@ -140,7 +140,7 @@
       :href (rfe/href :route-name/developer)}
      
      :others
-     [{:text "Welcome"
+     [{:text "Introduction"
        :top-level? true
        :route-name :route-name/developer
        :href (rfe/href :route-name/developer)}
@@ -176,6 +176,9 @@
                      :children    [{:text       "Sandbox"
                                     :route-name :route-name/cvm.run-cvx.sandbox
                                     :href       (rfe/href :route-name/cvm.run-cvx.sandbox)}
+                                   {:text       "Clients"
+                                    :route-name :route-name/cvm.run-cvx.clients
+                                    :href       (rfe/href :route-name/cvm.run-cvx.clients)}
                                    {:text       "Runner"
                                     :route-name :route-name/cvm.run-cvx.runner
                                     :href       (rfe/href :route-name/cvm.run-cvx.runner)}]}
@@ -224,119 +227,120 @@
                                   {:text       "Set"
                                    :route-name :route-name/cvm.data-types.set
                                    :href       (rfe/href :route-name/cvm.data-types.set)}]}
-                    {:text       "Definitions"
-                     :route-name :route-name/cvm.definitions
-                     :href       (rfe/href :route-name/cvm.definitions)}
-                    {:text       "Logic"
-                     :route-name :route-name/cvm.logic
-                     :href       (rfe/href :route-name/cvm.logic)}
-                    {:text       "Errors"
-                     :route-name :route-name/cvm.errors
-                     :href       (rfe/href :route-name/cvm.errors)}
-                    {:text       "Functions"
-                     :route-name :route-name/cvm.functions
-                     :href       (rfe/href :route-name/cvm.functions)}
-                    {:text       "Looping"
-                     :route-name :route-name/cvm.looping
-                     :href       (rfe/href :route-name/cvm.looping)}
-                    {:text       "Code is data"
-                     :route-name :route-name/cvm.code-is-data
-                     :href       (rfe/href :route-name/cvm.code-is-data)}
+                    {:text       "Building blocks"
+                     :route-name :route-name/cvm.building-blocks
+                     :href       (rfe/href :route-name/cvm.building-blocks)
+                     :children   [{:text       "Definitions"
+                                   :route-name :route-name/cvm.building-blocks.definitions
+                                   :href       (rfe/href :route-name/cvm.building-blocks.definitions)}
+                                  {:text       "Logic"
+                                   :route-name :route-name/cvm.building-blocks.logic
+                                   :href       (rfe/href :route-name/cvm.building-blocks.logic)}
+                                  {:text       "Errors"
+                                   :route-name :route-name/cvm.building-blocks.errors
+                                   :href       (rfe/href :route-name/cvm.building-blocks.errors)}
+                                  {:text       "Functions"
+                                   :route-name :route-name/cvm.building-blocks.functions
+                                   :href       (rfe/href :route-name/cvm.building-blocks.functions)}
+                                  {:text       "Loops"
+                                   :route-name :route-name/cvm.building-blocks.loops
+                                   :href       (rfe/href :route-name/cvm.building-blocks.loops)}
+                                  {:text       "Code is data"
+                                   :route-name :route-name/cvm.building-blocks.code-is-data
+                                   :href       (rfe/href :route-name/cvm.building-blocks.code-is-data)}]}
                     {:text       "Accounts"
                      :route-name :route-name/cvm.accounts
-                     :href       (rfe/href :route-name/cvm.accounts)}
-                    {:text       "Smart contracts"
-                     :route-name :route-name/cvm.smart-contracts
-                     :href       (rfe/href :route-name/cvm.smart-contracts)}
-                    {:text       "Actors"
-                     :route-name :route-name/cvm.actors
-                     :href       (rfe/href :route-name/cvm.actors)}
+                     :href       (rfe/href :route-name/cvm.accounts)
+                     :children   [{:text       "Callable functions"
+                                   :route-name :route-name/cvm.accounts.callable-functions
+                                   :href       (rfe/href :route-name/cvm.accounts.callable-functions)}
+                                  {:text       "Actors"
+                                   :route-name :route-name/cvm.accounts.actors
+                                   :href       (rfe/href :route-name/cvm.accounts.actors)}]}
+                    {:text       "Execution phases"
+                     :route-name :route-name/cvm.execution-phases
+                     :href       (rfe/href :route-name/cvm.execution-phases)}
+                    {:text       "Macros"
+                     :route-name :route-name/cvm.macros
+                     :href       (rfe/href :route-name/cvm.macros)}
                     ]}
-      
-      ;; Documentation
-      ;; ==============
-      {:text "Documentation"
+
+      ;; Reference
+      ;; =============
+      {:text       "Reference"
        :top-level? true
-       :route-name :route-name/documentation
-       :href (rfe/href :route-name/documentation)
-       :children
-       [{:text "Getting Started"
-         :route-name :route-name/documentation-getting-started
-         :href (rfe/href :route-name/documentation-getting-started)}
-        
-        {:text "Lisp Guide"
-         :route-name :route-name/documentation-tutorial
-         :href (rfe/href :route-name/documentation-tutorial)}
-        
-        {:text "Advanced Topics"
-         :route-name :route-name/advanced-topics
-         :href (rfe/href :route-name/advanced-topics)}
-        
-        {:text "Reference"
-         :route-name :route-name/documentation-reference
-         :href (rfe/href :route-name/documentation-reference)}
-        
-        {:text "Client API"
-         :route-name :route-name/client-api
-         :href (rfe/href :route-name/client-api)}]}
+       :route-name :route-name/reference
+       :href       (rfe/href :route-name/reference)}
+
+  
+      ;; REST API
+      ;; ========
+      {:text       "REST API"
+       :top-level? true
+       :route-name :route-name/rest-api
+       :href       (rfe/href :route-name/rest-api)
+       :children   [{:text       "Create an account"
+                     :route-name :route-name/rest-api.create-account
+                     :href       (rfe/href :route-name/rest-api.create-account)}
+                    {:text       "Account details"
+                     :route-name :route-name/rest-api.account-details
+                     :href       (rfe/href :route-name/rest-api.account-details)}
+                    {:text       "Request coins"
+                     :route-name :route-name/rest-api.request-coins
+                     :href       (rfe/href :route-name/rest-api.request-coins)}
+                    {:text       "Query"
+                     :route-name :route-name/rest-api.query
+                     :href       (rfe/href :route-name/rest-api.query)}
+                    {:text       "Prepare transaction"
+                     :route-name :route-name/rest-api.prepare-transaction
+                     :href       (rfe/href :route-name/rest-api.prepare-transaction)}
+                    {:text       "Submit transaction"
+                     :route-name :route-name/rest-api.submit-transaction
+                     :href       (rfe/href :route-name/rest-api.submit-transaction)}
+                    ]}
+
       
       
       ;; Sandbox
       ;; ==============
-      {:text "Sandbox"
+      {:text       "Sandbox"
        :top-level? true
        :route-name :route-name/sandbox
-       :href (rfe/href :route-name/sandbox)}
-      
-      
-      ;; Tools
+       :href       (rfe/href :route-name/sandbox)}
+
+
+      ;; Testnet
       ;; ==============
-      {:text "Tools"
+      {:text       "Testnet"
        :top-level? true
-       :route-name :route-name/tools
-       :href (rfe/href :route-name/tools)
-       :children
-       [{:text "Wallet"
-         :route-name :route-name/wallet
-         :href (rfe/href :route-name/wallet)}
-        
-        {:text "Faucet"
-         :route-name :route-name/faucet
-         :href (rfe/href :route-name/faucet)}
-        
-        {:text "Transfer"
-         :route-name :route-name/transfer
-         :href (rfe/href :route-name/transfer)}]}
-      
-      
-      ;; Explorer
-      ;; ==============
-      {:text "Explorer"
-       :top-level? true
-       :route-name :route-name/explorer
-       :href (rfe/href :route-name/explorer)
-       :children
-       (->> [{:text "Status"
-              :route-name :route-name/state
-              :href (rfe/href :route-name/state)}
-             
-             {:text "Accounts"
-              :route-name :route-name/accounts-explorer
-              :href (rfe/href :route-name/accounts-explorer)
-              :active? (active #{:route-name/accounts-explorer
-                                 :route-name/account-explorer})}
-             
-             {:text "Blocks"
-              :route-name :route-name/blocks
-              :href (rfe/href :route-name/blocks)
-              :active? (active #{:route-name/blocks
-                                 :route-name/block-explorer})}
-             
-             {:text "Transactions"
-              :route-name :route-name/transactions
-              :href (rfe/href :route-name/transactions)}]
-         (sort-by first))}
-      
+       :route-name :route-name/testnet
+       :href       (rfe/href :route-name/testnet)
+       :children   [{:text       "Accounts"
+                     :route-name :route-name/testnet.accounts
+                     :href       (rfe/href :route-name/testnet.accounts)
+                     :active?    (active #{:route-name/testnet.account
+                                           :route-name/testnet.accounts})}
+                    {:text       "Blocks"
+                     :route-name :route-name/testnet.blocks
+                     :href       (rfe/href :route-name/testnet.blocks)
+                     :active?    (active #{:route-name/testnet.block
+                                           :route-name/testnet.blocks})}
+                    {:text       "Request coins"
+                     :route-name :route-name/testnet.request-coins
+                     :href       (rfe/href :route-name/testnet.request-coins)}
+                    {:text       "Status"
+                     :route-name :route-name/testnet.status
+                     :href       (rfe/href :route-name/testnet.status)}
+                    {:text       "Transactions"
+                     :route-name :route-name/testnet.transactions
+                     :href       (rfe/href :route-name/testnet.transactions)}
+                    {:text       "Transfer"
+                     :route-name :route-name/testnet.transfer
+                     :href       (rfe/href :route-name/testnet.transfer)}
+                    {:text       "Wallet"
+                     :route-name :route-name/testnet.wallet
+                     :href       (rfe/href :route-name/testnet.wallet)}]}
+
       
       ;; About
       ;; ==============

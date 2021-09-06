@@ -568,7 +568,7 @@
           "Account"]
          [gui/AIdenticon {:value active-address :size gui/identicon-size-small}]
          [:a.hover:underline.hover:text-blue-500
-          {:href (rfe/href :route-name/account-explorer {:address active-address})}
+          {:href (rfe/href :route-name/testnet.account {:address active-address})}
           [:span.font-mono.text-xs.block.ml-1
            (format/prefix-# active-address)]]]
         
@@ -627,7 +627,7 @@
 
 (def sandbox-page
   #:page {:id :page.id/repl
-          :description "Use the Sandbox to execute transactions live on the Convex Network."
+          :description "Execute transactions live on the current test network. Fast and interactive."
           :initial-state
           {:convex-web.repl/language :convex-lisp
            :convex-web.repl/mode :convex-web.command.mode/transaction

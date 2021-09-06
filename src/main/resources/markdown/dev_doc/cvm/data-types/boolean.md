@@ -1,8 +1,8 @@
 There are only 2 possible values for a boolean: `true` or `false`. While very basic, their role is crucial and users will often encounter booleans throughout the developer guides.
 
 ```clojure
-(boolean? true)   ;; True
-(boolean? false)  ;; True
+(boolean? true)   ;; -> true
+(boolean? false)  ;; -> true
 ```
 
 
@@ -10,40 +10,40 @@ There are only 2 possible values for a boolean: `true` or `false`. While very ba
 
 Any value can be cast to a boolean.
 
-`false` and `nil` are consided to be "falsey":
+`false` and `nil` are considered to be "falsey":
 
 ```clojure
-(boolean false)  ;; False
-(boolean nil)    ;; False
+(boolean false)  ;; -> false
+(boolean nil)    ;; -> false
 ```
 
-While any other value is considered to be "truthy":
+While all other values are considered to be "truthy":
 
 ```clojure
-(boolean 42)      ;; True
-(boolean 0)       ;; True
-(boolean "text")  ;; True
+(boolean 42)      ;; -> true
+(boolean 0)       ;; -> true
+(boolean "text")  ;; -> true
 ```
 
-The distinction between "falsey" and "truthy" becomes important in the [section about logic](/cvm/logic.md).
+The distinction between "falsey" and "truthy" becomes important in the [section about logic](/cvm/logic).
 
 All values can be negated to the opposite boolean value:
 
 ```clojure
-(not false)   ;; True
-(not nil)     ;; True
+(not false)   ;; -> true
+(not nil)     ;; -> true
 
-(not true)    ;; False
-(not 42)      ;; False
-(not "text")  ;; False
+(not true)    ;; -> false
+(not 42)      ;; -> false
+(not "text")  ;; -> false
 ```
 
 
 ## Predicates
 
-By convention, although this is not mandatory, names for booleans or functions that return a boolean end with `?`. Such functions are also called **predicates**.
+By convention, although this is not mandatory, names for booleans or functions that return a boolean end with `?`. Such functions are commonly called **predicates**.
 
-The following lists are an overview, actual examples are scattered throughout the developer guides.
+The following list shows an overview. The actual examples are scattered throughout the developer guides.
 
 Testing the type of a value:
 

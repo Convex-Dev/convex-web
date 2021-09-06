@@ -85,7 +85,7 @@
         {:title glossary/block-number}
         [:a
          {:class gui/hyperlink-hover-class
-          :href (rfe/href :route-name/block-explorer {:index index})}
+          :href (rfe/href :route-name/testnet.block {:index index})}
          [:span.text-sm
           index]]]]
 
@@ -106,7 +106,7 @@
 
         [:a.flex-1.truncate
          {:class gui/hyperlink-hover-class
-          :href (rfe/href :route-name/account-explorer {:address address})}
+          :href (rfe/href :route-name/testnet.account {:address address})}
          [gui/Tooltip
           {:title address}
           [:span.font-mono.text-xs (format/prefix-# address)]]]]]
@@ -293,7 +293,7 @@
           [:td {:class td-class}
            [:div.flex.flex-1.justify-end
             [:a.hover:text-blue-500
-             {:href (rfe/href :route-name/block-explorer {:index block-index})}
+             {:href (rfe/href :route-name/testnet.block {:index block-index})}
              [:div.flex.space-x-3
               [:span.font-mono block-index]
               
@@ -312,7 +312,7 @@
               
               [:a.flex-1.truncate
                {:class gui/hyperlink-hover-class
-                :href (rfe/href :route-name/account-explorer {:address address})}
+                :href (rfe/href :route-name/testnet.account {:address address})}
                [gui/Tooltip
                 {:title (format/descriptive-address address)
                  :size "small"}
@@ -393,7 +393,7 @@
                  
                  [:a.flex-1.truncate
                   {:class gui/hyperlink-hover-class
-                   :href (rfe/href :route-name/account-explorer {:address address})}
+                   :href (rfe/href :route-name/testnet.account {:address address})}
                   [gui/Tooltip
                    {:title (format/descriptive-address address)
                     :size "small"}
@@ -474,7 +474,7 @@
                               :ajax/error error)))})))
 
 (def block-page
-  #:page {:id :page.id/block-explorer
+  #:page {:id :page.id/testnet.block
           :title "Block"
           :component #'BlockPage
           :state-spec :block-page/state-spec
@@ -522,7 +522,7 @@
                                       :error :account-page.state/error))
 
 (def account-page
-  #:page {:id :page.id/account-explorer
+  #:page {:id :page.id/testnet.account
           :title "Account"
           :state-spec :account-page/state-spec
           :component #'AccountPage
@@ -600,13 +600,13 @@
               
               (if modal?
                 [:code.underline.cursor-pointer.mx-2
-                 {:on-click #(stack/push :page.id/account-explorer {:state
+                 {:on-click #(stack/push :page.id/testnet.account {:state
                                                                     {:ajax/status :ajax.status/pending
                                                                      :convex-web/account {:convex-web.account/address address}}
                                                                     :modal? true})}
                  address-string]
                 [:a.flex-1.mx-2.hover:text-blue-500
-                 {:href (rfe/href :route-name/account-explorer {:address address})}
+                 {:href (rfe/href :route-name/testnet.account {:address address})}
                  [:div.flex.space-x-3
                   [:code.text-xs address-string]
                   
@@ -682,25 +682,30 @@
                     :page-num (pagination/page-num end config/default-range)
 
                     :first-label "First"
-                    :first-href (rfe/href :route-name/accounts-explorer)
+                    :first-href (rfe/href :route-name/testnet.accounts)
 
-                    :previous-href (rfe/href :route-name/accounts-explorer {} (let [start' (max 0 (- start config/default-range))]
-                                                                                {:start start'
-                                                                                 :end (if (< (- start start') config/default-range)
-                                                                                        (min total config/default-range)
-                                                                                        start)}))
+                    :previous-href (rfe/href :route-name/testnet.accounts
+                                             {}
+                                             (let [start' (max 0 (- start config/default-range))]
+                                               {:start start'
+                                                :end (if (< (- start start') config/default-range)
+                                                       (min total config/default-range)
+                                                       start)}))
 
-                    :next-href (rfe/href :route-name/accounts-explorer {} (let [end' (min total (+ end config/default-range))
-
-                                                                                start (if (< (- end' end) config/default-range)
-                                                                                        (- end' config/default-range)
-                                                                                        end)]
-                                                                            {:start start
-                                                                             :end (min total (+ end config/default-range))}))
+                    :next-href (rfe/href :route-name/testnet.accounts
+                                         {}
+                                         (let [end' (min total (+ end config/default-range))
+                                               start (if (< (- end' end) config/default-range)
+                                                       (- end' config/default-range)
+                                                       end)]
+                                           {:start start
+                                            :end (min total (+ end config/default-range))}))
 
                     :last-label "Last"
-                    :last-href (rfe/href :route-name/accounts-explorer {} {:start (max 0 (- total config/default-range))
-                                                                           :end total})
+                    :last-href (rfe/href :route-name/testnet.accounts
+                                         {}
+                                         {:start (max 0 (- total config/default-range))
+                                          :end total})
 
                     :ajax/status status})]
 
@@ -713,7 +718,7 @@
        [AccountsTable (sort-by :convex-web.account/address #(compare %1 %2) accounts) {:modal? modal?}])]))
 
 (def accounts-range-page
-  #:page {:id :page.id/accounts-range-explorer
+  #:page {:id :page.id/testnet.accounts
           :title "Accounts"
           :component #'AccountsRangePage
           :state-spec :accounts-page/state-spec
@@ -739,7 +744,7 @@
       [gui/Tooltip
        "View all Accounts"
        [gui/DefaultButton
-        {:on-click #(stack/push :page.id/accounts-range-explorer {:modal? true})}
+        {:on-click #(stack/push :page.id/testnet.accounts {:modal? true})}
         [:span.text-xs.uppercase "View All"]]]]]))
 
 (s/def :accounts-page.state/pending (s/and (s/keys :req [:ajax/status])
@@ -756,7 +761,7 @@
                                        :error :accounts-page.state/error))
 
 (def accounts-page
-  #:page {:id :page.id/accounts-explorer
+  #:page {:id :page.id/testnet.accounts
           :title "Accounts"
           :state-spec :accounts-page/state-spec
           :component #'AccountsPage
@@ -829,7 +834,7 @@
                 [:td {:class td-class}
                  [:div.flex.flex-1.justify-end
                   [:a.hover:text-blue-500
-                   {:href (rfe/href :route-name/block-explorer {:index index})}
+                   {:href (rfe/href :route-name/testnet.block {:index index})}
                    [:div.flex.space-x-3
                     [:span.font-mono index]
                     
@@ -864,11 +869,11 @@
       [gui/Tooltip
        "View all Blocks"
        [gui/DefaultButton
-        {:on-click #(stack/push :page.id/blocks-range-explorer {:modal? true})}
+        {:on-click #(stack/push :page.id/testnet.blocks {:modal? true})}
         [:span.text-xs.uppercase "View All"]]]]]))
 
 (def blocks-page
-  #:page {:id :page.id/blocks-explorer
+  #:page {:id :page.id/testnet.blocks
           :title "Latest Blocks"
           :component #'BlocksPage
           :state-spec :explorer.blocks/state-spec
@@ -952,7 +957,7 @@
    [:span.text-4xl "TODO"]])
 
 (def peers-page
-  #:page {:id :page.id/peers-explorer
+  #:page {:id :page.id/testnet.peers
           :title "Peers"
           :component #'PeersPage})
 
@@ -979,10 +984,10 @@
      [gui/RangeNavigation
       (merge range {:page-count (pagination/page-count total)
                     :page-num (pagination/page-num-reverse start total)
-                    :first-href (rfe/href :route-name/transactions)
-                    :last-href (rfe/href :route-name/transactions {} pagination/min-range)
-                    :previous-href (rfe/href :route-name/transactions {} previous-query)
-                    :next-href (rfe/href :route-name/transactions {} next-query)
+                    :first-href (rfe/href :route-name/testnet.transactions)
+                    :last-href (rfe/href :route-name/testnet.transactions {} pagination/min-range)
+                    :previous-href (rfe/href :route-name/testnet.transactions {} previous-query)
+                    :next-href (rfe/href :route-name/testnet.transactions {} next-query)
                     :ajax/status status})])
 
    ;; -- Body
@@ -994,7 +999,7 @@
      [TransactionsTable (or blocks [])])])
 
 (def transactions-range-page
-  #:page {:id :page.id/transactions-range-explorer
+  #:page {:id :page.id/testnet.transactions
           :title "Transactions"
           :component #'TransactionsRangePage
           :state-spec :explorer.blocks-range/state-spec
@@ -1013,7 +1018,7 @@
       [gui/Tooltip
        "View all Transactions"
        [gui/DefaultButton
-        {:on-click #(stack/push :page.id/transactions-range-explorer {:modal? true})}
+        {:on-click #(stack/push :page.id/testnet.transactions {:modal? true})}
         [:span.text-xs.uppercase "View All"]]]]]))
 
 (def transactions-page
@@ -1113,7 +1118,7 @@
       [:span (get-in error [:response :error :message])])))
 
 (def state-page
-  #:page {:id :page.id/state
+  #:page {:id :page.id/testnet.status
           :title "Status"
           :component #'StatePage
           :initial-state {:ajax/status :ajax.status/pending}

@@ -46,7 +46,7 @@
  {:toc? false
   :contents
   [{:name "Developer"
-    :path "markdown/developer.md"}]}
+    :path "markdown/dev_doc/introduction.md"}]}
  
  :explorer
  {:toc? false
@@ -98,11 +98,6 @@
   [{:name "Concepts"
     :path "markdown/concepts.md"}]}
 
- :tools
- {:toc? false
-  :contents
-  [{:name "Tools"
-    :path "markdown/tools.md"}]}
 
  :get-involved
  {:toc? false
@@ -116,13 +111,6 @@
   :contents
   [{:name "White Paper"
     :path "markdown/articles/convex-whitepaper.md"}]}
-
- :client-api
- {:toc? true
-  :smart-toc? true
-  :contents
-  [{:name "Client API"
-    :path "markdown/client_api.md"}]}
 
  :glossary
  {:toc? true
@@ -147,23 +135,64 @@
   :smart-toc? true
   :toc?       true}
 
- :cvm.actors
+ :cvm.accounts.actors
  {:contents   [{:name "Actors"
-                :path "markdown/dev_doc/cvm/actors.md"}]
+                :path "markdown/dev_doc/cvm/accounts/actors.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.accounts.callable-functions
+ {:contents   [{:name "Callable functions"
+                :path "markdown/dev_doc/cvm/accounts/callable-functions.md"}]
   :smart-toc? true
   :toc?       true}
 
  :cvm.basic-syntax
  {:contents   [{:name "Basic syntax"
                 :path "markdown/dev_doc/cvm/basic-syntax.md"}]
-  
   :smart-toc? true
   :toc?       false}
   
 
- :cvm.code-is-data
+ :cvm.building-blocks
+ {:contents   [{:name "Building blocks"
+                :path "markdown/dev_doc/cvm/building-blocks.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :cvm.building-blocks.code-is-data
  {:contents   [{:name "Code is data"
-                :path "markdown/dev_doc/cvm/code-is-data.md"}]
+                :path "markdown/dev_doc/cvm/building-blocks/code-is-data.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.building-blocks.definitions
+ {:contents   [{:name "Definitions"
+                :path "markdown/dev_doc/cvm/building-blocks/definitions.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.building-blocks.errors
+ {:contents   [{:name "Errors"
+                :path "markdown/dev_doc/cvm/building-blocks/errors.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.building-blocks.functions
+ {:contents   [{:name "Functions"
+                :path "markdown/dev_doc/cvm/building-blocks/functions.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.building-blocks.logic
+ {:contents   [{:name "Logic"
+                :path "markdown/dev_doc/cvm/building-blocks/logic.md"}]
+  :smart-toc? true
+  :toc?       true}
+
+ :cvm.building-blocks.loops
+ {:contents   [{:name "Loops"
+                :path "markdown/dev_doc/cvm/building-blocks/loops.md"}]
   :smart-toc? true
   :toc?       true}
 
@@ -177,19 +206,19 @@
  {:contents   [{:name "Address"
                 :path "markdown/dev_doc/cvm/data-types/address.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.blob-map
  {:contents   [{:name "Blob map"
                 :path "markdown/dev_doc/cvm/data-types/blob-map.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.blob
  {:contents   [{:name "Blob"
                 :path "markdown/dev_doc/cvm/data-types/blob.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.boolean
  {:contents   [{:name "Boolean"
@@ -201,7 +230,7 @@
  {:contents   [{:name "Keyword"
                 :path "markdown/dev_doc/cvm/data-types/keyword.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.list
  {:contents   [{:name "List"
@@ -219,7 +248,7 @@
  {:contents   [{:name "Nil"
                 :path "markdown/dev_doc/cvm/data-types/nil.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.numbers
  {:contents   [{:name "Numbers"
@@ -237,7 +266,7 @@
  {:contents   [{:name "Symbol"
                 :path "markdown/dev_doc/cvm/data-types/symbol.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.text
  {:contents   [{:name "Text"
@@ -251,33 +280,15 @@
   :smart-toc? true
   :toc?       true}
 
- :cvm.definitions
- {:contents   [{:name "Definitions"
-                :path "markdown/dev_doc/cvm/definitions.md"}]
+ :cvm.execution-phases
+ {:contents   [{:name "Execution phases"
+                :path "markdown/dev_doc/cvm/execution-phases.md"}]
   :smart-toc? true
   :toc?       true}
 
- :cvm.errors
- {:contents   [{:name "Errors"
-                :path "markdown/dev_doc/cvm/errors.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :cvm.functions
- {:contents   [{:name "Functions"
-                :path "markdown/dev_doc/cvm/functions.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :cvm.logic
- {:contents   [{:name "Logic"
-                :path "markdown/dev_doc/cvm/logic.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :cvm.looping
- {:contents   [{:name "Looping"
-                :path "markdown/dev_doc/cvm/looping.md"}]
+ :cvm.macros
+ {:contents   [{:name "Macros"
+                :path "markdown/dev_doc/cvm/macros.md"}]
   :smart-toc? true
   :toc?       true}
 
@@ -285,7 +296,13 @@
  {:contents   [{:name "Running Convex Lisp"
                 :path "markdown/dev_doc/cvm/running-convex-lisp.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
+
+ :cvm.run-cvx.clients
+ {:contents   [{:name "Clients"
+                :path "markdown/dev_doc/cvm/running-convex-lisp/clients.md"}]
+  :smart-toc? true
+  :toc?       false}
 
  :cvm.run-cvx.runner
  {:contents   [{:name "Runner"
@@ -299,11 +316,57 @@
   :smart-toc? true
   :toc?       true}
 
- :cvm.smart-contracts
- {:contents   [{:name "Smart contracts"
-                :path "markdown/dev_doc/cvm/smart-contracts.md"}]
+
+
+
+ :rest-api
+ {:contents   [{:name "REST API"
+                :path "markdown/dev_doc/rest-api.md"}]
   :smart-toc? true
   :toc?       true}
+
+ :rest-api.account-details
+ {:contents   [{:name "Account details"
+                :path "markdown/dev_doc/rest-api/account-details.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :rest-api.create-account
+ {:contents   [{:name "Create an account"
+                :path "markdown/dev_doc/rest-api/create-an-account.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :rest-api.prepare-transaction
+ {:contents   [{:name "Prepare transaction"
+                :path "markdown/dev_doc/rest-api/prepare-transaction.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :rest-api.query
+ {:contents   [{:name "Query"
+                :path "markdown/dev_doc/rest-api/query.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :rest-api.request-coins
+ {:contents   [{:name "Request coins"
+                :path "markdown/dev_doc/rest-api/request-coins.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :rest-api.submit-transaction
+ {:contents   [{:name "Submit transaction"
+                :path "markdown/dev_doc/rest-api/submit-transaction.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :testnet
+ {:contents   [{:name "Testnet"
+                :path "markdown/dev_doc/testnet.md"}]
+  :smart-toc? true
+  :toc?       false}
+
 
 
 }
