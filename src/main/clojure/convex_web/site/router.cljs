@@ -445,8 +445,15 @@
                        :start    (fn [_match]
                                    (stack/push :page.id/markdown {:reset? true
                                                                   :state  {:id :cvm.run-cvx.sandbox}
-                                                                  :title  "Sandbox"}))}]}]]
-    ]
+                                                                  :title  "Sandbox"}))}]}]
+     
+     ["/local-network"
+      {:name        :route-name/cvm.run-cvx.local-network
+       :controllers  [{:identity identity
+                       :start    (fn [_match]
+                                   (stack/push :page.id/markdown {:reset? true
+                                                                  :state  {:id :cvm.run-cvx.local-network}
+                                                                  :title  "Local Network"}))}]}]]]
 
 
 

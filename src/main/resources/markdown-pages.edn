@@ -319,8 +319,7 @@
  :cvm.run-cvx.local-network
  {:contents   [{:name "Local Network"
                 :path "markdown/dev_doc/cvm/running-convex-lisp/local-network.md"}]
-  :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
 
 

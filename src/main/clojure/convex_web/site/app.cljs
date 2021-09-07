@@ -179,7 +179,10 @@
                                     :href       (rfe/href :route-name/cvm.run-cvx.clients)}
                                    {:text       "Runner"
                                     :route-name :route-name/cvm.run-cvx.runner
-                                    :href       (rfe/href :route-name/cvm.run-cvx.runner)}]}
+                                    :href       (rfe/href :route-name/cvm.run-cvx.runner)}
+                                   {:text       "Local Network"
+                                    :route-name :route-name/cvm.run-cvx.local-network
+                                    :href       (rfe/href :route-name/cvm.run-cvx.local-network)}]}
                     {:text       "Basic syntax"
                      :route-name :route-name/cvm.basic-syntax
                      :href       (rfe/href :route-name/cvm.basic-syntax)}
