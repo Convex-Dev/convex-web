@@ -406,9 +406,6 @@
 (defn account-status-data [^AccountStatus account-status]
   (when account-status
     (let [env (environment-data (.getEnvironment account-status))
-          exports? (contains? env '*exports*)
-          actor? (.isActor account-status)
-          library? (and actor? (not exports?))
           
           ;; Reify exported functions giving it a name and arglists attributes.
           exports (map 
@@ -427,7 +424,11 @@
                                         [])]
                         {:name (datafy sym)
                          :arglists arglists}))
-                    (.getCallableFunctions account-status))]
+                    (.getCallableFunctions account-status))
+          
+          actor? (.isActor account-status)
+          
+          library? (and actor? (empty? exports))]
       
       (merge #:convex-web.account-status {:account-key (some-> account-status .getAccountKey .toChecksumHex)
                                           :controller (datafy (.getController account-status))
