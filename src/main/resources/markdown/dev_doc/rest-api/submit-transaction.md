@@ -7,7 +7,7 @@ Signature must be performed with the private key matching the public key associa
 
 ### Payload
 
-- `accountKey`: Ed25519 public key hew string encoded as a 64 character associated with Account.
+- `accountKey`: Ed25519 public key hew string encoded as a 64 character associated with the account
 - `address`:  address of the executing account encoded as a JSON number
 - `hash`: hash of the transaction encoded (string of 64 hex characters)
 - `sig`: Ed25519 signature of the hash using your key pair encoded (string of 128 hex characters)

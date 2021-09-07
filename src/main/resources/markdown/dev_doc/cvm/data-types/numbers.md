@@ -16,9 +16,9 @@ A **long** is a [64-bit signed integer](https://en.wikipedia.org/wiki/Integer_(c
 
 A **double** is a [double precision floating point number](https://en.wikipedia.org/wiki/Double-precision_floating-point_format):
 - Has a decimal part
-- `##Inf` it represents positive infinity
-- `##-Inf` it represents negative infinity
-- `##NaN` it represents a failure in some cases (meaning "Not a Number")
+- `##Inf` represents positive infinity
+- `##-Inf` represents negative infinity
+- `##NaN` represents a failure in some cases (meaning "Not a Number")
 
 ```clojure
 0.0

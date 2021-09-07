@@ -200,7 +200,7 @@
  {:contents   [{:name "Data types"
                 :path "markdown/dev_doc/cvm/data-types.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.address
  {:contents   [{:name "Address"
@@ -290,7 +290,7 @@
  {:contents   [{:name "Macros"
                 :path "markdown/dev_doc/cvm/macros.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.run-cvx
  {:contents   [{:name "Running Convex Lisp"
@@ -308,7 +308,7 @@
  {:contents   [{:name "Runner"
                 :path "markdown/dev_doc/cvm/running-convex-lisp/runner.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.run-cvx.sandbox
  {:contents   [{:name "Sandbox"
@@ -327,7 +327,7 @@
  {:contents   [{:name "REST API"
                 :path "markdown/dev_doc/rest-api.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :rest-api.account-details
  {:contents   [{:name "Account details"

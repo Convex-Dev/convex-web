@@ -45,8 +45,8 @@ memory can be bought or sold for Convex Coins explicitly:
 Memory allowance is also transferable to other accounts:
 
 ```clojure
-(transfer #42
-          1000)
+(transfer-memory #42
+                 1000)
 
 ;; Transferred 1000 bytes to account under address #42.
 ```
