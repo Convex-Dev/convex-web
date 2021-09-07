@@ -59,7 +59,7 @@
          {:class "object-cover"
           :src "/images/blockchain.png"}]
         
-        [:div.absolute.inset-x-0.top-0.h-full.bg-opacity-50
+        [:div.absolute.inset-x-0.top-0.h-full.bg-opacity-30
          {:class theme/bg-blue-01052A}]]
        
        
@@ -68,11 +68,11 @@
         
         [:div.flex.flex-col.justify-center.items-center.space-y-6.md:space-y-14.pt-14.md:pt-48.px-6
          
-         [:h1.text-4xl.lg:text-6xl.font-extrabold.text-white
+         [:h1.text-4xl.lg:text-6xl.font-extrabold.text-white.text-center
           "Building the Internet of Value for the business and consumer world"]
          
          [:div.flex.flex-col.md:flex-row.space-y-10.md:space-x-10.md:space-y-0
-          [:p.text-white.text-lg.md:text-2xl
+          [:p.text-white.text-lg.md:text-4xl
            "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]
           
           ;; -- Buttons
@@ -83,7 +83,7 @@
             [gui/BlueButton
              {}
              [:div.w-40
-              [:span.text-sm.text-white.uppercase
+              [:span.text-base.text-white.uppercase.font-bold
                "Try It Now"]]]]
            
            [:a
@@ -92,7 +92,7 @@
             [gui/BlueOutlineButton
              {}
              [:div.w-40
-              [:span.text-sm.text-white.uppercase
+              [:span.text-base.text-white.uppercase.font-bold
                "Whitepaper"]]]]]]]]
        
        [:div.hidden.md:block.absolute.inset-x-0.bottom-0
