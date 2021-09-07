@@ -266,6 +266,16 @@
                      :href       (rfe/href :route-name/cvm.macros)}
                     ]}
 
+      ;; Peer operations
+      ;; =============
+      {:text       "Peer operations"
+       :top-level? true
+       :route-name :route-name/peer-ops
+       :href       (rfe/href :route-name/peer-ops)
+       :children   [{:text       "Declare"
+                     :route-name :route-name/peer-ops.declare
+                     :href       (rfe/href :route-name/peer-ops.declare)}]}
+
       ;; Reference
       ;; =============
       {:text       "Reference"

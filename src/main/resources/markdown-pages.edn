@@ -321,7 +321,17 @@
                 :path "markdown/dev_doc/cvm/running-convex-lisp/local-network.md"}]
   :toc?       false}
 
+ :peer-ops
+ {:contents   [{:name "Peer operations"
+                :path "markdown/dev_doc/peer-operations.md"}]
+  :smart-toc? true
+  :toc?       false}
 
+ :peer-ops.declare
+ {:contents   [{:name "Declare"
+                :path "markdown/dev_doc/peer-operations/declare.md"}]
+  :smart-toc? true
+  :toc?       false}
 
  :rest-api
  {:contents   [{:name "REST API"
@@ -370,7 +380,5 @@
                 :path "markdown/dev_doc/testnet.md"}]
   :smart-toc? true
   :toc?       false}
-
-
 
 }

@@ -414,6 +414,25 @@
                                               :state  {:id :cvm.macros}
                                               :title  "Macros"}))}]}]
 
+    ["/peer-operations"
+
+     [""
+      {:name        :route-name/peer-ops
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown {:reset? true
+                                                                 :state  {:id :peer-ops}
+                                                                 :title  "Peer operations"}))}]}]
+
+     ["declare"
+      {:name        :route-name/peer-ops.declare
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown {:reset? true
+                                                                 :state  {:id :peer-ops.declare}
+                                                                 :title  "Declare"}))}]}]
+     ]
+
     ["/running-convex-lisp"
 
      [""
