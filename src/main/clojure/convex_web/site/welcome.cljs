@@ -54,12 +54,12 @@
        {:class "h-[calc(100vh-64px)]"}
        
        ;; Background image
-       [:div.relative
-        [:img
+       [:div.relative.w-screen
+        [:img.w-full
          {:class "object-cover"
           :src "/images/blockchain.png"}]
         
-        [:div.absolute.inset-x-0.top-0.h-full.bg-opacity-20
+        [:div.absolute.inset-x-0.top-0.h-full.bg-opacity-50
          {:class theme/bg-blue-01052A}]]
        
        
