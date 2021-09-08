@@ -661,23 +661,32 @@
                                              (merge {:reset? true}
                                                     (when-let [range (query-range match)]
                                                       {:state range}))))}]}]
-   ["/transfer"
-    {:name        :route-name/testnet.transfer
-     :controllers [{:identity identity
-                    :start    (fn [_]
-                                (stack/push :page.id/testnet.transfer
-                                            {:reset? true}))}]}]
+    ["/transfer"
+     {:name        :route-name/testnet.transfer
+      :controllers [{:identity identity
+                     :start    (fn [_]
+                                 (stack/push :page.id/testnet.transfer
+                                             {:reset? true}))}]}]
 
-   ["/wallet"
-    {:name        :route-name/testnet.wallet
-     :controllers [{:identity identity
-                    :start    (fn [_]
-                                (stack/push :page.id/testnet.wallet
-                                            {:reset? true}))}]}]
+    ["/wallet"
+     {:name        :route-name/testnet.wallet
+      :controllers [{:identity identity
+                     :start    (fn [_]
+                                 (stack/push :page.id/testnet.wallet
+                                             {:reset? true}))}]}]
     ]
 
+   ["tools"
 
-
+    [""
+      {:name        :route-name/tools
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools}
+                                               :title  "Tools"}))}]}]
+    ]
    
    
    ;; Concepts

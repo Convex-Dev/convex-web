@@ -350,6 +350,14 @@
                      :route-name :route-name/testnet.wallet
                      :href       (rfe/href :route-name/testnet.wallet)}]}
 
+      ;; Tools
+      ;; =============
+      {:text       "Tools"
+       :top-level? true
+       :route-name :route-name/tools
+       :href       (rfe/href :route-name/tools)
+       :children   []}
+
       
       ;; About
       ;; ==============
