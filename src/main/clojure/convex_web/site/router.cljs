@@ -452,15 +452,6 @@
                                                :state  {:id :cvm.run-cvx.clients}
                                                :title  "Clients"}))}]}]
 
-     ["/runner"
-      {:name        :route-name/cvm.run-cvx.runner
-       :controllers  [{:identity identity
-                       :start    (fn [_match]
-                                   (stack/push :page.id/markdown
-                                               {:reset? true
-                                                :state  {:id :cvm.run-cvx.runner}
-                                                :title  "Convex Lisp Runner"}))}]}]
-
      ["/sandbox"
       {:name        :route-name/cvm.run-cvx.sandbox
        :controllers  [{:identity identity
@@ -641,6 +632,14 @@
                                               :state  {:id :tools.cli}
                                               :title  "Command Line Interface"}))}]}]
 
+    ["/convex-lisp-runner"
+      {:name        :route-name/tools.convex-lisp-runner
+       :controllers  [{:identity identity
+                       :start    (fn [_match]
+                                   (stack/push :page.id/markdown
+                                               {:reset? true
+                                                :state  {:id :tools.convex-lisp-runner}
+                                                :title  "Convex Lisp Runner"}))}]}]
     ["/rest-api"
 
      [""

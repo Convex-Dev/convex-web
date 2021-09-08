@@ -176,10 +176,7 @@
                                     :href       (rfe/href :route-name/cvm.run-cvx.sandbox)}
                                    {:text       "Clients"
                                     :route-name :route-name/cvm.run-cvx.clients
-                                    :href       (rfe/href :route-name/cvm.run-cvx.clients)}
-                                   {:text       "Runner"
-                                    :route-name :route-name/cvm.run-cvx.runner
-                                    :href       (rfe/href :route-name/cvm.run-cvx.runner)}
+                                    :href       (rfe/href :route-name/cvm.run-cvx.clients)} 
                                    {:text       "Local Network"
                                     :route-name :route-name/cvm.run-cvx.local-network
                                     :href       (rfe/href :route-name/cvm.run-cvx.local-network)}]}
@@ -334,6 +331,9 @@
                     {:text       "Command Line Interface"
                      :route-name :route-name/tools.cli
                      :href       (rfe/href :route-name/tools.cli)}
+                    {:text       "Convex Lisp Runner"
+                     :route-name :route-name/tools.convex-lisp-runner
+                     :href       (rfe/href :route-name/tools.convex-lisp-runner)}
                     {:text       "REST API"
                      :route-name :route-name/tools.rest-api
                      :href       (rfe/href :route-name/tools.rest-api)
