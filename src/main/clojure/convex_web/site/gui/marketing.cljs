@@ -20,7 +20,7 @@
      {:text "FAQ"
       :href (rfe/href :route-name/faq)}]}
 
-   :documentation
+   :documentation ;; Not up-to-date
    {:text "DOCUMENTATION"
     :items
     [{:text "Getting Started"

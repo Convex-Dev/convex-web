@@ -264,6 +264,9 @@
                     {:text       "Macros"
                      :route-name :route-name/cvm.macros
                      :href       (rfe/href :route-name/cvm.macros)}
+                    {:text       "Reference"
+                     :route-name :route-name/cvm.reference
+                     :href       (rfe/href :route-name/cvm.reference)}
                     ]}
 
       ;; Peer operations
@@ -279,14 +282,6 @@
                      :route-name :route-name/peer-ops.run
                      :href       (rfe/href :route-name/peer-ops.run)}]}
 
-      ;; Reference
-      ;; =============
-      {:text       "Reference"
-       :top-level? true
-       :route-name :route-name/reference
-       :href       (rfe/href :route-name/reference)}
-
-  
       ;; REST API
       ;; ========
       {:text       "REST API"

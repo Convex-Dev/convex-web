@@ -414,6 +414,25 @@
                                               :state  {:id :cvm.macros}
                                               :title  "Macros"}))}]}]
   
+   ["/reference"
+    {:name        :route-name/cvm.reference
+     :controllers [{:identity identity
+                    :start    (fn [match]
+                                 (let [library (get-in match
+                                                       [:parameters
+                                                        :query
+                                                        :library]
+                                                       "convex.core")
+                                       symbol  (get-in match
+                                                       [:parameters
+                                                        :query
+                                                        :symbol])]
+                                   (stack/push :page.id/cvm.reference 
+                                               (merge {:reset? true}
+                                                      (when symbol
+                                                        {:state {:selected-library library
+                                                                 :symbol           symbol}})))))}]}]
+
     ["/running-convex-lisp"
 
      [""
@@ -489,18 +508,6 @@
                                               :title  "Run"}))}]}]
      ]
 
-
-   ["reference"
-    {:name        :route-name/reference
-     :controllers [{:identity identity
-                    :start    (fn [match]
-                                 (let [library (get-in match [:parameters :query :library] "convex.core")
-                                       symbol (get-in match [:parameters :query :symbol])]
-                                   (stack/push :page.id/reference 
-                                               (merge {:reset? true}
-                                                      (when symbol
-                                                        {:state {:selected-library library
-                                                                 :symbol symbol}})))))}]}]
 
 
    ["rest-api"
