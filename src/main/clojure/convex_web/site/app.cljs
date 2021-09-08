@@ -280,35 +280,7 @@
                      :href       (rfe/href :route-name/peer-ops.declare)}
                     {:text       "Run"
                      :route-name :route-name/peer-ops.run
-                     :href       (rfe/href :route-name/peer-ops.run)}]}
-
-      ;; REST API
-      ;; ========
-      {:text       "REST API"
-       :top-level? true
-       :route-name :route-name/rest-api
-       :href       (rfe/href :route-name/rest-api)
-       :children   [{:text       "Create an account"
-                     :route-name :route-name/rest-api.create-account
-                     :href       (rfe/href :route-name/rest-api.create-account)}
-                    {:text       "Account details"
-                     :route-name :route-name/rest-api.account-details
-                     :href       (rfe/href :route-name/rest-api.account-details)}
-                    {:text       "Request coins"
-                     :route-name :route-name/rest-api.request-coins
-                     :href       (rfe/href :route-name/rest-api.request-coins)}
-                    {:text       "Query"
-                     :route-name :route-name/rest-api.query
-                     :href       (rfe/href :route-name/rest-api.query)}
-                    {:text       "Prepare transaction"
-                     :route-name :route-name/rest-api.prepare-transaction
-                     :href       (rfe/href :route-name/rest-api.prepare-transaction)}
-                    {:text       "Submit transaction"
-                     :route-name :route-name/rest-api.submit-transaction
-                     :href       (rfe/href :route-name/rest-api.submit-transaction)}
-                    ]}
-
-      
+                     :href       (rfe/href :route-name/peer-ops.run)}]}      
       
       ;; Sandbox
       ;; ==============
@@ -356,7 +328,28 @@
        :top-level? true
        :route-name :route-name/tools
        :href       (rfe/href :route-name/tools)
-       :children   []}
+       :children   [{:text       "REST API"
+                     :route-name :route-name/tools.rest-api
+                     :href       (rfe/href :route-name/tools.rest-api)
+                     :children   [{:text       "Create an account"
+                                   :route-name :route-name/tools.rest-api.create-account
+                                   :href       (rfe/href :route-name/tools.rest-api.create-account)}
+                                  {:text       "Account details"
+                                   :route-name :route-name/tools.rest-api.account-details
+                                   :href       (rfe/href :route-name/tools.rest-api.account-details)}
+                                  {:text       "Request coins"
+                                   :route-name :route-name/tools.rest-api.request-coins
+                                   :href       (rfe/href :route-name/tools.rest-api.request-coins)}
+                                  {:text       "Query"
+                                   :route-name :route-name/tools.rest-api.query
+                                   :href       (rfe/href :route-name/tools.rest-api.query)}
+                                  {:text       "Prepare transaction"
+                                   :route-name :route-name/tools.rest-api.prepare-transaction
+                                   :href       (rfe/href :route-name/tools.rest-api.prepare-transaction)}
+                                  {:text       "Submit transaction"
+                                   :route-name :route-name/tools.rest-api.submit-transaction
+                                   :href       (rfe/href :route-name/tools.rest-api.submit-transaction)}]}
+                    ]}
 
       
       ;; About

@@ -479,7 +479,7 @@
                                                 :state  {:id :cvm.run-cvx.local-network}
                                                 :title  "Local Network"}))}]}]]]
 
-   ["/peer-operations"
+   ["peer-operations"
 
     [""
      {:name        :route-name/peer-ops
@@ -510,71 +510,7 @@
 
 
 
-   ["rest-api"
-
-    [""
-     {:name        :route-name/rest-api
-      :controllers [{:identity identity
-                     :start    (fn [match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  (merge {:id :rest-api}
-                                                             (when-let [section (scroll-to match)]
-                                                               {:scroll-to section}))
-                                              :title  "REST API"}))}]}]
-
-    ["/account-details"
-     {:name        :route-name/rest-api.account-details
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :rest-api.account-details}
-                                              :title  "Account details"}))}]}]
-    ["/create-an-account"
-     {:name        :route-name/rest-api.create-account
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :rest-api.create-account}
-                                              :title  "Create an account"}))}]}]
-
-    ["/prepare-transaction"
-     {:name        :route-name/rest-api.prepare-transaction
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :rest-api.prepare-transaction}
-                                              :title  "Prepare transaction"}))}]}]
-
-    ["/query"
-     {:name        :route-name/rest-api.query
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :rest-api.query}
-                                              :title  "Query"}))}]}]
-
-    ["/request-coins"
-     {:name        :route-name/rest-api.request-coins
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :rest-api.request-coins}
-                                              :title  "Request coins"}))}]}]
-    ["/submit-transaction"
-     {:name        :route-name/rest-api.submit-transaction
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :rest-api.submit-transaction}
-                                              :title  "Submit transaction"}))}]}]
-    ]
+   
 
 
    ["testnet"
@@ -686,6 +622,72 @@
                                               {:reset? true
                                                :state  {:id :tools}
                                                :title  "Tools"}))}]}]
+
+    ["/rest-api"
+
+     [""
+      {:name        :route-name/tools.rest-api
+       :controllers [{:identity identity
+                      :start    (fn [match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  (merge {:id :tools.rest-api}
+                                                              (when-let [section (scroll-to match)]
+                                                                {:scroll-to section}))
+                                               :title  "REST API"}))}]}]
+
+     ["/account-details"
+      {:name        :route-name/tools.rest-api.account-details
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.account-details}
+                                               :title  "Account details"}))}]}]
+     ["/create-an-account"
+      {:name        :route-name/tools.rest-api.create-account
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.create-account}
+                                               :title  "Create an account"}))}]}]
+
+     ["/prepare-transaction"
+      {:name        :route-name/tools.rest-api.prepare-transaction
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.prepare-transaction}
+                                               :title  "Prepare transaction"}))}]}]
+
+     ["/query"
+      {:name        :route-name/tools.rest-api.query
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.query}
+                                               :title  "Query"}))}]}]
+
+     ["/request-coins"
+      {:name        :route-name/tools.rest-api.request-coins
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.request-coins}
+                                               :title  "Request coins"}))}]}]
+     ["/submit-transaction"
+      {:name        :route-name/tools.rest-api.submit-transaction
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.submit-transaction}
+                                               :title  "Submit transaction"}))}]}]
+     ]
     ]
    
    
