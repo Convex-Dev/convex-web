@@ -337,16 +337,6 @@
 (s/def :convex-web.repl/commands (s/coll-of :convex-web/command))
 
 
-;; -- Comms
-
-(s/def :comms/state map?)
-
-
-;; -- Blockchain
-
-(s/def :blockchain/blocks vector?)
-
-
 ;; -- Devtools
 
 (s/def :devtools/enabled? boolean?)
@@ -359,7 +349,7 @@
 (s/def :page/id keyword?)
 (s/def :page/title string?)
 (s/def :page/description string?)
-(s/def :page/template #{:dev :marketing})
+(s/def :page/template #{:developer :marketing})
 (s/def :page/style (s/keys :opt [:page-style/title-size]))
 (s/def :page/component var?)
 (s/def :page/initial-state any?)
@@ -419,11 +409,6 @@
 (s/def :site/route
   (s/keys :opt [:route/match :route/state]))
 
-;; -- Site Comms
-
-(s/def :site/comms
-  (s/keys :req [:comms/state]))
-
 
 ;; -- Site Devtools
 
@@ -431,19 +416,11 @@
   (s/keys :opt [:devtools/enabled?]))
 
 
-;; -- Site Blockchain
-
-(s/def :site/blockchain
-  (s/keys :req [:blockchain/blocks]))
-
-
 ;; -- Site DB
 
 (s/def :site/app-db
   (s/keys :req [:site/pages]
-          :opt [:site/comms
-                :site/route
+          :opt [:site/route
                 :site/devtools
-                :site/session
-                :site/blockchain]))
+                :site/session]))
 

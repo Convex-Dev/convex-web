@@ -636,7 +636,7 @@
            [:> headlessui/Dialog.Overlay
             {:className "fixed inset-0 bg-gray-100"}]
            
-           [:div.fixed.inset-y-0.w-full
+           [:div.fixed.inset-y-0.w-full.h-full.overflow-auto
             
             [:div.h-16.flex.justify-end.items-center.px-6
              [CloseButton
@@ -715,7 +715,7 @@
           (when title
             [:div
              [:h1
-              {:class ["inline"
+              {:class ["md:inline"
                        "text-gray-900 text-3xl md:text-4xl"
                        "leading-none"
                        "border-b-2 border-blue-500"
@@ -747,7 +747,7 @@
         
         (when title
           [:h1
-           {:class ["inline"
+           {:class ["md:inline"
                     "text-gray-900 text-3xl md:text-4xl"
                     "leading-none"
                     "border-b-2 border-blue-500"
