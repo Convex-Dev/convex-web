@@ -165,8 +165,15 @@
                                  (stack/push :page.id/markdown
                                              {:reset? true
                                               :state  {:id :by-example}
-                                              :title  "By example"}))}]}
-     ]
+                                              :title  "By example"}))}]}]
+    ["/fungible-token"
+     {:name        :route-name/by-example.fungible-token
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :by-example.fungible-token}
+                                              :title  "Fungible token"}))}]}]
     ]
    
 

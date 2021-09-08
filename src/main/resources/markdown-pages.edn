@@ -128,6 +128,12 @@
   :smart-toc? true
   :toc?       false}
 
+ :by-example.fungible-token
+ {:contents   [{:name "Fungible token"
+                :path "markdown/dev_doc/by-example/fungible-token.md"}]
+  :smart-toc? true
+  :toc?       false}
+
  :cvm
  {:contents   [{:name "CVM"
                 :path "markdown/dev_doc/cvm.md"}]

@@ -262,7 +262,10 @@
        {:text       "By example"
         :top-level? true
         :route-name :route-name/by-example
-        :href       (rfe/href :route-name/by-example)}
+        :href       (rfe/href :route-name/by-example)
+        :children   [{:text       "Fungible token"
+                      :route-name :route-name/by-example.fungible-token
+                      :href       (rfe/href :route-name/by-example.fungible-token)}]}
 
       ;; Run a peer
       ;; =============
