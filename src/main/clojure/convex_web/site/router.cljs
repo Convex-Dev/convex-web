@@ -444,27 +444,14 @@
 
 
 
-   ["peer-operations"
-
-    [""
-     {:name        :route-name/peer-ops
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :peer-ops}
-                                              :title  "Peer operations"}))}]}]
-
-    
-    ["/run"
-     {:name        :route-name/peer-ops.run
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :peer-ops.run}
-                                              :title  "Run"}))}]}]
-     ]
+   ["run-a-peer"
+    {:name        :route-name/run-a-peer
+     :controllers [{:identity identity
+                    :start    (fn [_match]
+                                (stack/push :page.id/markdown
+                                            {:reset? true
+                                             :state  {:id :run-a-peer}
+                                             :title  "Run a peer"}))}]}]
 
 
 

@@ -257,15 +257,12 @@
                      :href       (rfe/href :route-name/cvm.reference)}
                     ]}
 
-      ;; Peer operations
+      ;; Run a peer
       ;; =============
-      {:text       "Peer operations"
+      {:text       "Run a peer"
        :top-level? true
-       :route-name :route-name/peer-ops
-       :href       (rfe/href :route-name/peer-ops)
-       :children   [{:text       "Run"
-                     :route-name :route-name/peer-ops.run
-                     :href       (rfe/href :route-name/peer-ops.run)}]}      
+       :route-name :route-name/run-a-peer
+       :href       (rfe/href :route-name/run-a-peer)}
       
       ;; Sandbox
       ;; ==============

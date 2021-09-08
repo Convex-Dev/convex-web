@@ -298,15 +298,9 @@
   :smart-toc? true
   :toc?       false}
 
- :peer-ops
- {:contents   [{:name "Peer operations"
-                :path "markdown/dev_doc/peer-operations.md"}]
-  :smart-toc? true
-  :toc?       false}
-
- :peer-ops.run
- {:contents   [{:name "Run"
-                :path "markdown/dev_doc/peer-operations/run.md"}]
+ :run-a-peer
+ {:contents   [{:name "Run a peer"
+                :path "markdown/dev_doc/run-a-peer.md"}]
   :smart-toc? true
   :toc?       false}
 
