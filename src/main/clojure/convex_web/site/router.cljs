@@ -622,6 +622,14 @@
                                              {:reset? true
                                               :state  {:id :tools.core}
                                               :title  "Core"}))}]}]
+    ["/clojure-toolchain"
+     {:name        :route-name/tools.clojure-toolchain
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :tools.clojure-toolchain}
+                                              :title  "Clojure toolchain"}))}]}]
 
     ["/command-line-interface"
      {:name        :route-name/tools.cli

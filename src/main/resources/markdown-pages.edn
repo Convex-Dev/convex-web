@@ -345,6 +345,12 @@
   :smart-toc? true
   :toc?       false}
 
+ :tools.clojure-toolchain
+ {:contents   [{:name "Clojure toolchain"
+                :path "markdown/dev_doc/tools/clojure-toolchain.md"}]
+  :smart-toc? true
+  :toc?       false}
+
  :tools.convex-lisp-runner
  {:contents   [{:name "Convex Lisp Runner"
                 :path "markdown/dev_doc/tools/convex-lisp-runner.md"}]
