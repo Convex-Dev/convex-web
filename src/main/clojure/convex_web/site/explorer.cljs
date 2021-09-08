@@ -628,7 +628,8 @@
             ;; -- Type
             [:td {:class td-class}
              [gui/Tooltip
-              {:title (gui/account-type-description status)}
+              {:title (gui/account-type-description status)
+               :size "small"}
               [:div.flex-1.px-2.rounded
                {:class (gui/account-type-text-color status)}
                [:span.uppercase

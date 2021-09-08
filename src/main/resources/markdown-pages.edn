@@ -13,7 +13,7 @@
   :contents
   [{:name "Under Construction"
     :path "markdown/under_construction.md"}]}
-  
+
  :technology
  {:toc? true
   :smart-toc? true
@@ -27,27 +27,27 @@
   :contents
   [{:name "Use Cases"
     :path "markdown/use-cases.md"}]}
- 
+
  :ecosystem
  {:toc? true
   :smart-toc? true
   :contents
   [{:name "Ecosystem"
     :path "markdown/ecosystem.md"}]}
- 
+
  :about
  {:toc? true
   :smart-toc? true
   :contents
   [{:name "About"
     :path "markdown/about.md"}]}
- 
+
  :developer
  {:toc? false
   :contents
   [{:name "Developer"
     :path "markdown/dev_doc/introduction.md"}]}
- 
+
  :explorer
  {:toc? false
   :contents
@@ -152,7 +152,7 @@
                 :path "markdown/dev_doc/cvm/basic-syntax.md"}]
   :smart-toc? true
   :toc?       false}
-  
+
 
  :cvm.building-blocks
  {:contents   [{:name "Building blocks"
@@ -316,6 +316,10 @@
   :smart-toc? true
   :toc?       true}
 
+ :cvm.run-cvx.local-network
+ {:contents   [{:name "Local Network"
+                :path "markdown/dev_doc/cvm/running-convex-lisp/local-network.md"}]
+  :toc?       false}
 
 
 

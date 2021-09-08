@@ -752,7 +752,8 @@
 
 (defn InfoTooltip [tooltip]
   [Tooltip
-   {:html (r/as-element [:p.text-xs.font-mono.leading-relaxed tooltip])}
+   {:title tooltip
+    :size "small"}
    [InformationCircleIcon {:class "w-4 h-4 hover:text-gray-500"}]])
 
 

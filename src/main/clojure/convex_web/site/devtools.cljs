@@ -145,6 +145,30 @@
                [:code.font-bold.mb-2 (str :frame/uuid " ") frame-uuid]
                [:pre.m-0 (expound/expound-str spec state)]]))]))]))
 
+(defn SpecCheckPanel 
+  "Devtool panel to check the state of the application."
+  []
+  (let [db (sub :devtools/?db)]
+    [:div.flex.flex-col.flex-1.max-w-full
+     
+     ;; -- DB & Stack spec check
+     (let [valid-db? (sub :devtools/?valid-db?)
+           valid-stack-state? (sub :devtools/?stack-state-valid?)]
+       (if (and valid-db? valid-stack-state?)
+         [:div.p-2
+          [:code "Valid"]]
+         
+         [:div.h-full.flex.flex-col.space-y-2.bg-red-100.p-2.overflow-scroll
+          (when-not valid-db?
+            [:pre.text-xs.text-red-500.p-2.m-0 (expound/expound-str :site/app-db db)])
+          
+          (for [[frame-uuid {:devtools.stack-state-check/keys [spec state valid?]}] (sub :devtools/?stack-state-check)]
+            (when-not valid?
+              ^{:key frame-uuid}
+              [:div.flex.flex-col.text-xs.text-red-500.p-2
+               [:code.font-bold.mb-2 (str :frame/uuid " ") frame-uuid]
+               [:pre.m-0 (expound/expound-str spec state)]]))]))]))
+
 ;; ---
 
 (re-frame/reg-sub :devtools.stress-test/?get
@@ -325,8 +349,8 @@
 
 
 (def default-panel
-  {:devtools.panel/id :devtools.panel.id/app-db
-   :devtools.panel/component #'AppDBPanel})
+  {:devtools.panel/id :devtools.panel.id/spec-check
+   :devtools.panel/component #'SpecCheckPanel})
 
 (defn InspectTab [{tab-id :id
                    tab-name :name
@@ -385,13 +409,11 @@
        "border-green-500"]}
 
      ;; -- Tabs
-     [:div.flex.bg-green-600.border-b.border-green-500.px-1
+     [:div.flex.bg-green-600.border-b.border-green-500.px-1.space-x-2
       [InspectTab
-       {:id :devtools.panel.id/app-db
-        :name "App-DB"
-        :panel #'AppDBPanel}]
-
-      [:div.mx-2]
+       {:id :devtools.panel.id/spec-check
+        :name "Spech Check"
+        :panel #'SpecCheckPanel}]
 
       ;;[InspectTab
       ;; {:id :devtools.panel.id/transaction

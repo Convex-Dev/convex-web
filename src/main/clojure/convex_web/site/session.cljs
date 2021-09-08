@@ -159,7 +159,7 @@
       {:disabled (str/blank? id)
        :on-click
        #(do
-          (set! (.-cookie js/document) (str "ring-session=" id))
+          (set! (.-cookie js/document) (str "ring-session=" id " ; path=/"))
           (.reload (.-location js/document)))}
       [gui/ButtonText
        {}
