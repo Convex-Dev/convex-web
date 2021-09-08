@@ -292,29 +292,6 @@
   :smart-toc? true
   :toc?       false}
 
- :cvm.run-cvx
- {:contents   [{:name "Running Convex Lisp"
-                :path "markdown/dev_doc/cvm/running-convex-lisp.md"}]
-  :smart-toc? true
-  :toc?       false}
-
- :cvm.run-cvx.clients
- {:contents   [{:name "Clients"
-                :path "markdown/dev_doc/cvm/running-convex-lisp/clients.md"}]
-  :smart-toc? true
-  :toc?       false}
-
- :cvm.run-cvx.sandbox
- {:contents   [{:name "Sandbox"
-                :path "markdown/dev_doc/cvm/running-convex-lisp/sandbox.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :cvm.run-cvx.local-network
- {:contents   [{:name "Local Network"
-                :path "markdown/dev_doc/cvm/running-convex-lisp/local-network.md"}]
-  :toc?       false}
-
  :peer-ops
  {:contents   [{:name "Peer operations"
                 :path "markdown/dev_doc/peer-operations.md"}]
@@ -332,6 +309,12 @@
                 :path "markdown/dev_doc/peer-operations/run.md"}]
   :smart-toc? true
   :toc?       false}
+
+ :sandbox.tutorial
+ {:contents   [{:name "Sandbox tutorial"
+                :path "markdown/dev_doc/sandbox/tutorial.md"}]
+  :smart-toc? true
+  :toc?       true}
 
  :testnet
  {:contents   [{:name "Testnet"

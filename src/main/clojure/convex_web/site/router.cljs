@@ -432,43 +432,9 @@
                                                       (when symbol
                                                         {:state {:selected-library library
                                                                  :symbol           symbol}})))))}]}]
+    ]
 
-    ["/running-convex-lisp"
 
-     [""
-      {:name        :route-name/cvm.run-cvx
-       :controllers [{:identity identity
-                      :start    (fn [_match]
-                                  (stack/push :page.id/markdown
-                                              {:reset? true
-                                               :state  {:id :cvm.run-cvx}
-                                               :title  "Running Convex Lisp"}))}]}]
-     ["/clients"
-      {:name        :route-name/cvm.run-cvx.clients
-       :controllers [{:identity identity
-                      :start    (fn [_match]
-                                  (stack/push :page.id/markdown
-                                              {:reset? true
-                                               :state  {:id :cvm.run-cvx.clients}
-                                               :title  "Clients"}))}]}]
-
-     ["/sandbox"
-      {:name        :route-name/cvm.run-cvx.sandbox
-       :controllers  [{:identity identity
-                       :start    (fn [_match]
-                                   (stack/push :page.id/markdown
-                                               {:reset? true
-                                                :state  {:id :cvm.run-cvx.sandbox}
-                                                :title  "Sandbox"}))}]}]
-     
-     ["/local-network"
-      {:name        :route-name/cvm.run-cvx.local-network
-       :controllers  [{:identity identity
-                       :start    (fn [_match]
-                                   (stack/push :page.id/markdown
-                                               {:reset? true
-                                                :state  {:id :cvm.run-cvx.local-network}
-                                                :title  "Local Network"}))}]}]]]
 
    ["peer-operations"
 
@@ -499,9 +465,6 @@
                                               :title  "Run"}))}]}]
      ]
 
-
-
-   
 
 
    ["testnet"
@@ -782,11 +745,22 @@
    ;; Sandbox
    ;; ==============
    ["sandbox"
-    {:name :route-name/sandbox
-     :controllers
-     [{:identity identity
-       :start (fn [_]
-                (stack/push :page.id/repl {:reset? true}))}]}]
+
+    [""
+     {:name        :route-name/sandbox
+      :controllers [{:identity identity
+                     :start    (fn [_]
+                                 (stack/push :page.id/repl
+                                             {:reset? true}))}]}]
+    ["/tutorial"
+     {:name        :route-name/sandbox.tutorial
+      :controllers  [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :sandbox.tutorial}
+                                               :title  "Sandbox tutorial"}))}]}]
+    ]
    
    
    ;; My Account (account details)

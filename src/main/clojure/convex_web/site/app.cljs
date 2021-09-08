@@ -168,19 +168,7 @@
        :top-level? true
        :route-name :route-name/cvm
        :href       (rfe/href :route-name/cvm)
-       :children   [{:text        "Running Convex Lisp"
-                     :route-name   :route-name/cvm.run-cvx
-                     :href        (rfe/href :route-name/cvm.run-cvx)
-                     :children    [{:text       "Sandbox"
-                                    :route-name :route-name/cvm.run-cvx.sandbox
-                                    :href       (rfe/href :route-name/cvm.run-cvx.sandbox)}
-                                   {:text       "Clients"
-                                    :route-name :route-name/cvm.run-cvx.clients
-                                    :href       (rfe/href :route-name/cvm.run-cvx.clients)} 
-                                   {:text       "Local Network"
-                                    :route-name :route-name/cvm.run-cvx.local-network
-                                    :href       (rfe/href :route-name/cvm.run-cvx.local-network)}]}
-                    {:text       "Basic syntax"
+       :children   [{:text       "Basic syntax"
                      :route-name :route-name/cvm.basic-syntax
                      :href       (rfe/href :route-name/cvm.basic-syntax)}
                     {:text       "Data types"
