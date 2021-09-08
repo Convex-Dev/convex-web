@@ -6,6 +6,8 @@
   (:import 
    (convex.core.util Shutdown)))
 
+(def system nil)
+
 (defn -main
   "Start Convex Web."
   [& _]
@@ -21,6 +23,8 @@
                           
                           (catch Exception ex
                             (log/error ex "There was an error while stopping system in shutdown hook."))))]
+    
+    (alter-var-root #'convex-web.core/system (constantly system))
     
     (Shutdown/addHook Shutdown/SERVER ^Runnable shutdown-hook)
     
