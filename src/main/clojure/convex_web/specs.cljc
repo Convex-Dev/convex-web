@@ -419,11 +419,6 @@
 (s/def :site/route
   (s/keys :opt [:route/match :route/state]))
 
-;; -- Site Comms
-
-(s/def :site/comms
-  (s/keys :req [:comms/state]))
-
 
 ;; -- Site Devtools
 
@@ -431,19 +426,11 @@
   (s/keys :opt [:devtools/enabled?]))
 
 
-;; -- Site Blockchain
-
-(s/def :site/blockchain
-  (s/keys :req [:blockchain/blocks]))
-
-
 ;; -- Site DB
 
 (s/def :site/app-db
   (s/keys :req [:site/pages]
-          :opt [:site/comms
-                :site/route
+          :opt [:site/route
                 :site/devtools
-                :site/session
-                :site/blockchain]))
+                :site/session]))
 
