@@ -120,8 +120,13 @@
     :path "markdown/glossary.md"}]}
 
 
- ;; DOC - CVM
+ ;; Dev documentation
 
+ :by-example
+ {:contents   [{:name "By example"
+                :path "markdown/dev_doc/by-example.md"}]
+  :smart-toc? true
+  :toc?       false}
 
  :cvm
  {:contents   [{:name "CVM"

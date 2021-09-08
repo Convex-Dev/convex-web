@@ -257,6 +257,13 @@
                      :href       (rfe/href :route-name/cvm.reference)}
                     ]}
 
+      ;; By example
+      ;; =======================
+       {:text       "By example"
+        :top-level? true
+        :route-name :route-name/by-example
+        :href       (rfe/href :route-name/by-example)}
+
       ;; Run a peer
       ;; =============
       {:text       "Run a peer"

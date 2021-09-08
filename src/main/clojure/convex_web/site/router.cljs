@@ -154,18 +154,34 @@
                                           :state  {:id :developer}
                                           :title  "Introduction"}))}]}]
 
+   ;; By example
+   ;; =============
+   ["by-example"
+
+    [""
+     {:name        :route-name/by-example
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :by-example}
+                                              :title  "By example"}))}]}
+     ]
+    ]
+   
+
    ;; CVM
    ;; ==============
    ["cvm"
 
     [""
-     {:controllers [{:identity identity
+     {:name        :route-name/cvm
+      :controllers [{:identity identity
                      :start    (fn [_match]
                                  (stack/push :page.id/markdown
                                              {:reset? true
                                               :state  {:id :cvm}
-                                              :title  "Convex Virtual Machine"}))}]
-      :name        :route-name/cvm}]
+                                              :title  "Convex Virtual Machine"}))}]}]
    
     ["/accounts"
 
