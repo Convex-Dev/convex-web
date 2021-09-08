@@ -697,7 +697,7 @@
           (when title
             [:div
              [:h1
-              {:class ["inline"
+              {:class ["md:inline"
                        "text-gray-900 text-3xl md:text-4xl"
                        "leading-none"
                        "border-b-2 border-blue-500"
@@ -729,7 +729,7 @@
         
         (when title
           [:h1
-           {:class ["inline"
+           {:class ["md:inline"
                     "text-gray-900 text-3xl md:text-4xl"
                     "leading-none"
                     "border-b-2 border-blue-500"
