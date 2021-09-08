@@ -391,8 +391,18 @@
 (defmulti error-message :code)
 
 (defmethod error-message :default
-  [{:keys [code message]}]
-  (str (error-code-string code) ": " message))
+  [{:keys [code message status]}]
+  (cond
+    (= status 403)
+    "The sandbox has been updated! Please refresh your browser."
+    
+    code
+    (str (error-code-string code)
+      (when message
+        (str ": " message)))
+    
+    :else
+    "Unknown error"))
 
 (defmethod error-message :STATE
   [{:keys [message]}]
@@ -423,7 +433,8 @@
 (defn Commands [commands]
   [:div.w-full.h-full.max-w-full.overflow-auto.bg-gray-100.border.rounded
    (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
-     ^{:key id}
+     ;; Error Commands don't have an ID.
+     ^{:key (or id (str (random-uuid)))}
      [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
       {:ref
        (fn [el]
