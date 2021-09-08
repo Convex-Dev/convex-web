@@ -618,7 +618,7 @@
            [:> headlessui/Dialog.Overlay
             {:className "fixed inset-0 bg-gray-100"}]
            
-           [:div.fixed.inset-y-0.w-full
+           [:div.fixed.inset-y-0.w-full.h-full.overflow-auto
             
             [:div.h-16.flex.justify-end.items-center.px-6
              [CloseButton
