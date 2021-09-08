@@ -413,25 +413,33 @@
                                              {:reset? true
                                               :state  {:id :cvm.macros}
                                               :title  "Macros"}))}]}]
+    ["/peer-operations"
+     {:name        :route-name/cvm.peer-operations
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.peer-operations}
+                                              :title  "Peer operations"}))}]}]
   
-   ["/reference"
-    {:name        :route-name/cvm.reference
-     :controllers [{:identity identity
-                    :start    (fn [match]
-                                 (let [library (get-in match
-                                                       [:parameters
-                                                        :query
-                                                        :library]
-                                                       "convex.core")
-                                       symbol  (get-in match
-                                                       [:parameters
-                                                        :query
-                                                        :symbol])]
-                                   (stack/push :page.id/cvm.reference 
-                                               (merge {:reset? true}
-                                                      (when symbol
-                                                        {:state {:selected-library library
-                                                                 :symbol           symbol}})))))}]}]
+    ["/reference"
+     {:name        :route-name/cvm.reference
+      :controllers [{:identity identity
+                     :start    (fn [match]
+                                  (let [library (get-in match
+                                                        [:parameters
+                                                         :query
+                                                         :library]
+                                                        "convex.core")
+                                        symbol  (get-in match
+                                                        [:parameters
+                                                         :query
+                                                         :symbol])]
+                                    (stack/push :page.id/cvm.reference 
+                                                (merge {:reset? true}
+                                                       (when symbol
+                                                         {:state {:selected-library library
+                                                                  :symbol           symbol}})))))}]}]
     ]
 
 
@@ -447,14 +455,7 @@
                                               :state  {:id :peer-ops}
                                               :title  "Peer operations"}))}]}]
 
-    ["/declare"
-     {:name        :route-name/peer-ops.declare
-      :controllers [{:identity identity
-                     :start    (fn [_match]
-                                 (stack/push :page.id/markdown
-                                             {:reset? true
-                                              :state  {:id :peer-ops.declare}
-                                              :title  "Declare"}))}]}]
+    
     ["/run"
      {:name        :route-name/peer-ops.run
       :controllers [{:identity identity

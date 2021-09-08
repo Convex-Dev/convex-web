@@ -249,6 +249,9 @@
                     {:text       "Macros"
                      :route-name :route-name/cvm.macros
                      :href       (rfe/href :route-name/cvm.macros)}
+                    {:text       "Peer operations"
+                     :route-name :route-name/cvm.peer-operations
+                     :href       (rfe/href :route-name/cvm.peer-operations)}
                     {:text       "Reference"
                      :route-name :route-name/cvm.reference
                      :href       (rfe/href :route-name/cvm.reference)}
@@ -260,10 +263,7 @@
        :top-level? true
        :route-name :route-name/peer-ops
        :href       (rfe/href :route-name/peer-ops)
-       :children   [{:text       "Declare"
-                     :route-name :route-name/peer-ops.declare
-                     :href       (rfe/href :route-name/peer-ops.declare)}
-                    {:text       "Run"
+       :children   [{:text       "Run"
                      :route-name :route-name/peer-ops.run
                      :href       (rfe/href :route-name/peer-ops.run)}]}      
       

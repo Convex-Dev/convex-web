@@ -292,15 +292,15 @@
   :smart-toc? true
   :toc?       false}
 
- :peer-ops
+ :cvm.peer-operations
  {:contents   [{:name "Peer operations"
-                :path "markdown/dev_doc/peer-operations.md"}]
+                :path "markdown/dev_doc/cvm/peer-operations.md"}]
   :smart-toc? true
   :toc?       false}
 
- :peer-ops.declare
- {:contents   [{:name "Declare"
-                :path "markdown/dev_doc/peer-operations/declare.md"}]
+ :peer-ops
+ {:contents   [{:name "Peer operations"
+                :path "markdown/dev_doc/peer-operations.md"}]
   :smart-toc? true
   :toc?       false}
 
