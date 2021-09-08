@@ -1,4 +1,6 @@
-Any aspect of the Convex stack is available to JVM languages through the core Java libraries hosted on [convex-dev/convex](https://github.com/Convex-Dev/convex).
+[https://github.com/Convex-Dev/convex](https://github.com/Convex-Dev/convex)
+
+Any aspect of the Convex stack is available to JVM languages through the core Java libraries.
 
 Besides Java, those utilities provide a decisive advantage to programming languages such as Clojure, Kotling, or Scala.
 
