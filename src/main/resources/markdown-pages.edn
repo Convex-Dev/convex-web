@@ -351,6 +351,11 @@
   :smart-toc? true
   :toc?       false}
 
+ :tools.core
+ {:contents   [{:name "Core"
+                :path "markdown/dev_doc/tools/core.md"}]
+  :smart-toc? true
+  :toc?       false}
  :tools.cli
  {:contents   [{:name "Command Line Interface"
                 :path "markdown/dev_doc/tools/command-line-interface.md"}]

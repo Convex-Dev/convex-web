@@ -328,7 +328,10 @@
        :top-level? true
        :route-name :route-name/tools
        :href       (rfe/href :route-name/tools)
-       :children   [{:text       "Command Line Interface"
+       :children   [{:text       "Core"
+                     :route-name :route-name/tools.core
+                     :href       (rfe/href :route-name/tools.core)}
+                    {:text       "Command Line Interface"
                      :route-name :route-name/tools.cli
                      :href       (rfe/href :route-name/tools.cli)}
                     {:text       "REST API"

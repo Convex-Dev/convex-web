@@ -623,6 +623,15 @@
                                               :state  {:id :tools}
                                               :title  "Tools"}))}]}]
 
+    ["/core"
+     {:name        :route-name/tools.core
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :tools.core}
+                                              :title  "Core"}))}]}]
+
     ["/command-line-interface"
      {:name        :route-name/tools.cli
       :controllers [{:identity identity
