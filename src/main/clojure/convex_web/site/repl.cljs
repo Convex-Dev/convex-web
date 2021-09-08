@@ -361,18 +361,23 @@
                                 
                                 }}}])
           
-          [:div.flex.flex-col.justify-center.p-1.bg-gray-100.rounded
-           [gui/Tooltip
-            {:title "Run"
-             :size "small"}
+          [gui/Tooltip
+           {:title "Run"
+            :size "small"}
+           [:button.flex.flex-col.justify-center.h-full
+            {:class 
+             ["px-2 py-1"
+              "rounded"
+              "bg-gray-100"
+              "hover:bg-gray-200 hover:shadow"
+              "active:bg-gray-300"]
+             :on-click execute}
             [gui/PlayIcon
              {:class
               ["w-6 h-6"
                "text-green-500"
-               "hover:shadow-lg hover:text-green-600 hover:bg-green-100"
                "rounded-full"
-               "cursor-pointer"]
-              :on-click execute}]]]]]))))
+               "cursor-pointer"]}]]]]]))))
 
 (def output-symbol-metadata-options
   {:show-examples? false})
