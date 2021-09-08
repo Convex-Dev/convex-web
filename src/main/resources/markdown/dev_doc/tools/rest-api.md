@@ -10,3 +10,19 @@ Generally, besides errors in each method, the following HTTP statuses are return
 
 - **400**: request is incorrectly formatted
 - **500**: server encountered an error
+
+
+## Libraries
+
+Here is a selection of libraries providing an interface for the REST API as well as Ed25519 signing. This list is
+growing, contributions welcome.
+
+**C:** [billbsing/convex-api-c](https://github.com/billbsing/convex-api-c.git) (in development)
+
+**Java:** [convex-dev/convex-java](https://github.com/orgs/Convex-Dev/convex)
+
+**NodeJS:** [convex-dev/convex-api-js](https://github.com/Convex-Dev/convex-api-js)
+
+**Python:** [convex-dev/convex-api-py](https://github.com/Convex-Dev/convex-api-py)
+
+**Ruby:** [billbsing/convex-api-ruby](https://github.com/billbsing/convex-api-ruby.git) (in development)
