@@ -337,16 +337,6 @@
 (s/def :convex-web.repl/commands (s/coll-of :convex-web/command))
 
 
-;; -- Comms
-
-(s/def :comms/state map?)
-
-
-;; -- Blockchain
-
-(s/def :blockchain/blocks vector?)
-
-
 ;; -- Devtools
 
 (s/def :devtools/enabled? boolean?)
