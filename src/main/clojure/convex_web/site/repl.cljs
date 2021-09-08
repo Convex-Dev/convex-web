@@ -524,7 +524,7 @@
     [:div.flex.flex-1.space-x-8.overflow-auto
      
      ;; -- REPL
-     [:div.w-screen.max-w-full.flex.flex-col.mb-6.space-y-1
+     [:div.w-screen.max-w-full.flex.flex-col.mb-6.space-y-2
       
       [:div.flex.justify-end
        [gui/Tooltip
@@ -542,33 +542,44 @@
       [Input state set-state]
       
       ;; -- Help
-      [:div.flex.space-x-2.pt-1.pb-4.text-gray-500
-       [:span.text-xs "Press " [:code.font-bold "Shift+Return"] " to run."]
+      [:div.flex.space-x-2.pt-1.pb-4.items-center.justify-between
        
-       ;; Keymaps.
-       [gui/Tooltip
-        {:html
-         (reagent/as-element
-           [:div.flex.flex-col.text-xs.font-mono.space-y-1
-            [:span.font-bold.text-sm.mb-2 "Keymaps"]
-            
-            [:div.flex.items-center.space-x-2
-             [:span.font-bold "Run: "]
-             [:span.bg-gray-500.p-1.rounded-md "Shift+Return"]]
-            
-            [:div.flex.items-center.space-x-2
-             [:span.font-bold "Clear: "]
-             [:span.bg-gray-500.p-1.rounded-md "Ctrl+Backspace"]]
-            
-            [:div.flex.items-center.space-x-2
-             [:span.font-bold "Navigate history up: "]
-             [:span.bg-gray-500.p-1.rounded-md "Ctrl+Up"]]
-            
-            [:div.flex.items-center.space-x-2
-             [:span.font-bold "Navigate history down: "]
-             [:span.bg-gray-500.p-1.rounded-md "Ctrl+Down"]]])}
+       ;; Shift return to run
+       [:div.flex.space-x-2.text-gray-500
+        [:span.text-xs "Press " [:code.font-bold "Shift+Return"] " to run."]
         
-        [gui/QuestionMarkCircle {:class "h-4 w-4"}]]]
+        ;; Keymaps
+        [gui/Tooltip
+         {:html
+          (reagent/as-element
+            [:div.flex.flex-col.text-xs.font-mono.space-y-1
+             [:span.font-bold.text-sm.mb-2 "Keymaps"]
+             
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Run: "]
+              [:span.bg-gray-500.p-1.rounded-md "Shift+Return"]]
+             
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Clear: "]
+              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Backspace"]]
+             
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Navigate history up: "]
+              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Up"]]
+             
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Navigate history down: "]
+              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Down"]]])}
+         
+         [gui/QuestionMarkCircle {:class "h-4 w-4"}]]]
+       
+       ;; Learn more
+       [gui/Tooltip
+        {:title "Sandbox Tutorial"
+         :size "small"}
+        [:a.text-xs.text-gray-500.rounded.hover:shadow.px-2.py-1.hover:bg-gray-100
+         {:href "sandbox/tutorial"}
+         "LEARN MORE"]]]
       
       ;; -- Options
       [:div.flex.flex-col.space-y-4.mt-1.cursor-default
