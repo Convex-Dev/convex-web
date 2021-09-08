@@ -615,13 +615,22 @@
    ["tools"
 
     [""
-      {:name        :route-name/tools
-       :controllers [{:identity identity
-                      :start    (fn [_match]
-                                  (stack/push :page.id/markdown
-                                              {:reset? true
-                                               :state  {:id :tools}
-                                               :title  "Tools"}))}]}]
+     {:name        :route-name/tools
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :tools}
+                                              :title  "Tools"}))}]}]
+
+    ["/command-line-interface"
+     {:name        :route-name/tools.cli
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :tools.cli}
+                                              :title  "Command Line Interface"}))}]}]
 
     ["/rest-api"
 

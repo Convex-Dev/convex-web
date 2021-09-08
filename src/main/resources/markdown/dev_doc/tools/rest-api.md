@@ -1,5 +1,5 @@
-`convex.world` hosts a JSON REST API for clients who would like to interact with the test network but cannot
-use the Convex binary protocol that peers speak.
+`convex.world` hosts a JSON REST API for interacting with the test network. It is useful for dApps and any client application
+that cannot leverage the binary protocol that peers speak.
 
 A selection of tailored libraries can be found within [Convex libraries](/cvm/running-convex-lisp/clients). However,
 any language/platform capable of producing an Ed25519 signature will be able to use this REST API directly.
