@@ -274,7 +274,10 @@
        :href       (rfe/href :route-name/peer-ops)
        :children   [{:text       "Declare"
                      :route-name :route-name/peer-ops.declare
-                     :href       (rfe/href :route-name/peer-ops.declare)}]}
+                     :href       (rfe/href :route-name/peer-ops.declare)}
+                    {:text       "Run"
+                     :route-name :route-name/peer-ops.run
+                     :href       (rfe/href :route-name/peer-ops.run)}]}
 
       ;; Reference
       ;; =============

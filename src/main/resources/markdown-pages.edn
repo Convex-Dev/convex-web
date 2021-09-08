@@ -333,6 +333,12 @@
   :smart-toc? true
   :toc?       false}
 
+ :peer-ops.run
+ {:contents   [{:name "Run"
+                :path "markdown/dev_doc/peer-operations/run.md"}]
+  :smart-toc? true
+  :toc?       false}
+
  :rest-api
  {:contents   [{:name "REST API"
                 :path "markdown/dev_doc/rest-api.md"}]

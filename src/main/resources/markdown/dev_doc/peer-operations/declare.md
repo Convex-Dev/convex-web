@@ -1,7 +1,11 @@
-Prior to running, a peer must be declared. The following Convex Lisp functions are the only features not described in the [Convex Virtual Machine](/cvm)
+Prior to [running](/peer-operations/run), a peer must be declared. The following Convex Lisp functions are the only features not described in the [Convex Virtual Machine](/cvm)
 section given their specificity.
 
-A peer requires a public key:
+Currently, the easiest way for creating a peer is through the [sandbox](/sandbox).
+
+A peer requires a public key. The section about [running peers](/peers-operations/run) lists available tools for generating key pairs. A public key is
+entered as a 32-byte [blob](/cvm/data-types/blob). For instance:
+
 
 ```clojure
 (def peer-key
@@ -18,7 +22,7 @@ A peer is created on-chain by providing its public key and its initial stake:
 The account calling this function becomes the owner of that newly declared peer. The power of a peer during consensus is directly and linearly related
 to its stake in Convex Coins, although Convex Coins are freely distributed on the current test network.
 
-In order for other peers to broadcasts beliefs and state updates to that new peer, a URL must be declared on-chain as well. Naturally, this URL must be
+In order for other peers to broadcast beliefs and state updates to that new peer, a URL must be declared on-chain as well. Naturally, this URL must be
 publicly accessible which will typically involve some port mapping when running the peer. The URL is provided in the metadata [map](/cvm/data-types/map)
 attached to the peer by its controller. This map can also contain other arbitrary information if desired.
 

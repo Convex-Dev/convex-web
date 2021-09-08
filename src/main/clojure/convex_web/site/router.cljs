@@ -413,67 +413,81 @@
                                              {:reset? true
                                               :state  {:id :cvm.macros}
                                               :title  "Macros"}))}]}]
-
-    ["/peer-operations"
-
-     [""
-      {:name        :route-name/peer-ops
-       :controllers [{:identity identity
-                      :start    (fn [_match]
-                                  (stack/push :page.id/markdown {:reset? true
-                                                                 :state  {:id :peer-ops}
-                                                                 :title  "Peer operations"}))}]}]
-
-     ["declare"
-      {:name        :route-name/peer-ops.declare
-       :controllers [{:identity identity
-                      :start    (fn [_match]
-                                  (stack/push :page.id/markdown {:reset? true
-                                                                 :state  {:id :peer-ops.declare}
-                                                                 :title  "Declare"}))}]}]
-     ]
-
+  
     ["/running-convex-lisp"
 
      [""
       {:name        :route-name/cvm.run-cvx
        :controllers [{:identity identity
                       :start    (fn [_match]
-                                  (stack/push :page.id/markdown {:reset? true
-                                                                 :state  {:id :cvm.run-cvx}
-                                                                 :title  "Running Convex Lisp"}))}]}]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.run-cvx}
+                                               :title  "Running Convex Lisp"}))}]}]
      ["/clients"
       {:name        :route-name/cvm.run-cvx.clients
        :controllers [{:identity identity
                       :start    (fn [_match]
-                                  (stack/push :page.id/markdown {:reset? true
-                                                                 :state  {:id :cvm.run-cvx.clients}
-                                                                 :title  "Clients"}))}]}]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.run-cvx.clients}
+                                               :title  "Clients"}))}]}]
 
      ["/runner"
       {:name        :route-name/cvm.run-cvx.runner
        :controllers  [{:identity identity
                        :start    (fn [_match]
-                                   (stack/push :page.id/markdown {:reset? true
-                                                                  :state  {:id :cvm.run-cvx.runner}
-                                                                  :title  "Convex Lisp Runner"}))}]}]
+                                   (stack/push :page.id/markdown
+                                               {:reset? true
+                                                :state  {:id :cvm.run-cvx.runner}
+                                                :title  "Convex Lisp Runner"}))}]}]
 
      ["/sandbox"
       {:name        :route-name/cvm.run-cvx.sandbox
        :controllers  [{:identity identity
                        :start    (fn [_match]
-                                   (stack/push :page.id/markdown {:reset? true
-                                                                  :state  {:id :cvm.run-cvx.sandbox}
-                                                                  :title  "Sandbox"}))}]}]
+                                   (stack/push :page.id/markdown
+                                               {:reset? true
+                                                :state  {:id :cvm.run-cvx.sandbox}
+                                                :title  "Sandbox"}))}]}]
      
      ["/local-network"
       {:name        :route-name/cvm.run-cvx.local-network
        :controllers  [{:identity identity
                        :start    (fn [_match]
-                                   (stack/push :page.id/markdown {:reset? true
-                                                                  :state  {:id :cvm.run-cvx.local-network}
-                                                                  :title  "Local Network"}))}]}]]]
+                                   (stack/push :page.id/markdown
+                                               {:reset? true
+                                                :state  {:id :cvm.run-cvx.local-network}
+                                                :title  "Local Network"}))}]}]]]
 
+   ["/peer-operations"
+
+    [""
+     {:name        :route-name/peer-ops
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :peer-ops}
+                                              :title  "Peer operations"}))}]}]
+
+    ["/declare"
+     {:name        :route-name/peer-ops.declare
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :peer-ops.declare}
+                                              :title  "Declare"}))}]}]
+    ["/run"
+     {:name        :route-name/peer-ops.run
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :peer-ops.run}
+                                              :title  "Run"}))}]}]
+     ]
 
 
    ["reference"
@@ -506,47 +520,53 @@
      {:name        :route-name/rest-api.account-details
       :controllers [{:identity identity
                      :start    (fn [_match]
-                                 (stack/push :page.id/markdown {:reset? true
-                                                                :state  {:id :rest-api.account-details}
-                                                                :title  "Account details"}))}]}]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :rest-api.account-details}
+                                              :title  "Account details"}))}]}]
     ["/create-an-account"
      {:name        :route-name/rest-api.create-account
       :controllers [{:identity identity
                      :start    (fn [_match]
-                                 (stack/push :page.id/markdown {:reset? true
-                                                                :state  {:id :rest-api.create-account}
-                                                                :title  "Create an account"}))}]}]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :rest-api.create-account}
+                                              :title  "Create an account"}))}]}]
 
     ["/prepare-transaction"
      {:name        :route-name/rest-api.prepare-transaction
       :controllers [{:identity identity
                      :start    (fn [_match]
-                                 (stack/push :page.id/markdown {:reset? true
-                                                                :state  {:id :rest-api.prepare-transaction}
-                                                                :title  "Prepare transaction"}))}]}]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :rest-api.prepare-transaction}
+                                              :title  "Prepare transaction"}))}]}]
 
     ["/query"
      {:name        :route-name/rest-api.query
       :controllers [{:identity identity
                      :start    (fn [_match]
-                                 (stack/push :page.id/markdown {:reset? true
-                                                                :state  {:id :rest-api.query}
-                                                                :title  "Query"}))}]}]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :rest-api.query}
+                                              :title  "Query"}))}]}]
 
     ["/request-coins"
      {:name        :route-name/rest-api.request-coins
       :controllers [{:identity identity
                      :start    (fn [_match]
-                                 (stack/push :page.id/markdown {:reset? true
-                                                                :state  {:id :rest-api.request-coins}
-                                                                :title  "Request coins"}))}]}]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :rest-api.request-coins}
+                                              :title  "Request coins"}))}]}]
     ["/submit-transaction"
      {:name        :route-name/rest-api.submit-transaction
       :controllers [{:identity identity
                      :start    (fn [_match]
-                                 (stack/push :page.id/markdown {:reset? true
-                                                                :state  {:id :rest-api.submit-transaction}
-                                                                :title  "Submit transaction"}))}]}]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :rest-api.submit-transaction}
+                                              :title  "Submit transaction"}))}]}]
     ]
 
 
