@@ -44,7 +44,7 @@ In the context of this actor, `my-masterpiece` is an NFT identifier. However, th
 
 ## Asset operations
 
-Just like [standard fungible tokens](/by-example/fungible-token), NFTs created via `asset.nft.tokens` support the
+Just like [standard fungible tokens](/examples/fungible-token), NFTs created via `asset.nft.tokens` support the
 `convex.asset` interface which provides a unified API for exchanging and managing all kind of assets.
 
 ```clojure
@@ -84,7 +84,7 @@ Checking ownership:
 ;; Recipient is now the owner of that NFT.
 ```
 
-Similarly to how a user can have a balance in [fungible tokens](/by-example/fungible-token), a balance of NFTs
+Similarly to how a user can have a balance in [fungible tokens](/examples/fungible-token), a balance of NFTs
 is a [set](/cvm/data-types/set) of all owned NFT identifiers.
 
 ```clojure

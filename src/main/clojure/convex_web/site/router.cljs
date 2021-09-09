@@ -154,33 +154,33 @@
                                           :state  {:id :developer}
                                           :title  "Introduction"}))}]}]
 
-   ;; By example
+   ;; Examples
    ;; =============
-   ["by-example"
+   ["examples"
 
     [""
-     {:name        :route-name/by-example
+     {:name        :route-name/examples
       :controllers [{:identity identity
                      :start    (fn [_match]
                                  (stack/push :page.id/markdown
                                              {:reset? true
-                                              :state  {:id :by-example}
-                                              :title  "By example"}))}]}]
+                                              :state  {:id :examples}
+                                              :title  "Examples"}))}]}]
     ["/fungible-token"
-     {:name        :route-name/by-example.fungible-token
+     {:name        :route-name/examples.fungible-token
       :controllers [{:identity identity
                      :start    (fn [_match]
                                  (stack/push :page.id/markdown
                                              {:reset? true
-                                              :state  {:id :by-example.fungible-token}
+                                              :state  {:id :examples.fungible-token}
                                               :title  "Fungible token"}))}]}]
     ["/nft"
-     {:name        :route-name/by-example.nft
+     {:name        :route-name/examples.nft
       :controllers [{:identity identity
                      :start    (fn [_match]
                                  (stack/push :page.id/markdown
                                              {:reset? true
-                                              :state  {:id :by-example.nft}
+                                              :state  {:id :examples.nft}
                                               :title  "NFT"}))}]}]
     ]
    
