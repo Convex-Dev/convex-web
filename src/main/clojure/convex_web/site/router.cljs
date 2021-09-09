@@ -166,6 +166,8 @@
                                              {:reset? true
                                               :state  {:id :examples}
                                               :title  "Examples"}))}]}]
+ 
+
     ["/fungible-token"
      {:name        :route-name/examples.fungible-token
       :controllers [{:identity identity
@@ -182,6 +184,14 @@
                                              {:reset? true
                                               :state  {:id :examples.nft}
                                               :title  "NFT"}))}]}]
+    ["/voting-system"
+     {:name        :route-name/examples.voting-system
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :examples.voting-system}
+                                              :title  "Voting system"}))}]}]
     ]
    
 

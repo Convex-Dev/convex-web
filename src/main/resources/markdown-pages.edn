@@ -315,6 +315,12 @@
   :smart-toc? true
   :toc?       false}
 
+ :examples.voting-system
+ {:contents   [{:name "Voting system"
+                :path "markdown/dev_doc/examples/voting-system.md"}]
+  :smart-toc? true
+  :toc?       false}
+
  :run-a-peer
  {:contents   [{:name "Run a peer"
                 :path "markdown/dev_doc/run-a-peer.md"}]
