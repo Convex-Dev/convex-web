@@ -686,10 +686,12 @@
 
       -server-error-response)))
 
-(defn -POST-create-account [system _]
+(defn -POST-create-account
+  "Ring Handler to create a new account.
+  
+  Internal API."
+  [system _]
   (try
-    (u/log :logging.event/new-account :severity :info)
-    
     (let [^Convex client (system/convex-client system)
           
           ^Address genesis-address (convex/genesis-address)
@@ -710,15 +712,14 @@
       
       (-successful-response (select-keys account [::account/address
                                                   ::account/created-at])))
-    (catch Exception ex
-      (u/log :logging.event/system-error
-        :severity :error
-        :message handler-exception-message
-        :exception ex)
-      
+    (catch Exception _
       -server-error-response)))
 
-(defn -POST-confirm-account [system {:keys [body] :as req}]
+(defn -POST-confirm-account 
+  "Ring Handler to confirm an account.
+  
+  Internal API."
+  [system {:keys [body] :as req}]
   (try
     (let [^Long address-long (transit-decode body)
           
