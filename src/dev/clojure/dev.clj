@@ -192,6 +192,17 @@
   
   
   ;; ----------------------
+
+  
+  (dotimes [_ 500]
+    (let [^AKeyPair generated-key-pair (AKeyPair/generate)
+          
+          ^AccountKey account-key (.getAccountKey generated-key-pair)
+          
+          ^String account-public-key (.toChecksumHex account-key)]
+      
+      (client/POST-public-v1-createAccount "https://convex.world" account-public-key)))
+  
   
   (def prepared
     (->> (range 10)

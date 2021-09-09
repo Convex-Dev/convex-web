@@ -11,6 +11,11 @@
 (defn sig [^AKeyPair key-pair ^String hash]
   (.toHexString (.sign key-pair (Hash/fromHex hash))))
 
+(defn POST-public-v1-createAccount [server-url account-key]
+  (let [url (str server-url "/api/v1/createAccount")
+        body (json/write-str {:accountKey account-key})]
+    (http/post url {:body body})))
+
 (defn GET-public-v1-account [server-url address]
   (let [url (str server-url "/api/v1/accounts/" address)]
     (http/get url)))
