@@ -120,8 +120,19 @@
     :path "markdown/glossary.md"}]}
 
 
- ;; DOC - CVM
+ ;; Dev documentation
 
+ :by-example
+ {:contents   [{:name "By example"
+                :path "markdown/dev_doc/by-example.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :by-example.fungible-token
+ {:contents   [{:name "Fungible token"
+                :path "markdown/dev_doc/by-example/fungible-token.md"}]
+  :smart-toc? true
+  :toc?       false}
 
  :cvm
  {:contents   [{:name "CVM"
@@ -200,7 +211,7 @@
  {:contents   [{:name "Data types"
                 :path "markdown/dev_doc/cvm/data-types.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
  :cvm.data-types.address
  {:contents   [{:name "Address"
@@ -290,80 +301,25 @@
  {:contents   [{:name "Macros"
                 :path "markdown/dev_doc/cvm/macros.md"}]
   :smart-toc? true
-  :toc?       true}
+  :toc?       false}
 
- :cvm.run-cvx
- {:contents   [{:name "Running Convex Lisp"
-                :path "markdown/dev_doc/cvm/running-convex-lisp.md"}]
+ :cvm.peer-operations
+ {:contents   [{:name "Peer operations"
+                :path "markdown/dev_doc/cvm/peer-operations.md"}]
   :smart-toc? true
   :toc?       false}
 
- :cvm.run-cvx.clients
- {:contents   [{:name "Clients"
-                :path "markdown/dev_doc/cvm/running-convex-lisp/clients.md"}]
+ :run-a-peer
+ {:contents   [{:name "Run a peer"
+                :path "markdown/dev_doc/run-a-peer.md"}]
   :smart-toc? true
   :toc?       false}
 
- :cvm.run-cvx.runner
- {:contents   [{:name "Runner"
-                :path "markdown/dev_doc/cvm/running-convex-lisp/runner.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :cvm.run-cvx.sandbox
- {:contents   [{:name "Sandbox"
-                :path "markdown/dev_doc/cvm/running-convex-lisp/sandbox.md"}]
+ :sandbox.tutorial
+ {:contents   [{:name "Sandbox tutorial"
+                :path "markdown/dev_doc/sandbox/tutorial.md"}]
   :smart-toc? true
   :toc?       true}
-
- :cvm.run-cvx.local-network
- {:contents   [{:name "Local Network"
-                :path "markdown/dev_doc/cvm/running-convex-lisp/local-network.md"}]
-  :toc?       false}
-
-
-
- :rest-api
- {:contents   [{:name "REST API"
-                :path "markdown/dev_doc/rest-api.md"}]
-  :smart-toc? true
-  :toc?       true}
-
- :rest-api.account-details
- {:contents   [{:name "Account details"
-                :path "markdown/dev_doc/rest-api/account-details.md"}]
-  :smart-toc? true
-  :toc?       false}
-
- :rest-api.create-account
- {:contents   [{:name "Create an account"
-                :path "markdown/dev_doc/rest-api/create-an-account.md"}]
-  :smart-toc? true
-  :toc?       false}
-
- :rest-api.prepare-transaction
- {:contents   [{:name "Prepare transaction"
-                :path "markdown/dev_doc/rest-api/prepare-transaction.md"}]
-  :smart-toc? true
-  :toc?       false}
-
- :rest-api.query
- {:contents   [{:name "Query"
-                :path "markdown/dev_doc/rest-api/query.md"}]
-  :smart-toc? true
-  :toc?       false}
-
- :rest-api.request-coins
- {:contents   [{:name "Request coins"
-                :path "markdown/dev_doc/rest-api/request-coins.md"}]
-  :smart-toc? true
-  :toc?       false}
-
- :rest-api.submit-transaction
- {:contents   [{:name "Submit transaction"
-                :path "markdown/dev_doc/rest-api/submit-transaction.md"}]
-  :smart-toc? true
-  :toc?       false}
 
  :testnet
  {:contents   [{:name "Testnet"
@@ -371,6 +327,75 @@
   :smart-toc? true
   :toc?       false}
 
+ :tools
+ {:contents   [{:name "Tools"
+                :path "markdown/dev_doc/tools.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :tools.clojure-toolchain
+ {:contents   [{:name "Clojure toolchain"
+                :path "markdown/dev_doc/tools/clojure-toolchain.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :tools.convex-lisp-runner
+ {:contents   [{:name "Convex Lisp Runner"
+                :path "markdown/dev_doc/tools/convex-lisp-runner.md"}]
+  :smart-toc? true
+  :toc?       false}
+ :tools.core
+ {:contents   [{:name "Core"
+                :path "markdown/dev_doc/tools/core.md"}]
+  :smart-toc? true
+  :toc?       false}
+ :tools.cli
+ {:contents   [{:name "Command Line Interface"
+                :path "markdown/dev_doc/tools/command-line-interface.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :tools.rest-api
+ {:contents   [{:name "REST API"
+                :path "markdown/dev_doc/tools/rest-api.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :tools.rest-api.account-details
+ {:contents   [{:name "Account details"
+                :path "markdown/dev_doc/tools/rest-api/account-details.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :tools.rest-api.create-account
+ {:contents   [{:name "Create an account"
+                :path "markdown/dev_doc/tools/rest-api/create-an-account.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :tools.rest-api.prepare-transaction
+ {:contents   [{:name "Prepare transaction"
+                :path "markdown/dev_doc/tools/rest-api/prepare-transaction.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :tools.rest-api.query
+ {:contents   [{:name "Query"
+                :path "markdown/dev_doc/tools/rest-api/query.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :tools.rest-api.request-coins
+ {:contents   [{:name "Request coins"
+                :path "markdown/dev_doc/tools/rest-api/request-coins.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :tools.rest-api.submit-transaction
+ {:contents   [{:name "Submit transaction"
+                :path "markdown/dev_doc/tools/rest-api/submit-transaction.md"}]
+  :smart-toc? true
+  :toc?       false}
 
 
 }

@@ -168,22 +168,7 @@
        :top-level? true
        :route-name :route-name/cvm
        :href       (rfe/href :route-name/cvm)
-       :children   [{:text        "Running Convex Lisp"
-                     :route-name   :route-name/cvm.run-cvx
-                     :href        (rfe/href :route-name/cvm.run-cvx)
-                     :children    [{:text       "Sandbox"
-                                    :route-name :route-name/cvm.run-cvx.sandbox
-                                    :href       (rfe/href :route-name/cvm.run-cvx.sandbox)}
-                                   {:text       "Clients"
-                                    :route-name :route-name/cvm.run-cvx.clients
-                                    :href       (rfe/href :route-name/cvm.run-cvx.clients)}
-                                   {:text       "Runner"
-                                    :route-name :route-name/cvm.run-cvx.runner
-                                    :href       (rfe/href :route-name/cvm.run-cvx.runner)}
-                                   {:text       "Local Network"
-                                    :route-name :route-name/cvm.run-cvx.local-network
-                                    :href       (rfe/href :route-name/cvm.run-cvx.local-network)}]}
-                    {:text       "Basic syntax"
+       :children   [{:text       "Basic syntax"
                      :route-name :route-name/cvm.basic-syntax
                      :href       (rfe/href :route-name/cvm.basic-syntax)}
                     {:text       "Data types"
@@ -264,43 +249,30 @@
                     {:text       "Macros"
                      :route-name :route-name/cvm.macros
                      :href       (rfe/href :route-name/cvm.macros)}
+                    {:text       "Peer operations"
+                     :route-name :route-name/cvm.peer-operations
+                     :href       (rfe/href :route-name/cvm.peer-operations)}
+                    {:text       "Reference"
+                     :route-name :route-name/cvm.reference
+                     :href       (rfe/href :route-name/cvm.reference)}
                     ]}
 
-      ;; Reference
+      ;; By example
+      ;; =======================
+       {:text       "By example"
+        :top-level? true
+        :route-name :route-name/by-example
+        :href       (rfe/href :route-name/by-example)
+        :children   [{:text       "Fungible token"
+                      :route-name :route-name/by-example.fungible-token
+                      :href       (rfe/href :route-name/by-example.fungible-token)}]}
+
+      ;; Run a peer
       ;; =============
-      {:text       "Reference"
+      {:text       "Run a peer"
        :top-level? true
-       :route-name :route-name/reference
-       :href       (rfe/href :route-name/reference)}
-
-  
-      ;; REST API
-      ;; ========
-      {:text       "REST API"
-       :top-level? true
-       :route-name :route-name/rest-api
-       :href       (rfe/href :route-name/rest-api)
-       :children   [{:text       "Create an account"
-                     :route-name :route-name/rest-api.create-account
-                     :href       (rfe/href :route-name/rest-api.create-account)}
-                    {:text       "Account details"
-                     :route-name :route-name/rest-api.account-details
-                     :href       (rfe/href :route-name/rest-api.account-details)}
-                    {:text       "Request coins"
-                     :route-name :route-name/rest-api.request-coins
-                     :href       (rfe/href :route-name/rest-api.request-coins)}
-                    {:text       "Query"
-                     :route-name :route-name/rest-api.query
-                     :href       (rfe/href :route-name/rest-api.query)}
-                    {:text       "Prepare transaction"
-                     :route-name :route-name/rest-api.prepare-transaction
-                     :href       (rfe/href :route-name/rest-api.prepare-transaction)}
-                    {:text       "Submit transaction"
-                     :route-name :route-name/rest-api.submit-transaction
-                     :href       (rfe/href :route-name/rest-api.submit-transaction)}
-                    ]}
-
-      
+       :route-name :route-name/run-a-peer
+       :href       (rfe/href :route-name/run-a-peer)}
       
       ;; Sandbox
       ;; ==============
@@ -341,6 +313,47 @@
                     {:text       "Wallet"
                      :route-name :route-name/testnet.wallet
                      :href       (rfe/href :route-name/testnet.wallet)}]}
+
+      ;; Tools
+      ;; =============
+      {:text       "Tools"
+       :top-level? true
+       :route-name :route-name/tools
+       :href       (rfe/href :route-name/tools)
+       :children   [{:text       "Core"
+                     :route-name :route-name/tools.core
+                     :href       (rfe/href :route-name/tools.core)}
+                    {:text       "Clojure toolchain"
+                     :route-name :route-name/tools.clojure-toolchain
+                     :href       (rfe/href :route-name/tools.clojure-toolchain)}
+                    {:text       "Command Line Interface"
+                     :route-name :route-name/tools.cli
+                     :href       (rfe/href :route-name/tools.cli)}
+                    {:text       "Convex Lisp Runner"
+                     :route-name :route-name/tools.convex-lisp-runner
+                     :href       (rfe/href :route-name/tools.convex-lisp-runner)}
+                    {:text       "REST API"
+                     :route-name :route-name/tools.rest-api
+                     :href       (rfe/href :route-name/tools.rest-api)
+                     :children   [{:text       "Create an account"
+                                   :route-name :route-name/tools.rest-api.create-account
+                                   :href       (rfe/href :route-name/tools.rest-api.create-account)}
+                                  {:text       "Account details"
+                                   :route-name :route-name/tools.rest-api.account-details
+                                   :href       (rfe/href :route-name/tools.rest-api.account-details)}
+                                  {:text       "Request coins"
+                                   :route-name :route-name/tools.rest-api.request-coins
+                                   :href       (rfe/href :route-name/tools.rest-api.request-coins)}
+                                  {:text       "Query"
+                                   :route-name :route-name/tools.rest-api.query
+                                   :href       (rfe/href :route-name/tools.rest-api.query)}
+                                  {:text       "Prepare transaction"
+                                   :route-name :route-name/tools.rest-api.prepare-transaction
+                                   :href       (rfe/href :route-name/tools.rest-api.prepare-transaction)}
+                                  {:text       "Submit transaction"
+                                   :route-name :route-name/tools.rest-api.submit-transaction
+                                   :href       (rfe/href :route-name/tools.rest-api.submit-transaction)}]}
+                    ]}
 
       
       ;; About

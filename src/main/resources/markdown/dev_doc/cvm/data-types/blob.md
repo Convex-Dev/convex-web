@@ -15,7 +15,7 @@ It is a sequence of bytes written in hexadecimal notation and prefixed with `0x`
 Such a sequence of bytes can represent many things. It is not very clear what it represents without providing any further context.
 
 Alternatively, it might be sometimes useful creating blobs from **hexstrings** (a [string](/cvm/data-types/text) where bytes are
-also encoded in hexademical notation):
+also encoded in hexadecimal notation):
 
 ```clojure
 (blob "01")
@@ -31,7 +31,7 @@ Besides representing arbitrary binary data such as a file. Blobs are typically u
 Although blobs are collections of bytes, in theory, they are not collections in the sense envisioned in further sections and data types such as [vectors](/cvm/data-types/vector) or
 [maps](/cvm/data-types/map).
 
-However, they are countable and it is possible to extract single bytes as longs data-type:
+However, they are countable and it is possible to extract single bytes as [longs](/cvm/data-type/numbers):
 
 ```clojure
 (count 0x112233)  ;; -> 3

@@ -554,7 +554,7 @@
         [SymbolType type])
       
       [:a.ml-2
-       {:href (rfe/href :route-name/reference {}
+       {:href (rfe/href :route-name/cvm.reference {}
                 (merge {:symbol symbol}
                   ;; Router defaults to convex.core
                   ;; if there isn't a library parameter.
