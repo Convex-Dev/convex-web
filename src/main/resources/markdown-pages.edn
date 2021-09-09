@@ -132,13 +132,13 @@
  {:contents   [{:name "Fungible token"
                 :path "markdown/dev_doc/by-example/fungible-token.md"}]
   :smart-toc? true
-  :toc?       false}
+  :toc?       true}
 
  :by-example.nft
  {:contents   [{:name "NFT"
                 :path "markdown/dev_doc/by-example/nft.md"}]
   :smart-toc? true
-  :toc?       false}
+  :toc?       true}
 
  :cvm
  {:contents   [{:name "CVM"

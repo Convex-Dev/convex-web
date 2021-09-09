@@ -21,7 +21,7 @@ The most basic but versatile form of repetition is [recursion](https://en.wikipe
 Starting from `5` and an empty [vector](/cvm/data-types/vector), previous example uses `loop` and `recur` to create an vector of numbers
 from `5` to `1`.
 
-First, local bindings are created exactly as described in [local definitions](/cvm/definitions?section=Local%20definitions). Initially, symbol
+First, local bindings are created exactly as described in [local definitions](/cvm/building-blocks/definitions?section=Local%20definitions). Initially, symbol
 `i` points to `5` while symbol `v` points to an empty vector. `if` at some point `i` becomes lesser than `1`, then `v` is returned and looping
 stops. Otherwise, `recur` is used to updates bindings with new values and start again.
 
@@ -62,7 +62,7 @@ the value of `i` is also stored in the vector `v` each time. Overall, this is wh
 ;; -> [5 4 3 2 1]
 ```
 
-Similarly, a defined [function](/cvm/functions) can apply itself:
+Similarly, a defined [function](/cvm/building-blocks/functions) can apply itself:
 
 ```clojure
 (defn to-1
@@ -104,7 +104,7 @@ be rewritten into this much more efficient version which uses `recur`:
 ;; -> [5 4 3 2 1]
 ```
 
-Following example defines a [multi-function](/cvm/functions) for elegantly computing a [factorial](https://en.wikipedia.org/wiki/Factorial):
+Following example defines a [multi-function](/cvm/building-blocks/functions) for elegantly computing a [factorial](https://en.wikipedia.org/wiki/Factorial):
 
 ```clojure
 (defn factorial

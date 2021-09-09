@@ -5,7 +5,7 @@ While abstract at first, this concept is uniquely powerful as it allows to exten
 exposes how to create and use macros which are specialized functions used during expansion.
 
 
-The section about [logic](/cvm/logic) exposed `cond` for executing code selectively based on whether some conditions are true or not. On top of `cond`,
+The section about [logic](/cvm/building-blocks/logic) exposed `cond` for executing code selectively based on whether some conditions are true or not. On top of `cond`,
 a series of features have been built to provide constructs found in other languages: `if`, `when`, `when-not`, etc. Those are perfect examples of how
 basic capabilities can be extended to higher-level ones since they are simply macros built on top of `cond`.
 
@@ -33,7 +33,7 @@ expression written in **infix** notation to the **prefix** notation that Convex 
 ```
 
 When calling a macro, parameters are never evaluated since everything happens during expansion, before execution. This is why `(2 + 2)` does not
-have to be quoted as described in the [code is data](/cvm/code-is-data) section.
+have to be quoted as described in the [code is data](/cvm/building-blocks/code-is-data) section.
 
 For understanding what happens, `expand` reveals how data is mapped:
 

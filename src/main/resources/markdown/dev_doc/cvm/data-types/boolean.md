@@ -25,7 +25,7 @@ While all other values are considered to be "truthy":
 (boolean "text")  ;; -> true
 ```
 
-The distinction between "falsey" and "truthy" becomes important in the [section about logic](/cvm/logic).
+The distinction between "falsey" and "truthy" becomes important in the [section about logic](/cvm/building-blocks/logic).
 
 All values can be negated to the opposite boolean value:
 

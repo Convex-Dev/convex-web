@@ -196,4 +196,4 @@ Check whether a set is a subset of another one (all items in the first set are p
                       ;; removing the first one
 ```
 
-Sets can be looped over as described in the [section about loops](/cvm/loops).
+Sets can be looped over as described in the [section about loops](/cvm/building-blocks/loops).

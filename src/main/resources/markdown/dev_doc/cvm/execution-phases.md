@@ -1,4 +1,4 @@
-The [code is data](/cvm/code-is-data) section introduced the idea that Convex Lisp code starts as data. A few times, the `eval` function has been
+The [code is data](/cvm/building-blocks/code-is-data) section introduced the idea that Convex Lisp code starts as data. A few times, the `eval` function has been
 mentioned, exposing how data can be executed:
 
 ```clojure
@@ -95,7 +95,7 @@ The `eval` function takes care of expansion and compilation if required:
 ;; -> 4
 ```
 
-**Attention.** Evaluating any arbitrary code is dangerous for the same reasons as outlined in the section about [functions](/cvm/functions).
+**Attention.** Evaluating any arbitrary code is dangerous for the same reasons as outlined in the section about [functions](/cvm/building-blocks/functions).
 In general, `eval` is only used in a limited set of circumstances by advanced users. It is not a common feature. 
 
 

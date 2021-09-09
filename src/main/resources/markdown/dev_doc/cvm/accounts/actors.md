@@ -5,7 +5,7 @@ reviews common patterns.
 
 ## Deploying a new actor
 
-The section about [code is data](/cvm/code-is-data) describes in detail how to write code that is not evaluated by using `quote` and `quasiquote`.
+The section about [code is data](/cvm/building-blocks/code-is-data) describes in detail how to write code that is not evaluated by using `quote` and `quasiquote`.
 When deploying an actor, code is provided. A new account is created by the CVM and this code is executed in the context of that new account:
 
 ```clojure
@@ -52,15 +52,15 @@ reusable functions:
 ;; -> 9
 ```
 
-**Attention.** As stated in the section about [functions](/cvm/functions), users must only apply known functions from trusted accounts since they
+**Attention.** As stated in the section about [functions](/cvm/building-blocks/functions), users must only apply known functions from trusted accounts since they
 run under the control of the executing account and have access to all its funds and other digital assets. Not knowing exactly what a function does, it is like giving
 your house keys to a shady stranger and walking away.
 
 
 ## Smart contracts
 
-An actor, being an account, has an environment and can [define symbols](/cvm/definitions). In other words, it can manage state persisted in the
-decentralized database. [Callable functions](/cvm/callable-functions) provide access control and describe how this state is effectively managed.
+An actor, being an account, has an environment and can [define symbols](/cvm/building-blocks/definitions). In other words, it can manage state persisted in the
+decentralized database. [Callable functions](/cvm/accounts/callable-functions) provide access control and describe how this state is effectively managed.
 
 In Convex, the concept of a smart contract is tightly associated with this fact. An account, typically an actor, hosts some state in its environment
 and callables functions that other accounts may call describe how this state can be altered and under which conditions. Some smart contracts are
