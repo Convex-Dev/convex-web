@@ -184,6 +184,14 @@
                                              {:reset? true
                                               :state  {:id :examples.nft}
                                               :title  "NFT"}))}]}]
+    ["/simple-oracle"
+     {:name        :route-name/examples.simple-oracle
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :examples.simple-oracle}
+                                              :title  "Simple oracle"}))}]}]
     ["/voting-system"
      {:name        :route-name/examples.voting-system
       :controllers [{:identity identity
