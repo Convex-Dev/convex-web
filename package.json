@@ -10,14 +10,14 @@
     "styles:release": "NODE_ENV=production npx postcss tailwind.css -o src/main/resources/public/css/styles.css --verbose"
   },
   "dependencies": {
-    "@headlessui/react": "^1.4.0",
-    "@heroicons/react": "^1.0.3",
+    "@headlessui/react": "^1.4.1",
+    "@heroicons/react": "^1.0.4",
     "@tailwindcss/typography": "^0.4.1",
     "@tailwindcss/ui": "^0.7.2",
-    "@types/react": "^17.0.15",
-    "codemirror": "^5.62.2",
+    "@types/react": "^17.0.19",
+    "codemirror": "^5.62.3",
     "highlight.js": "^11.2.0",
-    "jdenticon": "^3.1.0",
+    "jdenticon": "^3.1.1",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -28,10 +28,10 @@
     "timeago.js": "^4.0.2"
   },
   "devDependencies": {
-    "autoprefixer": "^10.3.1",
+    "autoprefixer": "^10.3.3",
     "postcss": "^8.3.6",
     "postcss-cli": "^8.3.1",
-    "shadow-cljs": "^2.15.5",
+    "shadow-cljs": "^2.15.8",
     "tailwindcss": "^2.2.7"
   }
 }

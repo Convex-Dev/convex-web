@@ -65,7 +65,7 @@
         (.mkdirs parent)))
     
     ;; Saves key-pair in-memory.
-    (PFXTools/saveKey key-store key-pair key-pair-passphrase)
+    (PFXTools/setKeyPair key-store key-pair key-pair-passphrase)
     
     ;; Persist modified key store to disk.
     (PFXTools/saveStore key-store key-store-file key-store-passphrase)
@@ -77,6 +77,11 @@
 
 (defn account-key ^AccountKey [^String checksum-hex]
   (AccountKey/fromChecksumHex checksum-hex))
+
+(defn ^AccountKey account-key-from-hex 
+  "Constructs an AccountKey object from a hex string."
+  [^String hex]
+  (AccountKey/fromHex hex))
 
 (defn key-pair-data 
   "Returns AKeyPair as a map."
@@ -131,6 +136,9 @@
       (throw (ex-info (.toString (.getExceptional new-context))
                {:exceptional (.getExceptional new-context)}))
       (.getResult new-context))))
+
+(defn ^Address genesis-address []
+  (Init/getGenesisAddress))
 
 (defn server-peer-controller
   "Gets the Peer controller Address."
@@ -398,9 +406,6 @@
 (defn account-status-data [^AccountStatus account-status]
   (when account-status
     (let [env (environment-data (.getEnvironment account-status))
-          exports? (contains? env '*exports*)
-          actor? (.isActor account-status)
-          library? (and actor? (not exports?))
           
           ;; Reify exported functions giving it a name and arglists attributes.
           exports (map 
@@ -419,7 +424,11 @@
                                         [])]
                         {:name (datafy sym)
                          :arglists arglists}))
-                    (.getCallableFunctions account-status))]
+                    (.getCallableFunctions account-status))
+          
+          actor? (.isActor account-status)
+          
+          library? (and actor? (empty? exports))]
       
       (merge #:convex-web.account-status {:account-key (some-> account-status .getAccountKey .toChecksumHex)
                                           :controller (datafy (.getController account-status))
@@ -539,13 +548,13 @@
    Returns Address.
 
    Throws ExceptionInfo if the transaction fails."
-  [^Convex client ^Address peer-controller ^AccountKey account-key]
+  [^Convex client ^Address genesis-address ^AccountKey account-key]
   (let [^String account-public-key (.toChecksumHex account-key)
         
         command (read-source (str "(create-account 0x" account-public-key ")"))
 
         tx-data {:nonce 0
-                 :address peer-controller
+                 :address genesis-address
                  :command command}
 
         ^Result result (->> (invoke-transaction tx-data)

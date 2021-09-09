@@ -18,4 +18,4 @@
 
 #?(:clj 
    (defn read-config [profile]
-     (aero/read-config "convex-web.edn" {:profile profile})))
+     (aero/read-config "config.edn" {:profile profile})))

@@ -11,9 +11,6 @@
 
 (use-fixtures :each (join-fixtures [(make-system-fixture #'system) spec-fixture]))
 
-(deftest convex-world-address-test
-  (is (= (convex/address 12) (sys/convex-world-address system))))
-
 (deftest result-data-test
   (let [convex-world-address (sys/convex-world-address system)]
     (testing "Inc 1"
@@ -52,7 +49,7 @@
         
         (testing "Expected values"
           (is (= #:convex-web.result{:error-code :CAST
-                                     :trace nil
+                                     :trace ["In function: map"]
                                      :value "\"Can't convert value of type Long to type Sequence\""}
                 (select-keys result [:convex-web.result/value
                                      :convex-web.result/value-kind

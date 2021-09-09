@@ -30,7 +30,7 @@
 (defn AddressUpdatedBalanceIs [address balance]
   [:span.inline-flex.text-gray-700.text-base.space-x-1
    [:a.inline-flex.items-center.space-x-1
-    {:href (rfe/href :route-name/account-explorer {:address address})}
+    {:href (rfe/href :route-name/testnet.account {:address address})}
     [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
     [:span.font-mono.text-sm.truncate
@@ -411,7 +411,7 @@
 
          (let [address (get transfer :convex-web.transfer/from)]
            [:a.inline-flex.items-center.space-x-1
-            {:href (rfe/href :route-name/account-explorer {:address address})}
+            {:href (rfe/href :route-name/testnet.account {:address address})}
             [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
             [:span.font-mono.text-sm.truncate
@@ -422,7 +422,7 @@
 
          (let [address (get transfer :convex-web.transfer/to)]
            [:a.inline-flex.items-center.space-x-1
-            {:href (rfe/href :route-name/account-explorer {:address address})}
+            {:href (rfe/href :route-name/testnet.account {:address address})}
             [gui/AIdenticon {:value address :size gui/identicon-size-small}]
 
             [:span.font-mono.text-sm.truncate
@@ -443,9 +443,9 @@
                                           :transfer-page/config]))
 
 (def transfer-page
-  #:page {:id :page.id/transfer
+  #:page {:id :page.id/testnet.transfer
           :title "Transfer"
-          :description "Use this tool to make transfers from your Accounts to any other Accounts."
+          :description "Use this tool to make Convex Coins transfers from one of your accounts to any other account on the current test network."
           :component #'TransferPage
           :state-spec :transfer-page/state})
 
@@ -646,7 +646,7 @@
          [:div]))]))
 
 (def faucet-page
-  #:page {:id :page.id/faucet
-          :title "Faucet"
-          :description "The Faucet lets you request free Convex coins for your Accounts. You can make a request once every 5 minutes."
+  #:page {:id :page.id/testnet.request-coins
+          :title "Requests coins"
+          :description "Here you can request free Convex coins for your accounts on the current test network. You can make a request once every 5 minutes."
           :component #'FaucetPage})

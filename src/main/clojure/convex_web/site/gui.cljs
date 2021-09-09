@@ -554,11 +554,12 @@
         [SymbolType type])
       
       [:a.ml-2
-       {:href (rfe/href :route-name/documentation-reference {} (merge {:symbol symbol}
-                                                                 ;; Router defaults to convex.core
-                                                                 ;; if there isn't a library parameter.
-                                                                 (when library
-                                                                   {:library library})))
+       {:href (rfe/href :route-name/cvm.reference {}
+                (merge {:symbol symbol}
+                  ;; Router defaults to convex.core
+                  ;; if there isn't a library parameter.
+                  (when library
+                    {:library library})))
         :target "_blank"}
        [IconExternalLink {:class "h-4 w-4 text-gray-500 hover:text-black"}]]]
      
@@ -586,10 +587,11 @@
           
           (for [{:keys [code]} examples]
             ^{:key code}
-            [:pre.text-xs.mb-1
-             [:code.clojure.rounded
-              {:ref highlight-element}
-              code]])]))]))
+            [:div.w-full.overflow-auto
+             [:pre.text-xs.mb-1
+              [:code.clojure.rounded
+               {:ref highlight-element}
+               code]]])]))]))
 
 (def hyperlink-hover-class "hover:underline hover:text-blue-500")
 
@@ -750,7 +752,8 @@
 
 (defn InfoTooltip [tooltip]
   [Tooltip
-   {:html (r/as-element [:p.text-xs.font-mono.leading-relaxed tooltip])}
+   {:title tooltip
+    :size "small"}
    [InformationCircleIcon {:class "w-4 h-4 hover:text-gray-500"}]])
 
 
@@ -1104,7 +1107,7 @@
         ;; Address & Refresh.
         [:div.flex.justify-between
          [:a.inline-flex.items-center.space-x-1
-          {:href (rfe/href :route-name/account-explorer {:address address})}
+          {:href (rfe/href :route-name/testnet.account {:address address})}
           [AIdenticon {:value (str address) :size identicon-size-small}]
 
           [:span.font-mono.text-xs.truncate

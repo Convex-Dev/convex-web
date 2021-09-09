@@ -17,6 +17,7 @@
    [clojure.pprint :as pprint]
    [clojure.stacktrace :as stacktrace]
    [clojure.data.json :as json]
+   [clojure.string :as str]
    
    [cognitect.anomalies :as anomalies]
    
@@ -458,26 +459,27 @@
 
 (defn POST-v1-create-account [system {:keys [body]}]
   (let [{:keys [accountKey]} (json-decode body)]
-    (when-not (s/valid? :convex-web/non-empty-string accountKey)
+    
+    (when (str/blank? accountKey)
       (throw (ex-info "Missing account key."
                (anomaly-incorrect
                  (error-body "MISSING" "Missing account key." error-source-server)))))
     
     (let [^AccountKey account-key (try 
-                                    (convex/account-key accountKey)
-                                    (catch Exception _
-                                      (throw (ex-info "Invalid Account Key."
+                                    (convex/account-key-from-hex accountKey)
+                                    (catch Throwable ex
+                                      (throw (ex-info (ex-message ex)
                                                (anomaly-incorrect
                                                  (error-body {:code error-code-INCORRECT
-                                                              :value "Invalid Account Key."
+                                                              :value (ex-message ex)
                                                               :source error-source-server}))))))
           
           client (system/convex-client system)
           
-          ^Address peer-controller (system/convex-world-address system)
+          ^Address genesis-address (convex/genesis-address)
           
           generated-address (try
-                              (convex/create-account client peer-controller account-key)
+                              (convex/create-account client genesis-address account-key)
                               (catch ExceptionInfo ex
                                 (let [{:keys [result] ::anomalies/keys [category]} (ex-data ex)
                                       
@@ -533,11 +535,9 @@
       :else
       (let [client (system/convex-client system)
             
-            ^Server server (system/convex-server system)
+            ^Address genesis-address (convex/genesis-address)
             
-            ^Address peer-controller (convex/server-peer-controller server)
-            
-            transfer (convex/transfer-transaction {:address peer-controller
+            transfer (convex/transfer-transaction {:address genesis-address
                                                    :nonce 0
                                                    :target address
                                                    :amount amount})
@@ -692,15 +692,13 @@
     
     (let [^Convex client (system/convex-client system)
           
-          ^Server server (system/convex-server system)
-          
-          ^Address peer-controller (convex/server-peer-controller server)
+          ^Address genesis-address (convex/genesis-address)
           
           ^AKeyPair generated-key-pair (AKeyPair/generate)
           
           ^AccountKey account-key (.getAccountKey generated-key-pair)
           
-          ^Address generated-address (convex/create-account client peer-controller account-key)
+          ^Address generated-address (convex/create-account client genesis-address account-key)
           
           account #:convex-web.account {:address (.longValue generated-address)
                                         :created-at (inst-ms (Instant/now))
@@ -732,12 +730,10 @@
         :else
         (let [^Convex client (system/convex-client system)
               
-              ^Server server (system/convex-server system)
-              
-              ^Address peer-controller (convex/server-peer-controller server)
+              ^Address genesis-address (convex/genesis-address)
               
               tx-data {:nonce 0
-                       :address peer-controller
+                       :address genesis-address
                        :target address-long
                        :amount 100000000}
               
@@ -796,11 +792,9 @@
         :else
         (let [client (system/convex-client context)
               
-              ^Server server (system/convex-server context)
+              ^Address genesis-address (convex/genesis-address)
               
-              ^Address peer-controller (convex/server-peer-controller server)
-              
-              result (convex/faucet client {:address peer-controller
+              result (convex/faucet client {:address genesis-address
                                             :target target
                                             :amount amount})
               
@@ -1095,36 +1089,36 @@
       (handler request)
       (catch Throwable ex
         (log/error "Web handler exception:" (with-out-str (stacktrace/print-stack-trace ex)))
-
+        
         ;; Mapping of anomalies category to HTTP status code.
         (let [{::keys [error-body] ::anomalies/keys [category]} (ex-data ex)]
           (case category
             ::anomalies/not-found
             (not-found-response error-body)
-
+            
             ::anomalies/forbidden
             (forbidden-response error-body)
-
+            
             ::anomalies/incorrect
             (bad-request-response error-body)
-
+            
             ::anomalies/busy
             (service-unavailable-response error-body)
-
+            
             ;; NOTE
             ;; Disclose error details to the client for debugging purposes - for the time being (2021-02-10).
-
+            
             ::anomalies/fault
             (server-error-response2
-              (error-body "SERVER"
-                          (with-out-str (stacktrace/print-stack-trace ex))
-                          error-source-server))
-
+              (convex-web.web-server/error-body "SERVER"
+                (with-out-str (stacktrace/print-stack-trace ex))
+                error-source-server))
+            
             ;; Default
-            (server-error-response2
-              (error-body "SERVER"
-                          (with-out-str (stacktrace/print-stack-trace ex))
-                          error-source-server))))))))
+            (convex-web.web-server/server-error-response2
+              (convex-web.web-server/error-body "SERVER"
+                (with-out-str (stacktrace/print-stack-trace ex))
+                error-source-server))))))))
 
 (defn public-api-handler [system]
   (-> (public-api system)

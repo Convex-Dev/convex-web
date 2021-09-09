@@ -7,7 +7,7 @@
    [convex-web.test :refer [catch-throwable make-system-fixture]])
   
   (:import 
-   (convex.core.data Address Blob Syntax Maps Symbol Keyword Vectors AString Strings)
+   (convex.core.data Address Blob Syntax Maps Symbol Keyword Vectors AString Strings AccountKey)
    (convex.core Result)
    (convex.core.init Init)
    (convex.core.lang Core)
@@ -226,3 +226,24 @@
           :convex-web.result/value "map"}
         
         (convex/result-data (Result/create (CVMLong/create 1) Core/MAP))))))
+
+(deftest account-key-from-hex-test
+  (testing "Invalid Address"
+    (is (thrown? NullPointerException (convex/account-key-from-hex nil)))
+    
+    (is (= "Invalid Address hex String []" 
+          (try 
+            (convex/account-key-from-hex "")
+            (catch Throwable ex
+              (ex-message ex)))))
+    
+    (is (= "Invalid Address hex String [123]" 
+          (try 
+            (convex/account-key-from-hex "123")
+            (catch Throwable ex
+              (ex-message ex))))))
+  
+  (testing "Roundtrip"
+    (let [^String account-key-hex "85cd134e1500ecf935677908cbd2b45c32622455fe55e8038ad45917250f72ea"
+          ^AccountKey account-key (convex/account-key-from-hex account-key-hex)]
+      (is (= account-key-hex (.toHexString account-key))))))

@@ -45,24 +45,31 @@
 
 ;; -- Config Peer
 
-(s/def :config.peer/url :convex-web/non-empty-string)
+(s/def :config.peer/hostname :convex-web/non-empty-string)
 
-(s/def :config.peer/port pos-int?)
+(s/def :config.peer/port nat-int?)
 
 (s/def :config.peer/key-store :convex-web/non-empty-string)
 
 (s/def :config.peer/key-passphrase :convex-web/non-empty-string)
 
+(s/def :config.peer/etch-store-temp? boolean?)
+
+(s/def :config.peer/etch-store-temp-prefix :convex-web/non-empty-string)
+
 (s/def :config/peer
-  (s/keys :req-un [:config.peer/url
-                   :config.peer/port
-                   :config.peer/key-store
-                   :config.peer/key-passphrase]))
+  (s/keys 
+    :req-un [:config.peer/hostname
+             :config.peer/key-store
+             :config.peer/key-passphrase]
+    :opt-un [:config.peer/port
+             :config.peer/etch-store-temp?
+             :config.peer/etch-store-temp-prefix]))
 
 
 ;; -- Config Web Server
 
-(s/def :config.web-server/port pos-int?)
+(s/def :config.web-server/port nat-int?)
 
 (s/def :config/web-server
   (s/keys :req-un [:config.web-server/port]))
@@ -330,16 +337,6 @@
 (s/def :convex-web.repl/commands (s/coll-of :convex-web/command))
 
 
-;; -- Comms
-
-(s/def :comms/state map?)
-
-
-;; -- Blockchain
-
-(s/def :blockchain/blocks vector?)
-
-
 ;; -- Devtools
 
 (s/def :devtools/enabled? boolean?)
@@ -352,7 +349,7 @@
 (s/def :page/id keyword?)
 (s/def :page/title string?)
 (s/def :page/description string?)
-(s/def :page/template #{:dev :marketing})
+(s/def :page/template #{:developer :marketing})
 (s/def :page/style (s/keys :opt [:page-style/title-size]))
 (s/def :page/component var?)
 (s/def :page/initial-state any?)
@@ -412,11 +409,6 @@
 (s/def :site/route
   (s/keys :opt [:route/match :route/state]))
 
-;; -- Site Comms
-
-(s/def :site/comms
-  (s/keys :req [:comms/state]))
-
 
 ;; -- Site Devtools
 
@@ -424,19 +416,11 @@
   (s/keys :opt [:devtools/enabled?]))
 
 
-;; -- Site Blockchain
-
-(s/def :site/blockchain
-  (s/keys :req [:blockchain/blocks]))
-
-
 ;; -- Site DB
 
 (s/def :site/app-db
   (s/keys :req [:site/pages]
-          :opt [:site/comms
-                :site/route
+          :opt [:site/route
                 :site/devtools
-                :site/session
-                :site/blockchain]))
+                :site/session]))
 

@@ -97,7 +97,7 @@
 (s/def :reference-page.state/reference coll?)
 
 (def reference-page
-  #:page {:id :page.id/documentation-reference
+  #:page {:id :page.id/cvm.reference
           :title "Reference"
           :component #'ReferencePage
           :state-spec

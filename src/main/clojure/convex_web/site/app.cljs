@@ -30,7 +30,7 @@
 
             ["react" :as react]
             ["@headlessui/react" :as headlessui]
-            ["@heroicons/react/solid" :refer [MenuIcon XIcon]]
+            ["@heroicons/react/solid" :refer [MenuIcon XIcon ChevronDownIcon ChevronRightIcon]]
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]
             ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
@@ -95,10 +95,8 @@
    ;; ---
 
    explorer/code-page
-   explorer/accounts-page
    explorer/accounts-range-page
    explorer/account-page
-   explorer/blocks-page
    explorer/blocks-range-page
    explorer/block-page
    explorer/peers-page
@@ -140,7 +138,7 @@
       :href (rfe/href :route-name/developer)}
      
      :others
-     [{:text "Welcome"
+     [{:text "Introduction"
        :top-level? true
        :route-name :route-name/developer
        :href (rfe/href :route-name/developer)}
@@ -163,91 +161,200 @@
         {:text "FAQ"
          :route-name :route-name/faq
          :href (rfe/href :route-name/faq)}]}
-      
-      ;; Documentation
-      ;; ==============
-      {:text "Documentation"
+
+      ;; CVM
+      ;; ===
+      {:text       "Convex Virtual Machine"
        :top-level? true
-       :route-name :route-name/documentation
-       :href (rfe/href :route-name/documentation)
-       :children
-       [{:text "Getting Started"
-         :route-name :route-name/documentation-getting-started
-         :href (rfe/href :route-name/documentation-getting-started)}
-        
-        {:text "Lisp Guide"
-         :route-name :route-name/documentation-tutorial
-         :href (rfe/href :route-name/documentation-tutorial)}
-        
-        {:text "Advanced Topics"
-         :route-name :route-name/advanced-topics
-         :href (rfe/href :route-name/advanced-topics)}
-        
-        {:text "Reference"
-         :route-name :route-name/documentation-reference
-         :href (rfe/href :route-name/documentation-reference)}
-        
-        {:text "Client API"
-         :route-name :route-name/client-api
-         :href (rfe/href :route-name/client-api)}]}
-      
+       :route-name :route-name/cvm
+       :href       (rfe/href :route-name/cvm)
+       :children   [{:text       "Basic syntax"
+                     :route-name :route-name/cvm.basic-syntax
+                     :href       (rfe/href :route-name/cvm.basic-syntax)}
+                    {:text       "Data types"
+                     :route-name :route-name/cvm.data-types
+                     :href       (rfe/href :route-name/cvm.data-types)
+                     :children   [{:text       "Nil"
+                                   :route-name :route-name/cvm.data-types.nil
+                                   :href       (rfe/href :route-name/cvm.data-types.nil)}
+                                  {:text       "Boolean"
+                                   :route-name :route-name/cvm.data-types.boolean
+                                   :href       (rfe/href :route-name/cvm.data-types.boolean)}
+                                  {:text       "Numbers"
+                                   :route-name :route-name/cvm.data-types.numbers
+                                   :href       (rfe/href :route-name/cvm.data-types.numbers)}
+                                  {:text       "Text"
+                                   :route-name :route-name/cvm.data-types.text
+                                   :href       (rfe/href :route-name/cvm.data-types.text)}
+                                  {:text       "Keyword"
+                                   :route-name :route-name/cvm.data-types.keyword
+                                   :href       (rfe/href :route-name/cvm.data-types.keyword)}
+                                  {:text       "Symbol"
+                                   :route-name :route-name/cvm.data-types.symbol
+                                   :href       (rfe/href :route-name/cvm.data-types.symbol)}
+                                  {:text       "Blob"
+                                   :route-name :route-name/cvm.data-types.blob
+                                   :href       (rfe/href :route-name/cvm.data-types.blob)}
+                                  {:text       "Address"
+                                   :route-name :route-name/cvm.data-types.address
+                                   :href       (rfe/href :route-name/cvm.data-types.address)}
+                                  {:text       "List"
+                                   :route-name :route-name/cvm.data-types.list
+                                   :href       (rfe/href :route-name/cvm.data-types.list)}
+                                  {:text       "Vector"
+                                   :route-name :route-name/cvm.data-types.vector
+                                   :href       (rfe/href :route-name/cvm.data-types.vector)}
+                                  {:text       "Map"
+                                   :route-name :route-name/cvm.data-types.map
+                                   :href       (rfe/href :route-name/cvm.data-types.map)}
+                                  {:text       "Blob map"
+                                   :route-name :route-name/cvm.data-types.blob-map
+                                   :href       (rfe/href :route-name/cvm.data-types.blob-map)}
+                                  {:text       "Set"
+                                   :route-name :route-name/cvm.data-types.set
+                                   :href       (rfe/href :route-name/cvm.data-types.set)}]}
+                    {:text       "Building blocks"
+                     :route-name :route-name/cvm.building-blocks
+                     :href       (rfe/href :route-name/cvm.building-blocks)
+                     :children   [{:text       "Definitions"
+                                   :route-name :route-name/cvm.building-blocks.definitions
+                                   :href       (rfe/href :route-name/cvm.building-blocks.definitions)}
+                                  {:text       "Logic"
+                                   :route-name :route-name/cvm.building-blocks.logic
+                                   :href       (rfe/href :route-name/cvm.building-blocks.logic)}
+                                  {:text       "Errors"
+                                   :route-name :route-name/cvm.building-blocks.errors
+                                   :href       (rfe/href :route-name/cvm.building-blocks.errors)}
+                                  {:text       "Functions"
+                                   :route-name :route-name/cvm.building-blocks.functions
+                                   :href       (rfe/href :route-name/cvm.building-blocks.functions)}
+                                  {:text       "Loops"
+                                   :route-name :route-name/cvm.building-blocks.loops
+                                   :href       (rfe/href :route-name/cvm.building-blocks.loops)}
+                                  {:text       "Code is data"
+                                   :route-name :route-name/cvm.building-blocks.code-is-data
+                                   :href       (rfe/href :route-name/cvm.building-blocks.code-is-data)}]}
+                    {:text       "Accounts"
+                     :route-name :route-name/cvm.accounts
+                     :href       (rfe/href :route-name/cvm.accounts)
+                     :children   [{:text       "Callable functions"
+                                   :route-name :route-name/cvm.accounts.callable-functions
+                                   :href       (rfe/href :route-name/cvm.accounts.callable-functions)}
+                                  {:text       "Actors"
+                                   :route-name :route-name/cvm.accounts.actors
+                                   :href       (rfe/href :route-name/cvm.accounts.actors)}]}
+                    {:text       "Execution phases"
+                     :route-name :route-name/cvm.execution-phases
+                     :href       (rfe/href :route-name/cvm.execution-phases)}
+                    {:text       "Macros"
+                     :route-name :route-name/cvm.macros
+                     :href       (rfe/href :route-name/cvm.macros)}
+                    {:text       "Peer operations"
+                     :route-name :route-name/cvm.peer-operations
+                     :href       (rfe/href :route-name/cvm.peer-operations)}
+                    {:text       "Reference"
+                     :route-name :route-name/cvm.reference
+                     :href       (rfe/href :route-name/cvm.reference)}
+                    ]}
+
+      ;; By example
+      ;; =======================
+       {:text       "By example"
+        :top-level? true
+        :route-name :route-name/by-example
+        :href       (rfe/href :route-name/by-example)
+        :children   [{:text       "Fungible token"
+                      :route-name :route-name/by-example.fungible-token
+                      :href       (rfe/href :route-name/by-example.fungible-token)}]}
+
+      ;; Run a peer
+      ;; =============
+      {:text       "Run a peer"
+       :top-level? true
+       :route-name :route-name/run-a-peer
+       :href       (rfe/href :route-name/run-a-peer)}
       
       ;; Sandbox
       ;; ==============
-      {:text "Sandbox"
+      {:text       "Sandbox"
        :top-level? true
        :route-name :route-name/sandbox
-       :href (rfe/href :route-name/sandbox)}
-      
-      
-      ;; Tools
+       :href       (rfe/href :route-name/sandbox)}
+
+
+      ;; Testnet
       ;; ==============
-      {:text "Tools"
+      {:text       "Testnet"
+       :top-level? true
+       :route-name :route-name/testnet
+       :href       (rfe/href :route-name/testnet)
+       :children   [{:text       "Accounts"
+                     :route-name :route-name/testnet.accounts
+                     :href       (rfe/href :route-name/testnet.accounts)
+                     :active?    (active #{:route-name/testnet.account
+                                           :route-name/testnet.accounts})}
+                    {:text       "Blocks"
+                     :route-name :route-name/testnet.blocks
+                     :href       (rfe/href :route-name/testnet.blocks)
+                     :active?    (active #{:route-name/testnet.block
+                                           :route-name/testnet.blocks})}
+                    {:text       "Request coins"
+                     :route-name :route-name/testnet.request-coins
+                     :href       (rfe/href :route-name/testnet.request-coins)}
+                    {:text       "Status"
+                     :route-name :route-name/testnet.status
+                     :href       (rfe/href :route-name/testnet.status)}
+                    {:text       "Transactions"
+                     :route-name :route-name/testnet.transactions
+                     :href       (rfe/href :route-name/testnet.transactions)}
+                    {:text       "Transfer"
+                     :route-name :route-name/testnet.transfer
+                     :href       (rfe/href :route-name/testnet.transfer)}
+                    {:text       "Wallet"
+                     :route-name :route-name/testnet.wallet
+                     :href       (rfe/href :route-name/testnet.wallet)}]}
+
+      ;; Tools
+      ;; =============
+      {:text       "Tools"
        :top-level? true
        :route-name :route-name/tools
-       :href (rfe/href :route-name/tools)
-       :children
-       [{:text "Wallet"
-         :route-name :route-name/wallet
-         :href (rfe/href :route-name/wallet)}
-        
-        {:text "Faucet"
-         :route-name :route-name/faucet
-         :href (rfe/href :route-name/faucet)}
-        
-        {:text "Transfer"
-         :route-name :route-name/transfer
-         :href (rfe/href :route-name/transfer)}]}
-      
-      
-      ;; Explorer
-      ;; ==============
-      {:text "Explorer"
-       :top-level? true
-       :route-name :route-name/explorer
-       :href (rfe/href :route-name/explorer)
-       :children
-       (->> [{:text "Status"
-              :route-name :route-name/state
-              :href (rfe/href :route-name/state)}
-             
-             {:text "Accounts"
-              :route-name :route-name/accounts-explorer
-              :href (rfe/href :route-name/accounts-explorer)
-              :active? (active #{:route-name/accounts-explorer
-                                 :route-name/account-explorer})}
-             
-             {:text "Blocks"
-              :route-name :route-name/blocks
-              :href (rfe/href :route-name/blocks)
-              :active? (active #{:route-name/blocks
-                                 :route-name/block-explorer})}
-             
-             {:text "Transactions"
-              :route-name :route-name/transactions
-              :href (rfe/href :route-name/transactions)}]
-         (sort-by first))}
-      
+       :href       (rfe/href :route-name/tools)
+       :children   [{:text       "Core"
+                     :route-name :route-name/tools.core
+                     :href       (rfe/href :route-name/tools.core)}
+                    {:text       "Clojure toolchain"
+                     :route-name :route-name/tools.clojure-toolchain
+                     :href       (rfe/href :route-name/tools.clojure-toolchain)}
+                    {:text       "Command Line Interface"
+                     :route-name :route-name/tools.cli
+                     :href       (rfe/href :route-name/tools.cli)}
+                    {:text       "Convex Lisp Runner"
+                     :route-name :route-name/tools.convex-lisp-runner
+                     :href       (rfe/href :route-name/tools.convex-lisp-runner)}
+                    {:text       "REST API"
+                     :route-name :route-name/tools.rest-api
+                     :href       (rfe/href :route-name/tools.rest-api)
+                     :children   [{:text       "Create an account"
+                                   :route-name :route-name/tools.rest-api.create-account
+                                   :href       (rfe/href :route-name/tools.rest-api.create-account)}
+                                  {:text       "Account details"
+                                   :route-name :route-name/tools.rest-api.account-details
+                                   :href       (rfe/href :route-name/tools.rest-api.account-details)}
+                                  {:text       "Request coins"
+                                   :route-name :route-name/tools.rest-api.request-coins
+                                   :href       (rfe/href :route-name/tools.rest-api.request-coins)}
+                                  {:text       "Query"
+                                   :route-name :route-name/tools.rest-api.query
+                                   :href       (rfe/href :route-name/tools.rest-api.query)}
+                                  {:text       "Prepare transaction"
+                                   :route-name :route-name/tools.rest-api.prepare-transaction
+                                   :href       (rfe/href :route-name/tools.rest-api.prepare-transaction)}
+                                  {:text       "Submit transaction"
+                                   :route-name :route-name/tools.rest-api.submit-transaction
+                                   :href       (rfe/href :route-name/tools.rest-api.submit-transaction)}]}
+                    ]}
+
       
       ;; About
       ;; ==============
@@ -285,56 +392,81 @@
     (some #(nav-item-expanded? route %) children)))
 
 (defn NavItem [route {:keys [text top-level? active? href target route-name children] :as item}]
-  (let [active? (nav-item-selected? route item)
-        
-        expanded? (nav-item-expanded? route item)
-        
-        leaf? (empty? children)]
-    
-    [:div.flex.flex-col.justify-center.space-y-1
-     (if leaf?
-       {:class "h-6 xl:h-7"}
-       {})
-     
-     ;; -- Item
-     [:a.py-1.px-2.transition.duration-200.ease-in-out.rounded
-      (let [border (if active?
-                     "bg-gray-200 hover:bg-gray-200"
-                     "hover:bg-gray-100")
-            
-            text-color (cond
-                         top-level?
-                         "text-blue-500"
-                         
-                         active?
-                         "text-gray-800"
-                         
-                         :else
-                         "text-gray-500")]
-        (merge {:href href
-                :class [border text-color]}
-          (when target
-            {:target target})))
+  (reagent/with-let [toggle-ref (reagent/atom nil)]
+    (let [active? (nav-item-selected? route item)
+          
+          expanded? (cond
+                      (some? @toggle-ref)
+                      @toggle-ref
+                      
+                      :else
+                      (nav-item-expanded? route item))
+          
+          leaf? (empty? children)]
       
-      [:div.flex.justify-between
-       (if target
-         [:div.space-x-2
-          [:span text]
-          [gui/IconExternalLink {:class "w-6 h-6"}]]
-         [:span text])
+      [:div.flex.flex-col.justify-center
+       ;; Always expand on click.
+       (merge {:on-click
+               (fn []
+                 (reset! toggle-ref true))}
+         (if leaf?
+           {:class "h-6 xl:h-7"}
+           {}))
        
-       (when-not leaf?
-         [(if expanded? gui/IconChevronDown gui/IconChevronUp)
-          {:class
-           ["w-6 h-6"
-            "text-gray-400"]}])]]
-     
-     ;; -- Children
-     (when (and (seq children) expanded?)
-       [:div.flex.flex-col.space-y-1.ml-4
-        (for [{:keys [text] :as child} children]
-          ^{:key text}
-          [NavItem route child])])]))
+       ;; -- Item
+       [:a.py-1.px-2.transition.duration-200.ease-in-out.rounded
+        (let [border (if active?
+                       "bg-gray-200 hover:bg-gray-200"
+                       "hover:bg-gray-100")
+              
+              text-color (cond
+                           top-level?
+                           "text-blue-500"
+                           
+                           active?
+                           "text-gray-800"
+                           
+                           :else
+                           "text-gray-500")]
+          (merge {:href href
+                  :class [border text-color]}
+            (when target
+              {:target target})))
+        
+        [:div.flex.justify-between.items-center
+         (if target
+           [:div.space-x-2
+            [:span text]
+            [gui/IconExternalLink {:class "w-6 h-6"}]]
+           [:span text])
+         
+         ;; Chevron right & down
+         (when-not leaf?
+           (let [style "w-6 h-6 text-gray-400 hover:bg-white rounded hover:shadow-md"
+                 
+                 Component (if expanded?
+                             ChevronDownIcon
+                             ChevronRightIcon)]
+             [:button
+              {:on-click
+               (fn [e]
+                 (swap! toggle-ref (fn [toggle]
+                                     (if (nil? toggle)
+                                       (not expanded?)
+                                       (not toggle))))
+                 
+                 (doto e
+                   (.preventDefault)
+                   (.stopPropagation)))}
+              [:> Component
+               {:className style}]]))]]
+       
+       ;; -- Children
+       (when (and (seq children) expanded?)
+         [:div.flex.flex-col.space-y-1.ml-3.mt-1
+          (for [{:keys [text] :as child} children]
+            ^{:key text}
+            [NavItem route child])])])))
 
 (defn SideNav [active-route]
   (let [{:keys [others]} (nav)]
@@ -343,11 +475,11 @@
               "hidden"
               
               ;; Desktop
-              "md:flex flex-col flex-shrink-0 md:w-[200px]"]}
+              "md:flex flex-col flex-shrink-0 md:w-[260px] pr-3"]}
      
      (for [{:keys [text] :as item} others]
        ^{:key text}
-       [:div.mb-2
+       [:div.mb-1
         [NavItem active-route item]])]))
 
 (defn Modal [{:frame/keys [uuid page state] :as frame}]
@@ -499,7 +631,7 @@
            [:> headlessui/Dialog.Overlay
             {:className "fixed inset-0 bg-gray-100"}]
            
-           [:div.fixed.inset-y-0.w-full
+           [:div.fixed.inset-y-0.w-full.h-full.overflow-auto
             
             [:div.h-16.flex.justify-end.items-center.px-6
              [CloseButton
@@ -578,7 +710,7 @@
           (when title
             [:div
              [:h1
-              {:class ["inline"
+              {:class ["md:inline"
                        "text-gray-900 text-3xl md:text-4xl"
                        "leading-none"
                        "border-b-2 border-blue-500"
@@ -610,7 +742,7 @@
         
         (when title
           [:h1
-           {:class ["inline"
+           {:class ["md:inline"
                     "text-gray-900 text-3xl md:text-4xl"
                     "leading-none"
                     "border-b-2 border-blue-500"

@@ -1,5 +1,13 @@
 ![Tests](https://github.com/Convex-Dev/convex-web/workflows/Tests/badge.svg)
 
+## Configuration
+
+### Secrets
+
+The default configuration - config.edn - requires a `~/.convex/secrets.edn` file.
+
+You can copy the example `secrets.example.edn` and configure the passphrase.
+
 ## Development
 
 ### Prerequisites

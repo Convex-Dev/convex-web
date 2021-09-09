@@ -361,18 +361,23 @@
                                 
                                 }}}])
           
-          [:div.flex.flex-col.justify-center.p-1.bg-gray-100.rounded
-           [gui/Tooltip
-            {:title "Run"
-             :size "small"}
+          [gui/Tooltip
+           {:title "Run"
+            :size "small"}
+           [:button.flex.flex-col.justify-center.h-full
+            {:class 
+             ["px-2 py-1"
+              "rounded"
+              "bg-gray-100"
+              "hover:bg-gray-200 hover:shadow"
+              "active:bg-gray-300"]
+             :on-click execute}
             [gui/PlayIcon
              {:class
               ["w-6 h-6"
                "text-green-500"
-               "hover:shadow-lg hover:text-green-600 hover:bg-green-100"
                "rounded-full"
-               "cursor-pointer"]
-              :on-click execute}]]]]]))))
+               "cursor-pointer"]}]]]]]))))
 
 (def output-symbol-metadata-options
   {:show-examples? false})
@@ -391,8 +396,18 @@
 (defmulti error-message :code)
 
 (defmethod error-message :default
-  [{:keys [code message]}]
-  (str (error-code-string code) ": " message))
+  [{:keys [code message status]}]
+  (cond
+    (= status 403)
+    "The sandbox has been updated! Please refresh your browser."
+    
+    code
+    (str (error-code-string code)
+      (when message
+        (str ": " message)))
+    
+    :else
+    "Unknown error"))
 
 (defmethod error-message :STATE
   [{:keys [message]}]
@@ -421,71 +436,75 @@
         [:code.text-xs t])])])
 
 (defn Commands [commands]
-  (into [:div] 
-    (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
-      ^{:key id}
-      [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
-       {:ref
-        (fn [el]
-          (when el
-            (.scrollIntoView el #js {"behavior" "smooth"
-                                     "block" "center"})))
-        :class
+  [:div.w-full.h-full.max-w-full.overflow-auto.bg-gray-100.border.rounded
+   (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
+     ;; Error Commands don't have an ID.
+     ^{:key (or id (str (random-uuid)))}
+     [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
+      {:ref
+       (fn [el]
+         (when el
+           (.scrollIntoView el #js {"behavior" "smooth"
+                                    "block" "center"})))
+       :class
+       (case status
+         :convex-web.command.status/running
+         "bg-yellow-100"
+         :convex-web.command.status/success
+         ""
+         :convex-web.command.status/error
+         "bg-red-100"
+         
+         "")}
+      
+      ;; -- Input
+      [:div.flex.flex-col.items-start
+       [:span.text-xs.uppercase.text-gray-600.block.mb-1
+        "Source"]
+       
+       (let [source (or (get query :convex-web.query/source)
+                      (get transaction :convex-web.transaction/source))]
+         [:div.flex.items-center
+          [gui/Highlight source {:pretty? true}]
+          
+          ;; This causes a strange overflow.
+          #_[gui/ClipboardCopy source {:margin "ml-2"}]])]
+      
+      [:div.my-3]
+      
+      ;; -- Output
+      [:div.flex.flex-col
+       (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
+         [:div.flex.mb-1
+          [:span.text-xs.uppercase.text-gray-600
+           (cond
+             error?
+             (let [code (get-in command [:convex-web.command/error :code])]
+               (apply str (if (keyword? code)
+                            ["Error " (str "(" (error-code-string code) ")")]
+                            ["Unrecognised Non-Keyword Error Code"])))
+             
+             :else
+             "Result")]
+          
+          ;; Don't display result type for errors.
+          (when-not error?
+            (when-let [type (get-in command [:convex-web.command/result :convex-web.result/type])]
+              [gui/Tooltip
+               {:title (str/capitalize type)
+                :size "small"}
+               [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
+       
+       [:div.flex
         (case status
           :convex-web.command.status/running
-          "bg-yellow-100"
-          :convex-web.command.status/success
-          ""
-          :convex-web.command.status/error
-          "bg-red-100"
+          [gui/SpinnerSmall]
           
-          "")}
-       
-       ;; -- Input
-       [:div.flex.flex-col.items-start
-        [:span.text-xs.uppercase.text-gray-600.block.mb-1
-         "Source"]
-        
-        (let [source (or (get query :convex-web.query/source)
-                       (get transaction :convex-web.transaction/source))]
-          [:div.flex.items-center
-           [gui/Highlight source {:pretty? true}]
-           [gui/ClipboardCopy source {:margin "ml-2"}]])]
-       
-       [:div.my-3]
-       
-       ;; -- Output
-       [:div.flex.flex-col
-        (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
-          [:div.flex.mb-1
-           [:span.text-xs.uppercase.text-gray-600
-            (cond
-              error?
-              (let [code (get-in command [:convex-web.command/error :code])]
-                (apply str (if (keyword? code)
-                             ["Error " (str "(" (error-code-string code) ")")]
-                             ["Unrecognised Non-Keyword Error Code"])))
-              
-              :else
-              "Result")]
-           
-           ;; Don't display result type for errors.
-           (when-not error?
-             (when-let [type (get-in command [:convex-web.command/result :convex-web.result/type])]
-               [gui/Tooltip
-                (str/capitalize type)
-                [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
-        
-        [:div.flex
-         (case status
-           :convex-web.command.status/running
-           [gui/SpinnerSmall]
-           
-           :convex-web.command.status/success
-           [gui/ResultRenderer (:convex-web.command/result command)]
-           
-           :convex-web.command.status/error
-           [ErrorOutput command])]]])))
+          :convex-web.command.status/success
+          [gui/ResultRenderer (:convex-web.command/result command)]
+          
+          :convex-web.command.status/error
+          [ErrorOutput command])]]])])
 
 ;; --
 
@@ -510,7 +529,7 @@
     [:div.flex.flex-1.space-x-8.overflow-auto
      
      ;; -- REPL
-     [:div.w-screen.flex.flex-col.mb-6.space-y-1
+     [:div.w-screen.max-w-full.flex.flex-col.mb-6.space-y-2
       
       [:div.flex.justify-end
        [gui/Tooltip
@@ -521,42 +540,51 @@
          [gui/MenuAlt3Icon
           {:class "h-5 w-5"}]]]]
       
-      ;; -- Commands
-      [:div.flex.flex-1.bg-gray-100.border.rounded.overflow-auto
-       [:div.flex.flex-col.flex-1
-        [Commands (commands state)]]]
+      ;; -- Output
+      [Commands (commands state)]
       
       ;; -- Input
       [Input state set-state]
       
       ;; -- Help
-      [:div.flex.space-x-2.pt-1.pb-4.text-gray-500
-       [:span.text-xs "Press " [:code.font-bold "Shift+Return"] " to run."]
+      [:div.flex.space-x-2.pt-1.pb-4.items-center.justify-between
        
-       ;; Keymaps.
-       [gui/Tooltip
-        {:html
-         (reagent/as-element
-           [:div.flex.flex-col.text-xs.font-mono.space-y-1
-            [:span.font-bold.text-sm.mb-2 "Keymaps"]
-            
-            [:div.flex.items-center.space-x-2
-             [:span.font-bold "Run: "]
-             [:span.bg-gray-500.p-1.rounded-md "Shift+Return"]]
-            
-            [:div.flex.items-center.space-x-2
-             [:span.font-bold "Clear: "]
-             [:span.bg-gray-500.p-1.rounded-md "Ctrl+Backspace"]]
-            
-            [:div.flex.items-center.space-x-2
-             [:span.font-bold "Navigate history up: "]
-             [:span.bg-gray-500.p-1.rounded-md "Ctrl+Up"]]
-            
-            [:div.flex.items-center.space-x-2
-             [:span.font-bold "Navigate history down: "]
-             [:span.bg-gray-500.p-1.rounded-md "Ctrl+Down"]]])}
+       ;; Shift return to run
+       [:div.flex.space-x-2.text-gray-500
+        [:span.text-xs "Press " [:code.font-bold "Shift+Return"] " to run."]
         
-        [gui/QuestionMarkCircle {:class "h-4 w-4"}]]]
+        ;; Keymaps
+        [gui/Tooltip
+         {:html
+          (reagent/as-element
+            [:div.flex.flex-col.text-xs.font-mono.space-y-1
+             [:span.font-bold.text-sm.mb-2 "Keymaps"]
+             
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Run: "]
+              [:span.bg-gray-500.p-1.rounded-md "Shift+Return"]]
+             
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Clear: "]
+              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Backspace"]]
+             
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Navigate history up: "]
+              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Up"]]
+             
+             [:div.flex.items-center.space-x-2
+              [:span.font-bold "Navigate history down: "]
+              [:span.bg-gray-500.p-1.rounded-md "Ctrl+Down"]]])}
+         
+         [gui/QuestionMarkCircle {:class "h-4 w-4"}]]]
+       
+       ;; Learn more
+       [gui/Tooltip
+        {:title "Sandbox Tutorial"
+         :size "small"}
+        [:a.text-xs.text-gray-500.rounded.hover:shadow.px-2.py-1.hover:bg-gray-100
+         {:href "sandbox/tutorial"}
+         "LEARN MORE"]]]
       
       ;; -- Options
       [:div.flex.flex-col.space-y-4.mt-1.cursor-default
@@ -567,7 +595,7 @@
           "Account"]
          [gui/AIdenticon {:value active-address :size gui/identicon-size-small}]
          [:a.hover:underline.hover:text-blue-500
-          {:href (rfe/href :route-name/account-explorer {:address active-address})}
+          {:href (rfe/href :route-name/testnet.account {:address active-address})}
           [:span.font-mono.text-xs.block.ml-1
            (format/prefix-# active-address)]]]
         
@@ -626,7 +654,7 @@
 
 (def sandbox-page
   #:page {:id :page.id/repl
-          :description "Use the Sandbox to execute transactions live on the Convex Network."
+          :description "Execute transactions live on the current test network. Fast and interactive."
           :initial-state
           {:convex-web.repl/language :convex-lisp
            :convex-web.repl/mode :convex-web.command.mode/transaction

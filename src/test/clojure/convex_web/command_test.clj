@@ -148,13 +148,13 @@
       
       (is (= :convex-web.command.status/error status))
       
-      (is (= {:code :CAST, 
-              :message "Can't convert value of type Long to type Sequence", 
-              :trace nil}
+      (is (= {:code :CAST,
+              :message "Can't convert value of type Long to type Sequence",
+              :trace ["In function: map"]}
             error))
       
       (is (= {:convex-web.result/error-code :CAST,
-              :convex-web.result/trace nil,
+              :convex-web.result/trace ["In function: map"],
               :convex-web.result/type "String",
               :convex-web.result/value "\"Can't convert value of type Long to type Sequence\""}
             (select-keys result [:convex-web.result/type

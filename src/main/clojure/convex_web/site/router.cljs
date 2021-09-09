@@ -147,12 +147,548 @@
    ;; Developer
    ;; ==============
    ["developer"
-    {:name :route-name/developer
-     :controllers
-     [{:start (fn [_]
-                (stack/push :page.id/markdown {:title "Welcome"
-                                               :state {:id :developer}
-                                               :reset? true}))}]}]
+    {:name        :route-name/developer
+     :controllers [{:start (fn [_]
+                             (stack/push :page.id/markdown
+                                         {:reset? true
+                                          :state  {:id :developer}
+                                          :title  "Introduction"}))}]}]
+
+   ;; By example
+   ;; =============
+   ["by-example"
+
+    [""
+     {:name        :route-name/by-example
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :by-example}
+                                              :title  "By example"}))}]}]
+    ["/fungible-token"
+     {:name        :route-name/by-example.fungible-token
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :by-example.fungible-token}
+                                              :title  "Fungible token"}))}]}]
+    ]
+   
+
+   ;; CVM
+   ;; ==============
+   ["cvm"
+
+    [""
+     {:name        :route-name/cvm
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm}
+                                              :title  "Convex Virtual Machine"}))}]}]
+   
+    ["/accounts"
+
+     [""
+      {:name        :route-name/cvm.accounts
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.accounts}
+                                               :title  "Accounts"}))}]}]
+     ["/actors"
+      {:name        :route-name/cvm.accounts.actors
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.accounts.actors}
+                                               :title  "Actors"}))}]}]
+     ["/callable-functions"
+      {:name        :route-name/cvm.accounts.callable-functions
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.accounts.callable-functions}
+                                               :title  "Callable functions"}))}]}]
+     ]
+
+    ["/basic-syntax"
+     {:name        :route-name/cvm.basic-syntax
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.basic-syntax}
+                                              :title  "Basic syntax"}))}]}]
+
+    ["/building-blocks"
+
+     [""
+      {:name        :route-name/cvm.building-blocks
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks}
+                                               :title  "Building blocks"}))}]}]
+     ["/code-is-data"
+      {:name        :route-name/cvm.building-blocks.code-is-data
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.code-is-data}
+                                               :title  "Code is data"}))}]}]
+     ["/definitions"
+      {:name        :route-name/cvm.building-blocks.definitions
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.definitions}
+                                               :title  "Definitions"}))}]}]
+     ["/errors"
+      {:name        :route-name/cvm.building-blocks.errors
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.errors}
+                                               :title  "Errors"}))}]}]
+
+     ["/functions"
+      {:name        :route-name/cvm.building-blocks.functions
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.functions}
+                                               :title  "Functions"}))}]}]
+
+     ["/logic"
+      {:name        :route-name/cvm.building-blocks.logic
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.logic}
+                                               :title  "Logic"}))}]}]
+
+     ["/loops"
+      {:name        :route-name/cvm.building-blocks.loops
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.building-blocks.loops}
+                                               :title  "Loops"}))}]}]
+     ]
+
+    ["/data-types"
+
+     [""
+      {:name        :route-name/cvm.data-types
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types}
+                                               :title  "Data types"}))}]}]
+
+     ["/address"
+      {:name        :route-name/cvm.data-types.address
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.address}
+                                               :title  "Address"}))}]}]
+     
+     ["/blob"
+      {:name        :route-name/cvm.data-types.blob
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.blob}
+                                               :title  "Blob"}))}]}]
+     
+     ["/blob-map"
+      {:name        :route-name/cvm.data-types.blob-map
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.blob-map}
+                                               :title  "Blob map"}))}]}]
+     
+     ["/boolean"
+      {:name        :route-name/cvm.data-types.boolean
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.boolean}
+                                               :title  "Boolean"}))}]}]
+     
+     ["/keyword"
+      {:name        :route-name/cvm.data-types.keyword
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.keyword}
+                                               :title  "Keyword"}))}]}]
+     
+     ["/list"
+      {:name        :route-name/cvm.data-types.list
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.list}
+                                               :title  "List"}))}]}]
+     
+     ["/map"
+      {:name        :route-name/cvm.data-types.map
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.map}
+                                               :title  "Map"}))}]}]
+     
+     ["/nil"
+      {:name        :route-name/cvm.data-types.nil
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.nil}
+                                               :title  "Nil"}))}]}]
+     
+     ["/numbers"
+      {:name        :route-name/cvm.data-types.numbers
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.numbers}
+                                               :title  "Numbers"}))}]}]
+
+     ["/symbol"
+      {:name        :route-name/cvm.data-types.symbol
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.symbol}
+                                               :title  "Symbol"}))}]}]
+     
+     ["/set"
+      {:name        :route-name/cvm.data-types.set
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.set}
+                                               :title  "Set"}))}]}]
+     
+     ["/text"
+      {:name        :route-name/cvm.data-types.text
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.text}
+                                               :title  "Text"}))}]}]
+     
+     ["/vector"
+      {:name        :route-name/cvm.data-types.vector
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :cvm.data-types.vector}
+                                               :title  "Vector"}))}]}]
+     ]
+
+    ["/execution-phases"
+     {:name        :route-name/cvm.execution-phases
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.execution-phases}
+                                              :title  "Execution phases"}))}]}]
+
+    ["/macros"
+     {:name        :route-name/cvm.macros
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.macros}
+                                              :title  "Macros"}))}]}]
+    ["/peer-operations"
+     {:name        :route-name/cvm.peer-operations
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :cvm.peer-operations}
+                                              :title  "Peer operations"}))}]}]
+  
+    ["/reference"
+     {:name        :route-name/cvm.reference
+      :controllers [{:identity identity
+                     :start    (fn [match]
+                                  (let [library (get-in match
+                                                        [:parameters
+                                                         :query
+                                                         :library]
+                                                        "convex.core")
+                                        symbol  (get-in match
+                                                        [:parameters
+                                                         :query
+                                                         :symbol])]
+                                    (stack/push :page.id/cvm.reference 
+                                                (merge {:reset? true}
+                                                       (when symbol
+                                                         {:state {:selected-library library
+                                                                  :symbol           symbol}})))))}]}]
+    ]
+
+
+
+   ["run-a-peer"
+    {:name        :route-name/run-a-peer
+     :controllers [{:identity identity
+                    :start    (fn [_match]
+                                (stack/push :page.id/markdown
+                                            {:reset? true
+                                             :state  {:id :run-a-peer}
+                                             :title  "Run a peer"}))}]}]
+
+
+
+   ["testnet"
+
+    [""
+     {:name        :route-name/testnet
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :testnet}
+                                              :title  "Testnet"}))}]}]
+
+    ["/accounts"
+     {:name        :route-name/testnet.accounts
+      :controllers [{:identity identity
+                     :start    (fn [match]
+                                 (stack/push :page.id/testnet.accounts
+                                             (merge {:reset? true}
+                                                    (when-let [range (query-range match)]
+                                                      {:state range}))))}]}]
+
+    ["/account/:address"
+     {:name        :route-name/testnet.account
+      :controllers [{:identity identity
+                     :start    (fn [match]
+                                 (let [address (get-in match
+                                                       [:parameters
+                                                        :path
+                                                        :address])]
+                                   (stack/push :page.id/testnet.account
+                                               {:reset? true
+                                                :state  {:ajax/status        :ajax.status/pending
+                                                         :convex-web/account {:convex-web.account/address address}}})))}]}]
+
+    ["/blocks"
+     {:name        :route-name/testnet.blocks
+      :controllers [{:identity identity
+                     :start    (fn [match]
+                                 (stack/push :page.id/testnet.blocks
+                                             (merge {:reset? true}
+                                                    (when-let [range (query-range match)]
+                                                      {:state range}))))}]}]
+
+    ["/block/:index"
+     {:name        :route-name/testnet.block
+      :controllers [{:identity identity
+                     :start    (fn [match]
+                                 (let [index (js/parseInt (get-in match
+                                                                  [:parameters
+                                                                   :path
+                                                                   :index]))]
+                                   (stack/push :page.id/testnet.block
+                                               {:reset? true
+                                                :state  {:convex-web/block {:convex-web.block/index index}}})))}]}]
+
+    ["/peers"
+     ;; TODO
+     {:name        :route-name/testnet.peers
+      :controllers [{:start (fn [_]
+                              (stack/push :page.id/testnet.peers
+                                          {:reset? true}))}]}]
+
+    ["/request-coins"
+     {:name        :route-name/testnet.request-coins
+      :controllers [{:identity identity
+                     :start    (fn [_]
+                                 (stack/push :page.id/testnet.request-coins
+                                             {:reset? true
+                                              :state  {:convex-web/faucet {:convex-web.faucet/amount 100000000}
+                                                       :faucet-page/config {:faucet-page.config/my-accounts? true}}}))}]}]
+
+    ["/status"
+     {:name        :route-name/testnet.status
+      :controllers [{:identity identity
+                     :start    (fn [_]
+                                 (stack/push :page.id/testnet.status
+                                             {:reset? true}))}]}]
+    ["/transactions"
+     {:name        :route-name/testnet.transactions
+      :controllers [{:identity identity
+                     :start    (fn [match]
+                                 (stack/push :page.id/testnet.transactions
+                                             (merge {:reset? true}
+                                                    (when-let [range (query-range match)]
+                                                      {:state range}))))}]}]
+    ["/transfer"
+     {:name        :route-name/testnet.transfer
+      :controllers [{:identity identity
+                     :start    (fn [_]
+                                 (stack/push :page.id/testnet.transfer
+                                             {:reset? true}))}]}]
+
+    ["/wallet"
+     {:name        :route-name/testnet.wallet
+      :controllers [{:identity identity
+                     :start    (fn [_]
+                                 (stack/push :page.id/testnet.wallet
+                                             {:reset? true}))}]}]
+    ]
+
+   ["tools"
+
+    [""
+     {:name        :route-name/tools
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :tools}
+                                              :title  "Tools"}))}]}]
+
+    ["/core"
+     {:name        :route-name/tools.core
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :tools.core}
+                                              :title  "Core"}))}]}]
+    ["/clojure-toolchain"
+     {:name        :route-name/tools.clojure-toolchain
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :tools.clojure-toolchain}
+                                              :title  "Clojure toolchain"}))}]}]
+
+    ["/command-line-interface"
+     {:name        :route-name/tools.cli
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :tools.cli}
+                                              :title  "Command Line Interface"}))}]}]
+
+    ["/convex-lisp-runner"
+      {:name        :route-name/tools.convex-lisp-runner
+       :controllers  [{:identity identity
+                       :start    (fn [_match]
+                                   (stack/push :page.id/markdown
+                                               {:reset? true
+                                                :state  {:id :tools.convex-lisp-runner}
+                                                :title  "Convex Lisp Runner"}))}]}]
+    ["/rest-api"
+
+     [""
+      {:name        :route-name/tools.rest-api
+       :controllers [{:identity identity
+                      :start    (fn [match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  (merge {:id :tools.rest-api}
+                                                              (when-let [section (scroll-to match)]
+                                                                {:scroll-to section}))
+                                               :title  "REST API"}))}]}]
+
+     ["/account-details"
+      {:name        :route-name/tools.rest-api.account-details
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.account-details}
+                                               :title  "Account details"}))}]}]
+     ["/create-an-account"
+      {:name        :route-name/tools.rest-api.create-account
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.create-account}
+                                               :title  "Create an account"}))}]}]
+
+     ["/prepare-transaction"
+      {:name        :route-name/tools.rest-api.prepare-transaction
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.prepare-transaction}
+                                               :title  "Prepare transaction"}))}]}]
+
+     ["/query"
+      {:name        :route-name/tools.rest-api.query
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.query}
+                                               :title  "Query"}))}]}]
+
+     ["/request-coins"
+      {:name        :route-name/tools.rest-api.request-coins
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.request-coins}
+                                               :title  "Request coins"}))}]}]
+     ["/submit-transaction"
+      {:name        :route-name/tools.rest-api.submit-transaction
+       :controllers [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :tools.rest-api.submit-transaction}
+                                               :title  "Submit transaction"}))}]}]
+     ]
+    ]
+   
    
    ;; Concepts
    ;; ==============
@@ -220,11 +756,22 @@
    ;; Sandbox
    ;; ==============
    ["sandbox"
-    {:name :route-name/sandbox
-     :controllers
-     [{:identity identity
-       :start (fn [_]
-                (stack/push :page.id/repl {:reset? true}))}]}]
+
+    [""
+     {:name        :route-name/sandbox
+      :controllers [{:identity identity
+                     :start    (fn [_]
+                                 (stack/push :page.id/repl
+                                             {:reset? true}))}]}]
+    ["/tutorial"
+     {:name        :route-name/sandbox.tutorial
+      :controllers  [{:identity identity
+                      :start    (fn [_match]
+                                  (stack/push :page.id/markdown
+                                              {:reset? true
+                                               :state  {:id :sandbox.tutorial}
+                                               :title  "Sandbox tutorial"}))}]}]
+    ]
    
    
    ;; My Account (account details)
@@ -235,197 +782,6 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/my-account {:reset? true}))}]}]
-   
-   
-   ;; Tools
-   ;; ==============
-   ["tools"
-    {:name :route-name/tools
-     :controllers
-     [{:identity identity
-       :start (fn [match]
-                (stack/push :page.id/markdown {:title "Tools"
-                                               :state (merge {:id :tools}
-                                                        (when-let [section (scroll-to match)]
-                                                          {:scroll-to section}))
-                                               :reset? true}))}]}]
-   
-   ;; Wallet
-   ;; ==============
-   ["wallet"
-    {:name :route-name/wallet
-     :controllers
-     [{:identity identity
-       :start (fn [_]
-                (stack/push :page.id/wallet {:reset? true}))}]}]
-   
-   
-   ;; Faucet
-   ;; ==============
-   ["faucet"
-    {:name :route-name/faucet
-     :controllers
-     [{:identity identity
-       :start (fn [_]
-                (stack/push :page.id/faucet {:reset? true
-                                             :state {:convex-web/faucet {:convex-web.faucet/amount 100000000}
-                                                     :faucet-page/config {:faucet-page.config/my-accounts? true}}}))}]}]
-   
-   
-   ;; Transfer
-   ;; ==============
-   ["transfer"
-    {:name :route-name/transfer
-     :controllers
-     [{:identity identity
-       :start (fn [_]
-                (stack/push :page.id/transfer {:reset? true}))}]}]
-   
-   
-   ;; Explorer
-   ;; ==============
-   ["explorer"
-    [""
-     {:name :route-name/explorer
-      :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/markdown {:title "Explorer"
-                                                :state {:id :explorer}
-                                                :reset? true}))}]}]
-    
-    ["/state"
-     {:name :route-name/state
-      :controllers
-      [{:identity identity
-        :start (fn [_]
-                 (stack/push :page.id/state {:reset? true}))}]}]
-    
-    ["/accounts"
-     {:name :route-name/accounts-explorer
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/accounts-range-explorer (merge {:reset? true}
-                                                                (when-let [range (query-range match)]
-                                                                  {:state range}))))}]}]
-    
-    ["/accounts/:address"
-     {:name :route-name/account-explorer
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (let [address (get-in match [:parameters :path :address])]
-                   (stack/push :page.id/account-explorer {:reset? true
-                                                          :state
-                                                          {:ajax/status :ajax.status/pending
-                                                           :convex-web/account {:convex-web.account/address address}}})))}]}]
-    
-    ["/blocks"
-     {:name :route-name/blocks
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/blocks-range-explorer (merge {:reset? true}
-                                                              (when-let [range (query-range match)]
-                                                                {:state range}))))}]}]
-    
-    ["/blocks/:index"
-     {:name :route-name/block-explorer
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (let [index (js/parseInt (get-in match [:parameters :path :index]))]
-                   (stack/push :page.id/block-explorer {:reset? true
-                                                        :state {:convex-web/block {:convex-web.block/index index}}})))}]}]
-    
-    ["/peers"
-     {:name :route-name/peers-explorer
-      :controllers
-      [{:start (fn [_]
-                 (stack/push :page.id/peers-explorer {:reset? true}))}]}]
-    
-    ["/transactions"
-     {:name :route-name/transactions
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/transactions-range-explorer (merge {:reset? true}
-                                                                    (when-let [range (query-range match)]
-                                                                      {:state range}))))}]}]]
-   
-   
-   ;; Documentation
-   ;; ==============
-   ["documentation"
-    [""
-     {:name :route-name/documentation
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/markdown {:title "Documentation"
-                                                :state (merge {:id :documentation}
-                                                         (when-let [section (scroll-to match)]
-                                                           {:scroll-to section}))
-                                                :reset? true}))}]}]
-    
-    
-    ["/reference"
-     {:name :route-name/documentation-reference
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (let [library (get-in match [:parameters :query :library] "convex.core")
-                       symbol (get-in match [:parameters :query :symbol])]
-                   (stack/push :page.id/documentation-reference 
-                     (merge {:reset? true}
-                       (when symbol
-                         {:state 
-                          {:selected-library library
-                           :symbol symbol}})))))}]}]
-    
-    ["/getting-started"
-     {:name :route-name/documentation-getting-started
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/markdown {:title "Getting Started"
-                                                :state (merge {:id :getting-started}
-                                                         (when-let [section (scroll-to match)]
-                                                           {:scroll-to section}))
-                                                :reset? true}))}]}]
-    
-    ["/tutorial"
-     {:name :route-name/documentation-tutorial
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/markdown {:title "Lisp Guide"
-                                                :state (merge {:id :tutorials}
-                                                         (when-let [section (scroll-to match)]
-                                                           {:scroll-to section}))
-                                                :reset? true}))}]}]
-    
-    ["/advanced-topics"
-     {:name :route-name/advanced-topics
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/markdown {:title "Advanced Topics"
-                                                :state (merge {:id :advanced-topics}
-                                                         (when-let [section (scroll-to match)]
-                                                           {:scroll-to section}))
-                                                :reset? true}))}]}]
-    
-    ["/client-api"
-     {:name :route-name/client-api
-      :controllers
-      [{:identity identity
-        :start (fn [match]
-                 (stack/push :page.id/markdown {:title "Client API"
-                                                :state (merge {:id :client-api}
-                                                         (when-let [section (scroll-to match)]
-                                                           {:scroll-to section}))
-                                                :reset? true}))}]}]]
    
    
    ;; About

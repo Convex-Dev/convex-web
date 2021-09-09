@@ -4,7 +4,7 @@ on:
     paths:
       - 'src/**'
       - 'deps.edn'
-      - 'convex-web.edn'
+      - 'config.edn'
 
 jobs:
   build:

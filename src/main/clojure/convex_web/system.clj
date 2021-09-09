@@ -45,8 +45,10 @@
 (defn ^Convex convex-client [system]
   (-convex-client (convex system)))
 
-(defn ^Address convex-world-address [system]
-  (convex/server-peer-controller (convex-server system)))
+(defn ^Address convex-world-address
+  "Genesis Address."
+  [system]
+  (convex/genesis-address))
 
 (defn ^State convex-world-context [system]
   (convex/server-context (convex-server system)))

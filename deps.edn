@@ -12,10 +12,10 @@
   com.cognitect/transit-cljs {:mvn/version "0.8.269"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
   
-  world.convex/convex-peer {:mvn/version "0.7.0-rc2"}
+  world.convex/convex-peer {:mvn/version "0.7.0"}
   
-  ;; world.convex/convex-core {:local/root "convex-core-0.7.0-SNAPSHOT.jar"}
-  ;; world.convex/convex-peer {:local/root "convex-peer-0.7.0-SNAPSHOT.jar"}
+  ;; world.convex/convex-core {:local/root "convex-core-0.7.0-rc3-06ee2229b8fa9abaf28309b0b609c52fcd91ba7c.jar"}
+  ;; world.convex/convex-peer {:local/root "convex-peer-0.7.0-rc3-06ee2229b8fa9abaf28309b0b609c52fcd91ba7c.jar"}
   
   prestancedesign/get-port {:mvn/version "0.1.1"}
   
@@ -96,7 +96,7 @@
   ;; -- Site dev
   :site-dev
   {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.879"}
-                thheller/shadow-cljs {:mvn/version "2.15.5"}
+                thheller/shadow-cljs {:mvn/version "2.15.8"}
                 binaryage/devtools {:mvn/version "1.0.3"}
                 re-frisk/re-frisk {:mvn/version "1.5.1"}}}
   

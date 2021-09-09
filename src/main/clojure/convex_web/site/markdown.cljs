@@ -7,7 +7,7 @@
    [reagent.core :as reagent]))
 
 (defn MarkdownPage [_ {:keys [scroll-to markdown]} _]
-  (reagent/with-let [*nodes (reagent/atom nil)
+  (reagent/with-let [nodes-ref (reagent/atom nil)
                      
                      pending-scroll?-ref (reagent/atom (boolean scroll-to))]
     
@@ -30,9 +30,11 @@
               (when el
                 (let [nodes (.querySelectorAll el "h2")]
                   (when smart-toc?
-                    (reset! *nodes nodes))
+                    (reset! nodes-ref nodes))
                   
                   (when @pending-scroll?-ref
+                    ;; Reitit has an internal API to decode the URI.
+                    ;; This code is copied from Reitit:
                     (let [scroll-to (js/decodeURIComponent (str/replace scroll-to "+" " "))]
                       (when-let [el (reduce
                                       (fn [_ node]
@@ -59,7 +61,7 @@
                [:ul.list-none.text-sm.mt-4.space-y-2.overflow-auto
                 (if smart-toc?
                   ;; Smart ToC
-                  (for [node @*nodes]
+                  (for [node @nodes-ref]
                     ^{:key (.-textContent node)}
                     [:li.mb-2
                      [:a.text-gray-600.hover:text-gray-900.cursor-pointer
