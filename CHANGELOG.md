@@ -1,5 +1,8 @@
 # Changes
 
+## 0.25.0 -- 2021-09-09
+- Update convex-peer to version 0.7.0 (alplha)
+
 ## 0.24.0 -- 2021-08-25
 - Update convex-peer to version 0.7.0-rc2
 - Update libraries
