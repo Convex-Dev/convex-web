@@ -106,10 +106,10 @@ By removing a key-value pair from an existing map:
 ```
 
 
-# Accessing values
+## Accessing values
 
 By retrieving the nthiest one (count starts at 0). Remember that order in maps is unpredictable. However, it is stable.
-Hence, `nth` can be used in [loops](/cvm/loops):
+Hence, `nth` can be used in [loops](/cvm/building-blocks/loops):
 
 ```clojure
 (nth {:name   "Convex"
@@ -165,25 +165,26 @@ By requesting a key:
 The following functions only works with maps:
 
 ```clojure
-(keys m)        ;; -> [:blockchain? :name :status]
-(values m)      ;; -> [true "Convex" :cool]
-                ;; Order of `keys` is consistent with `values`
-
-(merge {:a :b}
-       {1 2}    ;; -> {:a :b, 1 2}
-```
-
-
-## Common collection functions
-
-```clojure
-;; Defines a map under `m`, so that it is easier to follow the below examples.
+;; Defines a map under `m`, so that it is easier to follow
+;; the below examples.
 ;;
 (def m
      {:name        "Convex"
       :status      :cool
       :blockchain? true})
 ```
+
+```clojure
+(keys m)        ;; -> [:blockchain? :name :status]
+(values m)      ;; -> [true "Convex" :cool]
+                ;; Order of `keys` is consistent with `values`
+
+(merge {:a :b}
+       {1 2})   ;; -> {:a :b, 1 2}
+```
+
+
+## Common collection functions
 
 ```clojure
 (count m)       ;; -> 3
@@ -206,4 +207,4 @@ The following functions only works with maps:
                 ;; first one
 ```
 
-Maps can be looped over as described in the [section about loops](/cvm/loops).
+Maps can be looped over as described in the [section about loops](/cvm/building-blocks/loops).

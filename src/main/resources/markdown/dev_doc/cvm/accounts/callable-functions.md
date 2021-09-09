@@ -1,4 +1,4 @@
-[Functions](/cvm/functions) have been encountered many times before and *applying a function* meant executing it by providing optional
+[Functions](/cvm/building-blocks/functions) have been encountered many times before and *applying a function* meant executing it by providing optional
 parameters. Applying a function is always executed in the account which signed the transaction. This section introduces the concept
 of a **callable function**, a crucial concept for understanding smart contracts.
 
@@ -41,7 +41,7 @@ Address of the original account who signed the whole transaction:
 
 ## Defining and using callable functions
 
-Creating new accounts which host callable functions is explained in detail in the section about [actors](/cvm/actors). For
+Creating new accounts which host callable functions is explained in detail in the section about [actors](/cvm/accounts/actors). For
 the time being, let us suppose the following fictitious accounts:
 
 ```clojure
@@ -116,7 +116,7 @@ Callable functions can themselves use callable functions from other accounts, al
 
 **Attention.** Previous example presents a major flaw: anyone can call the `set-x` callable function and change the value of `x` in `#42`.
 
-In the vast majority of cases, access must be constrained. While more sophisticated examples are described in the section about [actors](/cvm/actors),
+In the vast majority of cases, access must be constrained. While more sophisticated examples are described in the section about [actors](/cvm/accounts/actors),
 it typically boils down to checking if `*caller*` is a trusted account. Naturally, other conditions can be enforced as well.
 
 ```clojure

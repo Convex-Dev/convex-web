@@ -19,20 +19,20 @@ All functions showcased for regular [maps](/cvm/data-types/map) can be applied:
 (get (blob-map #42 :some-value)
      #42)
 
-;; :some-value
+;; -> :some-value
 
 
 (get (blob-map #42 :some-value)
      0xff1234)
 
-;; nil
+;; -> nil
 
 
 (assoc (blob-map)
        42
-       :error!)
+       :hello)
 
-;; Error, key 42 is a long, not a blob.
+;; Error! key 42 is a long, not a blob.
 
 ;; Etc...
 ```

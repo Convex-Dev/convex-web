@@ -14,11 +14,13 @@ This small example creates a custom fungible token and transfers `500` units it 
   
 ```
 
+Let us break it down.
+
 
 ## Creating a custom fungible token
 
 Many different ways could be envisioned to implement a fungible token. This section showcases how to create one in a
-standardized manner by using `convex.fungible`, an official library provided by the Convex Foundation.
+standardized manner by using `convex.fungible`, an official library provided by the Convex Foundation. 
 
 ```clojure
 (import convex.fungible :as fun)
@@ -81,3 +83,10 @@ Indeed, our friend received some of our tokens:
 
 ;; -> 500
 ```
+
+
+## Additional notes
+
+The advantage of this standard approach is interoperability through the `convex.asset` interface, meaning your fungible
+token can participate in a much broader asset ecosystem. Naturally, your are free to implement your own system. How would
+you do it?

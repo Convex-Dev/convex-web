@@ -1,7 +1,7 @@
 In Convex Lisp, code is first and foremost data. It can be composed of all the [data types described previously](/cvm/data-types/overview). The CVM takes data and
 evaluates it to produce a result, which is data as well.
 
-The following section might seem abstract at first. However, concepts exposed here are of great importance for understanding [actors](/cvm/actors), as well as
+The following section might seem abstract at first. However, concepts exposed here are of great importance for understanding [actors](/cvm/accounts/actors), as well as
 [macros](/cvm/macros). For instance, they are needed for writing code that can be deployed later and executed in the context of a smart contract.
 
 
@@ -17,7 +17,7 @@ Literals are [data](/cvm/data-types) elements that evaluate to themselves:
 [:a :b]  ;; Evaluates to [:a :b], a vector
 ```
 
-[Function](/cvm/functions) application consists of a list where the first item designates a function and other items are parameters:
+[Function](/cvm/building-blocks/functions) application consists of a list where the first item designates a function and other items are parameters:
 
 ```clojure
 (+ 2 3)       ;; -> 5
@@ -55,7 +55,7 @@ Quoting is so common for some situations that an actual **'** can be used as a s
 
 '[:a (+ 2 3)]
 
-;; -> [:a (+ 2 3)
+;; -> [:a (+ 2 3)]
 
 
 [:a
@@ -69,7 +69,7 @@ Quoting is so common for some situations that an actual **'** can be used as a s
 ## Quasiquote and unquote
 
 Templating code is an important feature, especially in the context of smart contracts. Once understood, it becomes
-a powerful ally.
+a powerful tool.
 
 In that respect, `quasiquote` is very similar to `quote` as it prevents evaluation. However, it allows using `unquote`
 for selectively evaluating and preparing bits of data where needed:

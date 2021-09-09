@@ -28,7 +28,7 @@ parameters. To prevent evaluation, lists can be constructed using a dedicated fu
 ```
 
 Generally, [vectors](/cvm/data-types/vector) are more flexible for grouping several values together. Lists are more commonly used in the context of
-[code is data](/cvm/code-is-data) and [macros](/cvm/macros) (an advanced topic). Items can have different types and even be collections themselves.
+[code is data](/cvm/building-blocks/code-is-data) and [macros](/cvm/macros) (an advanced topic). Items can have different types and even be collections themselves.
 
 Unlike other programming languages, separating items with `,` is optional and rarely seen unless it makes an expression more readable. Like any other
 value in Convex, a list can never directly be altered. All examples below efficiently return a new list.
@@ -42,7 +42,7 @@ By using a function:
 (list 1 2 (+ 3 4))
 ```
 
-By using `quote` (explained in greater detail in the the section about [code is data](/cvm/code-is-data)), which prevent evaluation:
+By using `quote` (explained in greater detail in the the section about [code is data](/cvm/building-blocks/code-is-data)), which prevent evaluation:
 
 ```clojure
 (quote (1 2 (+ 3 4)))
@@ -102,12 +102,6 @@ By casting any other collection or pseudo-collection:
 ;;
 ;; It seems upside-down but it makes sense, new items are always
 ;; added at the beginning of the list.
-
-
-(into (list)
-      "Convex")
-
-;; -> (\x \e \v \n \o \C)
 ```
 
 
@@ -206,4 +200,4 @@ Following functions can only be used with sequential collections (lists or [vect
 (next (list :a))                ;; -> nil
 ```
 
-Lists can be looped over as described in the [section about loops](/cvm/loops).
+Lists can be looped over as described in the [section about loops](/cvm/building-blocks/loops).

@@ -257,15 +257,18 @@
                      :href       (rfe/href :route-name/cvm.reference)}
                     ]}
 
-      ;; By example
+      ;; Examples
       ;; =======================
-       {:text       "By example"
-        :top-level? true
-        :route-name :route-name/by-example
-        :href       (rfe/href :route-name/by-example)
-        :children   [{:text       "Fungible token"
-                      :route-name :route-name/by-example.fungible-token
-                      :href       (rfe/href :route-name/by-example.fungible-token)}]}
+      {:text       "Examples"
+       :top-level? true
+       :route-name :route-name/examples
+       :href       (rfe/href :route-name/examples)
+       :children   [{:text       "Fungible token"
+                     :route-name :route-name/examples.fungible-token
+                     :href       (rfe/href :route-name/examples.fungible-token)}
+                    {:text       "NFT"
+                     :route-name :route-name/examples.nft
+                     :href       (rfe/href :route-name/examples.nft)}]}
 
       ;; Run a peer
       ;; =============

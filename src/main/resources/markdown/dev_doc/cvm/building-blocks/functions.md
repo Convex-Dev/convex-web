@@ -14,7 +14,7 @@ Any function needs a [vector](/cvm/data-types/vector) of parameters and a body:
 ;; `x` by itself.
 ```
 
-Such a function is anonymous since it does not have a name. More precisely, it is not part of a [definition](/cvm/definitions).
+Such a function is anonymous since it does not have a name. More precisely, it is not part of a [definition](/cvm/building-blocks/definitions).
 It can be used right away as a first item in a list, as seen before:
 
 ```clojure
@@ -28,7 +28,7 @@ It can be used right away as a first item in a list, as seen before:
 
 Any anonymous function can be defined so that is easily accessible and reusable.
 
-A [definition](/cvm/definitions) allows a function to remain accessible across transactions by storing it in the environment of the
+A [definition](/cvm/building-blocks/definitions) allows a function to remain accessible across transactions by storing it in the environment of the
 executing account:
 
 ```clojure
@@ -63,7 +63,7 @@ metadata can be found in [Convex Architecture Document 013](https://github.com/C
      x))
 ```
 
-A function from another account can be applied, as described in the section about [definitions](/cvm/definitions). Supposing `square` is
+A function from another account can be applied, as described in the section about [definitions](/cvm/building-blocks/definitions). Supposing `square` is
 defined in account `#42`:
 
 ```clojure
@@ -84,7 +84,7 @@ with a blank page, please do not apply a function unless you know exactly what i
 
 ## Local definitions
 
-A function can be defined temporarily as a [local definition](/cvm/definitions?section=Local%20definitions):
+A function can be defined temporarily as a [local definition](/cvm/building-blocks/definitions?section=Local%20definitions):
 
 ```clojure
 (let [square (fn [x]
