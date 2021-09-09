@@ -174,6 +174,14 @@
                                              {:reset? true
                                               :state  {:id :by-example.fungible-token}
                                               :title  "Fungible token"}))}]}]
+    ["/nft"
+     {:name        :route-name/by-example.nft
+      :controllers [{:identity identity
+                     :start    (fn [_match]
+                                 (stack/push :page.id/markdown
+                                             {:reset? true
+                                              :state  {:id :by-example.nft}
+                                              :title  "NFT"}))}]}]
     ]
    
 
