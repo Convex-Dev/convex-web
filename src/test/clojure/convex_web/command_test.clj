@@ -1,6 +1,6 @@
 (ns convex-web.command-test
   (:require 
-   [clojure.test :refer :all]
+   [clojure.test :refer [deftest is testing use-fixtures]]
    
    [ring.mock.request :as mock]
    
@@ -29,7 +29,8 @@
           _ (handler (mock/request :post "/api/internal/confirm-account"
                        (encoding/transit-encode generated-address)))
           
-          command1 (c/execute system #:convex-web.command {:timestamp 1
+          command1 (c/execute system #:convex-web.command {:id (java.util.UUID/randomUUID)
+                                                           :timestamp 1
                                                            :mode :convex-web.command.mode/transaction
                                                            :address generated-address
                                                            :transaction
@@ -38,7 +39,8 @@
                                                             :type :convex-web.transaction.type/invoke
                                                             :language :convex-lisp}})
           
-          command2 (c/execute system #:convex-web.command {:timestamp 2
+          command2 (c/execute system #:convex-web.command {:id (java.util.UUID/randomUUID)
+                                                           :timestamp 2
                                                            :mode :convex-web.command.mode/transaction
                                                            :address generated-address
                                                            :transaction
@@ -47,7 +49,8 @@
                                                             :type :convex-web.transaction.type/invoke
                                                             :language :convex-lisp}})
           
-          command3 (c/execute system #:convex-web.command {:timestamp 3
+          command3 (c/execute system #:convex-web.command {:id (java.util.UUID/randomUUID)
+                                                           :timestamp 3
                                                            :mode :convex-web.command.mode/transaction
                                                            :address generated-address
                                                            :transaction
@@ -63,7 +66,8 @@
 (deftest query-mode-test
   (testing "Simple Commands"
     (let [{::c/keys [status result]} 
-          (c/execute system {::c/timestamp 1
+          (c/execute system {::c/id (java.util.UUID/randomUUID)
+                             ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
                              ::c/address 9
                              ::c/query
@@ -77,7 +81,8 @@
                                  :convex-web.result/value]))))
     
     (let [{::c/keys [status result]}
-          (c/execute system {::c/timestamp 1
+          (c/execute system {::c/id (java.util.UUID/randomUUID)
+                             ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
                              ::c/address 9
                              ::c/query
@@ -91,7 +96,8 @@
                                  :convex-web.result/value]))))
     
     (let [{::c/keys [status result]}
-          (c/execute system {::c/timestamp 1
+          (c/execute system {::c/id (java.util.UUID/randomUUID)
+                             ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
                              ::c/address 9
                              ::c/query
@@ -106,7 +112,8 @@
   
   (testing "Symbol lookup"
     (let [{::c/keys [status result]}
-          (c/execute system {::c/timestamp 1
+          (c/execute system {::c/id (java.util.UUID/randomUUID)
+                             ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
                              ::c/address 9
                              ::c/query
@@ -121,7 +128,8 @@
   
   (testing "Lookup doc"
     (let [{::c/keys [status result]}
-          (c/execute system {::c/timestamp 1
+          (c/execute system {::c/id (java.util.UUID/randomUUID)
+                             ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
                              ::c/address 9
                              ::c/query
@@ -136,7 +144,8 @@
                                  :convex-web.result/value])))))
   
   (testing "Syntax error"
-    (let [command (c/execute system {::c/timestamp 1
+    (let [command (c/execute system {::c/id (java.util.UUID/randomUUID)
+                                     ::c/timestamp 1
                                      ::c/mode :convex-web.command.mode/query
                                      ::c/query
                                      {:convex-web.query/source "("
@@ -149,7 +158,8 @@
   
   (testing "Cast error"
     (let [{::c/keys [status result error]} 
-          (c/execute system {::c/timestamp 1
+          (c/execute system {::c/id (java.util.UUID/randomUUID)
+                             ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
                              ::c/address 9
                              ::c/query

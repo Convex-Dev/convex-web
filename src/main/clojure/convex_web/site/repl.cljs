@@ -186,7 +186,9 @@
                             query #:convex-web.query {:source source
                                                       :language (language state)}
                             
-                            command (merge #:convex-web.command {:timestamp (.getTime (js/Date.))
+                            command (merge #:convex-web.command {:id (random-uuid)
+                                                                 :timestamp (.getTime (js/Date.))
+                                                                 :status :convex-web.command.status/running
                                                                  :mode (mode state)}
                                       (case (mode state)
                                         :convex-web.command.mode/query
@@ -202,33 +204,23 @@
                         (when-not (str/blank? (codemirror/cm-get-value editor))
                           (codemirror/cm-set-value editor "")
                           
+                          (set-state
+                            (fn [state]
+                              (update state :convex-web.repl/commands (fnil conj []) command)))
+                          
                           (command/execute command (fn [command-previous-state command-new-state]
                                                      (set-state
                                                        (fn [state]
-                                                         (let [{:convex-web.command/keys [id] :as command'} (merge command-previous-state command-new-state)
+                                                         (let [{:convex-web.command/keys [timestamp] :as command'} (merge command-previous-state command-new-state)
                                                                
-                                                               commands (or (commands state) [])
-                                                               
-                                                               ;; Without checking for the ID a Command without an ID
-                                                               ;; would be flagged since both values are nil.
-                                                               should-update? (when id
-                                                                                (some
-                                                                                  (fn [{this-id :convex-web.command/id}]
-                                                                                    (= id this-id))
-                                                                                  commands))
-                                                               
-                                                               commands' (if should-update?
-                                                                           ;; Map over the existing Commands to update the matching one.
-                                                                           (mapv
-                                                                             (fn [{this-id :convex-web.command/id :as command}]
-                                                                               (if (= id this-id)
-                                                                                 (merge command command')
-                                                                                 command))
-                                                                             commands)
-                                                                           ;; Don't need to update so we simply add the Command to the list.
-                                                                           (conj commands command'))]
+                                                               commands (mapv
+                                                                          (fn [{this-timestamp :convex-web.command/timestamp :as command}]
+                                                                            (if (= timestamp this-timestamp)
+                                                                              (merge command command')
+                                                                              command))
+                                                                          (or (commands state) []))]
                                                            
-                                                           (assoc state :convex-web.repl/commands commands'))))))))))]
+                                                           (assoc state :convex-web.repl/commands commands))))))))))]
       
       ;; Don't allow queries or transactions without an account.
       (if (nil? active-address)

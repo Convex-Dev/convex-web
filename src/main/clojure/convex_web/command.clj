@@ -212,7 +212,6 @@
             (log/debug (str "Source: " (source command) "\nType: " (type result-value) " \nValue: " result-value))
             (log/warn "Missing result. Command:" command))
         
-        result-id (some-> result .getID)
         result-value (some-> result .getValue)
         result-error-code (some-> result .getErrorCode)
         result-trace (some-> result .getTrace)
@@ -224,8 +223,7 @@
         command' (if result
                    (merge 
                      #:convex-web.command 
-                     {:id (convex/datafy result-id)
-                      :result (convex/result-data result)
+                     {:result (convex/result-data result)
                       :status
                       (if result-error-code
                         :convex-web.command.status/error
@@ -249,7 +247,8 @@
                         {:code code}))})
         
         ;; Updated Command.
-        command' (merge (select-keys command [:convex-web.command/timestamp
+        command' (merge (select-keys command [:convex-web.command/id
+                                              :convex-web.command/timestamp
                                               :convex-web.command/mode
                                               :convex-web.command/language
                                               :convex-web.command/address

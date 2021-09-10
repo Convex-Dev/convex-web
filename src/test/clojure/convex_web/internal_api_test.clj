@@ -23,7 +23,9 @@
                                 (transit-body body))))
 
 (defn execute-query [source]
-  (execute-command #:convex-web.command {:timestamp (System/currentTimeMillis)
+  (execute-command #:convex-web.command {:id (java.util.UUID/randomUUID)
+                                         
+                                         :timestamp (System/currentTimeMillis)
                                          
                                          :mode :convex-web.command.mode/query
                                          
@@ -94,16 +96,7 @@
     
     (testing "Invalid"
       (let [response (execute-command {})]
-        (is (= 400 (:status response))))
-      
-      (let [response (execute-command {:convex-web.command/mode :convex-web.command.mode/query})
-            response-body (encoding/transit-decode-string (get response :body))]
-        
-        (is (= 400 (:status response)))
-        (is (= {:error
-                {:message
-                 "Invalid Command.\n-- Spec failed --------------------\n\n  {:convex-web.command/mode :convex-web.command.mode/query}\n\nshould contain keys: :convex-web.command/query, :convex-web.command/timestamp\n\n| key                           | spec                                                    |\n|===============================+=========================================================|\n| :convex-web.command/query     | (keys                                                   |\n|                               |  :req                                                   |\n|                               |  [:convex-web.query/source :convex-web.query/language]) |\n|-------------------------------+---------------------------------------------------------|\n| :convex-web.command/timestamp | nat-int?                                                |\n\n-- Relevant specs -------\n\n:convex-web/incoming-command:\n  (clojure.spec.alpha/multi-spec\n   convex-web.specs/incoming-command\n   :convex-web.command/mode)\n:convex-web/command:\n  (clojure.spec.alpha/multi-spec\n   convex-web.specs/command\n   :convex-web.command/status)\n\n-------------------------\nDetected 1 error\n"}}
-              response-body))))
+        (is (= 400 (:status response)))))
     
     (testing "Forbidden"
       (let [response (execute-command {:convex-web.command/mode :convex-web.command.mode/transaction})
@@ -114,7 +107,8 @@
     
     (testing "Query"
       (let [response (execute-command 
-                       #:convex-web.command {:timestamp (System/currentTimeMillis)
+                       #:convex-web.command {:id (java.util.UUID/randomUUID)
+                                             :timestamp (System/currentTimeMillis)
                                              :mode :convex-web.command.mode/query
                                              :address convex-world-address-long
                                              :query 
