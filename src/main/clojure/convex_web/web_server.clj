@@ -35,8 +35,7 @@
   (:import 
    (java.io InputStream)
    
-   (convex.api Convex)           
-   (convex.peer Server)
+   (convex.api Convex)
    (convex.core.crypto ASignature AKeyPair)
    (convex.core.data Ref SignedData AccountKey ACell Hash Address)
    (convex.core.lang Context)
@@ -659,31 +658,34 @@
 (defn -POST-command [context {:keys [body] :as request}]
   (try
     (let [{::command/keys [address mode] :as command} (transit-decode body)
-
+          
           invalid? (not (s/valid? :convex-web/command command))
-
+          
           session-addresses (session-addresses context request)
-
+          
           forbidden? (case mode
                        :convex-web.command.mode/query
                        false
-
+                       
                        :convex-web.command.mode/transaction
-                       (not (contains? session-addresses address)))]
-
+                       (not (contains? session-addresses address))
+                       
+                       false)]
+      
       (cond
-        invalid?
-        (-bad-request-response (error "Invalid Command."))
-
         forbidden?
         (-forbidden-response (error "Unauthorized."))
-
+        
+        invalid?
+        (-bad-request-response (error (str "Invalid Command.\n" 
+                                        (expound/expound-str :convex-web/command command))))
+        
         :else
         (let [command' (command/execute context command)]
           (-successful-response command'))))
     (catch Throwable ex
       (log/error ex "Command error.")
-
+      
       -server-error-response)))
 
 (defn -POST-create-account

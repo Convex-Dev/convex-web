@@ -1,17 +1,15 @@
 (ns convex-web.internal-api-test
-  (:require [clojure.test :refer :all]
-            [clojure.spec.alpha :as s]
-
-            [convex-web.specs]
-            [convex-web.convex :as convex]
-            [convex-web.lang :as lang]
-            [convex-web.test :refer :all]
-            [convex-web.web-server :as web-server]
-            [convex-web.encoding :as encoding]
-            [convex-web.system :as sys]
-
-            [ring.mock.request :as mock])
-  (:import (convex.core.init Init)))
+  (:require 
+   [clojure.test :refer [deftest is testing use-fixtures]]
+   
+   [convex-web.specs]
+   [convex-web.lang :as lang]
+   [convex-web.test :refer [make-system-fixture transit-body]]
+   [convex-web.web-server :as web-server]
+   [convex-web.encoding :as encoding]
+   [convex-web.system :as sys]
+   
+   [ring.mock.request :as mock]))
 
 (def system nil)
 
@@ -25,7 +23,9 @@
                                 (transit-body body))))
 
 (defn execute-query [source]
-  (execute-command #:convex-web.command {:mode :convex-web.command.mode/query
+  (execute-command #:convex-web.command {:timestamp (System/currentTimeMillis)
+                                         
+                                         :mode :convex-web.command.mode/query
                                          
                                          :address
                                          (.longValue (sys/convex-world-address system))
@@ -91,9 +91,31 @@
                           (handler (-> 
                                      (mock/request :post "/api/internal/commands")
                                      (transit-body body))))]
+    
+    (testing "Invalid"
+      (let [response (execute-command {})]
+        (is (= 400 (:status response))))
+      
+      (let [response (execute-command {:convex-web.command/mode :convex-web.command.mode/query})
+            response-body (encoding/transit-decode-string (get response :body))]
+        
+        (is (= 400 (:status response)))
+        (is (= {:error
+                {:message
+                 "Invalid Command.\n-- Spec failed --------------------\n\n  {:convex-web.command/mode :convex-web.command.mode/query}\n\nshould contain keys: :convex-web.command/query, :convex-web.command/timestamp\n\n| key                           | spec                                                    |\n|===============================+=========================================================|\n| :convex-web.command/query     | (keys                                                   |\n|                               |  :req                                                   |\n|                               |  [:convex-web.query/source :convex-web.query/language]) |\n|-------------------------------+---------------------------------------------------------|\n| :convex-web.command/timestamp | nat-int?                                                |\n\n-- Relevant specs -------\n\n:convex-web/incoming-command:\n  (clojure.spec.alpha/multi-spec\n   convex-web.specs/incoming-command\n   :convex-web.command/mode)\n:convex-web/command:\n  (clojure.spec.alpha/multi-spec\n   convex-web.specs/command\n   :convex-web.command/status)\n\n-------------------------\nDetected 1 error\n"}}
+              response-body))))
+    
+    (testing "Forbidden"
+      (let [response (execute-command {:convex-web.command/mode :convex-web.command.mode/transaction})
+            response-body (encoding/transit-decode-string (get response :body))]
+        
+        (is (= 403 (:status response)))
+        (is (= {:error {:message "Unauthorized."}} response-body))))
+    
     (testing "Query"
       (let [response (execute-command 
-                       #:convex-web.command {:mode :convex-web.command.mode/query
+                       #:convex-web.command {:timestamp (System/currentTimeMillis)
+                                             :mode :convex-web.command.mode/query
                                              :address convex-world-address-long
                                              :query 
                                              {:convex-web.query/source "(inc 1)"
@@ -118,7 +140,8 @@
                                  :convex-web.command/status])))))
     
     (testing "Transaction"
-      (let [response (execute-command #:convex-web.command {:mode :convex-web.command.mode/transaction
+      (let [response (execute-command #:convex-web.command {:timestamp (System/currentTimeMillis)
+                                                            :mode :convex-web.command.mode/transaction
                                                             :address convex-world-address-long
                                                             :transaction 
                                                             {:convex-web.transaction/type :convex-web.transaction.type/invoke
@@ -145,7 +168,7 @@
                                :convex-web.command/status
                                :convex-web.command/query])))
       
-      (is (Long/parseLong (get-in body [:convex-web.command/result :convex-web.result/value])))))
+      (is (get-in body [:convex-web.command/result :convex-web.result/value]))))
   
   (testing "Self Address"
     (let [source (get-in lang/convex-lisp-examples [:self-address :source])
