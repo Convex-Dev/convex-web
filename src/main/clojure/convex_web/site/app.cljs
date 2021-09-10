@@ -263,7 +263,13 @@
        :top-level? true
        :route-name :route-name/examples
        :href       (rfe/href :route-name/examples)
-       :children   [{:text       "Fungible token"
+       :children   [{:text       "Voting system"
+                     :route-name :route-name/examples.voting-system
+                     :href       (rfe/href :route-name/examples.voting-system)}
+                    {:text       "Simple oracle"
+                     :route-name :route-name/examples.simple-oracle
+                     :href       (rfe/href :route-name/examples.simple-oracle)}
+                    {:text       "Fungible token"
                      :route-name :route-name/examples.fungible-token
                      :href       (rfe/href :route-name/examples.fungible-token)}
                     {:text       "NFT"
