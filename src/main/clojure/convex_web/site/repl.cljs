@@ -23,9 +23,10 @@
   (:convex-web.repl/language state))
 
 (defn commands
-  "Returns a collection of REPL Commands sorted by ID."
+  "Returns a collection of REPL Commands sorted (asc) by timestamp."
   [state]
-  (:convex-web.repl/commands state))
+  (let [commands (get state :convex-web.repl/commands [])]
+    (sort-by :convex-web.command/timestamp < commands)))
 
 (defn command-source [{:convex-web.command/keys [query transaction]}]
   (or (get query :convex-web.query/source)
@@ -186,13 +187,17 @@
                             query #:convex-web.query {:source source
                                                       :language (language state)}
                             
-                            command (merge #:convex-web.command {:mode (mode state)}
+                            command #:convex-web.command {:id (random-uuid)
+                                                          :timestamp (.getTime (js/Date.))
+                                                          :status :convex-web.command.status/running
+                                                          :mode (mode state)}
+                            command (merge command
                                       (case (mode state)
                                         :convex-web.command.mode/query
-                                        (merge #:convex-web.command {:query query}
+                                        (merge {:convex-web.command/query query}
                                           ;; Address is optional in query mode.
                                           (when active-address
-                                            #:convex-web.command {:address active-address}))
+                                            {:convex-web.command/address active-address}))
                                         
                                         :convex-web.command.mode/transaction
                                         #:convex-web.command {:address active-address
@@ -201,33 +206,26 @@
                         (when-not (str/blank? (codemirror/cm-get-value editor))
                           (codemirror/cm-set-value editor "")
                           
+                          ;; Persist the Command before getting a response from the server.
+                          ;; (It's a running command)
+                          (set-state
+                            (fn [state]
+                              (update state :convex-web.repl/commands (fnil conj []) command)))
+                          
+                          ;; Update the Command with the server response.
                           (command/execute command (fn [command-previous-state command-new-state]
                                                      (set-state
                                                        (fn [state]
                                                          (let [{:convex-web.command/keys [id] :as command'} (merge command-previous-state command-new-state)
                                                                
-                                                               commands (or (commands state) [])
-                                                               
-                                                               ;; Without checking for the ID a Command without an ID
-                                                               ;; would be flagged since both values are nil.
-                                                               should-update? (when id
-                                                                                (some
-                                                                                  (fn [{this-id :convex-web.command/id}]
-                                                                                    (= id this-id))
-                                                                                  commands))
-                                                               
-                                                               commands' (if should-update?
-                                                                           ;; Map over the existing Commands to update the matching one.
-                                                                           (mapv
-                                                                             (fn [{this-id :convex-web.command/id :as command}]
-                                                                               (if (= id this-id)
-                                                                                 (merge command command')
-                                                                                 command))
-                                                                             commands)
-                                                                           ;; Don't need to update so we simply add the Command to the list.
-                                                                           (conj commands command'))]
+                                                               commands (mapv
+                                                                          (fn [{this-id :convex-web.command/id :as command}]
+                                                                            (if (= id this-id)
+                                                                              (merge command command')
+                                                                              command))
+                                                                          (commands state))]
                                                            
-                                                           (assoc state :convex-web.repl/commands commands'))))))))))]
+                                                           (assoc state :convex-web.repl/commands commands))))))))))]
       
       ;; Don't allow queries or transactions without an account.
       (if (nil? active-address)
@@ -437,9 +435,8 @@
 
 (defn Commands [commands]
   [:div.w-full.h-full.max-w-full.overflow-auto.bg-gray-100.border.rounded
-   (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
-     ;; Error Commands don't have an ID.
-     ^{:key (or id (str (random-uuid)))}
+   (for [{:convex-web.command/keys [timestamp status query transaction] :as command} commands]
+     ^{:key timestamp}
      [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
       {:ref
        (fn [el]

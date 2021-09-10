@@ -102,7 +102,7 @@ An arbitrary [map](/cvm/data-types/map) can be attached to a definition as metad
   :happy)
 ```
 
-Metadata data for a definition can be retrieved by providing a quoted symbol. Quoting is described in the section about [code is data](/cvm/code-is-data).
+Metadata data for a definition can be retrieved by providing a quoted symbol. Quoting is described in the section about [code is data](/cvm/building-blocks/code-is-data).
 
 ```clojure
 (lookup-meta 'mood)

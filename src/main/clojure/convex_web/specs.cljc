@@ -279,7 +279,8 @@
                                     :convex-web.command.status/error
                                     :convex-web.command.status/success})
 
-(s/def :convex-web.command/id any?)
+(s/def :convex-web.command/id uuid?)
+(s/def :convex-web.command/timestamp nat-int?)
 (s/def :convex-web.command/address :convex-web/address)
 (s/def :convex-web.command/transaction :convex-web/transaction)
 (s/def :convex-web.command/query :convex-web/query)
@@ -289,14 +290,22 @@
 (defmulti incoming-command :convex-web.command/mode)
 
 (defmethod incoming-command :convex-web.command.mode/query [_]
-  (s/keys :req [:convex-web.command/mode
-                :convex-web.command/query]
-          :opt [:convex-web.command/address]))
+  (s/keys 
+    :req [:convex-web.command/id
+          :convex-web.command/timestamp
+          :convex-web.command/mode
+          :convex-web.command/query]
+    :opt [:convex-web.command/address
+          :convex-web.command/status]))
 
 (defmethod incoming-command :convex-web.command.mode/transaction [_]
-  (s/keys :req [:convex-web.command/mode
-                :convex-web.command/address
-                :convex-web.command/transaction]))
+  (s/keys 
+    :req [:convex-web.command/id
+          :convex-web.command/timestamp
+          :convex-web.command/mode
+          :convex-web.command/address
+          :convex-web.command/transaction]
+    :opt [:convex-web.command/status]))
 
 (s/def :convex-web/incoming-command (s/multi-spec incoming-command :convex-web.command/mode))
 
@@ -307,13 +316,11 @@
 
 (defmethod command :convex-web.command.status/running [_]
   (s/merge :convex-web/incoming-command
-           (s/keys :req [:convex-web.command/id
-                         :convex-web.command/status])))
+           (s/keys :req [:convex-web.command/status])))
 
 (defmethod command :convex-web.command.status/success [_]
   (s/merge :convex-web/incoming-command
-           (s/keys :req [:convex-web.command/id
-                         :convex-web.command/status]
+           (s/keys :req [:convex-web.command/status]
                    :opt [:convex-web.command/object])))
 
 (defmethod command :convex-web.command.status/error [_]

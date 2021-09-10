@@ -71,9 +71,6 @@ By casting any other collection or pseudo-collection:
 
 (into [:a]
       (list :b :c))  ;; -> [:a :b :c]
-
-(into []
-      "Convex")      ;; -> [\C \o \n \v \e \x]
 ```
 
 
@@ -96,7 +93,7 @@ By retrieving the nthiest one (count starts at 0):
 
 ([:a :b] 1)
 
-;; -> :a
+;; -> :b
 ;;
 ;; Vectors can also behave like functions, which has the
 ;; the same effect as `nth`.
@@ -166,4 +163,4 @@ Following functions can only be used with sequential collections ([lists](/cvm/d
 (next [:a])           ;; -> nil
 ```
 
-Vectors can be looped over as described in the [section about loops](/cvm/loops).
+Vectors can be looped over as described in the [section about loops](/cvm/building-blocks/loops).

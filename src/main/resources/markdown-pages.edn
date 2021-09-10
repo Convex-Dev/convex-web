@@ -122,18 +122,6 @@
 
  ;; Dev documentation
 
- :by-example
- {:contents   [{:name "By example"
-                :path "markdown/dev_doc/by-example.md"}]
-  :smart-toc? true
-  :toc?       false}
-
- :by-example.fungible-token
- {:contents   [{:name "Fungible token"
-                :path "markdown/dev_doc/by-example/fungible-token.md"}]
-  :smart-toc? true
-  :toc?       false}
-
  :cvm
  {:contents   [{:name "CVM"
                 :path "markdown/dev_doc/cvm.md"}]
@@ -306,6 +294,36 @@
  :cvm.peer-operations
  {:contents   [{:name "Peer operations"
                 :path "markdown/dev_doc/cvm/peer-operations.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :examples
+ {:contents   [{:name "Examples"
+                :path "markdown/dev_doc/examples.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :examples.fungible-token
+ {:contents   [{:name "Fungible token"
+                :path "markdown/dev_doc/examples/fungible-token.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :examples.nft
+ {:contents   [{:name "NFT"
+                :path "markdown/dev_doc/examples/nft.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :examples.simple-oracle
+ {:contents   [{:name "simple-oracle"
+                :path "markdown/dev_doc/examples/simple-oracle.md"}]
+  :smart-toc? true
+  :toc?       false}
+
+ :examples.voting-system
+ {:contents   [{:name "Voting system"
+                :path "markdown/dev_doc/examples/voting-system.md"}]
   :smart-toc? true
   :toc?       false}
 

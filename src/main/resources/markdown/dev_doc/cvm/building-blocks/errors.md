@@ -36,8 +36,8 @@ an exception as it cannot go any further.
 We encourage users to think thoroughly about how their code might fail. Most bugs and hacks do not happen because code does not succeed as planned but
 rather because code does not fail as it should. Hence, a *fail fast* approach is recommended: if something feels off, it should fail as soon as possible.
 
-`assert` throws an exception with code `:ASSERT` if any of its logical test does not pass (see section about [logic](/cvm/logic). It is used for ensuring
-that some conditions are respected, typically involving [definitions](/cvm/definitions) of any kind:
+`assert` throws an exception with code `:ASSERT` if any of its logical test does not pass (see section about [logic](/cvm/building-blocks/logic). It is used for ensuring
+that some conditions are respected, typically involving [definitions](/cvm/building-blocks/definitions) of any kind:
 
 ```clojure
 (assert (< 1 2))

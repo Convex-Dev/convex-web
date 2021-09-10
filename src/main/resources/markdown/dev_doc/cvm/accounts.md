@@ -5,8 +5,8 @@ An account:
 - Is bound to an [address](/cvm/data-types/address)
 - Can be related to a public key which can be removed or replaced
 - Can execute transactions if has a public key, any arbitrary code (signed by the private key), provided it has enough funds to cover executing fees
-- Can persist values in the [decentralized database via its environment](/cvm/definitions)
-- Can use [callable functions](/cvm/callable-functions) (special functions defined in other accounts)
+- Can persist values in the [decentralized database via its environment](/cvm/building-blocks/definitions)
+- Can use [callable functions](/cvm/accounts/callable-functions) (special functions defined in other accounts)
 
 Information about an account can be obtained by using the `account` function:
 
@@ -19,7 +19,7 @@ The result is a [map](/cvm/data-types/map). Key-values are described in the foll
 
 ## `:allowance`
 
-Storing values in the environment of an account as [definitions](/cvm/definitions) requires memory. Memory allowance is a [long](/cvm/data-types/numbers)
+Storing values in the environment of an account as [definitions](/cvm/building-blocks/definitions) requires memory. Memory allowance is a [long](/cvm/data-types/numbers)
 indicating memory left (in bytes) to be used by that account. The current memory allowance of the account executing a transaction can also be queried
 more readily by using a special symbol:
 
@@ -98,7 +98,7 @@ The remaining juice at a particular point in a transaction can be queried using 
 
 The controller of an account is the address of another account. Effectively, a controller can execute any code on behalf of the account it controls.
 
-**Attention.** This is a dangerous feature. It is most useful with [actors](/cvm/actors) and only in some particular cases. The following example is both
+**Attention.** This is a dangerous feature. It is most useful with [actors](/cvm/accounts/actors) and only in some particular cases. The following example is both
 a demonstration and a warning:
 
 ```clojure
@@ -136,7 +136,7 @@ It is as if the given code was a transaction submitted by account `#42`, momenta
 ## `:environment`
 
 Internally, the environment of an account is a [map](/cvm/data-types/map) where keys are [symbols](/cvm/data-types/symbol) and values can be of any type, as
-described in the section about [definitions](/cvm/definitions). Only an account can directly modify its environment. The section about
+described in the section about [definitions](/cvm/building-blocks/definitions). Only an account can directly modify its environment. The section about
 [callable functions](/cvm/callable_functions) exposes how an account can allow some of its functions to be executed on its behalf under certain
 conditions, leading the way to implementing smart contracts.
 
@@ -189,7 +189,7 @@ replaced:
 the public key without owning the matching private key means you will get locked out of that account.
 
 An account without a public key is an **actor**. Actors play an important role on the Convex network, especially when it comes to writing smart contracts.
-A [whole section is dedicated to creating and managing them](/cvm/actors).
+A [whole section is dedicated to creating and managing them](/cvm/accounts/actors).
 
 Removing a key by running `(set-key nil)` turns a user account into an actor. Conversely, setting a public key on an actor converts it to a user account since
 anyone with the matching private key can sign transactions on their behalf.
@@ -197,4 +197,4 @@ anyone with the matching private key can sign transactions on their behalf.
 
 ## `:metadata`
 
-As described earlier, [definitions](/cvm/definitions) can host optional metadata. Internally, such metadata values are stored in this [map](/cvm/data-types/map).
+As described earlier, [definitions](/cvm/building-blocks/definitions) can host optional metadata. Internally, such metadata values are stored in this [map](/cvm/data-types/map).

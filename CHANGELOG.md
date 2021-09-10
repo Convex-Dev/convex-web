@@ -1,5 +1,11 @@
 # Changes
 
+## 0.26.0 -- 2021-09-10
+- Updated developer docs
+- [Improve wallet screen prior to creating account #188](https://github.com/Convex-Dev/convex-web/issues/188)
+- [Add timestamp attribute to Command #184](https://github.com/Convex-Dev/convex-web/issues/184)
+- [Show Command in the output when it's submitted #187](https://github.com/Convex-Dev/convex-web/issues/187)
+
 ## 0.25.0 -- 2021-09-09
 - Update convex-peer to version 0.7.0 (alplha)
 
