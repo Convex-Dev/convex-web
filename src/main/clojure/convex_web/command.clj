@@ -249,7 +249,8 @@
                         {:code code}))})
         
         ;; Updated Command.
-        command' (merge (select-keys command [:convex-web.command/mode
+        command' (merge (select-keys command [:convex-web.command/timestamp
+                                              :convex-web.command/mode
                                               :convex-web.command/language
                                               :convex-web.command/address
                                               :convex-web.command/query

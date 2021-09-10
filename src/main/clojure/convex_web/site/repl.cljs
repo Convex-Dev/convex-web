@@ -23,9 +23,9 @@
   (:convex-web.repl/language state))
 
 (defn commands
-  "Returns a collection of REPL Commands sorted by ID."
+  "Returns a collection of REPL Commands sorted (asc) by timestamp."
   [state]
-  (:convex-web.repl/commands state))
+  (sort-by :convex-web.command/timestamp < (:convex-web.repl/commands state)))
 
 (defn command-source [{:convex-web.command/keys [query transaction]}]
   (or (get query :convex-web.query/source)
@@ -186,7 +186,8 @@
                             query #:convex-web.query {:source source
                                                       :language (language state)}
                             
-                            command (merge #:convex-web.command {:mode (mode state)}
+                            command (merge #:convex-web.command {:timestamp (.getTime (js/Date.))
+                                                                 :mode (mode state)}
                                       (case (mode state)
                                         :convex-web.command.mode/query
                                         (merge #:convex-web.command {:query query}
@@ -437,9 +438,8 @@
 
 (defn Commands [commands]
   [:div.w-full.h-full.max-w-full.overflow-auto.bg-gray-100.border.rounded
-   (for [{:convex-web.command/keys [id status query transaction] :as command} commands]
-     ;; Error Commands don't have an ID.
-     ^{:key (or id (str (random-uuid)))}
+   (for [{:convex-web.command/keys [timestamp status query transaction] :as command} commands]
+     ^{:key timestamp}
      [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
       {:ref
        (fn [el]

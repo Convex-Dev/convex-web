@@ -280,6 +280,7 @@
                                     :convex-web.command.status/success})
 
 (s/def :convex-web.command/id any?)
+(s/def :convex-web.command/timestamp nat-int?)
 (s/def :convex-web.command/address :convex-web/address)
 (s/def :convex-web.command/transaction :convex-web/transaction)
 (s/def :convex-web.command/query :convex-web/query)
@@ -289,12 +290,14 @@
 (defmulti incoming-command :convex-web.command/mode)
 
 (defmethod incoming-command :convex-web.command.mode/query [_]
-  (s/keys :req [:convex-web.command/mode
+  (s/keys :req [:convex-web.command/timestamp
+                :convex-web.command/mode
                 :convex-web.command/query]
           :opt [:convex-web.command/address]))
 
 (defmethod incoming-command :convex-web.command.mode/transaction [_]
-  (s/keys :req [:convex-web.command/mode
+  (s/keys :req [:convex-web.command/timestamp
+                :convex-web.command/mode
                 :convex-web.command/address
                 :convex-web.command/transaction]))
 
