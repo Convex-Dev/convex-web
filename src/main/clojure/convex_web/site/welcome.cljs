@@ -336,7 +336,7 @@
           on the Convex platform using Convex Lisp."]
          
          [:a.invisible.md:visible
-          {:href (rfe/href :route-name/documentation-getting-started)}
+          {:href (rfe/href :route-name/sandbox)}
           [gui/TealButton
            {}
            [:div.w-40
