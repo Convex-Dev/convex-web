@@ -911,12 +911,21 @@
                            (convex/account-status peer address)
                            (catch Throwable ex
                              (u/log :logging.event/system-error
-                                    :message (str "Failed to read Account Status " address ". Exception:" ex)
-                                    :exception ex)
+                               :message (str "Failed to read Account Status " address ". Exception:" ex)
+                               :exception ex)
 
                              nil))
 
-          account-status-data (convex/account-status-data account-status)]
+          account-status-data (convex/account-status-data account-status)
+
+          ;; Environment is lazily loaded.
+          account-status-data (update account-status-data :convex-web.account-status/environment
+                                (fn [env]
+                                  (->> env
+                                    (map
+                                      (fn [[k _]]
+                                        [k (with-meta {} {:lazy-sandbox? true})]))
+                                    (into {}))))]
       (if account-status
         (-successful-response #:convex-web.account {:address (.longValue address)
                                                     :status account-status-data})
@@ -924,10 +933,30 @@
           (log/error message address)
           (-not-found-response {:error {:message message}}))))
     (catch Throwable ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
+      (log/error ex (str "Get account error. Address: " address))
+
+      -server-error-response)))
+
+(defn -POST-env
+  "Returns value bound to symbol `sym` in the environment for account `address`."
+  [context {:keys [body]}]
+  (try
+    (let [{:keys [address sym]} (transit-decode body)
+
+          address (convex/address-safe address)
+
+          peer (system/convex-peer context)
+
+          account-status (convex/account-status peer address)]
+
+      (log/debug (with-out-str (pprint/pprint (convex/account-status-data account-status))))
+
+      (if-let [account-status-data (convex/account-status-data account-status)]
+        (-successful-response (get-in account-status-data [:convex-web.account-status/environment sym]))
+        (-not-found-response {:error {:message "Can't find symbol."}})))
+
+    (catch Throwable ex
+      (log/error ex "Get env error.")
 
       -server-error-response)))
 
@@ -1052,6 +1081,7 @@
     (POST "/api/internal/faucet" req (-POST-faucet system req))
     (GET "/api/internal/accounts" req (-GET-accounts system req))
     (GET "/api/internal/accounts/:address" [address] (-GET-account system address))
+    (POST "/api/internal/env" req (-POST-env system req))
     (GET "/api/internal/blocks" req (-GET-blocks system req))
     (GET "/api/internal/blocks-range" req (-GET-blocks-range system req))
     (GET "/api/internal/blocks/:index" [index] (-GET-block system index))

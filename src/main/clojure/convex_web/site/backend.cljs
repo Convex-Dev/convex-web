@@ -1,6 +1,11 @@
 (ns convex-web.site.backend
-  (:require [clojure.string :as str]
-            [ajax.core :refer [GET POST]]))
+  (:require
+   [clojure.string :as str]
+   [clojure.spec.alpha :as s]
+
+   [ajax.core :refer [GET POST]]
+
+   [convex-web.specs]))
 
 (defn csrf-header []
   {"x-csrf-token" (.-value (.getElementById js/document "__anti-forgery-token"))})
@@ -97,6 +102,29 @@
                                              :handler handler}
                                             (when error-handler
                                               {:error-handler error-handler}))))
+
+
+(defn POST-env [{:keys [params handler error-handler]}]
+  (POST "/api/internal/env" (merge {:headers (csrf-header)
+                                    :handler handler
+                                    :params params}
+                              (when error-handler
+                                {:error-handler error-handler}))))
+
+(s/def :POST-env.params/address :convex-web/address)
+
+(s/def :POST-env.params/sym symbol?)
+
+(s/def :POST-env/params
+  (s/keys :req-un [:POST-env.params/address
+                   :POST-env.params/sym]))
+
+(s/def :POST-env/args
+  (s/keys :req-un [:POST-env/params]))
+
+(s/fdef POST-env
+  :args (s/cat :args :POST-env/args))
+
 
 (defn POST-transaction-prepare [{:keys [address source] :as params} {:keys [handler error-handler]}]
   (POST "/api/v1/transaction/prepare" (merge {:handler handler

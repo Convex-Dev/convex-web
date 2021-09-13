@@ -1,30 +1,28 @@
 (ns convex-web.site.gui
-  (:require [convex-web.site.format :as format]
-            [convex-web.site.backend :as backend]
+  (:require
+   [clojure.string :as str]
 
-            [clojure.string :as str]
-            
-            [goog.string :as gstring]
-            [goog.string.format]
-            [reagent.core :as r]
-            [re-frame.core :as rf]
-            [reitit.frontend.easy :as rfe]
-            [zprint.core :as zprint]
+   [goog.string :as gstring]
+   [goog.string.format]
+   [reagent.core :as r]
+   [re-frame.core :as rf]
+   [reitit.frontend.easy :as rfe]
+   [zprint.core :as zprint]
 
-            ["react" :as react]
-            ["highlight.js/lib/core" :as hljs]
-            ["highlight.js/lib/languages/clojure"]
-            ["highlight.js/lib/languages/javascript"]
-            ["react-highlight.js" :as react-hljs]
+   [convex-web.site.format :as format]
+   [convex-web.site.backend :as backend]
 
-            ["react-tippy" :as tippy]
-            ["react-markdown" :as ReactMarkdown]
-
-            ["@headlessui/react" :as headlessui]
-            ["@heroicons/react/solid" :refer [XIcon]]
-            ["qrcode.react" :as QRCode]
-
-            ["jdenticon" :as jdenticon]))
+   ["react" :as react]
+   ["highlight.js/lib/core" :as hljs]
+   ["highlight.js/lib/languages/clojure"]
+   ["highlight.js/lib/languages/javascript"]
+   ["react-highlight.js" :as react-hljs]
+   ["react-tippy" :as tippy]
+   ["react-markdown" :as ReactMarkdown]
+   ["@headlessui/react" :as headlessui]
+   ["@heroicons/react/solid" :refer [XIcon]]
+   ["qrcode.react" :as QRCode]
+   ["jdenticon" :as jdenticon]))
 
 (defn event-target-value [event]
   (some-> event
@@ -1042,35 +1040,79 @@
         [:> headlessui/Disclosure.Panel
          {:className "px-4 pb-2 text-sm text-gray-500"}
 
-         children]]))])
+         (if (fn? children)
+           (children props)
+           children)]]))])
 
 (defn EnvironmentBrowser
   "A disclousure interface to browse an account's environment."
-  [account]
-  (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
-    [:div
-     [Disclosure
-      {:DisclosureButton (disclosure-button {:text "Environment"
-                                             :color "blue"})}
-      (if (seq environment)
-        (into [:ul.space-y-1.mt-1]
-          (map
-            (fn [[s value]]
-              (let [source (if (string? value)
-                             value
-                             (str value))]
-                [:li [Disclosure
-                      {:DisclosureButton (disclosure-button {:text s
-                                                             :color "gray"})}
-                      [Highlight
-                       (try
-                         (zprint/zprint-str source {:parse-string-all? true
-                                                    :width 60})
-                         (catch js/Error _
-                           source))
-                       {:language :convex-lisp}]]]))
-            (sort-by first environment)))
-        [:p.mt-1.text-xs "Empty"])]]))
+  [{:keys [convex-web/account]}]
+  (r/with-let [lazy-env-ref (r/atom {})]
+    (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
+      [:div
+       [Disclosure
+        {:DisclosureButton (disclosure-button {:text "Environment"
+                                               :color "blue"})}
+        (if (seq environment)
+          (into [:ul.space-y-1.mt-1]
+            (map
+              (fn [[sym value]]
+                (let [{:keys [lazy-sandbox?]} (meta value)]
+                  [:li [Disclosure
+                        {:DisclosureButton (disclosure-button {:text sym
+                                                               :color "gray"})}
+
+                        (fn [^js props]
+                          (when (and lazy-sandbox? (.-open props))
+
+                            ;; Initialize local state when the disclousure is opened for the first time.
+                            (when-not (contains? (set (keys @lazy-env-ref)) sym)
+
+                              ;; Status for a specific symbol in the environment.
+                              (swap! lazy-env-ref assoc-in [sym :ajax/status] :ajax.status/pending)
+
+                              (backend/POST-env
+                                {:params {:address (:convex-web.account/address account)
+                                          :sym (symbol sym)}
+
+                                 :handler
+                                 (fn [value]
+                                   (swap! lazy-env-ref update sym merge {:ajax/status :ajax.status/success
+                                                                         :value value}))
+
+                                 :error-handler
+                                 (fn [error]
+                                   (js/console.error error)
+
+                                   (swap! lazy-env-ref update sym merge {:ajax/status :ajax.status/error
+                                                                         :value :error}))})))
+
+                          (let [lazy-status (get-in @lazy-env-ref [sym :ajax/status])
+
+                                realized? (or (= lazy-status :ajax.status/success)
+                                            (= lazy-status :ajax.status/error))
+
+                                value (if lazy-sandbox?
+                                        (get-in @lazy-env-ref [sym :value])
+                                        value)
+
+                                value-str (if (string? value)
+                                            value
+                                            (str value))]
+
+                            (if (and lazy-sandbox? (not realized?))
+                              [:div.py-2
+                               [SpinnerSmall]]
+
+                              [Highlight
+                               (try
+                                 (zprint/zprint-str value-str {:parse-string-all? true
+                                                               :width 60})
+                                 (catch js/Error _
+                                   value-str))
+                               {:language :convex-lisp}])))]]))
+              (sort-by first environment)))
+          [:p.mt-1.text-xs "Empty"])]])))
 
 (defn AddressRenderer [address]
   (r/with-let [account-ref (r/atom {:ajax/status :ajax.status/pending})
@@ -1155,7 +1197,7 @@
              [:span.text-xs.uppercase type]]])]
 
         [EnvironmentBrowser
-         (:account @account-ref)]])]))
+         {:convex-web/account (:account @account-ref)}]])]))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
@@ -1490,7 +1532,7 @@
      ;; Environment
      ;; ==============
      [:div.w-full.max-w-prose.flex.flex-col.space-y-2
-      [EnvironmentBrowser account]
+      [EnvironmentBrowser {:convex-web/account account}]
       
       [:p.text-sm.text-gray-500.max-w-prose
        "The environment is a space reserved for each Account
