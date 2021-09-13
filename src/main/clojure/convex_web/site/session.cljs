@@ -10,8 +10,8 @@
             [convex-web.site.backend :as backend]))
 
 (re-frame/reg-sub :session/?session
-  (fn [{:site/keys [session]} _]
-    session))
+  (fn [db _]
+    (:site/session db)))
 
 (re-frame/reg-sub :session/?id
   :<- [:session/?session]
@@ -72,7 +72,12 @@
 
 (re-frame/reg-event-fx :session/!env
   (fn [_ [_ {:keys [address sym]}]]
-    {:fx [[:runtime.fx/do
+    {:fx [[:dispatch
+           [:session/!set-state
+            (fn [state]
+              (assoc-in state [address :env sym] {:ajax/status :ajax.status/pending}))]]
+
+          [:runtime.fx/do
            (fn []
              (backend/POST-env
                {:params {:address address
@@ -80,13 +85,17 @@
 
                 :handler
                 (fn [value]
-                  (disp :session/!set-state (fn [state]
-                                              (assoc-in state [address :env sym] value))))
+                  (disp :session/!set-state
+                    (fn [state]
+                      (assoc-in state [address :env sym] {:ajax/status :ajax.status/success
+                                                          :value value}))))
 
                 :error-handler
                 (fn [error]
-                  (disp :session/!set-state (fn [state]
-                                              (assoc-in state [address :env sym] error))))}))]]}))
+                  (disp :session/!set-state
+                    (fn [state]
+                      (assoc-in state [address :env sym] {:ajax/status :ajax.status/error
+                                                          :error error}))))}))]]}))
 
 (defn ?status []
   (sub :session/?status))

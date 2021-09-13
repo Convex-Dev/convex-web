@@ -1118,76 +1118,42 @@
 (defn EnvironmentBrowser2
   "A disclousure interface to browse an account's environment."
   [{:keys [convex-web/account on-disclose]}]
-  (r/with-let [lazy-env-ref (r/atom {})]
-    (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
-      [:div
-       [Disclosure
-        {:DisclosureButton (disclosure-button {:text "Environment"
-                                               :color "blue"})}
-        (if (seq environment)
-          (into [:ul.space-y-1.mt-1]
-            (map
-              (fn [[sym value]]
-                (let [{:keys [lazy-sandbox?]} (meta value)]
-                  [:li [Disclosure
-                        {:DisclosureButton (disclosure-button {:text sym
-                                                               :color "gray"})}
+  (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
+    [:div
+     [Disclosure
+      {:DisclosureButton (disclosure-button {:text "Environment"
+                                             :color "blue"})}
+      (if (seq environment)
+        (into [:ul.space-y-1.mt-1]
+          (map
+            (fn [[sym value]]
+              (let [{:keys [lazy-sandbox?]} (meta value)]
+                [:li [Disclosure
+                      {:DisclosureButton (disclosure-button {:text sym
+                                                             :color "gray"})}
 
-                        (fn [^js props]
+                      (fn [^js props]
 
-                          (when (.-open props)
-                            (on-disclose sym value))
+                        (when (.-open props)
+                          (on-disclose sym value))
 
-                          (when (and lazy-sandbox? (.-open props))
+                        (let [value-str (if (string? value)
+                                          value
+                                          (str value))]
 
-                            ;; Initialize local state when the disclousure is opened for the first time.
-                            (when-not (contains? (set (keys @lazy-env-ref)) sym)
+                          (if lazy-sandbox?
+                            [:div.py-2
+                             [SpinnerSmall]]
 
-                              ;; Status for a specific symbol in the environment.
-                              (swap! lazy-env-ref assoc-in [sym :ajax/status] :ajax.status/pending)
-
-                              (backend/POST-env
-                                {:params {:address (:convex-web.account/address account)
-                                          :sym (symbol sym)}
-
-                                 :handler
-                                 (fn [value]
-                                   (swap! lazy-env-ref update sym merge {:ajax/status :ajax.status/success
-                                                                         :value value}))
-
-                                 :error-handler
-                                 (fn [error]
-                                   (js/console.error error)
-
-                                   (swap! lazy-env-ref update sym merge {:ajax/status :ajax.status/error
-                                                                         :value :error}))})))
-
-                          (let [lazy-status (get-in @lazy-env-ref [sym :ajax/status])
-
-                                realized? (or (= lazy-status :ajax.status/success)
-                                            (= lazy-status :ajax.status/error))
-
-                                value (if lazy-sandbox?
-                                        (get-in @lazy-env-ref [sym :value])
-                                        value)
-
-                                value-str (if (string? value)
-                                            value
-                                            (str value))]
-
-                            (if (and lazy-sandbox? (not realized?))
-                              [:div.py-2
-                               [SpinnerSmall]]
-
-                              [Highlight
-                               (try
-                                 (zprint/zprint-str value-str {:parse-string-all? true
-                                                               :width 60})
-                                 (catch js/Error _
-                                   value-str))
-                               {:language :convex-lisp}])))]]))
-              (sort-by first environment)))
-          [:p.mt-1.text-xs "Empty"])]])))
+                            [Highlight
+                             (try
+                               (zprint/zprint-str value-str {:parse-string-all? true
+                                                             :width 60})
+                               (catch js/Error _
+                                 value-str))
+                             {:language :convex-lisp}])))]]))
+            (sort-by first environment)))
+        [:p.mt-1.text-xs "Empty"])]]))
 
 (defn AddressRenderer [address]
   (r/with-let [account-ref (r/atom {:ajax/status :ajax.status/pending})
@@ -1203,82 +1169,87 @@
                     (fn [error]
                       (reset! account-ref {:ajax/status :ajax.status/error
                                            :ajax/error error}))})]
-    [:div.w-full.max-w-prose.bg-white.rounded.shadow.p-3
-     (case (:ajax/status @account-ref)
-       :ajax.status/pending
-       [SpinnerSmall]
 
-       :ajax.status/error
-       [:div.flex.flex-col.space-y-1
-        [:div.flex.items-center.space-x-1
-         [AIdenticon {:value (str address) :size identicon-size-small}]
+    (let [session-state @(rf/subscribe [:session/?state])]
 
-         [:span.font-mono.text-xs.truncate
-          (format/prefix-# address)]]
+      [:div.w-full.max-w-prose.bg-white.rounded.shadow.p-3
+       (case (:ajax/status @account-ref)
+         :ajax.status/pending
+         [SpinnerSmall]
 
-        [:span.text-xs (get-in @account-ref [:ajax/error :response :error :message])]]
+         :ajax.status/error
+         [:div.flex.flex-col.space-y-1
+          [:div.flex.items-center.space-x-1
+           [AIdenticon {:value (str address) :size identicon-size-small}]
 
-       :ajax.status/success
-       [:div.flex.flex-col.space-y-3
+           [:span.font-mono.text-xs.truncate
+            (format/prefix-# address)]]
 
-        ;; Address & Refresh.
-        [:div.flex.justify-between
-         [:a.inline-flex.items-center.space-x-1
-          {:href (rfe/href :route-name/testnet.account {:address address})}
-          [AIdenticon {:value (str address) :size identicon-size-small}]
+          [:span.text-xs (get-in @account-ref [:ajax/error :response :error :message])]]
 
-          [:span.font-mono.text-xs.truncate
-           {:class hyperlink-hover-class}
-           (format/prefix-# address)]]
+         :ajax.status/success
+         [:div.flex.flex-col.space-y-3
 
-         [Tooltip
-          {:title "Refresh"
-           :size "small"}
-          [DefaultButton
-           {:on-click
-            (fn []
-              ;; Store the status of this request in a place specific to refresh
-              ;; because we don't want the whole UI to transition to pending.
-              (swap! account-ref assoc-in [:refresh :ajax/status] :ajax.status/pending)
+          ;; Address & Refresh.
+          [:div.flex.justify-between
+           [:a.inline-flex.items-center.space-x-1
+            {:href (rfe/href :route-name/testnet.account {:address address})}
+            [AIdenticon {:value (str address) :size identicon-size-small}]
 
-              (backend/GET-account
-                address
-                {:handler
-                 (fn [account]
-                   (swap! account-ref merge {:account account
-                                             :refresh {:ajax/status :ajax.status/success}}))
+            [:span.font-mono.text-xs.truncate
+             {:class hyperlink-hover-class}
+             (format/prefix-# address)]]
 
-                 :error-handler
-                 (fn [_]
-                   (swap! account-ref merge {:refresh {:ajax/status :ajax.status/error}}))}))}
-           (if (= :ajax.status/pending (get-in @account-ref [:refresh :ajax/status]))
-             [SpinnerSmall]
-             [RefreshIcon {:class "w-4 h-4"}])]]]
+           [Tooltip
+            {:title "Refresh"
+             :size "small"}
+            [DefaultButton
+             {:on-click
+              (fn []
+                ;; Store the status of this request in a place specific to refresh
+                ;; because we don't want the whole UI to transition to pending.
+                (swap! account-ref assoc-in [:refresh :ajax/status] :ajax.status/pending)
 
-        ;; Balance & Type.
-        [:div.flex.space-x-8
-         ;; -- Balance.
-         (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
-           [:div.flex.flex-col
-            [:span.text-xs.text-indigo-500.uppercase "Balance"]
-            [:div.flex.flex-col.flex-1.justify-center
-             [:span.text-xs (format/format-number balance)]]])
+                (backend/GET-account
+                  address
+                  {:handler
+                   (fn [account]
+                     (swap! account-ref merge {:account account
+                                               :refresh {:ajax/status :ajax.status/success}}))
 
-         ;; -- Type.
-         (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
-           [:div.flex.flex-col
-            [:span.text-xs.text-indigo-500.uppercase "Type"]
-            [:div.flex.flex-col.flex-1.justify-center
-             [:span.text-xs.uppercase type]]])]
+                   :error-handler
+                   (fn [_]
+                     (swap! account-ref merge {:refresh {:ajax/status :ajax.status/error}}))}))}
+             (if (= :ajax.status/pending (get-in @account-ref [:refresh :ajax/status]))
+               [SpinnerSmall]
+               [RefreshIcon {:class "w-4 h-4"}])]]]
 
-        [EnvironmentBrowser2
-         {:convex-web/account (:account @account-ref)
-          :on-disclose
-          (fn [sym value]
-            (log/debug sym value)
+          ;; Balance & Type.
+          [:div.flex.space-x-8
+           ;; -- Balance.
+           (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
+             [:div.flex.flex-col
+              [:span.text-xs.text-indigo-500.uppercase "Balance"]
+              [:div.flex.flex-col.flex-1.justify-center
+               [:span.text-xs (format/format-number balance)]]])
 
-            (rf/dispatch [:session/!env {:address address
-                                         :sym (symbol sym)}]))}]])]))
+           ;; -- Type.
+           (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
+             [:div.flex.flex-col
+              [:span.text-xs.text-indigo-500.uppercase "Type"]
+              [:div.flex.flex-col.flex-1.justify-center
+               [:span.text-xs.uppercase type]]])]
+
+          [EnvironmentBrowser2
+           {:convex-web/account (:account @account-ref)
+            :on-disclose
+            (fn [sym value]
+              (when-not (get-in session-state [address :env sym :ajax/status])
+                (when (:lazy-sandbox? (meta value))
+                  (js/console.log "Dispatch")
+
+                  (rf/dispatch [:session/!env {:address address
+                                               :sym (symbol sym)}]))))}]])])))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
