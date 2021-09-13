@@ -949,8 +949,6 @@
 
           account-status (convex/account-status peer address)]
 
-      (log/debug (with-out-str (pprint/pprint (convex/account-status-data account-status))))
-
       (if-let [account-status-data (convex/account-status-data account-status)]
         (-successful-response (get-in account-status-data [:convex-web.account-status/environment sym]))
         (-not-found-response {:error {:message "Can't find symbol."}})))
