@@ -4,6 +4,7 @@
 
    [goog.string :as gstring]
    [goog.string.format]
+   [lambdaisland.glogi :as log]
    [reagent.core :as r]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as rfe]
@@ -1114,6 +1115,80 @@
               (sort-by first environment)))
           [:p.mt-1.text-xs "Empty"])]])))
 
+(defn EnvironmentBrowser2
+  "A disclousure interface to browse an account's environment."
+  [{:keys [convex-web/account on-disclose]}]
+  (r/with-let [lazy-env-ref (r/atom {})]
+    (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
+      [:div
+       [Disclosure
+        {:DisclosureButton (disclosure-button {:text "Environment"
+                                               :color "blue"})}
+        (if (seq environment)
+          (into [:ul.space-y-1.mt-1]
+            (map
+              (fn [[sym value]]
+                (let [{:keys [lazy-sandbox?]} (meta value)]
+                  [:li [Disclosure
+                        {:DisclosureButton (disclosure-button {:text sym
+                                                               :color "gray"})}
+
+                        (fn [^js props]
+
+                          (when (.-open props)
+                            (on-disclose sym value))
+
+                          (when (and lazy-sandbox? (.-open props))
+
+                            ;; Initialize local state when the disclousure is opened for the first time.
+                            (when-not (contains? (set (keys @lazy-env-ref)) sym)
+
+                              ;; Status for a specific symbol in the environment.
+                              (swap! lazy-env-ref assoc-in [sym :ajax/status] :ajax.status/pending)
+
+                              (backend/POST-env
+                                {:params {:address (:convex-web.account/address account)
+                                          :sym (symbol sym)}
+
+                                 :handler
+                                 (fn [value]
+                                   (swap! lazy-env-ref update sym merge {:ajax/status :ajax.status/success
+                                                                         :value value}))
+
+                                 :error-handler
+                                 (fn [error]
+                                   (js/console.error error)
+
+                                   (swap! lazy-env-ref update sym merge {:ajax/status :ajax.status/error
+                                                                         :value :error}))})))
+
+                          (let [lazy-status (get-in @lazy-env-ref [sym :ajax/status])
+
+                                realized? (or (= lazy-status :ajax.status/success)
+                                            (= lazy-status :ajax.status/error))
+
+                                value (if lazy-sandbox?
+                                        (get-in @lazy-env-ref [sym :value])
+                                        value)
+
+                                value-str (if (string? value)
+                                            value
+                                            (str value))]
+
+                            (if (and lazy-sandbox? (not realized?))
+                              [:div.py-2
+                               [SpinnerSmall]]
+
+                              [Highlight
+                               (try
+                                 (zprint/zprint-str value-str {:parse-string-all? true
+                                                               :width 60})
+                                 (catch js/Error _
+                                   value-str))
+                               {:language :convex-lisp}])))]]))
+              (sort-by first environment)))
+          [:p.mt-1.text-xs "Empty"])]])))
+
 (defn AddressRenderer [address]
   (r/with-let [account-ref (r/atom {:ajax/status :ajax.status/pending})
 
@@ -1196,8 +1271,14 @@
             [:div.flex.flex-col.flex-1.justify-center
              [:span.text-xs.uppercase type]]])]
 
-        [EnvironmentBrowser
-         {:convex-web/account (:account @account-ref)}]])]))
+        [EnvironmentBrowser2
+         {:convex-web/account (:account @account-ref)
+          :on-disclose
+          (fn [sym value]
+            (log/debug sym value)
+
+            (rf/dispatch [:session/!env {:address address
+                                         :sym (symbol sym)}]))}]])]))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow

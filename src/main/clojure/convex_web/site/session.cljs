@@ -70,6 +70,24 @@
            (when active?
              {:dispatch [:session/!pick-address (get account :convex-web.account/address)]}))))
 
+(re-frame/reg-event-fx :session/!env
+  (fn [_ [_ {:keys [address sym]}]]
+    {:fx [[:runtime.fx/do
+           (fn []
+             (backend/POST-env
+               {:params {:address address
+                         :sym sym}
+
+                :handler
+                (fn [value]
+                  (disp :session/!set-state (fn [state]
+                                              (assoc-in state [address :env sym] value))))
+
+                :error-handler
+                (fn [error]
+                  (disp :session/!set-state (fn [state]
+                                              (assoc-in state [address :env sym] error))))}))]]}))
+
 (defn ?status []
   (sub :session/?status))
 
