@@ -1,8 +1,11 @@
 (ns convex-web.specs
-  (:require [clojure.spec.alpha :as s]
-            [clojure.string :as str]
+  (:require
+   [clojure.spec.alpha :as s]
+   [clojure.string :as str]
 
-            [reitit.core :as reitit]))
+   [reitit.core :as reitit])
+
+  (:import (reitit.core Match)))
 
 
 (s/def :convex-web/non-empty-string (s/and string? (complement str/blank?)))
@@ -399,7 +402,7 @@
 
 ;; -- Route
 
-(s/def :route/match #(= reitit/Match (type %)))
+(s/def :route/match #(= Match (type %)))
 (s/def :route/state any?)
 
 

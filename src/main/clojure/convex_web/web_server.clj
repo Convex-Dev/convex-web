@@ -911,12 +911,21 @@
                            (convex/account-status peer address)
                            (catch Throwable ex
                              (u/log :logging.event/system-error
-                                    :message (str "Failed to read Account Status " address ". Exception:" ex)
-                                    :exception ex)
+                               :message (str "Failed to read Account Status " address ". Exception:" ex)
+                               :exception ex)
 
                              nil))
 
-          account-status-data (convex/account-status-data account-status)]
+          account-status-data (convex/account-status-data account-status)
+
+          ;; Environment is lazily loaded.
+          account-status-data (update account-status-data :convex-web.account-status/environment
+                                (fn [env]
+                                  (->> env
+                                    (map
+                                      (fn [[k _]]
+                                        [k (with-meta {} {:lazy-sandbox? true})]))
+                                    (into {}))))]
       (if account-status
         (-successful-response #:convex-web.account {:address (.longValue address)
                                                     :status account-status-data})
@@ -924,10 +933,7 @@
           (log/error message address)
           (-not-found-response {:error {:message message}}))))
     (catch Throwable ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
+      (log/error ex (str "Get account error. Address: " address))
 
       -server-error-response)))
 
