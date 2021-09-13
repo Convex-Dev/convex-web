@@ -1046,7 +1046,7 @@
 
 (defn EnvironmentBrowser
   "A disclousure interface to browse an account's environment."
-  [account]
+  [{:keys [convex-web/account]}]
   (r/with-let [lazy-env-ref (r/atom {})]
     (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
       [:div
@@ -1197,7 +1197,7 @@
              [:span.text-xs.uppercase type]]])]
 
         [EnvironmentBrowser
-         (:account @account-ref)]])]))
+         {:convex-web/account (:account @account-ref)}]])]))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
@@ -1532,7 +1532,7 @@
      ;; Environment
      ;; ==============
      [:div.w-full.max-w-prose.flex.flex-col.space-y-2
-      [EnvironmentBrowser account]
+      [EnvironmentBrowser {:convex-web/account account}]
       
       [:p.text-sm.text-gray-500.max-w-prose
        "The environment is a space reserved for each Account
