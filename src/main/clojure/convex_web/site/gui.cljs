@@ -1056,19 +1056,25 @@
         (into [:ul.space-y-1.mt-1]
           (map
             (fn [[s value]]
-              (let [source (if (string? value)
-                             value
-                             (str value))]
+              (let [{:keys [lazy-sandbox?]} (meta value)
+
+                    value-str (if (string? value)
+                                value
+                                (str value))]
                 [:li [Disclosure
                       {:DisclosureButton (disclosure-button {:text s
                                                              :color "gray"})}
-                      [Highlight
-                       (try
-                         (zprint/zprint-str source {:parse-string-all? true
-                                                    :width 60})
-                         (catch js/Error _
-                           source))
-                       {:language :convex-lisp}]]]))
+
+                      (if lazy-sandbox?
+                        [:div.py-2
+                         [SpinnerSmall]]
+                        [Highlight
+                         (try
+                           (zprint/zprint-str value-str {:parse-string-all? true
+                                                         :width 60})
+                           (catch js/Error _
+                             value-str))
+                         {:language :convex-lisp}])]]))
             (sort-by first environment)))
         [:p.mt-1.text-xs "Empty"])]]))
 
