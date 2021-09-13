@@ -1,31 +1,28 @@
 (ns convex-web.site.gui
-  (:require [convex-web.site.format :as format]
-            [convex-web.site.backend :as backend]
+  (:require
+   [clojure.string :as str]
 
-            [clojure.string :as str]
-            
-            [goog.string :as gstring]
-            [goog.string.format]
-            [reagent.core :as r]
-            [re-frame.core :as rf]
-            [reitit.frontend.easy :as rfe]
-            [zprint.core :as zprint]
-            [lambdaisland.glogi :as log]
+   [goog.string :as gstring]
+   [goog.string.format]
+   [reagent.core :as r]
+   [re-frame.core :as rf]
+   [reitit.frontend.easy :as rfe]
+   [zprint.core :as zprint]
 
-            ["react" :as react]
-            ["highlight.js/lib/core" :as hljs]
-            ["highlight.js/lib/languages/clojure"]
-            ["highlight.js/lib/languages/javascript"]
-            ["react-highlight.js" :as react-hljs]
+   [convex-web.site.format :as format]
+   [convex-web.site.backend :as backend]
 
-            ["react-tippy" :as tippy]
-            ["react-markdown" :as ReactMarkdown]
-
-            ["@headlessui/react" :as headlessui]
-            ["@heroicons/react/solid" :refer [XIcon]]
-            ["qrcode.react" :as QRCode]
-
-            ["jdenticon" :as jdenticon]))
+   ["react" :as react]
+   ["highlight.js/lib/core" :as hljs]
+   ["highlight.js/lib/languages/clojure"]
+   ["highlight.js/lib/languages/javascript"]
+   ["react-highlight.js" :as react-hljs]
+   ["react-tippy" :as tippy]
+   ["react-markdown" :as ReactMarkdown]
+   ["@headlessui/react" :as headlessui]
+   ["@heroicons/react/solid" :refer [XIcon]]
+   ["qrcode.react" :as QRCode]
+   ["jdenticon" :as jdenticon]))
 
 (defn event-target-value [event]
   (some-> event
