@@ -937,6 +937,27 @@
 
       -server-error-response)))
 
+(defn -POST-env
+  "Returns value bound to symbol `sym` in the environment for account `address`."
+  [context {:keys [body]}]
+  (try
+    (let [{:keys [address sym]} (transit-decode body)
+
+          address (convex/address-safe address)
+
+          peer (system/convex-peer context)
+
+          account-status (convex/account-status peer address)]
+
+      (if-let [account-status-data (convex/account-status-data account-status)]
+        (-successful-response (get-in account-status-data [:convex-web.account/environment sym]))
+        (-not-found-response {:error {:message "Can't find symbol."}})))
+
+    (catch Throwable ex
+      (log/error ex "Get env error.")
+
+      -server-error-response)))
+
 (defn -GET-blocks [context _]
   (try
     (let [peer (system/convex-peer context)
@@ -1058,6 +1079,7 @@
     (POST "/api/internal/faucet" req (-POST-faucet system req))
     (GET "/api/internal/accounts" req (-GET-accounts system req))
     (GET "/api/internal/accounts/:address" [address] (-GET-account system address))
+    (POST "/api/internal/env" req (-POST-env system req))
     (GET "/api/internal/blocks" req (-GET-blocks system req))
     (GET "/api/internal/blocks-range" req (-GET-blocks-range system req))
     (GET "/api/internal/blocks/:index" [index] (-GET-block system index))
