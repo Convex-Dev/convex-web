@@ -1252,7 +1252,8 @@
           [Highlight result-value]))
       
       ;; Default.
-      [Highlight result-value])))
+      [:code.text-xs
+       result-value])))
 
 
 (defn CallableFunctions [account]
