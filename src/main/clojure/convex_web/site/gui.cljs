@@ -1211,6 +1211,9 @@
                 ;; because we don't want the whole UI to transition to pending.
                 (swap! account-ref assoc-in [:refresh :ajax/status] :ajax.status/pending)
 
+                ;; Reset address's env persisted in session.
+                (rf/dispatch [:session/!set-state #(assoc-in % [address :env] {})])
+
                 (backend/GET-account
                   address
                   {:handler
