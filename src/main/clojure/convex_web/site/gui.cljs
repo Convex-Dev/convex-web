@@ -1030,18 +1030,22 @@
 (defn disclosure-button 
   "Returns a headlessui/Disclosure.Button 
    which can be used with the Disclosure component."
-  [{:keys [text color]}]
+  [{:keys [text color on-click] :or {on-click identity}}]
   (fn [{:keys [open?]}]
     [:> headlessui/Disclosure.Button
-     {:className
+     {:as react/Fragment
+      :className
       (str/join " " (into disclosure-button-shared (disclosure-button-colors color)))}
-     [:span.text-xs
-      text]
-     [IconChevronUp
-      {:class
-       ["w-4 h-4"
-        (gstring/format "text-%s-500" color)
-        (when open? "transform rotate-180")]}]]))
+     [:button.w-full
+      {:on-click #(on-click (not open?))}
+      [:div.flex.flex-1.justify-between
+       [:span.text-xs
+        text]
+       [IconChevronUp
+        {:class
+         ["w-4 h-4"
+          (gstring/format "text-%s-500" color)
+          (when open? "transform rotate-180")]}]]]]))
 
 (defn Disclosure [{:keys [DisclosureButton]} children]  
   [:> headlessui/Disclosure
@@ -1078,33 +1082,34 @@
             (fn [[sym value]]
               (let [{:keys [convex-web/lazy?]} (meta value)]
                 [:li [Disclosure
-                      {:DisclosureButton (disclosure-button {:text sym
-                                                             :color "gray"})}
+                      {:DisclosureButton
+                       (disclosure-button
+                         {:text sym
+                          :color "gray"
+                          :on-click
+                          (fn [open?]
+                            ;; On open a lazy value, dispatches a query if not realized.
+                            (when (and open? lazy?)
+                              (when-not (get-in state [address :env sym :ajax/status])
+                                (rf/dispatch [:session/!env {:address address
+                                                             :sym (symbol sym)}]))))})}
 
-                      (fn [^js props]
-                        (when (.-open props)
-                          (when-not (get-in state [address :env sym :ajax/status])
-                            (when (:convex-web/lazy? (meta value))
-                              (js/console.log "Dispatch")
+                      (let [value-str (if (string? value)
+                                        value
+                                        (str value))]
 
-                              (rf/dispatch [:session/!env {:address address
-                                                           :sym (symbol sym)}]))))
+                        ;; Show a spinner whilst a lazy value is realized.
+                        (if lazy?
+                          [:div.py-2
+                           [SpinnerSmall]]
 
-                        (let [value-str (if (string? value)
-                                          value
-                                          (str value))]
-
-                          (if lazy?
-                            [:div.py-2
-                             [SpinnerSmall]]
-
-                            [Highlight
-                             (try
-                               (zprint/zprint-str value-str {:parse-string-all? true
-                                                             :width 60})
-                               (catch js/Error _
-                                 value-str))
-                             {:language :convex-lisp}])))]]))
+                          [Highlight
+                           (try
+                             (zprint/zprint-str value-str {:parse-string-all? true
+                                                           :width 60})
+                             (catch js/Error _
+                               value-str))
+                           {:language :convex-lisp}]))]]))
             (sort-by first environment)))
         [:p.mt-1.text-xs "Empty"])]]))
 
