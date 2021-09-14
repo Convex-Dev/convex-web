@@ -1,4 +1,6 @@
-(ns convex-web.convex)
+(ns convex-web.convex
+  (:require
+   [clojure.string :as str]))
 
 (def library-documentation
   {"asset.box" 
@@ -35,3 +37,18 @@
    
    "torus.exchange"
    ""})
+
+(defn address
+  "Returns address `x` as a number.
+
+  Throws ex-info if it can't create an address from `x`."
+  [x]
+  (cond
+    (number? x)
+    x
+
+    (string? x)
+    (js/parseInt (str/replace x "#" ""))
+
+    :else
+    (throw (ex-info (str "Can't create address from " x) {:x x}))))

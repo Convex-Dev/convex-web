@@ -8,7 +8,11 @@
 
 (s/def :convex-web/blob-string (s/and :convex-web/non-empty-string #(str/starts-with? % "0x")))
 
-(s/def :convex-web/address nat-int?)
+(s/def :convex-web/address
+  (s/or
+    :integer nat-int?
+    :string-# #(str/starts-with? % "#")
+    :string :convex-web/non-empty-string))
 
 (s/def :convex-web/sig (s/and :convex-web/non-empty-string #(= 128 (count %))))
 
@@ -406,9 +410,13 @@
 
 (s/def :convex-web.session/accounts (s/coll-of :convex-web/account))
 
+(s/def :convex-web.session/state map?)
+
 ;; -- Site Session
 
-(s/def :site/session (s/keys :opt [:convex-web.session/accounts]))
+(s/def :site/session
+  (s/keys :opt [:convex-web.session/accounts
+                :convex-web.session/state]))
 
 ;; -- Site Route
 

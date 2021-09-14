@@ -924,7 +924,7 @@
                                   (->> env
                                     (map
                                       (fn [[k _]]
-                                        [k (with-meta {} {:lazy-sandbox? true})]))
+                                        [k (with-meta {} {:convex-web/lazy? true})]))
                                     (into {}))))]
       (if account-status
         (-successful-response #:convex-web.account {:address (.longValue address)
@@ -948,8 +948,6 @@
           peer (system/convex-peer context)
 
           account-status (convex/account-status peer address)]
-
-      (log/debug (with-out-str (pprint/pprint (convex/account-status-data account-status))))
 
       (if-let [account-status-data (convex/account-status-data account-status)]
         (-successful-response (get-in account-status-data [:convex-web.account-status/environment sym]))
