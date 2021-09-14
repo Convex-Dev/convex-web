@@ -4,7 +4,6 @@
 
    [goog.string :as gstring]
    [goog.string.format]
-   [lambdaisland.glogi :as log]
    [reagent.core :as r]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as rfe]
@@ -12,6 +11,7 @@
 
    [convex-web.site.format :as format]
    [convex-web.site.backend :as backend]
+   [convex-web.convex :as convex]
 
    ["react" :as react]
    ["highlight.js/lib/core" :as hljs]
@@ -1062,76 +1062,6 @@
 
 (defn EnvironmentBrowser
   "A disclousure interface to browse an account's environment."
-  [{:keys [convex-web/account]}]
-  (r/with-let [lazy-env-ref (r/atom {})]
-    (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
-      [:div
-       [Disclosure
-        {:DisclosureButton (disclosure-button {:text "Environment"
-                                               :color "blue"})}
-        (if (seq environment)
-          (into [:ul.space-y-1.mt-1]
-            (map
-              (fn [[sym value]]
-                (let [{:keys [lazy-sandbox?]} (meta value)]
-                  [:li [Disclosure
-                        {:DisclosureButton (disclosure-button {:text sym
-                                                               :color "gray"})}
-
-                        (fn [^js props]
-                          (when (and lazy-sandbox? (.-open props))
-
-                            ;; Initialize local state when the disclousure is opened for the first time.
-                            (when-not (contains? (set (keys @lazy-env-ref)) sym)
-
-                              ;; Status for a specific symbol in the environment.
-                              (swap! lazy-env-ref assoc-in [sym :ajax/status] :ajax.status/pending)
-
-                              (backend/POST-env
-                                {:params {:address (:convex-web.account/address account)
-                                          :sym (symbol sym)}
-
-                                 :handler
-                                 (fn [value]
-                                   (swap! lazy-env-ref update sym merge {:ajax/status :ajax.status/success
-                                                                         :value value}))
-
-                                 :error-handler
-                                 (fn [error]
-                                   (js/console.error error)
-
-                                   (swap! lazy-env-ref update sym merge {:ajax/status :ajax.status/error
-                                                                         :value :error}))})))
-
-                          (let [lazy-status (get-in @lazy-env-ref [sym :ajax/status])
-
-                                realized? (or (= lazy-status :ajax.status/success)
-                                            (= lazy-status :ajax.status/error))
-
-                                value (if lazy-sandbox?
-                                        (get-in @lazy-env-ref [sym :value])
-                                        value)
-
-                                value-str (if (string? value)
-                                            value
-                                            (str value))]
-
-                            (if (and lazy-sandbox? (not realized?))
-                              [:div.py-2
-                               [SpinnerSmall]]
-
-                              [Highlight
-                               (try
-                                 (zprint/zprint-str value-str {:parse-string-all? true
-                                                               :width 60})
-                                 (catch js/Error _
-                                   value-str))
-                               {:language :convex-lisp}])))]]))
-              (sort-by first environment)))
-          [:p.mt-1.text-xs "Empty"])]])))
-
-(defn EnvironmentBrowser2
-  "A disclousure interface to browse an account's environment."
   [{:keys [convex-web/account on-disclose] :or {on-disclose identity}}]
   (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
     [:div
@@ -1186,7 +1116,9 @@
                                            :ajax/error error}))})]
 
     (let [{account :account
-           ajax-status :ajax/status} @account-ref]
+           ajax-status :ajax/status} @account-ref
+
+          address (convex/address address)]
 
       [:div.w-full.max-w-prose.bg-white.rounded.shadow.p-3
        (case ajax-status
@@ -1264,7 +1196,7 @@
                 ;; Merge account env with session (lazy) env.
                 account (merge-account-env {:convex-web/account account
                                             :convex-web.session/state state})]
-            [EnvironmentBrowser2
+            [EnvironmentBrowser
              {:convex-web/account account
               :on-disclose
               (fn [sym value]
@@ -1272,7 +1204,7 @@
                   (when (:convex-web/lazy? (meta value))
                     (js/console.log "Dispatch")
 
-                    (rf/dispatch [:session/!env {:address (js/parseInt (str/replace address "#" ""))
+                    (rf/dispatch [:session/!env {:address address
                                                  :sym (symbol sym)}]))))}])])])))
 
 (defn BlobRenderer [object]
@@ -1613,7 +1545,7 @@
            account (merge-account-env {:convex-web/account account
                                        :convex-web.session/state state})]
        [:div.w-full.max-w-prose.flex.flex-col.space-y-2
-        [EnvironmentBrowser2 {:convex-web/account account}]
+        [EnvironmentBrowser {:convex-web/account account}]
 
         [:p.text-sm.text-gray-500.max-w-prose
          "The environment is a space reserved for each Account
