@@ -1062,8 +1062,12 @@
 
 (defn EnvironmentBrowser
   "A disclousure interface to browse an account's environment."
-  [{:keys [convex-web/account on-disclose] :or {on-disclose identity}}]
-  (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
+  [{:keys [convex-web/account]}]
+  (let [state @(rf/subscribe [:session/?state])
+
+        {:convex-web.account/keys [address]} account
+
+        environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
     [:div
      [Disclosure
       {:DisclosureButton (disclosure-button {:text "Environment"
@@ -1078,9 +1082,13 @@
                                                              :color "gray"})}
 
                       (fn [^js props]
-
                         (when (.-open props)
-                          (on-disclose sym value))
+                          (when-not (get-in state [address :env sym :ajax/status])
+                            (when (:convex-web/lazy? (meta value))
+                              (js/console.log "Dispatch")
+
+                              (rf/dispatch [:session/!env {:address address
+                                                           :sym (symbol sym)}]))))
 
                         (let [value-str (if (string? value)
                                           value
@@ -1197,15 +1205,7 @@
                 account (merge-account-env {:convex-web/account account
                                             :convex-web.session/state state})]
             [EnvironmentBrowser
-             {:convex-web/account account
-              :on-disclose
-              (fn [sym value]
-                (when-not (get-in state [address :env sym :ajax/status])
-                  (when (:convex-web/lazy? (meta value))
-                    (js/console.log "Dispatch")
-
-                    (rf/dispatch [:session/!env {:address address
-                                                 :sym (symbol sym)}]))))}])])])))
+             {:convex-web/account account}])])])))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
