@@ -1065,7 +1065,11 @@
            children)]]))])
 
 (defn EnvironmentBrowser
-  "A disclousure interface to browse an account's environment."
+  "A disclousure interface to browse an account's environment.
+
+  Lazily load the environment on click.
+
+  Depends on session subs and events."
   [{:keys [convex-web/account]}]
   (let [state @(rf/subscribe [:session/?state])
 
