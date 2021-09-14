@@ -410,9 +410,13 @@
 
 (s/def :convex-web.session/accounts (s/coll-of :convex-web/account))
 
+(s/def :convex-web.session/state map?)
+
 ;; -- Site Session
 
-(s/def :site/session (s/keys :opt [:convex-web.session/accounts]))
+(s/def :site/session
+  (s/keys :opt [:convex-web.session/accounts
+                :convex-web.session/state]))
 
 ;; -- Site Route
 

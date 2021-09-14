@@ -112,6 +112,21 @@
     :else
     "An external user of Convex."))
 
+(defn merge-account-env
+  "Merge account's env with session (lazy) env."
+  [{:keys [convex-web/account convex-web.session/state]}]
+  (let [{:convex-web.account/keys [address]} account
+
+        ;; Construct env for success only.
+        env (reduce-kv
+              (fn [acc sym {:keys [value ajax/status]}]
+                (when (= status :ajax.status/success)
+                  (assoc acc sym value)))
+              {}
+              (get-in state [address :env]))]
+
+    (update-in account [:convex-web.account/status :convex-web.account-status/environment] merge env)))
+
 (def identicon-size-small 26)
 (def identicon-size-large 40)
 
@@ -1117,7 +1132,7 @@
 
 (defn EnvironmentBrowser2
   "A disclousure interface to browse an account's environment."
-  [{:keys [convex-web/account on-disclose]}]
+  [{:keys [convex-web/account on-disclose] :or {on-disclose identity}}]
   (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
     [:div
      [Disclosure
@@ -1246,17 +1261,9 @@
 
           (let [state @(rf/subscribe [:session/?state])
 
-                ;; Construct env for success only.
-                env (reduce-kv
-                      (fn [acc sym {:keys [value ajax/status]}]
-                        (when (= status :ajax.status/success)
-                          (assoc acc sym value)))
-                      {}
-                      (get-in state [address :env]))
-
                 ;; Merge account env with session (lazy) env.
-                account (update-in account [:convex-web.account/status :convex-web.account-status/environment] merge env)]
-
+                account (merge-account-env {:convex-web/account account
+                                            :convex-web.session/state state})]
             [EnvironmentBrowser2
              {:convex-web/account account
               :on-disclose
@@ -1265,7 +1272,7 @@
                   (when (:convex-web/lazy? (meta value))
                     (js/console.log "Dispatch")
 
-                    (rf/dispatch [:session/!env {:address address
+                    (rf/dispatch [:session/!env {:address (js/parseInt (str/replace address "#" ""))
                                                  :sym (symbol sym)}]))))}])])])))
 
 (defn BlobRenderer [object]
@@ -1533,19 +1540,19 @@
      ;; Public key
      ;; ==============
      [:div
-       [Caption
-        {:label "Public Key"
-         :tooltip "Public Keys may be safely shared with others, as they do not allow digital signatures to be created without the corresponding private key."}]
-       [:code.text-sm (or account-key "-")]]
+      [Caption
+       {:label "Public Key"
+        :tooltip "Public Keys may be safely shared with others, as they do not allow digital signatures to be created without the corresponding private key."}]
+      [:code.text-sm (or account-key "-")]]
      
      
      ;; Balance
      ;; ==============
      [:div {:class caption-container-style}
-       [Caption
-        {:label "Balance"
-         :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
-       [:code.text-2xl.cursor-default (format/format-number balance)]]
+      [Caption
+       {:label "Balance"
+        :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
+      [:code.text-2xl.cursor-default (format/format-number balance)]]
      
      
      [:div.flex.w-full.md:space-x-16.space-x-6
@@ -1600,10 +1607,15 @@
      
      ;; Environment
      ;; ==============
-     [:div.w-full.max-w-prose.flex.flex-col.space-y-2
-      [EnvironmentBrowser {:convex-web/account account}]
-      
-      [:p.text-sm.text-gray-500.max-w-prose
-       "The environment is a space reserved for each Account
+     (let [state @(rf/subscribe [:session/?state])
+
+           ;; Merge account env with session (lazy) env.
+           account (merge-account-env {:convex-web/account account
+                                       :convex-web.session/state state})]
+       [:div.w-full.max-w-prose.flex.flex-col.space-y-2
+        [EnvironmentBrowser2 {:convex-web/account account}]
+
+        [:p.text-sm.text-gray-500.max-w-prose
+         "The environment is a space reserved for each Account
        that can freely store on-chain data and definitions.
-       (e.g. code that you write in Convex Lisp)"]]]))
+       (e.g. code that you write in Convex Lisp)"]])]))
