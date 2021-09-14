@@ -1075,6 +1075,10 @@
 
         {:convex-web.account/keys [address]} account
 
+        ;; Merge account env with session (lazy) env.
+        account (merge-account-env {:convex-web/account account
+                                    :convex-web.session/state state})
+
         environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
     [:div
      [Disclosure
@@ -1208,13 +1212,8 @@
               [:div.flex.flex-col.flex-1.justify-center
                [:span.text-xs.uppercase type]]])]
 
-          (let [state @(rf/subscribe [:session/?state])
-
-                ;; Merge account env with session (lazy) env.
-                account (merge-account-env {:convex-web/account account
-                                            :convex-web.session/state state})]
-            [EnvironmentBrowser
-             {:convex-web/account account}])])])))
+          [EnvironmentBrowser
+           {:convex-web/account account}]])])))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
@@ -1548,15 +1547,11 @@
      
      ;; Environment
      ;; ==============
-     (let [state @(rf/subscribe [:session/?state])
+     [:div.w-full.max-w-prose.flex.flex-col.space-y-2
+      [EnvironmentBrowser
+       {:convex-web/account account}]
 
-           ;; Merge account env with session (lazy) env.
-           account (merge-account-env {:convex-web/account account
-                                       :convex-web.session/state state})]
-       [:div.w-full.max-w-prose.flex.flex-col.space-y-2
-        [EnvironmentBrowser {:convex-web/account account}]
-
-        [:p.text-sm.text-gray-500.max-w-prose
-         "The environment is a space reserved for each Account
+      [:p.text-sm.text-gray-500.max-w-prose
+       "The environment is a space reserved for each Account
        that can freely store on-chain data and definitions.
-       (e.g. code that you write in Convex Lisp)"]])]))
+       (e.g. code that you write in Convex Lisp)"]]]))
