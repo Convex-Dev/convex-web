@@ -924,7 +924,7 @@
                                   (->> env
                                     (map
                                       (fn [[k _]]
-                                        [k (with-meta {} {:lazy-sandbox? true})]))
+                                        [k (with-meta {} {:convex-web/lazy? true})]))
                                     (into {}))))]
       (if account-status
         (-successful-response #:convex-web.account {:address (.longValue address)

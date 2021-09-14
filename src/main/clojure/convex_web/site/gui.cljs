@@ -1127,7 +1127,7 @@
         (into [:ul.space-y-1.mt-1]
           (map
             (fn [[sym value]]
-              (let [{:keys [lazy-sandbox?]} (meta value)]
+              (let [{:keys [convex-web/lazy?]} (meta value)]
                 [:li [Disclosure
                       {:DisclosureButton (disclosure-button {:text sym
                                                              :color "gray"})}
@@ -1141,7 +1141,7 @@
                                           value
                                           (str value))]
 
-                          (if lazy-sandbox?
+                          (if lazy?
                             [:div.py-2
                              [SpinnerSmall]]
 
@@ -1170,10 +1170,11 @@
                       (reset! account-ref {:ajax/status :ajax.status/error
                                            :ajax/error error}))})]
 
-    (let [session-state @(rf/subscribe [:session/?state])]
+    (let [{account :account
+           ajax-status :ajax/status} @account-ref]
 
       [:div.w-full.max-w-prose.bg-white.rounded.shadow.p-3
-       (case (:ajax/status @account-ref)
+       (case ajax-status
          :ajax.status/pending
          [SpinnerSmall]
 
@@ -1240,16 +1241,29 @@
               [:div.flex.flex-col.flex-1.justify-center
                [:span.text-xs.uppercase type]]])]
 
-          [EnvironmentBrowser2
-           {:convex-web/account (:account @account-ref)
-            :on-disclose
-            (fn [sym value]
-              (when-not (get-in session-state [address :env sym :ajax/status])
-                (when (:lazy-sandbox? (meta value))
-                  (js/console.log "Dispatch")
+          (let [state @(rf/subscribe [:session/?state])
 
-                  (rf/dispatch [:session/!env {:address address
-                                               :sym (symbol sym)}]))))}]])])))
+                ;; Construct env for success only.
+                env (reduce-kv
+                      (fn [acc sym {:keys [value ajax/status]}]
+                        (when (= status :ajax.status/success)
+                          (assoc acc sym value)))
+                      {}
+                      (get-in state [address :env]))
+
+                ;; Merge account env with session (lazy) env.
+                account (update-in account [:convex-web.account/status :convex-web.account-status/environment] merge env)]
+
+            [EnvironmentBrowser2
+             {:convex-web/account account
+              :on-disclose
+              (fn [sym value]
+                (when-not (get-in state [address :env sym :ajax/status])
+                  (when (:convex-web/lazy? (meta value))
+                    (js/console.log "Dispatch")
+
+                    (rf/dispatch [:session/!env {:address address
+                                                 :sym (symbol sym)}]))))}])])])))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
