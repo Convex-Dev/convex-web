@@ -484,7 +484,7 @@
               "hidden"
               
               ;; Desktop
-              "md:flex flex-col flex-shrink-0 md:w-[260px] pr-3"]}
+              "md:flex flex-col flex-shrink-0 md:w-[260px] px-3"]}
      
      (for [{:keys [text] :as item} others]
        ^{:key text}
