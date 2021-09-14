@@ -2,6 +2,7 @@
 
 ## 0.27.0 -- 
 - [Lazily load account environment #196](https://github.com/Convex-Dev/convex-web/issues/196)
+- [Don't syntax highlight result #195](https://github.com/Convex-Dev/convex-web/issues/195)
 
 ## 0.26.0 -- 2021-09-10
 - Updated developer docs
