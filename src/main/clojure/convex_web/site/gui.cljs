@@ -1102,22 +1102,13 @@
                                 (rf/dispatch [:session/!env {:address address
                                                              :sym (symbol sym)}]))))})}
 
-                      (let [value-str (if (string? value)
-                                        value
-                                        (str value))]
+                      ;; Show a spinner whilst a lazy value is realized.
+                      (if lazy?
+                        [:div.py-2
+                         [SpinnerSmall]]
 
-                        ;; Show a spinner whilst a lazy value is realized.
-                        (if lazy?
-                          [:div.py-2
-                           [SpinnerSmall]]
-
-                          [Highlight
-                           (try
-                             (zprint/zprint-str value-str {:parse-string-all? true
-                                                           :width 60})
-                             (catch js/Error _
-                               value-str))
-                           {:language :convex-lisp}]))]]))
+                        [:code.text-xs
+                         (prn-str value)])]]))
             (sort-by first environment)))
         [:p.mt-1.text-xs "Empty"])]]))
 
