@@ -10,12 +10,70 @@
 
    ["@heroicons/react/solid" :refer [PlusIcon]]))
 
+(defn AddAccountPage [_ _ _]
+  [:div.flex.flex-col.space-y-8.p-6
+
+   [:div.flex.flex-col.space-y-6
+
+    ;; -- Address
+    [:div.flex.flex-col.space-y-2
+
+     [gui/Caption
+      "Address"]
+
+     [:input
+      {:class [gui/input-style "w-80 w-full"]
+       :type "text"
+       :value ""
+       :on-change
+       #()}]]
+
+    ;; -- Public Key
+    [:div.flex.flex-col.space-y-1
+
+     [gui/Caption
+      "Account Key"]
+
+     [:input
+      {:class [gui/input-style "w-full"]
+       :type "text"
+       :value ""
+       :on-change
+       #()}]]
+
+    ;; -- Private Key
+    [:div.flex.flex-col.space-y-1
+
+     [gui/Caption
+      "Private Key"]
+
+     [:input
+      {:class [gui/input-style "w-full"]
+       :type "text"
+       :value ""
+       :on-change
+       #()}]]]
+
+   ;; -- Confirm
+   [gui/PrimaryButton
+    {:on-click #(stack/push :page.id/add-account {:modal? true})}
+    [:span.block.text-sm.uppercase.text-white
+     {:class gui/button-child-small-padding}
+     "Confirm"]]])
+
+(def add-account-page
+  #:page {:id :page.id/add-account
+          :title "Add Account to Wallet"
+          :description "Add an existing account to your wallet."
+          :component #'AddAccountPage})
+
+
 (defn WalletPage [_ _ _]
   (let [accounts (session/?accounts)]
     [:div.flex.flex-col.items-start.space-y-12
 
      [gui/PrimaryButton
-      {:on-click #()}
+      {:on-click #(stack/push :page.id/add-account {:modal? true})}
       [:div.flex.items-center.space-x-2
        {:class gui/button-child-small-padding}
        [:> PlusIcon

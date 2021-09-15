@@ -115,7 +115,8 @@
 
    ;; ---
 
-   wallet/wallet-page])
+   wallet/wallet-page
+   wallet/add-account-page])
 
 ;; ---
 
@@ -509,13 +510,14 @@
        [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
         [:div.h-20.relative.flex.justify-between.items-center.px-6
 
-         [:span.font-mono.text-lg.leading-none title]
+         [:span.text-lg.leading-none title]
 
          [gui/Tooltip
           {:title "Close"}
           [gui/IconXCircle
            {:class
             ["w-6 h-6"
+             "ml-4"
              "text-gray-600 hover:text-gray-700"
              "cursor-pointer"]
             :on-click #(stack/pop)}]]]]
