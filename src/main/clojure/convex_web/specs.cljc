@@ -6,12 +6,12 @@
 
 (s/def :convex-web/non-empty-string (s/and string? (complement str/blank?)))
 
-(s/def :convex-web/blob-string (s/and :convex-web/non-empty-string #(str/starts-with? % "0x")))
+(s/def :convex-web/blob-string (s/and :convex-web/non-empty-string #(some-> % (str/starts-with? "0x"))))
 
 (s/def :convex-web/address
   (s/or
     :integer nat-int?
-    :string-# #(str/starts-with? % "#")
+    :string-prefixed (s/and :convex-web/non-empty-string #(some-> % (str/starts-with? "#")))
     :string :convex-web/non-empty-string))
 
 (s/def :convex-web/sig (s/and :convex-web/non-empty-string #(= 128 (count %))))
