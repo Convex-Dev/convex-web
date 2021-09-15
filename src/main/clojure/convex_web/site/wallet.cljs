@@ -1,15 +1,29 @@
 (ns convex-web.site.wallet
-  (:require [convex-web.site.session :as session]
-            [convex-web.site.store :as store]
-            [convex-web.site.gui :as gui]
-            [convex-web.site.format :as format]
+  (:require
+   [convex-web.site.session :as session]
+   [convex-web.site.store :as store]
+   [convex-web.site.gui :as gui]
+   [convex-web.site.format :as format]
 
-            [reitit.frontend.easy :as rfe]
-            [convex-web.site.stack :as stack]))
+   [reitit.frontend.easy :as rfe]
+   [convex-web.site.stack :as stack]
+
+   ["@heroicons/react/solid" :refer [PlusIcon]]))
 
 (defn WalletPage [_ _ _]
   (let [accounts (session/?accounts)]
     [:div.flex.flex-col.items-start.space-y-12
+
+     [gui/PrimaryButton
+      {:on-click #()}
+      [:div.flex.items-center.space-x-2
+       {:class gui/button-child-small-padding}
+       [:> PlusIcon
+        {:className "w-5 h-5 text-white"}]
+
+       [:span.block.text-sm.uppercase.text-white
+        "Add Account"]]]
+
      (if (seq accounts)
        [:table.text-left.table-auto
         [:thead
