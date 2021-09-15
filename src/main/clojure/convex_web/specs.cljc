@@ -1,15 +1,18 @@
 (ns convex-web.specs
-  (:require [clojure.spec.alpha :as s]
-            [clojure.string :as str]
-
-            [reitit.core]))
+  (:require
+   [clojure.spec.alpha :as s]
+   [clojure.string :as str]))
 
 
 (s/def :convex-web/non-empty-string (s/and string? (complement str/blank?)))
 
 (s/def :convex-web/blob-string (s/and :convex-web/non-empty-string #(str/starts-with? % "0x")))
 
-(s/def :convex-web/address nat-int?)
+(s/def :convex-web/address
+  (s/or
+    :integer nat-int?
+    :string-# #(str/starts-with? % "#")
+    :string :convex-web/non-empty-string))
 
 (s/def :convex-web/sig (s/and :convex-web/non-empty-string #(= 128 (count %))))
 
@@ -399,7 +402,7 @@
 
 ;; -- Route
 
-(s/def :route/match #(= reitit.core.Match (type %)))
+(s/def :route/match some?)
 (s/def :route/state any?)
 
 
@@ -407,9 +410,13 @@
 
 (s/def :convex-web.session/accounts (s/coll-of :convex-web/account))
 
+(s/def :convex-web.session/state map?)
+
 ;; -- Site Session
 
-(s/def :site/session (s/keys :opt [:convex-web.session/accounts]))
+(s/def :site/session
+  (s/keys :opt [:convex-web.session/accounts
+                :convex-web.session/state]))
 
 ;; -- Site Route
 

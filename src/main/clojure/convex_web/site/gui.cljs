@@ -1,30 +1,29 @@
 (ns convex-web.site.gui
-  (:require [convex-web.site.format :as format]
-            [convex-web.site.backend :as backend]
+  (:require
+   [clojure.string :as str]
 
-            [clojure.string :as str]
-            
-            [goog.string :as gstring]
-            [goog.string.format]
-            [reagent.core :as r]
-            [re-frame.core :as rf]
-            [reitit.frontend.easy :as rfe]
-            [zprint.core :as zprint]
+   [goog.string :as gstring]
+   [goog.string.format]
+   [reagent.core :as r]
+   [re-frame.core :as rf]
+   [reitit.frontend.easy :as rfe]
+   [zprint.core :as zprint]
 
-            ["react" :as react]
-            ["highlight.js/lib/core" :as hljs]
-            ["highlight.js/lib/languages/clojure"]
-            ["highlight.js/lib/languages/javascript"]
-            ["react-highlight.js" :as react-hljs]
+   [convex-web.site.format :as format]
+   [convex-web.site.backend :as backend]
+   [convex-web.convex :as convex]
 
-            ["react-tippy" :as tippy]
-            ["react-markdown" :as ReactMarkdown]
-
-            ["@headlessui/react" :as headlessui]
-            ["@heroicons/react/solid" :refer [XIcon]]
-            ["qrcode.react" :as QRCode]
-
-            ["jdenticon" :as jdenticon]))
+   ["react" :as react]
+   ["highlight.js/lib/core" :as hljs]
+   ["highlight.js/lib/languages/clojure"]
+   ["highlight.js/lib/languages/javascript"]
+   ["react-highlight.js" :as react-hljs]
+   ["react-tippy" :as tippy]
+   ["react-markdown" :as ReactMarkdown]
+   ["@headlessui/react" :as headlessui]
+   ["@heroicons/react/solid" :refer [XIcon]]
+   ["qrcode.react" :as QRCode]
+   ["jdenticon" :as jdenticon]))
 
 (defn event-target-value [event]
   (some-> event
@@ -112,6 +111,21 @@
 
     :else
     "An external user of Convex."))
+
+(defn merge-account-env
+  "Merge account's env with session (lazy) env."
+  [{:keys [convex-web/account convex-web.session/state]}]
+  (let [{:convex-web.account/keys [address]} account
+
+        ;; Construct env for success only.
+        env (reduce-kv
+              (fn [acc sym {:keys [value ajax/status]}]
+                (when (= status :ajax.status/success)
+                  (assoc acc sym value)))
+              {}
+              (get-in state [address :env]))]
+
+    (update-in account [:convex-web.account/status :convex-web.account-status/environment] merge env)))
 
 (def identicon-size-small 26)
 (def identicon-size-large 40)
@@ -1016,18 +1030,22 @@
 (defn disclosure-button 
   "Returns a headlessui/Disclosure.Button 
    which can be used with the Disclosure component."
-  [{:keys [text color]}]
+  [{:keys [text color on-click] :or {on-click identity}}]
   (fn [{:keys [open?]}]
     [:> headlessui/Disclosure.Button
-     {:className
+     {:as react/Fragment
+      :className
       (str/join " " (into disclosure-button-shared (disclosure-button-colors color)))}
-     [:span.text-xs
-      text]
-     [IconChevronUp
-      {:class
-       ["w-4 h-4"
-        (gstring/format "text-%s-500" color)
-        (when open? "transform rotate-180")]}]]))
+     [:button.w-full
+      {:on-click #(on-click (not open?))}
+      [:div.flex.flex-1.justify-between
+       [:span.text-xs
+        text]
+       [IconChevronUp
+        {:class
+         ["w-4 h-4"
+          (gstring/format "text-%s-500" color)
+          (when open? "transform rotate-180")]}]]]]))
 
 (defn Disclosure [{:keys [DisclosureButton]} children]  
   [:> headlessui/Disclosure
@@ -1042,12 +1060,26 @@
         [:> headlessui/Disclosure.Panel
          {:className "px-4 pb-2 text-sm text-gray-500"}
 
-         children]]))])
+         (if (fn? children)
+           (children props)
+           children)]]))])
 
 (defn EnvironmentBrowser
-  "A disclousure interface to browse an account's environment."
-  [account]
-  (let [environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
+  "A disclousure interface to browse an account's environment.
+
+  Lazily load the environment on click.
+
+  Depends on session subs and events."
+  [{:keys [convex-web/account]}]
+  (let [state @(rf/subscribe [:session/?state])
+
+        {:convex-web.account/keys [address]} account
+
+        ;; Merge account env with session (lazy) env.
+        account (merge-account-env {:convex-web/account account
+                                    :convex-web.session/state state})
+
+        environment (get-in account [:convex-web.account/status :convex-web.account-status/environment])]
     [:div
      [Disclosure
       {:DisclosureButton (disclosure-button {:text "Environment"
@@ -1055,20 +1087,28 @@
       (if (seq environment)
         (into [:ul.space-y-1.mt-1]
           (map
-            (fn [[s value]]
-              (let [source (if (string? value)
-                             value
-                             (str value))]
+            (fn [[sym value]]
+              (let [{:keys [convex-web/lazy?]} (meta value)]
                 [:li [Disclosure
-                      {:DisclosureButton (disclosure-button {:text s
-                                                             :color "gray"})}
-                      [Highlight
-                       (try
-                         (zprint/zprint-str source {:parse-string-all? true
-                                                    :width 60})
-                         (catch js/Error _
-                           source))
-                       {:language :convex-lisp}]]]))
+                      {:DisclosureButton
+                       (disclosure-button
+                         {:text sym
+                          :color "gray"
+                          :on-click
+                          (fn [open?]
+                            ;; On open a lazy value, dispatches a query if not realized.
+                            (when (and open? lazy?)
+                              (when-not (get-in state [address :env sym :ajax/status])
+                                (rf/dispatch [:session/!env {:address address
+                                                             :sym (symbol sym)}]))))})}
+
+                      ;; Show a spinner whilst a lazy value is realized.
+                      (if lazy?
+                        [:div.py-2
+                         [SpinnerSmall]]
+
+                        [:code.text-xs
+                         (prn-str value)])]]))
             (sort-by first environment)))
         [:p.mt-1.text-xs "Empty"])]]))
 
@@ -1086,76 +1126,85 @@
                     (fn [error]
                       (reset! account-ref {:ajax/status :ajax.status/error
                                            :ajax/error error}))})]
-    [:div.w-full.max-w-prose.bg-white.rounded.shadow.p-3
-     (case (:ajax/status @account-ref)
-       :ajax.status/pending
-       [SpinnerSmall]
 
-       :ajax.status/error
-       [:div.flex.flex-col.space-y-1
-        [:div.flex.items-center.space-x-1
-         [AIdenticon {:value (str address) :size identicon-size-small}]
+    (let [{account :account
+           ajax-status :ajax/status} @account-ref
 
-         [:span.font-mono.text-xs.truncate
-          (format/prefix-# address)]]
+          address (convex/address address)]
 
-        [:span.text-xs (get-in @account-ref [:ajax/error :response :error :message])]]
+      [:div.w-full.max-w-prose.bg-white.rounded.shadow.p-3
+       (case ajax-status
+         :ajax.status/pending
+         [SpinnerSmall]
 
-       :ajax.status/success
-       [:div.flex.flex-col.space-y-3
+         :ajax.status/error
+         [:div.flex.flex-col.space-y-1
+          [:div.flex.items-center.space-x-1
+           [AIdenticon {:value (str address) :size identicon-size-small}]
 
-        ;; Address & Refresh.
-        [:div.flex.justify-between
-         [:a.inline-flex.items-center.space-x-1
-          {:href (rfe/href :route-name/testnet.account {:address address})}
-          [AIdenticon {:value (str address) :size identicon-size-small}]
+           [:span.font-mono.text-xs.truncate
+            (format/prefix-# address)]]
 
-          [:span.font-mono.text-xs.truncate
-           {:class hyperlink-hover-class}
-           (format/prefix-# address)]]
+          [:span.text-xs (get-in @account-ref [:ajax/error :response :error :message])]]
 
-         [Tooltip
-          {:title "Refresh"
-           :size "small"}
-          [DefaultButton
-           {:on-click
-            (fn []
-              ;; Store the status of this request in a place specific to refresh
-              ;; because we don't want the whole UI to transition to pending.
-              (swap! account-ref assoc-in [:refresh :ajax/status] :ajax.status/pending)
+         :ajax.status/success
+         [:div.flex.flex-col.space-y-3
 
-              (backend/GET-account
-                address
-                {:handler
-                 (fn [account]
-                   (swap! account-ref merge {:account account
-                                             :refresh {:ajax/status :ajax.status/success}}))
+          ;; Address & Refresh.
+          [:div.flex.justify-between
+           [:a.inline-flex.items-center.space-x-1
+            {:href (rfe/href :route-name/testnet.account {:address address})}
+            [AIdenticon {:value (str address) :size identicon-size-small}]
 
-                 :error-handler
-                 (fn [_]
-                   (swap! account-ref merge {:refresh {:ajax/status :ajax.status/error}}))}))}
-           (if (= :ajax.status/pending (get-in @account-ref [:refresh :ajax/status]))
-             [SpinnerSmall]
-             [RefreshIcon {:class "w-4 h-4"}])]]]
+            [:span.font-mono.text-xs.truncate
+             {:class hyperlink-hover-class}
+             (format/prefix-# address)]]
 
-        ;; Balance & Type.
-        [:div.flex.space-x-8
-         ;; -- Balance.
-         (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
-           [:div.flex.flex-col
-            [:span.text-xs.text-indigo-500.uppercase "Balance"]
-            [:div.flex.flex-col.flex-1.justify-center
-             [:span.text-xs (format/format-number balance)]]])
+           [Tooltip
+            {:title "Refresh"
+             :size "small"}
+            [DefaultButton
+             {:on-click
+              (fn []
+                ;; Store the status of this request in a place specific to refresh
+                ;; because we don't want the whole UI to transition to pending.
+                (swap! account-ref assoc-in [:refresh :ajax/status] :ajax.status/pending)
 
-         ;; -- Type.
-         (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
-           [:div.flex.flex-col
-            [:span.text-xs.text-indigo-500.uppercase "Type"]
-            [:div.flex.flex-col.flex-1.justify-center
-             [:span.text-xs.uppercase type]]])]
+                ;; Reset address's env persisted in session.
+                (rf/dispatch [:session/!set-state #(assoc-in % [address :env] {})])
 
-        [EnvironmentBrowser
-         (:account @account-ref)]])]))
+                (backend/GET-account
+                  address
+                  {:handler
+                   (fn [account]
+                     (swap! account-ref merge {:account account
+                                               :refresh {:ajax/status :ajax.status/success}}))
+
+                   :error-handler
+                   (fn [_]
+                     (swap! account-ref merge {:refresh {:ajax/status :ajax.status/error}}))}))}
+             (if (= :ajax.status/pending (get-in @account-ref [:refresh :ajax/status]))
+               [SpinnerSmall]
+               [RefreshIcon {:class "w-4 h-4"}])]]]
+
+          ;; Balance & Type.
+          [:div.flex.space-x-8
+           ;; -- Balance.
+           (let [balance (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/balance])]
+             [:div.flex.flex-col
+              [:span.text-xs.text-indigo-500.uppercase "Balance"]
+              [:div.flex.flex-col.flex-1.justify-center
+               [:span.text-xs (format/format-number balance)]]])
+
+           ;; -- Type.
+           (let [type (get-in @account-ref [:account :convex-web.account/status :convex-web.account-status/type])]
+             [:div.flex.flex-col
+              [:span.text-xs.text-indigo-500.uppercase "Type"]
+              [:div.flex.flex-col.flex-1.justify-center
+               [:span.text-xs.uppercase type]]])]
+
+          [EnvironmentBrowser
+           {:convex-web/account account}]])])))
 
 (defn BlobRenderer [object]
   [:div.flex.flex-1.bg-white.rounded.shadow
@@ -1194,7 +1243,8 @@
           [Highlight result-value]))
       
       ;; Default.
-      [Highlight result-value])))
+      [:code.text-xs
+       result-value])))
 
 
 (defn CallableFunctions [account]
@@ -1422,19 +1472,19 @@
      ;; Public key
      ;; ==============
      [:div
-       [Caption
-        {:label "Public Key"
-         :tooltip "Public Keys may be safely shared with others, as they do not allow digital signatures to be created without the corresponding private key."}]
-       [:code.text-sm (or account-key "-")]]
+      [Caption
+       {:label "Public Key"
+        :tooltip "Public Keys may be safely shared with others, as they do not allow digital signatures to be created without the corresponding private key."}]
+      [:code.text-sm (or account-key "-")]]
      
      
      ;; Balance
      ;; ==============
      [:div {:class caption-container-style}
-       [Caption
-        {:label "Balance"
-         :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
-       [:code.text-2xl.cursor-default (format/format-number balance)]]
+      [Caption
+       {:label "Balance"
+        :tooltip "Account Balance denominated in Convex Copper Coins (the smallest coin unit)"}]
+      [:code.text-2xl.cursor-default (format/format-number balance)]]
      
      
      [:div.flex.w-full.md:space-x-16.space-x-6
@@ -1490,8 +1540,9 @@
      ;; Environment
      ;; ==============
      [:div.w-full.max-w-prose.flex.flex-col.space-y-2
-      [EnvironmentBrowser account]
-      
+      [EnvironmentBrowser
+       {:convex-web/account account}]
+
       [:p.text-sm.text-gray-500.max-w-prose
        "The environment is a space reserved for each Account
        that can freely store on-chain data and definitions.

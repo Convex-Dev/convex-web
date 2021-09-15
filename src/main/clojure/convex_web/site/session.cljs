@@ -10,8 +10,8 @@
             [convex-web.site.backend :as backend]))
 
 (re-frame/reg-sub :session/?session
-  (fn [{:site/keys [session]} _]
-    session))
+  (fn [db _]
+    (:site/session db)))
 
 (re-frame/reg-sub :session/?id
   :<- [:session/?session]
@@ -69,6 +69,33 @@
     (merge {:db (update-in db [:site/session :convex-web.session/accounts] conj account)}
            (when active?
              {:dispatch [:session/!pick-address (get account :convex-web.account/address)]}))))
+
+(re-frame/reg-event-fx :session/!env
+  (fn [_ [_ {:keys [address sym]}]]
+    {:fx [[:dispatch
+           [:session/!set-state
+            (fn [state]
+              (assoc-in state [address :env sym] {:ajax/status :ajax.status/pending}))]]
+
+          [:runtime.fx/do
+           (fn []
+             (backend/POST-env
+               {:params {:address address
+                         :sym sym}
+
+                :handler
+                (fn [value]
+                  (disp :session/!set-state
+                    (fn [state]
+                      (assoc-in state [address :env sym] {:ajax/status :ajax.status/success
+                                                          :value value}))))
+
+                :error-handler
+                (fn [error]
+                  (disp :session/!set-state
+                    (fn [state]
+                      (assoc-in state [address :env sym] {:ajax/status :ajax.status/error
+                                                          :error error}))))}))]]}))
 
 (defn ?status []
   (sub :session/?status))
