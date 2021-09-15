@@ -135,10 +135,6 @@
         
         (page/include-js (str asset-prefix-url "/js/main.js"))]))})
 
-(defn transit-decode [^InputStream x]
-  (when x
-    (t/read (t/reader x :json))))
-
 (defn json-key-fn [x]
   (cond
     (ident? x)
@@ -659,7 +655,7 @@
 
 (defn -POST-command [context {:keys [body] :as request}]
   (try
-    (let [{::command/keys [address mode] :as command} (transit-decode body)
+    (let [{::command/keys [address mode] :as command} (encoding/transit-decode body)
           
           invalid? (not (s/valid? :convex-web/command command))
           
@@ -688,6 +684,27 @@
     (catch Throwable ex
       (log/error ex "Command error.")
       
+      -server-error-response)))
+
+(defn -POST-add-account
+  "Ring Handler to add an existing account.
+
+  Internal API."
+  [system req]
+  (try
+    (let [{:keys [body]} req
+
+          {req-address :address
+           req-account-key :account-key
+           req-private-ley :private-key} (encoding/transit-decode body)
+
+          ^Convex client (system/convex-client system)]
+
+      ;; Accounts created on convex.world are persisted into the database.
+      ;; NOTE: Not all Accounts in Convex are persisted in the convex.world database.
+
+      (-successful-response {}))
+    (catch Exception _
       -server-error-response)))
 
 (defn -POST-create-account
@@ -725,7 +742,7 @@
   Internal API."
   [system {:keys [body] :as req}]
   (try
-    (let [^Long address-long (transit-decode body)
+    (let [^Long address-long (encoding/transit-decode body)
           
           account (account/find-by-address (system/db system) address-long)]
       (cond
@@ -761,7 +778,7 @@
 
 (defn -POST-faucet [context {:keys [body]}]
   (try
-    (let [{:convex-web.faucet/keys [target amount] :as faucet} (transit-decode body)
+    (let [{:convex-web.faucet/keys [target amount] :as faucet} (encoding/transit-decode body)
           
           account (account/find-by-address (system/db context) target)
           
@@ -943,7 +960,7 @@
   "Returns value bound to symbol `sym` in the environment for account `address`."
   [context {:keys [body]}]
   (try
-    (let [{:keys [address sym]} (transit-decode body)
+    (let [{:keys [address sym]} (encoding/transit-decode body)
 
           address (convex/address-safe address)
 
