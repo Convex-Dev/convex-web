@@ -146,7 +146,7 @@
 (defn execute-transaction [system command]
   (let [{::keys [address transaction]} command]
     (locking (convex/lockee address)
-      (let [{:convex-web.transaction/keys [source language amount type target]} transaction
+      (let [{:convex-web.transaction/keys [source amount type target]} transaction
 
             peer (system/convex-peer system)
 

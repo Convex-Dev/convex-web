@@ -24,7 +24,6 @@
    [com.brunobonacci.mulog :as u]
    [expound.alpha :as expound]
    [datalevin.core :as d]
-   [cognitect.transit :as t]
    [ring.middleware.defaults :refer [wrap-defaults api-defaults site-defaults]]
    [org.httpkit.server :as http-kit]
    [compojure.core :refer [routes GET POST]]
@@ -696,15 +695,35 @@
 
           {req-address :address
            req-account-key :account-key
-           req-private-ley :private-key} (encoding/transit-decode body)
+           req-private-key :private-key} (encoding/transit-decode body)
 
-          ^Convex client (system/convex-client system)]
+          req-address (convex/address req-address)
 
-      ;; Accounts created on convex.world are persisted into the database.
-      ;; NOTE: Not all Accounts in Convex are persisted in the convex.world database.
+          to-be-added-account #:convex-web.account {:address (.longValue req-address)
+                                                    :created-at (inst-ms (Instant/now))
+                                                    :key-pair {:convex-web.key-pair/account-key req-account-key
+                                                               :convex-web.key-pair/private-key req-private-key}}
 
-      (-successful-response {}))
-    (catch Exception _
+          existing-account (account/find-by-address (system/db system) req-address)
+
+          stealing? (and existing-account
+                      (account/nonequivalent? existing-account to-be-added-account))]
+
+      ;; NOTE: Not every account in Convex is persisted in the convex.world database.
+
+      (if stealing?
+        (-forbidden-response (error "Incorrect key pair."))
+        (let [account (or existing-account to-be-added-account)
+
+              session {:convex-web.session/id (ring-session req)
+                       :convex-web.session/accounts [account]}]
+
+          (d/transact! (system/db-conn system) [session])
+
+          (-successful-response true))))
+    (catch Exception ex
+      (log/error ex)
+
       -server-error-response)))
 
 (defn -POST-create-account
@@ -1085,6 +1104,7 @@
     (GET "/api/internal/session" req (-GET-session system req))
     (POST "/api/internal/generate-account" req (-POST-create-account system req))
     (POST "/api/internal/confirm-account" req (-POST-confirm-account system req))
+    (POST "/api/internal/add-account" req (-POST-add-account system req))
     (POST "/api/internal/faucet" req (-POST-faucet system req))
     (GET "/api/internal/accounts" req (-GET-accounts system req))
     (GET "/api/internal/accounts/:address" [address] (-GET-account system address))

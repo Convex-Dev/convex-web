@@ -6,7 +6,8 @@
 
 (defn all [db]
   (d/q '[:find [(pull ?e [* {:convex-web.session/accounts
-                             [:convex-web.account/address]}]) ...]
+                             [:convex-web.account/address
+                              :convex-web.account/key-pair]}]) ...]
          :in $
          :where [?e :convex-web.session/id _]]
        db))

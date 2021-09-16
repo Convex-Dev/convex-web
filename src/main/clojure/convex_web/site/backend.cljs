@@ -125,6 +125,35 @@
 (s/fdef POST-env
   :args (s/cat :args :POST-env/args))
 
+;; ---
+
+(defn POST-add-account [{:keys [params handler error-handler]}]
+  (POST "/api/internal/add-account" (merge {:headers (csrf-header)
+                                            :handler handler
+                                            :params params}
+                                      (when error-handler
+                                        {:error-handler error-handler}))))
+
+
+(s/def :POST-add-account.params/address :convex-web/address)
+
+(s/def :POST-add-account.params/account-key :convex-web.key-pair/account-key)
+
+(s/def :POST-add-account.params/private-key :convex-web.key-pair/private-key)
+
+(s/def :POST-add-account/params
+  (s/keys :req-un [:POST-add-account.params/address
+                   :POST-add-account.params/account-key
+                   :POST-add-account.params/private-key]))
+
+(s/def :POST-add-account/args
+  (s/keys :req-un [:POST-add-account/params]))
+
+(s/fdef POST-add-account
+  :args (s/cat :args :POST-add-account/args))
+
+;; ---
+
 
 (defn POST-transaction-prepare [{:keys [address source] :as params} {:keys [handler error-handler]}]
   (POST "/api/v1/transaction/prepare" (merge {:handler handler

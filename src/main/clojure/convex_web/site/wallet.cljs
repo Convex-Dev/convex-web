@@ -1,65 +1,79 @@
 (ns convex-web.site.wallet
   (:require
+   [reitit.frontend.easy :as rfe]
+
+   [convex-web.site.stack :as stack]
    [convex-web.site.session :as session]
    [convex-web.site.store :as store]
    [convex-web.site.gui :as gui]
    [convex-web.site.format :as format]
-
-   [reitit.frontend.easy :as rfe]
-   [convex-web.site.stack :as stack]
+   [convex-web.site.backend :as backend]
 
    ["@heroicons/react/solid" :refer [PlusIcon]]))
 
-(defn AddAccountPage [_ _ _]
-  [:div.flex.flex-col.space-y-8.p-6
+(defn AddAccountPage [_ state set-state]
+  (let [{:keys [address account-key private-key]} state]
+    [:div.flex.flex-col.space-y-8.p-6
 
-   [:div.flex.flex-col.space-y-6
+     [:div.flex.flex-col.space-y-6
 
-    ;; -- Address
-    [:div.flex.flex-col.space-y-2
+      ;; -- Address
+      [:div.flex.flex-col.space-y-2
 
-     [gui/Caption
-      "Address"]
+       [gui/Caption
+        "Address"]
 
-     [:input
-      {:class [gui/input-style "w-80 w-full"]
-       :type "text"
-       :value ""
-       :on-change
-       #()}]]
+       [:input
+        {:class [gui/input-style "w-80 w-full"]
+         :type "text"
+         :value address
+         :on-change
+         #(set-state assoc :address (gui/event-target-value %))}]]
 
-    ;; -- Public Key
-    [:div.flex.flex-col.space-y-1
+      ;; -- Public Key
+      [:div.flex.flex-col.space-y-1
 
-     [gui/Caption
-      "Account Key"]
+       [gui/Caption
+        "Account Key"]
 
-     [:input
-      {:class [gui/input-style "w-full"]
-       :type "text"
-       :value ""
-       :on-change
-       #()}]]
+       [:input
+        {:class [gui/input-style "w-full"]
+         :type "text"
+         :value account-key
+         :on-change
+         #(set-state assoc :account-key (gui/event-target-value %))}]]
 
-    ;; -- Private Key
-    [:div.flex.flex-col.space-y-1
+      ;; -- Private Key
+      [:div.flex.flex-col.space-y-1
 
-     [gui/Caption
-      "Private Key"]
+       [gui/Caption
+        "Private Key"]
 
-     [:input
-      {:class [gui/input-style "w-full"]
-       :type "text"
-       :value ""
-       :on-change
-       #()}]]]
+       [:input
+        {:class [gui/input-style "w-full"]
+         :type "text"
+         :value private-key
+         :on-change
+         #(set-state assoc :private-key (gui/event-target-value %))}]]]
 
-   ;; -- Confirm
-   [gui/PrimaryButton
-    {:on-click #(stack/push :page.id/add-account {:modal? true})}
-    [:span.block.text-sm.uppercase.text-white
-     {:class gui/button-child-small-padding}
-     "Confirm"]]])
+     ;; -- Confirm
+     [gui/PrimaryButton
+      {:on-click
+       (fn []
+         (backend/POST-add-account
+           {:params {:address address
+                     :account-key account-key
+                     :private-key private-key}
+
+            :handler (fn [response]
+                       (js/console.log response))
+
+            :error-handler (fn [error]
+                             (js/console.log error))}))}
+
+      [:span.block.text-sm.uppercase.text-white
+       {:class gui/button-child-small-padding}
+       "Confirm"]]]))
 
 (def add-account-page
   #:page {:id :page.id/add-account
