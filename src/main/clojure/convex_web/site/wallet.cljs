@@ -70,10 +70,12 @@
                      :account-key account-key
                      :private-key private-key}
 
-            :handler (fn [_]
+            :handler (fn [session]
                        (set-state assoc :ajax/status :ajax.status/success)
 
-                       (.reload (.-location js/document)))
+                       (session/refresh session)
+
+                       (stack/pop))
 
             :error-handler (fn [_]
                              (set-state assoc :ajax/status :ajax.status/error))}))}

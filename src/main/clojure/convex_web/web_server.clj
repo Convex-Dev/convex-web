@@ -716,11 +716,11 @@
         (let [account (or existing-account to-be-added-account)
 
               session {:convex-web.session/id (ring-session req)
-                       :convex-web.session/accounts [account]}]
+                       :convex-web.session/accounts [account]}
 
-          (d/transact! (system/db-conn system) [session])
+              {db :db-after} (d/transact! (system/db-conn system) [session])]
 
-          (-successful-response true))))
+          (-successful-response (session/find-session db (ring-session req))))))
     (catch Exception ex
       (log/error ex)
 

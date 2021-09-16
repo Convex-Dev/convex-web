@@ -178,8 +178,7 @@
   (session/all-ring (db))
   
   (session/all (db))
-  (session/find-session (db) "4feac0cd-cc06-4a3b-bcad-54596771356b")
-  (session/find-account (db) "f7d696Fc1884ed5A7294A4F765206DB32dCDbCAB35C84DF7a8348bc2bF3b8f45")
+  (session/find-session (db) "415c9d09-f7dc-4484-b308-cac943b8f95d")
   
   ;; --
   
