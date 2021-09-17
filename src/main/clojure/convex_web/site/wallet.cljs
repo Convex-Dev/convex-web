@@ -198,16 +198,16 @@
          {:on-click #(set-state update :show-wallet-key? not)}
 
          (if show-wallet-key?
-           [:> icon/EyeOffIcon
-            {:className "w-4 h-4 text-gray-500"}]
            [:> icon/EyeIcon
+            {:className "w-4 h-4 text-gray-500"}]
+           [:> icon/EyeOffIcon
             {:className "w-4 h-4 text-gray-500"}])]]]
 
       (if show-wallet-key?
         [:div.flex.items-center
          [:code.text-sm.mr-2 @(rf/subscribe [:session/?id])]
          [gui/ClipboardCopy @(rf/subscribe [:session/?id])]]
-        [:code.text-sm.text-gray-500 "********"])]
+        [:code.text-sm.text-gray-500 "········"])]
 
 
      [:div.flex
