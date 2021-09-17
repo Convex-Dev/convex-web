@@ -1,6 +1,7 @@
 # Changes
 
 ## 0.28.0 -- 
+- [Unusable website when height is too small #198](https://github.com/Convex-Dev/convex-web/issues/198)
 
 ## 0.27.0 -- 2021-09-15
 - [Lazily load account environment #196](https://github.com/Convex-Dev/convex-web/issues/196)
