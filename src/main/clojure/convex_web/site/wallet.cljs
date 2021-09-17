@@ -3,6 +3,7 @@
    [clojure.string :as str]
 
    [reitit.frontend.easy :as rfe]
+   [re-frame.core :as rf]
 
    [convex-web.site.stack :as stack]
    [convex-web.site.session :as session]
@@ -179,78 +180,101 @@
   (let [accounts (session/?accounts)]
     [:div.flex.flex-col.items-start.space-y-12
 
-     [gui/Tooltip
-      {:title "Add an existing account to your Wallet"
-       :size "small"}
+     ;; -- Wallet Key
 
-      [gui/PrimaryButton
-       {:on-click #(stack/push :page.id/add-account {:modal? true})}
-       [:div.flex.items-center.space-x-2
-        {:class gui/button-child-small-padding}
-        [:> PlusIcon
-         {:className "w-5 h-5 text-white"}]
+     [:div.flex.flex-col
+      [:span.text-base.text-gray-500
+       "Wallet Key"]
 
+      [:div.flex.items-center
+       [:code.text-sm.mr-2 @(rf/subscribe [:session/?id])]
+       [gui/ClipboardCopy @(rf/subscribe [:session/?id])]]]
+
+
+     [:div.flex
+      {:class
+       (if (seq accounts)
+         "flex-row space-x-16"
+         "flex-col space-y-8")}
+
+      ;; -- Accounts
+
+      (if (seq accounts)
+        [:table.text-left.table-auto
+         [:thead
+          (let [th-class "text-xs uppercase text-gray-600 sticky top-0"]
+            [:tr.select-none
+             [:th {:class th-class}
+              "Address"]
+
+             [:th
+              {:class th-class}
+              "Balance"]
+
+             [:th
+              {:class th-class}
+              "Key Pair"]])]
+
+         [:tbody
+          (doall
+            (for [{:convex-web.account/keys [address]} accounts]
+              (let [td-class ["text-xs text-gray-700 whitespace-no-wrap px-2"]]
+                ^{:key address}
+                [:tr.cursor-default
+
+                 ;; -- Address
+                 [:td {:class td-class}
+                  [:div.flex.items-center
+                   [gui/AIdenticon {:value address :size gui/identicon-size-large}]
+
+                   [:a.hover:underline.ml-2
+                    {:href (rfe/href :route-name/testnet.account {:address address})}
+                    [:code.text-xs (format/prefix-# address)]]]]
+
+                 ;; -- Balance
+                 [:td {:class td-class}
+                  [:code.text-xs.font-bold.text-indigo-500
+                   (let [account (store/?account address)]
+                     (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance])))]]
+
+                 ;; - Key Pair
+                 [:td {:class td-class}
+                  [gui/Tooltip
+                   {:title "View Key Pair"
+                    :position "right-end"
+                    :size "small"}
+                   [:button.p-2.rounded.hover:shadow.hover:bg-gray-100.active:bg-gray-200
+                    {:on-click #(stack/push :page.id/account-key-pair {:modal? true
+                                                                       :state {:address address}})}
+                    [:> icon/KeyIcon
+                     {:className "w-5 h-5"}]]]]])))]]
+        [:p.prose
+         "You currently have no active account. Either create a new account, or import one using a previously created wallet key."])
+
+
+      ;; -- Add & Restore
+
+      [:div.flex.flex-col.items-start.space-y-4
+       [gui/Tooltip
+        {:title "Add an existing account to your Wallet"
+         :size "small"}
+
+        [gui/PrimaryButton
+         {:on-click #(stack/push :page.id/add-account {:modal? true})}
+         [:div.flex.items-center.space-x-2
+          {:class gui/button-child-small-padding}
+          [:> PlusIcon
+           {:className "w-5 h-5 text-white"}]
+
+          [:span.block.text-sm.uppercase.text-white
+           "Add Account"]]]]
+
+       [gui/PrimaryButton
+        {:on-click #(stack/push :page.id/session {:modal? true
+                                                  :title "Restore Wallet Key"})}
         [:span.block.text-sm.uppercase.text-white
-         "Add Account"]]]]
-
-     (if (seq accounts)
-       [:table.text-left.table-auto
-        [:thead
-         (let [th-class "text-xs uppercase text-gray-600 sticky top-0"]
-           [:tr.select-none
-            [:th {:class th-class}
-             "Address"]
-            
-            [:th
-             {:class th-class}
-             "Balance"]
-
-            [:th
-             {:class th-class}
-             "Key Pair"]])]
-        
-        [:tbody
-         (doall
-           (for [{:convex-web.account/keys [address]} accounts]
-             (let [td-class ["text-xs text-gray-700 whitespace-no-wrap px-2"]]
-               ^{:key address}
-               [:tr.cursor-default
-                
-                ;; -- Address
-                [:td {:class td-class}
-                 [:div.flex.items-center
-                  [gui/AIdenticon {:value address :size gui/identicon-size-large}]
-                  
-                  [:a.hover:underline.ml-2
-                   {:href (rfe/href :route-name/testnet.account {:address address})}
-                   [:code.text-xs (format/prefix-# address)]]]]
-                
-                ;; -- Balance
-                [:td {:class td-class}
-                 [:code.text-xs.font-bold.text-indigo-500
-                  (let [account (store/?account address)]
-                    (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance])))]]
-
-                ;; - Key Pair
-                [:td {:class td-class}
-                 [gui/Tooltip
-                  {:title "View Key Pair"
-                   :position "right-end"
-                   :size "small"}
-                  [:button.p-2.rounded.hover:shadow.hover:bg-gray-100.active:bg-gray-200
-                   {:on-click #(stack/push :page.id/account-key-pair {:modal? true
-                                                                      :state {:address address}})}
-                   [:> icon/KeyIcon
-                    {:className "w-5 h-5"}]]]]])))]]
-       [:p.prose
-        "You currently have no active account. Either create a new account, or import one using a previously created wallet key."])
-     
-     [gui/PrimaryButton
-      {:on-click #(stack/push :page.id/session {:modal? true
-                                                :title "Restore Wallet Key"})}
-      [:span.block.text-sm.uppercase.text-white
-       {:class gui/button-child-large-padding}
-       "Restore Wallet Key"]]]))
+         {:class gui/button-child-small-padding}
+         "Restore Wallet Key"]]]]]))
 
 (def wallet-page
   #:page {:id :page.id/testnet.wallet
