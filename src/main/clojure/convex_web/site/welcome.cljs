@@ -55,7 +55,8 @@
        
        ;; Background image
        [:div.relative.w-screen
-        [:img.w-full
+        {:class "h-[calc(100vh-64px)]"}
+        [:img.w-full.mt-32
          {:class "object-cover"
           :src "/images/blockchain.png"}]
         
