@@ -26,16 +26,20 @@
                 convex-web.key-pair/account-key
                 convex-web.key-pair/private-key
                 ajax/status]} state]
+
     [:div.flex.flex-col.space-y-8.p-6
      {:class "w-[60vw]"}
 
      ;; -- Address
-     [:div.flex.items-center
+     [:div.flex.items-center.space-x-1
       [gui/AIdenticon {:value address :size gui/identicon-size-large}]
 
-      [:a.hover:underline.ml-2
+      [:a.hover:underline
        {:href (rfe/href :route-name/testnet.account {:address address})}
-       [:code.text-base (format/prefix-# address)]]]
+       [:code.text-base (format/prefix-# address)]]
+
+      (when (= status :ajax.status/pending)
+        [gui/SpinnerSmall])]
 
      [:div.flex.flex-col.space-y-6
 
