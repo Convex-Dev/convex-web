@@ -711,12 +711,12 @@
   (let [disabled? (get attrs :disabled)]
     [:button
      (merge {:class
-             ["bg-blue-500 hover:bg-blue-400 active:bg-blue-600"
-              "rounded"
+             ["rounded"
               "shadow-md"
               "focus:outline-none"
-              (when disabled?
-                "pointer-events-none")]
+              (if disabled?
+                "pointer-events-none bg-blue-300"
+                "bg-blue-500 hover:bg-blue-400 active:bg-blue-600")]
              :on-click identity}
             attrs)
      child]))

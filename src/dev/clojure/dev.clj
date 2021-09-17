@@ -80,23 +80,6 @@
   (let [handler (web-server/site system)]
     (handler (mock/request :post "/api/internal/generate-account")))
   
-  ;; -- Sessions
-  (d/q '[:find [(pull ?e [*
-                          {:convex-web.session/accounts
-                           [:convex-web.account/address]}]) ...]
-         :in $
-         :where [?e :convex-web.session/id _]]
-    @(system/db-conn system))
-  
-  
-  (d/q '[:find (pull ?e [{:convex-web.session/accounts
-                          [:convex-web.account/address]}]) .
-         :in $ ?id
-         :where [?e :convex-web.session/id ?id]]
-    @(system/db-conn system) "mydbOh9wCdTcF_vLvUVHR")
-  
-  (session/find-session @(system/db-conn system) "iGlF3AZWw0eGuGfL_ib4-")
-  
   
   ;; All Convex Addresses.
   (def all-accounts (convex/accounts-indexed (system/convex-peer system)))
@@ -191,6 +174,15 @@
   
   
   ;; ----------------------
+
+  (convex/key-pair-data (convex/generate-key-pair))
+
+  ;; 44
+  #:convex-web.key-pair
+  {:account-key
+   "e6F8084c036b573b4a793eEAc59856B628088d2f78130609540194Fb808b76B1",
+   :private-key
+   "302e020100300506032b6570042204200ceb2ddbd240eea249e3d4d535ec6471ba9e0522454bbf94728ae7816c4b2614"}
 
   
   (dotimes [_ 500]

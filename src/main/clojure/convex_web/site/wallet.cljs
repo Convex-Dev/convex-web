@@ -1,5 +1,7 @@
 (ns convex-web.site.wallet
   (:require
+   [clojure.string :as str]
+
    [reitit.frontend.easy :as rfe]
 
    [convex-web.site.stack :as stack]
@@ -9,7 +11,51 @@
    [convex-web.site.format :as format]
    [convex-web.site.backend :as backend]
 
-   ["@heroicons/react/solid" :refer [PlusIcon]]))
+   ["@heroicons/react/solid" :as icon :refer [PlusIcon]]))
+
+(defn AccountKeyPairPage [_ state _]
+  (let [{:keys [address account-key private-key ajax/status]} state]
+    [:div.flex.flex-col.space-y-8.p-6
+
+     ;; -- Address
+     [:div.flex.items-center
+      [gui/AIdenticon {:value address :size gui/identicon-size-large}]
+
+      [:a.hover:underline.ml-2
+       {:href (rfe/href :route-name/testnet.account {:address address})}
+       [:code.text-base (format/prefix-# address)]]]
+
+     [:div.flex.flex-col.space-y-6
+
+      ;; -- Public Key
+      [:div.flex.flex-col.space-y-1
+
+       [gui/Caption
+        "Account Key"]
+
+       [:input
+        {:class [gui/input-style "w-full"]
+         :type "text"
+         :value (or account-key "")
+         :readOnly true}]]
+
+      ;; -- Private Key
+      [:div.flex.flex-col.space-y-1
+
+       [gui/Caption
+        "Private Key"]
+
+       [:input
+        {:class [gui/input-style "w-full"]
+         :type "text"
+         :value (or private-key "")
+         :readOnly true}]]]]))
+
+(def account-key-pair-page
+  #:page {:id :page.id/account-key-pair
+          :title "Key Pair"
+          :component #'AccountKeyPairPage})
+
 
 (defn AddAccountPage [_ state set-state]
   (let [{:keys [address account-key private-key ajax/status]} state
@@ -60,7 +106,7 @@
 
      ;; -- Confirm
      [gui/PrimaryButton
-      {:disabled pending?
+      {:disabled (or pending? (str/blank? address))
        :on-click
        (fn []
          (set-state assoc :ajax/status :ajax.status/pending)
@@ -124,7 +170,11 @@
             
             [:th
              {:class th-class}
-             "Balance"]])]
+             "Balance"]
+
+            [:th
+             {:class th-class}
+             "Key Pair"]])]
         
         [:tbody
          (doall
@@ -133,6 +183,7 @@
                ^{:key address}
                [:tr.cursor-default
                 
+                ;; -- Address
                 [:td {:class td-class}
                  [:div.flex.items-center
                   [gui/AIdenticon {:value address :size gui/identicon-size-large}]
@@ -141,10 +192,23 @@
                    {:href (rfe/href :route-name/testnet.account {:address address})}
                    [:code.text-xs (format/prefix-# address)]]]]
                 
+                ;; -- Balance
                 [:td {:class td-class}
                  [:code.text-xs.font-bold.text-indigo-500
                   (let [account (store/?account address)]
-                    (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance])))]]])))]]
+                    (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance])))]]
+
+                ;; - Key Pair
+                [:td {:class td-class}
+                 [gui/Tooltip
+                  {:title "View Key Pair"
+                   :position "right-end"
+                   :size "small"}
+                  [:button.p-2.rounded.hover:shadow.hover:bg-gray-100.active:bg-gray-200
+                   {:on-click #(stack/push :page.id/account-key-pair {:modal? true
+                                                                      :state {:address address}})}
+                   [:> icon/KeyIcon
+                    {:className "w-5 h-5"}]]]]])))]]
        [:p.prose
         "You currently have no active account. Either create a new account, or import one using a previously created wallet key."])
      

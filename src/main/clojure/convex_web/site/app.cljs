@@ -116,7 +116,8 @@
    ;; ---
 
    wallet/wallet-page
-   wallet/add-account-page])
+   wallet/add-account-page
+   wallet/account-key-pair-page])
 
 ;; ---
 
