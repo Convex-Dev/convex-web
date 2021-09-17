@@ -8,6 +8,7 @@
    [convex-web.command :as command]
    [convex-web.config :as config]
    [convex-web.encoding :as encoding]
+   [convex-web.wallet :as wallet]
    
    [clojure.set :refer [rename-keys]]
    [clojure.edn :as edn]
@@ -996,7 +997,43 @@
 
       -server-error-response)))
 
+(defn -POST-wallet-account-key-pair
+  "Returns value bound to symbol `sym` in the environment for account `address`."
+  [system req]
+  (try
+    (let [{:keys [body]} req
+
+          {:keys [address]} (encoding/transit-decode body)]
+
+      (if-let [kp (wallet/account-key-pair (system/db system)
+                    {:convex-web.session/id (ring-session req)
+                     :convex-web/address address})]
+        (-successful-response kp)
+        (-not-found-response {:error {:message "Not found."}})))
+
+    (catch Throwable ex
+      (log/error ex "Get account key pair error.")
+
+      -server-error-response)))
+
 (defn -GET-blocks [context {:keys [query-params]}]
+  (try
+    (let [peer (system/convex-peer context)
+          order (convex/peer-order peer)
+          consensus (convex/consensus-point order)
+          max-items (min consensus config/default-range)
+          end consensus
+          start (- end max-items)]
+      (-successful-response (convex/blocks-data peer {:start start :end end})))
+    (catch Exception ex
+      (u/log :logging.event/system-error
+             :severity :error
+             :message handler-exception-message
+             :exception ex)
+
+      -server-error-response)))
+
+(defn -GET-blocks-range [context {:keys [query-params]}]
   (try
     (let [{:strs [start end]} query-params
 
@@ -1117,6 +1154,7 @@
     (GET "/api/internal/reference" req (-GET-reference system req))
     (GET "/api/internal/markdown-page" req (-GET-markdown-page system req))
     (GET "/api/internal/state" req (-GET-STATE system req))
+    (POST "/api/internal/wallet/account-key-pair" req (-POST-wallet-account-key-pair system req))
 
     (route/resources "/")
 

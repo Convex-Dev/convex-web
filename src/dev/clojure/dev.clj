@@ -154,6 +154,7 @@
   
   (account/find-all (db))
   (account/find-by-address (db) 48)
+  (account/find-address-key-pair (db) 44)
   
   
   ;; -- Session
@@ -161,7 +162,8 @@
   (session/all-ring (db))
   
   (session/all (db))
-  (session/find-session (db) "415c9d09-f7dc-4484-b308-cac943b8f95d")
+  (session/find-session (db) "764ea110-6e1a-4a29-8fe8-e6b44620ad3d")
+  (session/find-session-sensitive (db) "764ea110-6e1a-4a29-8fe8-e6b44620ad3d")
   
   ;; --
   

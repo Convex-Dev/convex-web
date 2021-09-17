@@ -1,7 +1,9 @@
 (ns convex-web.session
-  (:require [datalevin.core :as d]
-            [ring.middleware.session.store :refer [SessionStore]]
-            [clojure.tools.logging :as log])
+  (:require
+   [datalevin.core :as d]
+   [ring.middleware.session.store :refer [SessionStore]]
+   [clojure.tools.logging :as log])
+
   (:import (java.util UUID)))
 
 (defn all [db]
@@ -20,6 +22,15 @@
          :where [?e :convex-web.session/id ?id]]
        db id))
 
+(defn find-session-sensitive [db id]
+  (d/q '[:find (pull ?e [:convex-web.session/id
+                         {:convex-web.session/accounts
+                          [:convex-web.account/address
+                           :convex-web.account/key-pair]}]) .
+         :in $ ?id
+         :where [?e :convex-web.session/id ?id]]
+       db id))
+
 (defn find-account [db address]
   (d/q '[:find (pull ?accounts [:convex-web.account/address
                                 :convex-web.account/key-pair]) .
@@ -29,7 +40,6 @@
          [?accounts :convex-web.account/address ?address]]
        db
        address))
-
 
 (defn all-ring [db]
   (d/q '[:find [(pull ?e [*]) ...]

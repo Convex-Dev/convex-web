@@ -14,8 +14,19 @@
    ["@heroicons/react/solid" :as icon :refer [PlusIcon]]))
 
 (defn AccountKeyPairPage [_ state _]
-  (let [{:keys [address account-key private-key ajax/status]} state]
+  (let [{:keys [address
+                convex-web.key-pair/account-key
+                convex-web.key-pair/private-key
+                ajax/status]} state
+
+        input-style ["w-full h-10"
+                     "px-4"
+                     "rounded-md"
+                     "bg-blue-100"
+                     "font-mono text-xs"
+                     "focus:outline-none focus:ring focus:border-blue-300"]]
     [:div.flex.flex-col.space-y-8.p-6
+     {:class "w-[60vw]"}
 
      ;; -- Address
      [:div.flex.items-center
@@ -34,7 +45,7 @@
         "Account Key"]
 
        [:input
-        {:class [gui/input-style "w-full"]
+        {:class input-style
          :type "text"
          :value (or account-key "")
          :readOnly true}]]
@@ -46,7 +57,7 @@
         "Private Key"]
 
        [:input
-        {:class [gui/input-style "w-full"]
+        {:class input-style
          :type "text"
          :value (or private-key "")
          :readOnly true}]]]]))
@@ -54,7 +65,23 @@
 (def account-key-pair-page
   #:page {:id :page.id/account-key-pair
           :title "Key Pair"
-          :component #'AccountKeyPairPage})
+          :component #'AccountKeyPairPage
+          :on-push
+          (fn [_ state set-state]
+            (let [{:keys [address]} state]
+              (set-state merge {:ajax/status :ajax.status/pending})
+
+              (backend/POST-wallet-account-key-pair
+                {:params {:address address}
+
+                 :handler
+                 (fn [key-pair]
+                   (set-state merge key-pair {:ajax/status :ajax.status/success}))
+
+                 :error-handler
+                 (fn [error]
+                   (set-state merge {:ajax/status :ajax.status/error
+                                     :error error}))})))})
 
 
 (defn AddAccountPage [_ state set-state]
