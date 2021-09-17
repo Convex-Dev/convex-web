@@ -54,7 +54,7 @@
        {:class "h-[calc(100vh-64px)]"}
        
        ;; Background image
-       [:div.relative.w-screen
+       [:div.relative.w-full
         {:class "h-[calc(100vh-64px)]"}
         [:img.w-full.mt-32
          {:class "object-cover"
