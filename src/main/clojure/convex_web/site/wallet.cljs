@@ -12,7 +12,7 @@
    [convex-web.site.format :as format]
    [convex-web.site.backend :as backend]
 
-   ["@heroicons/react/solid" :as icon :refer [PlusIcon]]))
+   ["@heroicons/react/solid" :as icon]))
 
 (def input-style
   ["w-full h-10"
@@ -176,19 +176,38 @@
           :component #'AddAccountPage})
 
 
-(defn WalletPage [_ _ _]
-  (let [accounts (session/?accounts)]
+(defn WalletPage [_ state set-state]
+  (let [accounts (session/?accounts)
+
+        {:keys [show-wallet-key?]} state]
     [:div.flex.flex-col.items-start.space-y-12
 
      ;; -- Wallet Key
 
      [:div.flex.flex-col
-      [:span.text-base.text-gray-500
-       "Wallet Key"]
+      [:div.flex.items-center.space-x-2
+       [:span.text-base.text-gray-500
+        "Wallet Key"]
 
-      [:div.flex.items-center
-       [:code.text-sm.mr-2 @(rf/subscribe [:session/?id])]
-       [gui/ClipboardCopy @(rf/subscribe [:session/?id])]]]
+       [gui/Tooltip
+        {:title (if show-wallet-key?
+                  "Hide Wallet Key"
+                  "Show Wallet Key")
+         :size "small"}
+        [:button.p-2.rounded.hover:shadow.hover:bg-gray-100.active:bg-gray-200
+         {:on-click #(set-state update :show-wallet-key? not)}
+
+         (if show-wallet-key?
+           [:> icon/EyeOffIcon
+            {:className "w-4 h-4 text-gray-500"}]
+           [:> icon/EyeIcon
+            {:className "w-4 h-4 text-gray-500"}])]]]
+
+      (if show-wallet-key?
+        [:code.text-sm.text-gray-500 "********"]
+        [:div.flex.items-center
+         [:code.text-sm.mr-2 @(rf/subscribe [:session/?id])]
+         [gui/ClipboardCopy @(rf/subscribe [:session/?id])]])]
 
 
      [:div.flex
@@ -241,7 +260,6 @@
                  [:td {:class td-class}
                   [gui/Tooltip
                    {:title "View Key Pair"
-                    :position "right-end"
                     :size "small"}
                    [:button.p-2.rounded.hover:shadow.hover:bg-gray-100.active:bg-gray-200
                     {:on-click #(stack/push :page.id/account-key-pair {:modal? true
@@ -263,7 +281,7 @@
          {:on-click #(stack/push :page.id/add-account {:modal? true})}
          [:div.flex.items-center.space-x-2
           {:class gui/button-child-small-padding}
-          [:> PlusIcon
+          [:> icon/PlusIcon
            {:className "w-5 h-5 text-white"}]
 
           [:span.block.text-sm.uppercase.text-white
