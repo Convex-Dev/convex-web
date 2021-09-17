@@ -204,10 +204,10 @@
             {:className "w-4 h-4 text-gray-500"}])]]]
 
       (if show-wallet-key?
-        [:code.text-sm.text-gray-500 "********"]
         [:div.flex.items-center
          [:code.text-sm.mr-2 @(rf/subscribe [:session/?id])]
-         [gui/ClipboardCopy @(rf/subscribe [:session/?id])]])]
+         [gui/ClipboardCopy @(rf/subscribe [:session/?id])]]
+        [:code.text-sm.text-gray-500 "********"])]
 
 
      [:div.flex
