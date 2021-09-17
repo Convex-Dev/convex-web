@@ -13,18 +13,19 @@
 
    ["@heroicons/react/solid" :as icon :refer [PlusIcon]]))
 
+(def input-style
+  ["w-full h-10"
+   "px-4"
+   "rounded-md"
+   "bg-blue-100"
+   "font-mono text-xs"
+   "focus:outline-none focus:ring focus:border-blue-300"])
+
 (defn AccountKeyPairPage [_ state _]
   (let [{:keys [address
                 convex-web.key-pair/account-key
                 convex-web.key-pair/private-key
-                ajax/status]} state
-
-        input-style ["w-full h-10"
-                     "px-4"
-                     "rounded-md"
-                     "bg-blue-100"
-                     "font-mono text-xs"
-                     "focus:outline-none focus:ring focus:border-blue-300"]]
+                ajax/status]} state]
     [:div.flex.flex-col.space-y-8.p-6
      {:class "w-[60vw]"}
 
@@ -89,6 +90,7 @@
 
         pending? (= status :ajax.status/pending)]
     [:div.flex.flex-col.space-y-8.p-6
+     {:class "w-[50vw]"}
 
      [:div.flex.flex-col.space-y-6
 
@@ -99,7 +101,7 @@
         "Address"]
 
        [:input
-        {:class [gui/input-style "w-80 w-full"]
+        {:class input-style
          :type "text"
          :value address
          :on-change
@@ -112,7 +114,7 @@
         "Account Key"]
 
        [:input
-        {:class [gui/input-style "w-full"]
+        {:class input-style
          :type "text"
          :value account-key
          :on-change
@@ -125,7 +127,7 @@
         "Private Key"]
 
        [:input
-        {:class [gui/input-style "w-full"]
+        {:class input-style
          :type "text"
          :value private-key
          :on-change
