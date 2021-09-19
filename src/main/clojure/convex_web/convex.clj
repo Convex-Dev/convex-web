@@ -386,6 +386,9 @@
   (let [order (peer-order peer)
         start (or start 0)
         end (or end (consensus-point order))]
+
+    (log/debug "Query Blocks range:" start end)
+
     (reduce
       (fn [blocks index]
         (conj blocks (block-data peer index (.getBlock order index))))
