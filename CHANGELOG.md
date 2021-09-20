@@ -3,6 +3,8 @@
 ## 0.28.0 -- 
 - [Unusable website when height is too small #198](https://github.com/Convex-Dev/convex-web/issues/198)
 - [Sporadic X overflow in home page #189](https://github.com/Convex-Dev/convex-web/issues/189)
+- [Refactor Blocks internal HTTP API #203](https://github.com/Convex-Dev/convex-web/issues/203)
+- [Blocks page slow to load #202](https://github.com/Convex-Dev/convex-web/issues/202)
 
 ## 0.27.0 -- 2021-09-15
 - [Lazily load account environment #196](https://github.com/Convex-Dev/convex-web/issues/196)
