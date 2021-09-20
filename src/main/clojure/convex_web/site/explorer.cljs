@@ -1,18 +1,19 @@
 (ns convex-web.site.explorer
-  (:require [convex-web.site.runtime :as runtime]
-            [convex-web.site.backend :as backend]
-            [convex-web.site.gui :as gui]
-            [convex-web.site.stack :as stack]
-            [convex-web.site.format :as format]
-            [convex-web.pagination :as pagination]
-            [convex-web.site.session :as session]
-            [convex-web.glossary :as glossary]
-            [convex-web.config :as config]
+  (:require
+   [cljs.spec.alpha :as s]
 
-            [cljs.spec.alpha :as s]
+   [reitit.frontend.easy :as rfe]
+   [reagent.core :as reagent]
 
-            [reitit.frontend.easy :as rfe]
-            [reagent.core :as reagent]))
+   [convex-web.site.runtime :as runtime]
+   [convex-web.site.backend :as backend]
+   [convex-web.site.gui :as gui]
+   [convex-web.site.stack :as stack]
+   [convex-web.site.format :as format]
+   [convex-web.pagination :as pagination]
+   [convex-web.site.session :as session]
+   [convex-web.glossary :as glossary]
+   [convex-web.config :as config]))
 
 (def blocks-polling-interval 5000)
 
@@ -68,7 +69,9 @@
   (let [{:keys [convex-web.block/index
                 convex-web.block/timestamp
                 convex-web.signed-data/address
-                convex-web.signed-data/value]} state
+                convex-web.signed-data/value
+
+                ajax/status]} state
 
 
         {:convex-web.transaction/keys [type source sequence result]} value]
@@ -115,8 +118,8 @@
       [:div.flex.flex-col.space-y-2
        [gui/CaptionMono "Timestamp"]
        (let [timestamp (-> timestamp
-                           (format/date-time-from-millis)
-                           (format/date-time-to-string))]
+                         (format/date-time-from-millis)
+                         (format/date-time-to-string))]
          [gui/Tooltip
           {:title timestamp}
           [:span.text-sm.cursor-default
@@ -163,25 +166,27 @@
 
      ;; Result
      ;; ======================
-     (case type
-       :convex-web.transaction.type/invoke
-       (let [{result-value :convex-web.result/value
-              result-value-type :convex-web.result/type
-              result-error-code :convex-web.result/error-code} result]
-         [:div.flex.flex-col.space-y-2
-          [:div.flex.space-x-1
-           [gui/CaptionMono (if result-error-code "Error" "Result")]
+     (if (= status :ajax.status/pending)
+       [gui/SpinnerSmall]
+       (case type
+         :convex-web.transaction.type/invoke
+         (let [{result-value :convex-web.result/value
+                result-value-type :convex-web.result/type
+                result-error-code :convex-web.result/error-code} result]
+           [:div.flex.flex-col.space-y-2
+            [:div.flex.space-x-1
+             [gui/CaptionMono (if result-error-code "Error" "Result")]
 
-           (when-not result-error-code
-             (when result-value-type
-               [gui/InfoTooltip result-value-type]))]
+             (when-not result-error-code
+               (when result-value-type
+                 [gui/InfoTooltip result-value-type]))]
 
-          (if result-error-code
-            [:span.font-mono.text-sm.text-red-500 result-error-code ": " result-value]
-            [gui/ResultRenderer result])])
+            (if result-error-code
+              [:span.font-mono.text-sm.text-red-500 result-error-code ": " result-value]
+              [gui/ResultRenderer result])])
 
-       :convex-web.transaction.type/transfer
-       [:div])
+         :convex-web.transaction.type/transfer
+         [:div]))
 
 
      ;; Trace
@@ -198,7 +203,33 @@
   #:page {:id :page.id/transaction
           :component #'TransactionPage
           :title "Transaction"
-          :state-spec (s/merge :convex-web/block :convex-web/signed-data)})
+          :state-spec (s/merge :convex-web/block :convex-web/signed-data)
+          :on-push
+          (fn [_ state set-state]
+            (let [{:keys [convex-web.block/index
+                          convex-web.signed-data/value]} state
+
+                  {transaction-index :convex-web.transaction/index
+                   transaction-result :convex-web.transaction/result} value
+
+                  lazy-result? (get (meta transaction-result) :convex-web/lazy?)]
+
+              ;; Query Block if result is lazy.
+              ;;
+              ;; Blocks in the Explorer are lazy, but a Block in the Block page is 'realized'.
+              (when lazy-result?
+
+                (set-state merge {:ajax/status :ajax.status/pending})
+
+                (backend/GET-block index
+                  {:handler
+                   (fn [{:keys [convex-web.block/transactions]}]
+                     (let[signed-data (nth transactions transaction-index nil)]
+                       (set-state merge signed-data {:ajax/status :ajax.status/success})))
+
+                   :error-handler
+                   (fn [_]
+                     (set-state merge {:ajax/status :ajax.status/error}))}))))})
 
 (defn TransactionsTable [blocks]
   [:div
