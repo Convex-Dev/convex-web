@@ -656,43 +656,41 @@
                   [NavItem active-route item]])])]])]])))
 
 (defn TopNav []
-  (let [link-style "text-gray-800 hover:text-gray-500 active:text-black"]
-    [:nav.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
-     [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
-      {:class theme/bg-blue-01052A}
-      
-      [gui/ConvexWhite]
-      
-      ;; -- Items
-      [:div.flex.items-center.justify-end.space-x-4
-       
-       ;; -- Active account / Create Account
-       (cond
-         (= :ajax.status/pending (session/?status))
-         [gui/Spinner]
-         
-         (session/?active-address)
-         ;; -- Select account
-         [AccountSelect]
-         
-         :else
-         ;; -- Create Account
-         [:div.hidden.md:block
-          [gui/PrimaryButton
-           {:on-click #(stack/push :page.id/create-account {:modal? true})}
-           [:span.block.font-mono.text-xs.md:text-sm.text-white.uppercase
-            {:class gui/button-child-small-padding}
-            "Create Account"]]])
-       
-       ;; -- Mobile menu
-       [:div.md:hidden
-        [Menu]]]]]))
+  [:nav.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
+   [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
+    {:class theme/bg-blue-01052A}
+
+    [gui/ConvexWhite]
+
+    ;; -- Items
+    [:div.flex.items-center.justify-end.space-x-4
+
+     ;; -- Active account / Create Account
+     (cond
+       (= :ajax.status/pending (session/?status))
+       [gui/Spinner]
+
+       (session/?active-address)
+       ;; -- Select account
+       [AccountSelect]
+
+       :else
+       ;; -- Create Account
+       [:div.hidden.md:block
+        [gui/PrimaryButton
+         {:on-click #(stack/push :page.id/create-account {:modal? true})}
+         [:span.block.font-mono.text-xs.md:text-sm.text-white.uppercase
+          {:class gui/button-child-small-padding}
+          "Create Account"]]])
+
+     ;; -- Mobile menu
+     [:div.md:hidden
+      [Menu]]]]])
 
 (defn DeveloperPage [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component
          title :page/title
-         description :page/description
-         style :page/style} page
+         description :page/description} page
         
         set-state (stack/make-set-state uuid)]
     [:<>
