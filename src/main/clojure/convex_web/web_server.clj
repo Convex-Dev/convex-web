@@ -958,7 +958,7 @@
 
       -server-error-response)))
 
-(defn -GET-blocks-range [context {:keys [query-params]}]
+(defn -GET-blocks [context {:keys [query-params]}]
   (try
     (let [{:strs [start end]} query-params
 
@@ -987,18 +987,25 @@
         (-bad-request-response (error (str "Invalid range: [" start ":" end "].")))
 
         :else
-        (-successful-response {:meta
-                               {:start start
-                                :end end
-                                :total consensus}
+        (let [blocks (convex/blocks-data peer {:start start :end end})
+              blocks (map
+                       (fn [block]
+                         (let [txs (map
+                                     (fn [tx]
+                                       (assoc-in tx [:convex-web.signed-data/value :convex-web.transaction/result] (with-meta {} {:convex-web/lazy? true})))
+                                     (get block :convex-web.block/transactions))]
 
-                               :convex-web/blocks
-                               (convex/blocks-data peer {:start start :end end})})))
+                           (assoc block :convex-web.block/transactions txs)))
+                       blocks)]
+          (-successful-response {:meta
+                                 {:start start
+                                  :end end
+                                  :total consensus}
+
+                                 :convex-web/blocks
+                                 blocks}))))
     (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
+      (log/error ex "Failed to get blocks.")
 
       -server-error-response)))
 
@@ -1063,7 +1070,7 @@
     (GET "/api/internal/accounts" req (-GET-accounts system req))
     (GET "/api/internal/accounts/:address" [address] (-GET-account system address))
     (POST "/api/internal/env" req (-POST-env system req))
-    (GET "/api/internal/blocks-range" req (-GET-blocks-range system req))
+    (GET "/api/internal/blocks-range" req (-GET-blocks system req))
     (GET "/api/internal/blocks/:index" [index] (-GET-block system index))
     (GET "/api/internal/commands" req (-GET-commands system req))
     (POST "/api/internal/commands" req (-POST-command system req))
