@@ -280,10 +280,16 @@
 
       ;; -- Add & Restore
 
-      [:div.flex.flex-col.items-start.space-y-4
+      [:div.flex.flex-col.space-y-4
+       {:class
+        (if (seq accounts)
+          "items-strech"
+          "items-start")}
        [gui/Tooltip
         {:title "Add an existing account to your Wallet"
          :size "small"}
+
+        ;; -- Add Account
 
         [gui/PrimaryButton
          {:on-click #(stack/push :page.id/add-account {:modal? true})}
@@ -295,12 +301,14 @@
           [:span.block.text-xs.uppercase.text-white
            "Add existing account"]]]]
 
+       ;; -- Restore Wallet
+
        [gui/PrimaryButton
         {:on-click #(stack/push :page.id/session {:modal? true
-                                                  :title "Restore Wallet Key"})}
+                                                  :title "Restore Wallet"})}
         [:span.block.text-xs.uppercase.text-white
          {:class gui/button-child-small-padding}
-         "Restore Wallet Key"]]]]]))
+         "Restore Wallet"]]]]]))
 
 (def wallet-page
   #:page {:id :page.id/testnet.wallet
