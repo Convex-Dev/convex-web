@@ -1016,23 +1016,6 @@
 
       -server-error-response)))
 
-(defn -GET-blocks [context {:keys [query-params]}]
-  (try
-    (let [peer (system/convex-peer context)
-          order (convex/peer-order peer)
-          consensus (convex/consensus-point order)
-          max-items (min consensus config/default-range)
-          end consensus
-          start (- end max-items)]
-      (-successful-response (convex/blocks-data peer {:start start :end end})))
-    (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
-      -server-error-response)))
-
 (defn -GET-blocks-range [context {:keys [query-params]}]
   (try
     (let [{:strs [start end]} query-params
@@ -1146,7 +1129,7 @@
     (GET "/api/internal/accounts" req (-GET-accounts system req))
     (GET "/api/internal/accounts/:address" [address] (-GET-account system address))
     (POST "/api/internal/env" req (-POST-env system req))
-    (GET "/api/internal/blocks-range" req (-GET-blocks system req))
+    (GET "/api/internal/blocks-range" req (-GET-blocks-range system req))
     (GET "/api/internal/blocks/:index" [index] (-GET-block system index))
     (GET "/api/internal/commands" req (-GET-commands system req))
     (POST "/api/internal/commands" req (-POST-command system req))
