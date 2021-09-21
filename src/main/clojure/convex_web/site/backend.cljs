@@ -142,9 +142,10 @@
 (s/def :POST-add-account.params/private-key :convex-web.key-pair/private-key)
 
 (s/def :POST-add-account/params
-  (s/keys :req-un [:POST-add-account.params/address
-                   :POST-add-account.params/account-key
-                   :POST-add-account.params/private-key]))
+  (s/keys
+    :req-un [:POST-add-account.params/address]
+    :opt-un [:POST-add-account.params/account-key
+             :POST-add-account.params/private-key]))
 
 (s/def :POST-add-account/args
   (s/keys :req-un [:POST-add-account/params]))

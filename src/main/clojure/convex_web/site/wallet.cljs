@@ -146,9 +146,13 @@
          (set-state assoc :ajax/status :ajax.status/pending)
 
          (backend/POST-add-account
-           {:params {:address address
-                     :account-key account-key
-                     :private-key private-key}
+           {:params (merge {:address address}
+
+                      (when account-key
+                        {:account-key account-key})
+
+                      (when private-key
+                        {:private-key private-key}))
 
             :handler (fn [session]
                        (set-state assoc :ajax/status :ajax.status/success)

@@ -403,6 +403,9 @@
     (str (error-code-string code)
       (when message
         (str ": " message)))
+
+    message
+    (str message)
     
     :else
     "Unknown error"))

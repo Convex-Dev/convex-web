@@ -153,8 +153,8 @@
             caller-address (convex/address address)
 
             next-sequence-number (inc (or (convex/get-sequence-number caller-address)
-                                          (convex/sequence-number peer caller-address)
-                                          0))
+                                        (convex/sequence-number peer caller-address)
+                                        0))
 
             {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) caller-address)
 
@@ -169,9 +169,13 @@
                                                          :nonce next-sequence-number
                                                          :target target
                                                          :amount amount}))]
+
+        (when-not (:convex-web.key-pair/private-key key-pair)
+          (throw (ex-info "Missing private key." (merge {} key-pair))))
+
         (try
           (let [^Result r (->> (convex/sign (convex/create-key-pair key-pair) atransaction)
-                               (convex/transact-signed (system/convex-client system)))
+                            (convex/transact-signed (system/convex-client system)))
 
                 bad-sequence-number? (when-let [error-code (.getErrorCode r)]
                                        (= :SEQUENCE (convex/datafy error-code)))]
