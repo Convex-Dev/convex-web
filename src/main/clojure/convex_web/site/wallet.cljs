@@ -188,6 +188,78 @@
           :description "Add an existing account to your wallet."
           :component #'AddAccountPage})
 
+(defn RemoveAccountPage [_ state set-state]
+  (let [{:keys [address account-key private-key error ajax/status]} state
+
+        pending? (= status :ajax.status/pending)]
+    [:div.flex.flex-col.space-y-8.p-6
+     {:class "w-[50vw]"}
+
+     [:p.prose.prose-base
+      "You can always add this account to your wallet later, but if it's an account you own, please make sure you have a copy of the private key."]
+
+     [:div.flex.flex-col.space-y-6
+
+      ;; -- Address
+      [:div.flex.flex-col.space-y-2
+
+       [gui/Caption
+        "Address"]
+
+       [:input
+        {:class input-style
+         :type "text"
+         :value address
+         :on-change
+         #(set-state assoc :address (gui/event-target-value %))}]]]
+
+     (when (= :ajax.status/error status)
+       [:span.text-sm.text-red-500
+        (or (get-in error [:response :error :message])
+          (str (:status error) " " (:status-text error)))])
+
+     ;; -- Confirm
+     [gui/RedButton
+      {:disabled (or pending? (str/blank? address))
+       :on-click
+       (fn []
+         (set-state assoc :ajax/status :ajax.status/pending)
+
+         (backend/POST-add-account
+           {:params (merge {:address address}
+
+                      (when account-key
+                        {:account-key account-key})
+
+                      (when private-key
+                        {:private-key private-key}))
+
+            :handler (fn [session]
+                       (set-state assoc :ajax/status :ajax.status/success)
+
+                       (session/refresh session)
+
+                       (stack/pop))
+
+            :error-handler (fn [error]
+                             (set-state merge {:ajax/status :ajax.status/error
+                                               :error error}))}))}
+
+      [:div.relative
+       [:span.block.text-sm.uppercase.text-white
+        {:class gui/button-child-small-padding}
+        "Confirm"]
+
+       (when pending?
+         [:div.absolute.inset-0.flex.justify-center.items-center
+          [gui/SpinnerSmall]])]]]))
+
+(def remove-account-page
+  #:page {:id :page.id/wallet-remove-account
+          :title "Remove Account from Wallet"
+          :description "Remove account from your wallet."
+          :component #'RemoveAccountPage})
+
 
 (defn WalletPage [_ state set-state]
   (let [accounts (session/?accounts)

@@ -736,6 +736,21 @@
             attrs)
      child]))
 
+(defn RedButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge (merge {:class
+             ["rounded"
+              "shadow-md"
+              "focus:outline-none"
+              (if disabled?
+                "pointer-events-none bg-blue-300"
+                "bg-red-500 hover:bg-red-400 active:bg-red-600")]
+             :on-click identity}
+            attrs)
+       attrs)
+     child]))
+
 (defn LightBlueButton [attrs child]
   (let [disabled? (get attrs :disabled)]
     [:button
@@ -1479,18 +1494,36 @@
          :tooltip "Public Keys may be safely shared with others, as they do not allow digital signatures to be created without the corresponding private key."}]
        [:code.text-sm (or (format/prefix-0x account-key) "-")]]
 
-      [PrimaryButton
-       {:on-click #(stack/push :page.id/add-account
-                     {:modal? true
-                      :state {:address address
-                              :account-key account-key}})}
-       [Tooltip
-        {:title (str "Add account " (format/prefix-# address) " to your Wallet")
-         :size "small"}
-        [:div
-         {:class button-child-small-padding}
-         [:span.block.text-xs.uppercase.text-white
-          "Add to wallet"]]]]]
+      (let [session-accounts @(rf/subscribe [:session/?accounts])
+
+            addresses (into #{} (map :convex-web.account/address session-accounts))]
+
+        (if (contains? addresses address)
+          [RedButton
+           {:on-click #(stack/push :page.id/wallet-remove-account
+                         {:modal? true
+                          :state {:address address
+                                  :account-key account-key}})}
+           [Tooltip
+            {:title (str "Remove account " (format/prefix-# address) " from your Wallet")
+             :size "small"}
+            [:div
+             {:class button-child-small-padding}
+             [:span.block.text-xs.uppercase.text-white
+              "Remove from wallet"]]]]
+
+          [PrimaryButton
+           {:on-click #(stack/push :page.id/add-account
+                         {:modal? true
+                          :state {:address address
+                                  :account-key account-key}})}
+           [Tooltip
+            {:title (str "Add account " (format/prefix-# address) " to your Wallet")
+             :size "small"}
+            [:div
+             {:class button-child-small-padding}
+             [:span.block.text-xs.uppercase.text-white
+              "Add to wallet"]]]]))]
      
      
      ;; Balance
