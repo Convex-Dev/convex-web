@@ -11,6 +11,7 @@
 
    [convex-web.site.format :as format]
    [convex-web.site.backend :as backend]
+   [convex-web.site.stack :as stack]
    [convex-web.convex :as convex]
 
    ["react" :as react]
@@ -21,7 +22,7 @@
    ["react-tippy" :as tippy]
    ["react-markdown" :as ReactMarkdown]
    ["@headlessui/react" :as headlessui]
-   ["@heroicons/react/solid" :refer [XIcon]]
+   ["@heroicons/react/solid" :as icon :refer [XIcon]]
    ["qrcode.react" :as QRCode]
    ["jdenticon" :as jdenticon]))
 
@@ -1471,11 +1472,25 @@
      
      ;; Public key
      ;; ==============
-     [:div
-      [Caption
-       {:label "Public Key"
-        :tooltip "Public Keys may be safely shared with others, as they do not allow digital signatures to be created without the corresponding private key."}]
-      [:code.text-sm (or account-key "-")]]
+     [:div.flex.items-center.space-x-8
+      [:div
+       [Caption
+        {:label "Public Key"
+         :tooltip "Public Keys may be safely shared with others, as they do not allow digital signatures to be created without the corresponding private key."}]
+       [:code.text-sm (or (format/prefix-0x account-key) "-")]]
+
+      [PrimaryButton
+       {:on-click #(stack/push :page.id/add-account
+                     {:modal? true
+                      :state {:address address
+                              :account-key account-key}})}
+       [Tooltip
+        {:title (str "Add account " (format/prefix-# address) " to your Wallet")
+         :size "small"}
+        [:div
+         {:class button-child-small-padding}
+         [:span.block.text-xs.uppercase.text-white
+          "Add to wallet"]]]]]
      
      
      ;; Balance

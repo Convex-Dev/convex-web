@@ -171,7 +171,7 @@
 
 (def add-account-page
   #:page {:id :page.id/add-account
-          :title "Add Account to Wallet"
+          :title "Add existing Account to Wallet"
           :description "Add an existing account to your wallet."
           :component #'AddAccountPage})
 
@@ -285,7 +285,7 @@
            {:className "w-5 h-5 text-white"}]
 
           [:span.block.text-sm.uppercase.text-white
-           "Add Account"]]]]
+           "Add existing account"]]]]
 
        [gui/PrimaryButton
         {:on-click #(stack/push :page.id/session {:modal? true
