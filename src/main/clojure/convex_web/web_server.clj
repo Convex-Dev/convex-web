@@ -43,7 +43,9 @@
    (convex.core Peer State Result Order)
    (convex.core.exceptions MissingDataException)
    
-   (java.time Instant)
+   (java.time Instant ZonedDateTime)
+   (java.time.format DateTimeFormatter)
+
    (java.util Date)
    (clojure.lang ExceptionInfo)))
 
@@ -1149,14 +1151,21 @@
                  :access-control-allow-methods [:get :put :post :delete])))
 
 (defn site-handler [system]
-  (let [site-config (merge {:session
+  (let [now-plus-1-year (.plusYears (ZonedDateTime/now) 1)
+
+        session-expires (.format now-plus-1-year DateTimeFormatter/RFC_1123_DATE_TIME)
+
+        site-config (merge {:session
                             {:store (session/persistent-session-store (system/db-conn system))
                              :flash true
-                             :cookie-attrs {:http-only false :same-site :strict}}}
-                           (system/site-config system))]
+                             :cookie-attrs
+                             {:http-only false
+                              :same-site :strict
+                              :expires session-expires}}}
+                      (system/site-config system))]
     (-> (site system)
-        (wrap-logging)
-        (wrap-defaults (merge-with merge site-defaults site-config)))))
+      (wrap-logging)
+      (wrap-defaults (merge-with merge site-defaults site-config)))))
 
 (defn run-server
   "Start HTTP server (default port is 8090).
