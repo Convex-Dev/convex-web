@@ -1153,6 +1153,14 @@
 (defn site-handler [system]
   (let [now-plus-1-year (.plusYears (ZonedDateTime/now) 1)
 
+        ;; The maximum lifetime of the cookie as an HTTP-date timestamp
+        ;;
+        ;; If unspecified, the cookie becomes a session cookie.
+        ;; A session finishes when the client shuts down, and session cookies will be removed.
+        ;;
+        ;; See:
+        ;;  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
+        ;;  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date
         session-expires (.format now-plus-1-year DateTimeFormatter/RFC_1123_DATE_TIME)
 
         site-config (merge {:session
