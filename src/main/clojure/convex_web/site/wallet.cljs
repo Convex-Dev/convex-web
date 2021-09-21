@@ -26,7 +26,10 @@
   (let [{:keys [address
                 convex-web.key-pair/account-key
                 convex-web.key-pair/private-key
-                ajax/status]} state]
+                ajax/status]} state
+
+        account-key (some-> account-key format/prefix-0x)
+        private-key (some-> private-key format/prefix-0x)]
 
     [:div.flex.flex-col.space-y-8.p-6
      {:class "w-[60vw]"}
@@ -208,9 +211,10 @@
             {:className "w-4 h-4 text-gray-500"}])]]]
 
       (if show-wallet-key?
-        [:div.flex.items-center
-         [:code.text-sm.mr-2 @(rf/subscribe [:session/?id])]
-         [gui/ClipboardCopy @(rf/subscribe [:session/?id])]]
+        (let [sid @(rf/subscribe [:session/?id])]
+          [:div.flex.items-center
+           [:code.text-sm.mr-2 sid]
+           [gui/ClipboardCopy sid]])
         [:code.text-sm.text-gray-500 "········"])]
 
 
@@ -288,13 +292,13 @@
           [:> icon/PlusIcon
            {:className "w-5 h-5 text-white"}]
 
-          [:span.block.text-sm.uppercase.text-white
+          [:span.block.text-xs.uppercase.text-white
            "Add existing account"]]]]
 
        [gui/PrimaryButton
         {:on-click #(stack/push :page.id/session {:modal? true
                                                   :title "Restore Wallet Key"})}
-        [:span.block.text-sm.uppercase.text-white
+        [:span.block.text-xs.uppercase.text-white
          {:class gui/button-child-small-padding}
          "Restore Wallet Key"]]]]]))
 
