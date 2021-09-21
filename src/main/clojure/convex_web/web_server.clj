@@ -700,10 +700,12 @@
 
           req-address (convex/address req-address)
 
-          to-be-added-account #:convex-web.account {:address (.longValue req-address)
-                                                    :created-at (inst-ms (Instant/now))
-                                                    :key-pair {:convex-web.key-pair/account-key req-account-key
-                                                               :convex-web.key-pair/private-key req-private-key}}
+          to-be-added-account (merge #:convex-web.account {:address (.longValue req-address)
+                                                           :created-at (inst-ms (Instant/now))}
+                                (when (and req-account-key req-private-key)
+                                  {:convex-web.account/key-pair
+                                   {:convex-web.key-pair/account-key req-account-key
+                                    :convex-web.key-pair/private-key req-private-key}}))
 
           existing-account (account/find-by-address (system/db system) req-address)
 

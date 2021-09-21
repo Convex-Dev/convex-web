@@ -94,7 +94,7 @@
 
 
 (defn AddAccountPage [_ state set-state]
-  (let [{:keys [address account-key private-key ajax/status]} state
+  (let [{:keys [address account-key private-key error ajax/status]} state
 
         pending? (= status :ajax.status/pending)]
     [:div.flex.flex-col.space-y-8.p-6
@@ -141,6 +141,11 @@
          :on-change
          #(set-state assoc :private-key (gui/event-target-value %))}]]]
 
+     (when (= :ajax.status/error status)
+       [:span.text-sm.text-red-500
+        (or (get-in error [:response :error :message])
+          (str (:status error) " " (:status-text error)))])
+
      ;; -- Confirm
      [gui/PrimaryButton
       {:disabled (or pending? (str/blank? address))
@@ -164,8 +169,9 @@
 
                        (stack/pop))
 
-            :error-handler (fn [_]
-                             (set-state assoc :ajax/status :ajax.status/error))}))}
+            :error-handler (fn [error]
+                             (set-state merge {:ajax/status :ajax.status/error
+                                               :error error}))}))}
 
       [:div.relative
        [:span.block.text-sm.uppercase.text-white
