@@ -74,6 +74,9 @@
       (io/delete-file f))
     
     (println "Deleted db" dir))
+
+  ;; Generate a new key pair.
+  (convex/key-pair-data (convex/generate-key-pair))
   
   
   ;; -- Testing
