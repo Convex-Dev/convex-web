@@ -153,14 +153,14 @@
        (fn []
          (set-state assoc :ajax/status :ajax.status/pending)
 
-         (backend/POST-add-account
-           {:params (merge {:address address}
+         (backend/invoke-wallet-add-account
+           {:body (merge {:address address}
 
-                      (when account-key
-                        {:account-key account-key})
+                    (when account-key
+                      {:account-key account-key})
 
-                      (when private-key
-                        {:private-key private-key}))
+                    (when private-key
+                      {:private-key private-key}))
 
             :handler (fn [session]
                        (set-state assoc :ajax/status :ajax.status/success)

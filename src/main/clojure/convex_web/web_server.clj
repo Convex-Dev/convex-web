@@ -1177,9 +1177,28 @@
       (-successful-response kp)
       (-not-found-response {:error {:message "Not found."}}))))
 
-(defmethod invoke* :convex-web.invoke/wallet-delete-account
+(defmethod invoke* :convex-web.invoke/wallet-add-account
   [system req body]
-  nil)
+  (let [{invoke-body :convex-web.invoke/body} body
+
+        {req-address :address
+         req-account-key :account-key
+         req-private-key :private-key} invoke-body
+
+        req-address (convex/address req-address)
+
+        to-be-added-account (merge #:convex-web.account {:address (.longValue req-address)}
+                              (when (and req-account-key req-private-key)
+                                {:convex-web.account/key-pair
+                                 {:convex-web.key-pair/account-key req-account-key
+                                  :convex-web.key-pair/private-key req-private-key}}))
+
+        session {:convex-web.session/id (ring-session req)
+                 :convex-web.session/accounts [to-be-added-account]}
+
+        {db :db-after} (d/transact! (system/db-conn system) [session])]
+
+    (-successful-response (session/find-session db (ring-session req)))))
 
 (defn invoke [system req]
   (try
