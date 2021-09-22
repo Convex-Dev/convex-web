@@ -1219,7 +1219,6 @@
     (GET "/api/internal/session" req (-GET-session system req))
     (POST "/api/internal/generate-account" req (-POST-create-account system req))
     (POST "/api/internal/confirm-account" req (-POST-confirm-account system req))
-    (POST "/api/internal/add-account" req (-POST-add-account system req))
     (POST "/api/internal/faucet" req (-POST-faucet system req))
     (GET "/api/internal/accounts" req (-GET-accounts system req))
     (GET "/api/internal/accounts/:address" [address] (-GET-account system address))
@@ -1232,7 +1231,6 @@
     (GET "/api/internal/reference" req (-GET-reference system req))
     (GET "/api/internal/markdown-page" req (-GET-markdown-page system req))
     (GET "/api/internal/state" req (-GET-STATE system req))
-
     (POST "/api/internal/invoke" req (invoke system req))
 
     (route/resources "/")
