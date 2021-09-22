@@ -211,6 +211,7 @@
         {:class input-style
          :type "text"
          :value address
+         :readOnly true
          :on-change
          #(set-state assoc :address (gui/event-target-value %))}]]]
 
