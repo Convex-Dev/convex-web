@@ -1215,6 +1215,33 @@
 
     (-successful-response (session/find-session db (ring-session req)))))
 
+(defmethod invoke* :convex-web.invoke/wallet-remove-account
+  [system req body]
+  (let [{invoke-body :convex-web.invoke/body} body
+
+        {address-to-be-removed :address} invoke-body
+
+        sid (ring-session req)
+
+        session (session/find-session (system/db system) sid)
+
+        {wallet :convex-web.session/wallet} session
+
+        wallet (reduce
+                 (fn [wallet account]
+                   (let [{address-in-wallet :convex-web.account/address} account]
+                     (if (not= (convex/address address-to-be-removed)
+                           (convex/address-safe address-in-wallet))
+                       (conj wallet account)
+                       wallet)))
+                 #{}
+                 wallet)
+
+        {db :db-after} (d/transact! (system/db-conn system) [{:convex-web.session/id sid
+                                                              :convex-web.session/wallet wallet}])]
+
+    (-successful-response (session/find-session db (ring-session req)))))
+
 (defn invoke [system req]
   (try
 

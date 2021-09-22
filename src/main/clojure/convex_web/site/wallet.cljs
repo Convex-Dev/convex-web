@@ -11,6 +11,7 @@
    [convex-web.site.gui :as gui]
    [convex-web.site.format :as format]
    [convex-web.site.backend :as backend]
+   [convex-web.site.invoke :as invoke]
 
    ["@heroicons/react/solid" :as icon]))
 
@@ -225,14 +226,14 @@
        (fn []
          (set-state assoc :ajax/status :ajax.status/pending)
 
-         (backend/POST-add-account
-           {:params (merge {:address address}
+         (invoke/wallet-remove-account
+           {:body (merge {:address address}
 
-                      (when account-key
-                        {:account-key account-key})
+                    (when account-key
+                      {:account-key account-key})
 
-                      (when private-key
-                        {:private-key private-key}))
+                    (when private-key
+                      {:private-key private-key}))
 
             :handler (fn [session]
                        (set-state assoc :ajax/status :ajax.status/success)

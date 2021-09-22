@@ -160,6 +160,11 @@
                 :handler handler
                 :error-handler error-handler}))
 
+(defn invoke-wallet-remove-account [{:keys [body handler error-handler]}]
+  (POST-invoke {:params (invoke-params :convex-web.invoke/wallet-remove-account body)
+                :handler handler
+                :error-handler error-handler}))
+
 
 ;; ---
 
