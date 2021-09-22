@@ -1242,7 +1242,11 @@
 
     (-successful-response (session/find-session db (ring-session req)))))
 
-(defn invoke [system req]
+(defn invoke
+  "Internal invoke API.
+
+  Invoke a Ring handler registered by ID."
+  [system req]
   (try
 
     (let [{body-encoded :body} req
