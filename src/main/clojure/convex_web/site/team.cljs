@@ -27,7 +27,7 @@
                ;; -- Dr Leonard
                {:name "Dr Leonard Anderson"
                 :title "Advisor"
-                :areas "Patent, Investment and Marketing"
+                :areas "Investment and Marketing"
                 :image "/images/team/leonard.jpg"
                 :linkedin "https://www.linkedin.com/in/kemuri/"}
                
