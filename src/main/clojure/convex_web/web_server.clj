@@ -829,15 +829,25 @@
           
           (if (.isError result)
             (throw (ex-info "Failed to transfer funds." {:error-code (.getErrorCode result)}))
-            (do
-              (d/transact! (system/db-conn system) [{:convex-web.session/id (ring-session req)
-                                                     :convex-web.session/accounts
-                                                     [{:convex-web.account/address address-long}]
+            (let [sid (ring-session req)
 
-                                                     ;; Add newly created account to wallet.
-                                                     :convex-web.session/wallet
-                                                     #{(select-keys account [::account/address
-                                                                             ::account/key-pair])}}])
+                  session-account {:convex-web.account/address address-long}
+
+                  wallet-account (select-keys account [::account/address
+                                                       ::account/key-pair])
+
+                  session (if-let [session (session/find-session (system/db system) sid)]
+                            ;; Update an existing session.
+                            (-> session
+                              (update :convex-web.session/accounts (fnil conj []) session-account)
+                              (update :convex-web.session/wallet (fnil conj #{}) wallet-account))
+
+                            ;; Else; Create a new session.
+                            {:convex-web.session/id sid
+                             :convex-web.session/accounts [session-account]
+                             :convex-web.session/wallet #{wallet-account}})]
+
+              (d/transact! (system/db-conn system) [session])
               
               (-successful-response (select-keys account [::account/address
                                                           ::account/created-at])))))))
