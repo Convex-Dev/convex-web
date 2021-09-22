@@ -81,7 +81,7 @@
             (let [{:keys [address]} state]
               (set-state merge {:ajax/status :ajax.status/pending})
 
-              (backend/invoke-wallet-account-key-pair
+              (invoke/wallet-account-key-pair
                 {:body {:address address}
 
                  :handler
@@ -154,7 +154,7 @@
        (fn []
          (set-state assoc :ajax/status :ajax.status/pending)
 
-         (backend/invoke-wallet-add-account
+         (invoke/wallet-add-account
            {:body (merge {:address address}
 
                     (when account-key

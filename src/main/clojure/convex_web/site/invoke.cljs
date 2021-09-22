@@ -17,12 +17,12 @@
   {:convex-web.invoke/id id
    :convex-web.invoke/body body})
 
-(defn invoke-wallet-account-key-pair [{:keys [body handler error-handler]}]
+(defn wallet-account-key-pair [{:keys [body handler error-handler]}]
   (POST-invoke {:params (invoke-params :convex-web.invoke/wallet-account-key-pair body)
                 :handler handler
                 :error-handler error-handler}))
 
-(defn invoke-wallet-add-account [{:keys [body handler error-handler]}]
+(defn wallet-add-account [{:keys [body handler error-handler]}]
   (POST-invoke {:params (invoke-params :convex-web.invoke/wallet-add-account body)
                 :handler handler
                 :error-handler error-handler}))

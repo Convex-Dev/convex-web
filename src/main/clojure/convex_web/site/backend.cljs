@@ -138,36 +138,6 @@
 
 ;; ---
 
-(defn POST-invoke [{:keys [params handler error-handler]}]
-  (POST "/api/internal/invoke"
-    (merge {:headers (csrf-header)
-            :handler handler
-            :params params}
-      (when error-handler
-        {:error-handler error-handler}))))
-
-(defn invoke-params [id body]
-  {:convex-web.invoke/id id
-   :convex-web.invoke/body body})
-
-(defn invoke-wallet-account-key-pair [{:keys [body handler error-handler]}]
-  (POST-invoke {:params (invoke-params :convex-web.invoke/wallet-account-key-pair body)
-                :handler handler
-                :error-handler error-handler}))
-
-(defn invoke-wallet-add-account [{:keys [body handler error-handler]}]
-  (POST-invoke {:params (invoke-params :convex-web.invoke/wallet-add-account body)
-                :handler handler
-                :error-handler error-handler}))
-
-(defn invoke-wallet-remove-account [{:keys [body handler error-handler]}]
-  (POST-invoke {:params (invoke-params :convex-web.invoke/wallet-remove-account body)
-                :handler handler
-                :error-handler error-handler}))
-
-
-;; ---
-
 
 (defn POST-transaction-prepare [{:keys [address source] :as params} {:keys [handler error-handler]}]
   (POST "/api/v1/transaction/prepare" (merge {:handler handler
