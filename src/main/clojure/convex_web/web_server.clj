@@ -655,18 +655,27 @@
 
 (defn -POST-command [system {:keys [body] :as request}]
   (try
-    (let [{::command/keys [address mode] :as command} (encoding/transit-decode body)
+    (let [{::command/keys [signer mode] :as command} (encoding/transit-decode body)
+
+          sid (ring-session request)
+
+          {signer-address :convex-web.account/address} signer
+
+          signer (session/find-account (system/db system)
+                   {:sid sid
+                    :address signer-address})
+
+          ;; Signer is the account holding the key pair to sign the query/transaction.
+          command (merge command {:convex-web.command/signer signer})
           
           invalid? (not (s/valid? :convex-web/command command))
-          
-          session-addresses (session-addresses system request)
           
           forbidden? (case mode
                        :convex-web.command.mode/query
                        false
                        
                        :convex-web.command.mode/transaction
-                       (not (contains? session-addresses address))
+                       (nil? signer)
                        
                        false)]
       
@@ -679,12 +688,7 @@
                                         (expound/expound-str :convex-web/command command))))
         
         :else
-        (let [sid (ring-session request)
-
-              command (merge command {:convex-web.command/sid sid})
-
-              command' (command/execute system command)]
-          (-successful-response command'))))
+        (-successful-response (command/execute system command))))
     (catch Throwable ex
       (log/error ex "Command error.")
       

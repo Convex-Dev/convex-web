@@ -132,9 +132,13 @@
 ;; --
 
 (defn execute-query [system command]
-  (let [{::keys [address query]} command
+  (let [{::keys [signer query]} command
+
+        {signer-address :convex-web.account/address} signer
+
         {:convex-web.query/keys [source language]} query]
-    (convex/query (system/convex-client system) {:address address
+
+    (convex/query (system/convex-client system) {:address signer-address
                                                  :source source
                                                  :lang language})))
 
@@ -145,41 +149,41 @@
 ;; --
 
 (defn execute-transaction [system command]
-  (let [{::keys [sid address transaction]} command]
-    (locking (convex/lockee address)
+  (let [{::keys [signer transaction]} command
+
+        {signer-address :convex-web.account/address} signer
+
+        signer-address (convex/address signer-address)]
+
+    (locking (convex/lockee signer-address)
+
       (let [{:convex-web.transaction/keys [source amount type target]} transaction
 
             peer (system/convex-peer system)
 
-            caller-address (convex/address address)
-
-            next-sequence-number (inc (or (convex/get-sequence-number caller-address)
-                                        (convex/sequence-number peer caller-address)
+            next-sequence-number (inc (or (convex/get-sequence-number signer-address)
+                                        (convex/sequence-number peer signer-address)
                                         0))
 
-            db (system/db system)
-
-            account (session/find-account db {:sid sid :address caller-address})
-
-            {account-key-pair :convex-web.account/key-pair} account
+            {signer-key-pair :convex-web.account/key-pair} signer
 
             atransaction (case type
                            :convex-web.transaction.type/invoke
                            (convex/invoke-transaction {:nonce next-sequence-number
-                                                       :address caller-address
+                                                       :address signer-address
                                                        :command (convex/read-source source)} )
 
                            :convex-web.transaction.type/transfer
-                           (convex/transfer-transaction {:address caller-address
+                           (convex/transfer-transaction {:address signer-address
                                                          :nonce next-sequence-number
                                                          :target target
                                                          :amount amount}))]
 
-        (when-not (:convex-web.key-pair/private-key account-key-pair)
-          (throw (ex-info "Missing private key." (merge {} account-key-pair))))
+        (when-not (:convex-web.key-pair/private-key signer-key-pair)
+          (throw (ex-info "Missing private key." (merge {} signer-key-pair))))
 
         (try
-          (let [^Result r (->> (convex/sign (convex/create-key-pair account-key-pair) atransaction)
+          (let [^Result r (->> (convex/sign (convex/create-key-pair signer-key-pair) atransaction)
                             (convex/transact-signed (system/convex-client system)))
 
                 bad-sequence-number? (when-let [error-code (.getErrorCode r)]
@@ -187,11 +191,11 @@
 
             (if bad-sequence-number?
               (log/error "Result error: Bad sequence number." {:attempted-sequence-number next-sequence-number})
-              (convex/set-sequence-number! caller-address next-sequence-number))
+              (convex/set-sequence-number! signer-address next-sequence-number))
 
             r)
           (catch Throwable t
-            (convex/reset-sequence-number! caller-address)
+            (convex/reset-sequence-number! signer-address)
 
             (log/error t "Transaction failed." (merge transaction {:attempted-sequence-number next-sequence-number}))
 
