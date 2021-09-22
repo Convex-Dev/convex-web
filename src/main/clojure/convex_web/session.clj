@@ -7,27 +7,24 @@
   (:import (java.util UUID)))
 
 (defn all [db]
-  (d/q '[:find [(pull ?e [* {:convex-web.session/accounts
-                             [:convex-web.account/address
-                              :convex-web.account/key-pair]}]) ...]
+  (d/q '[:find [(pull ?e [*]) ...]
          :in $
          :where [?e :convex-web.session/id _]]
        db))
 
 (defn find-session [db id]
-  (d/q '[:find (pull ?e [:convex-web.session/id
-                         :convex-web.session/wallet
-                         {:convex-web.session/accounts
-                          [:convex-web.account/address]}]) .
-         :in $ ?id
-         :where [?e :convex-web.session/id ?id]]
-       db id))
+  (when-let [session (d/q '[:find (pull ?e [*]) .
+                            :in $ ?id
+                            :where [?e :convex-web.session/id ?id]]
+                       db id)]
+    (let [{wallet :convex-web.session/wallet} session
+
+          ;; TODO: Change the app to use :convex-web.session/wallet instead.
+          session (assoc session :convex-web.session/accounts (vec wallet))]
+      session)))
 
 (defn find-session-sensitive [db id]
-  (d/q '[:find (pull ?e [:convex-web.session/id
-                         {:convex-web.session/accounts
-                          [:convex-web.account/address
-                           :convex-web.account/key-pair]}]) .
+  (d/q '[:find (pull ?e [*]) .
          :in $ ?id
          :where [?e :convex-web.session/id ?id]]
        db id))

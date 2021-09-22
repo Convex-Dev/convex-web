@@ -831,21 +831,18 @@
             (throw (ex-info "Failed to transfer funds." {:error-code (.getErrorCode result)}))
             (let [sid (ring-session req)
 
-                  session-account {:convex-web.account/address address-long}
-
                   wallet-account (select-keys account [::account/address
                                                        ::account/key-pair])
 
                   session (if-let [session (session/find-session (system/db system) sid)]
                             ;; Update an existing session.
-                            (-> session
-                              (update :convex-web.session/accounts (fnil conj []) session-account)
-                              (update :convex-web.session/wallet (fnil conj #{}) wallet-account))
+                            (update session :convex-web.session/wallet (fnil conj #{}) wallet-account)
 
                             ;; Else; Create a new session.
                             {:convex-web.session/id sid
-                             :convex-web.session/accounts [session-account]
                              :convex-web.session/wallet #{wallet-account}})]
+
+              (log/debug (with-out-str (pprint/pprint session)))
 
               (d/transact! (system/db-conn system) [session])
               
@@ -1216,13 +1213,10 @@
 
         session (if-let [session (session/find-session (system/db system) sid)]
                   ;; Update an existing session.
-                  (-> session
-                    (update :convex-web.session/accounts (fnil conj []) to-be-added-account)
-                    (update :convex-web.session/wallet (fnil conj #{}) to-be-added-account))
+                  (update session :convex-web.session/wallet (fnil conj #{}) to-be-added-account)
 
                   ;; Else; Create a new session.
                   {:convex-web.session/id sid
-                   :convex-web.session/accounts [to-be-added-account]
                    :convex-web.session/wallet #{to-be-added-account}})
 
         {db :db-after} (d/transact! (system/db-conn system) [session])]

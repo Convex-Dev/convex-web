@@ -165,8 +165,8 @@
   (session/all-ring (db))
   
   (session/all (db))
-  (session/find-session (db) "764ea110-6e1a-4a29-8fe8-e6b44620ad3d")
-  (session/find-session-sensitive (db) "764ea110-6e1a-4a29-8fe8-e6b44620ad3d")
+  (session/find-session (db) "917090fd-f1ca-473e-9697-6ec21e18e3f7")
+  (session/find-session-sensitive (db) "917090fd-f1ca-473e-9697-6ec21e18e3f7")
   
   ;; --
   
