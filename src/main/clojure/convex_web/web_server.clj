@@ -842,8 +842,6 @@
                             {:convex-web.session/id sid
                              :convex-web.session/wallet #{wallet-account}})]
 
-              (log/debug (with-out-str (pprint/pprint session)))
-
               (d/transact! (system/db-conn system) [session])
               
               (-successful-response (select-keys account [::account/address
@@ -1218,6 +1216,8 @@
                   ;; Else; Create a new session.
                   {:convex-web.session/id sid
                    :convex-web.session/wallet #{to-be-added-account}})
+
+        session (select-keys session [:convex-web.session/id :convex-web.session/wallet])
 
         {db :db-after} (d/transact! (system/db-conn system) [session])]
 

@@ -7,7 +7,7 @@
                             address :convex-web/address}]
   (let [session (session/find-session-sensitive db sid)
 
-        {session-accounts :convex-web.session/accounts} session]
+        {wallet :convex-web.session/wallet} session]
     (reduce
       (fn [_ account]
         (let[{account-address :convex-web.account/address
@@ -15,4 +15,4 @@
           (when (= (convex/address address) (convex/address account-address))
             (reduced account-key-pair))))
       nil
-      session-accounts)))
+      wallet)))
