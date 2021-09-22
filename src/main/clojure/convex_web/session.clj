@@ -16,6 +16,7 @@
 
 (defn find-session [db id]
   (d/q '[:find (pull ?e [:convex-web.session/id
+                         :convex-web.session/wallet
                          {:convex-web.session/accounts
                           [:convex-web.account/address]}]) .
          :in $ ?id

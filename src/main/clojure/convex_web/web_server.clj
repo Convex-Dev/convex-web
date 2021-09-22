@@ -1202,14 +1202,28 @@
 
         req-address (convex/address req-address)
 
-        to-be-added-account (merge #:convex-web.account {:address (.longValue req-address)}
-                              (when (and req-account-key req-private-key)
-                                {:convex-web.account/key-pair
-                                 {:convex-web.key-pair/account-key req-account-key
-                                  :convex-web.key-pair/private-key req-private-key}}))
+        key-pair-account-key (when req-account-key
+                               {:convex-web.key-pair/account-key req-account-key})
 
-        session {:convex-web.session/id (ring-session req)
-                 :convex-web.session/accounts [to-be-added-account]}
+        key-pair-private-key (when req-private-key
+                               {:convex-web.key-pair/private-key req-private-key})
+
+        to-be-added-account (merge #:convex-web.account {:address (.longValue req-address)}
+                              (when (or key-pair-account-key key-pair-private-key)
+                                {:convex-web.account/key-pair (merge key-pair-account-key key-pair-private-key)}))
+
+        sid (ring-session req)
+
+        session (if-let [session (session/find-session (system/db system) sid)]
+                  ;; Update an existing session.
+                  (-> session
+                    (update :convex-web.session/accounts (fnil conj []) to-be-added-account)
+                    (update :convex-web.session/wallet (fnil conj #{}) to-be-added-account))
+
+                  ;; Else; Create a new session.
+                  {:convex-web.session/id sid
+                   :convex-web.session/accounts [to-be-added-account]
+                   :convex-web.session/wallet #{to-be-added-account}})
 
         {db :db-after} (d/transact! (system/db-conn system) [session])]
 
