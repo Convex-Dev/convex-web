@@ -1266,7 +1266,9 @@
     (catch Throwable ex
       (log/error ex "Invoke error.")
 
-      server-error-response)))
+      {:status 500
+       :headers {"Content-Type" "application/transit+json"}
+       :body (encoding/transit-encode (error (ex-message ex)))})))
 
 (defn site [system]
   (routes
