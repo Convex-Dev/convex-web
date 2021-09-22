@@ -80,8 +80,8 @@
             (let [{:keys [address]} state]
               (set-state merge {:ajax/status :ajax.status/pending})
 
-              (backend/POST-wallet-account-key-pair
-                {:params {:address address}
+              (backend/invoke-wallet-account-key-pair
+                {:body {:address address}
 
                  :handler
                  (fn [key-pair]

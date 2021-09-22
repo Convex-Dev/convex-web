@@ -155,24 +155,16 @@
 
 ;; ---
 
-(defn POST-wallet-account-key-pair [{:keys [params handler error-handler]}]
-  (POST "/api/internal/wallet/account-key-pair"
+
+(defn invoke-wallet-account-key-pair [{:keys [body handler error-handler]}]
+  (POST "/api/internal/invoke"
     (merge {:headers (csrf-header)
             :handler handler
-            :params params}
+            :params {:convex-web.invoke/id :convex-web.invoke/wallet-account-key-pair
+                     :convex-web.invoke/body body}}
       (when error-handler
         {:error-handler error-handler}))))
 
-(s/def :POST-wallet-account-key-pair.params/address :convex-web/address)
-
-(s/def :POST-wallet-account-key-pair/params
-  (s/keys :req-un [:POST-wallet-account-key-pair.params/address]))
-
-(s/def :POST-wallet-account-key-pair/args
-  (s/keys :req-un [:POST-wallet-account-key-pair/params]))
-
-(s/fdef POST-wallet-account-key-pair
-  :args (s/cat :args :POST-wallet-account-key-pair/args))
 
 ;; ---
 

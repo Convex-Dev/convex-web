@@ -729,6 +729,49 @@
 
       -server-error-response)))
 
+(defn -POST-remove-account
+  "Ring Handler to remove account from user's session.
+
+  Internal API."
+  [system req]
+  (try
+    (let [{:keys [body]} req
+
+          {req-address :address
+           req-account-key :account-key
+           req-private-key :private-key} (encoding/transit-decode body)
+
+          req-address (convex/address req-address)
+
+          to-be-added-account (merge #:convex-web.account {:address (.longValue req-address)
+                                                           :created-at (inst-ms (Instant/now))}
+                                (when (and req-account-key req-private-key)
+                                  {:convex-web.account/key-pair
+                                   {:convex-web.key-pair/account-key req-account-key
+                                    :convex-web.key-pair/private-key req-private-key}}))
+
+          existing-account (account/find-by-address (system/db system) req-address)
+
+          stealing? (and existing-account
+                      (account/nonequivalent? existing-account to-be-added-account))]
+
+      ;; NOTE: Not every account in Convex is persisted in the convex.world database.
+
+      (if stealing?
+        (-forbidden-response (error "Incorrect key pair."))
+        (let [account (or existing-account to-be-added-account)
+
+              session {:convex-web.session/id (ring-session req)
+                       :convex-web.session/accounts [account]}
+
+              {db :db-after} (d/transact! (system/db-conn system) [session])]
+
+          (-successful-response (session/find-session db (ring-session req))))))
+    (catch Exception ex
+      (log/error ex)
+
+      -server-error-response)))
+
 (defn -POST-create-account
   "Ring Handler to create a new account.
   
@@ -1121,6 +1164,37 @@
 
       -server-error-response)))
 
+(defmulti invoke*
+  (fn [_ _ body]
+    (:convex-web.invoke/id body)))
+
+(defmethod invoke* :convex-web.invoke/wallet-account-key-pair
+  [system req body]
+  (let [address (get-in body [:convex-web.invoke/body :address])]
+    (if-let [kp (wallet/account-key-pair (system/db system)
+                  {:convex-web.session/id (ring-session req)
+                   :convex-web/address address})]
+      (-successful-response kp)
+      (-not-found-response {:error {:message "Not found."}}))))
+
+(defmethod invoke* :convex-web.invoke/wallet-delete-account
+  [system req body]
+  nil)
+
+(defn invoke [system req]
+  (try
+
+    (let [{body-encoded :body} req
+
+          body (encoding/transit-decode body-encoded)]
+
+      (invoke* system req body))
+
+    (catch Throwable ex
+      (log/error ex "Invoke error.")
+
+      server-error-response)))
+
 (defn site [system]
   (routes
     (GET "/api/internal/session" req (-GET-session system req))
@@ -1139,7 +1213,8 @@
     (GET "/api/internal/reference" req (-GET-reference system req))
     (GET "/api/internal/markdown-page" req (-GET-markdown-page system req))
     (GET "/api/internal/state" req (-GET-STATE system req))
-    (POST "/api/internal/wallet/account-key-pair" req (-POST-wallet-account-key-pair system req))
+
+    (POST "/api/internal/invoke" req (invoke system req))
 
     (route/resources "/")
 
