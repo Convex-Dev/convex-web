@@ -166,7 +166,6 @@
   
   (session/all (db))
   (session/find-session (db) "917090fd-f1ca-473e-9697-6ec21e18e3f7")
-  (session/find-session-sensitive (db) "917090fd-f1ca-473e-9697-6ec21e18e3f7")
   
   ;; --
   

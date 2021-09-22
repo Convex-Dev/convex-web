@@ -5,7 +5,7 @@
 
 (defn account-key-pair [db {sid :convex-web.session/id
                             address :convex-web/address}]
-  (let [session (session/find-session-sensitive db sid)
+  (let [session (session/find-session db sid)
 
         {wallet :convex-web.session/wallet} session]
     (reduce

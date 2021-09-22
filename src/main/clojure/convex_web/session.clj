@@ -23,12 +23,6 @@
           session (assoc session :convex-web.session/accounts (vec wallet))]
       session)))
 
-(defn find-session-sensitive [db id]
-  (d/q '[:find (pull ?e [*]) .
-         :in $ ?id
-         :where [?e :convex-web.session/id ?id]]
-       db id))
-
 (defn find-account [db address]
   (d/q '[:find (pull ?accounts [:convex-web.account/address
                                 :convex-web.account/key-pair]) .
