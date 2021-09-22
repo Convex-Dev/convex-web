@@ -832,7 +832,12 @@
             (do
               (d/transact! (system/db-conn system) [{:convex-web.session/id (ring-session req)
                                                      :convex-web.session/accounts
-                                                     [{:convex-web.account/address address-long}]}])
+                                                     [{:convex-web.account/address address-long}]
+
+                                                     ;; Add newly created account to wallet.
+                                                     :convex-web.session/wallet
+                                                     #{(select-keys account [::account/address
+                                                                             ::account/key-pair])}}])
               
               (-successful-response (select-keys account [::account/address
                                                           ::account/created-at])))))))
