@@ -493,17 +493,21 @@
     (.getValue context)))
 
 (defn ^Result query [^Convex client {:keys [source address] :as q}]
-  (let [^ACell acell (read-source source)
-        
-        ^Address address (convex-web.convex/address address)]
+  (let [^ACell acell (read-source source)]
     (try
       (log/debug "Query sync" q)
-      
-      (.querySync client ^ACell acell ^Address address)
+
+      (if address
+        (.querySync client ^ACell acell (convex-web.convex/address address))
+        (.querySync client ^ACell acell))
+
       (catch Exception ex
         (let [message "Failed to get Query result."
+
               category (or (throwable-category ex) ::anomalies/fault)]
+
           (log/error ex message)
+
           (throw (ex-info message
                    (merge q {::anomalies/message (ex-message ex)
                              ::anomalies/category category})

@@ -10,6 +10,7 @@
    [convex-web.system :as sys]
    [convex-web.encoding :as encoding]
    [convex-web.web-server :as web-server]
+   [convex-web.account :as account]
    [convex-web.test :refer [make-system-fixture]])
   (:import (convex.core.data StringShort)))
 
@@ -28,11 +29,15 @@
           
           _ (handler (mock/request :post "/api/internal/confirm-account"
                        (encoding/transit-encode generated-address)))
+
+          db (sys/db system)
+
+          signer (account/find-by-address db generated-address)
           
           command1 (c/execute system #:convex-web.command {:id (java.util.UUID/randomUUID)
                                                            :timestamp 1
                                                            :mode :convex-web.command.mode/transaction
-                                                           :address generated-address
+                                                           :signer signer
                                                            :transaction
                                                            #:convex-web.transaction
                                                            {:source "(def x 1)"
@@ -42,7 +47,7 @@
           command2 (c/execute system #:convex-web.command {:id (java.util.UUID/randomUUID)
                                                            :timestamp 2
                                                            :mode :convex-web.command.mode/transaction
-                                                           :address generated-address
+                                                           :signer signer
                                                            :transaction
                                                            #:convex-web.transaction
                                                            {:source "(do (def x 2) (rollback :abort))"
@@ -52,7 +57,7 @@
           command3 (c/execute system #:convex-web.command {:id (java.util.UUID/randomUUID)
                                                            :timestamp 3
                                                            :mode :convex-web.command.mode/transaction
-                                                           :address generated-address
+                                                           :signer signer
                                                            :transaction
                                                            #:convex-web.transaction
                                                            {:source "x"
@@ -69,7 +74,7 @@
           (c/execute system {::c/id (java.util.UUID/randomUUID)
                              ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
-                             ::c/address 9
+                             ::c/signer {:convex-web.account/address 9}
                              ::c/query
                              {:convex-web.query/source "1"
                               :convex-web.query/language :convex-lisp}})]
@@ -84,7 +89,7 @@
           (c/execute system {::c/id (java.util.UUID/randomUUID)
                              ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
-                             ::c/address 9
+                             ::c/signer {:convex-web.account/address 9}
                              ::c/query
                              {:convex-web.query/source "1.0"
                               :convex-web.query/language :convex-lisp}})]
@@ -99,7 +104,7 @@
           (c/execute system {::c/id (java.util.UUID/randomUUID)
                              ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
-                             ::c/address 9
+                             ::c/signer {:convex-web.account/address 9}
                              ::c/query
                              {:convex-web.query/source "\"Hello\""
                               :convex-web.query/language :convex-lisp}})]
@@ -115,7 +120,7 @@
           (c/execute system {::c/id (java.util.UUID/randomUUID)
                              ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
-                             ::c/address 9
+                             ::c/signer {:convex-web.account/address 9}
                              ::c/query
                              {:convex-web.query/source "inc"
                               :convex-web.query/language :convex-lisp}})]
@@ -131,7 +136,7 @@
           (c/execute system {::c/id (java.util.UUID/randomUUID)
                              ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
-                             ::c/address 9
+                             ::c/signer {:convex-web.account/address 9}
                              ::c/query
                              {:convex-web.query/source "(doc inc)"
                               :convex-web.query/language :convex-lisp}})]
@@ -161,7 +166,7 @@
           (c/execute system {::c/id (java.util.UUID/randomUUID)
                              ::c/timestamp 1
                              ::c/mode :convex-web.command.mode/query
-                             ::c/address 9
+                             ::c/signer {:convex-web.account/address 9}
                              ::c/query
                              {:convex-web.query/source "(map inc 1)"
                               :convex-web.query/language :convex-lisp}})]

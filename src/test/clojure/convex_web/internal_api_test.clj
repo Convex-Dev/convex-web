@@ -84,10 +84,7 @@
         (is (= "The Account for this Address does not exist." (get-in body [:error :message])))))))
 
 (deftest command-test
-  (let [convex-world-address (sys/convex-world-address system)
-        convex-world-address-long (.longValue convex-world-address)
-        
-        handler (site-handler)
+  (let [handler (site-handler)
         
         execute-command (fn [body]
                           (handler (-> 
@@ -110,7 +107,6 @@
                        #:convex-web.command {:id (java.util.UUID/randomUUID)
                                              :timestamp (System/currentTimeMillis)
                                              :mode :convex-web.command.mode/query
-                                             :address convex-world-address-long
                                              :query 
                                              {:convex-web.query/source "(inc 1)"
                                               :convex-web.query/language :convex-lisp}})
@@ -136,7 +132,6 @@
     (testing "Transaction"
       (let [response (execute-command #:convex-web.command {:timestamp (System/currentTimeMillis)
                                                             :mode :convex-web.command.mode/transaction
-                                                            :address convex-world-address-long
                                                             :transaction 
                                                             {:convex-web.transaction/type :convex-web.transaction.type/invoke
                                                              :convex-web.transaction/source "(inc 1)"

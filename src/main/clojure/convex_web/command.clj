@@ -1,19 +1,21 @@
 (ns convex-web.command
-  (:require [convex-web.system :as system]
-            [convex-web.account :as account]
-            [convex-web.session :as session]
-            [convex-web.convex :as convex]
-            [convex-web.specs]
+  (:require
+   [clojure.spec.alpha :as s]
+   [clojure.tools.logging :as log]
+   [clojure.stacktrace :as stacktrace]
+   [clojure.pprint :as pprint]
 
-            [clojure.spec.alpha :as s]
-            [clojure.tools.logging :as log]
-            [clojure.stacktrace :as stacktrace]
+   [datalevin.core :as d]
 
-            [datalevin.core :as d])
-  (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
-           (convex.core.lang Reader Symbols)
-           (convex.core Result)
-           (convex.core.data.prim CVMBool CVMLong CVMDouble)))
+   [convex-web.system :as system]
+   [convex-web.convex :as convex]
+   [convex-web.specs])
+
+  (:import
+   (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
+   (convex.core.lang Reader Symbols)
+   (convex.core Result)
+   (convex.core.data.prim CVMBool CVMLong CVMDouble)))
 
 (defn source [command]
   (let [{:convex-web.command/keys [transaction query]} command]
@@ -208,7 +210,9 @@
 ;; --
 
 (defn execute [system {::keys [mode] :as command}]
-  (let [{:keys [result error]} 
+  (let [_ (log/debug (str "Execute\n" (with-out-str (pprint/pprint command))))
+
+        {:keys [result error]}
         (try
           {:result (cond
                      (= :convex-web.command.mode/query mode)

@@ -666,7 +666,8 @@
                     :address signer-address})
 
           ;; Signer is the account holding the key pair to sign the query/transaction.
-          command (merge command {:convex-web.command/signer signer})
+          command (merge command (when signer
+                                   {:convex-web.command/signer signer}))
           
           invalid? (not (s/valid? :convex-web/command command))
           
@@ -681,11 +682,19 @@
       
       (cond
         forbidden?
-        (-forbidden-response (error "Unauthorized."))
+        (let [error (error "Unauthorized.")]
+
+          (log/error "Command error." error)
+
+          (-forbidden-response error))
         
         invalid?
-        (-bad-request-response (error (str "Invalid Command.\n" 
-                                        (expound/expound-str :convex-web/command command))))
+        (let [error (error (str "Invalid Command.\n"
+                             (expound/expound-str :convex-web/command command)))]
+
+          (log/error "Command error." error)
+
+          (-bad-request-response error))
         
         :else
         (-successful-response (command/execute system command))))

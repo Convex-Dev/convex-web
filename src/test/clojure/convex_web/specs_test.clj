@@ -1,10 +1,10 @@
 (ns convex-web.specs-test
   (:require 
-   [convex-web.specs]
-   [convex-web.config :as config]
-   
    [clojure.test :refer [deftest is testing]]
-   [clojure.spec.alpha :as s]))
+   [clojure.spec.alpha :as s]
+
+   [convex-web.specs]
+   [convex-web.config :as config]))
 
 (s/check-asserts true)
 
@@ -33,28 +33,33 @@
       (is (s/valid? :convex-web/command c))))
 
   (testing "Incoming Transaction"
-    (let [t #:convex-web.transaction{:type :convex-web.transaction.type/invoke
-                                     :source "1"
-                                     :language :convex-lisp
-                                     :target 1}
 
-          c #:convex-web.command {:id (java.util.UUID/randomUUID)
-                                  :timestamp 1
-                                  :address TEST_ADDRESS
-                                  :mode :convex-web.command.mode/transaction
-                                  :transaction t}]
-      (is (s/valid? :convex-web/command c)))
+    (testing "Invoke"
+      (let [t #:convex-web.transaction{:type :convex-web.transaction.type/invoke
+                                       :source "1"
+                                       :language :convex-lisp
+                                       :target 1}
 
-    (let [t #:convex-web.transaction{:type :convex-web.transaction.type/transfer
-                                     :amount 1
-                                     :target 1}
+            c #:convex-web.command {:id (java.util.UUID/randomUUID)
+                                    :timestamp 1
+                                    :signer {:convex-web.account/address 9}
+                                    :mode :convex-web.command.mode/transaction
+                                    :transaction t}]
 
-          c #:convex-web.command {:id (java.util.UUID/randomUUID)
-                                  :timestamp 1
-                                  :address TEST_ADDRESS
-                                  :mode :convex-web.command.mode/transaction
-                                  :transaction t}]
-      (is (s/valid? :convex-web/command c))))
+        (is (= nil (s/explain-data :convex-web/command c)))))
+
+    (testing "Transfer"
+      (let [t #:convex-web.transaction{:type :convex-web.transaction.type/transfer
+                                       :amount 1
+                                       :target 1}
+
+            c #:convex-web.command {:id (java.util.UUID/randomUUID)
+                                    :timestamp 1
+                                    :signer {:convex-web.account/address 9}
+                                    :mode :convex-web.command.mode/transaction
+                                    :transaction t}]
+
+        (is (= nil (s/explain-data :convex-web/command c))))))
 
   (testing "Running Transaction"
     (let [t #:convex-web.transaction {:type :convex-web.transaction.type/invoke
@@ -64,11 +69,12 @@
 
           c #:convex-web.command {:id (java.util.UUID/randomUUID)
                                   :timestamp 1
-                                  :address TEST_ADDRESS
+                                  :signer {:convex-web.account/address 9}
                                   :status :convex-web.command.status/running
                                   :mode :convex-web.command.mode/transaction
                                   :transaction t}]
-      (is (s/valid? :convex-web/command c))))
+
+      (is (= nil (s/explain-data :convex-web/command c)))))
 
   (testing "Running Query"
     (let [q #:convex-web.query {:source "1"
@@ -80,7 +86,8 @@
                                   :status :convex-web.command.status/running
                                   :mode :convex-web.command.mode/query
                                   :query q}]
-      (is (s/valid? :convex-web/command c))))
+
+      (is (= nil (s/explain-data :convex-web/command c)))))
 
   (testing "Successful Query"
     (let [q #:convex-web.query {:source "1"
@@ -106,8 +113,9 @@
                                   :mode :convex-web.command.mode/query
                                   :query q
                                   :error {:message "Error"}}]
-      (is (s/valid? :convex-web/command c)))))
+
+      (is (= nil (s/explain-data :convex-web/command c))))))
 
 (deftest config-test
   (testing "Test configuration"
-    (is (s/valid? :convex-web/config (config/read-config :test)))))
+    (is (= nil (s/explain-data :convex-web/config (config/read-config :test))))))
