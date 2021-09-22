@@ -10,7 +10,6 @@
    [convex-web.site.store :as store]
    [convex-web.site.gui :as gui]
    [convex-web.site.format :as format]
-   [convex-web.site.backend :as backend]
    [convex-web.site.invoke :as invoke]
 
    ["@heroicons/react/solid" :as icon]))
@@ -320,7 +319,11 @@
 
              [:th
               {:class th-class}
-              "Key Pair"]])]
+              "Key Pair"]
+
+             [:th
+              {:class th-class}
+              ""]])]
 
          [:tbody
           (doall
@@ -344,7 +347,7 @@
                    (let [account (store/?account address)]
                      (format/format-number (get-in account [:convex-web.account/status :convex-web.account-status/balance])))]]
 
-                 ;; - Key Pair
+                 ;; -- Key Pair
                  [:td {:class td-class}
                   [gui/Tooltip
                    {:title "View Key Pair"
@@ -353,6 +356,18 @@
                     {:on-click #(stack/push :page.id/account-key-pair {:modal? true
                                                                        :state {:address address}})}
                     [:> icon/KeyIcon
+                     {:className "w-5 h-5"}]]]]
+
+                 ;; -- Remove
+                 [:td {:class td-class}
+                  [gui/Tooltip
+                   {:title "Remove account"
+                    :size "small"}
+                   [:button.p-2.rounded.hover:shadow.hover:bg-gray-100.active:bg-gray-200
+                    {:on-click #(stack/push :page.id/wallet-remove-account
+                                  {:modal? true
+                                   :state {:address address}})}
+                    [:> icon/TrashIcon
                      {:className "w-5 h-5"}]]]]])))]]
         [:p.prose
          "You currently have no active account. Either create a new account, or import one using a previously created wallet key."])
