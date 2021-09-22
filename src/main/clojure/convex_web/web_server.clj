@@ -653,13 +653,13 @@
 
       -server-error-response)))
 
-(defn -POST-command [context {:keys [body] :as request}]
+(defn -POST-command [system {:keys [body] :as request}]
   (try
     (let [{::command/keys [address mode] :as command} (encoding/transit-decode body)
           
           invalid? (not (s/valid? :convex-web/command command))
           
-          session-addresses (session-addresses context request)
+          session-addresses (session-addresses system request)
           
           forbidden? (case mode
                        :convex-web.command.mode/query
@@ -679,7 +679,11 @@
                                         (expound/expound-str :convex-web/command command))))
         
         :else
-        (let [command' (command/execute context command)]
+        (let [sid (ring-session request)
+
+              command (merge command {:convex-web.command/sid sid})
+
+              command' (command/execute system command)]
           (-successful-response command'))))
     (catch Throwable ex
       (log/error ex "Command error.")

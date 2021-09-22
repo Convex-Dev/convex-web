@@ -165,7 +165,8 @@
   (session/all-ring (db))
   
   (session/all (db))
-  (session/find-session (db) "917090fd-f1ca-473e-9697-6ec21e18e3f7")
+  (session/find-session (db) "ee9e0671-1c8e-4787-a60c-a97543ef634a")
+  (session/find-account (db) {:sid "ee9e0671-1c8e-4787-a60c-a97543ef634a" :address 87})
   
   ;; --
   

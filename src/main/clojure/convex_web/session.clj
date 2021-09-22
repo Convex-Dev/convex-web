@@ -1,8 +1,12 @@
 (ns convex-web.session
   (:require
+   [clojure.tools.logging :as log]
+
    [datalevin.core :as d]
    [ring.middleware.session.store :refer [SessionStore]]
-   [clojure.tools.logging :as log])
+
+
+   [convex-web.convex :as convex])
 
   (:import (java.util UUID)))
 
@@ -23,15 +27,19 @@
           session (assoc session :convex-web.session/accounts (vec wallet))]
       session)))
 
-(defn find-account [db address]
-  (d/q '[:find (pull ?accounts [:convex-web.account/address
-                                :convex-web.account/key-pair]) .
-         :in $ ?address
-         :where
-         [_ :convex-web.session/accounts ?accounts]
-         [?accounts :convex-web.account/address ?address]]
-       db
-       address))
+(defn find-account [db {:keys [sid address]}]
+  (let [wallet (d/q '[:find ?wallet .
+                      :in $ ?sid
+                      :where
+                      [?session :convex-web.session/id ?sid]
+                      [?session :convex-web.session/wallet ?wallet]]
+                 db sid)]
+    (reduce
+      (fn [_ {this-address :convex-web.account/address :as account}]
+        (when (= (convex/address-safe address) (convex/address-safe this-address))
+          (reduced account)))
+      nil
+      wallet)))
 
 (defn all-ring [db]
   (d/q '[:find [(pull ?e [*]) ...]

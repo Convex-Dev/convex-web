@@ -1,6 +1,7 @@
 (ns convex-web.command
   (:require [convex-web.system :as system]
             [convex-web.account :as account]
+            [convex-web.session :as session]
             [convex-web.convex :as convex]
             [convex-web.specs]
 
@@ -144,7 +145,7 @@
 ;; --
 
 (defn execute-transaction [system command]
-  (let [{::keys [address transaction]} command]
+  (let [{::keys [sid address transaction]} command]
     (locking (convex/lockee address)
       (let [{:convex-web.transaction/keys [source amount type target]} transaction
 
@@ -156,7 +157,11 @@
                                         (convex/sequence-number peer caller-address)
                                         0))
 
-            {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) caller-address)
+            db (system/db system)
+
+            account (session/find-account db {:sid sid :address caller-address})
+
+            {account-key-pair :convex-web.account/key-pair} account
 
             atransaction (case type
                            :convex-web.transaction.type/invoke
@@ -170,11 +175,11 @@
                                                          :target target
                                                          :amount amount}))]
 
-        (when-not (:convex-web.key-pair/private-key key-pair)
-          (throw (ex-info "Missing private key." (merge {} key-pair))))
+        (when-not (:convex-web.key-pair/private-key account-key-pair)
+          (throw (ex-info "Missing private key." (merge {} account-key-pair))))
 
         (try
-          (let [^Result r (->> (convex/sign (convex/create-key-pair key-pair) atransaction)
+          (let [^Result r (->> (convex/sign (convex/create-key-pair account-key-pair) atransaction)
                             (convex/transact-signed (system/convex-client system)))
 
                 bad-sequence-number? (when-let [error-code (.getErrorCode r)]
