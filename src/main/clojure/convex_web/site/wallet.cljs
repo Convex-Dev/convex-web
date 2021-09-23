@@ -381,7 +381,7 @@
           "items-strech"
           "items-start")}
        [gui/Tooltip
-        {:title "Add an existing account to your Wallet"
+        {:title "Add an existing account to your wallet"
          :size "small"}
 
         ;; -- Add Account
@@ -396,14 +396,18 @@
           [:span.block.text-xs.uppercase.text-white
            "Add existing account"]]]]
 
+
        ;; -- Restore Wallet
 
-       [gui/PrimaryButton
-        {:on-click #(stack/push :page.id/session {:modal? true
-                                                  :title "Restore Wallet"})}
-        [:span.block.text-xs.uppercase.text-white
-         {:class gui/button-child-small-padding}
-         "Restore Wallet"]]]]]))
+       [gui/Tooltip
+        {:title "Restore an existing wallet"
+         :size "small"}
+        [gui/PrimaryButton
+         {:on-click #(stack/push :page.id/session {:modal? true
+                                                   :title "Restore Wallet"})}
+         [:span.block.text-xs.uppercase.text-white
+          {:class gui/button-child-small-padding}
+          "Restore Wallet"]]]]]]))
 
 (def wallet-page
   #:page {:id :page.id/testnet.wallet
