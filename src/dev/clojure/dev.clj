@@ -157,7 +157,6 @@
   
   (account/find-all (db))
   (account/find-by-address (db) 48)
-  (account/find-address-key-pair (db) 44)
   
   
   ;; -- Session

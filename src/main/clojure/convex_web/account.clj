@@ -12,19 +12,11 @@
          :where [?e :convex-web.account/address]]
        db))
 
-(defn find-by-address [db addressable]
+(defn find-by-address [db address]
   (d/q '[:find (pull ?e [* {:convex-web.account/faucets [*]}]) .
          :in $ ?address
          :where [?e :convex-web.account/address ?address]]
-       db (.longValue (convex/address addressable))))
-
-(defn find-address-key-pair [db address]
-  (d/q '[:find ?key-pair .
-         :in $ ?address
-         :where
-         [?account :convex-web.account/address ?address]
-         [?account :convex-web.account/key-pair ?key-pair]]
-    db (.longValue (convex/address address))))
+       db (.longValue (convex/address address))))
 
 (defn equivalent?
   "Returns true if account-a is equivalent to account-b.

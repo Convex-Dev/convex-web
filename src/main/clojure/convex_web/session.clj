@@ -1,10 +1,10 @@
 (ns convex-web.session
   (:require
+   [clojure.pprint :as pp]
    [clojure.tools.logging :as log]
 
    [datalevin.core :as d]
    [ring.middleware.session.store :refer [SessionStore]]
-
 
    [convex-web.convex :as convex])
 
@@ -64,14 +64,14 @@
           key (or key (str (UUID/randomUUID)))
           session (merge {:ring.session/key key} data)]
 
-      (log/debug "Transact Session" session)
+      (log/debug (str "Write Ring session:\n" (with-out-str (pp/pprint session))))
 
       (d/transact! conn [session])
 
       key))
 
   (delete-session [_ key]
-    (log/debug "Delete Session" key)
+    (log/debug "Delete Ring session" key)
 
     (d/transact! conn [[:db.fn/retractEntity key]])
 
