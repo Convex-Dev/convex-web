@@ -380,19 +380,15 @@
         (if (seq accounts)
           "items-strech"
           "items-start")}
+
+       ;; -- Add Account
+
        [gui/Tooltip
         {:title "Add an existing account to your wallet"
          :size "small"}
 
-        ;; -- Add Account
-
-        [:button
-         {:class
-          ["rounded"
-           "shadow-md"
-           "focus:outline-none"
-           "bg-blue-500 hover:bg-blue-400 active:bg-blue-600"]
-          :on-click #(stack/push :page.id/add-account {:modal? true})}
+        [gui/PrimaryButton
+         {:on-click #(stack/push :page.id/add-account {:modal? true})}
          [:div.flex.items-center.space-x-2
           {:class gui/button-child-small-padding}
           [:> icon/PlusIcon
