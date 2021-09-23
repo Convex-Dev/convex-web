@@ -1131,10 +1131,10 @@
         req-address (convex/address req-address)
 
         key-pair-account-key (when req-account-key
-                               {:convex-web.key-pair/account-key req-account-key})
+                               {:convex-web.key-pair/account-key (str/replace req-account-key #"^0x" "")})
 
         key-pair-private-key (when req-private-key
-                               {:convex-web.key-pair/private-key req-private-key})
+                               {:convex-web.key-pair/private-key (str/replace req-private-key #"^0x" "")})
 
         to-be-added-account (merge #:convex-web.account {:address (.longValue req-address)}
                               (when (or key-pair-account-key key-pair-private-key)
