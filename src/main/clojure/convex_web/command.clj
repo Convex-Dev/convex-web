@@ -182,7 +182,8 @@
                                                          :amount amount}))]
 
         (when-not (:convex-web.key-pair/private-key signer-key-pair)
-          (throw (ex-info "Missing private key." (merge {} signer-key-pair))))
+          (throw (ex-info (str "Wallet doesn't have a private key set up for account " signer-address ".")
+                   (merge {} signer-key-pair))))
 
         (try
           (let [^Result r (->> (convex/sign (convex/create-key-pair signer-key-pair) atransaction)
@@ -257,11 +258,8 @@
                    ;; and the Exception's message will be used as its message.
                    #:convex-web.command 
                    {:status :convex-web.command.status/error
-                    :error
-                    (merge {:message (ex-message (or (some-> error stacktrace/root-cause) error))}
-                      ;; If the Reader fails, it will add the error code to the exception data.
-                      (when-let [code (:convex-web.result/error-code (ex-data error))]
-                        {:code code}))})
+                    :error {:code (or (:convex-web.result/error-code (ex-data error)) :Server)
+                            :message (ex-message (or (some-> error stacktrace/root-cause) error))}})
         
         ;; Updated Command.
         command' (merge (select-keys command [:convex-web.command/id
