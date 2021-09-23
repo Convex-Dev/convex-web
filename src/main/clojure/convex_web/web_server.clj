@@ -703,92 +703,6 @@
       
       -server-error-response)))
 
-(defn -POST-add-account
-  "Ring Handler to add an existing account.
-
-  Internal API."
-  [system req]
-  (try
-    (let [{:keys [body]} req
-
-          {req-address :address
-           req-account-key :account-key
-           req-private-key :private-key} (encoding/transit-decode body)
-
-          req-address (convex/address req-address)
-
-          to-be-added-account (merge #:convex-web.account {:address (.longValue req-address)
-                                                           :created-at (inst-ms (Instant/now))}
-                                (when (and req-account-key req-private-key)
-                                  {:convex-web.account/key-pair
-                                   {:convex-web.key-pair/account-key req-account-key
-                                    :convex-web.key-pair/private-key req-private-key}}))
-
-          existing-account (account/find-by-address (system/db system) req-address)
-
-          stealing? (and existing-account
-                      (account/nonequivalent? existing-account to-be-added-account))]
-
-      ;; NOTE: Not every account in Convex is persisted in the convex.world database.
-
-      (if stealing?
-        (-forbidden-response (error "Incorrect key pair."))
-        (let [account (or existing-account to-be-added-account)
-
-              session {:convex-web.session/id (ring-session req)
-                       :convex-web.session/accounts [account]}
-
-              {db :db-after} (d/transact! (system/db-conn system) [session])]
-
-          (-successful-response (session/find-session db (ring-session req))))))
-    (catch Exception ex
-      (log/error ex)
-
-      -server-error-response)))
-
-(defn -POST-remove-account
-  "Ring Handler to remove account from user's session.
-
-  Internal API."
-  [system req]
-  (try
-    (let [{:keys [body]} req
-
-          {req-address :address
-           req-account-key :account-key
-           req-private-key :private-key} (encoding/transit-decode body)
-
-          req-address (convex/address req-address)
-
-          to-be-added-account (merge #:convex-web.account {:address (.longValue req-address)
-                                                           :created-at (inst-ms (Instant/now))}
-                                (when (and req-account-key req-private-key)
-                                  {:convex-web.account/key-pair
-                                   {:convex-web.key-pair/account-key req-account-key
-                                    :convex-web.key-pair/private-key req-private-key}}))
-
-          existing-account (account/find-by-address (system/db system) req-address)
-
-          stealing? (and existing-account
-                      (account/nonequivalent? existing-account to-be-added-account))]
-
-      ;; NOTE: Not every account in Convex is persisted in the convex.world database.
-
-      (if stealing?
-        (-forbidden-response (error "Incorrect key pair."))
-        (let [account (or existing-account to-be-added-account)
-
-              session {:convex-web.session/id (ring-session req)
-                       :convex-web.session/accounts [account]}
-
-              {db :db-after} (d/transact! (system/db-conn system) [session])]
-
-          (-successful-response (session/find-session db (ring-session req))))))
-    (catch Exception ex
-      (log/error ex)
-
-      -server-error-response)))
-
 (defn -POST-create-account
   "Ring Handler to create a new account.
   
@@ -877,6 +791,7 @@
           [last-faucet & _] (sort-by :convex-web.faucet/timestamp #(compare %2 %1) (get account ::account/faucets))
           last-faucet-timestamp (get last-faucet :convex-web.faucet/timestamp 0)
           last-faucet-millis-ago (- (.getTime (Date.)) last-faucet-timestamp)]
+
       (cond
         (not (s/valid? :convex-web/faucet faucet))
         (let [message "Invalid request."]
@@ -926,6 +841,7 @@
             :amount amount)
           
           (-successful-response faucet))))
+
     (catch Exception ex
       (u/log :logging.event/system-error
         :severity :error
@@ -1304,6 +1220,7 @@
     (GET "/api/internal/reference" req (-GET-reference system req))
     (GET "/api/internal/markdown-page" req (-GET-markdown-page system req))
     (GET "/api/internal/state" req (-GET-STATE system req))
+
     (POST "/api/internal/invoke" req (invoke system req))
 
     (route/resources "/")
