@@ -23,10 +23,9 @@
    "focus:outline-none focus:ring focus:border-blue-300"])
 
 (defn AccountKeyPairPage [_ state _]
-  (let [{:keys [address
-                convex-web.key-pair/account-key
-                convex-web.key-pair/private-key
-                ajax/status]} state
+  (let [{:convex-web.account/keys [address key-pair]} state
+
+        {:convex-web.key-pair/keys [account-key private-key]} key-pair
 
         account-key (some-> account-key format/prefix-0x)
         private-key (some-> private-key format/prefix-0x)]
@@ -40,10 +39,7 @@
 
       [:a.hover:underline
        {:href (rfe/href :route-name/testnet.account {:address address})}
-       [:code.text-base (format/prefix-# address)]]
-
-      (when (= status :ajax.status/pending)
-        [gui/SpinnerSmall])]
+       [:code.text-base (format/prefix-# address)]]]
 
      [:div.flex.flex-col.space-y-6
 
@@ -75,22 +71,7 @@
   #:page {:id :page.id/account-key-pair
           :title "Key Pair"
           :component #'AccountKeyPairPage
-          :on-push
-          (fn [_ state set-state]
-            (let [{:keys [address]} state]
-              (set-state merge {:ajax/status :ajax.status/pending})
-
-              (invoke/wallet-account-key-pair
-                {:body {:address address}
-
-                 :handler
-                 (fn [key-pair]
-                   (set-state merge key-pair {:ajax/status :ajax.status/success}))
-
-                 :error-handler
-                 (fn [error]
-                   (set-state merge {:ajax/status :ajax.status/error
-                                     :error error}))})))})
+          :state-spec :convex-web/signer})
 
 
 (defn AddAccountPage [_ state set-state]
@@ -327,7 +308,7 @@
 
          [:tbody
           (doall
-            (for [{:convex-web.account/keys [address]} accounts]
+            (for [{:convex-web.account/keys [address key-pair] :as account} accounts]
               (let [td-class ["text-xs text-gray-700 whitespace-no-wrap px-2"]]
                 ^{:key address}
                 [:tr.cursor-default
@@ -350,11 +331,17 @@
                  ;; -- Key Pair
                  [:td {:class td-class}
                   [gui/Tooltip
-                   {:title "View Key Pair"
+                   {:title (if key-pair
+                             "View Key Pair"
+                             "Account doesn't have a key pair")
                     :size "small"}
                    [:button.p-2.rounded.hover:shadow.hover:bg-gray-100.active:bg-gray-200
-                    {:on-click #(stack/push :page.id/account-key-pair {:modal? true
-                                                                       :state {:address address}})}
+                    {:class (if key-pair
+                              "text-gray-800"
+                              "text-gray-400 pointer-events-none")
+                     :on-click #(stack/push :page.id/account-key-pair
+                                  {:modal? true
+                                   :state account})}
                     [:> icon/KeyIcon
                      {:className "w-5 h-5"}]]]]
 

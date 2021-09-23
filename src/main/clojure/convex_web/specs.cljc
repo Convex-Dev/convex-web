@@ -149,6 +149,9 @@
 (s/def :convex-web/key-pair (s/keys :req [:convex-web.key-pair/account-key
                                           :convex-web.key-pair/private-key]))
 
+(s/def :convex-web/key-pair-opt (s/keys :opt [:convex-web.key-pair/account-key
+                                              :convex-web.key-pair/private-key]))
+
 ;; -- Account Status
 
 (s/def :convex-web.account-status/sequence :convex-web/sequence)
@@ -162,7 +165,7 @@
 
 (s/def :convex-web.account/status :convex-web/account-status)
 (s/def :convex-web.account/address :convex-web/address)
-(s/def :convex-web.account/key-pair :convex-web/key-pair)
+(s/def :convex-web.account/key-pair :convex-web/key-pair-opt)
 
 (s/def :convex-web/account (s/keys :req [:convex-web.account/address]
                                    :opt [:convex-web.account/status
