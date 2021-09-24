@@ -13,7 +13,7 @@
    (convex.core.lang Core Reader RT Context AFn)
    (convex.core.lang.impl Fn CoreFn)
    (convex.core Order Block Peer State Result)
-   (convex.core.crypto AKeyPair PFXTools)
+   (convex.core.crypto AKeyPair PFXTools Ed25519KeyPair)
    (convex.core.transactions Transfer ATransaction Invoke Call)
    (convex.core.util Utils)
    (convex.api Convex)
@@ -85,9 +85,10 @@
 
 (defn key-pair-data 
   "Returns AKeyPair as a map."
-  [^AKeyPair key-pair]
+  [^Ed25519KeyPair key-pair]
   {:convex-web.key-pair/account-key (.toChecksumHex (.getAccountKey key-pair))
-   :convex-web.key-pair/private-key (.toHexString (.getEncodedPrivateKey key-pair))})
+   :convex-web.key-pair/private-key (.toHexString (.getEncodedPrivateKey key-pair))
+   :convex-web.key-pair/seed (.toHexString (.getSeed key-pair))})
 
 (defn ^AKeyPair create-key-pair 
   "Creates AKeyPair from a map."
