@@ -769,14 +769,13 @@
                             ;; Update an existing session.
                             (update session :convex-web.session/wallet (fnil conj #{}) wallet-account)
 
-                            ;; Else; Create a new session.
+                            ;; Else; create a new session.
                             {:convex-web.session/id sid
                              :convex-web.session/wallet #{wallet-account}})]
 
               (d/transact! (system/db-conn system) [session])
               
-              (-successful-response (select-keys account [::account/address
-                                                          ::account/created-at])))))))
+              (-successful-response wallet-account))))))
     (catch Exception ex
       (log/error ex "Account confirmation error.")
       
