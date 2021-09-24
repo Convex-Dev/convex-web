@@ -88,9 +88,11 @@
 
 
 (defn AddAccountPage [_ state set-state]
-  (let [{:keys [address seed account-key private-key error ajax/status]} state
+  (let [{:keys [using-choice address seed account-key private-key error ajax/status]} state
 
-        pending? (= status :ajax.status/pending)]
+        pending? (= status :ajax.status/pending)
+
+        using-choice (or using-choice :seed)]
     [:div.flex.flex-col.space-y-8.p-6
      {:class "w-[50vw]"}
 
@@ -110,44 +112,71 @@
          #(set-state assoc :address (gui/event-target-value %))}]]
 
 
-      ;; -- Public Key
-      [:div.flex.flex-col.space-y-1
+      ;; -- Using Seed
+      [:div.flex.space-x-2
+       [:label
+        [:input
+         {:type "radio"
+          :value "seed"
+          :checked (= using-choice :seed)
+          :on-change #(set-state assoc :using-choice :seed)}]
 
-       [gui/Caption
-        "Seed"]
+        [:span.text-xs.text-gray-700.uppercase.ml-1 "Using Seed"]]
 
-       [:input
-        {:class input-style
-         :type "text"
-         :value seed
-         :on-change
-         #(set-state assoc :seed (gui/event-target-value %))}]]
+       ;; -- Using keys
+       [:label
+        [:input
+         {:type "radio"
+          :value "keys"
+          :checked (= using-choice :keys)
+          :on-change #(set-state assoc :using-choice :keys)}]
 
-      ;; -- Public Key
-      [:div.flex.flex-col.space-y-1
+        [:span.text-xs.text-gray-700.uppercase.ml-1 "Using Keys"]]]
 
-       [gui/Caption
-        "Account Key"]
 
-       [:input
-        {:class input-style
-         :type "text"
-         :value account-key
-         :on-change
-         #(set-state assoc :account-key (gui/event-target-value %))}]]
+      ;; -- Using
 
-      ;; -- Private Key
-      [:div.flex.flex-col.space-y-1
+      (if (= using-choice :seed)
+        ;; Using seed.
+        [:div.flex.flex-col.space-y-1
 
-       [gui/Caption
-        "Private Key"]
+         [gui/Caption
+          "Seed"]
 
-       [:input
-        {:class input-style
-         :type "text"
-         :value private-key
-         :on-change
-         #(set-state assoc :private-key (gui/event-target-value %))}]]]
+         [:input
+          {:class input-style
+           :type "text"
+           :value seed
+           :on-change
+           #(set-state assoc :seed (gui/event-target-value %))}]]
+
+        ;; Else; using keys.
+        [:<>
+         ;; -- Public Key
+         [:div.flex.flex-col.space-y-1
+
+          [gui/Caption
+           "Account Key"]
+
+          [:input
+           {:class input-style
+            :type "text"
+            :value account-key
+            :on-change
+            #(set-state assoc :account-key (gui/event-target-value %))}]]
+
+         ;; -- Private Key
+         [:div.flex.flex-col.space-y-1
+
+          [gui/Caption
+           "Private Key"]
+
+          [:input
+           {:class input-style
+            :type "text"
+            :value private-key
+            :on-change
+            #(set-state assoc :private-key (gui/event-target-value %))}]]])]
 
      (when (= :ajax.status/error status)
        [:span.text-sm.text-red-500
