@@ -215,7 +215,7 @@
 
       [:div.relative
        [:span.block.text-sm.uppercase.text-white
-        {:class gui/button-child-small-padding}
+        {:class gui/button-child-large-padding}
         "Confirm"]
 
        (when pending?
@@ -288,7 +288,7 @@
 
       [:div.relative
        [:span.block.text-sm.uppercase.text-white
-        {:class gui/button-child-small-padding}
+        {:class gui/button-child-large-padding}
         "Confirm"]
 
        (when pending?
@@ -436,11 +436,11 @@
         [gui/PrimaryButton
          {:on-click #(stack/push :page.id/add-account {:modal? true})}
          [:div.flex.items-center.space-x-2
-          {:class gui/button-child-small-padding}
+          {:class gui/button-child-large-padding}
           [:> icon/PlusIcon
            {:className "w-5 h-5 text-white"}]
 
-          [:span.block.text-xs.uppercase.text-white
+          [:span.block.text-sm.uppercase.text-white
            "Add existing account"]]]]
 
 
@@ -452,8 +452,8 @@
         [gui/PrimaryButton
          {:on-click #(stack/push :page.id/session {:modal? true
                                                    :title "Restore Wallet"})}
-         [:span.block.text-xs.uppercase.text-white
-          {:class gui/button-child-small-padding}
+         [:span.block.text-sm.uppercase.text-white
+          {:class gui/button-child-large-padding}
           "Restore Wallet"]]]]]]))
 
 (def wallet-page
