@@ -433,8 +433,13 @@
         {:title "Add an existing account to your wallet"
          :size "small"}
 
-        [gui/PrimaryButton
-         {:on-click #(stack/push :page.id/add-account {:modal? true})}
+        [:button
+         {:class
+          ["w-[300px]"
+           "rounded"
+           "shadow-md"
+           "bg-blue-500 hover:bg-blue-400 active:bg-blue-600"]
+          :on-click #(stack/push :page.id/add-account {:modal? true})}
          [:div.flex.items-center.space-x-2
           {:class gui/button-child-large-padding}
           [:> icon/PlusIcon
@@ -449,8 +454,14 @@
        [gui/Tooltip
         {:title "Restore an existing wallet"
          :size "small"}
-        [gui/PrimaryButton
-         {:on-click #(stack/push :page.id/session {:modal? true
+
+        [:button
+         {:class
+          ["w-[300px]"
+           "rounded"
+           "shadow-md"
+           "bg-blue-500 hover:bg-blue-400 active:bg-blue-600"]
+          :on-click #(stack/push :page.id/session {:modal? true
                                                    :title "Restore Wallet"})}
          [:span.block.text-sm.uppercase.text-white
           {:class gui/button-child-large-padding}
