@@ -36,8 +36,8 @@
    (java.io InputStream)
    
    (convex.api Convex)
-   (convex.core.crypto ASignature AKeyPair)
-   (convex.core.data Ref SignedData AccountKey ACell Hash Address)
+   (convex.core.crypto ASignature AKeyPair Ed25519KeyPair)
+   (convex.core.data Ref SignedData AccountKey ACell Hash Address Blob)
    (convex.core.lang Context)
    (convex.core.lang.impl AExceptional)
    (convex.core Peer State Result Order)
@@ -1124,10 +1124,17 @@
   (let [{invoke-body :convex-web.invoke/body} body
 
         {req-address :address
+         req-seed :seed
          req-account-key :account-key
          req-private-key :private-key} invoke-body
 
         req-address (convex/address req-address)
+
+        ;; It's possible to recreate the key pair from seed.
+        key-pair-from-seed (when req-seed
+                             (convex/key-pair-data
+                               (Ed25519KeyPair/create
+                                 (Blob/fromHex (str/replace req-seed #"^0x" "")))))
 
         key-pair-account-key (when req-account-key
                                {:convex-web.key-pair/account-key (str/replace req-account-key #"^0x" "")})
@@ -1135,9 +1142,13 @@
         key-pair-private-key (when req-private-key
                                {:convex-web.key-pair/private-key (str/replace req-private-key #"^0x" "")})
 
-        to-be-added-account (merge #:convex-web.account {:address (.longValue req-address)}
-                              (when (or key-pair-account-key key-pair-private-key)
-                                {:convex-web.account/key-pair (merge key-pair-account-key key-pair-private-key)}))
+        key-pair-from-keys (merge key-pair-account-key key-pair-private-key)
+
+        key-pair (or key-pair-from-seed key-pair-from-keys)
+
+        to-be-added-account (merge {:convex-web.account/address (.longValue req-address)}
+                              (when key-pair
+                                {:convex-web.account/key-pair key-pair}))
 
         sid (ring-session req)
 

@@ -26,8 +26,8 @@
    (convex.core Peer)
    (convex.core.init Init AInitConfig)
    (convex.core.lang Core Reader Context)
-   (convex.core.crypto AKeyPair PFXTools)
-   (convex.core.data Keywords Address Hash AccountKey ASet AHashMap Symbol AccountStatus)))
+   (convex.core.crypto AKeyPair Ed25519KeyPair PFXTools)
+   (convex.core.data Blob Hash AccountKey Symbol)))
 
 ;; -- Logging
 (set-init
@@ -78,7 +78,11 @@
   ;; Generate a new key pair.
   (convex/key-pair-data (convex/generate-key-pair))
   
-  
+  (convex/key-pair-data
+    (Ed25519KeyPair/create
+      (Blob/fromHex "e7fc701f56bb8b602aeb6b96980038c3ad7419b578ee91ccac06ba6a21ec5259")))
+
+
   ;; -- Testing
   (let [handler (web-server/site system)]
     (handler (mock/request :post "/api/internal/generate-account")))

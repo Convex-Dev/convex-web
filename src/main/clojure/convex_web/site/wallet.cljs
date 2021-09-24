@@ -25,8 +25,9 @@
 (defn AccountKeyPairPage [_ state _]
   (let [{:convex-web.account/keys [address key-pair]} state
 
-        {:convex-web.key-pair/keys [account-key private-key]} key-pair
+        {:convex-web.key-pair/keys [seed account-key private-key]} key-pair
 
+        seed (some-> seed format/prefix-0x)
         account-key (some-> account-key format/prefix-0x)
         private-key (some-> private-key format/prefix-0x)]
 
@@ -42,6 +43,18 @@
        [:code.text-base (format/prefix-# address)]]]
 
      [:div.flex.flex-col.space-y-6
+
+      ;; -- Seed
+      [:div.flex.flex-col.space-y-1
+
+       [gui/Caption
+        "Seed"]
+
+       [:input
+        {:class input-style
+         :type "text"
+         :value (or seed "")
+         :readOnly true}]]
 
       ;; -- Public Key
       [:div.flex.flex-col.space-y-1
@@ -75,7 +88,7 @@
 
 
 (defn AddAccountPage [_ state set-state]
-  (let [{:keys [address account-key private-key error ajax/status]} state
+  (let [{:keys [address seed account-key private-key error ajax/status]} state
 
         pending? (= status :ajax.status/pending)]
     [:div.flex.flex-col.space-y-8.p-6
@@ -95,6 +108,20 @@
          :value address
          :on-change
          #(set-state assoc :address (gui/event-target-value %))}]]
+
+
+      ;; -- Public Key
+      [:div.flex.flex-col.space-y-1
+
+       [gui/Caption
+        "Seed"]
+
+       [:input
+        {:class input-style
+         :type "text"
+         :value seed
+         :on-change
+         #(set-state assoc :seed (gui/event-target-value %))}]]
 
       ;; -- Public Key
       [:div.flex.flex-col.space-y-1
@@ -136,6 +163,9 @@
 
          (invoke/wallet-add-account
            {:body (merge {:address address}
+
+                    (when seed
+                      {:seed seed})
 
                     (when account-key
                       {:account-key account-key})
