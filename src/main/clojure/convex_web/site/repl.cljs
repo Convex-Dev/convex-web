@@ -536,11 +536,11 @@
      [:div.w-screen.max-w-full.flex.flex-col.mb-6.space-y-2
       
       [:div.flex.justify-end
-       [gui/Tooltip
-        {:title "Show Examples & Reference"
-         :size "small"}
-        [gui/DefaultButton
-         {:on-click #(toggle-sidebar set-state)}
+       [gui/DefaultButton
+        {:on-click #(toggle-sidebar set-state)}
+        [:div.flex.space-x-2
+         [:span "Show Examples & Reference"]
+
          [gui/MenuAlt3Icon
           {:class "h-5 w-5"}]]]]
       
