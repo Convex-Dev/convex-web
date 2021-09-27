@@ -1,20 +1,20 @@
 (ns convex-web.site.repl
-  (:require [convex-web.site.gui :as gui]
-            [convex-web.site.command :as command]
-            [convex-web.site.session :as session]
-            [convex-web.site.stack :as stack]
-            [convex-web.site.backend :as backend]
-            [convex-web.site.format :as format]
+  (:require
+   [clojure.string :as str]
+   [cljs.spec.alpha :as s]
 
-            [clojure.string :as str]
-            [cljs.spec.alpha :as s]
+   [codemirror-reagent.core :as codemirror]
+   [reagent.core :as reagent]
+   [reitit.frontend.easy :as rfe]
 
-            [codemirror-reagent.core :as codemirror]
-            [reagent.core :as reagent]
-            [reitit.frontend.easy :as rfe]
-            [zprint.core :as zprint]
-            
-            ["react-resizable" :refer [ResizableBox]]))
+   [convex-web.site.gui :as gui]
+   [convex-web.site.command :as command]
+   [convex-web.site.session :as session]
+   [convex-web.site.stack :as stack]
+   [convex-web.site.backend :as backend]
+   [convex-web.site.format :as format]
+
+   ["react-resizable" :refer [ResizableBox]]))
 
 (defn mode [state]
   (:convex-web.repl/mode state))
@@ -54,61 +54,39 @@
 ;; ---
 
 (def convex-lisp-examples
-  (let [make-example (fn [& examples]
-                       (str/join "\n\n" examples))]
-    [["Self Balance"
-      (make-example "*balance*")]
+  [["Self Balance"
+    "*balance*"]
 
-     ["Self Address"
-      (make-example "*address*")]
+   ["Self Address"
+    "*address*"]
 
-     ["Check Balance"
-      (make-example
-        "(balance #9)")]
+   ["Check Balance"
+    "(balance #9)"]
 
-     ["Transfer"
-      (make-example
-        "(transfer #9 1000)")]
+   ["Transfer"
+    "(transfer #9 1000)"]
 
-     ["Creating a Token"
-      (make-example
-        "(import convex.fungible :as fungible)"
-        "(def my-token (deploy (fungible/build-token {:supply 1000})))")]
+   ["Creating a Token"
+    "(import convex.fungible :as fungible)\n\n(def my-token (deploy (fungible/build-token {:supply 1000})))"]
 
-     ["Simple Storage Actor"
-      (make-example
-        "(def storage-example-address (deploy '(do (def stored-data nil) (defn get [] stored-data) (defn set [x] (def stored-data x)) (export get set))))")]
-
-     ["Call Actor"
-      (make-example
-        "(def storage-example-address (deploy '(do (def stored-data nil) (defn get [] stored-data) (defn set [x] (def stored-data x)) (export get set))))"
-
-        "(call storage-example-address (set 1))"
-        "(call storage-example-address (get))")]
-
-     ["Subcurrency Actor"
-      (make-example
-        "(deploy '(do (def owner *caller*) (defn contract-transfer [receiver amount] (assert (= owner *caller*)) (transfer receiver amount)) (defn contract-balance [] *balance*) (export contract-transfer contract-balance)))")]]))
+   ["Simple Storage Actor"
+    "(def storage-example-address (deploy '(do (def stored-data nil)\n\n(defn ^{:callable? true} get [] stored-data)\n\n(defn ^{:callable? true} set [x] (def stored-data x)))))\n\n(call storage-example-address (set 1))\n\n(call storage-example-address (get))"]])
 
 (defn Examples [language]
-  (let [Title (fn [title]
-                [:span.text-sm title])]
-    
-    [:div.flex.flex-col.flex-1.pl-1.pr-4.overflow-auto
-     (map
-       (fn [[title source-code]]
-         (let [source-code (try
-                             (zprint/zprint-str source-code {:parse-string? true :width 60})
-                             (catch js/Error _
-                               source-code))]
-           ^{:key title}
-           [:div.flex.flex-col.py-2
-            [:div.flex.justify-between.items-center
-             [Title title]
-             [gui/ClipboardCopy source-code]]
-            
-            [gui/Highlight source-code {:language language}]]))
-       convex-lisp-examples)]))
+  [:div.flex.flex-col.flex-1.divide-y.pl-1.pr-4.overflow-auto
+   (for [[title source-code] convex-lisp-examples]
+     ^{:key title}
+     [:div.flex.flex-col.py-2.space-y-2
+
+      ;; -- Name
+      [:div.flex.justify-between.items-center
+       [:span.text-sm
+        title]
+
+       [gui/ClipboardCopy source-code]]
+
+      ;; -- Source
+      [gui/Highlight source-code {:language language}]])])
 
 (defn Reference [reference]
   (reagent/with-let [search-string-ref (reagent/atom nil)
