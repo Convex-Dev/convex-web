@@ -125,6 +125,19 @@
 (s/fdef POST-env
   :args (s/cat :args :POST-env/args))
 
+;; ---
+
+;; TODO: Delete
+(defn POST-add-account [{:keys [params handler error-handler]}]
+  (POST "/api/internal/add-account" (merge {:headers (csrf-header)
+                                            :handler handler
+                                            :params params}
+                                      (when error-handler
+                                        {:error-handler error-handler}))))
+
+
+;; ---
+
 
 (defn POST-transaction-prepare [{:keys [address source] :as params} {:keys [handler error-handler]}]
   (POST "/api/v1/transaction/prepare" (merge {:handler handler

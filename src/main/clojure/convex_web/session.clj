@@ -1,34 +1,45 @@
 (ns convex-web.session
-  (:require [datalevin.core :as d]
-            [ring.middleware.session.store :refer [SessionStore]]
-            [clojure.tools.logging :as log])
+  (:require
+   [clojure.pprint :as pp]
+   [clojure.tools.logging :as log]
+
+   [datalevin.core :as d]
+   [ring.middleware.session.store :refer [SessionStore]]
+
+   [convex-web.convex :as convex])
+
   (:import (java.util UUID)))
 
 (defn all [db]
-  (d/q '[:find [(pull ?e [* {:convex-web.session/accounts
-                             [:convex-web.account/address]}]) ...]
+  (d/q '[:find [(pull ?e [*]) ...]
          :in $
          :where [?e :convex-web.session/id _]]
        db))
 
 (defn find-session [db id]
-  (d/q '[:find (pull ?e [:convex-web.session/id
-                         {:convex-web.session/accounts
-                          [:convex-web.account/address]}]) .
-         :in $ ?id
-         :where [?e :convex-web.session/id ?id]]
-       db id))
+  (when-let [session (d/q '[:find (pull ?e [*]) .
+                            :in $ ?id
+                            :where [?e :convex-web.session/id ?id]]
+                       db id)]
+    (let [{wallet :convex-web.session/wallet} session
 
-(defn find-account [db address]
-  (d/q '[:find (pull ?accounts [:convex-web.account/address
-                                :convex-web.account/key-pair]) .
-         :in $ ?address
-         :where
-         [_ :convex-web.session/accounts ?accounts]
-         [?accounts :convex-web.account/address ?address]]
-       db
-       address))
+          ;; TODO: Change the app to use :convex-web.session/wallet instead.
+          session (assoc session :convex-web.session/accounts (vec wallet))]
+      session)))
 
+(defn find-account [db {:keys [sid address]}]
+  (let [wallet (d/q '[:find ?wallet .
+                      :in $ ?sid
+                      :where
+                      [?session :convex-web.session/id ?sid]
+                      [?session :convex-web.session/wallet ?wallet]]
+                 db sid)]
+    (reduce
+      (fn [_ {this-address :convex-web.account/address :as account}]
+        (when (= (convex/address-safe address) (convex/address-safe this-address))
+          (reduced account)))
+      nil
+      wallet)))
 
 (defn all-ring [db]
   (d/q '[:find [(pull ?e [*]) ...]
@@ -53,14 +64,14 @@
           key (or key (str (UUID/randomUUID)))
           session (merge {:ring.session/key key} data)]
 
-      (log/debug "Transact Session" session)
+      (log/debug (str "Write Ring session:\n" (with-out-str (pp/pprint session))))
 
       (d/transact! conn [session])
 
       key))
 
   (delete-session [_ key]
-    (log/debug "Delete Session" key)
+    (log/debug "Delete Ring session" key)
 
     (d/transact! conn [[:db.fn/retractEntity key]])
 

@@ -28,9 +28,8 @@
             [lambdaisland.glogi.console :as glogi-console]
             [reitit.frontend.easy :as rfe]
 
-            ["react" :as react]
             ["@headlessui/react" :as headlessui]
-            ["@heroicons/react/solid" :refer [MenuIcon XIcon ChevronDownIcon ChevronRightIcon]]
+            ["@heroicons/react/solid" :as icon :refer [MenuIcon XIcon ChevronDownIcon ChevronRightIcon]]
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]
             ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
@@ -115,7 +114,10 @@
 
    ;; ---
 
-   wallet/wallet-page])
+   wallet/wallet-page
+   wallet/add-account-page
+   wallet/remove-account-page
+   wallet/account-key-pair-page])
 
 ;; ---
 
@@ -509,16 +511,13 @@
        [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
         [:div.h-20.relative.flex.justify-between.items-center.px-6
 
-         [:span.font-mono.text-lg.leading-none title]
+         [:span.text-lg.leading-none title]
 
-         [gui/Tooltip
-          {:title "Close"}
-          [gui/IconXCircle
-           {:class
-            ["w-6 h-6"
-             "text-gray-600 hover:text-gray-700"
-             "cursor-pointer"]
-            :on-click #(stack/pop)}]]]]
+         [:button.p-2.rounded.hover:shadow.hover:bg-gray-100.active:bg-gray-200
+          {:class "text-gray-900 active:text-gray-700"
+           :on-click #(stack/pop)}
+          [:> icon/XIcon
+           {:className "w-5 h-5"}]]]]
 
        ;; -- Body
        [:div.flex.flex-1.max-h-full.overflow-auto

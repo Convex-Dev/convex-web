@@ -1,18 +1,21 @@
 (ns convex-web.command
-  (:require [convex-web.system :as system]
-            [convex-web.account :as account]
-            [convex-web.convex :as convex]
-            [convex-web.specs]
+  (:require
+   [clojure.spec.alpha :as s]
+   [clojure.tools.logging :as log]
+   [clojure.stacktrace :as stacktrace]
+   [clojure.pprint :as pprint]
 
-            [clojure.spec.alpha :as s]
-            [clojure.tools.logging :as log]
-            [clojure.stacktrace :as stacktrace]
+   [datalevin.core :as d]
 
-            [datalevin.core :as d])
-  (:import (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
-           (convex.core.lang Reader Symbols)
-           (convex.core Result)
-           (convex.core.data.prim CVMBool CVMLong CVMDouble)))
+   [convex-web.system :as system]
+   [convex-web.convex :as convex]
+   [convex-web.specs])
+
+  (:import
+   (convex.core.data Address Symbol ABlob AMap AVector ASet AList AString)
+   (convex.core.lang Reader Symbols)
+   (convex.core Result)
+   (convex.core.data.prim CVMBool CVMLong CVMDouble)))
 
 (defn source [command]
   (let [{:convex-web.command/keys [transaction query]} command]
@@ -131,9 +134,13 @@
 ;; --
 
 (defn execute-query [system command]
-  (let [{::keys [address query]} command
+  (let [{::keys [signer query]} command
+
+        {signer-address :convex-web.account/address} signer
+
         {:convex-web.query/keys [source language]} query]
-    (convex/query (system/convex-client system) {:address address
+
+    (convex/query (system/convex-client system) {:address signer-address
                                                  :source source
                                                  :lang language})))
 
@@ -144,45 +151,54 @@
 ;; --
 
 (defn execute-transaction [system command]
-  (let [{::keys [address transaction]} command]
-    (locking (convex/lockee address)
-      (let [{:convex-web.transaction/keys [source language amount type target]} transaction
+  (let [{::keys [signer transaction]} command
+
+        {signer-address :convex-web.account/address} signer
+
+        signer-address (convex/address signer-address)]
+
+    (locking (convex/lockee signer-address)
+
+      (let [{:convex-web.transaction/keys [source amount type target]} transaction
 
             peer (system/convex-peer system)
 
-            caller-address (convex/address address)
+            next-sequence-number (inc (or (convex/get-sequence-number signer-address)
+                                        (convex/sequence-number peer signer-address)
+                                        0))
 
-            next-sequence-number (inc (or (convex/get-sequence-number caller-address)
-                                          (convex/sequence-number peer caller-address)
-                                          0))
-
-            {:convex-web.account/keys [key-pair]} (account/find-by-address (system/db system) caller-address)
+            {signer-key-pair :convex-web.account/key-pair} signer
 
             atransaction (case type
                            :convex-web.transaction.type/invoke
                            (convex/invoke-transaction {:nonce next-sequence-number
-                                                       :address caller-address
+                                                       :address signer-address
                                                        :command (convex/read-source source)} )
 
                            :convex-web.transaction.type/transfer
-                           (convex/transfer-transaction {:address caller-address
+                           (convex/transfer-transaction {:address signer-address
                                                          :nonce next-sequence-number
                                                          :target target
                                                          :amount amount}))]
+
+        (when-not (:convex-web.key-pair/private-key signer-key-pair)
+          (throw (ex-info (str "Wallet doesn't have a private key set up for account " signer-address ".")
+                   (merge {} signer-key-pair))))
+
         (try
-          (let [^Result r (->> (convex/sign (convex/create-key-pair key-pair) atransaction)
-                               (convex/transact-signed (system/convex-client system)))
+          (let [^Result r (->> (convex/sign (convex/create-key-pair signer-key-pair) atransaction)
+                            (convex/transact-signed (system/convex-client system)))
 
                 bad-sequence-number? (when-let [error-code (.getErrorCode r)]
                                        (= :SEQUENCE (convex/datafy error-code)))]
 
             (if bad-sequence-number?
               (log/error "Result error: Bad sequence number." {:attempted-sequence-number next-sequence-number})
-              (convex/set-sequence-number! caller-address next-sequence-number))
+              (convex/set-sequence-number! signer-address next-sequence-number))
 
             r)
           (catch Throwable t
-            (convex/reset-sequence-number! caller-address)
+            (convex/reset-sequence-number! signer-address)
 
             (log/error t "Transaction failed." (merge transaction {:attempted-sequence-number next-sequence-number}))
 
@@ -195,7 +211,9 @@
 ;; --
 
 (defn execute [system {::keys [mode] :as command}]
-  (let [{:keys [result error]} 
+  (let [_ (log/debug (str "Execute\n" (with-out-str (pprint/pprint command))))
+
+        {:keys [result error]}
         (try
           {:result (cond
                      (= :convex-web.command.mode/query mode)
@@ -240,11 +258,8 @@
                    ;; and the Exception's message will be used as its message.
                    #:convex-web.command 
                    {:status :convex-web.command.status/error
-                    :error
-                    (merge {:message (ex-message (or (some-> error stacktrace/root-cause) error))}
-                      ;; If the Reader fails, it will add the error code to the exception data.
-                      (when-let [code (:convex-web.result/error-code (ex-data error))]
-                        {:code code}))})
+                    :error {:code (or (:convex-web.result/error-code (ex-data error)) :Server)
+                            :message (ex-message (or (some-> error stacktrace/root-cause) error))}})
         
         ;; Updated Command.
         command' (merge (select-keys command [:convex-web.command/id

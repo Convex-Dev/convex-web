@@ -11,6 +11,7 @@
 
    [convex-web.site.format :as format]
    [convex-web.site.backend :as backend]
+   [convex-web.site.stack :as stack]
    [convex-web.convex :as convex]
 
    ["react" :as react]
@@ -21,7 +22,7 @@
    ["react-tippy" :as tippy]
    ["react-markdown" :as ReactMarkdown]
    ["@headlessui/react" :as headlessui]
-   ["@heroicons/react/solid" :refer [XIcon]]
+   ["@heroicons/react/solid" :as icon :refer [XIcon]]
    ["qrcode.react" :as QRCode]
    ["jdenticon" :as jdenticon]))
 
@@ -711,12 +712,12 @@
   (let [disabled? (get attrs :disabled)]
     [:button
      (merge {:class
-             ["bg-blue-500 hover:bg-blue-400 active:bg-blue-600"
-              "rounded"
+             ["rounded"
               "shadow-md"
               "focus:outline-none"
-              (when disabled?
-                "pointer-events-none")]
+              (if disabled?
+                "pointer-events-none bg-blue-300"
+                "bg-blue-500 hover:bg-blue-400 active:bg-blue-600")]
              :on-click identity}
             attrs)
      child]))
@@ -733,6 +734,21 @@
                 "pointer-events-none")]
              :on-click identity}
             attrs)
+     child]))
+
+(defn RedButton [attrs child]
+  (let [disabled? (get attrs :disabled)]
+    [:button
+     (merge (merge {:class
+             ["rounded"
+              "shadow-md"
+              "focus:outline-none"
+              (if disabled?
+                "pointer-events-none bg-blue-300"
+                "bg-red-500 hover:bg-red-400 active:bg-red-600")]
+             :on-click identity}
+            attrs)
+       attrs)
      child]))
 
 (defn LightBlueButton [attrs child]
@@ -1468,14 +1484,50 @@
         :class (account-type-bg-color status)}
        type]]
      
-     
+     ;; -- Add/Remove to/from wallet
+     (let [session-accounts @(rf/subscribe [:session/?accounts])
+
+           addresses (into #{} (map :convex-web.account/address session-accounts))]
+
+       (if (contains? addresses address)
+         [:div.flex.flex-col.space-y-2
+          [RedButton
+           {:on-click #(stack/push :page.id/wallet-remove-account
+                         {:modal? true
+                          :state {:address address
+                                  :account-key account-key}})}
+           [:div
+            {:class button-child-small-padding}
+            [:span.block.text-xs.uppercase.text-white
+             "Remove from wallet"]]]
+
+          [:span.text-xs.text-gray-500
+           "Remove this account from your wallet."]]
+
+         [:div.flex.flex-col.space-y-2
+          [PrimaryButton
+           {:on-click #(stack/push :page.id/add-account
+                         {:modal? true
+                          :title "Add to Wallet"
+                          :state {:address address
+                                  :account-key account-key}})}
+           [:div
+            {:class button-child-small-padding}
+            [:span.block.text-xs.uppercase.text-white
+             "Add to wallet"]]]
+
+          [:span.text-xs.text-gray-500
+           "Add this account to your wallet."]]))
+
+
      ;; Public key
      ;; ==============
-     [:div
-      [Caption
-       {:label "Public Key"
-        :tooltip "Public Keys may be safely shared with others, as they do not allow digital signatures to be created without the corresponding private key."}]
-      [:code.text-sm (or account-key "-")]]
+     [:div.flex.items-center.space-x-8
+      [:div
+       [Caption
+        {:label "Public Key"
+         :tooltip "Public Keys may be safely shared with others, as they do not allow digital signatures to be created without the corresponding private key."}]
+       [:code.text-sm (or (format/prefix-0x account-key) "-")]]]
      
      
      ;; Balance
@@ -1543,7 +1595,8 @@
       [EnvironmentBrowser
        {:convex-web/account account}]
 
-      [:p.text-sm.text-gray-500.max-w-prose
-       "The environment is a space reserved for each Account
+      [:div.pb-20
+       [:p.text-sm.text-gray-500.max-w-prose
+        "The environment is a space reserved for each Account
        that can freely store on-chain data and definitions.
-       (e.g. code that you write in Convex Lisp)"]]]))
+       (e.g. code that you write in Convex Lisp)"]]]]))

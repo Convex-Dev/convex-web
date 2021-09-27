@@ -191,17 +191,21 @@
                                                           :timestamp (.getTime (js/Date.))
                                                           :status :convex-web.command.status/running
                                                           :mode (mode state)}
+
+                            signer {:convex-web.account/address active-address}
+
                             command (merge command
                                       (case (mode state)
                                         :convex-web.command.mode/query
                                         (merge {:convex-web.command/query query}
-                                          ;; Address is optional in query mode.
+
+                                          ;; Signer is optional in query mode.
                                           (when active-address
-                                            {:convex-web.command/address active-address}))
+                                            {:convex-web.command/signer signer}))
                                         
                                         :convex-web.command.mode/transaction
-                                        #:convex-web.command {:address active-address
-                                                              :transaction transaction}))]
+                                        #:convex-web.command {:transaction transaction
+                                                              :signer signer}))]
                         
                         (when-not (str/blank? (codemirror/cm-get-value editor))
                           (codemirror/cm-set-value editor "")
@@ -403,6 +407,9 @@
     (str (error-code-string code)
       (when message
         (str ": " message)))
+
+    message
+    (str message)
     
     :else
     "Unknown error"))
