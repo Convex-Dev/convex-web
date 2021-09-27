@@ -92,7 +92,7 @@
 
         pending? (= status :ajax.status/pending)
 
-        using-choice (or using-choice :seed)]
+        using-choice (or using-choice :keys)]
     [:div.flex.flex-col.space-y-8.p-6
      {:class "w-[50vw]"}
 
@@ -112,16 +112,8 @@
          #(set-state assoc :address (gui/event-target-value %))}]]
 
 
-      ;; -- Using Seed
+      ;; -- Using Keys / Seed
       [:div.flex.space-x-2
-       [:label
-        [:input
-         {:type "radio"
-          :value "seed"
-          :checked (= using-choice :seed)
-          :on-change #(set-state assoc :using-choice :seed)}]
-
-        [:span.text-xs.text-gray-700.uppercase.ml-1 "Using Seed"]]
 
        ;; -- Using keys
        [:label
@@ -131,7 +123,17 @@
           :checked (= using-choice :keys)
           :on-change #(set-state assoc :using-choice :keys)}]
 
-        [:span.text-xs.text-gray-700.uppercase.ml-1 "Using Keys"]]]
+        [:span.text-xs.text-gray-700.uppercase.ml-1 "Using Keys"]]
+
+       ;; -- Using Seed
+       [:label
+        [:input
+         {:type "radio"
+          :value "seed"
+          :checked (= using-choice :seed)
+          :on-change #(set-state assoc :using-choice :seed)}]
+
+        [:span.text-xs.text-gray-700.uppercase.ml-1 "Using Seed"]]]
 
 
       ;; -- Using
