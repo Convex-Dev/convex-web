@@ -658,7 +658,7 @@
 
 (def sandbox-page
   #:page {:id :page.id/repl
-          :description "Execute transactions live on the current test network. Fast and interactive."
+          :description "Enter commands in the lower pane to execute transactions live on the current test network. The Sandbox is a fast interactive REPL giving each account a unique, persistent programmable environment."
           :initial-state
           {:convex-web.repl/language :convex-lisp
            :convex-web.repl/mode :convex-web.command.mode/transaction
