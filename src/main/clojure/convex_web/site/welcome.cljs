@@ -76,7 +76,7 @@
 
                    {:id :gamma
                     :title "Gamma"
-                    :status :in-progress
+                    :status :todo
                     :body
                     [:div
                      [:p
@@ -131,16 +131,16 @@
 
                     bg (case status
                          :in-progress
-                         "bg-gray-300 text-gray-400"
+                         "bg-orange-500 text-white"
 
                          :completed
                          "bg-blue-500 text-white"
 
                          :todo
-                         "bg-gray-300 text-gray-400")
+                         "bg-gray-500 text-gray-400")
 
                     border (if selected?
-                             "border-2 border-blue-600"
+                             "border-2 border-white"
                              "border-2 border-transparent")]
 
                 [:button
