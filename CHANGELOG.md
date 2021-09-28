@@ -7,6 +7,7 @@
 - [Blocks page slow to load #202](https://github.com/Convex-Dev/convex-web/issues/202)
 - [Sessions not persisting? #200](https://github.com/Convex-Dev/convex-web/issues/200)
 - [Import / export keys #147](https://github.com/Convex-Dev/convex-web/issues/147)
+- [Update sandbox examples #204](https://github.com/Convex-Dev/convex-web/issues/204)
 
 ## 0.27.0 -- 2021-09-15
 - [Lazily load account environment #196](https://github.com/Convex-Dev/convex-web/issues/196)

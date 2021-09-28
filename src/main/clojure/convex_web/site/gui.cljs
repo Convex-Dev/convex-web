@@ -7,7 +7,8 @@
    [reagent.core :as r]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as rfe]
-   [zprint.core :as zprint]
+   [cljfmt.core :as cljfmt]
+
 
    [convex-web.site.format :as format]
    [convex-web.site.backend :as backend]
@@ -1414,9 +1415,8 @@
               (= :ajax.status/success ajax-status)
               (let [source (get-in result [:convex-web.command/transaction :convex-web.transaction/source])]
                 [Highlight 
-                 (try                             
-                   (zprint/zprint-str source {:parse-string-all? true
-                                              :width 60})
+                 (try
+                   (cljfmt/reformat-string source)
                    (catch js/Error _
                      source))]))]]
           
