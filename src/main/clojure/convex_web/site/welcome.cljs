@@ -1,12 +1,13 @@
 (ns convex-web.site.welcome
   (:require 
+   [reagent.core :as r]
+   [reitit.frontend.easy :as rfe]
+
    [convex-web.site.theme :as theme]
    [convex-web.site.gui :as gui]
    [convex-web.site.gui.marketing :as marketing]
    
-   [reitit.frontend.easy :as rfe]
-   
-   ["@heroicons/react/solid" :refer [ChevronDownIcon]]))
+   ["@heroicons/react/solid" :as icon :refer [ChevronDownIcon]]))
 
 (defn KeyAdvantages []
   [:div.grid.grid-cols-1.md:grid-cols-3.gap-4
@@ -27,6 +28,99 @@
       [:span.font-medium.underline
        title]])])
 
+(defn Roadmap []
+  (r/with-let [selected-version-ref (r/atom :beta)]
+
+    (let [selected-version @selected-version-ref
+
+          roadmap [{:id :genesis
+                    :title "Genesis"
+                    :status :completed
+                    :body "Convex was designed based on the revolutionary ideas of Convergent Proof of Stake invented in 2018, and the concept was proven with the development of the Convex Virtual Machine capable of executing arbitrary Turing complete smart contracts using functional programming and the lamdba calculus."}
+
+                   {:id :testnet
+                    :title "Testnet"
+                    :status :completed
+                    :body ""}
+
+                   {:id :alpha
+                    :title "Alpha"
+                    :status :completed
+                    :body ""}
+
+                   {:id :beta
+                    :title "Beta"
+                    :status :in-progress
+                    :body "Beta"}
+
+                   {:id :gamma
+                    :title "Gamma"
+                    :status :in-progress
+                    :body ""}
+
+                   {:id :v1
+                    :title "V1"
+                    :status :todo
+                    :body ""}
+
+                   {:id :v2
+                    :title "V2"
+                    :status :todo
+                    :body ""}]
+
+          ;; Roadmap indexed by ID; it's easy to read a particular version by ID.
+          roadmap-indexed (->> roadmap
+                            (map (juxt :id identity))
+                            (into {}))]
+
+      [:div.flex.flex-col.space-y-4
+       {:class "bg-[#01052A]"}
+
+       [:div.relative.flex.items-center.py-8.pb-2.px-8
+
+        (into [:<>]
+
+          (interpose
+            [:hr.flex-1.border.border-gray-400]
+
+            (for [{:keys [id title status]} roadmap]
+              (let [selected? (= selected-version id)
+
+                    bg (case status
+                         :in-progress
+                         "bg-gray-300 text-gray-400"
+
+                         :completed
+                         "bg-blue-500 text-white"
+
+                         :todo
+                         "bg-gray-300 text-gray-400")
+
+                    border (if selected?
+                             "border-2 border-blue-600"
+                             "border-2 border-transparent")]
+
+                [:button
+                 {:on-click #(reset! selected-version-ref id)}
+                 [:div.w-10.h-10.flex.justify-center.items-center.rounded-full
+                  {:class [bg border]}
+
+                  [:p.absolute.top-0.text-white.text-normal
+                   title]
+
+                  [:> icon/CheckIcon
+                   {:className "w-5 h-5"}]]]))))]
+
+       [:div.self-center.prose.prose-md.overflow-auto
+        {:class "h-[200px]"}
+
+        [:div.flex.flex-col.space-y-2
+         [:p.self-center.text-gray-200.text-xl
+          (get-in roadmap-indexed [selected-version :title])]
+
+         [:p.text-gray-200
+          (get-in roadmap-indexed [selected-version :body])]]]])))
+
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["md:w-1/2 flex flex-col justify-center space-y-8"]
         marketing-bullets ["flex flex-col space-y-3 text-white"]
@@ -45,6 +139,8 @@
     [:div
      
      [marketing/Nav]
+
+     [Roadmap]
      
      ;; -- Building the Internet of Value
      [:div.flex.flex-col.justify-center.items-center.space-y-32
