@@ -36,37 +36,80 @@
           roadmap [{:id :genesis
                     :title "Genesis"
                     :status :completed
-                    :body "Convex was designed based on the revolutionary ideas of Convergent Proof of Stake invented in 2018, and the concept was proven with the development of the Convex Virtual Machine capable of executing arbitrary Turing complete smart contracts using functional programming and the lamdba calculus."}
+                    :body
+                    [:div
+                     [:p
+                      "Convex was designed based on the revolutionary ideas of Convergent Proof of Stake invented in 2018, and the concept was proven with the development of the Convex Virtual Machine capable of executing arbitrary Turing complete smart contracts using functional programming and the lamdba calculus."]]}
 
                    {:id :testnet
                     :title "Testnet"
                     :status :completed
-                    :body ""}
+                    :body
+                    [:div
+                     [:p
+                      "The Test Network was launched in early 2020 and has been running ever since. "]
+
+                     [:p
+                      "The testnet serves as a powerful tool for developing Convex actors and applications, as well as providing a testing ground for new CVM features and capabilities."]
+
+                     [:p
+                      "It is periodically reset for the purposes of upgrades, but otherwise works as a fully functioning Convex network."]]}
 
                    {:id :alpha
                     :title "Alpha"
                     :status :completed
-                    :body ""}
+                    :body
+                    [:div
+                     [:p
+                      "The Alpha release brought substantial new capabilities to the CVM, performance enhancements and tolling to make it possible for anyone to create a Convex Peer and participate in maintaining the consensus of the Network. "]
+
+                     [:p
+                      "The post-Alpha phase will include further functional development to complete the scope of capabilities expected for the main network. Some breaking changes may occur, however the Alpha is already broadly suitable for development of prototype applications and use cases."]]}
 
                    {:id :beta
                     :title "Beta"
                     :status :in-progress
-                    :body "Beta"}
+                    :body
+                    [:div
+                     [:p
+                      "The Beta release will be broadly feature complete, suitable for development of full-scale decentralised applications and use cases in advance of the main network launch. Developers can confidently build upon the Beta release and expect only minor changes and upgrades prior to main network launch."]]}
 
                    {:id :gamma
                     :title "Gamma"
                     :status :in-progress
-                    :body ""}
+                    :body
+                    [:div
+                     [:p
+                      "The Gamma release will provide a feature complete platform for security audits, performance tuning and testing of main network release candidates. No substantial functional or protocol changes will be made during this period unless critical security issues make these necessary. "]]}
 
                    {:id :v1
                     :title "V1"
                     :status :todo
-                    :body ""}
+                    :body
+                    [:div
+                     [:p
+                      "The V1 Mainnet release will be the first production launch of the Convex network, suitable for production applications managing real digital assets and applications. "]
+
+                     [:p
+                      "Holders of pre-sold Convex coins will be able to receive and utilise their coins via their own secure wallets. Decentralised applications and use will be able to launch with fully functional digital assets."]]}
 
                    {:id :v2
                     :title "V2"
                     :status :todo
-                    :body ""}]
+                    :body
+                    [:div
+                     [:p
+                      "The V2 Mainnet release will be the first major upgrade to Convex, and may involve changes to the peer protocol and CVM design.  Planned developments include:"]
+
+                     [:ul
+                      [:li
+                       "First class CVM types"]
+
+                      [:li
+                       "Unlimited scalability with integrated subnets"]]
+
+                     [:p
+                      "However we are committed to retaining backwards compatibility and seamless upgrade for existing Convex applications. Most Convex applications will be able to run unchanged."]]}]
 
           ;; Roadmap indexed by ID; it's easy to read a particular version by ID.
           roadmap-indexed (->> roadmap
@@ -111,14 +154,15 @@
                   [:> icon/CheckIcon
                    {:className "w-5 h-5"}]]]))))]
 
-       [:div.self-center.prose.prose-md.overflow-auto
+       [:div.self-center.overflow-auto
         {:class "h-[200px]"}
 
         [:div.flex.flex-col.space-y-2
+
          [:p.self-center.text-gray-200.text-xl
           (get-in roadmap-indexed [selected-version :title])]
 
-         [:p.text-gray-200
+         [:div.prose.prose-md.text-gray-200
           (get-in roadmap-indexed [selected-version :body])]]]])))
 
 (defn WelcomePage [_ _ _]
