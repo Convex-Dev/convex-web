@@ -118,17 +118,20 @@
 
       [:div.flex.flex-col.space-y-10
 
-       [:div.relative.flex.items-center.py-10.px-8.space-x-2
+       ;; -- Timeline
+       [:div.relative.flex.items-center.py-10.px-8.space-x-2.overflow-auto
 
         (into [:<>]
 
           (interpose
-            [:hr.flex-1.border.border-gray-400]
+            [:div.w-full
+             {:style {"min-width" "40px"}}
+             [:hr.flex-1.border.border-gray-400]]
 
             (for [{:keys [id title status]} roadmap]
               [:button
                {:on-click #(reset! selected-version-ref id)}
-               [:div.w-14.h-14.flex.justify-center.items-center.rounded-full
+               [:div.w-14.h-14.flex.justify-center.items-center.rounded-full.shadow-2xl
                 {:class
                  (case status
                    :in-progress
