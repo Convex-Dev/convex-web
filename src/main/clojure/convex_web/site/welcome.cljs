@@ -136,7 +136,7 @@
                          "bg-blue-500 text-white"
 
                          :todo
-                         "bg-gray-400 text-gray-400")
+                         "bg-gray-400 bg-opacity-30 text-gray-400")
 
                     border (if selected?
                              "border-2 border-white"
@@ -162,11 +162,12 @@
                     :todo
                     nil)]]))))]
 
-       [:div.self-center
+       [:div.self-center.bg-black.bg-opacity-10.rounded.py-4.px-6
 
-        [:div.flex.flex-col
+        [:div.flex.flex-col.overflow-auto
+         {:class "h-[240px]"}
 
-         [:p.self-center.text-gray-200.text-3xl
+         [:p.self-center.text-gray-200.text-3xl.font-bold
           (get-in roadmap-indexed [selected-version :title])]
 
          [:div.prose.prose-xl.text-gray-200
@@ -491,7 +492,7 @@
       
       
 
-      [:div.flex.items-center.justify-center.bg-gray-900.h-screen
+      [:div.flex.items-center.justify-center.bg-gray-800.h-screen
        [:div.w-full.max-w-screen-xl.mx-auto
 
         [:div.flex.flex-col.space-y-24
