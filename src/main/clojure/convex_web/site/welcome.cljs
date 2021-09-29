@@ -116,9 +116,9 @@
                             (map (juxt :id identity))
                             (into {}))]
 
-      [:div.flex.flex-col.space-y-16
+      [:div.flex.flex-col.space-y-10
 
-       [:div.relative.flex.items-center.py-8.pb-2.px-8.space-x-2
+       [:div.relative.flex.items-center.py-10.px-8.space-x-2
 
         (into [:<>]
 
@@ -126,37 +126,40 @@
             [:hr.flex-1.border.border-gray-400]
 
             (for [{:keys [id title status]} roadmap]
-              (let [selected? (= selected-version id)
+              [:button
+               {:on-click #(reset! selected-version-ref id)}
+               [:div.w-14.h-14.flex.justify-center.items-center.rounded-full
+                {:class
+                 (case status
+                   :in-progress
+                   "bg-blue-500 hover:bg-blue-400"
 
-                    [bg border-color] (case status
-                                        :in-progress
-                                        ["bg-blue-500" "border-blue-500"]
+                   :completed
+                   "bg-teal-500 hover:bg-teal-400"
 
-                                        :completed
-                                        ["bg-teal-500" "border-teal-500"]
+                   :todo
+                   "bg-gray-400 bg-opacity-30 hover:bg-opacity-50")}
 
-                                        :todo
-                                        ["bg-gray-400 bg-opacity-30" "border-gray-400"])]
 
-                [:button
-                 {:on-click #(reset! selected-version-ref id)}
-                 [:div.w-10.h-10.flex.justify-center.items-center.rounded-full
-                  {:class [bg "border-2" border-color]}
+                ;; -- Version
 
-                  [:p.absolute.top-0.text-xl.text-white
-                   title]
+                [:p.absolute.top-0.text-2xl.text-white
+                 title]
 
-                  (case status
-                    :in-progress
-                    [:> icon/CogIcon
-                     {:className "w-5 h-5 text-white"}]
 
-                    :completed
-                    [:> icon/CheckIcon
-                     {:className "w-5 h-5 text-white"}]
+                ;; -- Status icon
 
-                    :todo
-                    nil)]]))))]
+                (case status
+                  :in-progress
+                  [:> icon/CogIcon
+                   {:className "w-6 h-6 text-white"}]
+
+                  :completed
+                  [:> icon/CheckIcon
+                   {:className "w-6 h-6 text-white"}]
+
+                  :todo
+                  nil)]])))]
 
        [:div.self-center.bg-black.bg-opacity-10.rounded.py-4.px-6
 
@@ -486,16 +489,17 @@
             [:span.text-sm.text-white.uppercase
              "Try It Now"]]]]]]]
       
-      
+
+      ;; Roadmap
+      ;; =========================
 
       [:div.flex.items-center.justify-center.bg-gray-800.h-screen
-       [:div.w-full.max-w-screen-xl.mx-auto
+       [:div.w-full.max-w-screen-xl.mx-auto.px-6.flex.flex-col.space-y-24
 
-        [:div.flex.flex-col.space-y-24
-         [:h3.text-5xl.lg:text-7xl.font-extrabold.text-white
-          "Roadmap"]
+        [:h3.text-5xl.lg:text-7xl.font-extrabold.text-white
+         "Roadmap"]
 
-         [Roadmap]]]]
+        [Roadmap]]]
 
 
       ;; Bottom nav
