@@ -117,7 +117,6 @@
                             (into {}))]
 
       [:div.flex.flex-col.space-y-6
-       {:class "bg-[#01052A]"}
 
        [:div.relative.flex.items-center.py-8.pb-2.px-8.space-x-2
 
@@ -148,7 +147,7 @@
                  [:div.w-10.h-10.flex.justify-center.items-center.rounded-full
                   {:class [bg border]}
 
-                  [:p.absolute.top-0.text-white.text-normal
+                  [:p.absolute.top-0.text-white.text-xl
                    title]
 
                   (case status
@@ -163,15 +162,14 @@
                     :todo
                     nil)]]))))]
 
-       [:div.self-center.overflow-auto
-        {:class "h-[200px]"}
+       [:div.self-center
 
         [:div.flex.flex-col
 
          [:p.self-center.text-gray-200.text-3xl
           (get-in roadmap-indexed [selected-version :title])]
 
-         [:div.prose.prose-md.text-gray-200
+         [:div.prose.prose-xl.text-gray-200
           (get-in roadmap-indexed [selected-version :body])]]]])))
 
 (defn WelcomePage [_ _ _]
@@ -192,8 +190,6 @@
     [:div
      
      [marketing/Nav]
-
-     [Roadmap]
      
      ;; -- Building the Internet of Value
      [:div.flex.flex-col.justify-center.items-center.space-y-32
@@ -494,6 +490,17 @@
              "Try It Now"]]]]]]]
       
       
+
+      [:div.flex.items-center.justify-center.bg-gray-900.h-screen
+       [:div.w-full.max-w-screen-xl.mx-auto
+
+        [:div.flex.flex-col.space-y-24
+         [:h3.text-5xl.lg:text-7xl.font-extrabold.text-white
+          "Roadmap"]
+
+         [Roadmap]]]]
+
+
       ;; Bottom nav
       ;; =========================
       [:div.w-full.flex.justify-center.bg-gray-900
