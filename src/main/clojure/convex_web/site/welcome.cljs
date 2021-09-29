@@ -116,7 +116,7 @@
                             (map (juxt :id identity))
                             (into {}))]
 
-      [:div.flex.flex-col.space-y-6
+      [:div.flex.flex-col.space-y-16
 
        [:div.relative.flex.items-center.py-8.pb-2.px-8.space-x-2
 
@@ -128,36 +128,32 @@
             (for [{:keys [id title status]} roadmap]
               (let [selected? (= selected-version id)
 
-                    bg (case status
-                         :in-progress
-                         "bg-orange-500 text-white"
+                    [bg border-color] (case status
+                                        :in-progress
+                                        ["bg-blue-500" "border-blue-500"]
 
-                         :completed
-                         "bg-blue-500 text-white"
+                                        :completed
+                                        ["bg-teal-500" "border-teal-500"]
 
-                         :todo
-                         "bg-gray-400 bg-opacity-30 text-gray-400")
-
-                    border (if selected?
-                             "border-2 border-white"
-                             "border-2 border-transparent")]
+                                        :todo
+                                        ["bg-gray-400 bg-opacity-30" "border-gray-400"])]
 
                 [:button
                  {:on-click #(reset! selected-version-ref id)}
                  [:div.w-10.h-10.flex.justify-center.items-center.rounded-full
-                  {:class [bg border]}
+                  {:class [bg "border-2" border-color]}
 
-                  [:p.absolute.top-0.text-white.text-xl
+                  [:p.absolute.top-0.text-xl.text-white
                    title]
 
                   (case status
                     :in-progress
                     [:> icon/CogIcon
-                     {:className "w-5 h-5"}]
+                     {:className "w-5 h-5 text-white"}]
 
                     :completed
                     [:> icon/CheckIcon
-                     {:className "w-5 h-5"}]
+                     {:className "w-5 h-5 text-white"}]
 
                     :todo
                     nil)]]))))]
