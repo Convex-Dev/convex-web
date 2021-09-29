@@ -116,10 +116,10 @@
                             (map (juxt :id identity))
                             (into {}))]
 
-      [:div.flex.flex-col.space-y-4
+      [:div.flex.flex-col.space-y-6
        {:class "bg-[#01052A]"}
 
-       [:div.relative.flex.items-center.py-8.pb-2.px-8
+       [:div.relative.flex.items-center.py-8.pb-2.px-8.space-x-2
 
         (into [:<>]
 
@@ -137,7 +137,7 @@
                          "bg-blue-500 text-white"
 
                          :todo
-                         "bg-gray-500 text-gray-400")
+                         "bg-gray-400 text-gray-400")
 
                     border (if selected?
                              "border-2 border-white"
@@ -151,15 +151,24 @@
                   [:p.absolute.top-0.text-white.text-normal
                    title]
 
-                  [:> icon/CheckIcon
-                   {:className "w-5 h-5"}]]]))))]
+                  (case status
+                    :in-progress
+                    [:> icon/CogIcon
+                     {:className "w-5 h-5"}]
+
+                    :completed
+                    [:> icon/CheckIcon
+                     {:className "w-5 h-5"}]
+
+                    :todo
+                    nil)]]))))]
 
        [:div.self-center.overflow-auto
         {:class "h-[200px]"}
 
-        [:div.flex.flex-col.space-y-2
+        [:div.flex.flex-col
 
-         [:p.self-center.text-gray-200.text-xl
+         [:p.self-center.text-gray-200.text-3xl
           (get-in roadmap-indexed [selected-version :title])]
 
          [:div.prose.prose-md.text-gray-200
