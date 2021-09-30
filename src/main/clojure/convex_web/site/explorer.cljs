@@ -259,7 +259,7 @@
          {:class th-style}
          [:div.flex.space-x-1
           {:class th-div-style}
-          [:span "Signer"]
+          [:span "Account"]
           [gui/InfoTooltip "Address of the Account that digitally signed the transaction. This Signature has been verified by all Peers in Consensus."]]]
         
         ;; -- 3. Timestamp
@@ -267,7 +267,7 @@
          {:class th-style}
          [:div.flex.space-x-1
           {:class th-div-style}
-          [:span "Timestamp"]
+          [:span "Time"]
           [gui/InfoTooltip "UTC Timestamp of the block containing the transaction"]]]
         
         ;; -- 4. Type
@@ -321,24 +321,21 @@
          ^{:key [block-index transaction-index]}
          [:tr.cursor-default
           ;; -- 0. Block Index
-          [:td {:class td-class}
-           [:div.flex.flex-1.justify-end
-            [:a.hover:text-blue-500
-             {:href (rfe/href :route-name/testnet.block {:index block-index})}
-             [:div.flex.space-x-3
-              [:span.font-mono block-index]
-              
-              [:span "View"]]]]]
+          [:td {:class (cons "text-right" td-class)}
+           [:a.hover:text-blue-500
+            {:href (rfe/href :route-name/testnet.block {:index block-index})}
+            [:span.font-mono.mr-8
+             block-index]]]
           
           ;; -- 1. TR#
           [:td {:class (cons "text-right" td-class)}
            [:span.text-xs.mr-8
             transaction-index]]
           
-          ;; -- 2. Signer
+          ;; -- 2. Account
           [:td {:class td-class}
            (let [address (get m :convex-web.signed-data/address)]
-             [:div.flex.items-center.w-40.space-x-1
+             [:div.flex.items-center.space-x-1
               [gui/AIdenticon {:value address :size gui/identicon-size-small}]
               
               [:a.flex-1.truncate
