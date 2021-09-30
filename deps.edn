@@ -78,7 +78,7 @@
   datalevin/datalevin {:mvn/version "0.4.40"}
   cljfmt/cljfmt {:mvn/version "0.8.0"}
   rewrite-clj/rewrite-clj {:mvn/version "1.0.682-alpha"}
-  expound/expound {:mvn/version "0.8.9"}
+  expound/expound {:mvn/version "0.8.10"}
   cljs-ajax/cljs-ajax {:mvn/version "0.8.4"}
   borkdude/sci {:mvn/version "0.2.5"}}
  
