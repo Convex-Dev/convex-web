@@ -1,12 +1,13 @@
 (ns convex-web.site.welcome
   (:require 
+   [reagent.core :as r]
+   [reitit.frontend.easy :as rfe]
+
    [convex-web.site.theme :as theme]
    [convex-web.site.gui :as gui]
    [convex-web.site.gui.marketing :as marketing]
    
-   [reitit.frontend.easy :as rfe]
-   
-   ["@heroicons/react/solid" :refer [ChevronDownIcon]]))
+   ["@heroicons/react/solid" :as icon :refer [ChevronDownIcon]]))
 
 (defn KeyAdvantages []
   [:div.grid.grid-cols-1.md:grid-cols-3.gap-4
@@ -26,6 +27,153 @@
      [:div.flex.flex-col.items-center.space-y-2
       [:span.font-medium.underline
        title]])])
+
+(defn Roadmap []
+  (r/with-let [selected-version-ref (r/atom :beta)]
+
+    (let [selected-version @selected-version-ref
+
+          roadmap [{:id :genesis
+                    :title "Genesis"
+                    :status :completed
+                    :body
+                    [:div
+                     [:p
+                      "Convex was designed based on the revolutionary ideas of Convergent Proof of Stake invented in 2018, and the concept was proven with the development of the Convex Virtual Machine capable of executing arbitrary Turing complete smart contracts using functional programming and the lamdba calculus."]]}
+
+                   {:id :testnet
+                    :title "Testnet"
+                    :status :completed
+                    :body
+                    [:div
+                     [:p
+                      "The Test Network was launched in early 2020 and has been running ever since. "]
+
+                     [:p
+                      "The testnet serves as a powerful tool for developing Convex actors and applications, as well as providing a testing ground for new CVM features and capabilities."]
+
+                     [:p
+                      "It is periodically reset for the purposes of upgrades, but otherwise works as a fully functioning Convex network."]]}
+
+                   {:id :alpha
+                    :title "Alpha"
+                    :status :completed
+                    :body
+                    [:div
+                     [:p
+                      "The Alpha release brought substantial new capabilities to the CVM, performance enhancements and tolling to make it possible for anyone to create a Convex Peer and participate in maintaining the consensus of the Network. "]
+
+                     [:p
+                      "The post-Alpha phase will include further functional development to complete the scope of capabilities expected for the main network. Some breaking changes may occur, however the Alpha is already broadly suitable for development of prototype applications and use cases."]]}
+
+                   {:id :beta
+                    :title "Beta"
+                    :status :in-progress
+                    :body
+                    [:div
+                     [:p
+                      "The Beta release will be broadly feature complete, suitable for development of full-scale decentralised applications and use cases in advance of the main network launch. Developers can confidently build upon the Beta release and expect only minor changes and upgrades prior to main network launch."]]}
+
+                   {:id :gamma
+                    :title "Gamma"
+                    :status :todo
+                    :body
+                    [:div
+                     [:p
+                      "The Gamma release will provide a feature complete platform for security audits, performance tuning and testing of main network release candidates. No substantial functional or protocol changes will be made during this period unless critical security issues make these necessary. "]]}
+
+                   {:id :v1
+                    :title "V1"
+                    :status :todo
+                    :body
+                    [:div
+                     [:p
+                      "The V1 Mainnet release will be the first production launch of the Convex network, suitable for production applications managing real digital assets and applications. "]
+
+                     [:p
+                      "Holders of pre-sold Convex coins will be able to receive and utilise their coins via their own secure wallets. Decentralised applications and use will be able to launch with fully functional digital assets."]]}
+
+                   {:id :v2
+                    :title "V2"
+                    :status :todo
+                    :body
+                    [:div
+                     [:p
+                      "The V2 Mainnet release will be the first major upgrade to Convex, and may involve changes to the peer protocol and CVM design.  Planned developments include:"]
+
+                     [:ul
+                      [:li
+                       "First class CVM types"]
+
+                      [:li
+                       "Unlimited scalability with integrated subnets"]]
+
+                     [:p
+                      "However we are committed to retaining backwards compatibility and seamless upgrade for existing Convex applications. Most Convex applications will be able to run unchanged."]]}]
+
+          ;; Roadmap indexed by ID; it's easy to read a particular version by ID.
+          roadmap-indexed (->> roadmap
+                            (map (juxt :id identity))
+                            (into {}))]
+
+      [:div.flex.flex-col.space-y-10
+
+       ;; -- Timeline
+       [:div.relative.flex.items-center.py-10.px-8.space-x-2.overflow-auto
+
+        (into [:<>]
+
+          (interpose
+            [:div.w-full
+             {:style {"min-width" "40px"}}
+             [:hr.flex-1.border.border-gray-400]]
+
+            (for [{:keys [id title status]} roadmap]
+              [:button
+               {:on-click #(reset! selected-version-ref id)}
+               [:div.w-14.h-14.flex.justify-center.items-center.rounded-full.shadow-2xl
+                {:class
+                 (case status
+                   :in-progress
+                   "bg-blue-500 hover:bg-blue-400"
+
+                   :completed
+                   "bg-teal-500 hover:bg-teal-400"
+
+                   :todo
+                   "bg-gray-400 bg-opacity-30 hover:bg-opacity-50")}
+
+
+                ;; -- Version
+
+                [:p.absolute.top-0.text-2xl.text-white
+                 title]
+
+
+                ;; -- Status icon
+
+                (case status
+                  :in-progress
+                  [:> icon/CogIcon
+                   {:className "w-6 h-6 text-white"}]
+
+                  :completed
+                  [:> icon/CheckIcon
+                   {:className "w-6 h-6 text-white"}]
+
+                  :todo
+                  nil)]])))]
+
+       [:div.self-center.bg-black.bg-opacity-10.rounded.py-4.px-6
+
+        [:div.flex.flex-col.overflow-auto
+         {:class "h-[240px]"}
+
+         [:p.self-center.text-gray-200.text-3xl.font-bold
+          (get-in roadmap-indexed [selected-version :title])]
+
+         [:div.prose.prose-xl.text-gray-200
+          (get-in roadmap-indexed [selected-version :body])]]]])))
 
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["md:w-1/2 flex flex-col justify-center space-y-8"]
@@ -344,7 +492,19 @@
             [:span.text-sm.text-white.uppercase
              "Try It Now"]]]]]]]
       
-      
+
+      ;; Roadmap
+      ;; =========================
+
+      [:div.flex.items-center.justify-center.bg-gray-800.h-screen
+       [:div.w-full.max-w-screen-xl.mx-auto.px-6.flex.flex-col.space-y-24
+
+        [:h3.text-5xl.lg:text-7xl.font-extrabold.text-white
+         "Roadmap"]
+
+        [Roadmap]]]
+
+
       ;; Bottom nav
       ;; =========================
       [:div.w-full.flex.justify-center.bg-gray-900
