@@ -24,7 +24,7 @@
   
   ;; -- Logging
   
-  ch.qos.logback/logback-classic {:mvn/version "1.2.5"}
+  ch.qos.logback/logback-classic {:mvn/version "1.2.6"}
   
   ;; Logback implements the SLF4J API
   org.slf4j/slf4j-api {:mvn/version "1.7.32"}
