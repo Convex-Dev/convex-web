@@ -420,73 +420,86 @@
 
 (defn Commands [commands]
   [:div.w-full.h-full.max-w-full.overflow-auto.bg-gray-100.border.rounded
-   (for [{:convex-web.command/keys [timestamp status query transaction] :as command} commands]
-     ^{:key timestamp}
-     [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
-      {:ref
-       (fn [el]
-         (when el
-           (.scrollIntoView el #js {"behavior" "smooth"
-                                    "block" "center"})))
-       :class
-       (case status
-         :convex-web.command.status/running
-         "bg-yellow-100"
-         :convex-web.command.status/success
-         ""
-         :convex-web.command.status/error
-         "bg-red-100"
-         
-         "")}
-      
-      ;; -- Input
-      [:div.flex.flex-col.items-start
-       [:span.text-xs.uppercase.text-gray-600.block.mb-1
-        "Source"]
-       
-       (let [source (or (get query :convex-web.query/source)
-                      (get transaction :convex-web.transaction/source))]
-         [:div.flex.items-center
-          [gui/Highlight source {:pretty? true}]
-          
-          ;; This causes a strange overflow.
-          #_[gui/ClipboardCopy source {:margin "ml-2"}]])]
-      
-      [:div.my-3]
-      
-      ;; -- Output
-      [:div.flex.flex-col
-       (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
-         [:div.flex.mb-1
-          [:span.text-xs.uppercase.text-gray-600
-           (cond
-             error?
-             (let [code (get-in command [:convex-web.command/error :code])]
-               (apply str (if (keyword? code)
-                            ["Error " (str "(" (error-code-string code) ")")]
-                            ["Unrecognised Non-Keyword Error Code"])))
-             
-             :else
-             "Result")]
-          
-          ;; Don't display result type for errors.
-          (when-not error?
-            (when-let [type (get-in command [:convex-web.command/result :convex-web.result/type])]
-              [gui/Tooltip
-               {:title (str/capitalize type)
-                :size "small"}
-               [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
-       
-       [:div.flex
-        (case status
-          :convex-web.command.status/running
-          [gui/SpinnerSmall]
-          
-          :convex-web.command.status/success
-          [gui/ResultRenderer (:convex-web.command/result command)]
-          
-          :convex-web.command.status/error
-          [ErrorOutput command])]]])])
+   (if (seq commands)
+     (for [{:convex-web.command/keys [timestamp status query transaction] :as command} commands]
+       ^{:key timestamp}
+       [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
+        {:ref
+         (fn [el]
+           (when el
+             (.scrollIntoView el #js {"behavior" "smooth"
+                                      "block" "center"})))
+         :class
+         (case status
+           :convex-web.command.status/running
+           "bg-yellow-100"
+           :convex-web.command.status/success
+           ""
+           :convex-web.command.status/error
+           "bg-red-100"
+
+           "")}
+
+        ;; -- Input
+        [:div.flex.flex-col.items-start
+         [:span.text-xs.uppercase.text-gray-600.block.mb-1
+          "Source"]
+
+         (let [source (or (get query :convex-web.query/source)
+                        (get transaction :convex-web.transaction/source))]
+           [:div.flex.items-center
+            [gui/Highlight source {:pretty? true}]
+
+            ;; This causes a strange overflow.
+            #_[gui/ClipboardCopy source {:margin "ml-2"}]])]
+
+        [:div.my-3]
+
+        ;; -- Output
+        [:div.flex.flex-col
+         (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
+           [:div.flex.mb-1
+            [:span.text-xs.uppercase.text-gray-600
+             (cond
+               error?
+               (let [code (get-in command [:convex-web.command/error :code])]
+                 (apply str (if (keyword? code)
+                              ["Error " (str "(" (error-code-string code) ")")]
+                              ["Unrecognised Non-Keyword Error Code"])))
+
+               :else
+               "Result")]
+
+            ;; Don't display result type for errors.
+            (when-not error?
+              (when-let [type (get-in command [:convex-web.command/result :convex-web.result/type])]
+                [gui/Tooltip
+                 {:title (str/capitalize type)
+                  :size "small"}
+                 [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
+
+         [:div.flex
+          (case status
+            :convex-web.command.status/running
+            [gui/SpinnerSmall]
+
+            :convex-web.command.status/success
+            [gui/ResultRenderer (:convex-web.command/result command)]
+
+            :convex-web.command.status/error
+            [ErrorOutput command])]]])
+
+     ;; Else; explain the Sandbox.
+     [:div.h-full.flex.flex-col.items-center.justify-center
+      [:div.prose.prose-base
+       [:p.text-2xl.text-center
+        "Welcome to the Sandbox"]
+
+       [:p
+        "The Sandbox is a fast interactive REPL giving each account a unique, persistent programmable environment."]
+
+       [:p
+        "Enter commands in the lower pane to execute transactions live on the current test network."]]])])
 
 ;; --
 
@@ -636,7 +649,6 @@
 
 (def sandbox-page
   #:page {:id :page.id/repl
-          :description "Enter commands in the lower pane to execute transactions live on the current test network. The Sandbox is a fast interactive REPL giving each account a unique, persistent programmable environment."
           :initial-state
           {:convex-web.repl/language :convex-lisp
            :convex-web.repl/mode :convex-web.command.mode/transaction
