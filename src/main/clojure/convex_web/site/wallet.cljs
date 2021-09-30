@@ -2,6 +2,8 @@
   (:require
    [clojure.string :as str]
 
+   [lambdaisland.glogi :as log]
+
    [reitit.frontend.easy :as rfe]
    [re-frame.core :as rf]
 
@@ -280,7 +282,21 @@
             :handler (fn [session]
                        (set-state assoc :ajax/status :ajax.status/success)
 
-                       (session/refresh session)
+                       ;; Update session's accounts and selected address, but preserve its state.
+                       (rf/dispatch [:session/!update (fn [current-session]
+                                                        (let [session (merge current-session session)
+
+                                                              {session-accounts :convex-web.session/accounts
+                                                               selected-address :convex-web.session/selected-address} session
+
+                                                              session-addresses (into #{} (map :convex-web.account/address session-accounts))
+
+                                                              selected-address-exists? (contains? session-addresses selected-address)]
+
+                                                          ;; Remove active address if it no longer exists in the wallet.
+                                                          (cond-> session
+                                                            (false? selected-address-exists?)
+                                                            (dissoc :convex-web.session/selected-address))))])
 
                        (stack/pop))
 
