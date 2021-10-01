@@ -11,7 +11,7 @@
    (convex.core Result)
    (convex.core.init Init)
    (convex.core.lang Core)
-   (convex.core.data.prim CVMLong)
+   (convex.core.data.prim CVMLong CVMBool)
    (convex.core.crypto AKeyPair)
    (clojure.lang ExceptionInfo)))
 
@@ -168,6 +168,13 @@
             (.getValue (.getExceptional context3)))))))
 
 (deftest result-data-test
+  (testing "Bool"
+    (is (= {:convex-web.result/id 1,
+            :convex-web.result/type "Boolean",
+            :convex-web.result/value "true"}
+          (convex/result-data (Result/create (CVMLong/create 1)
+                                (CVMBool/create true))))))
+
   (testing "String"
     (is (= {:convex-web.result/id 1,
             :convex-web.result/type "String",

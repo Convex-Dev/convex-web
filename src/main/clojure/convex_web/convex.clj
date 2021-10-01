@@ -338,6 +338,16 @@
                                 :type (or (some-> result-value .getType .toString) "Nil")
                                 :value (or (some-> result-value Utils/print) "nil")}
       
+      (when (instance? Syntax result-value)
+        (let [syntax-meta (.getMeta result-value)
+
+              interactive? (some-> (.get syntax-meta (Keyword/create "interactive?")) .booleanValue)
+
+              ;; It's never nil.
+              interactive? (or interactive? false)]
+
+          {:convex-web.result/interactive? interactive?}))
+
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})
       
