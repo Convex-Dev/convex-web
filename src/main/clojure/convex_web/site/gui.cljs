@@ -515,29 +515,9 @@
    (merge {:fill "none" :stroke "currentColor" :viewBox "0 0 24 24" :xmlns "http://www.w3.org/2000/svg"} attrs)
    [:path {:stroke-linecap "round" :stroke-linejoin "round" :stroke-width "2" :d "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"}]])
 
-(defn Highlight [source & [{:keys [language pretty?]}]]
+(defn Highlight [source & [{:keys [language]}]]
   (let [languages {:convex-lisp "language-clojure"}
-
-        language (get languages language "language-clojure")
-
-        source (str source)
-        source (cond
-                 (= language "language-clojure")
-                 (if pretty?
-                   (try
-                     ;; Zprint struggles to format this string and freezes the app:
-                     ;;
-                     ;; "{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}"
-                     ;;
-                     ;; See issue https://github.com/Convex-Dev/convex/issues/87
-                     #_(zprint/zprint-str source {:parse-string-all? true})
-                     source
-                     (catch js/Error _
-                       source))
-                   source)
-
-                 :else
-                 source)]
+        language (get languages language "language-clojure")]
     [:div.text-xs.overflow-auto
      [:> (.-default react-hljs) {:language language}
       source]]))
