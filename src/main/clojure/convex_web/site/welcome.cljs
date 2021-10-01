@@ -147,6 +147,8 @@
                 ;; -- Version
 
                 [:p.absolute.top-0.text-2xl.text-white
+                 {:class (when (= id selected-version)
+                           "underline")}
                  title]
 
 
