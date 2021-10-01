@@ -11,6 +11,7 @@
 - [Update active address after removing account #205](https://github.com/Convex-Dev/convex-web/issues/205)
 - [Simplify testnet account table #192](https://github.com/Convex-Dev/convex-web/issues/192)
 - Updated Convex to 0.7.1
+- Roadmap
 
 ## 0.27.0 -- 2021-09-15
 - [Lazily load account environment #196](https://github.com/Convex-Dev/convex-web/issues/196)
