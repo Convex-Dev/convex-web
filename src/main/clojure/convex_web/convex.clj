@@ -329,6 +329,9 @@
 (defn consensus-point [^Order order]
   (.getConsensusPoint order))
 
+(defn interactive-result [^ACell acell]
+  [])
+
 (defn result-data [^Result result]
   (let [^ACell result-id (.getID result)
         ^ACell result-error-code (.getErrorCode result)
@@ -338,6 +341,7 @@
                                 :type (or (some-> result-value .getType .toString) "Nil")
                                 :value (or (some-> result-value Utils/print) "nil")}
       
+      ;; Interactive Syntax.
       (when (instance? Syntax result-value)
         (let [syntax-meta (.getMeta result-value)
 
@@ -346,7 +350,9 @@
               ;; It's never nil.
               interactive? (or interactive? false)]
 
-          {:convex-web.result/interactive? interactive?}))
+          (merge {:convex-web.result/interactive? interactive?}
+            (when interactive?
+              {:convex-web.result/interactive (interactive-result result-value)}))))
 
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})

@@ -225,15 +225,17 @@
           (convex/result-data (Result/create (CVMLong/create 1)
                                 (Syntax/create (Maps/empty))))))
 
-    (is (= {:convex-web.result/id 1,
-            :convex-web.result/type "Syntax",
-            :convex-web.result/value "^{:interactive? true} {}"
-            :convex-web.result/interactive? true}
-          (convex/result-data (Result/create (CVMLong/create 1)
-                                (Syntax/create (Maps/empty)
-                                  ;; Metadata to mark this Syntax as interactive.
-                                  (.assoc (Maps/empty)
-                                    (Keyword/create "interactive?") (CVMBool/create true))))))))
+    (testing "Interactive"
+      (is (= {:convex-web.result/id 1,
+              :convex-web.result/type "Syntax",
+              :convex-web.result/value "^{:interactive? true} {}"
+              :convex-web.result/interactive? true
+              :convex-web.result/interactive [],}
+            (convex/result-data (Result/create (CVMLong/create 1)
+                                  (Syntax/create (Maps/empty)
+                                    ;; Metadata to mark this Syntax as interactive.
+                                    (.assoc (Maps/empty)
+                                      (Keyword/create "interactive?") (CVMBool/create true)))))))))
 
   (testing
     "Core function"
