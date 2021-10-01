@@ -57,6 +57,10 @@
   (fn [db [_ session]]
     (assoc db :site/session session)))
 
+(re-frame/reg-event-db :session/!update
+  (fn [db [_ f args]]
+    (assoc db :site/session (apply f (:site/session db) args))))
+
 (re-frame/reg-event-db :session/!pick-address
   (fn [db [_ address]]
     (assoc-in db [:site/session :convex-web.session/selected-address] address)))
@@ -133,6 +137,9 @@
 
 (defn ?accounts []
   (sub :session/?accounts))
+
+(defn refresh [session]
+  (disp :session/!update merge session))
 
 (defn SessionPage [_ {:keys [convex-web.session/id]} set-state]
   [:div.flex.flex-1.justify-center.my-4.mx-10

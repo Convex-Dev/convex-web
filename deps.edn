@@ -12,7 +12,7 @@
   com.cognitect/transit-cljs {:mvn/version "0.8.269"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
   
-  world.convex/convex-peer {:mvn/version "0.7.0"}
+  world.convex/convex-peer {:mvn/version "0.7.1"}
   
   ;; world.convex/convex-core {:local/root "convex-core-0.7.0-rc3-06ee2229b8fa9abaf28309b0b609c52fcd91ba7c.jar"}
   ;; world.convex/convex-peer {:local/root "convex-peer-0.7.0-rc3-06ee2229b8fa9abaf28309b0b609c52fcd91ba7c.jar"}
@@ -24,7 +24,7 @@
   
   ;; -- Logging
   
-  ch.qos.logback/logback-classic {:mvn/version "1.2.5"}
+  ch.qos.logback/logback-classic {:mvn/version "1.2.6"}
   
   ;; Logback implements the SLF4J API
   org.slf4j/slf4j-api {:mvn/version "1.7.32"}
@@ -76,9 +76,9 @@
   re-frame/re-frame {:mvn/version "1.2.0"}
   metosin/reitit-frontend {:mvn/version "0.5.15"}
   datalevin/datalevin {:mvn/version "0.4.40"}
-  
-  expound/expound {:mvn/version "0.8.9"}
-  zprint/zprint {:mvn/version "1.1.2"}
+  cljfmt/cljfmt {:mvn/version "0.8.0"}
+  rewrite-clj/rewrite-clj {:mvn/version "1.0.682-alpha"}
+  expound/expound {:mvn/version "0.8.10"}
   cljs-ajax/cljs-ajax {:mvn/version "0.8.4"}
   borkdude/sci {:mvn/version "0.2.5"}}
  
@@ -96,7 +96,7 @@
   ;; -- Site dev
   :site-dev
   {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.879"}
-                thheller/shadow-cljs {:mvn/version "2.15.8"}
+                thheller/shadow-cljs {:mvn/version "2.15.10"}
                 binaryage/devtools {:mvn/version "1.0.3"}
                 re-frisk/re-frisk {:mvn/version "1.5.1"}}}
   
@@ -120,7 +120,7 @@
   ;; -- Cognitect test runner
   :test-runner
   {:extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                           :sha "4e7e1c0dfd5291fa2134df052443dc29695d8cbe"}}
+                                           :sha "dd6da11611eeb87f08780a30ac8ea6012d4c05ce"}}
    
    :exec-fn cognitect.test-runner.api/test
    :exec-args {:dirs ["src/test"]}}

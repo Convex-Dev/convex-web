@@ -8,6 +8,7 @@
    [convex-web.command :as command]
    [convex-web.config :as config]
    [convex-web.encoding :as encoding]
+   [convex-web.wallet :as wallet]
    
    [clojure.set :refer [rename-keys]]
    [clojure.edn :as edn]
@@ -24,7 +25,6 @@
    [com.brunobonacci.mulog :as u]
    [expound.alpha :as expound]
    [datalevin.core :as d]
-   [cognitect.transit :as t]
    [ring.middleware.defaults :refer [wrap-defaults api-defaults site-defaults]]
    [org.httpkit.server :as http-kit]
    [compojure.core :refer [routes GET POST]]
@@ -36,14 +36,16 @@
    (java.io InputStream)
    
    (convex.api Convex)
-   (convex.core.crypto ASignature AKeyPair)
-   (convex.core.data Ref SignedData AccountKey ACell Hash Address)
+   (convex.core.crypto ASignature AKeyPair Ed25519KeyPair)
+   (convex.core.data Ref SignedData AccountKey ACell Hash Address Blob)
    (convex.core.lang Context)
    (convex.core.lang.impl AExceptional)
    (convex.core Peer State Result Order)
    (convex.core.exceptions MissingDataException)
    
-   (java.time Instant)
+   (java.time Instant ZonedDateTime)
+   (java.time.format DateTimeFormatter)
+
    (java.util Date)
    (clojure.lang ExceptionInfo)))
 
@@ -132,10 +134,6 @@
         [:div#app]
         
         (page/include-js (str asset-prefix-url "/js/main.js"))]))})
-
-(defn transit-decode [^InputStream x]
-  (when x
-    (t/read (t/reader x :json))))
 
 (defn json-key-fn [x]
   (cond
@@ -655,34 +653,51 @@
 
       -server-error-response)))
 
-(defn -POST-command [context {:keys [body] :as request}]
+(defn -POST-command [system {:keys [body] :as request}]
   (try
-    (let [{::command/keys [address mode] :as command} (transit-decode body)
+    (let [{::command/keys [signer mode] :as command} (encoding/transit-decode body)
+
+          sid (ring-session request)
+
+          {signer-address :convex-web.account/address} signer
+
+          signer (session/find-account (system/db system)
+                   {:sid sid
+                    :address signer-address})
+
+          ;; Signer is the account holding the key pair to sign the query/transaction.
+          command (merge command (when signer
+                                   {:convex-web.command/signer signer}))
           
           invalid? (not (s/valid? :convex-web/command command))
-          
-          session-addresses (session-addresses context request)
           
           forbidden? (case mode
                        :convex-web.command.mode/query
                        false
                        
                        :convex-web.command.mode/transaction
-                       (not (contains? session-addresses address))
+                       (nil? signer)
                        
                        false)]
       
       (cond
         forbidden?
-        (-forbidden-response (error "Unauthorized."))
+        (let [error (error "Unauthorized.")]
+
+          (log/error "Command error." error)
+
+          (-forbidden-response error))
         
         invalid?
-        (-bad-request-response (error (str "Invalid Command.\n" 
-                                        (expound/expound-str :convex-web/command command))))
+        (let [error (error (str "Invalid Command.\n"
+                             (expound/expound-str :convex-web/command command)))]
+
+          (log/error "Command error." error)
+
+          (-bad-request-response error))
         
         :else
-        (let [command' (command/execute context command)]
-          (-successful-response command'))))
+        (-successful-response (command/execute system command))))
     (catch Throwable ex
       (log/error ex "Command error.")
       
@@ -723,7 +738,7 @@
   Internal API."
   [system {:keys [body] :as req}]
   (try
-    (let [^Long address-long (transit-decode body)
+    (let [^Long address-long (encoding/transit-decode body)
           
           account (account/find-by-address (system/db system) address-long)]
       (cond
@@ -745,13 +760,22 @@
           
           (if (.isError result)
             (throw (ex-info "Failed to transfer funds." {:error-code (.getErrorCode result)}))
-            (do
-              (d/transact! (system/db-conn system) [{:convex-web.session/id (ring-session req)
-                                                     :convex-web.session/accounts
-                                                     [{:convex-web.account/address address-long}]}])
+            (let [sid (ring-session req)
+
+                  wallet-account (select-keys account [::account/address
+                                                       ::account/key-pair])
+
+                  session (if-let [session (session/find-session (system/db system) sid)]
+                            ;; Update an existing session.
+                            (update session :convex-web.session/wallet (fnil conj #{}) wallet-account)
+
+                            ;; Else; create a new session.
+                            {:convex-web.session/id sid
+                             :convex-web.session/wallet #{wallet-account}})]
+
+              (d/transact! (system/db-conn system) [session])
               
-              (-successful-response (select-keys account [::account/address
-                                                          ::account/created-at])))))))
+              (-successful-response wallet-account))))))
     (catch Exception ex
       (log/error ex "Account confirmation error.")
       
@@ -759,13 +783,14 @@
 
 (defn -POST-faucet [context {:keys [body]}]
   (try
-    (let [{:convex-web.faucet/keys [target amount] :as faucet} (transit-decode body)
+    (let [{:convex-web.faucet/keys [target amount] :as faucet} (encoding/transit-decode body)
           
           account (account/find-by-address (system/db context) target)
           
           [last-faucet & _] (sort-by :convex-web.faucet/timestamp #(compare %2 %1) (get account ::account/faucets))
           last-faucet-timestamp (get last-faucet :convex-web.faucet/timestamp 0)
           last-faucet-millis-ago (- (.getTime (Date.)) last-faucet-timestamp)]
+
       (cond
         (not (s/valid? :convex-web/faucet faucet))
         (let [message "Invalid request."]
@@ -815,6 +840,7 @@
             :amount amount)
           
           (-successful-response faucet))))
+
     (catch Exception ex
       (u/log :logging.event/system-error
         :severity :error
@@ -941,7 +967,7 @@
   "Returns value bound to symbol `sym` in the environment for account `address`."
   [context {:keys [body]}]
   (try
-    (let [{:keys [address sym]} (transit-decode body)
+    (let [{:keys [address sym]} (encoding/transit-decode body)
 
           address (convex/address-safe address)
 
@@ -958,20 +984,22 @@
 
       -server-error-response)))
 
-(defn -GET-blocks [context _]
+(defn -POST-wallet-account-key-pair
+  "Returns value bound to symbol `sym` in the environment for account `address`."
+  [system req]
   (try
-    (let [peer (system/convex-peer context)
-          order (convex/peer-order peer)
-          consensus (convex/consensus-point order)
-          max-items (min consensus config/default-range)
-          end consensus
-          start (- end max-items)]
-      (-successful-response (convex/blocks-data peer {:start start :end end})))
-    (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
+    (let [{:keys [body]} req
+
+          {:keys [address]} (encoding/transit-decode body)]
+
+      (if-let [kp (wallet/account-key-pair (system/db system)
+                    {:convex-web.session/id (ring-session req)
+                     :convex-web/address address})]
+        (-successful-response kp)
+        (-not-found-response {:error {:message "Not found."}})))
+
+    (catch Throwable ex
+      (log/error ex "Get account key pair error.")
 
       -server-error-response)))
 
@@ -1004,18 +1032,25 @@
         (-bad-request-response (error (str "Invalid range: [" start ":" end "].")))
 
         :else
-        (-successful-response {:meta
-                               {:start start
-                                :end end
-                                :total consensus}
+        (let [blocks (convex/blocks-data peer {:start start :end end})
+              blocks (map
+                       (fn [block]
+                         (let [txs (map
+                                     (fn [tx]
+                                       (assoc-in tx [:convex-web.signed-data/value :convex-web.transaction/result] (with-meta {} {:convex-web/lazy? true})))
+                                     (get block :convex-web.block/transactions))]
 
-                               :convex-web/blocks
-                               (convex/blocks-data peer {:start start :end end})})))
+                           (assoc block :convex-web.block/transactions txs)))
+                       blocks)]
+          (-successful-response {:meta
+                                 {:start start
+                                  :end end
+                                  :total consensus}
+
+                                 :convex-web/blocks
+                                 blocks}))))
     (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
+      (log/error ex "Failed to get blocks.")
 
       -server-error-response)))
 
@@ -1071,6 +1106,113 @@
 
       -server-error-response)))
 
+(defmulti invoke*
+  (fn [_ _ body]
+    (:convex-web.invoke/id body)))
+
+(defmethod invoke* :convex-web.invoke/wallet-account-key-pair
+  [system req body]
+  (let [address (get-in body [:convex-web.invoke/body :address])]
+    (if-let [kp (wallet/account-key-pair (system/db system)
+                  {:convex-web.session/id (ring-session req)
+                   :convex-web/address address})]
+      (-successful-response kp)
+      (-not-found-response {:error {:message "Not found."}}))))
+
+(defmethod invoke* :convex-web.invoke/wallet-add-account
+  [system req body]
+  (let [{invoke-body :convex-web.invoke/body} body
+
+        {req-address :address
+         req-seed :seed
+         req-account-key :account-key
+         req-private-key :private-key} invoke-body
+
+        req-address (convex/address req-address)
+
+        ;; It's possible to recreate the key pair from seed.
+        key-pair-from-seed (when req-seed
+                             (convex/key-pair-data
+                               (Ed25519KeyPair/create
+                                 (Blob/fromHex (str/replace req-seed #"^0x" "")))))
+
+        key-pair-account-key (when req-account-key
+                               {:convex-web.key-pair/account-key (str/replace req-account-key #"^0x" "")})
+
+        key-pair-private-key (when req-private-key
+                               {:convex-web.key-pair/private-key (str/replace req-private-key #"^0x" "")})
+
+        key-pair-from-keys (merge key-pair-account-key key-pair-private-key)
+
+        key-pair (or key-pair-from-seed key-pair-from-keys)
+
+        to-be-added-account (merge {:convex-web.account/address (.longValue req-address)}
+                              (when key-pair
+                                {:convex-web.account/key-pair key-pair}))
+
+        sid (ring-session req)
+
+        session (if-let [session (session/find-session (system/db system) sid)]
+                  ;; Update an existing session.
+                  (update session :convex-web.session/wallet (fnil conj #{}) to-be-added-account)
+
+                  ;; Else; Create a new session.
+                  {:convex-web.session/id sid
+                   :convex-web.session/wallet #{to-be-added-account}})
+
+        session (select-keys session [:convex-web.session/id :convex-web.session/wallet])
+
+        {db :db-after} (d/transact! (system/db-conn system) [session])]
+
+    (-successful-response (session/find-session db (ring-session req)))))
+
+(defmethod invoke* :convex-web.invoke/wallet-remove-account
+  [system req body]
+  (let [{invoke-body :convex-web.invoke/body} body
+
+        {address-to-be-removed :address} invoke-body
+
+        sid (ring-session req)
+
+        session (session/find-session (system/db system) sid)
+
+        {wallet :convex-web.session/wallet} session
+
+        wallet (reduce
+                 (fn [wallet account]
+                   (let [{address-in-wallet :convex-web.account/address} account]
+                     (if (not= (convex/address address-to-be-removed)
+                           (convex/address-safe address-in-wallet))
+                       (conj wallet account)
+                       wallet)))
+                 #{}
+                 wallet)
+
+        {db :db-after} (d/transact! (system/db-conn system) [{:convex-web.session/id sid
+                                                              :convex-web.session/wallet wallet}])]
+
+    (-successful-response (session/find-session db (ring-session req)))))
+
+(defn invoke
+  "Internal invoke API.
+
+  Invoke a Ring handler registered by ID."
+  [system req]
+  (try
+
+    (let [{body-encoded :body} req
+
+          body (encoding/transit-decode body-encoded)]
+
+      (invoke* system req body))
+
+    (catch Throwable ex
+      (log/error ex "Invoke error.")
+
+      {:status 500
+       :headers {"Content-Type" "application/transit+json"}
+       :body (encoding/transit-encode (error (ex-message ex)))})))
+
 (defn site [system]
   (routes
     (GET "/api/internal/session" req (-GET-session system req))
@@ -1080,7 +1222,6 @@
     (GET "/api/internal/accounts" req (-GET-accounts system req))
     (GET "/api/internal/accounts/:address" [address] (-GET-account system address))
     (POST "/api/internal/env" req (-POST-env system req))
-    (GET "/api/internal/blocks" req (-GET-blocks system req))
     (GET "/api/internal/blocks-range" req (-GET-blocks-range system req))
     (GET "/api/internal/blocks/:index" [index] (-GET-block system index))
     (GET "/api/internal/commands" req (-GET-commands system req))
@@ -1089,6 +1230,8 @@
     (GET "/api/internal/reference" req (-GET-reference system req))
     (GET "/api/internal/markdown-page" req (-GET-markdown-page system req))
     (GET "/api/internal/state" req (-GET-STATE system req))
+
+    (POST "/api/internal/invoke" req (invoke system req))
 
     (route/resources "/")
 
@@ -1160,14 +1303,29 @@
                  :access-control-allow-methods [:get :put :post :delete])))
 
 (defn site-handler [system]
-  (let [site-config (merge {:session
+  (let [now-plus-1-year (.plusYears (ZonedDateTime/now) 1)
+
+        ;; The maximum lifetime of the cookie as an HTTP-date timestamp
+        ;;
+        ;; If unspecified, the cookie becomes a session cookie.
+        ;; A session finishes when the client shuts down, and session cookies will be removed.
+        ;;
+        ;; See:
+        ;;  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
+        ;;  https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Date
+        session-expires (.format now-plus-1-year DateTimeFormatter/RFC_1123_DATE_TIME)
+
+        site-config (merge {:session
                             {:store (session/persistent-session-store (system/db-conn system))
                              :flash true
-                             :cookie-attrs {:http-only false :same-site :strict}}}
-                           (system/site-config system))]
+                             :cookie-attrs
+                             {:http-only false
+                              :same-site :strict
+                              :expires session-expires}}}
+                      (system/site-config system))]
     (-> (site system)
-        (wrap-logging)
-        (wrap-defaults (merge-with merge site-defaults site-config)))))
+      (wrap-logging)
+      (wrap-defaults (merge-with merge site-defaults site-config)))))
 
 (defn run-server
   "Start HTTP server (default port is 8090).

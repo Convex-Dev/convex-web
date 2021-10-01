@@ -26,8 +26,8 @@
    (convex.core Peer)
    (convex.core.init Init AInitConfig)
    (convex.core.lang Core Reader Context)
-   (convex.core.crypto AKeyPair PFXTools)
-   (convex.core.data Keywords Address Hash AccountKey ASet AHashMap Symbol AccountStatus)))
+   (convex.core.crypto AKeyPair Ed25519KeyPair PFXTools)
+   (convex.core.data Blob Hash AccountKey Symbol)))
 
 ;; -- Logging
 (set-init
@@ -74,28 +74,18 @@
       (io/delete-file f))
     
     (println "Deleted db" dir))
+
+  ;; Generate a new key pair.
+  (convex/key-pair-data (convex/generate-key-pair))
   
-  
+  (convex/key-pair-data
+    (Ed25519KeyPair/create
+      (Blob/fromHex "e7fc701f56bb8b602aeb6b96980038c3ad7419b578ee91ccac06ba6a21ec5259")))
+
+
   ;; -- Testing
   (let [handler (web-server/site system)]
     (handler (mock/request :post "/api/internal/generate-account")))
-  
-  ;; -- Sessions
-  (d/q '[:find [(pull ?e [*
-                          {:convex-web.session/accounts
-                           [:convex-web.account/address]}]) ...]
-         :in $
-         :where [?e :convex-web.session/id _]]
-    @(system/db-conn system))
-  
-  
-  (d/q '[:find (pull ?e [{:convex-web.session/accounts
-                          [:convex-web.account/address]}]) .
-         :in $ ?id
-         :where [?e :convex-web.session/id ?id]]
-    @(system/db-conn system) "mydbOh9wCdTcF_vLvUVHR")
-  
-  (session/find-session @(system/db-conn system) "iGlF3AZWw0eGuGfL_ib4-")
   
   
   ;; All Convex Addresses.
@@ -178,8 +168,8 @@
   (session/all-ring (db))
   
   (session/all (db))
-  (session/find-session (db) "4feac0cd-cc06-4a3b-bcad-54596771356b")
-  (session/find-account (db) "f7d696Fc1884ed5A7294A4F765206DB32dCDbCAB35C84DF7a8348bc2bF3b8f45")
+  (session/find-session (db) "ee9e0671-1c8e-4787-a60c-a97543ef634a")
+  (session/find-account (db) {:sid "ee9e0671-1c8e-4787-a60c-a97543ef634a" :address 87})
   
   ;; --
   
@@ -192,6 +182,15 @@
   
   
   ;; ----------------------
+
+  (convex/key-pair-data (convex/generate-key-pair))
+
+  ;; 44
+  #:convex-web.key-pair
+  {:account-key
+   "e6F8084c036b573b4a793eEAc59856B628088d2f78130609540194Fb808b76B1",
+   :private-key
+   "302e020100300506032b6570042204200ceb2ddbd240eea249e3d4d535ec6471ba9e0522454bbf94728ae7816c4b2614"}
 
   
   (dotimes [_ 500]

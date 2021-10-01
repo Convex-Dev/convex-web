@@ -30,7 +30,7 @@ One of the advantages of using prefix notation is that it provides a standard wa
 used above has been designed to be **variadic**, meaning it accepts a variable number of parameters:
 
 ```clojure
-(+ 2)         ;; 4
+(+ 2)         ;; 2
 (+ 2 3)       ;; 5
 (+ 2 3 10)    ;; 15
 (+ 2 3 10 5)  ;; 20

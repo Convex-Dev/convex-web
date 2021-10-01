@@ -1,20 +1,20 @@
 (ns convex-web.site.repl
-  (:require [convex-web.site.gui :as gui]
-            [convex-web.site.command :as command]
-            [convex-web.site.session :as session]
-            [convex-web.site.stack :as stack]
-            [convex-web.site.backend :as backend]
-            [convex-web.site.format :as format]
+  (:require
+   [clojure.string :as str]
+   [cljs.spec.alpha :as s]
 
-            [clojure.string :as str]
-            [cljs.spec.alpha :as s]
+   [codemirror-reagent.core :as codemirror]
+   [reagent.core :as reagent]
+   [reitit.frontend.easy :as rfe]
 
-            [codemirror-reagent.core :as codemirror]
-            [reagent.core :as reagent]
-            [reitit.frontend.easy :as rfe]
-            [zprint.core :as zprint]
-            
-            ["react-resizable" :refer [ResizableBox]]))
+   [convex-web.site.gui :as gui]
+   [convex-web.site.command :as command]
+   [convex-web.site.session :as session]
+   [convex-web.site.stack :as stack]
+   [convex-web.site.backend :as backend]
+   [convex-web.site.format :as format]
+
+   ["react-resizable" :refer [ResizableBox]]))
 
 (defn mode [state]
   (:convex-web.repl/mode state))
@@ -54,61 +54,39 @@
 ;; ---
 
 (def convex-lisp-examples
-  (let [make-example (fn [& examples]
-                       (str/join "\n\n" examples))]
-    [["Self Balance"
-      (make-example "*balance*")]
+  [["Self Balance"
+    "*balance*"]
 
-     ["Self Address"
-      (make-example "*address*")]
+   ["Self Address"
+    "*address*"]
 
-     ["Check Balance"
-      (make-example
-        "(balance #9)")]
+   ["Check Balance"
+    "(balance #9)"]
 
-     ["Transfer"
-      (make-example
-        "(transfer #9 1000)")]
+   ["Transfer"
+    "(transfer #9 1000)"]
 
-     ["Creating a Token"
-      (make-example
-        "(import convex.fungible :as fungible)"
-        "(def my-token (deploy (fungible/build-token {:supply 1000})))")]
+   ["Creating a Token"
+    "(import convex.fungible :as fungible)\n\n(def my-token (deploy (fungible/build-token {:supply 1000})))"]
 
-     ["Simple Storage Actor"
-      (make-example
-        "(def storage-example-address (deploy '(do (def stored-data nil) (defn get [] stored-data) (defn set [x] (def stored-data x)) (export get set))))")]
-
-     ["Call Actor"
-      (make-example
-        "(def storage-example-address (deploy '(do (def stored-data nil) (defn get [] stored-data) (defn set [x] (def stored-data x)) (export get set))))"
-
-        "(call storage-example-address (set 1))"
-        "(call storage-example-address (get))")]
-
-     ["Subcurrency Actor"
-      (make-example
-        "(deploy '(do (def owner *caller*) (defn contract-transfer [receiver amount] (assert (= owner *caller*)) (transfer receiver amount)) (defn contract-balance [] *balance*) (export contract-transfer contract-balance)))")]]))
+   ["Simple Storage Actor"
+    "(def storage-example-address (deploy '(do (def stored-data nil)\n\n(defn ^{:callable? true} get [] stored-data)\n\n(defn ^{:callable? true} set [x] (def stored-data x)))))\n\n(call storage-example-address (set 1))\n\n(call storage-example-address (get))"]])
 
 (defn Examples [language]
-  (let [Title (fn [title]
-                [:span.text-sm title])]
-    
-    [:div.flex.flex-col.flex-1.pl-1.pr-4.overflow-auto
-     (map
-       (fn [[title source-code]]
-         (let [source-code (try
-                             (zprint/zprint-str source-code {:parse-string? true :width 60})
-                             (catch js/Error _
-                               source-code))]
-           ^{:key title}
-           [:div.flex.flex-col.py-2
-            [:div.flex.justify-between.items-center
-             [Title title]
-             [gui/ClipboardCopy source-code]]
-            
-            [gui/Highlight source-code {:language language}]]))
-       convex-lisp-examples)]))
+  [:div.flex.flex-col.flex-1.divide-y.pl-1.pr-4.overflow-auto
+   (for [[title source-code] convex-lisp-examples]
+     ^{:key title}
+     [:div.flex.flex-col.py-2.space-y-2
+
+      ;; -- Name
+      [:div.flex.justify-between.items-center
+       [:span.text-sm
+        title]
+
+       [gui/ClipboardCopy source-code]]
+
+      ;; -- Source
+      [gui/Highlight source-code {:language language}]])])
 
 (defn Reference [reference]
   (reagent/with-let [search-string-ref (reagent/atom nil)
@@ -191,17 +169,21 @@
                                                           :timestamp (.getTime (js/Date.))
                                                           :status :convex-web.command.status/running
                                                           :mode (mode state)}
+
+                            signer {:convex-web.account/address active-address}
+
                             command (merge command
                                       (case (mode state)
                                         :convex-web.command.mode/query
                                         (merge {:convex-web.command/query query}
-                                          ;; Address is optional in query mode.
+
+                                          ;; Signer is optional in query mode.
                                           (when active-address
-                                            {:convex-web.command/address active-address}))
+                                            {:convex-web.command/signer signer}))
                                         
                                         :convex-web.command.mode/transaction
-                                        #:convex-web.command {:address active-address
-                                                              :transaction transaction}))]
+                                        #:convex-web.command {:transaction transaction
+                                                              :signer signer}))]
                         
                         (when-not (str/blank? (codemirror/cm-get-value editor))
                           (codemirror/cm-set-value editor "")
@@ -403,6 +385,9 @@
     (str (error-code-string code)
       (when message
         (str ": " message)))
+
+    message
+    (str message)
     
     :else
     "Unknown error"))
@@ -435,73 +420,86 @@
 
 (defn Commands [commands]
   [:div.w-full.h-full.max-w-full.overflow-auto.bg-gray-100.border.rounded
-   (for [{:convex-web.command/keys [timestamp status query transaction] :as command} commands]
-     ^{:key timestamp}
-     [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
-      {:ref
-       (fn [el]
-         (when el
-           (.scrollIntoView el #js {"behavior" "smooth"
-                                    "block" "center"})))
-       :class
-       (case status
-         :convex-web.command.status/running
-         "bg-yellow-100"
-         :convex-web.command.status/success
-         ""
-         :convex-web.command.status/error
-         "bg-red-100"
-         
-         "")}
-      
-      ;; -- Input
-      [:div.flex.flex-col.items-start
-       [:span.text-xs.uppercase.text-gray-600.block.mb-1
-        "Source"]
-       
-       (let [source (or (get query :convex-web.query/source)
-                      (get transaction :convex-web.transaction/source))]
-         [:div.flex.items-center
-          [gui/Highlight source {:pretty? true}]
-          
-          ;; This causes a strange overflow.
-          #_[gui/ClipboardCopy source {:margin "ml-2"}]])]
-      
-      [:div.my-3]
-      
-      ;; -- Output
-      [:div.flex.flex-col
-       (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
-         [:div.flex.mb-1
-          [:span.text-xs.uppercase.text-gray-600
-           (cond
-             error?
-             (let [code (get-in command [:convex-web.command/error :code])]
-               (apply str (if (keyword? code)
-                            ["Error " (str "(" (error-code-string code) ")")]
-                            ["Unrecognised Non-Keyword Error Code"])))
-             
-             :else
-             "Result")]
-          
-          ;; Don't display result type for errors.
-          (when-not error?
-            (when-let [type (get-in command [:convex-web.command/result :convex-web.result/type])]
-              [gui/Tooltip
-               {:title (str/capitalize type)
-                :size "small"}
-               [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
-       
-       [:div.flex
-        (case status
-          :convex-web.command.status/running
-          [gui/SpinnerSmall]
-          
-          :convex-web.command.status/success
-          [gui/ResultRenderer (:convex-web.command/result command)]
-          
-          :convex-web.command.status/error
-          [ErrorOutput command])]]])])
+   (if (seq commands)
+     (for [{:convex-web.command/keys [timestamp status query transaction] :as command} commands]
+       ^{:key timestamp}
+       [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
+        {:ref
+         (fn [el]
+           (when el
+             (.scrollIntoView el #js {"behavior" "smooth"
+                                      "block" "center"})))
+         :class
+         (case status
+           :convex-web.command.status/running
+           "bg-yellow-100"
+           :convex-web.command.status/success
+           ""
+           :convex-web.command.status/error
+           "bg-red-100"
+
+           "")}
+
+        ;; -- Input
+        [:div.flex.flex-col.items-start
+         [:span.text-xs.uppercase.text-gray-600.block.mb-1
+          "Source"]
+
+         (let [source (or (get query :convex-web.query/source)
+                        (get transaction :convex-web.transaction/source))]
+           [:div.flex.items-center
+            [gui/Highlight source {:pretty? true}]
+
+            ;; This causes a strange overflow.
+            #_[gui/ClipboardCopy source {:margin "ml-2"}]])]
+
+        [:div.my-3]
+
+        ;; -- Output
+        [:div.flex.flex-col
+         (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
+           [:div.flex.mb-1
+            [:span.text-xs.uppercase.text-gray-600
+             (cond
+               error?
+               (let [code (get-in command [:convex-web.command/error :code])]
+                 (apply str (if (keyword? code)
+                              ["Error " (str "(" (error-code-string code) ")")]
+                              ["Unrecognised Non-Keyword Error Code"])))
+
+               :else
+               "Result")]
+
+            ;; Don't display result type for errors.
+            (when-not error?
+              (when-let [type (get-in command [:convex-web.command/result :convex-web.result/type])]
+                [gui/Tooltip
+                 {:title (str/capitalize type)
+                  :size "small"}
+                 [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
+
+         [:div.flex
+          (case status
+            :convex-web.command.status/running
+            [gui/SpinnerSmall]
+
+            :convex-web.command.status/success
+            [gui/ResultRenderer (:convex-web.command/result command)]
+
+            :convex-web.command.status/error
+            [ErrorOutput command])]]])
+
+     ;; Else; explain the Sandbox.
+     [:div.h-full.flex.flex-col.items-center.justify-center
+      [:div.prose.prose-base
+       [:p.text-2xl.text-center
+        "Welcome to the Sandbox"]
+
+       [:p
+        "The Sandbox is a fast interactive REPL giving each account a unique, persistent programmable environment."]
+
+       [:p
+        "Enter commands in the lower pane to execute transactions live on the current test network."]]])])
 
 ;; --
 
@@ -529,11 +527,11 @@
      [:div.w-screen.max-w-full.flex.flex-col.mb-6.space-y-2
       
       [:div.flex.justify-end
-       [gui/Tooltip
-        {:title "Show Examples & Reference"
-         :size "small"}
-        [gui/DefaultButton
-         {:on-click #(toggle-sidebar set-state)}
+       [gui/DefaultButton
+        {:on-click #(toggle-sidebar set-state)}
+        [:div.flex.space-x-2
+         [:span "Show Examples & Reference"]
+
          [gui/MenuAlt3Icon
           {:class "h-5 w-5"}]]]]
       
@@ -651,7 +649,6 @@
 
 (def sandbox-page
   #:page {:id :page.id/repl
-          :description "Execute transactions live on the current test network. Fast and interactive."
           :initial-state
           {:convex-web.repl/language :convex-lisp
            :convex-web.repl/mode :convex-web.command.mode/transaction

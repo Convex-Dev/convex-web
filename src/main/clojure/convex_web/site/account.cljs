@@ -225,7 +225,7 @@
                               (get-in frame [:frame/state :transfer-page/to]))))))
 
 (defn TransferPage [frame state set-state]
-  (let [{:keys [convex-web/transfer convex-web/command transfer-page/config] :as state} state
+  (let [{:keys [convex-web/transfer convex-web/command transfer-page/config]} state
 
         active-address (session/?active-address)
 

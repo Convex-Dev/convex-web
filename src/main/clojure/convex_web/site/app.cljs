@@ -28,9 +28,8 @@
             [lambdaisland.glogi.console :as glogi-console]
             [reitit.frontend.easy :as rfe]
 
-            ["react" :as react]
             ["@headlessui/react" :as headlessui]
-            ["@heroicons/react/solid" :refer [MenuIcon XIcon ChevronDownIcon ChevronRightIcon]]
+            ["@heroicons/react/solid" :as icon :refer [MenuIcon XIcon ChevronDownIcon ChevronRightIcon]]
             ["highlight.js/lib/core" :as hljs]
             ["highlight.js/lib/languages/clojure" :as hljs-clojure]
             ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
@@ -115,7 +114,10 @@
 
    ;; ---
 
-   wallet/wallet-page])
+   wallet/wallet-page
+   wallet/add-account-page
+   wallet/remove-account-page
+   wallet/account-key-pair-page])
 
 ;; ---
 
@@ -509,16 +511,13 @@
        [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg
         [:div.h-20.relative.flex.justify-between.items-center.px-6
 
-         [:span.font-mono.text-lg.leading-none title]
+         [:span.text-lg.leading-none title]
 
-         [gui/Tooltip
-          {:title "Close"}
-          [gui/IconXCircle
-           {:class
-            ["w-6 h-6"
-             "text-gray-600 hover:text-gray-700"
-             "cursor-pointer"]
-            :on-click #(stack/pop)}]]]]
+         [:button.p-2.rounded.hover:shadow.hover:bg-gray-100.active:bg-gray-200
+          {:class "text-gray-900 active:text-gray-700"
+           :on-click #(stack/pop)}
+          [:> icon/XIcon
+           {:className "w-5 h-5"}]]]]
 
        ;; -- Body
        [:div.flex.flex-1.max-h-full.overflow-auto
@@ -528,11 +527,11 @@
 
 ;; TODO This should be extracted into a "generic" component, so it can be used in other parts of the site.
 (defn AccountSelect []
-  (let [*state (reagent/atom {:show? false})]
+  (let [state-ref (reagent/atom {:show? false})]
     (fn []
-      (let [{:keys [show? selected]} @*state
+      (let [{:keys [show?]} @state-ref
 
-            selected (or selected (session/?active-address))
+            active-address (session/?active-address)
 
             item-style ["inline-flex w-full h-16 relative py-2 pl-3 pr-9"
                         "cursor-default select-none"
@@ -544,13 +543,13 @@
 
           ;; Selected
           [:span.inline-block.w-full
-           {:on-click #(swap! *state update :show? not)}
+           {:on-click #(swap! state-ref update :show? not)}
            [:button.cursor-default.relative.w-full.rounded-md.bg-white.pr-9.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5 {:type "button" :aria-haspopup "listbox" :aria-expanded "true" :aria-labelledby "listbox-label"}
 
             [:div.flex.items-center.space-x-2
-             [gui/AIdenticon {:value selected :size 40}]
+             [gui/AIdenticon {:value active-address :size 40}]
              [:span.block.ml-2.text-sm
-              (format/prefix-# selected)]]
+              (format/prefix-# active-address)]]
 
             [:span.absolute.inset-y-0.right-0.flex.items-center.pr-2.pointer-events-none
              [:svg.h-5.w-5.text-gray-400 {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
@@ -559,7 +558,7 @@
           [gui/Transition
            (merge gui/dropdown-transition {:show? show?})
            [gui/Dismissible
-            {:on-dismiss #(swap! *state update :show? (constantly false))}
+            {:on-dismiss #(swap! state-ref update :show? (constantly false))}
             [:div.origin-top-right.absolute.right-0.mt-2.rounded-md.shadow-lg.bg-white
              [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
 
@@ -568,7 +567,7 @@
                {:class item-style
                 :on-click
                 #(do
-                   (reset! *state {:show? false})
+                   (reset! state-ref {:show? false})
 
                    (stack/push :page.id/create-account {:modal? true}))}
 
@@ -586,13 +585,13 @@
                  {:class item-style
                   :on-click
                   #(do
-                     (reset! *state {:show? false :selected address})
+                     (reset! state-ref {:show? false})
 
                      (session/pick-address address))}
 
                  [:div.flex.items-center
                   [:div.h-5.w-5.mr-2
-                   (when (= address selected)
+                   (when (= address active-address)
                      [gui/CheckIcon {:class "h-5 w-5"}])]
 
                   [gui/AIdenticon {:value address :size 40}]
@@ -656,43 +655,41 @@
                   [NavItem active-route item]])])]])]])))
 
 (defn TopNav []
-  (let [link-style "text-gray-800 hover:text-gray-500 active:text-black"]
-    [:nav.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
-     [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
-      {:class theme/bg-blue-01052A}
-      
-      [gui/ConvexWhite]
-      
-      ;; -- Items
-      [:div.flex.items-center.justify-end.space-x-4
-       
-       ;; -- Active account / Create Account
-       (cond
-         (= :ajax.status/pending (session/?status))
-         [gui/Spinner]
-         
-         (session/?active-address)
-         ;; -- Select account
-         [AccountSelect]
-         
-         :else
-         ;; -- Create Account
-         [:div.hidden.md:block
-          [gui/PrimaryButton
-           {:on-click #(stack/push :page.id/create-account {:modal? true})}
-           [:span.block.font-mono.text-xs.md:text-sm.text-white.uppercase
-            {:class gui/button-child-small-padding}
-            "Create Account"]]])
-       
-       ;; -- Mobile menu
-       [:div.md:hidden
-        [Menu]]]]]))
+  [:nav.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
+   [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
+    {:class theme/bg-blue-01052A}
+
+    [gui/ConvexWhite]
+
+    ;; -- Items
+    [:div.flex.items-center.justify-end.space-x-4
+
+     ;; -- Active account / Create Account
+     (cond
+       (= :ajax.status/pending (session/?status))
+       [gui/Spinner]
+
+       (session/?active-address)
+       ;; -- Select account
+       [AccountSelect]
+
+       :else
+       ;; -- Create Account
+       [:div.hidden.md:block
+        [gui/PrimaryButton
+         {:on-click #(stack/push :page.id/create-account {:modal? true})}
+         [:span.block.font-mono.text-xs.md:text-sm.text-white.uppercase
+          {:class gui/button-child-small-padding}
+          "Create Account"]]])
+
+     ;; -- Mobile menu
+     [:div.md:hidden
+      [Menu]]]]])
 
 (defn DeveloperPage [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component
          title :page/title
-         description :page/description
-         style :page/style} page
+         description :page/description} page
         
         set-state (stack/make-set-state uuid)]
     [:<>
@@ -700,7 +697,7 @@
      
      ;; Main
      ;; ================
-     [:div.w-full.max-w-7xl.mx-auto
+     [:div.w-full.max-w-screen-2xl.mx-auto
       [:div.h-screen.flex.pt-24
        {:class 
         [;; Mobile

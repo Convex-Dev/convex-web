@@ -1,5 +1,18 @@
 # Changes
 
+## 0.28.0 -- 2021-10-01
+- [Unusable website when height is too small #198](https://github.com/Convex-Dev/convex-web/issues/198)
+- [Sporadic X overflow in home page #189](https://github.com/Convex-Dev/convex-web/issues/189)
+- [Refactor Blocks internal HTTP API #203](https://github.com/Convex-Dev/convex-web/issues/203)
+- [Blocks page slow to load #202](https://github.com/Convex-Dev/convex-web/issues/202)
+- [Sessions not persisting? #200](https://github.com/Convex-Dev/convex-web/issues/200)
+- [Import / export keys #147](https://github.com/Convex-Dev/convex-web/issues/147)
+- [Update sandbox examples #204](https://github.com/Convex-Dev/convex-web/issues/204)
+- [Update active address after removing account #205](https://github.com/Convex-Dev/convex-web/issues/205)
+- [Simplify testnet account table #192](https://github.com/Convex-Dev/convex-web/issues/192)
+- Updated Convex to 0.7.1
+- Roadmap
+
 ## 0.27.0 -- 2021-09-15
 - [Lazily load account environment #196](https://github.com/Convex-Dev/convex-web/issues/196)
 - [Don't syntax highlight result #195](https://github.com/Convex-Dev/convex-web/issues/195)

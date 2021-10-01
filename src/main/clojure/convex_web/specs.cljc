@@ -6,12 +6,12 @@
 
 (s/def :convex-web/non-empty-string (s/and string? (complement str/blank?)))
 
-(s/def :convex-web/blob-string (s/and :convex-web/non-empty-string #(str/starts-with? % "0x")))
+(s/def :convex-web/blob-string (s/and :convex-web/non-empty-string #(some-> % (str/starts-with? "0x"))))
 
 (s/def :convex-web/address
   (s/or
     :integer nat-int?
-    :string-# #(str/starts-with? % "#")
+    :string-prefixed (s/and :convex-web/non-empty-string #(some-> % (str/starts-with? "#")))
     :string :convex-web/non-empty-string))
 
 (s/def :convex-web/sig (s/and :convex-web/non-empty-string #(= 128 (count %))))
@@ -149,6 +149,9 @@
 (s/def :convex-web/key-pair (s/keys :req [:convex-web.key-pair/account-key
                                           :convex-web.key-pair/private-key]))
 
+(s/def :convex-web/key-pair-opt (s/keys :opt [:convex-web.key-pair/account-key
+                                              :convex-web.key-pair/private-key]))
+
 ;; -- Account Status
 
 (s/def :convex-web.account-status/sequence :convex-web/sequence)
@@ -162,11 +165,15 @@
 
 (s/def :convex-web.account/status :convex-web/account-status)
 (s/def :convex-web.account/address :convex-web/address)
-(s/def :convex-web.account/key-pair :convex-web/key-pair)
+(s/def :convex-web.account/key-pair :convex-web/key-pair-opt)
 
 (s/def :convex-web/account (s/keys :req [:convex-web.account/address]
                                    :opt [:convex-web.account/status
                                          :convex-web.account/key-pair]))
+
+(s/def :convex-web/signer
+  (s/keys :req [:convex-web.account/address
+                :convex-web.account/key-pair]))
 
 (s/def :convex-web/accounts (s/coll-of :convex-web/account))
 
@@ -285,6 +292,12 @@
 (s/def :convex-web.command/id uuid?)
 (s/def :convex-web.command/timestamp nat-int?)
 (s/def :convex-web.command/address :convex-web/address)
+
+(s/def :convex-web.command/signer
+  (s/or
+    :signer :convex-web/signer
+    :account :convex-web/account))
+
 (s/def :convex-web.command/transaction :convex-web/transaction)
 (s/def :convex-web.command/query :convex-web/query)
 (s/def :convex-web.command/object any?)
@@ -298,15 +311,15 @@
           :convex-web.command/timestamp
           :convex-web.command/mode
           :convex-web.command/query]
-    :opt [:convex-web.command/address
-          :convex-web.command/status]))
+    :opt [:convex-web.command/status
+          :convex-web.command/signer]))
 
 (defmethod incoming-command :convex-web.command.mode/transaction [_]
   (s/keys 
     :req [:convex-web.command/id
           :convex-web.command/timestamp
           :convex-web.command/mode
-          :convex-web.command/address
+          :convex-web.command/signer
           :convex-web.command/transaction]
     :opt [:convex-web.command/status]))
 
