@@ -44,13 +44,3 @@
                [[:string "Hello"]]}]]}
 
           (s/conform ::hiccup/element [:text {} [:text {} "Hello"]])))))
-
-(deftest compile-test
-  (is  (= [:span "1"] (hiccup/compile [:text 1])))
-  (is  (= [:span "1"] (hiccup/compile [:text {} 1])))
-
-  (is  (= [:span "Hello"] (hiccup/compile [:text "Hello"])))
-  (is  (= [:span "\"Hello\""] (hiccup/compile [:text "\"Hello\""])))
-
-  (is  (= [:span "{:tag :text, :content [[:number 1]]}"]
-         (hiccup/compile [:text {} [:text 1]]))))
