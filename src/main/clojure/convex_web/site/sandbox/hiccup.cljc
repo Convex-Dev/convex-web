@@ -1,4 +1,5 @@
 (ns convex-web.site.sandbox.hiccup
+  "See convex-web.site.sandbox.hiccup-test for examples."
   (:require
    [clojure.spec.alpha :as s]))
 
