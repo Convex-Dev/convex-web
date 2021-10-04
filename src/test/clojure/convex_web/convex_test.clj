@@ -230,7 +230,7 @@
               :convex-web.result/type "Syntax",
               :convex-web.result/value "^{:interactive? true} {}"
               :convex-web.result/interactive? true
-              :convex-web.result/interactive [],}
+              :convex-web.result/interactive :clojure.spec.alpha/invalid}
             (convex/result-data (Result/create (CVMLong/create 1)
                                   (Syntax/create (Maps/empty)
                                     ;; Metadata to mark this Syntax as interactive.
