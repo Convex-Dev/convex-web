@@ -13,6 +13,7 @@
    [convex-web.site.format :as format]
    [convex-web.site.backend :as backend]
    [convex-web.site.stack :as stack]
+   [convex-web.site.sandbox.renderer :as renderer]
    [convex-web.convex :as convex]
 
    ["react" :as react]
@@ -1216,19 +1217,20 @@
 
 (defn ResultRenderer [result]
   (let [{result-type :convex-web.result/type
-         result-value :convex-web.result/value} result]
-    (case result-type
-      ;; "Syntax"
-      ;; Syntax can be a tutorial or not.
-      ;; Check metadata to see if it's a tutorial.
+         result-value :convex-web.result/value
+         result-interactive? :convex-web.result/interactive?
+         result-interactive :convex-web.result/interactive} result]
+    (cond
+      result-interactive?
+      (renderer/compile result-interactive)
       
-      "Address"
+      (= result-type "Address")
       [AddressRenderer result-value]
       
-      "Blob"
+      (= result-type "Blob")
       [BlobRenderer result-value]
       
-      "Function"
+      (= result-type "Function")
       (let [{result-value :convex-web.result/value
              result-metadata :convex-web.result/metadata} result]
         (if result-metadata
@@ -1239,7 +1241,7 @@
              :show-examples? false}]]
           [Highlight result-value]))
       
-      ;; Default.
+      :else
       [:code.text-xs
        result-value])))
 

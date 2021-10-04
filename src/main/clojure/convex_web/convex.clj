@@ -5,7 +5,9 @@
    [clojure.tools.logging :as log]
    [clojure.java.io :as io]
    
-   [cognitect.anomalies :as anomalies])
+   [cognitect.anomalies :as anomalies]
+
+   [convex-web.site.sandbox.hiccup :as hiccup])
   (:import 
    (convex.peer Server)
    (convex.core.init Init)
@@ -352,7 +354,7 @@
 
           (merge {:convex-web.result/interactive? interactive?}
             (when interactive?
-              {:convex-web.result/interactive (interactive-result result-value)}))))
+              {:convex-web.result/interactive (s/conform ::hiccup/element (datafy result-value))}))))
 
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})
