@@ -5,28 +5,33 @@
 
    [convex-web.site.sandbox.hiccup :as hiccup]))
 
-(deftest hiccup-element
-  (testing "Text with string"
+(deftest hiccup-element-test
+  (testing "String and number are not valid elements"
+    (is (= :clojure.spec.alpha/invalid (s/conform ::hiccup/element 1)))
+    (is (= :clojure.spec.alpha/invalid (s/conform ::hiccup/element "Hello"))))
 
-    (testing "Text without attributes"
-      (is (= {:tag :text
-              :content [[:terminal [:string "Hello"]]]}
+  (testing "Empty vector is not a valid element"
+    (is (= :clojure.spec.alpha/invalid (s/conform ::hiccup/element []))))
 
-            (s/conform ::hiccup/element [:text "Hello"]))))
+  (testing "Text without attributes"
+    (is (= {:tag :text
+            :content [[:string "Hello"]]}
 
-    (testing "Text with attributes"
-      (is (= {:tag :text
-              :attributes {}
-              :content [[:terminal [:number 1]]]}
+          (s/conform ::hiccup/element [:text "Hello"]))))
 
-            (s/conform ::hiccup/element [:text {} 1])))))
-
-  (testing "Text with number"
+  (testing "Text with attributes"
     (is (= {:tag :text
             :attributes {}
-            :content [[:terminal [:number 1]]]}
+            :content [[:number 1]]}
 
-          (s/conform ::hiccup/element [:text {} 1]))))
+          (s/conform ::hiccup/element [:text {} 1])))
+
+    (testing "Text with number"
+      (is (= {:tag :text
+              :attributes {}
+              :content [[:number 1]]}
+
+            (s/conform ::hiccup/element [:text {} 1])))))
 
   (testing "Text with nested element"
     (is (= {:tag :text
@@ -36,6 +41,16 @@
               {:tag :text
                :attributes {},
                :content
-               [[:terminal [:string "Hello"]]]}]],}
+               [[:string "Hello"]]}]]}
 
           (s/conform ::hiccup/element [:text {} [:text {} "Hello"]])))))
+
+(deftest compile-test
+  (is  (= [:span "1"] (hiccup/compile [:text 1])))
+  (is  (= [:span "1"] (hiccup/compile [:text {} 1])))
+
+  (is  (= [:span "Hello"] (hiccup/compile [:text "Hello"])))
+  (is  (= [:span "\"Hello\""] (hiccup/compile [:text "\"Hello\""])))
+
+  (is  (= [:span "{:tag :text, :content [[:number 1]]}"]
+         (hiccup/compile [:text {} [:text 1]]))))
