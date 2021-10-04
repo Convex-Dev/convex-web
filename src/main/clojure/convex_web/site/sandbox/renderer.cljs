@@ -23,8 +23,8 @@
      (str content-body)]))
 
 (defmethod compile* :h-box
-     [{:keys [content]}]
-     (into [:div.flex.flex-row] (map compile* content)))
+  [{:keys [content]}]
+  (into [:div.flex.flex-row] (map compile* content)))
 
 (defn compile [markup]
   (let [conformed (s/conform ::hiccup/element markup)]
