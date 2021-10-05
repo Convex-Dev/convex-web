@@ -1,5 +1,11 @@
 (ns convex-web.site.sandbox.hiccup
-  "See convex-web.site.sandbox.hiccup-test for examples."
+  "Specs for the Interactive Sandbox language.
+
+  This is a very small language with a Hiccup-like syntax
+  which can be used to create UIs in the Sandbox.
+
+  See convex-web.site.sandbox.hiccup-test for examples,
+  and convex-web.site.sandbox.renderer for the renderer."
   (:require
    [clojure.spec.alpha :as s]))
 

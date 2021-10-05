@@ -1,4 +1,16 @@
 (ns convex-web.site.sandbox.renderer
+  "Reagent renderer for Interactive Sandbox.
+
+  Compiles an AST produced by spec/conform to a Reagent component.
+
+  Currently implemented tags:
+    - :text
+    - :command
+    - :h-box
+    - :v-box
+
+  A tag is implemented as a multimethod,
+  so it's possible to extend the language via new methods/tags."
   (:require
    [re-frame.core :as rf]
    [lambdaisland.glogi :as log]
