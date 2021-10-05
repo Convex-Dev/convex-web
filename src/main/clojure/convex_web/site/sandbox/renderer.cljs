@@ -15,7 +15,11 @@
    [re-frame.core :as rf]
    [lambdaisland.glogi :as log]
 
-   [convex-web.site.command :as command]))
+   [convex-web.site.command :as command]
+
+   ["highlight.js/lib/languages/clojure"]
+   ["highlight.js/lib/languages/javascript"]
+   ["react-highlight.js" :as react-hljs]))
 
 (defmulti compile :tag)
 
@@ -29,6 +33,14 @@
   (let [[_ content-body] (first content)]
     [:span
      (str content-body)]))
+
+(defmethod compile :code
+  [{:keys [content]}]
+  ;; Code's content is the first number/string/element.
+  (let [[_ content-body] (first content)]
+    [:div.text-xs.overflow-auto
+     [:> (.-default react-hljs) {:language "language-clojure"}
+      (str content-body)]]))
 
 (defmethod compile :command
   [{:keys [attributes content]}]
