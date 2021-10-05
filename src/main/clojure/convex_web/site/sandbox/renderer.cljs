@@ -44,7 +44,8 @@
 
 (defmethod compile :command
   [{:keys [attributes content]}]
-  (let [{attr-source :source} attributes
+  (let [{attr-source :source
+         attr-action :action} attributes
 
         ;; Command's content is the first number/string/element.
         [_ content-body] (first content)]
@@ -52,21 +53,28 @@
     [:button.bg-blue-500.hover:bg-blue-400.active:bg-blue-600.p-2.rounded.shadow
      {:on-click
       (fn []
-        (let [active-address @(rf/subscribe [:session/?active-address])
+        (let [active-address @(rf/subscribe [:session/?active-address])]
+          (cond
+            (= attr-action :execute)
+            (let [command #:convex-web.command {:id (random-uuid)
+                                                :timestamp (.getTime (js/Date.))
+                                                :status :convex-web.command.status/running
+                                                :mode :convex-web.command.mode/query
+                                                :query #:convex-web.query {:source attr-source
+                                                                           :language :convex-lisp}}]
+              (command/execute command
+                (fn [_ response]
+                  (log/debug :command-new-state response)
 
-              command #:convex-web.command {:id (random-uuid)
-                                            :timestamp (.getTime (js/Date.))
-                                            :status :convex-web.command.status/running
-                                            :mode :convex-web.command.mode/query
-                                            :query #:convex-web.query {:source attr-source
-                                                                       :language :convex-lisp}}]
-          (command/execute command
-            (fn [_ response]
-              (log/debug :command-new-state response)
+                  (rf/dispatch [:session/!set-state
+                                (fn [state]
+                                  (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj response))]))))
 
-              (rf/dispatch [:session/!set-state
-                            (fn [state]
-                              (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj response))])))))}
+            (= attr-action :edit)
+            nil
+
+            :else
+            (log/warn :unknown-action attr-action))))}
 
      ;; Command's button text.
      [:span.text-sm.text-white
