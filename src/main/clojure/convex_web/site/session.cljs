@@ -9,6 +9,10 @@
             [convex-web.site.db :as db]
             [convex-web.site.backend :as backend]))
 
+(defn -active-address
+  [selected-address default-address]
+  (or selected-address default-address))
+
 (re-frame/reg-sub :session/?session
   (fn [db _]
     (:site/session db)))
@@ -47,7 +51,7 @@
   :<- [:session/?default-address]
   :<- [:session/?selected-address]
   (fn [[default-address selected-address] _]
-    (or selected-address default-address)))
+    (-active-address selected-address default-address)))
 
 (re-frame/reg-sub :session/?status
   (fn [db _]
