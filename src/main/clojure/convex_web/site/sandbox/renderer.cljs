@@ -14,12 +14,14 @@
   (:require
    [re-frame.core :as rf]
    [lambdaisland.glogi :as log]
+   [cljfmt.core :as cljfmt]
 
    [convex-web.site.command :as command]
 
    ["highlight.js/lib/languages/clojure"]
    ["highlight.js/lib/languages/javascript"]
-   ["react-highlight.js" :as react-hljs]))
+   ["react-highlight.js" :as react-hljs]
+   ["@heroicons/react/solid" :as icon]))
 
 (defmulti compile :tag)
 
@@ -40,9 +42,12 @@
   (let [[_ content-body] (first content)]
     [:div.text-xs.overflow-auto
      [:> (.-default react-hljs) {:language "language-clojure"}
-      (str content-body)]]))
+      (try
+        (cljfmt/reformat-string (str content-body))
+        (catch js/Error _
+          (str content-body)))]]))
 
-(defmethod compile :command
+(defmethod compile :button
   [{:keys [attributes content]}]
   (let [{attr-source :source
          attr-action :action} attributes
@@ -50,12 +55,18 @@
         ;; Command's content is the first number/string/element.
         [_ content-body] (first content)]
 
-    [:button.bg-blue-500.hover:bg-blue-400.active:bg-blue-600.p-2.rounded.shadow
-     {:on-click
+    [:button.p-2.rounded.shadow
+     {:class (cond
+               (#{:query :transact} attr-action)
+               "bg-green-500 hover:bg-green-400 active:bg-green-600"
+
+               (= attr-action :edit)
+               "bg-blue-500 hover:bg-blue-400 active:bg-blue-600")
+      :on-click
       (fn []
         (let [active-address @(rf/subscribe [:session/?active-address])]
           (cond
-            (= attr-action :execute)
+            (= attr-action :query)
             (let [command #:convex-web.command {:id (random-uuid)
                                                 :timestamp (.getTime (js/Date.))
                                                 :status :convex-web.command.status/running
@@ -77,13 +88,24 @@
             (log/warn :unknown-action attr-action))))}
 
      ;; Command's button text.
-     [:span.text-sm.text-white
-      (str content-body)]]))
+     [:div.flex.justify-start.space-x-2
+      [:span.text-sm.text-white
+       (str content-body)]
+
+      (cond
+        (#{:query :transact} attr-action)
+        [:> icon/ArrowRightIcon {:className "w-5 h-5 text-white"}]
+
+        (= :edit attr-action)
+        [:> icon/CodeIcon {:className "w-5 h-5 text-white"}]
+
+        :else
+        nil)]]))
 
 (defmethod compile :h-box
   [ast]
   (let [{:keys [content]} ast]
-    (into [:div.flex.flex-row.space-x-2]
+    (into [:div.flex.flex-row.items-center.space-x-3]
       (map
         (fn [[_ ast]]
           (compile ast))
@@ -92,7 +114,7 @@
 (defmethod compile :v-box
   [ast]
   (let [{:keys [content]} ast]
-    (into [:div.flex.flex-col.space-y-2]
+    (into [:div.flex.flex-col.items-start.space-y-3]
       (map
         (fn [[_ ast]]
           (compile ast))
