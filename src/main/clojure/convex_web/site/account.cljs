@@ -1,7 +1,7 @@
 (ns convex-web.site.account
   (:require
    [convex-web.site.gui :as gui]
-   [convex-web.site.gui.account :as gui-account]
+   [convex-web.site.gui.account :as guia]
    [convex-web.site.backend :as backend]
    [convex-web.site.session :as session]
    [convex-web.site.stack :as stack]
@@ -86,7 +86,7 @@
          [gui/Spinner]]
 
         :ajax.status/success
-        [gui-account/Account account]
+        [guia/Account account]
 
         :ajax.status/error
         [:div.flex.flex-col.flex-1.justify-center.items-center
@@ -255,7 +255,7 @@
       ;; ===========
       [:div.relative.w-full.flex.flex-col
        [Caption "From"]
-       [gui/AccountSelect
+       [guia/AccountSelect
         {:active-address from
          :addresses addresses
          :on-change (fn [address]
@@ -302,7 +302,7 @@
 
          ;; -- Select or Input text
          (if to-my-accounts?
-           [gui/AccountSelect
+           [guia/AccountSelect
             {:active-address to
              :addresses addresses
              :on-change (fn [address]
@@ -537,7 +537,7 @@
 
       ;; -- Select or Input text
       (if to-my-account?
-        [gui/AccountSelect
+        [guia/AccountSelect
          {:active-address target
           :addresses addresses
           :on-change (fn [address]

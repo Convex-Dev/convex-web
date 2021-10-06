@@ -7,8 +7,6 @@
    [reagent.core :as r]
    [reitit.frontend.easy :as rfe]
 
-   [convex-web.site.format :as format]
-
    ["react" :as react]
    ["highlight.js/lib/core" :as hljs]
    ["highlight.js/lib/languages/clojure"]
@@ -944,64 +942,6 @@
    {:source markdown
     :renderers
     {:code (r/reactify-component MarkdownCodeBlock)}}])
-
-(defn AccountSelect [{:keys [active-address addresses on-change]}]
-  (let [state-ref (r/atom {:show? false})]
-    (fn [{:keys [active-address addresses on-change]}]
-      (let [{:keys [show?]} @state-ref
-
-            item-style ["inline-flex w-full h-16 relative py-2 pl-3 pr-9"
-                        "cursor-default select-none"
-                        "text-gray-900 text-xs"
-                        "hover:bg-blue-100 hover:bg-opacity-50 active:bg-blue-200"]]
-        [:div
-
-         ;; -- Selected
-         [:button.h-10.inline-flex.items-center.justify-between.cursor-default.w-full.border.border-gray-200.rounded-md.bg-white.text-left.focus:outline-none.focus:shadow-outline-blue.focus:border-blue-300.transition.ease-in-out.duration-150.sm:text-sm.sm:leading-5
-          {:on-click #(swap! state-ref update :show? not)}
-
-          (if (str/blank? active-address)
-            ;; Empty, but fill the space.
-            [:div.flex-1]
-            [:div.flex.flex-1.items-center.px-2
-             [AIdenticon {:value active-address :size 40}]
-
-             [:span.font-mono.block.ml-2
-              (format/prefix-# active-address)]])
-
-          [:svg.h-5.w-5.text-gray-400.pr-2.pointer-events-none
-           {:viewBox "0 0 20 20" :fill "none" :stroke "currentColor"}
-           [:path {:d "M7 7l3-3 3 3m0 6l-3 3-3-3" :stroke-width "1.5" :stroke-linecap "round" :stroke-linejoin "round"}]]]
-
-         ;; -- Dropdown
-         [:div.relative
-          [Transition
-           (merge dropdown-transition {:show? show?})
-           [Dismissible
-            {:on-dismiss #(swap! state-ref update :show? (constantly false))}
-            [:div.origin-top-right.absolute.right-0.rounded-md.shadow-lg.bg-white
-             [:ul.max-h-60.rounded-md.py-1.text-base.leading-6.shadow-xs.overflow-auto.focus:outline-none.sm:text-sm.sm:leading-5
-
-              (for [address addresses]
-                ^{:key address}
-                [:li
-                 {:class item-style
-                  :on-click
-                  (fn []
-                    (reset! state-ref {:show? false})
-
-                    (when on-change
-                      (on-change address)))}
-
-                 [:div.flex.items-center
-                  [:div.h-5.w-5.mr-2
-                   (when (= address active-address)
-                     [CheckIcon {:class "h-5 w-5"}])]
-
-                  [AIdenticon {:value address :size 40}]
-
-                  [:span.font-mono.block.ml-2
-                   (format/prefix-# address)]]])]]]]]]))))
 
 (def disclosure-button-shared
   ["w-full px-4 py-2 rounded-lg"
