@@ -1,6 +1,6 @@
 {:deps {:aliases [:site-dev :logback-site]}
 
- :nrepl {:port 9000}
+ :nrepl false
 
  :jvm-opts ["-Xmx2G"]
 

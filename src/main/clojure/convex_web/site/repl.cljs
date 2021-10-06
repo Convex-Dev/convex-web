@@ -8,6 +8,7 @@
    [reitit.frontend.easy :as rfe]
 
    [convex-web.site.gui :as gui]
+   [convex-web.site.gui.sandbox :as guis]
    [convex-web.site.command :as command]
    [convex-web.site.session :as session]
    [convex-web.site.stack :as stack]
@@ -484,7 +485,7 @@
             [gui/SpinnerSmall]
 
             :convex-web.command.status/success
-            [gui/ResultRenderer (:convex-web.command/result command)]
+            [guis/ResultRenderer (:convex-web.command/result command)]
 
             :convex-web.command.status/error
             [ErrorOutput command])]]])
