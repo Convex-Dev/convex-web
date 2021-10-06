@@ -10,7 +10,12 @@
    [clojure.spec.alpha :as s]))
 
 (s/def ::element-tag
-  #{:text :code :button :h-box :v-box})
+  #{:text
+    :caption
+    :code
+    :button
+    :h-box
+    :v-box})
 
 (s/def ::element-attributes
   (s/map-of keyword? any?))

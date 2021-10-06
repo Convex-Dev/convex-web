@@ -6,6 +6,8 @@
    [codemirror-reagent.core :as codemirror]
    [reagent.core :as reagent]
    [reitit.frontend.easy :as rfe]
+   [lambdaisland.glogi :as log]
+   [cljfmt.core :as cljfmt]
 
    [convex-web.site.gui :as gui]
    [convex-web.site.gui.sandbox :as guis]
@@ -16,6 +18,11 @@
    [convex-web.site.format :as format]
 
    ["react-resizable" :refer [ResizableBox]]))
+
+(defn editor
+  "Returns the CodeMirror editor stored in the page's state."
+  [state]
+  (:editor state))
 
 (defn mode [state]
   (:convex-web.repl/mode state))
@@ -147,13 +154,15 @@
   ;; `source-ref` is a regular Atom
   ;; because the component doesn't need
   ;; to update when the Atom's value changes.
-  (reagent/with-let [editor-ref (atom nil)
-                     source-ref (atom "")
+  (reagent/with-let [source-ref (atom "")
                      history-index (atom nil)]
     (let [active-address (session/?active-address)
+
+          editor (editor state)
           
           execute (fn []
-                    (when-let [editor @editor-ref]
+                    (when editor
+
                       ;; Reset history navigation index.
                       (reset! history-index nil)
                       
@@ -241,16 +250,16 @@
           :onResizeStop
           (fn [_ _]
             ;; Move focus to editor.
-            (codemirror/cm-focus @editor-ref))}
+            (codemirror/cm-focus editor))}
          
          ;; Pretending to be Codemirror.
          ;; This div's height is bigger than Codemirror's, so we change its cursor to text
          ;; to pretend to be the editor and focus Codemirror on click.
          [:div.h-full.flex.mt-2.space-x-1.cursor-text
-          {:on-click #(codemirror/cm-focus @editor-ref)}
+          {:on-click #(codemirror/cm-focus editor)}
           (let [enter-extra-key 
                 (fn []
-                  (if-let [editor @editor-ref]
+                  (if editor
                     (let [^js pos (-> editor
                                     (codemirror/cm-get-doc)
                                     (codemirror/cm-get-cursor))
@@ -313,8 +322,8 @@
                                                        :ctrl-down history-down
                                                        :ctrl-backspace clear-all})
                             (codemirror/set-extra-keys editor))
-                          
-                          (reset! editor-ref editor)
+
+                          (set-state assoc :editor editor)
                           
                           (codemirror/cm-focus editor))
               :on-update (fn [_ editor]
@@ -419,88 +428,105 @@
         ^{:key t}
         [:code.text-xs t])])])
 
-(defn Commands [commands]
-  [:div.w-full.h-full.max-w-full.overflow-auto.bg-gray-100.border.rounded
-   (if (seq commands)
-     (for [{:convex-web.command/keys [timestamp status query transaction] :as command} commands]
-       ^{:key timestamp}
-       [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
-        {:ref
-         (fn [el]
-           (when el
-             (.scrollIntoView el #js {"behavior" "smooth"
-                                      "block" "center"})))
-         :class
-         (case status
-           :convex-web.command.status/running
-           "bg-yellow-100"
-           :convex-web.command.status/success
-           ""
-           :convex-web.command.status/error
-           "bg-red-100"
+(defn Commands [state _]
+  (let [commands (commands state)]
+    [:div.w-full.h-full.max-w-full.overflow-auto.bg-gray-100.border.rounded
+     (if (seq commands)
+       (for [{:convex-web.command/keys [timestamp status query transaction] :as command} commands]
+         ^{:key timestamp}
+         [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
+          {:ref
+           (fn [el]
+             (when el
+               (.scrollIntoView el #js {"behavior" "smooth"
+                                        "block" "center"})))
+           :class
+           (case status
+             :convex-web.command.status/running
+             "bg-yellow-100"
+             :convex-web.command.status/success
+             ""
+             :convex-web.command.status/error
+             "bg-red-100"
 
-           "")}
+             "")}
 
-        ;; -- Input
-        [:div.flex.flex-col.items-start
-         [:span.text-xs.uppercase.text-gray-600.block.mb-1
-          "Source"]
+          ;; -- Input
+          [:div.flex.flex-col.items-start
+           [:span.text-xs.uppercase.text-gray-600.block.mb-1
+            "Source"]
 
-         (let [source (or (get query :convex-web.query/source)
-                        (get transaction :convex-web.transaction/source))]
-           [:div.flex.items-center
-            [gui/Highlight source {:pretty? true}]
+           (let [source (or (get query :convex-web.query/source)
+                          (get transaction :convex-web.transaction/source))]
+             [:div.flex.items-center
+              [gui/Highlight source {:pretty? true}]
 
-            ;; This causes a strange overflow.
-            #_[gui/ClipboardCopy source {:margin "ml-2"}]])]
+              ;; This causes a strange overflow.
+              #_[gui/ClipboardCopy source {:margin "ml-2"}]])]
 
-        [:div.my-3]
+          [:div.my-3]
 
-        ;; -- Output
-        [:div.flex.flex-col
-         (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
-           [:div.flex.mb-1
-            [:span.text-xs.uppercase.text-gray-600
-             (cond
-               error?
-               (let [code (get-in command [:convex-web.command/error :code])]
-                 (apply str (if (keyword? code)
-                              ["Error " (str "(" (error-code-string code) ")")]
-                              ["Unrecognised Non-Keyword Error Code"])))
+          ;; -- Output
+          [:div.flex.flex-col
+           (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
+             [:div.flex.mb-1
+              [:span.text-xs.uppercase.text-gray-600
+               (cond
+                 error?
+                 (let [code (get-in command [:convex-web.command/error :code])]
+                   (apply str (if (keyword? code)
+                                ["Error " (str "(" (error-code-string code) ")")]
+                                ["Unrecognised Non-Keyword Error Code"])))
 
-               :else
-               "Result")]
+                 :else
+                 "Result")]
 
-            ;; Don't display result type for errors.
-            (when-not error?
-              (when-let [type (get-in command [:convex-web.command/result :convex-web.result/type])]
-                [gui/Tooltip
-                 {:title (str/capitalize type)
-                  :size "small"}
-                 [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
+              ;; Don't display result type for errors.
+              (when-not error?
+                (when-let [type (get-in command [:convex-web.command/result :convex-web.result/type])]
+                  [gui/Tooltip
+                   {:title (str/capitalize type)
+                    :size "small"}
+                   [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))])
 
-         [:div.flex
-          (case status
-            :convex-web.command.status/running
-            [gui/SpinnerSmall]
+           [:div.flex
+            (case status
+              :convex-web.command.status/running
+              [gui/SpinnerSmall]
 
-            :convex-web.command.status/success
-            [guis/ResultRenderer (:convex-web.command/result command)]
+              :convex-web.command.status/success
+              [guis/ResultRenderer
+               {:result (:convex-web.command/result command)
+                :interactive-click-handler
+                (fn [{:keys [action source] :as attrs}]
 
-            :convex-web.command.status/error
-            [ErrorOutput command])]]])
+                  (let [source (try
+                                 (cljfmt/reformat-string source)
+                                 (catch js/Error _
+                                   source))]
 
-     ;; Else; explain the Sandbox.
-     [:div.h-full.flex.flex-col.items-center.justify-center
-      [:div.prose.prose-base
-       [:p.text-2xl.text-center
-        "Welcome to the Sandbox"]
+                    (log/debug :attrs attrs)
 
-       [:p
-        "The Sandbox is a fast interactive REPL giving each account a unique, persistent programmable environment."]
+                    (when (= action :edit)
+                      (let [cm (editor state)]
+                        (codemirror/cm-set-value cm source)
+                        (codemirror/set-cursor-at-the-end cm)
+                        (codemirror/cm-focus cm)))))}]
 
-       [:p
-        "Enter commands in the lower pane to execute transactions live on the current test network."]]])])
+              :convex-web.command.status/error
+              [ErrorOutput command])]]])
+
+       ;; Else; explain the Sandbox.
+       [:div.h-full.flex.flex-col.items-center.justify-center
+        [:div.prose.prose-base
+         [:p.text-2xl.text-center
+          "Welcome to the Sandbox"]
+
+         [:p
+          "The Sandbox is a fast interactive REPL giving each account a unique, persistent programmable environment."]
+
+         [:p
+          "Enter commands in the lower pane to execute transactions live on the current test network."]]])]))
 
 ;; --
 
@@ -537,7 +563,7 @@
           {:class "h-5 w-5"}]]]]
       
       ;; -- Output
-      [Commands (commands state)]
+      [Commands state set-state]
       
       ;; -- Input
       [Input state set-state]

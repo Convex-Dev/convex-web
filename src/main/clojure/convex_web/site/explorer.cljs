@@ -185,7 +185,8 @@
 
             (if result-error-code
               [:span.font-mono.text-sm.text-red-500 result-error-code ": " result-value]
-              [guis/ResultRenderer result])])
+              [guis/ResultRenderer
+               {:result result}])])
 
          :convex-web.transaction.type/transfer
          [:div]))

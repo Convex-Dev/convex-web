@@ -37,7 +37,16 @@
   (let [{:keys [content]} ast
 
         [_ content-body] (first content)]
-    [:span
+    [:span.prose.prose-sm
+     (str content-body)]))
+
+(defmethod compile :caption
+  [{:keys [ast]}]
+  ;; Text's content is the first number/string/element.
+  (let [{:keys [content]} ast
+
+        [_ content-body] (first content)]
+    [:span.text-xs.text-gray-500
      (str content-body)]))
 
 (defmethod compile :code
@@ -244,18 +253,16 @@
 
      [gui/ClipboardCopy object]]]])
 
-(defn ResultRenderer [result]
+(defn ResultRenderer [{:keys [result interactive-click-handler]}]
   (let [{result-type :convex-web.result/type
          result-value :convex-web.result/value
          result-interactive? :convex-web.result/interactive?
          result-interactive :convex-web.result/interactive} result]
     (cond
       result-interactive?
-      (compile {:ast result-interactive
-                :click-handler
-                (fn [{:keys [action source]}]
-                  (when (= action :edit)
-                    (js/console.log source)))})
+      (compile (merge {:ast result-interactive}
+                 (when interactive-click-handler
+                   {:click-handler interactive-click-handler})))
 
       (= result-type "Address")
       [AddressRenderer result-value]
