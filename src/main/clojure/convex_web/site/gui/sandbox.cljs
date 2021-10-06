@@ -25,23 +25,27 @@
     - :button
     - :h-box
     - :v-box"
-  :tag)
+  (comp :tag :ast))
 
 (defmethod compile :default
-  [ast]
+  [{:keys [ast]}]
   [:code (str ast)])
 
 (defmethod compile :text
-  [{:keys [content]}]
+  [{:keys [ast]}]
   ;; Text's content is the first number/string/element.
-  (let [[_ content-body] (first content)]
+  (let [{:keys [content]} ast
+
+        [_ content-body] (first content)]
     [:span
      (str content-body)]))
 
 (defmethod compile :code
-  [{:keys [content]}]
-  ;; Code's content is the first number/string/element.
-  (let [[_ content-body] (first content)]
+  [{:keys [ast]}]
+  (let [{:keys [content]} ast
+
+        ;; Code's content is the first number/string/element.
+        [_ content-body] (first content)]
     [gui/Highlight
      (try
        (cljfmt/reformat-string (str content-body))
@@ -49,8 +53,11 @@
          (str content-body)))]))
 
 (defmethod compile :button
-  [{:keys [attributes content]}]
-  (let [{attr-source :source
+  [{:keys [ast click-handler] :or {click-handler identity}}]
+
+  (let [{:keys [attributes content]} ast
+
+        {attr-source :source
          attr-action :action} attributes
 
         ;; Command's content is the first number/string/element.
@@ -86,7 +93,11 @@
             nil
 
             :else
-            (log/warn :unknown-action attr-action))))}
+            (log/warn :unknown-action attr-action)))
+
+        ;; Caller might need to do something on click,
+        ;; especially if it's an edit action.
+        (click-handler attributes))}
 
      ;; Command's button text.
      [:div.flex.justify-start.space-x-2
@@ -104,22 +115,28 @@
         nil)]]))
 
 (defmethod compile :h-box
-  [ast]
+  [{:keys [ast click-handler]}]
   (let [{:keys [content]} ast]
     (into [:div.flex.flex-row.items-center.space-x-3]
       (map
         (fn [[_ ast]]
-          (compile ast))
+          (compile {:ast ast
+                    :click-handler click-handler}))
         content))))
 
 (defmethod compile :v-box
-  [ast]
+  [{:keys [ast click-handler]}]
   (let [{:keys [content]} ast]
     (into [:div.flex.flex-col.items-start.space-y-3]
       (map
         (fn [[_ ast]]
-          (compile ast))
+          (compile {:ast ast
+                    :click-handler click-handler}))
         content))))
+
+
+;; End of Interactive Sandbox
+;; -----------------------------
 
 
 (defn AddressRenderer [address]
@@ -234,7 +251,11 @@
          result-interactive :convex-web.result/interactive} result]
     (cond
       result-interactive?
-      (compile result-interactive)
+      (compile {:ast result-interactive
+                :click-handler
+                (fn [{:keys [action source]}]
+                  (when (= action :edit)
+                    (js/console.log source)))})
 
       (= result-type "Address")
       [AddressRenderer result-value]
