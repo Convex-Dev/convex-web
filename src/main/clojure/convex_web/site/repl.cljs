@@ -432,9 +432,9 @@
   (let [commands (commands state)]
     [:div.w-full.h-full.max-w-full.overflow-auto.bg-gray-100.border.rounded
      (if (seq commands)
-       (for [{:convex-web.command/keys [timestamp status query transaction] :as command} commands]
+       (for [{:convex-web.command/keys [timestamp status query transaction result] :as command} commands]
          ^{:key timestamp}
-         [:div.w-full.border-b.p-4.transition-colors.duration-500.ease-in-out
+         [:div.w-full.flex.flex-col.space-y-3.border-b.p-4.transition-colors.duration-500.ease-in-out
           {:ref
            (fn [el]
              (when el
@@ -452,19 +452,20 @@
              "")}
 
           ;; -- Input
-          [:div.flex.flex-col.items-start
-           [:span.text-xs.uppercase.text-gray-600.block.mb-1
-            "Source"]
+          (let [show-source? (get-in result [:convex-web.result/metadata :source?] true)]
 
-           (let [source (or (get query :convex-web.query/source)
-                          (get transaction :convex-web.transaction/source))]
-             [:div.flex.items-center
-              [gui/Highlight source {:pretty? true}]
+            (when show-source?
+              [:div.flex.flex-col.items-start
+               [:span.text-xs.uppercase.text-gray-600.block.mb-1
+                "Source"]
 
-              ;; This causes a strange overflow.
-              #_[gui/ClipboardCopy source {:margin "ml-2"}]])]
+               (let [source (or (get query :convex-web.query/source)
+                              (get transaction :convex-web.transaction/source))]
+                 [:div.flex.items-center
+                  [gui/Highlight source {:pretty? true}]
 
-          [:div.my-3]
+                  ;; This causes a strange overflow.
+                  #_[gui/ClipboardCopy source {:margin "ml-2"}]])]))
 
           ;; -- Output
           [:div.flex.flex-col

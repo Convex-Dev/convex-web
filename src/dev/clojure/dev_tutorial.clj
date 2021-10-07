@@ -32,11 +32,13 @@
                 :source (str '(f 1))}
                "Try yourself"]]
 
-             {:interactive? true}))
+             {:interactive? true
+              :source? false}))
 
         }
        "Continue"]]
 
-     {:interactive? true})
+     {:interactive? true
+      :source? false})
 
   )

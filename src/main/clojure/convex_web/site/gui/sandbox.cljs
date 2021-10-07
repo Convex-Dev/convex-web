@@ -256,6 +256,7 @@
 (defn ResultRenderer [{:keys [result interactive-click-handler]}]
   (let [{result-type :convex-web.result/type
          result-value :convex-web.result/value
+         result-metadata :convex-web.result/metadata
          result-interactive? :convex-web.result/interactive?
          result-interactive :convex-web.result/interactive} result]
     (cond

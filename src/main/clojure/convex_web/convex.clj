@@ -12,6 +12,7 @@
    (convex.peer Server)
    (convex.core.init Init)
    (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AccountKey ACell AHashMap)
+   (convex.core.data.prim CVMBool)
    (convex.core.lang Core Reader RT Context AFn)
    (convex.core.lang.impl Fn CoreFn)
    (convex.core Order Block Peer State Result)
@@ -331,9 +332,6 @@
 (defn consensus-point [^Order order]
   (.getConsensusPoint order))
 
-(defn interactive-result [^ACell acell]
-  [])
-
 (defn result-data [^Result result]
   (let [^ACell result-id (.getID result)
         ^ACell result-error-code (.getErrorCode result)
@@ -345,16 +343,19 @@
       
       ;; Interactive Syntax.
       (when (instance? Syntax result-value)
-        (let [syntax-meta (.getMeta result-value)
+        (let [^AHashMap syntax-meta (.getMeta ^Syntax result-value)
 
-              interactive? (some-> (.get syntax-meta (Keyword/create "interactive?")) .booleanValue)
+              ^CVMBool interactive? (.get syntax-meta (Keyword/create "interactive?"))
+
+              interactive? (some-> interactive? .booleanValue)
 
               ;; It's never nil.
               interactive? (or interactive? false)]
 
           (merge {:convex-web.result/interactive? interactive?}
             (when interactive?
-              {:convex-web.result/interactive (s/conform ::hiccup/element (datafy result-value))}))))
+              {:convex-web.result/metadata (datafy syntax-meta)
+               :convex-web.result/interactive (s/conform ::hiccup/element (datafy result-value))}))))
 
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})
