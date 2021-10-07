@@ -255,7 +255,7 @@
 
      [gui/ClipboardCopy object]]]])
 
-(defn ResultRenderer [{:keys [result interactive-click-handler]}]
+(defn ResultRenderer [{:keys [result interactive]}]
   (let [{result-type :convex-web.result/type
          result-value :convex-web.result/value
          result-metadata :convex-web.result/metadata
@@ -265,8 +265,8 @@
     (cond
       result-interactive?
       (compile (merge {:ast result-interactive}
-                 (when interactive-click-handler
-                   {:click-handler interactive-click-handler})))
+                 (when-let [click-handler (:click-handler interactive)]
+                   {:click-handler click-handler})))
 
       (= result-type "Address")
       [AddressRenderer result-value]

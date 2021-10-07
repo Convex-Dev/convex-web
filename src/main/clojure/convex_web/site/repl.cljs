@@ -506,21 +506,22 @@
                 :convex-web.command.status/success
                 [guis/ResultRenderer
                  {:result (:convex-web.command/result command)
-                  :interactive-click-handler
-                  (fn [{:keys [action source] :as attrs}]
+                  :interactive
+                  {:click-handler
+                   (fn [{:keys [action source] :as attrs}]
 
-                    (let [source (try
-                                   (cljfmt/reformat-string source)
-                                   (catch js/Error _
-                                     source))]
+                     (let [source (try
+                                    (cljfmt/reformat-string source)
+                                    (catch js/Error _
+                                      source))]
 
-                      (log/debug :attrs attrs)
+                       (log/debug :attrs attrs)
 
-                      (when (= action :edit)
-                        (let [cm (editor state)]
-                          (codemirror/cm-set-value cm source)
-                          (codemirror/set-cursor-at-the-end cm)
-                          (codemirror/cm-focus cm)))))}]
+                       (when (= action :edit)
+                         (let [cm (editor state)]
+                           (codemirror/cm-set-value cm source)
+                           (codemirror/set-cursor-at-the-end cm)
+                           (codemirror/cm-focus cm)))))}}]
 
                 :convex-web.command.status/error
                 [ErrorOutput command])]]]))
