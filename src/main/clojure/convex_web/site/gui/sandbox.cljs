@@ -62,7 +62,7 @@
          (str content-body)))]))
 
 (defmethod compile :button
-  [{:keys [ast click-handler]}]
+  [{:keys [ast click-handler click-disabled?]}]
 
   (let [click-handler (or click-handler identity)
 
@@ -72,15 +72,22 @@
          attr-action :action} attributes
 
         ;; Command's content is the first number/string/element.
-        [_ content-body] (first content)]
+        [_ content-body] (first content)
+
+        style (cond
+                (#{:query :transact} attr-action)
+                ["bg-green-500 hover:bg-green-400 active:bg-green-600"]
+
+                (= attr-action :edit)
+                ["bg-blue-500 hover:bg-blue-400 active:bg-blue-600"])
+
+        style (if click-disabled?
+                (conj style "disabled:bg-opacity-50 pointer-events-none")
+                style)]
 
     [:button.p-2.rounded.shadow
-     {:class (cond
-               (#{:query :transact} attr-action)
-               "bg-green-500 hover:bg-green-400 active:bg-green-600"
-
-               (= attr-action :edit)
-               "bg-blue-500 hover:bg-blue-400 active:bg-blue-600")
+     {:disabled (or click-disabled? false)
+      :class style
       :on-click
       (fn []
         (let [active-address @(rf/subscribe [:session/?active-address])]
@@ -126,23 +133,33 @@
         nil)]]))
 
 (defmethod compile :h-box
-  [{:keys [ast click-handler]}]
+  [{:keys [ast click-handler click-disabled?]}]
   (let [{:keys [content]} ast]
     (into [:div.flex.flex-row.items-center.space-x-3]
       (map
         (fn [[_ ast]]
-          (compile {:ast ast
-                    :click-handler click-handler}))
+          (compile (merge {:ast ast}
+
+                     (when click-handler
+                       {:click-handler click-handler})
+
+                     (when click-disabled?
+                       {:click-disabled? click-disabled?}))))
         content))))
 
 (defmethod compile :v-box
-  [{:keys [ast click-handler]}]
+  [{:keys [ast click-handler click-disabled?]}]
   (let [{:keys [content]} ast]
     (into [:div.flex.flex-col.items-start.space-y-3]
       (map
         (fn [[_ ast]]
-          (compile {:ast ast
-                    :click-handler click-handler}))
+          (compile (merge {:ast ast}
+
+                     (when click-handler
+                       {:click-handler click-handler})
+
+                     (when click-disabled?
+                       {:click-disabled? click-disabled?}))))
         content))))
 
 
@@ -265,8 +282,8 @@
     (cond
       result-interactive?
       (compile (merge {:ast result-interactive}
-                 (when-let [click-handler (:click-handler interactive)]
-                   {:click-handler click-handler})))
+                 (select-keys interactive [:click-handler
+                                           :click-disabled?])))
 
       (= result-type "Address")
       [AddressRenderer result-value]
