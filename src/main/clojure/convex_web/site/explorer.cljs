@@ -160,7 +160,7 @@
        :convex-web.transaction.type/invoke
        [:div.flex.flex-col.space-y-2
         [gui/CaptionMono "Source"]
-        [gui/Highlight source {:pretty? true}]]
+        [gui/Highlight source]]
 
        :convex-web.transaction.type/transfer
        [:div])
