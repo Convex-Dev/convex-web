@@ -62,9 +62,11 @@
          (str content-body)))]))
 
 (defmethod compile :button
-  [{:keys [ast click-handler] :or {click-handler identity}}]
+  [{:keys [ast click-handler]}]
 
-  (let [{:keys [attributes content]} ast
+  (let [click-handler (or click-handler identity)
+
+        {:keys [attributes content]} ast
 
         {attr-source :source
          attr-action :action} attributes
