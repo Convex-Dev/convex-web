@@ -257,8 +257,9 @@
   (let [{result-type :convex-web.result/type
          result-value :convex-web.result/value
          result-metadata :convex-web.result/metadata
-         result-interactive? :convex-web.result/interactive?
-         result-interactive :convex-web.result/interactive} result]
+         result-interactive :convex-web.result/interactive} result
+
+        {result-interactive? :interactive?} result-metadata]
     (cond
       result-interactive?
       (compile (merge {:ast result-interactive}

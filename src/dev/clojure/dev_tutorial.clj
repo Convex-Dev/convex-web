@@ -33,9 +33,7 @@
                "Try yourself"]]
 
              {:interactive? true
-              :source? false}))
-
-        }
+              :source? false}))}
        "Continue"]]
 
      {:interactive? true

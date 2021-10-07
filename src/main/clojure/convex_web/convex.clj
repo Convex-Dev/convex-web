@@ -347,15 +347,11 @@
 
               ^CVMBool interactive? (.get syntax-meta (Keyword/create "interactive?"))
 
-              interactive? (some-> interactive? .booleanValue)
+              interactive? (some-> interactive? .booleanValue)]
 
-              ;; It's never nil.
-              interactive? (or interactive? false)]
-
-          (merge {:convex-web.result/interactive? interactive?}
+          (merge {:convex-web.result/metadata (datafy syntax-meta)}
             (when interactive?
-              {:convex-web.result/metadata (datafy syntax-meta)
-               :convex-web.result/interactive (s/conform ::hiccup/element (datafy result-value))}))))
+              {:convex-web.result/interactive (s/conform ::hiccup/element (datafy result-value))}))))
 
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})
