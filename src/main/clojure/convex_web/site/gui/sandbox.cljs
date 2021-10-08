@@ -278,9 +278,19 @@
          result-metadata :convex-web.result/metadata
          result-interactive :convex-web.result/interactive} result
 
-        {result-interactive? :interactive?} result-metadata]
+        {result-interactive? :interactive?} result-metadata
+
+        ;; It's enabled by default.
+        interactive-enabled? (get interactive :enabled? true)]
+
     (cond
-      result-interactive?
+      ;; An interactive result is a richer UI, and it's normally used to display tutorials.
+      ;;
+      ;; A Syntax's metadata is used to 'annotate' the result as interative.
+      ;;
+      ;; It's possible to disable an interactive result, because its usage is contextual.
+      ;; (Doesn't make sense to be used outside the Sandbox.)
+      (and result-interactive? interactive-enabled?)
       (compile (merge {:ast result-interactive}
                  (select-keys interactive [:click-handler
                                            :click-disabled?])))

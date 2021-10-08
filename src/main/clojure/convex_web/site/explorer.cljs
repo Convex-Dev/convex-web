@@ -188,7 +188,7 @@
               [:span.font-mono.text-sm.text-red-500 result-error-code ": " result-value]
               [guis/ResultRenderer
                {:result result
-                :interactive {:click-disabled? true}}])])
+                :interactive {:enabled? false}}])])
 
          :convex-web.transaction.type/transfer
          [:div]))
