@@ -11,6 +11,7 @@
 
 (s/def ::element-tag
   #{:text
+    :markdown
     :caption
     :code
     :button

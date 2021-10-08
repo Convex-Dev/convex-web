@@ -132,6 +132,15 @@
         :else
         nil)]]))
 
+(defmethod compile :markdown
+  [{:keys [ast]}]
+  (let [{:keys [content]} ast
+
+        [_ content-body] (first content)]
+    [:div.prose.prose-sm
+     [gui/Markdown
+      (str content-body)]]))
+
 (defmethod compile :h-box
   [{:keys [ast click-handler click-disabled?]}]
   (let [{:keys [content]} ast]
