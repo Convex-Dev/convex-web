@@ -25,6 +25,13 @@
      {:interactive? true})
 
   '(syntax
+     [:button
+      {:action :transact
+       :source "(inc 1)"}
+      "Transact action"]
+     {:interactive? true})
+
+  '(syntax
      [:markdown "# Title\n\n## Subtitle"]
      {:interactive? true})
 

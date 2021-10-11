@@ -92,13 +92,35 @@
       (fn []
         (let [active-address @(rf/subscribe [:session/?active-address])]
           (cond
-            (= attr-action :query)
+            (#{:query :transact} attr-action)
             (let [command #:convex-web.command {:id (random-uuid)
                                                 :timestamp (.getTime (js/Date.))
-                                                :status :convex-web.command.status/running
-                                                :mode :convex-web.command.mode/query
-                                                :query #:convex-web.query {:source attr-source
-                                                                           :language :convex-lisp}}]
+                                                :status :convex-web.command.status/running}
+
+                  command (merge command
+                            (case attr-action
+                              :query
+                              #:convex-web.command
+                              {:mode :convex-web.command.mode/query
+                               :query
+                               #:convex-web.query
+                               {:source attr-source
+                                :language :convex-lisp}}
+
+                              :transact
+                              #:convex-web.command
+                              {:mode :convex-web.command.mode/transaction
+                               :transaction
+                               #:convex-web.transaction
+                               {:type :convex-web.transaction.type/invoke
+                                :source attr-source
+                                :language :convex-lisp}}))
+
+                  command (merge command
+                            (when active-address
+                              {:convex-web.command/signer
+                               {:convex-web.account/address active-address}}))]
+
               (command/execute command
                 (fn [_ response]
                   (log/debug :command-new-state response)
