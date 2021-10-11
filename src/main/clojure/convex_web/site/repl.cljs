@@ -19,11 +19,6 @@
 
    ["react-resizable" :refer [ResizableBox]]))
 
-(defn editor
-  "Returns the CodeMirror editor stored in the page's state."
-  [state]
-  (:editor state))
-
 (defn mode [state]
   (:convex-web.repl/mode state))
 
@@ -435,7 +430,14 @@
         [:code.text-xs t])])])
 
 (defn Commands [state _]
-  (let [commands (commands state)]
+  (let [commands (commands state)
+
+        session-state (session/?state)
+
+        ;; Editor is stored in the global session,
+        ;; because other components need to interface with it.
+        {editor :editor} session-state]
+
     [:div.w-full.h-full.max-w-full.overflow-auto.bg-gray-100.border.rounded
      (if (seq commands)
        (for [{:convex-web.command/keys [timestamp status query transaction result] :as command} commands]
@@ -517,17 +519,16 @@
                    (fn [{:keys [action source] :as attrs}]
 
                      (let [source (try
-                                    (cljfmt/reformat-string source)
+                                    (cljfmt/reformat-string (str source))
                                     (catch js/Error _
                                       source))]
 
                        (log/debug :attrs attrs)
 
                        (when (= action :edit)
-                         (let [cm (editor state)]
-                           (codemirror/cm-set-value cm source)
-                           (codemirror/set-cursor-at-the-end cm)
-                           (codemirror/cm-focus cm)))))}}]
+                         (codemirror/cm-set-value editor source)
+                         (codemirror/set-cursor-at-the-end editor)
+                         (codemirror/cm-focus editor))))}}]
 
                 :convex-web.command.status/error
                 [ErrorOutput command])]]]))

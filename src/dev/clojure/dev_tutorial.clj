@@ -3,6 +3,10 @@
 (comment
 
   '(syntax
+     "Text explaining something in the Sandbox."
+     {:interactive? true})
+
+  '(syntax
      [:text "Text explaining something in the Sandbox."]
      {:interactive? true})
 
@@ -13,7 +17,7 @@
   '(syntax
      [:button
       {:action :edit
-       :source "(inc 1)"}
+       :source '(inc 1)}
       "Edit action"]
      {:interactive? true})
 
