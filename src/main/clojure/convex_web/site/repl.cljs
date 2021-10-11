@@ -156,9 +156,14 @@
   ;; to update when the Atom's value changes.
   (reagent/with-let [source-ref (atom "")
                      history-index (atom nil)]
+
     (let [active-address (session/?active-address)
 
-          editor (editor state)
+          session-state (session/?state)
+
+          ;; Editor is stored in the global session,
+          ;; because other components need to interface with it.
+          {editor :editor} session-state
           
           execute (fn []
                     (when editor
@@ -323,9 +328,10 @@
                                                        :ctrl-backspace clear-all})
                             (codemirror/set-extra-keys editor))
 
-                          (set-state assoc :editor editor)
+                          (session/set-state assoc :editor editor)
                           
                           (codemirror/cm-focus editor))
+
               :on-update (fn [_ editor]
                            (->> (codemirror/extra-keys {:enter enter-extra-key
                                                         :shift-enter execute
