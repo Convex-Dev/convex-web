@@ -31,7 +31,7 @@
   '(syntax
      [:button
       {:action :transact
-       :source "(inc 1)"}
+       :source '(inc 1)}
       "Transact action"]
      {:interactive? true})
 
@@ -51,7 +51,7 @@
 
        [:button
         {:action :edit
-         :source (str '(defn f [x] x))}
+         :source '(defn f [x] x)}
         "Define a function"]]
 
       [:caption
@@ -60,17 +60,16 @@
       [:button
        {:action :query
         :source
-        (str
-          '(syntax
-             [:v-box
-              [:text "Now let's call `f`, and pass `1` as argument:"]
+        '(syntax
+           [:v-box
+            [:text "Now let's call `f`, and pass `1` as argument:"]
 
-              [:button
-               {:action :edit
-                :source (str '(f 1))}
-               "Call a function"]]
+            [:button
+             {:action :edit
+              :source '(f 1)}
+             "Call a function"]]
 
-             {:interactive? true}))}
+           {:interactive? true})}
        "Continue"]]
 
      {:interactive? true})

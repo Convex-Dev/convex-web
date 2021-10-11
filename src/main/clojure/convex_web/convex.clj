@@ -352,8 +352,33 @@
           (merge {:convex-web.result/metadata (datafy syntax-meta)}
             (when interactive?
               (let [element (datafy result-value)
-                    element (if (string? element)
+                    element (cond
+                              ;; Syntax sugar for text.
+                              (string? element)
                               [:text element]
+
+                              ;; Syntax sugar for a layout.
+                              (and (vector? element) (not (s/valid? ::hiccup/element element)))
+                              (into [:h-box] element)
+
+                              (not (s/valid? ::hiccup/element element))
+                              [:v-box
+                               [:text "Sorry. This syntax is not valid in the Interactive Sandbox:"]
+                               [:code (str element)]
+                               [:markdown "**Please see the documentation for Widgets:**\n- `:text`\n- `:button`"]
+                               [:v-box
+                                [:text "Examples:"]
+                                [:v-box
+                                 [:code "(syntax [:text \"Hello\"] {:interactive? true)"]
+                                 [:text "Hello"]]
+
+                                [:v-box
+                                 [:code "(syntax [:button {:action :edit :source '(inc 1)}\"Click me to edit source\"] {:interactive? true)"]
+                                 [:button
+                                  {:action :edit :source '(inc 1)}
+                                  "Click me to edit source"]]]]
+
+                              :else
                               element)]
                 {:convex-web.result/interactive (s/conform ::hiccup/element element)})))))
 
