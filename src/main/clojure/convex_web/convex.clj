@@ -351,7 +351,11 @@
 
           (merge {:convex-web.result/metadata (datafy syntax-meta)}
             (when interactive?
-              {:convex-web.result/interactive (s/conform ::hiccup/element (datafy result-value))}))))
+              (let [element (datafy result-value)
+                    element (if (string? element)
+                              [:text element]
+                              element)]
+                {:convex-web.result/interactive (s/conform ::hiccup/element element)})))))
 
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})
