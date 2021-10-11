@@ -104,7 +104,7 @@
                               {:mode :convex-web.command.mode/query
                                :query
                                #:convex-web.query
-                               {:source attr-source
+                               {:source (str attr-source)
                                 :language :convex-lisp}}
 
                               :transact
@@ -113,7 +113,7 @@
                                :transaction
                                #:convex-web.transaction
                                {:type :convex-web.transaction.type/invoke
-                                :source attr-source
+                                :source (str attr-source)
                                 :language :convex-lisp}}))
 
                   command (merge command
