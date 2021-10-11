@@ -1,17 +1,19 @@
 (ns convex-web.site.account
-  (:require [convex-web.site.gui :as gui]
-            [convex-web.site.backend :as backend]
-            [convex-web.site.session :as session]
-            [convex-web.site.stack :as stack]
-            [convex-web.site.command :as command]
-            [convex-web.site.format :as format]
-            [convex-web.site.runtime :refer [sub]]
+  (:require
+   [convex-web.site.gui :as gui]
+   [convex-web.site.gui.account :as guia]
+   [convex-web.site.backend :as backend]
+   [convex-web.site.session :as session]
+   [convex-web.site.stack :as stack]
+   [convex-web.site.command :as command]
+   [convex-web.site.format :as format]
+   [convex-web.site.runtime :refer [sub]]
 
-            [cljs.spec.alpha :as s]
-            [clojure.string :as str]
-            [reitit.frontend.easy :as rfe]
-            [reagent.ratom :refer [make-reaction]]
-            [re-frame.core :as re-frame]))
+   [cljs.spec.alpha :as s]
+   [clojure.string :as str]
+   [reitit.frontend.easy :as rfe]
+   [reagent.ratom :refer [make-reaction]]
+   [re-frame.core :as re-frame]))
 
 (defn balance
   "Account's balance."
@@ -84,7 +86,7 @@
          [gui/Spinner]]
 
         :ajax.status/success
-        [gui/Account account]
+        [guia/Account account]
 
         :ajax.status/error
         [:div.flex.flex-col.flex-1.justify-center.items-center
@@ -253,7 +255,7 @@
       ;; ===========
       [:div.relative.w-full.flex.flex-col
        [Caption "From"]
-       [gui/AccountSelect
+       [guia/AccountSelect
         {:active-address from
          :addresses addresses
          :on-change (fn [address]
@@ -300,7 +302,7 @@
 
          ;; -- Select or Input text
          (if to-my-accounts?
-           [gui/AccountSelect
+           [guia/AccountSelect
             {:active-address to
              :addresses addresses
              :on-change (fn [address]
@@ -535,7 +537,7 @@
 
       ;; -- Select or Input text
       (if to-my-account?
-        [gui/AccountSelect
+        [guia/AccountSelect
          {:active-address target
           :addresses addresses
           :on-change (fn [address]

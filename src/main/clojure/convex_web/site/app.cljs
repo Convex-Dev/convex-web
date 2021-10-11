@@ -704,14 +704,14 @@
          "px-6"
          
          ;; Desktop
-         "md:space-x-24 md:px-0"]}
+         "md:px-0"]}
        
        ;; -- Nav
        [SideNav (:route/match (router/?route))]
        
        ;; -- Page
        (when active-page-frame
-         [:div.relative.flex.flex-col.flex-1.space-y-10.overflow-auto
+         [:div.relative.flex.flex-col.flex-1.space-y-10.pl-9.pr-12.overflow-auto
           
           (when title
             [:div

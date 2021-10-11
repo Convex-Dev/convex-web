@@ -8,6 +8,8 @@
    [convex-web.site.runtime :as runtime]
    [convex-web.site.backend :as backend]
    [convex-web.site.gui :as gui]
+   [convex-web.site.gui.sandbox :as guis]
+   [convex-web.site.gui.account :as guia]
    [convex-web.site.stack :as stack]
    [convex-web.site.format :as format]
    [convex-web.pagination :as pagination]
@@ -158,7 +160,8 @@
        :convex-web.transaction.type/invoke
        [:div.flex.flex-col.space-y-2
         [gui/CaptionMono "Source"]
-        [gui/Highlight source {:pretty? true}]]
+        [:div.max-w-lg
+         [gui/Highlight source]]]
 
        :convex-web.transaction.type/transfer
        [:div])
@@ -183,7 +186,9 @@
 
             (if result-error-code
               [:span.font-mono.text-sm.text-red-500 result-error-code ": " result-value]
-              [gui/ResultRenderer result])])
+              [guis/ResultRenderer
+               {:result result
+                :interactive {:enabled? false}}])])
 
          :convex-web.transaction.type/transfer
          [:div]))
@@ -521,7 +526,7 @@
      [:span (get-in error [:response :error :message])]]
 
     :ajax.status/success
-    [gui/Account account]))
+    [guia/Account account]))
 
 (defn- get-account [_ state set-state]
   (let [address (get-in state [:convex-web/account :convex-web.account/address])]

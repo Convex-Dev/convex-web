@@ -11,7 +11,7 @@
    (convex.core Result)
    (convex.core.init Init)
    (convex.core.lang Core)
-   (convex.core.data.prim CVMLong)
+   (convex.core.data.prim CVMLong CVMBool)
    (convex.core.crypto AKeyPair)
    (clojure.lang ExceptionInfo)))
 
@@ -168,6 +168,13 @@
             (.getValue (.getExceptional context3)))))))
 
 (deftest result-data-test
+  (testing "Bool"
+    (is (= {:convex-web.result/id 1,
+            :convex-web.result/type "Boolean",
+            :convex-web.result/value "true"}
+          (convex/result-data (Result/create (CVMLong/create 1)
+                                (CVMBool/create true))))))
+
   (testing "String"
     (is (= {:convex-web.result/id 1,
             :convex-web.result/type "String",
@@ -210,6 +217,26 @@
           (convex/result-data (Result/create (CVMLong/create 1)
                                 (Maps/empty))))))
   
+  (testing "Syntax"
+    (is (= {:convex-web.result/id 1,
+            :convex-web.result/type "Syntax",
+            :convex-web.result/value "^{} {}"
+            :convex-web.result/metadata {}}
+          (convex/result-data (Result/create (CVMLong/create 1)
+                                (Syntax/create (Maps/empty))))))
+
+    (testing "Interactive"
+      (is (= {:convex-web.result/id 1,
+              :convex-web.result/type "Syntax",
+              :convex-web.result/value "^{:interactive? true} {}"
+              :convex-web.result/metadata {:interactive? true}
+              :convex-web.result/interactive :clojure.spec.alpha/invalid}
+            (convex/result-data (Result/create (CVMLong/create 1)
+                                  (Syntax/create (Maps/empty)
+                                    ;; Metadata to mark this Syntax as interactive.
+                                    (.assoc (Maps/empty)
+                                      (Keyword/create "interactive?") (CVMBool/create true)))))))))
+
   (testing
     "Core function"
     (is

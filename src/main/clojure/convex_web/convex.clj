@@ -5,11 +5,14 @@
    [clojure.tools.logging :as log]
    [clojure.java.io :as io]
    
-   [cognitect.anomalies :as anomalies])
+   [cognitect.anomalies :as anomalies]
+
+   [convex-web.site.sandbox.hiccup :as hiccup])
   (:import 
    (convex.peer Server)
    (convex.core.init Init)
    (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AccountKey ACell AHashMap)
+   (convex.core.data.prim CVMBool)
    (convex.core.lang Core Reader RT Context AFn)
    (convex.core.lang.impl Fn CoreFn)
    (convex.core Order Block Peer State Result)
@@ -338,6 +341,22 @@
                                 :type (or (some-> result-value .getType .toString) "Nil")
                                 :value (or (some-> result-value Utils/print) "nil")}
       
+      ;; Interactive Syntax.
+      (when (instance? Syntax result-value)
+        (let [^AHashMap syntax-meta (.getMeta ^Syntax result-value)
+
+              ^CVMBool interactive? (.get syntax-meta (Keyword/create "interactive?"))
+
+              interactive? (some-> interactive? .booleanValue)]
+
+          (merge {:convex-web.result/metadata (datafy syntax-meta)}
+            (when interactive?
+              (let [element (datafy result-value)
+                    element (if (string? element)
+                              [:text element]
+                              element)]
+                {:convex-web.result/interactive (s/conform ::hiccup/element element)})))))
+
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})
       
