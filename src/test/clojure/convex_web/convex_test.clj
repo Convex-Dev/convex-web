@@ -229,13 +229,17 @@
       (is (= {:convex-web.result/id 1,
               :convex-web.result/type "Syntax",
               :convex-web.result/value "^{:interactive? true} {}"
-              :convex-web.result/metadata {:interactive? true}
-              :convex-web.result/interactive :clojure.spec.alpha/invalid}
-            (convex/result-data (Result/create (CVMLong/create 1)
-                                  (Syntax/create (Maps/empty)
-                                    ;; Metadata to mark this Syntax as interactive.
-                                    (.assoc (Maps/empty)
-                                      (Keyword/create "interactive?") (CVMBool/create true)))))))))
+              :convex-web.result/metadata {:interactive? true}}
+            (select-keys
+              (convex/result-data (Result/create (CVMLong/create 1)
+                                    (Syntax/create (Maps/empty)
+                                      ;; Metadata to mark this Syntax as interactive.
+                                      (.assoc (Maps/empty)
+                                        (Keyword/create "interactive?") (CVMBool/create true)))))
+              [:convex-web.result/id
+               :convex-web.result/type
+               :convex-web.result/value
+               :convex-web.result/metadata])))))
 
   (testing
     "Core function"
