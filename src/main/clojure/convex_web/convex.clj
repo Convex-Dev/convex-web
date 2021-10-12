@@ -332,6 +332,21 @@
 (defn consensus-point [^Order order]
   (.getConsensusPoint order))
 
+(defn coerce-element [x]
+  (cond
+    ;; Syntax sugar for text:
+    ;; "Hello" => [:text "Hello"]
+    (string? x)
+    [:text x]
+
+    ;; Syntax sugar for horizontal layout:
+    ;; ["Hello"] => [:h-box [:text "Hello"]]
+    (and (vector? x) (not (s/valid? ::hiccup/element x)))
+    (into [:h-box] (map coerce-element x))
+
+    :else
+    x))
+
 (defn result-data [^Result result]
   (let [^ACell result-id (.getID result)
         ^ACell result-error-code (.getErrorCode result)
@@ -352,16 +367,8 @@
           (merge {:convex-web.result/metadata (datafy syntax-meta)}
             (when interactive?
               (let [element (datafy result-value)
-                    element (cond
-                              ;; Syntax sugar for text.
-                              (string? element)
-                              [:text element]
-
-                              ;; Syntax sugar for a layout.
-                              (and (vector? element) (not (s/valid? ::hiccup/element element)))
-                              (into [:h-box] element)
-
-                              (not (s/valid? ::hiccup/element element))
+                    element (coerce-element element)
+                    element (if-not (s/valid? ::hiccup/element element)
                               [:v-box
                                [:text "Sorry. This syntax is not valid in the Interactive Sandbox:"]
                                [:code (str element)]
@@ -377,8 +384,6 @@
                                  [:button
                                   {:action :edit :source '(inc 1)}
                                   "Click me to edit source"]]]]
-
-                              :else
                               element)]
                 {:convex-web.result/interactive (s/conform ::hiccup/element element)})))))
 

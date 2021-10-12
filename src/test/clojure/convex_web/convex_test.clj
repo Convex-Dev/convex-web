@@ -167,6 +167,26 @@
       (is (= (Keyword/create "abort")
             (.getValue (.getExceptional context3)))))))
 
+(deftest coerce-element-test
+  (testing "Text syntax sugar"
+    (is (= [:text "Hello"] (convex/coerce-element "Hello"))))
+
+  (testing "Horizontal layout & text syntax sugar"
+    (is (= [:h-box
+            [:text "Hello"]
+            [:text "World"]]
+          (convex/coerce-element ["Hello" "World"]))))
+
+  (testing "Mix"
+    (is (= [:h-box
+            [:text "Hello"]
+            [:text "World"]
+            [:text "Foo"]
+            [:h-box
+             [:text "Bar"]
+             [:text "Baz"]]]
+          (convex/coerce-element ["Hello" "World" [:text "Foo"] ["Bar" [:text "Baz"]]])))))
+
 (deftest result-data-test
   (testing "Bool"
     (is (= {:convex-web.result/id 1,
