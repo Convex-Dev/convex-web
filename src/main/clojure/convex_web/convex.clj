@@ -372,18 +372,27 @@
                               [:v-box
                                [:text "Sorry. This syntax is not valid in the Interactive Sandbox:"]
                                [:code (str element)]
-                               [:markdown "**Please see the documentation for Widgets:**\n- `:text`\n- `:button`"]
-                               [:v-box
-                                [:text "Examples:"]
-                                [:v-box
-                                 [:code "(syntax [:text \"Hello\"] {:interactive? true)"]
-                                 [:text "Hello"]]
 
-                                [:v-box
-                                 [:code "(syntax [:button {:action :edit :source '(inc 1)}\"Click me to edit source\"] {:interactive? true)"]
-                                 [:button
-                                  {:action :edit :source '(inc 1)}
-                                  "Click me to edit source"]]]]
+                               [:markdown "**Examples:**"]
+
+                               [:markdown "`:text`"]
+                               [:v-box
+                                [:code (str '(syntax [:text "Hello"] {:interactive? true}))]
+                                [:text "Hello"]]
+
+                               [:markdown "`:markdown`"]
+                               [:v-box
+                                [:code (str '(syntax [:markdown "### Heading"] {:interactive? true}))]
+                                [:markdown "### Heading"]]
+
+                               [:markdown "`:button`"]
+                               (let [example [:button {:action :edit :source '(inc 1)}
+                                              "Click me to edit source"]]
+                                 [:v-box
+                                  [:code (str '(syntax example {:interactive? true}))]
+                                  example])]
+
+                              ;; Else; valid element.
                               element)]
                 {:convex-web.result/interactive (s/conform ::hiccup/element element)})))))
 
