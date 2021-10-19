@@ -50,6 +50,9 @@
      [:markdown "# Title\n\n## Subtitle"]
      {:interactive? true})
 
+
+  ;; Tutorial example
+
   '(syntax
      [:v-box
       [:markdown
@@ -62,26 +65,25 @@
 
        [:button
         {:action :edit
-         :source '(defn f [x] x)}
-        "Define a function"]]
+         :text "Define a function"}
+        (str '(defn f [x] x))]]
 
-      [:caption
+      [:text
        "Click on 'Continue' once you have executed the step above."]
 
       [:button
        {:action :query
-        :source
-        '(syntax
-           [:v-box
-            [:text "Now let's call `f`, and pass `1` as argument:"]
+        :text "Continue"}
+       (str '(syntax
+               [:v-box
+                [:text "Now let's call `f`, and pass `1` as argument:"]
 
-            [:button
-             {:action :edit
-              :source '(f 1)}
-             "Call a function"]]
+                [:button
+                 {:action :edit
+                  :text "Call `f`"}
+                 (str '(f 1))]]
 
-           {:interactive? true})}
-       "Continue"]]
+               {:interactive? true}))]]
 
      {:interactive? true})
 
