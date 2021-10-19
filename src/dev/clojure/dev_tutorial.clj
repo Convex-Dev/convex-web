@@ -38,6 +38,27 @@
       "(inc 1)"]
      {:interactive? true})
 
+
+  '(syntax
+     [:button
+      {:text "(inc 1)"
+       :action :query}
+      (str '(let [x (inc 1)]
+              (syntax
+                [:v-box
+                 [:p "Result is" [:code x]]
+
+                 [:button
+                  {:text "Finish"}
+                  ":Finish"]]
+
+                {:interactive? true
+                 :clear-screen? true})))]
+
+     {:interactive? true
+      :clear-screen? true})
+
+
   '(syntax
      [:button
       {:text "Increment (Query)"
@@ -79,12 +100,25 @@
                 [:text "Now let's call `f`, and pass `1` as argument:"]
 
                 [:button
-                 {:action :query}
-                 (str '(f 1))]]
+                 {:text "(f 1)"
+                  :action :query}
+
+                 (str '(let [x (f 1)]
+                         (syntax
+                           [:v-box
+                            [:code x]
+
+                            [:button
+                             {:text "Finish"}
+                             ":Finish"]]
+
+                           {:interactive? true
+                            :clear-screen? true})))]]
 
                {:interactive? true
                 :clear-screen? true}))]]
 
-     {:interactive? true})
+     {:interactive? true
+      :clear-screen? true})
 
   )
