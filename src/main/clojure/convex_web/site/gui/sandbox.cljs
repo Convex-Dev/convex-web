@@ -40,15 +40,6 @@
     [:span.prose.prose-sm
      (str content-body)]))
 
-(defmethod render :caption
-  [{:keys [ast]}]
-  ;; Text's content is the first number/string/element.
-  (let [{:keys [content]} ast
-
-        [_ content-body] (first content)]
-    [:span.text-xs.text-gray-500
-     (str content-body)]))
-
 (defmethod render :code
   [{:keys [ast]}]
   (let [{:keys [content]} ast

@@ -16,6 +16,12 @@
 
   '(syntax
      [:button
+      {:action :edit}
+      "(inc 1)"]
+     {:interactive? true})
+
+  '(syntax
+     [:button
       {:text "Edit action"
        :action :edit}
       "(inc 1)"]
