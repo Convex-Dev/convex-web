@@ -170,7 +170,7 @@
 (defmethod render :p
   [{:keys [ast click-handler click-disabled?]}]
   (let [{:keys [content]} ast]
-    (into [:p.space-x-1]
+    (into [:p.space-x-1.space-y-1]
       (map
         (fn [[_ ast]]
           (render (merge {:ast ast}
