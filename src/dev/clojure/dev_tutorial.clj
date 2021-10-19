@@ -11,8 +11,27 @@
      {:interactive? true})
 
   '(syntax
-     [:caption "Tiny text for caption."]
+     ["Text explaining something in the Sandbox."
+      "Text explaining something in the Sandbox."
+      "Text explaining something in the Sandbox."
+      "Text explaining something in the Sandbox."
+      [:button
+       {:action :edit}
+       "(inc 1)"]]
      {:interactive? true})
+
+
+  '(syntax
+     [:h-box
+      [:text "Text explaining something in the Sandbox."]
+      [:text "Text explaining something in the Sandbox."]
+      [:text "Text explaining something in the Sandbox."]
+      [:text "Text explaining something in the Sandbox."]
+      [:button
+       {:action :edit}
+       "(inc 1)"]]
+     {:interactive? true})
+
 
   '(syntax
      [:button
