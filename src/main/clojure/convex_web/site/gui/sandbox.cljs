@@ -16,22 +16,22 @@
 
    ["@heroicons/react/solid" :as icon]))
 
-(defmulti compile
-  "Compiles an AST produced by spec/conform to a Reagent component.
+(defmulti render
+  "Render an Interactive Sandbox element.
 
-  Currently implemented tags:
+  Elements are purely data - it's similar to an AST.
 
-    - :text
-    - :button
-    - :h-box
-    - :v-box"
+  Example:
+
+  {:tag :text
+   :content [[:number 1]]}"
   (comp :tag :ast))
 
-(defmethod compile :default
+(defmethod render :default
   [{:keys [ast]}]
   [:code (str ast)])
 
-(defmethod compile :text
+(defmethod render :text
   [{:keys [ast]}]
   ;; Text's content is the first number/string/element.
   (let [{:keys [content]} ast
@@ -40,7 +40,7 @@
     [:span.prose.prose-sm
      (str content-body)]))
 
-(defmethod compile :caption
+(defmethod render :caption
   [{:keys [ast]}]
   ;; Text's content is the first number/string/element.
   (let [{:keys [content]} ast
@@ -49,7 +49,7 @@
     [:span.text-xs.text-gray-500
      (str content-body)]))
 
-(defmethod compile :code
+(defmethod render :code
   [{:keys [ast]}]
   (let [{:keys [content]} ast
 
@@ -61,7 +61,7 @@
        (catch js/Error _
          (str content-body)))]))
 
-(defmethod compile :button
+(defmethod render :button
   [{:keys [ast click-handler click-disabled?]}]
 
   (let [click-handler (or click-handler identity)
@@ -154,7 +154,7 @@
         :else
         nil)]]))
 
-(defmethod compile :markdown
+(defmethod render :markdown
   [{:keys [ast]}]
   (let [{:keys [content]} ast
 
@@ -163,13 +163,13 @@
      [gui/Markdown
       (str content-body)]]))
 
-(defmethod compile :h-box
+(defmethod render :h-box
   [{:keys [ast click-handler click-disabled?]}]
   (let [{:keys [content]} ast]
     (into [:div.flex.flex-row.items-center.space-x-3]
       (map
         (fn [[_ ast]]
-          (compile (merge {:ast ast}
+          (render (merge {:ast ast}
 
                      (when click-handler
                        {:click-handler click-handler})
@@ -178,13 +178,13 @@
                        {:click-disabled? click-disabled?}))))
         content))))
 
-(defmethod compile :v-box
+(defmethod render :v-box
   [{:keys [ast click-handler click-disabled?]}]
   (let [{:keys [content]} ast]
     (into [:div.flex.flex-col.items-start.space-y-3]
       (map
         (fn [[_ ast]]
-          (compile (merge {:ast ast}
+          (render (merge {:ast ast}
 
                      (when click-handler
                        {:click-handler click-handler})
@@ -322,7 +322,7 @@
       ;; It's possible to disable an interactive result, because its usage is contextual.
       ;; (Doesn't make sense to be used outside the Sandbox.)
       (and result-interactive? interactive-enabled?)
-      (compile (merge {:ast result-interactive}
+      (render (merge {:ast result-interactive}
                  (select-keys interactive [:click-handler
                                            :click-disabled?])))
 
