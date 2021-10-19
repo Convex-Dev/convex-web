@@ -134,19 +134,26 @@
                         :action attr-action
                         :source source}))}
 
-     ;; Command's button text.
-     [:div.flex.justify-start.space-x-2
-      [:span.text-sm.text-white
-       ;; Button's text is the explicit set text attribute,
-       ;; or the action's source.
-       (str (or attr-text source))]
 
+     [:div.flex.items-center.justify-start.space-x-2
+
+      ;; Button's text.
+      (cond
+        attr-text
+        [:span.text-sm.text-white
+         attr-text]
+
+        :else
+        [:code.text-xs.text-white
+         source])
+
+      ;; Button's icon.
       (cond
         (#{:query :transact} attr-action)
         [:> icon/ArrowRightIcon {:className "w-5 h-5 text-white"}]
 
         (= :edit attr-action)
-        [:> icon/CodeIcon {:className "w-5 h-5 text-white"}]
+        [:> icon/PencilIcon {:className "w-5 h-5 text-white"}]
 
         :else
         nil)]]))
