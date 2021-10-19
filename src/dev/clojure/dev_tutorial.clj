@@ -59,6 +59,14 @@
 
 
   '(syntax
+     [:>
+      {:name "Execute"
+       :show-source? true}
+      "(inc 1)"]
+     {:interactive? true})
+
+
+  '(syntax
      [:button
       {:text "(inc 1)"
        :action :query}
@@ -138,6 +146,6 @@
                 :clear-screen? true}))]]
 
      {:interactive? true
-      :clear-screen? true})
+      :clear-screen? false})
 
   )

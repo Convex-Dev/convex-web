@@ -6,6 +6,7 @@
    [reitit.frontend.easy :as rfe]
    [cljfmt.core :as cljfmt]
    [lambdaisland.glogi :as log]
+   [codemirror-reagent.core :as codemirror]
 
    [convex-web.site.format :as format]
    [convex-web.site.backend :as backend]
@@ -154,6 +155,110 @@
 
         :else
         nil)]]))
+
+(defn CommandRenderer [{:keys [ast]}]
+  (r/with-let [source-ref (r/atom (get-in ast [:content 0 1]))]
+    (let [{:keys [attributes]} ast
+
+          {attr-name :name
+           attr-mode :mode
+           attr-show-source? :show-source?
+           :or {attr-mode :transact}} attributes
+
+          source @source-ref
+
+          active-address @(rf/subscribe [:session/?active-address])
+
+          execute (fn []
+                    (cond
+                      (#{:query :transact} attr-mode)
+                      (let [command #:convex-web.command {:id (random-uuid)
+                                                          :timestamp (.getTime (js/Date.))
+                                                          :status :convex-web.command.status/running}
+
+                            command (merge command
+                                      (case attr-mode
+                                        :query
+                                        #:convex-web.command
+                                        {:mode :convex-web.command.mode/query
+                                         :query
+                                         #:convex-web.query
+                                         {:source source
+                                          :language :convex-lisp}}
+
+                                        :transact
+                                        #:convex-web.command
+                                        {:mode :convex-web.command.mode/transaction
+                                         :transaction
+                                         #:convex-web.transaction
+                                         {:type :convex-web.transaction.type/invoke
+                                          :source source
+                                          :language :convex-lisp}}))
+
+                            command (merge command
+                                      (when active-address
+                                        {:convex-web.command/signer
+                                         {:convex-web.account/address active-address}}))]
+
+                        (command/execute command
+                          (fn [_ response]
+                            (log/debug :command-new-state response)
+
+                            (rf/dispatch [:session/!set-state
+                                          (fn [state]
+                                            (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj response))]))))
+
+                      :else
+                      (log/warn :unknown-mode attr-mode)))]
+
+      [:div.flex.flex-col.items-start.space-y-2
+
+       (when attr-show-source?
+         [codemirror/CodeMirror
+          [:div.relative.flex-shrink-0.flex-1.overflow-auto.border.rounded]
+          {:configuration {:lineNumbers false
+                           :value source
+                           :mode "clojure"}
+
+           :on-mount (fn [_ editor]
+                       (codemirror/cm-focus editor))
+
+           :on-update (fn [_ editor]
+                        (codemirror/cm-focus editor))
+
+           :events {:editor
+                    {"change"
+                     (fn [editor _]
+                       (reset! source-ref (codemirror/cm-get-value editor)))}}}])
+
+
+       [:button.p-2.rounded.shadow
+        {:class ["bg-green-500 hover:bg-green-400 active:bg-green-600"]
+         :on-click execute}
+
+
+        [:div.flex.items-center.justify-start.space-x-2
+
+         ;; Button's text.
+         (cond
+           attr-name
+           [:span.text-sm.text-white
+            attr-name]
+
+           :else
+           [:code.text-xs.text-white
+            source])
+
+         ;; Button's icon.
+         (cond
+           (= :edit attr-mode)
+           [:> icon/PencilIcon {:className "w-5 h-5 text-white"}]
+
+           :else
+           nil)]]])))
+
+(defmethod render :> [m]
+  [CommandRenderer m])
 
 (defmethod render :markdown
   [{:keys [ast]}]
