@@ -17,6 +17,7 @@
    [convex-web.site.backend :as backend]
    [convex-web.site.format :as format]
 
+   ["@heroicons/react/solid" :as icon]
    ["react-resizable" :refer [ResizableBox]]))
 
 (defn mode [state]
@@ -583,7 +584,17 @@
      ;; -- REPL
      [:div.w-screen.max-w-full.flex.flex-col.mb-6.space-y-2
       
-      [:div.flex.justify-end
+      [:div.flex.justify-end.space-x-4
+
+       [gui/DefaultButton
+        {:on-click #(set-state assoc :convex-web.repl/commands [])}
+        [:div.flex.space-x-2
+         [:span
+          "Clear Output"]
+
+         [:> icon/TrashIcon
+          {:className "h-5 w-5 text-gray-600"}]]]
+
        [gui/DefaultButton
         {:on-click #(toggle-sidebar set-state)}
         [:div.flex.space-x-2
