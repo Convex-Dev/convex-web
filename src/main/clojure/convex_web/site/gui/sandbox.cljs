@@ -68,11 +68,13 @@
 
         {:keys [attributes content]} ast
 
-        {attr-source :source
-         attr-action :action} attributes
+        {attr-text :text
+         attr-action :action
+         :or {attr-action :transact}} attributes
 
-        ;; Command's content is the first number/string/element.
-        [_ content-body] (first content)
+        ;; Button's source is the first value in content.
+        ;; (First value in the tuple is the 'type' - string, number, element.)
+        [_ source] (first content)
 
         style (cond
                 (#{:query :transact} attr-action)
@@ -104,7 +106,7 @@
                               {:mode :convex-web.command.mode/query
                                :query
                                #:convex-web.query
-                               {:source (str attr-source)
+                               {:source (str source)
                                 :language :convex-lisp}}
 
                               :transact
@@ -113,7 +115,7 @@
                                :transaction
                                #:convex-web.transaction
                                {:type :convex-web.transaction.type/invoke
-                                :source (str attr-source)
+                                :source (str source)
                                 :language :convex-lisp}}))
 
                   command (merge command
@@ -137,12 +139,16 @@
 
         ;; Caller might need to do something on click,
         ;; especially if it's an edit action.
-        (click-handler attributes))}
+        (click-handler {:ast ast
+                        :action attr-action
+                        :source source}))}
 
      ;; Command's button text.
      [:div.flex.justify-start.space-x-2
       [:span.text-sm.text-white
-       (str content-body)]
+       ;; Button's text is the explicit set text attribute,
+       ;; or the action's source.
+       (str (or attr-text source))]
 
       (cond
         (#{:query :transact} attr-action)

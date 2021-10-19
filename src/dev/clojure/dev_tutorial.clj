@@ -16,24 +16,29 @@
 
   '(syntax
      [:button
-      {:action :edit
-       :source '(inc 1)}
-      "Edit action"]
+      {:text "Edit action"
+       :action :edit}
+      "(inc 1)"]
      {:interactive? true})
 
   '(syntax
      [:button
-      {:action :query
-       :source "(inc 1)"}
-      "Query action"]
+      "(inc 1)"]
      {:interactive? true})
 
   '(syntax
      [:button
-      {:action :transact
-       :source '(inc 1)}
-      "Transact action"]
+      {:action :query}
+      "(inc 1)"]
      {:interactive? true})
+
+  '(syntax
+     [:button
+      {:text "Increment (Query)"
+       :action :query}
+      "(inc 1)"]
+     {:interactive? true})
+
 
   '(syntax
      [:markdown "# Title\n\n## Subtitle"]
