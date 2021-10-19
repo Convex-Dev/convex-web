@@ -15,6 +15,7 @@
     :caption
     :code
     :button
+    :p
     :h-box
     :v-box})
 

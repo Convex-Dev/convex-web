@@ -163,6 +163,21 @@
      [gui/Markdown
       (str content-body)]]))
 
+(defmethod render :p
+  [{:keys [ast click-handler click-disabled?]}]
+  (let [{:keys [content]} ast]
+    (into [:p.space-x-1]
+      (map
+        (fn [[_ ast]]
+          (render (merge {:ast ast}
+
+                    (when click-handler
+                      {:click-handler click-handler})
+
+                    (when click-disabled?
+                      {:click-disabled? click-disabled?}))))
+        content))))
+
 (defmethod render :h-box
   [{:keys [ast click-handler click-disabled?]}]
   (let [{:keys [content]} ast]

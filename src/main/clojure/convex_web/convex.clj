@@ -339,10 +339,10 @@
     (string? x)
     [:text x]
 
-    ;; Syntax sugar for horizontal layout:
-    ;; ["Hello"] => [:h-box [:text "Hello"]]
+    ;; Syntax sugar for a paragraph:
+    ;; ["Hello"] => [:p [:text "Hello"]]
     (and (vector? x) (not (s/valid? ::hiccup/element x)))
-    (into [:h-box] (map coerce-element x))
+    (into [:p] (map coerce-element x))
 
     :else
     x))
