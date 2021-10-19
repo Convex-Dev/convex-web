@@ -79,11 +79,11 @@
                 [:text "Now let's call `f`, and pass `1` as argument:"]
 
                 [:button
-                 {:action :edit
-                  :text "Call `f`"}
+                 {:action :query}
                  (str '(f 1))]]
 
-               {:interactive? true}))]]
+               {:interactive? true
+                :clear-screen? true}))]]
 
      {:interactive? true})
 

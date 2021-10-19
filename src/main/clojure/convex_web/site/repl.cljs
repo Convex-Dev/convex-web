@@ -440,98 +440,111 @@
 
     [:div.w-full.h-full.max-w-full.overflow-auto.bg-gray-100.border.rounded
      (if (seq commands)
-       (for [{:convex-web.command/keys [timestamp status query transaction result] :as command} commands]
+       (let [{last-command-result :convex-web.command/result} (last commands)
 
-         (let [interactive? (get-in result [:convex-web.result/metadata :interactive?])]
+             {result-metadata :convex-web.result/metadata} last-command-result
 
-           ^{:key timestamp}
-           [:div.w-full.flex.flex-col.space-y-3.border-b.p-4.transition-colors.duration-500.ease-in-out
-            {:ref
-             (fn [el]
-               (when el
-                 (.scrollIntoView el #js {"behavior" "smooth"
-                                          "block" "center"})))
-             :class
-             (case status
-               :convex-web.command.status/running
-               "bg-yellow-100"
-               :convex-web.command.status/success
-               ""
-               :convex-web.command.status/error
-               "bg-red-100"
+             {result-interactive? :interactive?
+              result-clear-screen? :clear-screen?} result-metadata
 
-               "")}
+             ;; If last command is interactive and requests a clear screen,
+             ;; only the last command should be shown.
+             commands (if (and result-interactive? result-clear-screen?)
+                        [(last commands)]
+                        commands)]
 
+         (for [{:convex-web.command/keys [timestamp status query transaction result] :as command} commands]
 
-            ;; -- Input
+           (let [interactive? (get-in result [:convex-web.result/metadata :interactive?])]
 
-            ;; It's not necessary to show this information when in "interactive mode".
-            (when-not interactive?
-              [:div.flex.flex-col.items-start
-               [:span.text-xs.uppercase.text-gray-600.block.mb-1
-                "Source"]
+             ^{:key timestamp}
+             [:div.w-full.flex.flex-col.space-y-3.border-b.p-4.transition-colors.duration-500.ease-in-out
+              {:ref
+               (fn [el]
+                 (when el
+                   (.scrollIntoView el #js {"behavior" "smooth"
+                                            "block" "center"})))
+               :class
+               (case status
+                 :convex-web.command.status/running
+                 "bg-yellow-100"
+                 :convex-web.command.status/success
+                 ""
+                 :convex-web.command.status/error
+                 "bg-red-100"
 
-               (let [source (or (get query :convex-web.query/source)
-                              (get transaction :convex-web.transaction/source))]
-                 [:div.flex.items-center
-                  [gui/Highlight source {:pretty? true}]
-
-                  ;; This causes a strange overflow.
-                  #_[gui/ClipboardCopy source {:margin "ml-2"}]])])
+                 "")}
 
 
-            ;; -- Output
-            [:div.flex.flex-col.items-start.space-y-2
+              ;; -- Input
 
-             ;; It's not necessary to show this information when in "interactive mode".
-             (when-not interactive?
-               (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
-                 [:div.flex.mb-1
-                  [:span.text-xs.uppercase.text-gray-600
-                   (cond
-                     error?
-                     (let [code (get-in command [:convex-web.command/error :code])]
-                       (apply str (if (keyword? code)
-                                    ["Error " (str "(" (error-code-string code) ")")]
-                                    ["Unrecognised Non-Keyword Error Code"])))
+              ;; It's not necessary to show this information when in "interactive mode".
+              (when-not interactive?
+                [:div.flex.flex-col.items-start
+                 [:span.text-xs.uppercase.text-gray-600.block.mb-1
+                  "Source"]
 
-                     :else
-                     "Result")]
+                 (let [source (or (get query :convex-web.query/source)
+                                (get transaction :convex-web.transaction/source))]
+                   [:div.flex.items-center
+                    [gui/Highlight source {:pretty? true}]
 
-                  ;; Don't display result type for errors.
-                  (when-not error?
-                    (when-let [type (get-in command [:convex-web.command/result :convex-web.result/type])]
-                      [gui/Tooltip
-                       {:title (str/capitalize type)
-                        :size "small"}
-                       [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))]))
+                    ;; This causes a strange overflow.
+                    #_[gui/ClipboardCopy source {:margin "ml-2"}]])])
 
-             [:div.flex
-              (case status
-                :convex-web.command.status/running
-                [gui/SpinnerSmall]
 
-                :convex-web.command.status/success
-                [guis/ResultRenderer
-                 {:result (:convex-web.command/result command)
-                  :interactive
-                  {:click-handler
-                   (fn [{:keys [action source] :as attrs}]
+              ;; -- Output
+              [:div.flex.flex-col.items-start.space-y-2
 
-                     (let [source (try
-                                    (cljfmt/reformat-string (str source))
-                                    (catch js/Error _
-                                      source))]
+               ;; It's not necessary to show this information when in "interactive mode".
+               (when-not interactive?
+                 (let [error? (= :convex-web.command.status/error (get command :convex-web.command/status))]
+                   [:div.flex.mb-1
+                    [:span.text-xs.uppercase.text-gray-600
+                     (cond
+                       error?
+                       (let [code (get-in command [:convex-web.command/error :code])]
+                         (apply str (if (keyword? code)
+                                      ["Error " (str "(" (error-code-string code) ")")]
+                                      ["Unrecognised Non-Keyword Error Code"])))
 
-                       (log/debug :attrs attrs)
+                       :else
+                       "Result")]
 
-                       (when (= action :edit)
-                         (codemirror/cm-set-value editor source)
-                         (codemirror/set-cursor-at-the-end editor)
-                         (codemirror/cm-focus editor))))}}]
+                    ;; Don't display result type for errors.
+                    (when-not error?
+                      (when-let [type (get-in command [:convex-web.command/result :convex-web.result/type])]
+                        [gui/Tooltip
+                         {:title (str/capitalize type)
+                          :size "small"}
+                         [gui/InformationCircleIcon {:class "w-4 h-4 text-black ml-1"}]]))]))
 
-                :convex-web.command.status/error
-                [ErrorOutput command])]]]))
+               [:div.flex
+                (case status
+                  :convex-web.command.status/running
+                  [gui/SpinnerSmall]
+
+                  :convex-web.command.status/success
+                  [guis/ResultRenderer
+                   {:result (:convex-web.command/result command)
+                    :interactive
+                    {:click-handler
+                     (fn [{:keys [action source] :as attrs}]
+
+                       (let [source (try
+                                      (cljfmt/reformat-string (str source))
+                                      (catch js/Error _
+                                        source))]
+
+                         (log/debug :attrs attrs)
+
+                         (when (= action :edit)
+                           (codemirror/cm-set-value editor source)
+                           (codemirror/set-cursor-at-the-end editor)
+                           (codemirror/cm-focus editor))))}}]
+
+                  :convex-web.command.status/error
+                  [ErrorOutput command])]]])))
 
        ;; Else; explain the Sandbox.
        [:div.h-full.flex.flex-col.items-center.justify-center
