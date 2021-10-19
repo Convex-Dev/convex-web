@@ -149,9 +149,6 @@
 
       ;; Button's icon.
       (cond
-        (#{:query :transact} attr-action)
-        [:> icon/ArrowRightIcon {:className "w-5 h-5 text-white"}]
-
         (= :edit attr-action)
         [:> icon/PencilIcon {:className "w-5 h-5 text-white"}]
 
