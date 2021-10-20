@@ -360,7 +360,7 @@
       (when (instance? Syntax result-value)
         (let [^AHashMap syntax-meta (.getMeta ^Syntax result-value)
 
-              ^CVMBool interactive? (.get syntax-meta (Keyword/create "interactive?"))
+              ^CVMBool interactive? (.get syntax-meta (Keyword/create "interact?"))
 
               interactive? (some-> interactive? .booleanValue)]
 
@@ -371,26 +371,7 @@
                     element (if-not (s/valid? ::hiccup/element element)
                               [:v-box
                                [:text "Sorry. This syntax is not valid in the Interactive Sandbox:"]
-                               [:code (str element)]
-
-                               [:markdown "**Examples:**"]
-
-                               [:markdown "`:text`"]
-                               [:v-box
-                                [:code (str '(syntax [:text "Hello"] {:interactive? true}))]
-                                [:text "Hello"]]
-
-                               [:markdown "`:markdown`"]
-                               [:v-box
-                                [:code (str '(syntax [:markdown "### Heading"] {:interactive? true}))]
-                                [:markdown "### Heading"]]
-
-                               [:markdown "`:button`"]
-                               (let [example [:button {:action :edit :source '(inc 1)}
-                                              "Click me to edit source"]]
-                                 [:v-box
-                                  [:code (str '(syntax example {:interactive? true}))]
-                                  example])]
+                               [:code (str element)]]
 
                               ;; Else; valid element.
                               element)]

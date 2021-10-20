@@ -445,8 +445,8 @@
 
              {result-metadata :convex-web.result/metadata} last-command-result
 
-             {result-interactive? :interactive?
-              result-clear-screen? :clear-screen?} result-metadata
+             {result-interactive? :interact?
+              result-clear-screen? :cls?} result-metadata
 
              ;; If last command is interactive and requests a clear screen,
              ;; only the last command should be shown.
@@ -456,7 +456,7 @@
 
          (for [{:convex-web.command/keys [timestamp status query transaction result] :as command} commands]
 
-           (let [interactive? (get-in result [:convex-web.result/metadata :interactive?])]
+           (let [interactive? (get-in result [:convex-web.result/metadata :interact?])]
 
              ^{:key timestamp}
              [:div.w-full.flex.flex-col.space-y-3.border-b.p-4.transition-colors.duration-500.ease-in-out

@@ -4,22 +4,24 @@
 
   '(syntax
      "Text explaining something in the Sandbox."
-     {:interactive? true})
+     {:interact? true})
 
   '(syntax
      [:text "Text explaining something in the Sandbox."]
-     {:interactive? true})
+     {:interact? true})
 
   '(syntax
-     ["Text explaining something in the Sandbox."
-      "Text explaining something in the Sandbox."
-      "Text explaining something in the Sandbox."
-      "Text explaining something in the Sandbox."
-      [:button
-       {:action :edit}
+     ["Text explaining something in the Sandbox.       "
+      [:cmd
+       {:show-source? true}
+       "(inc 1)"]
+      " Text explaining something in the Sandbox. "
+      " Text explaining something in the Sandbox. "
+      " Text explaining something in the Sandbox. "
+      [:cmd
+       {:show-source? true}
        "(inc 1)"]]
-     {:interactive? true})
-
+     {:interact? true})
 
   '(syntax
      [:h-box
@@ -27,125 +29,95 @@
       [:text "Text explaining something in the Sandbox."]
       [:text "Text explaining something in the Sandbox."]
       [:text "Text explaining something in the Sandbox."]
-      [:button
-       {:action :edit}
+      [:cmd
        "(inc 1)"]]
-     {:interactive? true})
-
-
-  '(syntax
-     [:button
-      {:action :edit}
-      "(inc 1)"]
-     {:interactive? true})
+     {:interact? true})
 
   '(syntax
-     [:button
-      {:text "Edit action"
-       :action :edit}
-      "(inc 1)"]
-     {:interactive? true})
-
-  '(syntax
-     [:button
-      "(inc 1)"]
-     {:interactive? true})
-
-  '(syntax
-     [:button
-      {:action :query}
-      "(inc 1)"]
-     {:interactive? true})
-
-
-  '(syntax
-     [:>
+     [:cmd
       {:name "Execute"
+       :mode :query
+       :show-source? false}
+      "(inc 1)"]
+     {:interact? true})
+
+  '(syntax
+     [:cmd
+      {:name "Execute"
+       :mode :query
        :show-source? true}
       "(inc 1)"]
-     {:interactive? true})
-
-
-  '(syntax
-     [:button
-      {:text "(inc 1)"
-       :action :query}
-      (str '(let [x (inc 1)]
-              (syntax
-                [:v-box
-                 [:p "Result is" [:code x]]
-
-                 [:button
-                  {:text "Finish"}
-                  ":Finish"]]
-
-                {:interactive? true
-                 :clear-screen? true})))]
-
-     {:interactive? true
-      :clear-screen? true})
-
+     {:interact? true})
 
   '(syntax
-     [:button
-      {:text "Increment (Query)"
-       :action :query}
+     [:cmd
+      {:name "Execute"
+       :mode :query
+       :show-source? true
+       :frame (str '(syntax [:v-box
+
+                             [:code :%]
+
+                             [:cmd
+                              {:mode :query :name "Done"}
+                              ":done"]]
+                      {:interact? true
+                       :cls? true}))}
       "(inc 1)"]
-     {:interactive? true})
+     {:interact? true
+      :cls? true})
 
 
   '(syntax
-     [:markdown "# Title\n\n## Subtitle"]
-     {:interactive? true})
+     [:md "# Title\n\n## Subtitle"]
+     {:interact? true})
 
 
   ;; Tutorial example
 
   '(syntax
      [:v-box
-      [:markdown
+      [:md
        "### Convex Lisp Tutorial\n\nLet's define a function `f`:"]
 
-      [:h-box
-
-       [:code
-        "(defn f [x] x)"]
-
-       [:button
-        {:action :edit
-         :text "Define a function"}
-        (str '(defn f [x] x))]]
+      [:cmd
+        {:name "Execute"
+         :show-source? true}
+        (str '(defn f [x] x))]
 
       [:text
        "Click on 'Continue' once you have executed the step above."]
 
-      [:button
-       {:action :query
-        :text "Continue"}
+      [:cmd
+       {:mode :query
+        :name "Continue"}
        (str '(syntax
                [:v-box
                 [:text "Now let's call `f`, and pass `1` as argument:"]
 
-                [:button
-                 {:text "(f 1)"
-                  :action :query}
+                [:cmd
+                 {:name "(f 1)"
+                  :mode :query}
 
                  (str '(let [x (f 1)]
                          (syntax
                            [:v-box
                             [:code x]
 
-                            [:button
-                             {:text "Finish"}
+                            [:cmd
+                             {:name "Finish"
+                              :mode :query}
                              ":Finish"]]
 
-                           {:interactive? true
-                            :clear-screen? true})))]]
+                           {:interact? true
+                            :cls? true})))]]
 
-               {:interactive? true
-                :clear-screen? true}))]]
+               {:interact? true
+                :cls? true}))]]
 
-     {:interactive? true
-      :clear-screen? false})
+     {:interact? true
+      :cls? true
+      :mode :query
+      :input "(inc 1)"})
 
   )

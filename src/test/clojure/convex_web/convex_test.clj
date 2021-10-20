@@ -248,14 +248,14 @@
     (testing "Interactive"
       (is (= {:convex-web.result/id 1,
               :convex-web.result/type "Syntax",
-              :convex-web.result/value "^{:interactive? true} {}"
-              :convex-web.result/metadata {:interactive? true}}
+              :convex-web.result/value "^{:interact? true} {}"
+              :convex-web.result/metadata {:interact? true}}
             (select-keys
               (convex/result-data (Result/create (CVMLong/create 1)
                                     (Syntax/create (Maps/empty)
                                       ;; Metadata to mark this Syntax as interactive.
                                       (.assoc (Maps/empty)
-                                        (Keyword/create "interactive?") (CVMBool/create true)))))
+                                        (Keyword/create "interact?") (CVMBool/create true)))))
               [:convex-web.result/id
                :convex-web.result/type
                :convex-web.result/value

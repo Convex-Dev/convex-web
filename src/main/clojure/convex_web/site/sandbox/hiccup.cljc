@@ -11,10 +11,9 @@
 
 (s/def ::element-tag
   #{:text
-    :markdown
+    :md
     :code
-    :button
-    :>
+    :cmd
     :p
     :h-box
     :v-box})

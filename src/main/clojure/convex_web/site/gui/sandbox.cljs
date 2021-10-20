@@ -1,5 +1,7 @@
 (ns convex-web.site.gui.sandbox
   (:require
+   [clojure.string :as str]
+
    [goog.string.format]
    [reagent.core :as r]
    [re-frame.core :as rf]
@@ -163,6 +165,7 @@
           {attr-name :name
            attr-mode :mode
            attr-show-source? :show-source?
+           attr-frame :frame
            :or {attr-mode :transact}} attributes
 
           source @source-ref
@@ -172,7 +175,11 @@
           execute (fn []
                     (cond
                       (#{:query :transact} attr-mode)
-                      (let [command #:convex-web.command {:id (random-uuid)
+                      (let [frame-source (if attr-frame
+                                           (str/replace attr-frame ":%" source)
+                                           source)
+
+                            command #:convex-web.command {:id (random-uuid)
                                                           :timestamp (.getTime (js/Date.))
                                                           :status :convex-web.command.status/running}
 
@@ -183,7 +190,7 @@
                                         {:mode :convex-web.command.mode/query
                                          :query
                                          #:convex-web.query
-                                         {:source source
+                                         {:source frame-source
                                           :language :convex-lisp}}
 
                                         :transact
@@ -192,7 +199,7 @@
                                          :transaction
                                          #:convex-web.transaction
                                          {:type :convex-web.transaction.type/invoke
-                                          :source source
+                                          :source frame-source
                                           :language :convex-lisp}}))
 
                             command (merge command
@@ -257,10 +264,10 @@
            :else
            nil)]]])))
 
-(defmethod render :> [m]
+(defmethod render :cmd [m]
   [CommandRenderer m])
 
-(defmethod render :markdown
+(defmethod render :md
   [{:keys [ast]}]
   (let [{:keys [content]} ast
 
@@ -272,7 +279,7 @@
 (defmethod render :p
   [{:keys [ast click-handler click-disabled?]}]
   (let [{:keys [content]} ast]
-    (into [:p.space-x-1.space-y-1]
+    (into [:p]
       (map
         (fn [[_ ast]]
           (render (merge {:ast ast}
@@ -430,7 +437,7 @@
          result-metadata :convex-web.result/metadata
          result-interactive :convex-web.result/interactive} result
 
-        {result-interactive? :interactive?} result-metadata
+        {result-interactive? :interact?} result-metadata
 
         ;; It's enabled by default.
         interactive-enabled? (get interactive :enabled? true)]
