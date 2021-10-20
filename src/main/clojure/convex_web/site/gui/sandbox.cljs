@@ -1,11 +1,14 @@
 (ns convex-web.site.gui.sandbox
   (:require
+   [clojure.string :as str]
+
    [goog.string.format]
    [reagent.core :as r]
    [re-frame.core :as rf]
    [reitit.frontend.easy :as rfe]
    [cljfmt.core :as cljfmt]
    [lambdaisland.glogi :as log]
+   [codemirror-reagent.core :as codemirror]
 
    [convex-web.site.format :as format]
    [convex-web.site.backend :as backend]
@@ -16,22 +19,22 @@
 
    ["@heroicons/react/solid" :as icon]))
 
-(defmulti compile
-  "Compiles an AST produced by spec/conform to a Reagent component.
+(defmulti render
+  "Render an Interactive Sandbox element.
 
-  Currently implemented tags:
+  Elements are purely data - it's similar to an AST.
 
-    - :text
-    - :button
-    - :h-box
-    - :v-box"
+  Example:
+
+  {:tag :text
+   :content [[:number 1]]}"
   (comp :tag :ast))
 
-(defmethod compile :default
+(defmethod render :default
   [{:keys [ast]}]
   [:code (str ast)])
 
-(defmethod compile :text
+(defmethod render :text
   [{:keys [ast]}]
   ;; Text's content is the first number/string/element.
   (let [{:keys [content]} ast
@@ -40,16 +43,7 @@
     [:span.prose.prose-sm
      (str content-body)]))
 
-(defmethod compile :caption
-  [{:keys [ast]}]
-  ;; Text's content is the first number/string/element.
-  (let [{:keys [content]} ast
-
-        [_ content-body] (first content)]
-    [:span.text-xs.text-gray-500
-     (str content-body)]))
-
-(defmethod compile :code
+(defmethod render :code
   [{:keys [ast]}]
   (let [{:keys [content]} ast
 
@@ -61,100 +55,121 @@
        (catch js/Error _
          (str content-body)))]))
 
-(defmethod compile :button
-  [{:keys [ast click-handler click-disabled?]}]
+(defn CommandRenderer [{:keys [ast]}]
+  (r/with-let [source-ref (r/atom (get-in ast [:content 0 1]))]
+    (let [{:keys [attributes]} ast
 
-  (let [click-handler (or click-handler identity)
+          {attr-name :name
+           attr-mode :mode
+           attr-show-source? :show-source?
+           attr-frame :frame
+           :or {attr-mode :transact}} attributes
 
-        {:keys [attributes content]} ast
+          source @source-ref
 
-        {attr-source :source
-         attr-action :action} attributes
+          active-address @(rf/subscribe [:session/?active-address])
 
-        ;; Command's content is the first number/string/element.
-        [_ content-body] (first content)
+          execute (fn []
+                    (cond
+                      (#{:query :transact} attr-mode)
+                      (let [frame-source (if attr-frame
+                                           (str/replace attr-frame ":%" source)
+                                           source)
 
-        style (cond
-                (#{:query :transact} attr-action)
-                ["bg-green-500 hover:bg-green-400 active:bg-green-600"]
+                            command #:convex-web.command {:id (random-uuid)
+                                                          :timestamp (.getTime (js/Date.))
+                                                          :status :convex-web.command.status/running}
 
-                (= attr-action :edit)
-                ["bg-blue-500 hover:bg-blue-400 active:bg-blue-600"])
+                            command (merge command
+                                      (case attr-mode
+                                        :query
+                                        #:convex-web.command
+                                        {:mode :convex-web.command.mode/query
+                                         :query
+                                         #:convex-web.query
+                                         {:source frame-source
+                                          :language :convex-lisp}}
 
-        style (if click-disabled?
-                (conj style "disabled:bg-opacity-50 pointer-events-none")
-                style)]
+                                        :transact
+                                        #:convex-web.command
+                                        {:mode :convex-web.command.mode/transaction
+                                         :transaction
+                                         #:convex-web.transaction
+                                         {:type :convex-web.transaction.type/invoke
+                                          :source frame-source
+                                          :language :convex-lisp}}))
 
-    [:button.p-2.rounded.shadow
-     {:disabled (or click-disabled? false)
-      :class style
-      :on-click
-      (fn []
-        (let [active-address @(rf/subscribe [:session/?active-address])]
-          (cond
-            (#{:query :transact} attr-action)
-            (let [command #:convex-web.command {:id (random-uuid)
-                                                :timestamp (.getTime (js/Date.))
-                                                :status :convex-web.command.status/running}
+                            command (merge command
+                                      (when active-address
+                                        {:convex-web.command/signer
+                                         {:convex-web.account/address active-address}}))]
 
-                  command (merge command
-                            (case attr-action
-                              :query
-                              #:convex-web.command
-                              {:mode :convex-web.command.mode/query
-                               :query
-                               #:convex-web.query
-                               {:source (str attr-source)
-                                :language :convex-lisp}}
+                        (command/execute command
+                          (fn [_ response]
+                            (let [f (if (get-in response [:convex-web.command/result :convex-web.result/metadata :cls?])
+                                      ;; Reset history (since it's a 'clear screen')
+                                      (fn [state]
+                                        (assoc-in state [:page.id/repl active-address :convex-web.repl/commands] [response]))
 
-                              :transact
-                              #:convex-web.command
-                              {:mode :convex-web.command.mode/transaction
-                               :transaction
-                               #:convex-web.transaction
-                               {:type :convex-web.transaction.type/invoke
-                                :source (str attr-source)
-                                :language :convex-lisp}}))
+                                      ;; Append command.
+                                      (fn [state]
+                                        (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj response)))]
 
-                  command (merge command
-                            (when active-address
-                              {:convex-web.command/signer
-                               {:convex-web.account/address active-address}}))]
+                              (rf/dispatch [:session/!set-state f])))))
 
-              (command/execute command
-                (fn [_ response]
-                  (log/debug :command-new-state response)
+                      :else
+                      (log/warn :unknown-mode attr-mode)))]
 
-                  (rf/dispatch [:session/!set-state
-                                (fn [state]
-                                  (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj response))]))))
+      [:div.flex.flex-col.items-start.space-y-2
 
-            (= attr-action :edit)
-            nil
+       (when attr-show-source?
+         [codemirror/CodeMirror
+          [:div.relative.flex-shrink-0.flex-1.overflow-auto.border.rounded]
+          {:configuration {:lineNumbers false
+                           :value source
+                           :mode "clojure"}
 
-            :else
-            (log/warn :unknown-action attr-action)))
+           :on-mount (fn [_ editor]
+                       (codemirror/cm-focus editor))
 
-        ;; Caller might need to do something on click,
-        ;; especially if it's an edit action.
-        (click-handler attributes))}
+           :on-update (fn [_ editor]
+                        (codemirror/cm-focus editor))
 
-     ;; Command's button text.
-     [:div.flex.justify-start.space-x-2
-      [:span.text-sm.text-white
-       (str content-body)]
+           :events {:editor
+                    {"change"
+                     (fn [editor _]
+                       (reset! source-ref (codemirror/cm-get-value editor)))}}}])
 
-      (cond
-        (#{:query :transact} attr-action)
-        [:> icon/ArrowRightIcon {:className "w-5 h-5 text-white"}]
 
-        (= :edit attr-action)
-        [:> icon/CodeIcon {:className "w-5 h-5 text-white"}]
+       [:button.p-2.rounded.shadow
+        {:class ["bg-green-500 hover:bg-green-400 active:bg-green-600"]
+         :on-click execute}
 
-        :else
-        nil)]]))
 
-(defmethod compile :markdown
+        [:div.flex.items-center.justify-start.space-x-2
+
+         ;; Button's text.
+         (cond
+           attr-name
+           [:span.text-sm.text-white
+            attr-name]
+
+           :else
+           [:code.text-xs.text-white
+            source])
+
+         ;; Button's icon.
+         (cond
+           (= :edit attr-mode)
+           [:> icon/PencilIcon {:className "w-5 h-5 text-white"}]
+
+           :else
+           nil)]]])))
+
+(defmethod render :cmd [m]
+  [CommandRenderer m])
+
+(defmethod render :md
   [{:keys [ast]}]
   (let [{:keys [content]} ast
 
@@ -163,13 +178,28 @@
      [gui/Markdown
       (str content-body)]]))
 
-(defmethod compile :h-box
+(defmethod render :p
+  [{:keys [ast click-handler click-disabled?]}]
+  (let [{:keys [content]} ast]
+    (into [:p]
+      (map
+        (fn [[_ ast]]
+          (render (merge {:ast ast}
+
+                    (when click-handler
+                      {:click-handler click-handler})
+
+                    (when click-disabled?
+                      {:click-disabled? click-disabled?}))))
+        content))))
+
+(defmethod render :h-box
   [{:keys [ast click-handler click-disabled?]}]
   (let [{:keys [content]} ast]
     (into [:div.flex.flex-row.items-center.space-x-3]
       (map
         (fn [[_ ast]]
-          (compile (merge {:ast ast}
+          (render (merge {:ast ast}
 
                      (when click-handler
                        {:click-handler click-handler})
@@ -178,13 +208,13 @@
                        {:click-disabled? click-disabled?}))))
         content))))
 
-(defmethod compile :v-box
+(defmethod render :v-box
   [{:keys [ast click-handler click-disabled?]}]
   (let [{:keys [content]} ast]
     (into [:div.flex.flex-col.items-start.space-y-3]
       (map
         (fn [[_ ast]]
-          (compile (merge {:ast ast}
+          (render (merge {:ast ast}
 
                      (when click-handler
                        {:click-handler click-handler})
@@ -309,7 +339,7 @@
          result-metadata :convex-web.result/metadata
          result-interactive :convex-web.result/interactive} result
 
-        {result-interactive? :interactive?} result-metadata
+        {result-interactive? :interact?} result-metadata
 
         ;; It's enabled by default.
         interactive-enabled? (get interactive :enabled? true)]
@@ -322,7 +352,7 @@
       ;; It's possible to disable an interactive result, because its usage is contextual.
       ;; (Doesn't make sense to be used outside the Sandbox.)
       (and result-interactive? interactive-enabled?)
-      (compile (merge {:ast result-interactive}
+      (render (merge {:ast result-interactive}
                  (select-keys interactive [:click-handler
                                            :click-disabled?])))
 

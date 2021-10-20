@@ -17,6 +17,7 @@
    [convex-web.site.backend :as backend]
    [convex-web.site.format :as format]
 
+   ["@heroicons/react/solid" :as icon]
    ["react-resizable" :refer [ResizableBox]]))
 
 (defn mode [state]
@@ -208,14 +209,19 @@
                           (command/execute command (fn [command-previous-state command-new-state]
                                                      (set-state
                                                        (fn [state]
-                                                         (let [{:convex-web.command/keys [id] :as command'} (merge command-previous-state command-new-state)
+                                                         (let [{:convex-web.command/keys [id result] :as command'} (merge command-previous-state command-new-state)
+
+                                                               clear-screen? (get-in result [:convex-web.result/metadata :cls?])
                                                                
-                                                               commands (mapv
-                                                                          (fn [{this-id :convex-web.command/id :as command}]
-                                                                            (if (= id this-id)
-                                                                              (merge command command')
-                                                                              command))
-                                                                          (commands state))]
+                                                               ;; 'Clear screen' clear/reset a user's command history.
+                                                               commands (if clear-screen?
+                                                                          [command']
+                                                                          (mapv
+                                                                            (fn [{this-id :convex-web.command/id :as command}]
+                                                                              (if (= id this-id)
+                                                                                (merge command command')
+                                                                                command))
+                                                                            (commands state)))]
                                                            
                                                            (assoc state :convex-web.repl/commands commands))))))))))]
       
@@ -442,7 +448,7 @@
      (if (seq commands)
        (for [{:convex-web.command/keys [timestamp status query transaction result] :as command} commands]
 
-         (let [interactive? (get-in result [:convex-web.result/metadata :interactive?])]
+         (let [interactive? (get-in result [:convex-web.result/metadata :interact?])]
 
            ^{:key timestamp}
            [:div.w-full.flex.flex-col.space-y-3.border-b.p-4.transition-colors.duration-500.ease-in-out
@@ -570,7 +576,17 @@
      ;; -- REPL
      [:div.w-screen.max-w-full.flex.flex-col.mb-6.space-y-2
       
-      [:div.flex.justify-end
+      [:div.flex.justify-end.space-x-4
+
+       [gui/DefaultButton
+        {:on-click #(set-state assoc :convex-web.repl/commands [])}
+        [:div.flex.space-x-2
+         [:span
+          "Clear Output"]
+
+         [:> icon/TrashIcon
+          {:className "h-5 w-5 text-gray-600"}]]]
+
        [gui/DefaultButton
         {:on-click #(toggle-sidebar set-state)}
         [:div.flex.space-x-2

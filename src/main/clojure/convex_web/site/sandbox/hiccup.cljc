@@ -11,10 +11,10 @@
 
 (s/def ::element-tag
   #{:text
-    :markdown
-    :caption
+    :md
     :code
-    :button
+    :cmd
+    :p
     :h-box
     :v-box})
 

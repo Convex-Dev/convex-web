@@ -172,17 +172,17 @@
     (is (= [:text "Hello"] (convex/coerce-element "Hello"))))
 
   (testing "Horizontal layout & text syntax sugar"
-    (is (= [:h-box
+    (is (= [:p
             [:text "Hello"]
             [:text "World"]]
           (convex/coerce-element ["Hello" "World"]))))
 
   (testing "Mix"
-    (is (= [:h-box
+    (is (= [:p
             [:text "Hello"]
             [:text "World"]
             [:text "Foo"]
-            [:h-box
+            [:p
              [:text "Bar"]
              [:text "Baz"]]]
           (convex/coerce-element ["Hello" "World" [:text "Foo"] ["Bar" [:text "Baz"]]])))))
@@ -248,14 +248,14 @@
     (testing "Interactive"
       (is (= {:convex-web.result/id 1,
               :convex-web.result/type "Syntax",
-              :convex-web.result/value "^{:interactive? true} {}"
-              :convex-web.result/metadata {:interactive? true}}
+              :convex-web.result/value "^{:interact? true} {}"
+              :convex-web.result/metadata {:interact? true}}
             (select-keys
               (convex/result-data (Result/create (CVMLong/create 1)
                                     (Syntax/create (Maps/empty)
                                       ;; Metadata to mark this Syntax as interactive.
                                       (.assoc (Maps/empty)
-                                        (Keyword/create "interactive?") (CVMBool/create true)))))
+                                        (Keyword/create "interact?") (CVMBool/create true)))))
               [:convex-web.result/id
                :convex-web.result/type
                :convex-web.result/value

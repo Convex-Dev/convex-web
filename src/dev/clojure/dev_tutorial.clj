@@ -4,74 +4,122 @@
 
   '(syntax
      "Text explaining something in the Sandbox."
-     {:interactive? true})
+     {:interact? true
+      :cls? true})
 
   '(syntax
      [:text "Text explaining something in the Sandbox."]
-     {:interactive? true})
+     {:interact? true})
 
   '(syntax
-     [:caption "Tiny text for caption."]
-     {:interactive? true})
+     ["Text explaining something in the Sandbox.       "
+      [:cmd
+       {:show-source? true}
+       "(inc 1)"]
+      " Text explaining something in the Sandbox. "
+      " Text explaining something in the Sandbox. "
+      " Text explaining something in the Sandbox. "
+      [:cmd
+       {:show-source? true}
+       "(inc 1)"]]
+     {:interact? true})
 
   '(syntax
-     [:button
-      {:action :edit
-       :source '(inc 1)}
-      "Edit action"]
-     {:interactive? true})
+     [:h-box
+      [:text "Text explaining something in the Sandbox."]
+      [:text "Text explaining something in the Sandbox."]
+      [:text "Text explaining something in the Sandbox."]
+      [:text "Text explaining something in the Sandbox."]
+      [:cmd
+       "(inc 1)"]]
+     {:interact? true})
 
   '(syntax
-     [:button
-      {:action :query
-       :source "(inc 1)"}
-      "Query action"]
-     {:interactive? true})
+     [:cmd
+      {:name "Execute"
+       :mode :query
+       :show-source? false}
+      "(inc 1)"]
+     {:interact? true})
 
   '(syntax
-     [:button
-      {:action :transact
-       :source '(inc 1)}
-      "Transact action"]
-     {:interactive? true})
+     [:cmd
+      {:name "Execute"
+       :mode :query
+       :show-source? true}
+      "(inc 1)"]
+     {:interact? true})
 
   '(syntax
-     [:markdown "# Title\n\n## Subtitle"]
-     {:interactive? true})
+     [:cmd
+      {:name "Execute"
+       :mode :query
+       :show-source? true
+       :frame (str '(syntax [:v-box
+
+                             [:code :%]
+
+                             [:cmd
+                              {:mode :query :name "Done"}
+                              ":done"]]
+                      {:interact? true
+                       :cls? true}))}
+      "(inc 1)"]
+     {:interact? true
+      :cls? true})
+
+
+  '(syntax
+     [:md "# Title\n\n## Subtitle"]
+     {:interact? true})
+
+
+  ;; Tutorial example
 
   '(syntax
      [:v-box
-      [:markdown
+      [:md
        "### Convex Lisp Tutorial\n\nLet's define a function `f`:"]
 
-      [:h-box
+      [:cmd
+        {:name "Execute"
+         :show-source? true}
+        (str '(defn f [x] x))]
 
-       [:code
-        "(defn f [x] x)"]
-
-       [:button
-        {:action :edit
-         :source '(defn f [x] x)}
-        "Define a function"]]
-
-      [:caption
+      [:text
        "Click on 'Continue' once you have executed the step above."]
 
-      [:button
-       {:action :query
-        :source
-        '(syntax
-           [:v-box
-            [:text "Now let's call `f`, and pass `1` as argument:"]
+      [:cmd
+       {:mode :query
+        :name "Continue"}
+       (str '(syntax
+               [:v-box
+                [:text "Now let's call `f`, and pass `1` as argument:"]
 
-            [:button
-             {:action :edit
-              :source '(f 1)}
-             "Call a function"]]
+                [:cmd
+                 {:name "(f 1)"
+                  :mode :query}
 
-           {:interactive? true})}
-       "Continue"]]
+                 (str '(let [x (f 1)]
+                         (syntax
+                           [:v-box
+                            [:text "Result:"]
+                            [:code x]
 
-     {:interactive? true})
+                            [:cmd
+                             {:name "Finish"
+                              :mode :query}
+                             ":Finish"]]
+
+                           {:interact? true
+                            :cls? false})))]]
+
+               {:interact? true
+                :cls? true}))]]
+
+     {:interact? true
+      :cls? true
+      :mode :query
+      :input "(inc 1)"})
 
   )
