@@ -1,5 +1,28 @@
 # Interactive Sandbox
 
+It's possible to create bespoken GUIs in the Sandbox
+to interface with the Convex network, build documentation,
+or talk to Smart Contracts.
+
+The UI is described with Convex Lisp data structures, and it must be wrapped
+in a Syntax object with a known set of keywords in its metadata:
+
+```clojure
+(syntax "Hello, world!" {:interact? true})
+```
+
+The presence of the `:interact?` keyword, in a Syntax's metadata, changes the semantics
+of its value - in the context of the Sandbox. The Syntax's value is interpreted
+as a language to describe an interactive interface.
+
+These are the known keywords, by the Sandbox, which
+can be attached to a Syntax object:
+
+- `interact?`: boolean, used to change the semantics of a Syntax's value in the context of the Sandbox;
+- `:cls?`: boolean, used to clear previous results;
+- `:mode`: `:transaction` or `:query`, is used to set the mode for next commands;
+- `:input`: string, is used to set the content of the editor;
+
 ## Widgets
 
 Widgets are written in a Hiccup-like syntax, but most of them have a shorter syntax too.
@@ -22,57 +45,70 @@ Example of conformed text Widget:
  :content [[:string "Hello"]]}
 ```
 
-### Text
+### Reference
+
+#### Text
+
+Short syntax:
 
 ```clojure
 "Hello"
-
-;; => {:tag :text :content [[:string "Hello"]]}
-
-;; Alternative syntax / canonical format:
-;; => [:text "Hello"]
 ```
 
-### Code
+Hiccup syntax:
 
 ```clojure
-(quote (inc 1))
-
-;; => [:code "(inc 1)"]
+[:text "Hello"]
 ```
 
-### Markdown
+#### Paragraph
+
+Short syntax:
 
 ```clojure
-[:md "Markdown *content*"]
+["Hi there!"]
 ```
 
-### Label 
+Hiccup syntax:
 
 ```clojure
-[:label "Small text"]
-
-;; => [:text {:style :label} "Small text"]
+[:p "Hi there!"]
 ```
 
-### Query
+#### Code
 
 ```clojure
-[:q '(inc 1)]
+[:code "(inc 1)"]
 ```
+
+#### Markdown
 
 ```clojure
-[:q {:runnable? true}
- '(inc 1)]
+[:md "**Markdown** *content*"]
 ```
 
-### Transaction
+#### Command
+
+**Command** widget defaults to `:transaction` mode,
+and its action button is labeled with its source:
 
 ```clojure
-[:tx '(inc 1)]
+[:cmd "(inc 1)"]
 ```
 
-### Layout
+Set a **Command**'s mode:
+
+```clojure
+[:cmd {:mode :query} "(inc 1)"]
+```
+
+Set a **Command**'s name:
+
+```clojure
+[:cmd {:name "Increment 1"} "(inc 1)"]
+```
+
+#### Layout
 
 A layout is a compound Widget and its children are also Widgets.
 
@@ -80,24 +116,24 @@ You can nest layouts:
 
 ```clojure
 [:v-box
- "Hello"
- [:v-box
-  "Example 1"
-  [:q '(inc 1)]]]
+ [:text "Hello"]
+ [:h-box
+  [:text "Example 1"]
+  [:cmd "(inc 1)"]]]
 ```
 
 #### Horizontal layout
 
 ```clojure
-["Hello" "World"]
-
-;; => [:h-box [:text "Hello"] [:text "World"]]
+[:h-box
+  [:text "Example 1"]
+  [:cmd "(inc 1)"]]
 ```
 
 #### Vertical layout
 
 ```clojure
-[:v-box "Hello" "World"]
-
-;; => [:v-box [:text "Hello"] [:text "World"]]
+[:v-box
+  [:text "Example 1"]
+  [:cmd "(inc 1)"]]
 ```
