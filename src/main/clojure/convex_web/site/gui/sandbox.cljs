@@ -106,11 +106,16 @@
 
                         (command/execute command
                           (fn [_ response]
-                            (log/debug :command-new-state response)
+                            (let [f (if (get-in response [:convex-web.command/result :convex-web.result/metadata :cls?])
+                                      ;; Reset history (since it's a 'clear screen')
+                                      (fn [state]
+                                        (assoc-in state [:page.id/repl active-address :convex-web.repl/commands] [response]))
 
-                            (rf/dispatch [:session/!set-state
-                                          (fn [state]
-                                            (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj response))]))))
+                                      ;; Append command.
+                                      (fn [state]
+                                        (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj response)))]
+
+                              (rf/dispatch [:session/!set-state f])))))
 
                       :else
                       (log/warn :unknown-mode attr-mode)))]

@@ -4,7 +4,8 @@
 
   '(syntax
      "Text explaining something in the Sandbox."
-     {:interact? true})
+     {:interact? true
+      :cls? true})
 
   '(syntax
      [:text "Text explaining something in the Sandbox."]
@@ -102,6 +103,7 @@
                  (str '(let [x (f 1)]
                          (syntax
                            [:v-box
+                            [:text "Result:"]
                             [:code x]
 
                             [:cmd
@@ -110,7 +112,7 @@
                              ":Finish"]]
 
                            {:interact? true
-                            :cls? true})))]]
+                            :cls? false})))]]
 
                {:interact? true
                 :cls? true}))]]
