@@ -108,6 +108,12 @@ Set a **Command**'s name:
 [:cmd {:name "Increment 1"} "(inc 1)"]
 ```
 
+Show a **Command**'s source:
+
+```clojure
+[:cmd {:show-source? true} "(inc 1)"]
+```
+
 #### Layout
 
 A layout is a compound Widget and its children are also Widgets.
