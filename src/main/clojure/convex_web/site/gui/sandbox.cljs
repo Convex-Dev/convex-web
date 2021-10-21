@@ -15,9 +15,7 @@
    [convex-web.site.gui :as gui]
    [convex-web.site.gui.account :as guia]
    [convex-web.site.command :as command]
-   [convex-web.convex :as convex]
-
-   ["@heroicons/react/solid" :as icon]))
+   [convex-web.convex :as convex]))
 
 (defmulti render
   "Render an Interactive Sandbox element.
