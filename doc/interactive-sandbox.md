@@ -22,6 +22,7 @@ can be attached to a Syntax object:
 - `:cls?`: boolean, used to clear previous results;
 - `:mode`: `:transaction` or `:query`, is used to set the mode for next commands;
 - `:input`: string, is used to set the content of the editor;
+- `:lang`: function, but string encoded, called with a Command's result; it's useful to wrap the result.
 
 ## Widgets
 
