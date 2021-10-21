@@ -181,48 +181,30 @@
       (str content-body)]]))
 
 (defmethod render :p
-  [{:keys [ast click-handler click-disabled?]}]
+  [{:keys [ast]}]
   (let [{:keys [content]} ast]
     (into [:p]
       (map
         (fn [[_ ast]]
-          (render (merge {:ast ast}
-
-                    (when click-handler
-                      {:click-handler click-handler})
-
-                    (when click-disabled?
-                      {:click-disabled? click-disabled?}))))
+          (render {:ast ast}))
         content))))
 
 (defmethod render :h-box
-  [{:keys [ast click-handler click-disabled?]}]
+  [{:keys [ast]}]
   (let [{:keys [content]} ast]
     (into [:div.flex.flex-row.items-center.space-x-3]
       (map
         (fn [[_ ast]]
-          (render (merge {:ast ast}
-
-                     (when click-handler
-                       {:click-handler click-handler})
-
-                     (when click-disabled?
-                       {:click-disabled? click-disabled?}))))
+          (render {:ast ast}))
         content))))
 
 (defmethod render :v-box
-  [{:keys [ast click-handler click-disabled?]}]
+  [{:keys [ast]}]
   (let [{:keys [content]} ast]
     (into [:div.flex.flex-col.items-start.space-y-3]
       (map
         (fn [[_ ast]]
-          (render (merge {:ast ast}
-
-                     (when click-handler
-                       {:click-handler click-handler})
-
-                     (when click-disabled?
-                       {:click-disabled? click-disabled?}))))
+          (render {:ast ast}))
         content))))
 
 
@@ -354,9 +336,7 @@
       ;; It's possible to disable an interactive result, because its usage is contextual.
       ;; (Doesn't make sense to be used outside the Sandbox.)
       (and result-interactive? interactive-enabled?)
-      (render (merge {:ast result-interactive}
-                 (select-keys interactive [:click-handler
-                                           :click-disabled?])))
+      (render {:ast result-interactive})
 
       (= result-type "Address")
       [AddressRenderer result-value]

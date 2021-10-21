@@ -537,22 +537,7 @@
 
                 :convex-web.command.status/success
                 [guis/ResultRenderer
-                 {:result (:convex-web.command/result command)
-                  :interactive
-                  {:click-handler
-                   (fn [{:keys [action source] :as attrs}]
-
-                     (let [source (try
-                                    (cljfmt/reformat-string (str source))
-                                    (catch js/Error _
-                                      source))]
-
-                       (log/debug :attrs attrs)
-
-                       (when (= action :edit)
-                         (codemirror/cm-set-value editor source)
-                         (codemirror/set-cursor-at-the-end editor)
-                         (codemirror/cm-focus editor))))}}]
+                 {:result (:convex-web.command/result command)}]
 
                 :convex-web.command.status/error
                 [ErrorOutput command])]]]))
