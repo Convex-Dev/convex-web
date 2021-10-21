@@ -52,25 +52,6 @@
       "(inc 1)"]
      {:interact? true})
 
-  ;; -- Frame
-
-  '(syntax
-     [:cmd
-      {:name "Execute"
-       :mode :query
-       :show-source? true
-       :frame (str '(syntax [:v-box
-
-                             [:code :%]
-
-                             [:cmd
-                              {:mode :query :name "Done"}
-                              ":done"]]
-                      {:interact? true
-                       :cls? true}))}
-      "(inc 1)"]
-     {:interact? true
-      :cls? true})
 
   ;; -- Lang
 
@@ -158,5 +139,59 @@
       :cls? true
       :mode :query
       :input "(defn f [x] x)"})
+
+
+  ;; -- Voting System
+  ;; https://convex.world/examples/voting-system
+
+  '(defn voting-gui []
+     (syntax
+       [:v-box
+
+        [:md "### What if instead of writing Convex Lisp to interface with a Smart Contract, you could, let's say, press buttons?"]
+
+        [:cmd
+         {:name "Let's see if that's possible!"}
+         (str '(syntax
+                 [:v-box
+                  [:text "Do you like Belgian waffles?"]
+
+                  [:cmd
+                   {:name "Yes"}
+                   (str '(call my-proposal (vote :yes)))]
+
+                  [:cmd
+                   {:name "Meh"}
+                   (str '(call my-proposal (vote :meh)))]
+
+                  [:cmd
+                   {:name "No"}
+                   (str '(call my-proposal (vote :no)))]]
+
+                 {:interact? true
+                  :cls? true}))]]
+
+       {:interact? true
+        :cls? true}))
+
+
+  '(defn query-votes-gui []
+     (syntax
+       [:cmd
+        {:name "Check votes"
+         :lang (str '(fn [m]
+                       (syntax [:v-box
+                                [:md "### Votes"]
+
+                                [:p [:text "Yes: "] [:text (get m :yes)]]
+                                [:p [:text "Meh: "] [:text (get m :meh)]]
+                                [:p [:text "No: "] [:text (get m :no)]]]
+                         {:interact? true
+                          :cls? false})))}
+        (str 'my-proposal/votes)]
+       {:interact? true
+        :cls? false}))
+
+
 
   )
