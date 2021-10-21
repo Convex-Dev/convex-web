@@ -206,24 +206,42 @@
                               (update state :convex-web.repl/commands (fnil conj []) command)))
                           
                           ;; Update the Command with the server response.
-                          (command/execute command (fn [command-previous-state command-new-state]
-                                                     (set-state
-                                                       (fn [state]
-                                                         (let [{:convex-web.command/keys [id result] :as command'} (merge command-previous-state command-new-state)
+                          (command/execute command
+                            (fn [command-previous-state command-new-state]
+                              (set-state
+                                (fn [state]
+                                  (let [{:convex-web.command/keys [id result] :as command'} (merge command-previous-state command-new-state)
 
-                                                               clear-screen? (get-in result [:convex-web.result/metadata :cls?])
-                                                               
-                                                               ;; 'Clear screen' clear/reset a user's command history.
-                                                               commands (if clear-screen?
-                                                                          [command']
-                                                                          (mapv
-                                                                            (fn [{this-id :convex-web.command/id :as command}]
-                                                                              (if (= id this-id)
-                                                                                (merge command command')
-                                                                                command))
-                                                                            (commands state)))]
-                                                           
-                                                           (assoc state :convex-web.repl/commands commands))))))))))]
+                                        clear-screen? (get-in result [:convex-web.result/metadata :cls?])
+
+                                        mode (get-in result [:convex-web.result/metadata :mode])
+                                        ;; Ignore mode if it's not :query or :transaction.
+                                        mode ({:query :convex-web.command.mode/query
+                                               :transaction :convex-web.command.mode/transaction} mode)
+
+                                        input (get-in result [:convex-web.result/metadata :input])
+
+                                        ;; 'Clear screen' clear/reset a user's command history.
+                                        commands (if clear-screen?
+                                                   [command']
+                                                   (mapv
+                                                     (fn [{this-id :convex-web.command/id :as command}]
+                                                       (if (= id this-id)
+                                                         (merge command command')
+                                                         command))
+                                                     (commands state)))]
+
+                                    ;; A syntax's metadata might contain configuration
+                                    ;; to overwrite the Sandbox's mode, and/or set the editor content:
+
+                                    ;; Set source from syntax's metadata.
+                                    (when-not (str/blank? input)
+                                      (codemirror/cm-set-value editor input))
+
+                                    ;; Overwrite mode from syntax's metadata.
+                                    (cond-> (assoc state :convex-web.repl/commands commands)
+                                      mode
+                                      (assoc :convex-web.repl/mode mode)))))))))))]
       
       ;; Don't allow queries or transactions without an account.
       (if (nil? active-address)

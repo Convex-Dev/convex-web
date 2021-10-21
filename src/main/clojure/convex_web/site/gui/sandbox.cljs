@@ -106,14 +106,24 @@
 
                         (command/execute command
                           (fn [_ response]
-                            (let [f (if (get-in response [:convex-web.command/result :convex-web.result/metadata :cls?])
-                                      ;; Reset history (since it's a 'clear screen')
-                                      (fn [state]
-                                        (assoc-in state [:page.id/repl active-address :convex-web.repl/commands] [response]))
+                            (let [{:keys [cls? input mode]} (get-in response [:convex-web.command/result :convex-web.result/metadata])
 
-                                      ;; Append command.
-                                      (fn [state]
-                                        (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj response)))]
+                                  f (fn [state]
+                                      (let [state (if cls?
+                                                    ;; Reset history (since it's a 'clear screen')
+                                                    (assoc-in state [:page.id/repl active-address :convex-web.repl/commands] [response])
+                                                    ;; Append command.
+                                                    (update-in state [:page.id/repl active-address :convex-web.repl/commands] conj response))]
+
+                                        ;; Set source from syntax's metadata.
+                                        (when-not (str/blank? input)
+                                          (codemirror/cm-set-value (:editor state) input))
+
+                                        ;; Overwrite mode from syntax's metadata.
+                                        (cond-> state
+                                          mode
+                                          (assoc :convex-web.repl/mode mode))))]
+
 
                               (rf/dispatch [:session/!set-state f])))))
 

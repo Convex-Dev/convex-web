@@ -40,7 +40,9 @@
        :mode :query
        :show-source? false}
       "(inc 1)"]
-     {:interact? true})
+     {:interact? true
+      :mode :query
+      :input "(inc 1)"})
 
   '(syntax
      [:cmd
@@ -84,7 +86,7 @@
       [:cmd
         {:name "Execute"
          :show-source? true}
-        (str '(defn f [x] x))]
+        "(defn f [x] x)"]
 
       [:text
        "Click on 'Continue' once you have executed the step above."]
@@ -112,14 +114,16 @@
                              ":Finish"]]
 
                            {:interact? true
-                            :cls? false})))]]
+                            :cls? false
+                            :mode :query})))]]
 
                {:interact? true
-                :cls? true}))]]
+                :cls? true
+                :mode :query}))]]
 
      {:interact? true
       :cls? true
       :mode :query
-      :input "(inc 1)"})
+      :input "(defn f [x] x)"})
 
   )
