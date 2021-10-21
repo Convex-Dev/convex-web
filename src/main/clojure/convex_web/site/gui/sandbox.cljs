@@ -55,7 +55,11 @@
        (catch js/Error _
          (str content-body)))]))
 
-(defn CommandRenderer [{:keys [ast]}]
+(defn CommandRenderer
+  "A Command Widget is used to run queries and transactions on chain.
+
+  A button is used to run the command."
+  [{:keys [ast]}]
   (r/with-let [source-ref (r/atom (get-in ast [:content 0 1]))]
     (let [{:keys [attributes]} ast
 
@@ -69,6 +73,7 @@
 
           active-address @(rf/subscribe [:session/?active-address])
 
+          ;; Execute command, query or transaction, and update state.
           execute (fn []
                     (cond
                       (#{:query :transact} attr-mode)
@@ -130,8 +135,10 @@
                       :else
                       (log/warn :unknown-mode attr-mode)))]
 
-      [:div.flex.flex-col.items-start.space-y-2
+      ;; Container for inline editor and button.
+      [:div.inline-flex.flex-col.items-start.space-y-2
 
+       ;; Inline editor for Command.
        (when attr-show-source?
          [codemirror/CodeMirror
           [:div.relative.flex-shrink-0.flex-1.overflow-auto.border.rounded]
@@ -150,31 +157,18 @@
                      (fn [editor _]
                        (reset! source-ref (codemirror/cm-get-value editor)))}}}])
 
-
-       [:button.p-2.rounded.shadow
+       ;; Command is executed on (button) click.
+       [:button.px-1.rounded.shadow
         {:class ["bg-green-500 hover:bg-green-400 active:bg-green-600"]
          :on-click execute}
+        (cond
+          attr-name
+          [:span.text-sm.text-white
+           attr-name]
 
-
-        [:div.flex.items-center.justify-start.space-x-2
-
-         ;; Button's text.
-         (cond
-           attr-name
-           [:span.text-sm.text-white
-            attr-name]
-
-           :else
-           [:code.text-xs.text-white
-            source])
-
-         ;; Button's icon.
-         (cond
-           (= :edit attr-mode)
-           [:> icon/PencilIcon {:className "w-5 h-5 text-white"}]
-
-           :else
-           nil)]]])))
+          :else
+          [:code.text-xs.text-white
+           source])]])))
 
 (defmethod render :cmd [m]
   [CommandRenderer m])
