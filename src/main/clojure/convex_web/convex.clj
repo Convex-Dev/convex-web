@@ -358,14 +358,12 @@
       
       ;; Interactive Syntax.
       (when (instance? Syntax result-value)
-        (let [^AHashMap syntax-meta (.getMeta ^Syntax result-value)
+        (let [syntax-meta (datafy (.getMeta ^Syntax result-value))
 
-              ^CVMBool interactive? (.get syntax-meta (Keyword/create "interact?"))
+              {:keys [interact?]} syntax-meta]
 
-              interactive? (some-> interactive? .booleanValue)]
-
-          (merge {:convex-web.result/metadata (datafy syntax-meta)}
-            (when interactive?
+          (merge {:convex-web.result/metadata syntax-meta}
+            (when interact?
               (let [element (datafy result-value)
                     element (coerce-element element)
                     element (if-not (s/valid? ::hiccup/element element)

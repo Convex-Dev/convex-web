@@ -76,13 +76,14 @@
                     (cond
                       (#{:query :transact} cmd-mode)
                       (let [source (if cmd-lang
-                                     (str "(" cmd-lang source ")")
+                                     (str "(" cmd-lang " " source ")")
                                      source)
 
                             command #:convex-web.command {:id (random-uuid)
                                                           :timestamp (.getTime (js/Date.))
                                                           :status :convex-web.command.status/running}
 
+                            ;; Merge Command header and source.
                             command (merge command
                                       (case cmd-mode
                                         :query
@@ -102,6 +103,7 @@
                                           :source source
                                           :language :convex-lisp}}))
 
+                            ;; Merge Command and signer (optional).
                             command (merge command
                                       (when active-address
                                         {:convex-web.command/signer
