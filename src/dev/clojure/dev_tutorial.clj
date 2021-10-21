@@ -52,6 +52,8 @@
       "(inc 1)"]
      {:interact? true})
 
+  ;; -- Frame
+
   '(syntax
      [:cmd
       {:name "Execute"
@@ -70,6 +72,37 @@
      {:interact? true
       :cls? true})
 
+  ;; -- Lang
+
+  '(syntax
+     [:cmd
+      {:name "Execute"
+       :mode :query
+       :show-source? true
+       :lang (str '(fn [x] x))}
+      (str '(inc 1))]
+     {:interact? true
+      :cls? true})
+
+  '(syntax
+     [:cmd
+      {:name "Execute"
+       :mode :query
+       :show-source? true
+       :lang (str '(fn [x]
+                     (syntax
+                       [:v-box
+                        [:code x]
+                        [:cmd
+                         {:mode :query
+                          :name "Done"}
+                         "nil"]]
+                       {:interact? true
+                        :cls? true})))}
+      (str '(inc 1))]
+     {:interact? true
+      :cls? true})
+
 
   '(syntax
      [:md "# Title\n\n## Subtitle"]
@@ -84,9 +117,9 @@
        "### Convex Lisp Tutorial\n\nLet's define a function `f`:"]
 
       [:cmd
-        {:name "Execute"
-         :show-source? true}
-        "(defn f [x] x)"]
+       {:name "Execute"
+        :show-source? true}
+       "(defn f [x] x)"]
 
       [:text
        "Click on 'Continue' once you have executed the step above."]

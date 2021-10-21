@@ -61,11 +61,11 @@
   (r/with-let [source-ref (r/atom (get-in ast [:content 0 1]))]
     (let [{:keys [attributes]} ast
 
-          {attr-name :name
-           attr-mode :mode
-           attr-show-source? :show-source?
-           attr-frame :frame
-           :or {attr-mode :transact}} attributes
+          {cmd-name :name
+           cmd-mode :mode
+           cmd-show-source? :show-source?
+           cmd-lang :lang
+           :or {cmd-mode :transact}} attributes
 
           source @source-ref
 
@@ -74,23 +74,23 @@
           ;; Execute command, query or transaction, and update state.
           execute (fn []
                     (cond
-                      (#{:query :transact} attr-mode)
-                      (let [frame-source (if attr-frame
-                                           (str/replace attr-frame ":%" source)
-                                           source)
+                      (#{:query :transact} cmd-mode)
+                      (let [source (if cmd-lang
+                                     (str "(" cmd-lang source ")")
+                                     source)
 
                             command #:convex-web.command {:id (random-uuid)
                                                           :timestamp (.getTime (js/Date.))
                                                           :status :convex-web.command.status/running}
 
                             command (merge command
-                                      (case attr-mode
+                                      (case cmd-mode
                                         :query
                                         #:convex-web.command
                                         {:mode :convex-web.command.mode/query
                                          :query
                                          #:convex-web.query
-                                         {:source frame-source
+                                         {:source source
                                           :language :convex-lisp}}
 
                                         :transact
@@ -99,7 +99,7 @@
                                          :transaction
                                          #:convex-web.transaction
                                          {:type :convex-web.transaction.type/invoke
-                                          :source frame-source
+                                          :source source
                                           :language :convex-lisp}}))
 
                             command (merge command
@@ -131,13 +131,13 @@
                               (rf/dispatch [:session/!set-state f])))))
 
                       :else
-                      (log/warn :unknown-mode attr-mode)))]
+                      (log/warn :unknown-mode cmd-mode)))]
 
       ;; Container for inline editor and button.
       [:div.inline-flex.flex-col.items-start.space-y-2
 
        ;; Inline editor for Command.
-       (when attr-show-source?
+       (when cmd-show-source?
          [codemirror/CodeMirror
           [:div.relative.flex-shrink-0.flex-1.overflow-auto.border.rounded]
           {:configuration {:lineNumbers false
@@ -160,9 +160,9 @@
         {:class ["bg-green-500 hover:bg-green-400 active:bg-green-600"]
          :on-click execute}
         (cond
-          attr-name
+          cmd-name
           [:span.text-sm.text-white
-           attr-name]
+           cmd-name]
 
           :else
           [:code.text-xs.text-white
