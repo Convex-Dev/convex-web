@@ -144,51 +144,81 @@
   ;; -- Voting System
   ;; https://convex.world/examples/voting-system
 
-  '(defn voting-gui []
+  '(defn show-votes []
+     (syntax
+       [:v-box
+        [:md "### Votes"]
+
+        [:h-box
+         [:md "**Yes:**"]
+         [:text (get my-proposal/votes :yes)]]
+
+        [:h-box
+         [:md "**Meh:**"]
+         [:text (get my-proposal/votes :meh)]]
+
+        [:h-box
+         [:md "**No:**"]
+         [:text (get my-proposal/votes :no)]]]
+
+       {:interact? true
+        :cls? false}))
+
+  '(defn demo1 []
      (syntax
        [:v-box
 
+        ;; Markdown text.
         [:md "### What if instead of writing Convex Lisp to interface with a Smart Contract, you could, let's say, press buttons?"]
 
+        ;; Command with nested Commands for each vote.
         [:cmd
          {:name "Let's see if that's possible!"}
          (str '(syntax
                  [:v-box
                   [:text "Do you like Belgian waffles?"]
 
+
+                  ;; Each Command to vote does two things:
+                  ;; 1) vote
+                  ;; 2) show votes
+                  ;;
+                  ;; `show-votes` is another interactive syntax.
+
                   [:cmd
                    {:name "Yes"}
-                   (str '(call my-proposal (vote :yes)))]
+                   (str '(do
+                           (call my-proposal (vote :yes))
+
+                           (show-votes)))]
 
                   [:cmd
                    {:name "Meh"}
-                   (str '(call my-proposal (vote :meh)))]
+                   (str '(do
+                           (call my-proposal (vote :meh))
+
+                           (show-votes)))]
 
                   [:cmd
                    {:name "No"}
-                   (str '(call my-proposal (vote :no)))]]
+                   (str '(do
+                           (call my-proposal (vote :no))
+
+                           (show-votes)))]]
 
                  {:interact? true
                   :cls? true}))]]
 
+       ;; It's a 'special' Syntax: it's interactive, and it clears the screen.
        {:interact? true
         :cls? true}))
 
 
-  '(defn query-votes-gui []
+  '(defn check-votes []
      (syntax
        [:cmd
-        {:name "Check votes"
-         :lang (str '(fn [m]
-                       (syntax [:v-box
-                                [:md "### Votes"]
-
-                                [:p [:text "Yes: "] [:text (get m :yes)]]
-                                [:p [:text "Meh: "] [:text (get m :meh)]]
-                                [:p [:text "No: "] [:text (get m :no)]]]
-                         {:interact? true
-                          :cls? false})))}
-        (str 'my-proposal/votes)]
+        {:name "Check votes"}
+        (str '(show-votes))]
        {:interact? true
         :cls? false}))
 
@@ -203,12 +233,16 @@
 
         [:md "Complete the expression so it will evaluate to true."]
 
+        ;; Problem code snippet.
         [:code "(= _ true)"]
 
+        ;; Command to check the solution.
         [:cmd
          {:name "Check"
           :mode :query
           :show-source? true
+
+          ;; `lang` allow us to manipulate a form before sending to the server.
           :lang
           (str
             '(fn [x]
