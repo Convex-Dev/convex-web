@@ -193,5 +193,51 @@
         :cls? false}))
 
 
+  ;; 4Clojure
+  ;; -- https://4clojure.oxal.org/#/problem/1
+
+  '(defn problem1 []
+     (syntax
+       [:v-box
+        [:md "### Problem 1"]
+
+        [:md "Complete the expression so it will evaluate to true."]
+
+        [:code "(= _ true)"]
+
+        [:cmd
+         {:name "Check"
+          :mode :query
+          :show-source? true
+          :lang
+          (str
+            '(fn [x]
+               (syntax
+                 (if (= true x)
+                   [:v-box
+                    [:text "Correct! 🎉"]
+                    [:cmd
+                     {:name "Next"}
+                     (str '(problem2))]]
+                   [:text
+                    "Oops.. try again."])
+                 {:interact? true})))}
+
+         ";; Type your solution here ✍️"]]
+
+       {:interact? true
+        :cls? true}))
+
+  '(defn problem2 []
+     (syntax
+       [:v-box
+        [:md "### Problem 2"]
+
+        [:md "TODO"]]
+
+       {:interact? true
+        :cls? true}))
+
+
 
   )
