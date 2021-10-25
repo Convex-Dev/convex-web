@@ -125,7 +125,7 @@
 
           (interpose
             [:div.w-full
-             {:style {"min-width" "40px"}}
+             {:style {"minWidth" "40px"}}
              [:hr.flex-1.border.border-gray-400]]
 
             (for [{:keys [id title status]} roadmap]
