@@ -60,8 +60,38 @@
       {:name "Execute"
        :mode :query
        :show-source? true
-       :lang (str '(fn [x] x))}
+       :lang (str '(fn [x y] [x y]))}
       (str '(inc 1))]
+     {:interact? true
+      :cls? true})
+
+  '(syntax
+     [:cmd
+      {:name "Execute"
+       :mode :query
+       :show-source? true
+       :lang (str '(fn [x y] (eval x)))}
+      (str '(inc 1))]
+     {:interact? true
+      :cls? true})
+
+  '(syntax
+     [:cmd
+      {:name "Execute"
+       :mode :query
+       :show-source? true
+       :input {:x {:type "number"}
+               :y {:type "number"}}
+       :lang (str '(fn [_ input]
+                     (let [n (max
+                               (get input :x)
+                               (get input :y))]
+                       (syntax
+                         [:h-box
+                          [:text "Max is:"]
+                          [:code n]]
+                         {:interact? true}))))}
+      (str '(max x y))]
      {:interact? true
       :cls? true})
 

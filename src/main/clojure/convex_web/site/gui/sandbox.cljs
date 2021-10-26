@@ -58,13 +58,16 @@
 
   A button is used to run the command."
   [{:keys [ast]}]
-  (r/with-let [source-ref (r/atom (get-in ast [:content 0 1]))]
+  (r/with-let [source-ref (r/atom (get-in ast [:content 0 1]))
+
+               input-ref (r/atom {})]
     (let [{:keys [attributes]} ast
 
           {cmd-name :name
            cmd-mode :mode
            cmd-show-source? :show-source?
            cmd-lang :lang
+           cmd-input :input
            :or {cmd-mode :transact}} attributes
 
           source @source-ref
@@ -76,7 +79,8 @@
                     (cond
                       (#{:query :transact} cmd-mode)
                       (let [source (if cmd-lang
-                                     (str "(" cmd-lang " " source ")")
+                                     ;; A lang function is given a form (quoted) and input (a map).
+                                     (str "(" cmd-lang " '" source " " @input-ref ")")
                                      source)
 
                             command #:convex-web.command {:id (random-uuid)
@@ -137,6 +141,30 @@
 
       ;; Container for inline editor and button.
       [:div.inline-flex.flex-col.items-start.space-y-2
+
+       (when cmd-input
+         [:div.flex.flex-col.space-y-2
+          (for [[id {input-type :type}]cmd-input]
+            ^{:key id}
+            [:div.flex.flex-col.space-y-1.bg-blue-100.p-1.rounded.shadow
+
+             [:span.p-1.bg-blue-50.text-gray-700.rounded
+              (name id)]
+
+             [:input.p-1.rounded
+              {:type (or input-type "text")
+               :on-change
+               (fn [e]
+                 (let [v (gui/event-target-value e)
+
+                       v (cond
+                           (= input-type "number")
+                           (js/parseFloat v)
+
+                           :else
+                           v)]
+
+                   (swap! input-ref assoc id v)))}]])])
 
        ;; Inline editor for Command.
        (when cmd-show-source?
