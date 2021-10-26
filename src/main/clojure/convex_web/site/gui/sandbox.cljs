@@ -78,12 +78,20 @@
           execute (fn []
                     (cond
                       (#{:query :transact} cmd-mode)
-                      (let [source (if cmd-lang
-                                     ;; A lang function is given a form (quoted) and input (a map).
-                                     (str "(" cmd-lang " '" source " " @input-ref ")")
+                      (let [source (if (str/blank? source)
+                                     "nil"
                                      source)
 
-                            _ (js/console.log source)
+                            ;; Inputs in the same order as defined in attributes.
+                            inputs (str/join " "
+                                     (map
+                                       (fn [[id]]
+                                         (get @input-ref id))
+                                       cmd-input))
+
+                            source (if cmd-lang
+                                     (str "(apply " cmd-lang " '" source " [" inputs "] )")
+                                     source)
 
                             command #:convex-web.command {:id (random-uuid)
                                                           :timestamp (.getTime (js/Date.))
@@ -146,7 +154,7 @@
 
        (when cmd-input
          [:div.flex.flex-col.space-y-2
-          (for [[id {input-type :type}]cmd-input]
+          (for [[id {input-type :type}] cmd-input]
             ^{:key id}
             [:div.flex.flex-col.space-y-1.bg-blue-100.p-1.rounded.shadow
 

@@ -59,9 +59,9 @@
      [:cmd
       {:name "Execute"
        :mode :query
-       :show-source? true
-       :lang (str '(fn [x y] [x y]))}
-      (str '(inc 1))]
+       :input [["x"] ["y"]]
+       :lang (str '(fn [x & more] [x more]))}
+      "nil"]
      {:interact? true
       :cls? true})
 
@@ -70,22 +70,9 @@
       {:name "Execute"
        :mode :query
        :show-source? true
-       :lang (str '(fn [x y] (eval x)))}
-      (str '(inc 1))]
-     {:interact? true
-      :cls? true})
-
-  '(syntax
-     [:cmd
-      {:name "Execute"
-       :mode :query
-       :show-source? true
-       :input {:x {:type "number"}
-               :y {:type "number"}}
-       :lang (str '(fn [_ input]
-                     (let [n (max
-                               (get input :x)
-                               (get input :y))]
+       :input [[:x] [:y]]
+       :lang (str '(fn [_ & [x y]]
+                     (let [n (max x y)]
                        (syntax
                          [:h-box
                           [:text "Max is:"]
@@ -275,9 +262,9 @@
           ;; `lang` allow us to manipulate a form before sending to the server.
           :lang
           (str
-            '(fn [x _]
+            '(fn [form]
                (syntax
-                 (if (= true (eval x))
+                 (if (= true (eval form))
                    [:v-box
                     [:text "Correct! 🎉"]
                     [:cmd
@@ -303,38 +290,35 @@
         :cls? true}))
 
 
-  ;; Transfer
+  ;; GUI to transfer coins
 
   '(syntax
      [:cmd
       {:name "Transfer"
 
        :input
-       {"Amount" {:type "number"}
-        "Address" {:type "number"}}
+       [["Address" {}]
+        ["Amount" {}]]
 
-       :lang (str '(fn [form input]
-                     (let [receiver (address (get input "Address"))
-                           amount (get input "Amount")]
+       :lang
+       (str '(fn [form & [receiver amount]]
+               (transfer (address receiver) amount)
 
-                       (transfer receiver amount)
+               (syntax
+                 [:v-box
+                  [:p
+                   [:text "Successfully transfered "]
+                   [:text amount]
+                   [:text " to "]
+                   [:text receiver]
+                   [:text "."]]
 
-                       (syntax
-                         [:v-box
-                          [:p
-                           [:text "Successfully transfered "]
-                           [:text amount]
-                           [:text " to "]
-                           [:text receiver]
-                           [:text "."]]
-
-                          [:h-box
-                           [:text "Your balance is:"]
-                           [:text *balance*]]]
-                         {:interact? true}))))}
+                  [:h-box
+                   [:text "Your balance is:"]
+                   [:text *balance*]]]
+                 {:interact? true})))}
       "nil"]
      {:interact? true})
-
 
 
   )
