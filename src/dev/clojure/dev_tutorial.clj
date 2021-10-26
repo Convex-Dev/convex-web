@@ -303,5 +303,38 @@
         :cls? true}))
 
 
+  ;; Transfer
+
+  '(syntax
+     [:cmd
+      {:name "Transfer"
+
+       :input
+       {"Amount" {:type "number"}
+        "Address" {:type "number"}}
+
+       :lang (str '(fn [form input]
+                     (let [receiver (address (get input "Address"))
+                           amount (get input "Amount")]
+
+                       (transfer receiver amount)
+
+                       (syntax
+                         [:v-box
+                          [:p
+                           [:text "Successfully transfered "]
+                           [:text amount]
+                           [:text " to "]
+                           [:text receiver]
+                           [:text "."]]
+
+                          [:h-box
+                           [:text "Your balance is:"]
+                           [:text *balance*]]]
+                         {:interact? true}))))}
+      "nil"]
+     {:interact? true})
+
+
 
   )

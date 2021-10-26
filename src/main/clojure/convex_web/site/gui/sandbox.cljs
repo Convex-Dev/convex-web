@@ -83,6 +83,8 @@
                                      (str "(" cmd-lang " '" source " " @input-ref ")")
                                      source)
 
+                            _ (js/console.log source)
+
                             command #:convex-web.command {:id (random-uuid)
                                                           :timestamp (.getTime (js/Date.))
                                                           :status :convex-web.command.status/running}
