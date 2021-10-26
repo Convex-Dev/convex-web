@@ -275,9 +275,9 @@
           ;; `lang` allow us to manipulate a form before sending to the server.
           :lang
           (str
-            '(fn [x]
+            '(fn [x _]
                (syntax
-                 (if (= true x)
+                 (if (= true (eval x))
                    [:v-box
                     [:text "Correct! 🎉"]
                     [:cmd
