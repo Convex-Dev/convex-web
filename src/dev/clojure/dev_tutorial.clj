@@ -301,7 +301,7 @@
         ["Amount" {}]]
 
        :lang
-       (str '(fn [form & [receiver amount]]
+       (str '(fn [_ & [receiver amount]]
                (transfer (address receiver) amount)
 
                (syntax
@@ -310,14 +310,14 @@
                    [:text "Successfully transfered "]
                    [:text amount]
                    [:text " to "]
-                   [:text receiver]
+                   [:text (str (address receiver))]
                    [:text "."]]
 
                   [:h-box
                    [:text "Your balance is:"]
                    [:text *balance*]]]
                  {:interact? true})))}
-      "nil"]
+      "(silly-fn nil)"]
      {:interact? true})
 
 

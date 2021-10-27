@@ -101,7 +101,9 @@
       (is (= {'(1) '(2)} (convex/datafy (convex/execute context {(list 1) (list 2)})))))
     
     (testing "Set" 
-      (is (= #{} (convex/datafy (convex/execute context #{})))))
+      (is (= #{} (convex/datafy (convex/execute context #{}))))
+      (is (= #{1} (convex/datafy (convex/execute-string context "#{1 1}"))))
+      (is (= #{[:a 1]} (convex/datafy (convex/execute-string context "#{[:a 1]}")))))
     
     #_(testing "AccountKey"
         (is (= (-> Init/HERO_KP
@@ -114,7 +116,9 @@
             (convex/datafy Init/RESERVED_ADDRESS))))
     
     (testing "Blob"
-      (is (= (.toHexString (Blob/create (.getBytes "Text")))
+      (is (= "0x1234" (convex/datafy (Blob/fromHex "1234"))))
+
+      (is (= (str "0x" (.toHexString (Blob/create (.getBytes "Text"))))
             (convex/datafy (Blob/create (.getBytes "Text"))))))
     
     (testing "Syntax"

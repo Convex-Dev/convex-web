@@ -248,7 +248,7 @@
     (.toString ^AFn x)
 
     (instance? ABlob x)
-    (.toHexString ^ABlob x)
+    (str "0x" (.toHexString ^ABlob x))
     
     (instance? CVMByte x)
     (.longValue ^CVMByte x)
