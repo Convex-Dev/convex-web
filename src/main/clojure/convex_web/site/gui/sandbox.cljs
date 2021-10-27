@@ -150,18 +150,18 @@
                       (log/warn :unknown-mode cmd-mode)))]
 
       ;; Container for inline editor and button.
-      [:div.inline-flex.flex-col.items-start.space-y-2
+      [:div.inline-flex.flex-col.items-start.space-y-2.bg-white.p-3.rounded.shadow
 
        (when cmd-input
-         [:div.flex.flex-col.space-y-2
+         [:div.flex.flex-col.space-y-1
           (for [[id {input-type :type}] cmd-input]
             ^{:key id}
-            [:div.flex.flex-col.space-y-1.bg-blue-100.p-1.rounded.shadow
+            [:div.flex.items-center.space-x-1
 
-             [:span.p-1.bg-blue-50.text-gray-700.rounded
+             [:span.text-xs.px-2.py-1.bg-blue-100.text-gray-700.rounded
               (name id)]
 
-             [:input.p-1.rounded
+             [:input.p-1.rounded.border
               {:type (or input-type "text")
                :on-change
                (fn [e]

@@ -74,9 +74,7 @@
        :lang (str '(fn [_ & [x y]]
                      (let [n (max x y)]
                        (syntax
-                         [:h-box
-                          [:text "Max is:"]
-                          [:code n]]
+                         [:md (str "#### Max is:\n## " n)]
                          {:interact? true}))))}
       (str '(max x y))]
      {:interact? true
