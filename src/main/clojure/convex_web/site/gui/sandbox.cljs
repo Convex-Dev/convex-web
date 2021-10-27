@@ -53,6 +53,39 @@
        (catch js/Error _
          (str content-body)))]))
 
+(defn new-command [{:keys [mode source signer]}]
+  (let [command #:convex-web.command {:id (random-uuid)
+                                      :timestamp (.getTime (js/Date.))
+                                      :status :convex-web.command.status/running}
+
+        ;; Merge Command header and source.
+        command (merge command
+                  (case mode
+                    :query
+                    #:convex-web.command
+                    {:mode :convex-web.command.mode/query
+                     :query
+                     #:convex-web.query
+                     {:source source
+                      :language :convex-lisp}}
+
+                    :transact
+                    #:convex-web.command
+                    {:mode :convex-web.command.mode/transaction
+                     :transaction
+                     #:convex-web.transaction
+                     {:type :convex-web.transaction.type/invoke
+                      :source source
+                      :language :convex-lisp}}))
+
+        ;; Merge Command and signer (optional).
+        command (merge command
+                  (when signer
+                    {:convex-web.command/signer
+                     {:convex-web.account/address signer}}))]
+
+    command))
+
 (defn CommandRenderer
   "A Command Widget is used to run queries and transactions on chain.
 
@@ -93,35 +126,9 @@
                                      (str "(apply " cmd-lang " '" source " [" inputs "] )")
                                      source)
 
-                            command #:convex-web.command {:id (random-uuid)
-                                                          :timestamp (.getTime (js/Date.))
-                                                          :status :convex-web.command.status/running}
-
-                            ;; Merge Command header and source.
-                            command (merge command
-                                      (case cmd-mode
-                                        :query
-                                        #:convex-web.command
-                                        {:mode :convex-web.command.mode/query
-                                         :query
-                                         #:convex-web.query
-                                         {:source source
-                                          :language :convex-lisp}}
-
-                                        :transact
-                                        #:convex-web.command
-                                        {:mode :convex-web.command.mode/transaction
-                                         :transaction
-                                         #:convex-web.transaction
-                                         {:type :convex-web.transaction.type/invoke
-                                          :source source
-                                          :language :convex-lisp}}))
-
-                            ;; Merge Command and signer (optional).
-                            command (merge command
-                                      (when active-address
-                                        {:convex-web.command/signer
-                                         {:convex-web.account/address active-address}}))]
+                            command (new-command {:mode cmd-mode
+                                                  :source source
+                                                  :signer active-address})]
 
                         (command/execute command
                           (fn [_ response]
