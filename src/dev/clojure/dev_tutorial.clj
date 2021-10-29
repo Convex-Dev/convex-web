@@ -238,179 +238,181 @@
         :cls? false}))
 
 
-  ;; 4Clojure
+  ;; Convex Lisp tutorial based on 4Clojure
   ;; -- https://4clojure.oxal.org/#/problem/1
 
-  '(defn problem1 []
-     (syntax
-       [:v-box
-        [:md "### Problem 1"]
+  '(let [back-to-menu [:cmd
+                       {:name "Back to Menu"
+                        :mode :query}
+                       (str '(syntax (tutorial) {:interact? true
+                                                 :cls? true}))]]
 
-        [:md "Complete the expression so it will evaluate to true."]
+     (defn tutorial []
+       (syntax
+         [:v-box
+          [:md "### Convex Lisp Tutorial"]
 
-        ;; Problem code snippet.
-        [:code "(= _ true)"]
+          [:cmd
+           {:name "Tutorial 1"}
+           (str '(tutorial-1))]
 
-        ;; Command to check the solution.
-        [:cmd
-         {:name "Check"
-          :mode :query
-          :show-source? true
+          [:cmd
+           {:name "Tutorial 2"}
+           (str '(tutorial-2))]
 
-          ;; `lang` allow us to manipulate a form before sending to the server.
-          :lang
-          (str
-            '(fn [form]
-               (syntax
-                 (if (= true (eval form))
-                   [:v-box
-                    [:text "Correct! 🎉"]
-                    [:cmd
-                     {:name "Next"}
-                     (str '(problem2))]]
-                   [:text
-                    "Oops.. try again."])
-                 {:interact? true})))}
+          [:cmd
+           {:name "Tutorial 3"}
+           (str '(tutorial-3))]
 
-         ";; Type your solution here ✍️"]]
+          [:cmd
+           {:name "Tutorial 4"}
+           (str '(tutorial-4))]]
+         {:interact? true
+          :cls? true}))
 
-       {:interact? true
-        :cls? true}))
+     (defn tutorial-1 []
+       (syntax
+         [:v-box
+          [:md "### Problem 1"]
 
-  '(defn problem1 []
-     (syntax
-       [:v-box
-        [:md "### Problem 1"]
+          [:md "Complete the expression so it will evaluate to true."]
 
-        [:md "Complete the expression so it will evaluate to true."]
+          ;; Command to check the solution.
+          [:cmd
+           {:name "Check"
+            :mode :query
+            :show-source? true
+            :input [[:x]]
+            :lang
+            (str
+              '(fn [form & [x]]
+                 (syntax
+                   (if (= true (first x))
+                     [:v-box
+                      [:text "Correct! 🎉"]
+                      [:cmd
+                       {:name "Next"}
+                       (str '(tutorial-2))]]
+                     [:text
+                      "Oops.. try again."])
+                   {:interact? true})))}
 
-        ;; Command to check the solution.
-        [:cmd
-         {:name "Check"
-          :mode :query
-          :show-source? true
-          :input [[:x]]
-          :lang
-          (str
-            '(fn [form & [x]]
-               (syntax
-                 (if (= true (first x))
-                   [:v-box
-                    [:text "Correct! 🎉"]
-                    [:cmd
-                     {:name "Next"}
-                     (str '(problem2))]]
-                   [:text
-                    "Oops.. try again."])
-                 {:interact? true})))}
+           "(= x true)"]
 
-         "(= x true)"]]
+          back-to-menu]
 
-       {:interact? true
-        :cls? true}))
+         {:interact? true
+          :cls? true}))
 
-  '(defn problem2 []
-     (syntax
-       [:v-box
-        [:md "### Problem 2"]
+     (defn tutorial-2 []
+       (syntax
+         [:v-box
+          [:md "### Problem 2"]
 
-        [:md "Complete the expression so it will evaluate to true."]
+          [:md "Complete the expression so it will evaluate to true."]
 
-        ;; Command to check the solution.
-        [:cmd
-         {:name "Check"
-          :mode :query
-          :show-source? true
-          :input [[:x]]
-          :lang
-          (str
-            '(fn [form & [x]]
-               (syntax
-                 (if (= 4 (first x))
-                   [:v-box
-                    [:text "Correct! 🎉"]
-                    [:cmd
-                     {:name "Next"}
-                     (str '(problem3))]]
-                   [:text
-                    "Oops.. try again."])
-                 {:interact? true})))}
+          ;; Command to check the solution.
+          [:cmd
+           {:name "Check"
+            :mode :query
+            :show-source? true
+            :input [[:x]]
+            :lang
+            (str
+              '(fn [form & [x]]
+                 (syntax
+                   (if (= 4 (first x))
+                     [:v-box
+                      [:text "Correct! 🎉"]
+                      [:cmd
+                       {:name "Next"}
+                       (str '(tutorial-3))]]
+                     [:text
+                      "Oops.. try again."])
+                   {:interact? true})))}
 
-         "(= x (- 10 (* 2 3)))"]]
+           "(= x (- 10 (* 2 3)))"]
 
-       {:interact? true
-        :cls? true}))
+          back-to-menu]
 
-  '(defn problem3 []
-     (syntax
-       [:v-box
-        [:md "### Problem 3"]
+         {:interact? true
+          :cls? true}))
 
-        [:md "Lists can be constructed with either a function or a quoted form."]
+     (defn tutorial-3 []
+       (syntax
+         [:v-box
+          [:md "### Problem 3"]
 
-        ;; Command to check the solution.
-        [:cmd
-         {:name "Check"
-          :mode :query
-          :show-source? true
-          :input [[:x]]
-          :lang
-          (str
-            '(fn [form & [x]]
-               (syntax
-                 (if (= '(:a :b :c) (apply list x))
-                   [:v-box
-                    [:text "Correct! 🎉"]
+          [:md "Lists can be constructed with either a function or a quoted form."]
 
-                    [:cmd
-                     {:name "Next"}
-                     (str '(problem3))]]
+          ;; Command to check the solution.
+          [:cmd
+           {:name "Check"
+            :mode :query
+            :show-source? true
+            :input [[:x]]
+            :lang
+            (str
+              '(fn [form & [x]]
+                 (syntax
+                   (if (= '(:a :b :c) (apply list x))
+                     [:v-box
+                      [:text "Correct! 🎉"]
 
-                   [:v-box
-                    [:text
-                     "Oops.. try again."]
+                      [:cmd
+                       {:name "Next"}
+                       (str '(tutorial-4))]]
 
-                    [:code (str `(not (= (:a :b :c) ~(apply list x))))]])
-                 {:interact? true})))}
+                     [:v-box
+                      [:text
+                       "Oops.. try again."]
 
-         "(= (list x) '(:a :b :c))"]]
+                      [:code (str `(not (= (:a :b :c) ~(apply list x))))]])
+                   {:interact? true})))}
 
-       {:interact? true
-        :cls? true}))
+           "(= (list x) '(:a :b :c))"]
 
-  '(defn problem4 []
-     (syntax
-       [:v-box
-        [:md "### Problem 4"]
+          back-to-menu]
 
-        [:md "When operating on a list, the conj function will return a new list with one or more items \"added\" to the front."]
+         {:interact? true
+          :cls? true}))
 
-        ;; Command to check the solution.
-        [:cmd
-         {:name "Check"
-          :mode :query
-          :show-source? true
-          :input [[:x]]
-          :lang
-          (str
-            '(fn [form & [x]]
-               (syntax
-                 (if (= '(1 2 3 4) (first x))
-                   [:v-box
-                    [:text "Correct! 🎉"]
+     (defn tutorial-4 []
+       (syntax
+         [:v-box
+          [:md "### Problem 4"]
 
-                    [:cmd
-                     {:name "Next"}
-                     (str '(problem5))]]
+          [:md "When operating on a list, the conj function will return a new list with one or more items \"added\" to the front."]
 
-                   [:text
-                    "Oops.. try again."])
-                 {:interact? true})))}
+          ;; Command to check the solution.
+          [:cmd
+           {:name "Check"
+            :mode :query
+            :show-source? true
+            :input [[:x]]
+            :lang
+            (str
+              '(fn [form & [x]]
+                 (syntax
+                   (if (= '(1 2 3 4) (first x))
+                     [:v-box
+                      [:text "Correct! 🎉"]
 
-         "(= x (conj '(2 3 4) 1))\n(= x (conj '(3 4) 2 1))"]]
+                      [:cmd
+                       {:name "Next"}
+                       (str '(problem5))]]
 
-       {:interact? true
-        :cls? true}))
+                     [:text
+                      "Oops.. try again."])
+                   {:interact? true})))}
+
+           "(= x (conj '(2 3 4) 1))\n(= x (conj '(3 4) 2 1))"]
+
+          back-to-menu]
+
+         {:interact? true
+          :cls? true}))
+     )
 
 
   ;; GUI to transfer coins

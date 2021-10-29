@@ -111,7 +111,7 @@
           execute (fn []
                     (cond
                       (#{:query :transact} cmd-mode)
-                      (let [source (str " [ "source " ] ")
+                      (let [source (str "(do "source " ) ")
 
                             ;; Inputs in the same order as defined in attributes.
                             inputs (str/join " "
