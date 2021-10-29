@@ -111,19 +111,17 @@
           execute (fn []
                     (cond
                       (#{:query :transact} cmd-mode)
-                      (let [source (if (str/blank? source)
-                                     "nil"
-                                     source)
+                      (let [source (str " [ "source " ] ")
 
                             ;; Inputs in the same order as defined in attributes.
                             inputs (str/join " "
                                      (map
                                        (fn [[id]]
-                                         (get @input-ref id))
+                                         (str "[" (get @input-ref id) "]"))
                                        cmd-input))
 
                             source (if cmd-lang
-                                     (str "(apply " cmd-lang " '" source " [" inputs "] )")
+                                     (str "(apply " cmd-lang " (quote " source ") [" inputs "] )")
                                      source)
 
                             command (new-command {:mode cmd-mode
