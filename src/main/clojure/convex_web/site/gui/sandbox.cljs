@@ -163,30 +163,6 @@
          {:class "bg-white p-3 rounded shadow"}
          {})
 
-       (when cmd-input
-         [:div.flex.flex-col.space-y-1
-          (for [[id {input-type :type}] cmd-input]
-            ^{:key id}
-            [:div.flex.items-center.space-x-1
-
-             [:span.text-xs.px-2.py-1.bg-blue-100.text-gray-700.rounded
-              (name id)]
-
-             [:input.p-1.rounded.border
-              {:type (or input-type "text")
-               :on-change
-               (fn [e]
-                 (let [v (gui/event-target-value e)
-
-                       v (cond
-                           (= input-type "number")
-                           (js/parseFloat v)
-
-                           :else
-                           v)]
-
-                   (swap! input-ref assoc id v)))}]])])
-
        ;; Inline editor for Command.
        (when cmd-show-source?
          [codemirror/CodeMirror
@@ -205,6 +181,30 @@
                     {"change"
                      (fn [editor _]
                        (reset! source-ref (codemirror/cm-get-value editor)))}}}])
+
+       (when cmd-input
+         [:div.flex.flex-col.space-y-1
+          (for [[id {input-type :type}] cmd-input]
+            ^{:key id}
+            [:div.flex.items-center.space-x-1
+
+             [:span.text-xs.px-2.py-1.bg-blue-100.text-gray-700.rounded
+              (name id)]
+
+             [:input.text-xs.p-1.rounded.border
+              {:type (or input-type "text")
+               :on-change
+               (fn [e]
+                 (let [v (gui/event-target-value e)
+
+                       v (cond
+                           (= input-type "number")
+                           (js/parseFloat v)
+
+                           :else
+                           v)]
+
+                   (swap! input-ref assoc id v)))}]])])
 
        ;; Command is executed on (button) click.
        [:button.px-1.rounded.shadow

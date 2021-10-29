@@ -277,6 +277,38 @@
        {:interact? true
         :cls? true}))
 
+  '(defn problem1 []
+     (syntax
+       [:v-box
+        [:md "### Problem 1"]
+
+        [:md "Complete the expression so it will evaluate to true."]
+
+        ;; Command to check the solution.
+        [:cmd
+         {:name "Check"
+          :mode :query
+          :show-source? true
+          :input [[:x]]
+          :lang
+          (str
+            '(fn [form & [x]]
+               (syntax
+                 (if (= true x)
+                   [:v-box
+                    [:text "Correct! 🎉"]
+                    [:cmd
+                     {:name "Next"}
+                     (str '(problem2))]]
+                   [:text
+                    "Oops.. try again."])
+                 {:interact? true})))}
+
+         "(= x true)"]]
+
+       {:interact? true
+        :cls? true}))
+
   '(defn problem2 []
      (syntax
        [:v-box
