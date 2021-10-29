@@ -294,7 +294,7 @@
           (str
             '(fn [form & [x]]
                (syntax
-                 (if (= true x)
+                 (if (= true (first x))
                    [:v-box
                     [:text "Correct! 🎉"]
                     [:cmd
@@ -314,7 +314,100 @@
        [:v-box
         [:md "### Problem 2"]
 
-        [:md "TODO"]]
+        [:md "Complete the expression so it will evaluate to true."]
+
+        ;; Command to check the solution.
+        [:cmd
+         {:name "Check"
+          :mode :query
+          :show-source? true
+          :input [[:x]]
+          :lang
+          (str
+            '(fn [form & [x]]
+               (syntax
+                 (if (= 4 (first x))
+                   [:v-box
+                    [:text "Correct! 🎉"]
+                    [:cmd
+                     {:name "Next"}
+                     (str '(problem3))]]
+                   [:text
+                    "Oops.. try again."])
+                 {:interact? true})))}
+
+         "(= x (- 10 (* 2 3)))"]]
+
+       {:interact? true
+        :cls? true}))
+
+  '(defn problem3 []
+     (syntax
+       [:v-box
+        [:md "### Problem 3"]
+
+        [:md "Lists can be constructed with either a function or a quoted form."]
+
+        ;; Command to check the solution.
+        [:cmd
+         {:name "Check"
+          :mode :query
+          :show-source? true
+          :input [[:x]]
+          :lang
+          (str
+            '(fn [form & [x]]
+               (syntax
+                 (if (= '(:a :b :c) (apply list x))
+                   [:v-box
+                    [:text "Correct! 🎉"]
+
+                    [:cmd
+                     {:name "Next"}
+                     (str '(problem3))]]
+
+                   [:v-box
+                    [:text
+                     "Oops.. try again."]
+
+                    [:code (str `(not (= (:a :b :c) ~(apply list x))))]])
+                 {:interact? true})))}
+
+         "(= (list x) '(:a :b :c))"]]
+
+       {:interact? true
+        :cls? true}))
+
+  '(defn problem4 []
+     (syntax
+       [:v-box
+        [:md "### Problem 4"]
+
+        [:md "When operating on a list, the conj function will return a new list with one or more items \"added\" to the front."]
+
+        ;; Command to check the solution.
+        [:cmd
+         {:name "Check"
+          :mode :query
+          :show-source? true
+          :input [[:x]]
+          :lang
+          (str
+            '(fn [form & [x]]
+               (syntax
+                 (if (= '(1 2 3 4) (first x))
+                   [:v-box
+                    [:text "Correct! 🎉"]
+
+                    [:cmd
+                     {:name "Next"}
+                     (str '(problem5))]]
+
+                   [:text
+                    "Oops.. try again."])
+                 {:interact? true})))}
+
+         "(= x (conj '(2 3 4) 1))\n(= x (conj '(3 4) 2 1))"]]
 
        {:interact? true
         :cls? true}))
