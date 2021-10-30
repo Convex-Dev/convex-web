@@ -105,57 +105,6 @@
      {:interact? true})
 
 
-  ;; Tutorial example
-
-  '(syntax
-     [:v-box
-      [:md
-       "### Convex Lisp Tutorial\n\nLet's define a function `f`:"]
-
-      [:cmd
-       {:name "Execute"
-        :show-source? true}
-       "(defn f [x] x)"]
-
-      [:text
-       "Click on 'Continue' once you have executed the step above."]
-
-      [:cmd
-       {:mode :query
-        :name "Continue"}
-       (str '(syntax
-               [:v-box
-                [:text "Now let's call `f`, and pass `1` as argument:"]
-
-                [:cmd
-                 {:name "(f 1)"
-                  :mode :query}
-
-                 (str '(let [x (f 1)]
-                         (syntax
-                           [:v-box
-                            [:text "Result:"]
-                            [:code x]
-
-                            [:cmd
-                             {:name "Finish"
-                              :mode :query}
-                             ":Finish"]]
-
-                           {:interact? true
-                            :cls? false
-                            :mode :query})))]]
-
-               {:interact? true
-                :cls? true
-                :mode :query}))]]
-
-     {:interact? true
-      :cls? true
-      :mode :query
-      :input "(defn f [x] x)"})
-
-
   ;; -- Voting System
   ;; https://convex.world/examples/voting-system
 
@@ -442,7 +391,7 @@
                    [:text "Your balance is:"]
                    [:text *balance*]]]
                  {:interact? true})))}
-      "(silly-fn nil)"]
+      "nil"]
      {:interact? true})
 
 
