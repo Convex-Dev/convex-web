@@ -412,7 +412,7 @@
                      [:text "Your balance is:"]
                      [:text *balance*]]]
                    {:interact? true})))}
-        "nil"]
+        ""]
        {:interact? true}))
 
 

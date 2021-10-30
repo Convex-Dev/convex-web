@@ -155,7 +155,7 @@
                       (log/warn :unknown-mode cmd-mode)))]
 
       ;; Container for inline editor and button.
-      [:div.inline-flex.flex-col.items-start.space-y-2
+      [:div.inline-flex.flex-col.space-y-2
        ;; The UI looks more like a form when there are inputs.
        (if (seq cmd-input)
          {:class "bg-white p-3 rounded shadow"}
