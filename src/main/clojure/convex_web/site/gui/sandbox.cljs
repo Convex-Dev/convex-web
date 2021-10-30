@@ -111,7 +111,7 @@
           execute (fn []
                     (cond
                       (#{:query :transact} cmd-mode)
-                      (let [source (str "(do "source " ) ")
+                      (let [
 
                             ;; Inputs in the same order as defined in attributes.
                             inputs (str/join " "
@@ -121,7 +121,7 @@
                                        cmd-input))
 
                             source (if cmd-lang
-                                     (str "(apply " cmd-lang " (quote " source ") [" inputs "] )")
+                                     (str "(apply " cmd-lang " (quote (" source ")) [" inputs "] )")
                                      source)
 
                             command (new-command {:mode cmd-mode

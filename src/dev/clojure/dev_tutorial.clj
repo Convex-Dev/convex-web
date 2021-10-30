@@ -61,7 +61,7 @@
        :mode :query
        :input [["x"] ["y"]]
        :lang (str '(fn [x & more] [x more]))}
-      "nil"]
+      ""]
      {:interact? true
       :cls? true})
 
@@ -201,21 +201,41 @@
          [:v-box
           [:md "### Convex Lisp Tutorial"]
 
-          [:cmd
-           {:name "Tutorial 1"}
-           (str '(tutorial-1))]
+          ;; 1
+          [:h-box
 
-          [:cmd
-           {:name "Tutorial 2"}
-           (str '(tutorial-2))]
+           [:cmd
+            {:name "Tutorial 1"}
+            (str '(tutorial-1))]
 
-          [:cmd
-           {:name "Tutorial 3"}
-           (str '(tutorial-3))]
+           [:text "Nothing but the Truth"]]
 
-          [:cmd
-           {:name "Tutorial 4"}
-           (str '(tutorial-4))]]
+          ;; 2
+          [:h-box
+
+           [:cmd
+            {:name "Tutorial 2"}
+            (str '(tutorial-2))]
+
+           [:text "Simple Math"]]
+
+          ;; 3
+          [:h-box
+
+           [:cmd
+            {:name "Tutorial 3"}
+            (str '(tutorial-3))]
+
+           [:text "Lists"]]
+
+          ;; 4
+          [:h-box
+
+           [:cmd
+            {:name "Tutorial 4"}
+            (str '(tutorial-4))]
+
+           [:text "conj on Lists"]]]
          {:interact? true
           :cls? true}))
 
