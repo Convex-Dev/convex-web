@@ -426,7 +426,7 @@
         ["Amount" {}]]
 
        :lang
-       (str '(fn [_ & [receiver amount]]
+       (str '(fn [_ & [[receiver] [amount]]]
                (transfer (address receiver) amount)
 
                (syntax
