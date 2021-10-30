@@ -386,33 +386,34 @@
 
   ;; GUI to transfer coins
 
-  '(syntax
-     [:cmd
-      {:name "Transfer"
+  '(defn transfer-gui []
+     (syntax
+       [:cmd
+        {:name "Transfer"
 
-       :input
-       [["Address" {}]
-        ["Amount" {}]]
+         :input
+         [["Address" {}]
+          ["Amount" {}]]
 
-       :lang
-       (str '(fn [_ & [[receiver] [amount]]]
-               (transfer (address receiver) amount)
+         :lang
+         (str '(fn [_ & [[receiver] [amount]]]
+                 (transfer (address receiver) amount)
 
-               (syntax
-                 [:v-box
-                  [:p
-                   [:text "Successfully transfered "]
-                   [:text amount]
-                   [:text " to "]
-                   [:text (str (address receiver))]
-                   [:text "."]]
+                 (syntax
+                   [:v-box
+                    [:p
+                     [:text "Successfully transfered "]
+                     [:text amount]
+                     [:text " to "]
+                     [:text (str (address receiver))]
+                     [:text "."]]
 
-                  [:h-box
-                   [:text "Your balance is:"]
-                   [:text *balance*]]]
-                 {:interact? true})))}
-      "nil"]
-     {:interact? true})
+                    [:h-box
+                     [:text "Your balance is:"]
+                     [:text *balance*]]]
+                   {:interact? true})))}
+        "nil"]
+       {:interact? true}))
 
 
   )
