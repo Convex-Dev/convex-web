@@ -356,8 +356,12 @@
                                                                :target to
                                                                :amount amount}
 
-                         command #:convex-web.command {:mode :convex-web.command.mode/transaction
-                                                       :address from
+                         signer {:convex-web.account/address from}
+
+                         command #:convex-web.command {:id (random-uuid)
+                                                       :timestamp (.getTime (js/Date.))
+                                                       :mode :convex-web.command.mode/transaction
+                                                       :signer signer
                                                        :transaction transaction}]
 
                      (set-state assoc :convex-web/command {:convex-web.command/status :convex-web.command.status/running})
