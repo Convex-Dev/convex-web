@@ -366,30 +366,31 @@
 
                      (set-state assoc :convex-web/command {:convex-web.command/status :convex-web.command.status/running})
 
-                     (command/execute command (fn [command command']
-                                                (cond
-                                                  (= :convex-web.command.status/success (:convex-web.command/status command'))
-                                                  (do
-                                                    (set-state
-                                                      (fn [state]
-                                                        (let [state' (assoc state :convex-web/command (merge command command'))
+                     (command/execute command
+                       (fn [command command']
+                         (cond
+                           (= :convex-web.command.status/success (:convex-web.command/status command'))
+                           (do
+                             (set-state
+                               (fn [state]
+                                 (let [state' (assoc state :convex-web/command (merge command command'))
 
-                                                              ;; Set status to pending because we need to check the updated balance.
-                                                              state' (assoc-in state' [:transfer-page/from :ajax/status] :ajax.status/pending)
-                                                              state' (assoc-in state' [:transfer-page/to :ajax/status] :ajax.status/pending)]
-                                                          state')))
+                                       ;; Set status to pending because we need to check the updated balance.
+                                       state' (assoc-in state' [:transfer-page/from :ajax/status] :ajax.status/pending)
+                                       state' (assoc-in state' [:transfer-page/to :ajax/status] :ajax.status/pending)]
+                                   state')))
 
 
-                                                    (get-transfer-account {:frame/uuid (get frame :frame/uuid)
-                                                                           :address from
-                                                                           :state-key :transfer-page/from})
+                             (get-transfer-account {:frame/uuid (get frame :frame/uuid)
+                                                    :address from
+                                                    :state-key :transfer-page/from})
 
-                                                    (get-transfer-account {:frame/uuid (get frame :frame/uuid)
-                                                                           :address to
-                                                                           :state-key :transfer-page/to}))
+                             (get-transfer-account {:frame/uuid (get frame :frame/uuid)
+                                                    :address to
+                                                    :state-key :transfer-page/to}))
 
-                                                  :else
-                                                  (set-state assoc :convex-web/command (merge command command'))))))}
+                           :else
+                           (set-state assoc :convex-web/command (merge command command'))))))}
        [:span.block.text-sm.uppercase
         {:class [gui/button-child-large-padding
                  (if invalid-transfer?
