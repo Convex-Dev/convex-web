@@ -5,11 +5,14 @@
    [clojure.tools.logging :as log]
    [clojure.java.io :as io]
    
-   [cognitect.anomalies :as anomalies])
+   [cognitect.anomalies :as anomalies]
+
+   [convex-web.site.sandbox.hiccup :as hiccup])
   (:import 
    (convex.peer Server)
    (convex.core.init Init)
    (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AccountKey ACell AHashMap)
+   (convex.core.data.prim CVMBool)
    (convex.core.lang Core Reader RT Context AFn)
    (convex.core.lang.impl Fn CoreFn)
    (convex.core Order Block Peer State Result)
@@ -245,7 +248,7 @@
     (.toString ^AFn x)
 
     (instance? ABlob x)
-    (.toHexString ^ABlob x)
+    (str "0x" (.toHexString ^ABlob x))
     
     (instance? CVMByte x)
     (.longValue ^CVMByte x)
@@ -329,6 +332,21 @@
 (defn consensus-point [^Order order]
   (.getConsensusPoint order))
 
+(defn coerce-element [x]
+  (cond
+    ;; Syntax sugar for text:
+    ;; "Hello" => [:text "Hello"]
+    (string? x)
+    [:text x]
+
+    ;; Syntax sugar for a paragraph:
+    ;; ["Hello"] => [:p [:text "Hello"]]
+    (and (vector? x) (not (s/valid? ::hiccup/element x)))
+    (into [:p] (map coerce-element x))
+
+    :else
+    x))
+
 (defn result-data [^Result result]
   (let [^ACell result-id (.getID result)
         ^ACell result-error-code (.getErrorCode result)
@@ -338,6 +356,25 @@
                                 :type (or (some-> result-value .getType .toString) "Nil")
                                 :value (or (some-> result-value Utils/print) "nil")}
       
+      ;; Interactive Syntax.
+      (when (instance? Syntax result-value)
+        (let [syntax-meta (datafy (.getMeta ^Syntax result-value))
+
+              {:keys [interact?]} syntax-meta]
+
+          (merge {:convex-web.result/metadata syntax-meta}
+            (when interact?
+              (let [element (datafy result-value)
+                    element (coerce-element element)
+                    element (if-not (s/valid? ::hiccup/element element)
+                              [:v-box
+                               [:text "Sorry. This syntax is not valid in the Interactive Sandbox:"]
+                               [:code (str element)]]
+
+                              ;; Else; valid element.
+                              element)]
+                {:convex-web.result/interactive (s/conform ::hiccup/element element)})))))
+
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})
       

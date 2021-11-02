@@ -18,6 +18,7 @@
             [datalevin.core :as d]
             [com.stuartsierra.component :as component])
   (:import (convex.peer Server API)
+           (convex.api ConvexLocal)
            (convex.core.crypto AKeyPair)
            (convex.core.data Keywords Address)
            (etch EtchStore)
@@ -185,29 +186,29 @@
                                    :else
                                    convex-world-peer-port)
           
-          ^Server server (doto (API/launchPeer {Keywords/URL convex-world-peer-hostname
-                                                Keywords/PORT convex-world-peer-port
-                                                Keywords/STORE convex-world-peer-store
-                                                Keywords/RESTORE restore?
-                                                Keywords/KEYPAIR convex-world-key-pair})
-                           (.setHostname (str convex-world-peer-hostname ":" convex-world-peer-port)))
+          ^Server convex-world-peer-server (doto (API/launchPeer {Keywords/URL convex-world-peer-hostname
+                                                                  Keywords/PORT convex-world-peer-port
+                                                                  Keywords/STORE convex-world-peer-store
+                                                                  Keywords/RESTORE restore?
+                                                                  Keywords/KEYPAIR convex-world-key-pair})
+                                             (.setHostname (str convex-world-peer-hostname ":" convex-world-peer-port)))
           
           _ (log/info "Started Peer on port" convex-world-peer-port)
           
-          ^InetSocketAddress convex-world-host-address (convex/server-address server)
+          ^InetSocketAddress convex-world-host-address (convex/server-address convex-world-peer-server)
           _ (log/debug "convex.world host-address" convex-world-host-address)
           
-          ^Address genesis-address (convex/genesis-address)
-          _ (log/debug "convex.world genesis-address" genesis-address)
+          ^Address convex-world-genesis-address (convex/genesis-address)
+          _ (log/debug "convex.world genesis-address" convex-world-genesis-address)
           
-          ^convex.api.Convex client (convex.api.Convex/connect
-                                      convex-world-host-address 
-                                      genesis-address
-                                      convex-world-key-pair)]
+          ^ConvexLocal client (ConvexLocal/create
+                                convex-world-peer-server
+                                convex-world-genesis-address
+                                convex-world-key-pair)]
       (assoc component
-        :server server
-        :client client
-        :store convex-world-peer-store)))
+        :server convex-world-peer-server
+        :store convex-world-peer-store
+        :client client)))
   
   (stop [component]
     (when-let [^Server server (:server component)]

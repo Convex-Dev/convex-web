@@ -1,17 +1,19 @@
 (ns convex-web.site.account
-  (:require [convex-web.site.gui :as gui]
-            [convex-web.site.backend :as backend]
-            [convex-web.site.session :as session]
-            [convex-web.site.stack :as stack]
-            [convex-web.site.command :as command]
-            [convex-web.site.format :as format]
-            [convex-web.site.runtime :refer [sub]]
+  (:require
+   [convex-web.site.gui :as gui]
+   [convex-web.site.gui.account :as guia]
+   [convex-web.site.backend :as backend]
+   [convex-web.site.session :as session]
+   [convex-web.site.stack :as stack]
+   [convex-web.site.command :as command]
+   [convex-web.site.format :as format]
+   [convex-web.site.runtime :refer [sub]]
 
-            [cljs.spec.alpha :as s]
-            [clojure.string :as str]
-            [reitit.frontend.easy :as rfe]
-            [reagent.ratom :refer [make-reaction]]
-            [re-frame.core :as re-frame]))
+   [cljs.spec.alpha :as s]
+   [clojure.string :as str]
+   [reitit.frontend.easy :as rfe]
+   [reagent.ratom :refer [make-reaction]]
+   [re-frame.core :as re-frame]))
 
 (defn balance
   "Account's balance."
@@ -84,7 +86,7 @@
          [gui/Spinner]]
 
         :ajax.status/success
-        [gui/Account account]
+        [guia/Account account]
 
         :ajax.status/error
         [:div.flex.flex-col.flex-1.justify-center.items-center
@@ -253,7 +255,7 @@
       ;; ===========
       [:div.relative.w-full.flex.flex-col
        [Caption "From"]
-       [gui/AccountSelect
+       [guia/AccountSelect
         {:active-address from
          :addresses addresses
          :on-change (fn [address]
@@ -300,7 +302,7 @@
 
          ;; -- Select or Input text
          (if to-my-accounts?
-           [gui/AccountSelect
+           [guia/AccountSelect
             {:active-address to
              :addresses addresses
              :on-change (fn [address]
@@ -354,36 +356,41 @@
                                                                :target to
                                                                :amount amount}
 
-                         command #:convex-web.command {:mode :convex-web.command.mode/transaction
-                                                       :address from
+                         signer {:convex-web.account/address from}
+
+                         command #:convex-web.command {:id (random-uuid)
+                                                       :timestamp (.getTime (js/Date.))
+                                                       :mode :convex-web.command.mode/transaction
+                                                       :signer signer
                                                        :transaction transaction}]
 
                      (set-state assoc :convex-web/command {:convex-web.command/status :convex-web.command.status/running})
 
-                     (command/execute command (fn [command command']
-                                                (cond
-                                                  (= :convex-web.command.status/success (:convex-web.command/status command'))
-                                                  (do
-                                                    (set-state
-                                                      (fn [state]
-                                                        (let [state' (assoc state :convex-web/command (merge command command'))
+                     (command/execute command
+                       (fn [command command']
+                         (cond
+                           (= :convex-web.command.status/success (:convex-web.command/status command'))
+                           (do
+                             (set-state
+                               (fn [state]
+                                 (let [state' (assoc state :convex-web/command (merge command command'))
 
-                                                              ;; Set status to pending because we need to check the updated balance.
-                                                              state' (assoc-in state' [:transfer-page/from :ajax/status] :ajax.status/pending)
-                                                              state' (assoc-in state' [:transfer-page/to :ajax/status] :ajax.status/pending)]
-                                                          state')))
+                                       ;; Set status to pending because we need to check the updated balance.
+                                       state' (assoc-in state' [:transfer-page/from :ajax/status] :ajax.status/pending)
+                                       state' (assoc-in state' [:transfer-page/to :ajax/status] :ajax.status/pending)]
+                                   state')))
 
 
-                                                    (get-transfer-account {:frame/uuid (get frame :frame/uuid)
-                                                                           :address from
-                                                                           :state-key :transfer-page/from})
+                             (get-transfer-account {:frame/uuid (get frame :frame/uuid)
+                                                    :address from
+                                                    :state-key :transfer-page/from})
 
-                                                    (get-transfer-account {:frame/uuid (get frame :frame/uuid)
-                                                                           :address to
-                                                                           :state-key :transfer-page/to}))
+                             (get-transfer-account {:frame/uuid (get frame :frame/uuid)
+                                                    :address to
+                                                    :state-key :transfer-page/to}))
 
-                                                  :else
-                                                  (set-state assoc :convex-web/command (merge command command'))))))}
+                           :else
+                           (set-state assoc :convex-web/command (merge command command'))))))}
        [:span.block.text-sm.uppercase
         {:class [gui/button-child-large-padding
                  (if invalid-transfer?
@@ -535,7 +542,7 @@
 
       ;; -- Select or Input text
       (if to-my-account?
-        [gui/AccountSelect
+        [guia/AccountSelect
          {:active-address target
           :addresses addresses
           :on-change (fn [address]

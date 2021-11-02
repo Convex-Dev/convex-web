@@ -8,6 +8,8 @@
    [convex-web.site.runtime :as runtime]
    [convex-web.site.backend :as backend]
    [convex-web.site.gui :as gui]
+   [convex-web.site.gui.sandbox :as guis]
+   [convex-web.site.gui.account :as guia]
    [convex-web.site.stack :as stack]
    [convex-web.site.format :as format]
    [convex-web.pagination :as pagination]
@@ -158,7 +160,8 @@
        :convex-web.transaction.type/invoke
        [:div.flex.flex-col.space-y-2
         [gui/CaptionMono "Source"]
-        [gui/Highlight source {:pretty? true}]]
+        [:div.max-w-lg
+         [gui/Highlight source]]]
 
        :convex-web.transaction.type/transfer
        [:div])
@@ -183,7 +186,9 @@
 
             (if result-error-code
               [:span.font-mono.text-sm.text-red-500 result-error-code ": " result-value]
-              [gui/ResultRenderer result])])
+              [guis/ResultRenderer
+               {:result result
+                :interactive {:enabled? false}}])])
 
          :convex-web.transaction.type/transfer
          [:div]))
@@ -352,7 +357,8 @@
                              (format/date-time-from-millis)
                              (format/date-time-to-string))]
              [gui/Tooltip
-              {:title timestamp}
+              {:title timestamp
+               :size "small"}
               [:span (format/time-ago timestamp)]])]
           
           ;; -- 4. Type
@@ -367,14 +373,15 @@
                              
                              ""))}
            [gui/Tooltip
-            (case transaction-type
-              :convex-web.transaction.type/transfer
-              "Direct transfer of Convex Coins from the Signer's Account to a destination Account"
-              
-              :convex-web.transaction.type/invoke
-              "Execution of code by Signer Account"
-              
-              "")
+            {:size "small"
+             :title (case transaction-type
+                      :convex-web.transaction.type/transfer
+                      "Direct transfer of Convex Coins from the Signer's Account to a destination Account"
+
+                      :convex-web.transaction.type/invoke
+                      "Execution of code by Signer Account"
+
+                      "")}
             [:span.text-xs.uppercase
              transaction-type]]]
           
@@ -449,6 +456,191 @@
 
 ;; ---
 
+(defn BlockTransactionsTable [block]
+  [:div
+   [:table.text-left.table-auto
+    [:thead
+     (let [th-style "text-xs uppercase text-gray-600 sticky top-0 bg-white cursor-default"
+           th-div-style "py-2 mr-8"]
+       [:tr
+
+        ;; -- 1. TR#
+        [:th
+         {:class th-style}
+         [:div.flex.space-x-1
+          {:class th-div-style}
+          [:span "TR#"]
+          [gui/InfoTooltip glossary/transaction-index]]]
+
+        ;; -- 2. Signer
+        [:th
+         {:class th-style}
+         [:div.flex.space-x-1
+          {:class th-div-style}
+          [:span "Account"]
+          [gui/InfoTooltip "Address of the Account that digitally signed the transaction. This Signature has been verified by all Peers in Consensus."]]]
+
+        ;; -- 3. Timestamp
+        [:th
+         {:class th-style}
+         [:div.flex.space-x-1
+          {:class th-div-style}
+          [:span "Time"]
+          [gui/InfoTooltip "UTC Timestamp of the block containing the transaction"]]]
+
+        ;; -- 4. Type
+        [:th
+         {:class th-style}
+         [:div.flex.space-x-1
+          {:class th-div-style}
+          [:span "Type"]
+          [gui/InfoTooltip
+           "Transfer: Direct transfer of Convex Coins from the Signer's
+            Account to a destination Account; Invoke: Execution of code by
+            Signer Account"]]]
+
+        ;; -- 5. Sequence Number
+        [:th
+         {:class th-style}
+         [:div.flex.space-x-1
+          {:class th-div-style}
+          [:span "Sequence Number"]
+          [gui/InfoTooltip glossary/sequence-number]]]
+
+        ;; -- Status
+        [:th
+         {:class th-style}
+         [:div.flex.space-x-1
+          {:class th-div-style}
+          [:span "Status"]
+          [gui/InfoTooltip
+           glossary/transaction-status]]]
+
+        ;; -- 7. Result
+        [:th
+         {:class th-style}
+         [:div.flex.space-x-1
+          {:class th-div-style}
+          [:span "Result"]
+          [gui/InfoTooltip
+           "Transfer: Amount and destination Address; Invoke: Convex Lisp
+            code executed on the CVM for the transaction."]]]])]
+
+    [:tbody
+     (for [m (flatten-transactions [block])]
+       (let [block-index (get m :convex-web.block/index)
+
+             {transaction-index :convex-web.transaction/index
+              transaction-type :convex-web.transaction/type
+              transaction-sequence :convex-web.transaction/sequence
+              transaction-result :convex-web.transaction/result} (get m :convex-web.signed-data/value)
+
+             td-class ["p-1 whitespace-no-wrap text-xs"]]
+         ^{:key [block-index transaction-index]}
+         [:tr.cursor-default
+
+          ;; -- 1. TR#
+          [:td {:class (cons "text-right" td-class)}
+           [:span.text-xs.mr-8
+            transaction-index]]
+
+          ;; -- 2. Account
+          [:td {:class td-class}
+           (let [address (get m :convex-web.signed-data/address)]
+             [:div.flex.items-center.space-x-1
+              [gui/AIdenticon {:value address :size gui/identicon-size-small}]
+
+              [:a.flex-1.truncate
+               {:class gui/hyperlink-hover-class
+                :href (rfe/href :route-name/testnet.account {:address address})}
+               [gui/Tooltip
+                {:title (format/descriptive-address address)
+                 :size "small"}
+                [:span.font-mono.text-xs (format/prefix-# address)]]]])]
+
+          ;; -- 3. Timestamp
+          [:td {:class td-class}
+           (let [timestamp (-> (get m :convex-web.block/timestamp)
+                             (format/date-time-from-millis)
+                             (format/date-time-to-string))]
+             [gui/Tooltip
+              {:title timestamp
+               :size "small"}
+              [:span (format/time-ago timestamp)]])]
+
+          ;; -- 4. Type
+          [:td
+           {:class
+            (conj td-class (case transaction-type
+                             :convex-web.transaction.type/transfer
+                             "text-indigo-500"
+
+                             :convex-web.transaction.type/invoke
+                             "text-pink-500"
+
+                             ""))}
+           [gui/Tooltip
+            {:size "small"
+             :title (case transaction-type
+                      :convex-web.transaction.type/transfer
+                      "Direct transfer of Convex Coins from the Signer's Account to a destination Account"
+
+                      :convex-web.transaction.type/invoke
+                      "Execution of code by Signer Account"
+
+                      "")}
+            [:span.text-xs.uppercase
+             transaction-type]]]
+
+          ;; -- 5. Sequence Number
+          [:td
+           {:class (conj td-class "text-right")}
+           [:span.text-xs.uppercase.mr-8
+            transaction-sequence]]
+
+          ;; -- 6. Status
+          [:td
+           {:class td-class}
+           (if (get transaction-result :convex-web.result/error-code)
+             [:span.text-xs.text-red-500 "ERROR"]
+             [:span.text-xs "OK"])]
+
+          ;; -- 7. Value
+          [:td
+           {:class td-class}
+           (case (get-in m [:convex-web.signed-data/value :convex-web.transaction/type])
+             :convex-web.transaction.type/invoke
+             [gui/SecondaryButton
+              {:on-click #(stack/push :page.id/transaction {:state m
+                                                            :modal? true})}
+              [gui/ButtonText
+               {:padding gui/button-child-small-padding
+                :text-size "text-xs"
+                :text-transform "normal-case"}
+               "View details"]]
+
+             :convex-web.transaction.type/transfer
+             [:span.inline-flex.items-center
+              [:span.mr-1 "Transferred"]
+
+              [:span.font-bold.text-indigo-500.mr-1
+               (format/format-number
+                 (get-in m [:convex-web.signed-data/value :convex-web.transaction/amount]))]
+
+              [:span.mr-1 " to "]
+
+              (let [address (get-in m [:convex-web.signed-data/value :convex-web.transaction/target])]
+                [:div.flex.items-center.w-40
+                 [gui/AIdenticon {:value address :size gui/identicon-size-small}]
+
+                 [:a.flex-1.truncate
+                  {:class gui/hyperlink-hover-class
+                   :href (rfe/href :route-name/testnet.account {:address address})}
+                  [gui/Tooltip
+                   {:title (format/descriptive-address address)
+                    :size "small"}
+                   [:span.font-mono.text-xs (format/prefix-# address)]]]])])]]))]]])
+
 (defn Block [{:convex-web.block/keys [index] :as block}]
   [:div.flex.flex-col.space-y-8
 
@@ -460,7 +652,7 @@
    ;; -- Transactions
    [:div.flex.flex-col.space-y-2
     [gui/Caption "Transactions"]
-    [TransactionsTable (vector block)]]])
+    [BlockTransactionsTable block]]])
 
 (defn BlockPage [_ {:keys [ajax/status ajax/error convex-web/block]} _]
   (case status
@@ -521,7 +713,7 @@
      [:span (get-in error [:response :error :message])]]
 
     :ajax.status/success
-    [gui/Account account]))
+    [guia/Account account]))
 
 (defn- get-account [_ state set-state]
   (let [address (get-in state [:convex-web/account :convex-web.account/address])]

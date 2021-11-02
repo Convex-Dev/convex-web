@@ -11,7 +11,7 @@
    (convex.core Result)
    (convex.core.init Init)
    (convex.core.lang Core)
-   (convex.core.data.prim CVMLong)
+   (convex.core.data.prim CVMLong CVMBool)
    (convex.core.crypto AKeyPair)
    (clojure.lang ExceptionInfo)))
 
@@ -101,7 +101,9 @@
       (is (= {'(1) '(2)} (convex/datafy (convex/execute context {(list 1) (list 2)})))))
     
     (testing "Set" 
-      (is (= #{} (convex/datafy (convex/execute context #{})))))
+      (is (= #{} (convex/datafy (convex/execute context #{}))))
+      (is (= #{1} (convex/datafy (convex/execute-string context "#{1 1}"))))
+      (is (= #{[:a 1]} (convex/datafy (convex/execute-string context "#{[:a 1]}")))))
     
     #_(testing "AccountKey"
         (is (= (-> Init/HERO_KP
@@ -114,7 +116,9 @@
             (convex/datafy Init/RESERVED_ADDRESS))))
     
     (testing "Blob"
-      (is (= (.toHexString (Blob/create (.getBytes "Text")))
+      (is (= "0x1234" (convex/datafy (Blob/fromHex "1234"))))
+
+      (is (= (str "0x" (.toHexString (Blob/create (.getBytes "Text"))))
             (convex/datafy (Blob/create (.getBytes "Text"))))))
     
     (testing "Syntax"
@@ -167,7 +171,34 @@
       (is (= (Keyword/create "abort")
             (.getValue (.getExceptional context3)))))))
 
+(deftest coerce-element-test
+  (testing "Text syntax sugar"
+    (is (= [:text "Hello"] (convex/coerce-element "Hello"))))
+
+  (testing "Horizontal layout & text syntax sugar"
+    (is (= [:p
+            [:text "Hello"]
+            [:text "World"]]
+          (convex/coerce-element ["Hello" "World"]))))
+
+  (testing "Mix"
+    (is (= [:p
+            [:text "Hello"]
+            [:text "World"]
+            [:text "Foo"]
+            [:p
+             [:text "Bar"]
+             [:text "Baz"]]]
+          (convex/coerce-element ["Hello" "World" [:text "Foo"] ["Bar" [:text "Baz"]]])))))
+
 (deftest result-data-test
+  (testing "Bool"
+    (is (= {:convex-web.result/id 1,
+            :convex-web.result/type "Boolean",
+            :convex-web.result/value "true"}
+          (convex/result-data (Result/create (CVMLong/create 1)
+                                (CVMBool/create true))))))
+
   (testing "String"
     (is (= {:convex-web.result/id 1,
             :convex-web.result/type "String",
@@ -210,6 +241,30 @@
           (convex/result-data (Result/create (CVMLong/create 1)
                                 (Maps/empty))))))
   
+  (testing "Syntax"
+    (is (= {:convex-web.result/id 1,
+            :convex-web.result/type "Syntax",
+            :convex-web.result/value "^{} {}"
+            :convex-web.result/metadata {}}
+          (convex/result-data (Result/create (CVMLong/create 1)
+                                (Syntax/create (Maps/empty))))))
+
+    (testing "Interactive"
+      (is (= {:convex-web.result/id 1,
+              :convex-web.result/type "Syntax",
+              :convex-web.result/value "^{:interact? true} {}"
+              :convex-web.result/metadata {:interact? true}}
+            (select-keys
+              (convex/result-data (Result/create (CVMLong/create 1)
+                                    (Syntax/create (Maps/empty)
+                                      ;; Metadata to mark this Syntax as interactive.
+                                      (.assoc (Maps/empty)
+                                        (Keyword/create "interact?") (CVMBool/create true)))))
+              [:convex-web.result/id
+               :convex-web.result/type
+               :convex-web.result/value
+               :convex-web.result/metadata])))))
+
   (testing
     "Core function"
     (is

@@ -1,5 +1,8 @@
 # Changes
 
+## 0.29.0 -- 2021-11-02
+- Update Convex to 0.7.2
+
 ## 0.28.0 -- 2021-10-01
 - [Unusable website when height is too small #198](https://github.com/Convex-Dev/convex-web/issues/198)
 - [Sporadic X overflow in home page #189](https://github.com/Convex-Dev/convex-web/issues/189)
