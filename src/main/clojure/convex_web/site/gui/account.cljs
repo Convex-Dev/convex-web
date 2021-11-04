@@ -241,8 +241,10 @@
 
                 (rf/dispatch
                   [:command/!execute
-                   {:convex-web.command/mode :convex-web.command.mode/transaction
-                    :convex-web.command/address active-address
+                   {:convex-web.command/id (random-uuid)
+                    :convex-web.command/timestamp (.getTime (js/Date.))
+                    :convex-web.command/mode :convex-web.command.mode/transaction
+                    :convex-web.command/signer {:convex-web.account/address active-address}
                     :convex-web.command/transaction
                     {:convex-web.transaction/type :convex-web.transaction.type/invoke
                      :convex-web.transaction/source callable-source
