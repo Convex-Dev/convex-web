@@ -166,10 +166,12 @@
 (s/def :convex-web.account/status :convex-web/account-status)
 (s/def :convex-web.account/address :convex-web/address)
 (s/def :convex-web.account/key-pair :convex-web/key-pair-opt)
+(s/def :convex-web.account/registry map?)
 
 (s/def :convex-web/account (s/keys :req [:convex-web.account/address]
                                    :opt [:convex-web.account/status
-                                         :convex-web.account/key-pair]))
+                                         :convex-web.account/key-pair
+                                         :convex-web.account/registry]))
 
 (s/def :convex-web/signer
   (s/keys :req [:convex-web.account/address
