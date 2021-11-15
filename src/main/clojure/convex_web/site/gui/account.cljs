@@ -297,7 +297,10 @@
                 (get-in result [:convex-web.command/result :convex-web.result/value])]])]]])])))
 
 (defn Account [account]
-  (let [{:convex-web.account/keys [address status]} account
+  (let [{:convex-web.account/keys [address status registry]} account
+
+        {account-name :name
+         account-description :description} registry
 
         {:convex-web.account-status/keys [memory-size
                                           allowance
@@ -318,12 +321,36 @@
                   [:div.flex.space-x-1
                    [:span {:class caption-style} label]
                    [gui/InfoTooltip tooltip]])]
+
     [:div.flex.flex-col.items-start.space-y-8
+
+     ;; Metadata
+     ;; ==============
+     (when registry
+       [:div.flex.flex-col.space-y-2
+
+        (when account-name
+          [:h2.text-2xl
+           account-name])
+
+        (when account-description
+          (let [style "text-sm text-gray-600"]
+            (if (string? account-description)
+              [:p
+               {:class style}
+               account-description]
+              (into [:<>]
+                (for [s account-description]
+                  [:p
+                   {:class style}
+                   s])))))])
+
 
      ;; Address
      ;; ==============
      [:div.flex.flex-col
       [:div.flex.items-center.space-x-4
+
        ;; -- Identicon
        [gui/AIdenticon {:value address :size 88}]
 
