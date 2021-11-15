@@ -927,11 +927,11 @@
 
       -server-error-response)))
 
-(defn -GET-account [context address]
+(defn -GET-account [system address]
   (try
     (let [address (convex/address-safe address)
 
-          peer (system/convex-peer context)
+          peer (system/convex-peer system)
 
           account-status (try
                            (convex/account-status peer address)
@@ -953,8 +953,16 @@
                                         [k (with-meta {} {:convex-web/lazy? true})]))
                                     (into {}))))]
       (if account-status
-        (-successful-response #:convex-web.account {:address (.longValue address)
-                                                    :status account-status-data})
+        (let [form (convex/read-source (str "(call *registry* (lookup " address "))"))
+
+              ;; It's possible to register metadata for accounts in the *registry*.
+              registry (convex/execute-query (system/convex-peer system) form {:address address})
+              registry (convex/datafy registry)]
+
+          (-successful-response (merge #:convex-web.account {:address (.longValue address)
+                                                             :status account-status-data}
+                                  (when registry
+                                    {:convex-web.account/registry registry}))))
         (let [message (str "The Account for this Address does not exist.")]
           (log/error message address)
           (-not-found-response {:error {:message message}}))))
