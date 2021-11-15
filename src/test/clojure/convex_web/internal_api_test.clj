@@ -76,6 +76,15 @@
                  :meta}
                (set (keys body))))))
 
+    (testing "Core Library"
+      (let [response (handler (mock/request :get "/api/internal/accounts/8"))
+            body (encoding/transit-decode-string (get response :body))]
+        (is (= 200 (get response :status)))
+        (is (= #{:convex-web.account/address
+                 :convex-web.account/status
+                 :convex-web.account/registry}
+              (set (keys body))))))
+
     (testing "Not found"
       (let [response (handler (mock/request :get "/api/internal/accounts/x"))
             body (encoding/transit-decode-string (get response :body))]
