@@ -413,7 +413,7 @@
      (fn [^Long tx-index ^SignedData signed-data]
        (let [^ATransaction transaction (.getValue signed-data)]
          #:convex-web.signed-data 
-         {:address (.longValue (.getAddress transaction))
+         {:address (.longValue (.getOrigin transaction))
           :account-key (.toChecksumHex (.getAccountKey signed-data))
           :value (transaction-result-data 
                    (.getValue signed-data)
