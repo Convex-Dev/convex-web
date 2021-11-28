@@ -62,7 +62,8 @@
            {:description "Applies a function to each element of a data structure in sequence, and returns a vector of results. Additional collection may be provided to call a function with higher arity.",
             :examples [{:code "(map inc [1 2 3])"}],
             :signature [{:params [f coll]}
-                        {:params [f coll1 coll2 & more-colls]}]}}
+                        {:params [f coll1 coll2 & more-colls]}]}
+           :static true}
         (convex/datafy (convex/lookup-metadata context (Symbol/create "map")))))))
 
 (deftest datafy-test
@@ -271,7 +272,8 @@
       (=
         '{:convex-web.result/id 1,
           :convex-web.result/metadata
-          {:doc
+          {:static true
+           :doc
            {:description
             "Applies a function to each element of a data structure in sequence, and returns a vector of results. Additional collection may be provided to call a function with higher arity.",
             :examples [{:code "(map inc [1 2 3])"}],

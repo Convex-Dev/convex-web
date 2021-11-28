@@ -256,7 +256,8 @@
                 :examples [{:code "(inc 10)"}],
                 :signature [{:params [num], :return Long}],
                 :symbol "inc"},
-               :type nil} 
+               :type nil
+               :static true}
             (c/result-metadata (convex/execute context inc) {:source "inc" :lang :convex-lisp}))))
     
     (testing "Macro"
