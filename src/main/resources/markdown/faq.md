@@ -129,6 +129,4 @@ We are establishing the Convex Foundation a non-profit organisation that will fa
 
 ## Who is building Convex?
 
-We are a small team of dedicated hackers and creators passionate about building an amazing platform for the future digital economy.
-
-We have chosen to stay anonymous for now. That may change. Or not. We might be Satoshi Nakamoto. Who knows?
+We are a small [team](https://convex.world/about/team) of dedicated hackers and creators passionate about building an amazing platform for the future digital economy.
