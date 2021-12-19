@@ -68,7 +68,7 @@ Technically, Convex is not a blockchain because Blocks are not required to conta
 
 ## Consensus Algorithm
 
-The Convex Consensus Algorithm is obtains consensus through the use of a convergent Belief Merge Function. This algorithm is called Convergent Proof of Stake (CPoS), and is described in more detail in the [White Paper](https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf).
+The Convex Consensus Algorithm obtains consensus through the use of a convergent Belief Merge Function. This algorithm is called Convergent Proof of Stake (CPoS), and is described in more detail in the [White Paper](https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf).
 
 ## Consensus Point
 
@@ -196,7 +196,7 @@ As a general principle, on-chain data should be kept to the *absolute minimum ne
 
 ## Ordering
 
-An Ordering defines the sequence in which Blocks of Transactions are to be executed. A key purpose role of the Consensus Algorithm is to ensure that all good PEers agree on the same Consensus Ordering, and hence all calculate the same Consensus State.
+An Ordering defines the sequence in which Blocks of Transactions are to be executed. A key purpose role of the Consensus Algorithm is to ensure that all good Peers agree on the same Consensus Ordering, and hence all calculate the same Consensus State.
 
 In normal use of the Convex system, the Ordering maintained by a Peer will be confirmed in Consensus only up to a certain point (the Consensus Point). Blocks after this point are not yet confirmed, but are in the process of being proposed for consensus.
 
