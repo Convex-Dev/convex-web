@@ -26,7 +26,7 @@ The bottom area is where the transaction code is entered. All results are displa
 
 There are two execution modes for the sandbox:
 
-- **Query**: code is executed, a result is returned but any change in the network is discarded; it if as if nothing happened; it does not incur fees in Convex Coins
+- **Query**: code is executed, a result is returned but any change in the network is discarded; it is as if nothing happened; it does not incur fees in Convex Coins
 - **Transaction** (default): code is executed, a result will be returned; it incurs fees in Convex Coins
 
 Hence, queries are useful when reading information without making any change, while actual transactions must be used for potential changes in the network's state to take effect. Most of the time, when learning or prototyping in Convex, users
