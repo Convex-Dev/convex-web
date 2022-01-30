@@ -68,14 +68,14 @@ Convex shares many common attributes with traditional public blockchains:
 - Ability to deploy and execute secure smart contract code
 - Transactions are grouped into Blocks
 
-Technically however it's not actually implemented as a blockchain (at least in the sense that there is a linked list of blocks where each block contains the hash of a previous block). The Convex consensus algorithm creates an *ordering* of blocks, but the cryptographic hashes used to secure this ordering are kept outside the blocks themselves. This might seem like a minor detail, but it gives us a big advantage, as blocks can be submitted and processed by the consensus network in parallel without having to know the hash of preceding block(s).
+Technically however it's not actually implemented as a blockchain (at least in the sense that there is a linked list of blocks where each block contains the hash of a previous block). The Convex consensus algorithm creates an *ordering* of blocks, but the cryptographic hashes used to secure this ordering are kept outside the blocks themselves. This might seem like a minor detail, but it gives us a big advantage, as blocks can be submitted and processed by peers in the consensus network concurrently without having to first determine the hash of preceding block(s).
 
 
 ## How does Convex perform so well?
 
 It's complex! But here are some of the most important points:
 
-- The consensus algorithm (Convergent Proof of Stake, or CPoS) is extremely fast. It can confirm blocks in a few milliseconds between peers running on a local network. The main latency delay in the global network is signal transmission over the Internet: the speed of light is a tricky problem.
+- The consensus algorithm (Convergent Proof of Stake, or CPoS) is extremely fast. It can confirm blocks in milliseconds between peers running on a local network. The main latency delay in the global network is just signal transmission over the Internet: the speed of light is a tricky problem.
 - The CVM execution model is designed for performance: CVM operations are relatively high level, but are implemented using very efficient low-level code.
 - We wrote a custom database (Etch) from scratch, specifically to support the performance needs of Convex. Having a database perfectly designed and tuned for the specific workload is a huge advantage and is faster than more generic alternatives (e.g. LevelDB)
 - We exploit a lot of advanced features of the JVM, which is a very powerful platform backed by thousand man-years of engineering effort. We especially appreciate the JIT compiler, concurrency, asynchronous IO and advanced memory management features. It probably wouldn't be feasible to build something as fast as Convex without these.
@@ -113,7 +113,7 @@ You can use Convex Actors to implement smart contracts. Not every Actor needs to
 
 ## When will the Main Network go live?
 
-We are targeting Main Network Launch (Convex One) in the second half of 2021.
+We are targeting Main Network Launch (Convex One) in 2022.
 
 An important caveat: getting it right is more important than rushing a release. We won't launch until we are 100% sure it is ready for production use and fully secure with real-world value at stake.
 
