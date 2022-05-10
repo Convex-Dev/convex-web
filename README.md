@@ -44,6 +44,20 @@ Start server on port 8080:
 (go)
 ```
 
+## Docker Testing
+
+To run convex-web as a local docker container, you will need to do the following.
+
+Build the docker image
+```
+docker build -t convex-web .
+```
+
+Run the docker image
+```
+docker run --publish 8080:8080 convex-web
+```
+
 ## Production
 
 ### App
