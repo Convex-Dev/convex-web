@@ -708,6 +708,8 @@
   (.registerLanguage hljs "clojure" hljs-clojure)
   (.registerLanguage hljs "javascript" hljs-javascript)
 
-  (re-frame/dispatch-sync [::!init (.-value (.getElementById js/document "__anti-forgery-token"))])
+  (let [tok (.getElementById js/document "__anti-forgery-token")]
+       (re-frame/dispatch-sync [::!init (when tok (.-value tok))]))
+
 
   (start))
