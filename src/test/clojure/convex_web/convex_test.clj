@@ -59,7 +59,7 @@
   (let [context (sys/convex-world-context system)]
     (is
       (= '{:doc
-           {:description "Applies a function to each element of a data structure in sequence, and returns a vector of results. Additional collection may be provided to call a function with higher arity.",
+           {:description "Applies a Function to each element of a data structure in sequence, and returns a vector of results. Additional collections may be provided to call a function with higher arity.",
             :examples [{:code "(map inc [1 2 3])"}],
             :signature [{:params [f coll]}
                         {:params [f coll1 coll2 & more-colls]}]}
@@ -275,7 +275,7 @@
           {:static true
            :doc
            {:description
-            "Applies a function to each element of a data structure in sequence, and returns a vector of results. Additional collection may be provided to call a function with higher arity.",
+            "Applies a Function to each element of a data structure in sequence, and returns a vector of results. Additional collections may be provided to call a function with higher arity.",
             :examples [{:code "(map inc [1 2 3])"}],
             :signature [{:params [f coll]}
                         {:params [f coll1 coll2 & more-colls]}]}},

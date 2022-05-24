@@ -163,7 +163,7 @@
       (let [response (handler (mock/request :get (str "/api/v1/accounts/" (convex-world-address-long))))
             response-body (json/read-str (get response :body) :key-fn keyword)]
         (is (= 200 (get response :status)))
-        (is (= #{:account-key
+        (is (= #{:accountKey
                  :controller
                  :address
                  :allowance

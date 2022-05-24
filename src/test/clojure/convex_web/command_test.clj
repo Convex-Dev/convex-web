@@ -143,8 +143,7 @@
       
       (is (= :convex-web.command.status/success status))
       (is (= {:convex-web.result/type "Map",
-              :convex-web.result/value
-              "{:description \"Increments the given `long` by 1.\",:signature [{:return Long,:params [num]}],:errors {:CAST \"If the actor argument is not a `long`.\"},:examples [{:code \"(inc 10)\"}]}"}
+              :convex-web.result/value "{:description \"Increments the given Long value by 1.\",:signature [{:return Long,:params [num]}],:errors {:CAST \"If the actor argument is not castable to Long.\"},:examples [{:code \"(inc 10)\"}]}"}
             (select-keys result [:convex-web.result/type
                                  :convex-web.result/value])))))
   
@@ -251,8 +250,8 @@
     (testing "Function"
       (is (= {} (c/result-metadata (convex/execute context inc))))
       (is (= '{:doc
-               {:description "Increments the given `long` by 1.",
-                :errors {:CAST "If the actor argument is not a `long`."},
+               {:description "Increments the given Long value by 1.",
+                :errors {:CAST "If the actor argument is not castable to Long."},
                 :examples [{:code "(inc 10)"}],
                 :signature [{:params [num], :return Long}],
                 :symbol "inc"},
