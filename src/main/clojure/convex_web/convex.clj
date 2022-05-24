@@ -220,7 +220,7 @@
     (keyword (.toString (.getName ^Keyword x)))
 
     (instance? Symbol x)
-    (symbol (.getName ^Symbol x))
+    (symbol (str (.getName ^Symbol x)))
 
     (instance? AList x)
     (map datafy x)
@@ -457,7 +457,7 @@
                                         (instance? Fn f)
                                         (map 
                                           (fn [^Symbol param]
-                                            (.getName param))
+                                            (str (.getName param)))
                                           (.getParams ^Fn f))
                                         
                                         ;; TODO: Handle MultiFn.
