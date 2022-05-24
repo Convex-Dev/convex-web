@@ -11,7 +11,7 @@
   (:import 
    (convex.peer Server)
    (convex.core.init Init)
-   (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AccountKey ACell AHashMap)
+   (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AccountKey ACell AHashMap SignedData)
    (convex.core.data.prim CVMBool)
    (convex.core.lang Core Reader RT Context AFn)
    (convex.core.lang.impl Fn CoreFn)
@@ -403,22 +403,23 @@
     
     (merge tx {:convex-web.transaction/result (result-data result)})))
 
-(defn block-data [^Peer peer ^Long index ^Block block]
-  #:convex-web.block 
-  {:index index
-   :timestamp (.getTimeStamp block)
-   :peer (.toChecksumHex (.getPeer block))
-   :transactions
-   (map-indexed
-     (fn [^Long tx-index ^SignedData signed-data]
-       (let [^ATransaction transaction (.getValue signed-data)]
-         #:convex-web.signed-data 
-         {:address (.longValue (.getOrigin transaction))
-          :account-key (.toChecksumHex (.getAccountKey signed-data))
-          :value (transaction-result-data 
-                   (.getValue signed-data)
-                   (.getResult peer index tx-index))}))
-     (.getTransactions block))})
+(defn block-data [^Peer peer ^Long index ^SignedData signed-block]
+  (let [^Block block (.getValue signed-block)]
+    #:convex-web.block 
+    {:index index
+     :timestamp (.getTimeStamp block)
+     :peer (.toChecksumHex (.getAccountKey signed-block))
+     :transactions
+     (map-indexed
+       (fn [^Long tx-index ^SignedData signed-data]
+         (let [^ATransaction transaction (.getValue signed-data)]
+           #:convex-web.signed-data 
+           {:address (.longValue (.getOrigin transaction))
+            :account-key (.toChecksumHex (.getAccountKey signed-data))
+            :value (transaction-result-data 
+                     (.getValue signed-data)
+                     (.getResult peer index tx-index))}))
+       (.getTransactions block))}))
 
 (defn blocks-data [^Peer peer & [{:keys [start end]}]]
   (let [order (peer-order peer)
@@ -429,7 +430,11 @@
 
     (reduce
       (fn [blocks index]
-        (conj blocks (block-data peer index (.getBlock order index))))
+        (conj blocks 
+              (block-data peer
+                          index
+                          (.getBlock order
+                                     index))))
       []
       (range start end))))
 
