@@ -19,11 +19,14 @@ RUN npm install
 
 RUN npm run app:release
 
-RUN  npm run styles:release
+RUN npm run styles:release
 
 RUN rm -rf $HOME/.convex
 RUN mkdir -p $HOME/.convex
-RUN echo "{:key-store-passphrase \"secret\" \
- :key-passphrase \"secret\"}" > $HOME/.convex/secrets.edn
+RUN echo "{:key-store-passphrase \"password\" \
+ :key-passphrase \"password\"}" > $HOME/.convex/secrets.edn
+ADD config.edn $HOME/.convex/config.edn
+RUN rm $HOME/config.edn
+RUN ln -s $HOME/.convex/config.edn $HOME/config.edn
 
-CMD clojure -J-Duser.home=$HOME -M:repl:dev:logback-dev -e "(go)"
+CMD clojure -J-Duser.home=$HOME -M:main:repl:logback-prod -e "(go)"
