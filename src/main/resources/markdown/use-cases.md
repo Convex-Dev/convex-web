@@ -27,6 +27,8 @@ Our first game is a 3D block game inspired by Minecraft, Boulderdash and the Rog
 
 Convex provides the ideal substrate for the convergence of real and virtual worlds into new shared realities. With a rich model of digital assets and on-chain smart contract capabilities, we can help you craft the next generation of experiences in virtual reality.
 
+Our metaverse innovation includes the world's first fully on-chain 3D game world.
+
 ## Payments and Retail CBDCs
 
 Convex supports an advanced model of digital currencies with customisable governance, suitable for CBDCs and other currencies with trusted issuers. Our open source mobile wallet (Convexity) makes these easily accessible and convenient for users, and can be customised to create branded experiences with additional functionality.
