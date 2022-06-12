@@ -46,10 +46,10 @@ workflows:
       # - jvm:
       #     requires:
       #        - short-if-irrelevant
-      - deploy:
-          # filters:
-          #   branches:
-          #     only: master
-          # requires:
-          #   - jvm
+      - deploy
+        # filters:
+        #   branches:
+        #     only: master
+        # requires:
+        #   - jvm
 
