@@ -147,6 +147,9 @@
   :logback-prod
   {:jvm-opts ["-Dlogback.configurationFile=logback/logback-prod.xml"]}
   
+  ;; -- Build configuration
+ :build {:deps {io.github.clojure/tools.build {:git/tag "v0.8.2" :git/sha "ba1a2bf"}}
+         :ns-default build}
   
   ;; -- Check outdated dependencies
   ;; clj -M:outdated
