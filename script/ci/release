@@ -1,5 +1,6 @@
 #!/bin/sh -x
 
 UBERJAR_FILENAME=$(cat build/UBERJAR_FILENAME)
+RELEASE="$DIR/$UBERJAR_FILENAME"
 cp build/${UBERJAR_FILENAME} $RELEASE
 java -cp "$RELEASE" clojure.main -e '(println "OK")'

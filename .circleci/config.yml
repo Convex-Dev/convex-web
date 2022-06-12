@@ -26,11 +26,12 @@ jobs:
       - run:
           name: Create uberjar
           command: |
-            script/build/uberjar            
-            RELEASE=/tmp/release script/ci/release                        
+            script/build/uberjar
+            mkdir -p /tmp/release
+            DIR=/tmp/release script/ci/release
       - store_artifacts:
           path: /tmp/release
-          destination: release
+          destination: release.jar
       - save_cache:
           paths:
             - ~/.m2
