@@ -31,7 +31,7 @@ jobs:
             DIR=/tmp/release script/ci/release
       - store_artifacts:
           path: /tmp/release
-          destination: release.jar
+          destination: release
       - save_cache:
           paths:
             - ~/.m2
