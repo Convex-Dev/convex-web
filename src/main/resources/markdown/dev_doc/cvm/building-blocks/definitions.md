@@ -1,5 +1,5 @@
 First and foremost, Convex can be understood as a decentralized database capable of storing **cells**. A cell can be any type of values encountered in these guides,
-from [data types](/cvm/data-types) to [functions](/cvm/function). This section reviews how arbitrary cells can be stored across transactions, as long as required.
+from [data types](/cvm/data-types) to [functions](cvm/building-blocks/functions). This section reviews how arbitrary cells can be stored across transactions, as long as required.
 
 Each account has an **environment**. Conceptually, an environment can be understood as a [map](/cvm/data-types/map) where keys are [symbols](/cvm/data-types/symbol)
 and values can be anything. A symbol pointing to an arbitrary value is called a **definition**.

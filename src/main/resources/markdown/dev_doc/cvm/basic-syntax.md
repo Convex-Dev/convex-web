@@ -18,7 +18,7 @@ Once again, simple maths dictates that one can be fully explicit by using parens
 Now, without knowing anything about the order of operations but knowing about parens, we know for sure that `(2 * 3)` is computed first, and then `(4 + 6)`. No other rule
 must be remembered but this one: inner parens are executed before outer parens.
 
-Instead of talking about mathematical operators, the primary unit of computation in Convex Lisp is the [function](/functions). Values provided to functions are called
+Instead of talking about mathematical operators, the primary unit of computation in Convex Lisp is the [function](/cvm/building-blocks/functions). Values provided to functions are called
 **parameters**. Later sections will describe how you can write your own functions and do anything you can imagine. Functions are always specified first in so-called
 **prefix notation** and then parameters are provided. Hence, here is the above example written in Convex Lisp:
 
