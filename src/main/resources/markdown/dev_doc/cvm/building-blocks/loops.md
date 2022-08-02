@@ -77,7 +77,7 @@ Similarly, a defined [function](/cvm/building-blocks/functions) can apply itself
                 i))))
 
 
-(to-1 5)
+(to-1 5 [])
 
 ;; -> [5 4 3 2 1]
 ```
