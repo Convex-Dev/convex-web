@@ -10,7 +10,7 @@ Unlike [strings](/cvm/data-types/text), they cannot contain spaces and are used 
 
 Their usage is described in greater detail in [the section about definitions](/cvm/building-blocks/definitions). By default,
 symbols are evaluated and must be defined in the environment (pointing to a value). Otherwise, an [error](/cvm/building-blocks/errors) will occur. The section about
-[code as data](/cvm/code-as-data) explains the concept of **quoting** which prevents evaluation. Consulting both sections, now or at a later point,
+[code is data](/cvm/building-blocks/code-is-data) explains the concept of **quoting** which prevents evaluation. Consulting both sections, now or at a later point,
 will provide a deeper explanation as to what symbols are and why they exist.
 
 ```clojure
