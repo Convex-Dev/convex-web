@@ -3,7 +3,7 @@ Symbols are composed of 1 to 64 characters without anything around:
 ```clojure
 hello
 hello-world
-this-is-a-keyword
+this-is-a-symbol
 ```
 
 Unlike [strings](/cvm/data-types/text), they cannot contain spaces and are used mostly used as names for variables.
