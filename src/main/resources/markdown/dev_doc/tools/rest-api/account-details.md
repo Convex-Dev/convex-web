@@ -7,6 +7,7 @@ Returns general information about an account on the test network according to th
 
 ### Response
 
+- `accountKey`: public key used for this account
 - `address`: account address encoded as a JSON number
 - `allowance`: unused memory allowance owned by this ccount
 - `balance`: account's balance in Convex Coins.
@@ -20,6 +21,7 @@ For example:
 
  ```json
 {
+  "accountKey":"50757f7994b1A9024EA1E35af5845aA6E15d6eE731D437aeBEdF58E69DA182aA",
   "address": 9,
   "allowance": 10000000,
   "balance": 10000000000,
