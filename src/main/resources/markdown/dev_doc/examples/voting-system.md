@@ -20,7 +20,7 @@ are human.
 **Vote.** A voting [callable function](/cvm/accounts/callable-functions). First, it ensures that the calling account is allowed
 to vote, that deadline is not met yet, and that its choice is valid. Then, if those conditions are satisfied, vote
 is accepted and the calling account is removed from allowed accounts so that it cannot vote a second time. A
-[keyword](/cvm/data-types/keyword) is returned to provid feedback.
+[keyword](/cvm/data-types/keyword) is returned to provide feedback.
 
 
 ## First draft
