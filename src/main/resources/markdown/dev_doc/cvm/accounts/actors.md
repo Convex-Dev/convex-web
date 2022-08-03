@@ -210,7 +210,7 @@ my-actor/x
 ```
 
 The second solution is to write a callable function that explicitly evaluates code. The `eval` function is explained in greater detail in the section
-about [compiler phases](/cvm/compiler-phases). In short, it allows to execute any arbitrary piece of code provided as data:
+about [execution phases](/cvm/execution-phases). In short, it allows to execute any arbitrary piece of code provided as data:
 
 ```clojure
 ;; New actor defines a smart contract `do-anything` which is simply
