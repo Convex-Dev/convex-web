@@ -4,7 +4,7 @@ After three years of intensive development we're working to deliver the Convex m
 
 ## Genesis (complete)
 
-Convex was designed based on the revolutionary ideas of Convergent Proof of Stake invented in 2018, and the concept was proven with the development of the Convex Virtual Machine capable of executing arbitrary Turing complete smart contracts using functional programming and the lamdba calculus.
+Convex was designed based on the revolutionary ideas of Convergent Proof of Stake invented in 2018, and the concept was proven with the development of the Convex Virtual Machine capable of executing arbitrary Turing complete smart contracts using functional programming and the lambda calculus.
 
 ## Testnet (complete)
 

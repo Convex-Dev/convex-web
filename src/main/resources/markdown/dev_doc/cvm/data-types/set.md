@@ -85,7 +85,7 @@ By using the `get` function:
 (get #{:a :b}
     :c)
 
-;; -> talse
+;; -> false
 ```
 
 By using the `contains-key?` function. Conceptually, sets are like [maps](/cvm/data-types/map) where items are keys and

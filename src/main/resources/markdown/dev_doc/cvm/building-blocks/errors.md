@@ -46,7 +46,7 @@ that some conditions are respected, typically involving [definitions](/cvm/build
 
 
 (assert (get {:a 42}
-             a)
+             :a)
         (> 42 1))
 
 ;; Nothing happens, both tests return truthy values

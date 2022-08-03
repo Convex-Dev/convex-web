@@ -1,4 +1,4 @@
-Often, smart contracts require data coming from the outside world. For instance, in IoT projects, data coming from sensors.
+Often, smart contracts require data coming from the outside world. For instance, in IoT projects, data is coming from sensors.
 An oracle is a trusted account which is entitled to deliver such data on-chain. For instance, the account of a particular
 IoT device.
 

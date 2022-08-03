@@ -1,6 +1,6 @@
 ## Overview
 
-This small example creates an NFT pointing to a picture and transfers it to user `#57`:
+This small example creates an NFT pointing to a picture and transfers of it to user `#57`:
 
 ```clojure
 (do

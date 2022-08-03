@@ -121,7 +121,7 @@ We can distinguish between two forms of Dapp:
 
 ## Digital Signature
 
-A cryptographic technique where a piece of data
+A cryptographic technique where a piece of data is hashed together with a private key
 
 Digital signatures in Convex use the Ed25519 algorithm. The data that is signed is the Value ID of a CVM Data Object (which in turn is the SHA3-256 hash of the Encoding)
 
@@ -202,7 +202,7 @@ In normal use of the Convex system, the Ordering maintained by a Peer will be co
 
 ## Peer
 
-A Peer is a system that participates in the operation of the decentralised Convex Network, and in particular helps to achieve Consnesus.
+A Peer is a system that participates in the operation of the decentralised Convex Network, and in particular helps to achieve Consensus.
 
 Peers are required to use a private key to sign certain messages as they participate in the Consensus Protocol. Because of this, a Peer's Stake may be at risk if the system is not adequately secured. Peer operators therefore have a strong incentive to maintain good security for their systems.
 

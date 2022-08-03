@@ -97,7 +97,7 @@ As a shorthand, `quasiquote` can be written as a **backtick** and `unquote` as a
 ;; -> (+ 1 2 4)
 ```
 
-Alternatively, a simple example like that can be reproduced using the `list` function:
+Alternatively, a simple exemple like that can be reproduced using the `list` function:
 
 ```clojure
 (let [x 2]

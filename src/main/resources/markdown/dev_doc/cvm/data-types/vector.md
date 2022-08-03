@@ -33,7 +33,7 @@ By using a function:
 ;; -> [:a :b]
 ```
 
-By adding an item to an existing list:
+By adding an item to an existing vector:
 
 ```clojure
 (conj [:a :b]
