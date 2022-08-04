@@ -1,7 +1,7 @@
 **POST** *https://convex.world/api/v1/createAccount*
 
 Creates a new account associated with the given Ed25519 public key. The endpoint will pay for the fees incurred by
-creating an new account since fees are currently fictitious on the test network.
+creating a new account since fees are currently fictitious on the test network.
 
 
 ### Payload
