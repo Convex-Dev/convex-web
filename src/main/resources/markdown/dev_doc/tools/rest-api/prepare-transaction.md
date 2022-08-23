@@ -3,7 +3,7 @@
 A transaction requires its hash to be digitally signed by the executing account prior to submission.
 
 Given Convex Lisp source representing a transaction, this endpoint returns the hash to sign. Afterwards, the transaction
-can be [submitted](/rest-api/submit-transaction).
+can be [submitted](/tools/rest-api/submit-transaction).
 
 
 ### Payload
