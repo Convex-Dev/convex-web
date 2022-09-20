@@ -1,8 +1,8 @@
-# Changes
+# Major changes and resolved issues
 
 ## 0.30.0 --
 - [Fix Callable Functions UI #207](https://github.com/Convex-Dev/convex-web/issues/207)
-- Update Convex to 0.7.3
+- Update Convex to 0.7.9
 
 ## 0.29.0 -- 2021-11-02
 - Update Convex to 0.7.2
