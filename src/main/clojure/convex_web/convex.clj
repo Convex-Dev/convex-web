@@ -12,7 +12,6 @@
    (convex.peer Server)
    (convex.core.init Init)
    (convex.core.data Keyword Symbol Syntax Address AccountStatus SignedData AVector AList ASet AMap ABlob Blob AccountKey ACell AHashMap SignedData)
-   (convex.core.data.prim CVMBool)
    (convex.core.lang Core Reader RT Context AFn)
    (convex.core.lang.impl Fn CoreFn)
    (convex.core Order Block Peer State Result)
@@ -21,6 +20,7 @@
    (convex.core.util Utils)
    (convex.api Convex)
    (convex.core.data.prim CVMByte)
+   (java.io IOException)
    (java.util.concurrent TimeoutException)
    (java.net InetSocketAddress)))
 
@@ -39,7 +39,7 @@
    (let [f (io/file f)]
      (try
        (PFXTools/loadStore f passphrase)
-       (catch java.io.FileNotFoundException _
+       (catch IOException _ex
          (PFXTools/createStore f passphrase))))))
 
 (defn key-store-aliases 
