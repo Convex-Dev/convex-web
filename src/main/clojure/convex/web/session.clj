@@ -1,4 +1,4 @@
-(ns convex-web.session
+(ns convex.web.session
 
   "User session management."
 
@@ -114,6 +114,6 @@
 
 
 
-(defn persistent-session-store
+(defn store
   [conn]
   (PersistentSessionStore. conn))

@@ -1,11 +1,11 @@
 (ns convex-web.wallet
   (:require
-   [convex-web.session :as session]
+   [convex.web.session :as $.web.session]
    [convex-web.convex :as convex]))
 
 (defn account-key-pair [db {sid :convex-web.session/id
                             address :convex-web/address}]
-  (let [session (session/find-session db sid)
+  (let [session ($.web.session/find-session db sid)
 
         {wallet :convex-web.session/wallet} session]
     (reduce

@@ -4,7 +4,7 @@
    [convex-web.convex :as convex]
    [convex-web.system :as system]
    [convex-web.account :as account]
-   [convex-web.session :as session]
+   [convex.web.session :as $.web.session]
    [convex-web.command :as command]
    [convex-web.config :as config]
    [convex-web.encoding :as encoding]
@@ -53,8 +53,8 @@
   (get-in request [:cookies "ring-session" :value]))
 
 (defn session-addresses [context request]
-  (let [session (session/find-session (system/db context) (ring-session request))]
-    (->> (get session ::session/accounts)
+  (let [session ($.web.session/find-session (system/db context) (ring-session request))]
+    (->> (get session :convex-web.session/accounts)
          (map ::account/address)
          (into #{}))))
 
@@ -662,7 +662,7 @@
 
           {signer-address :convex-web.account/address} signer
 
-          signer (session/find-account (system/db system)
+          signer ($.web.session/find-account (system/db system)
                    {:sid sid
                     :address signer-address})
 
@@ -766,7 +766,7 @@
                   wallet-account (select-keys account [::account/address
                                                        ::account/key-pair])
 
-                  session (if-let [session (session/find-session (system/db system) sid)]
+                  session (if-let [session ($.web.session/find-session (system/db system) sid)]
                             ;; Update an existing session.
                             (update session :convex-web.session/wallet (fnil conj #{}) wallet-account)
 
@@ -853,7 +853,7 @@
 (defn -GET-session [system req]
   (try
     (let [id (ring-session req)
-          session (merge {::session/id id} (session/find-session (system/db system) id))]
+          session (merge {:convex-web.session/id id} ($.web.session/find-session (system/db system) id))]
       (-successful-response session))
     (catch Exception ex
       (u/log :logging.event/system-error
@@ -1161,7 +1161,7 @@
 
         sid (ring-session req)
 
-        session (if-let [session (session/find-session (system/db system) sid)]
+        session (if-let [session ($.web.session/find-session (system/db system) sid)]
                   ;; Update an existing session.
                   (update session :convex-web.session/wallet (fnil conj #{}) to-be-added-account)
 
@@ -1173,7 +1173,7 @@
 
         {db :db-after} (d/transact! (system/db-conn system) [session])]
 
-    (-successful-response (session/find-session db (ring-session req)))))
+    (-successful-response ($.web.session/find-session db (ring-session req)))))
 
 (defmethod invoke* :convex-web.invoke/wallet-remove-account
   [system req body]
@@ -1183,7 +1183,7 @@
 
         sid (ring-session req)
 
-        session (session/find-session (system/db system) sid)
+        session ($.web.session/find-session (system/db system) sid)
 
         {wallet :convex-web.session/wallet} session
 
@@ -1200,7 +1200,7 @@
         {db :db-after} (d/transact! (system/db-conn system) [{:convex-web.session/id sid
                                                               :convex-web.session/wallet wallet}])]
 
-    (-successful-response (session/find-session db (ring-session req)))))
+    (-successful-response ($.web.session/find-session db (ring-session req)))))
 
 (defn invoke
   "Internal invoke API.
@@ -1325,7 +1325,7 @@
         session-expires (.format now-plus-1-year DateTimeFormatter/RFC_1123_DATE_TIME)
 
         site-config (merge {:session
-                            {:store (session/persistent-session-store (system/db-conn system))
+                            {:store ($.web.session/store (system/db-conn system))
                              :flash true
                              :cookie-attrs
                              {:http-only false
