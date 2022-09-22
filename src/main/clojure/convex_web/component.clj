@@ -1,9 +1,10 @@
 (ns convex-web.component
   (:require [convex-web.web-server :as web-server]
-            [convex-web.store :as store]
             [convex-web.db :as db]
             [convex-web.convex :as convex]
             [convex-web.config :as config]
+
+            [convex.web.etch :as $.web.etch]
 
             [clojure.spec.alpha :as s]
             [clojure.spec.test.alpha :as stest]
@@ -128,7 +129,7 @@
            convex-world-peer-key-store-passphrase :key-store-passphrase
            convex-world-peer-key-passphrase :key-passphrase} peer-config
           
-          ^EtchStore convex-world-peer-store (store/create! peer-config)
+          ^EtchStore convex-world-peer-store ($.web.etch/open peer-config)
           
           convex-world-key-store (convex/key-store
                                    convex-world-peer-key-store-path 

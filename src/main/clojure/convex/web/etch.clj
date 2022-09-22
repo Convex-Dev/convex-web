@@ -1,4 +1,4 @@
-(ns convex-web.store
+(ns convex.web.etch
 
   "Preparing Etch instances."
 
@@ -14,7 +14,7 @@
 ;;;;;;;;;;
 
 
-(defn create!
+(defn open
 
   "Creates an Etch instance and sets it for global use."
   
