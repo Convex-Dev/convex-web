@@ -1,18 +1,26 @@
 (ns convex-web.wallet
-  (:require
-   [convex.web.session :as $.web.session]
-   [convex-web.convex :as convex]))
 
-(defn account-key-pair [db {sid :convex-web.session/id
-                            address :convex-web/address}]
-  (let [session ($.web.session/find-session db sid)
+  "Each wallet is designated by a session and can host one or several accounts."
 
-        {wallet :convex-web.session/wallet} session]
-    (reduce
-      (fn [_ account]
-        (let[{account-address :convex-web.account/address
-              account-key-pair :convex-web.account/key-pair} account]
-          (when (= (convex/address address) (convex/address account-address))
-            (reduced account-key-pair))))
-      nil
-      wallet)))
+  (:require [convex-web.convex  :as $.web.convex]
+            [convex.web.session :as $.web.session]))
+
+
+;;;;;;;;;;
+
+
+(defn account-key-pair
+
+  "Finds the key pair of the given account."
+  
+  [db {address    :convex-web/address
+       id-session :convex-web.session/id}]
+
+  (reduce (fn [_acc account]
+            (when (= ($.web.convex/address address)
+                     ($.web.convex/address (account :convex-web.account/address)))
+              (reduced (account :convex-web.account/key-pair))))
+          nil
+          (-> db
+              ($.web.session/find-session id-session)
+              (:convex-web.session/wallet))))

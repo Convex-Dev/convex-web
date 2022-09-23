@@ -9,7 +9,7 @@
             [ring.middleware.session.store :as ring.middleware.session.store]))
 
 
-;;;;;;;;;;
+;;;;;;;;;; Datalevin queries
 
 
 (defn all
@@ -79,7 +79,7 @@
            (session :convex-web.session/wallet))))
 
 
-;;;;;;;;;;
+;;;;;;;;;; Used for Ring middleware
 
 
 (deftype PersistentSessionStore
