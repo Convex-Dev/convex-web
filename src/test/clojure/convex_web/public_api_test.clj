@@ -1,7 +1,7 @@
 (ns convex-web.public-api-test
   (:require 
    [convex-web.component]
-   [convex-web.client :as client]
+   [convex.web.rest.client :as $.web.rest.client]
    [convex-web.config :as config]
    [convex-web.web-server :as web-server]
    [convex-web.system :as sys]
@@ -352,7 +352,7 @@
         (let [body (mock/json-body request {:address (convex-world-address-long)
                                             :accountKey (convex-world-account-checksum-hex)
                                             :hash "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b"
-                                            :sig (client/sig (convex-world-key-pair) "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
+                                            :sig ($.web.rest.client/sig (convex-world-key-pair) "4cf64e350799858086d05fc003c3fc2b7c8407e8b92574f80fb66a31e8a4e01b")})
               
               response (handler body)
               response-body (json/read-str (get response :body) :key-fn keyword)]
