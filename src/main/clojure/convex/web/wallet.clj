@@ -1,4 +1,4 @@
-(ns convex-web.wallet
+(ns convex.web.wallet
 
   "Each wallet is designated by a session and can host one or several accounts."
 

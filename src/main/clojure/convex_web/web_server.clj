@@ -8,7 +8,7 @@
    [convex-web.command :as command]
    [convex-web.config :as config]
    [convex-web.encoding :as encoding]
-   [convex-web.wallet :as wallet]
+   [convex.web.wallet :as $.web.wallet]
 
    [clojure.set :refer [rename-keys]]
    [clojure.edn :as edn]
@@ -1001,7 +1001,7 @@
 
           {:keys [address]} (encoding/transit-decode body)]
 
-      (if-let [kp (wallet/account-key-pair (system/db system)
+      (if-let [kp ($.web.wallet/account-key-pair (system/db system)
                     {:convex-web.session/id (ring-session req)
                      :convex-web/address address})]
         (-successful-response kp)
@@ -1122,7 +1122,7 @@
 (defmethod invoke* :convex-web.invoke/wallet-account-key-pair
   [system req body]
   (let [address (get-in body [:convex-web.invoke/body :address])]
-    (if-let [kp (wallet/account-key-pair (system/db system)
+    (if-let [kp ($.web.wallet/account-key-pair (system/db system)
                   {:convex-web.session/id (ring-session req)
                    :convex-web/address address})]
       (-successful-response kp)
