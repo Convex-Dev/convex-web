@@ -1,51 +1,107 @@
 (ns convex.web.pagination
-  (:require [convex-web.config :as config]))
+
+  "Paginating results."
+
+  (:require [convex-web.config :as $.web.config]))
+
+
+;;;;;;;;;; Values
+
 
 (def min-range
-  {:end config/default-range})
+     {:end $.web.config/default-range})
+
+
+;;;;;;;;;; Functions
+
 
 (defn decrease-range
-  "Range to query older items."
+
+  "Range for querying older items."
+
+
   ([start]
-   (decrease-range start config/default-range))
+
+   (decrease-range start
+                   $.web.config/default-range))
+
+
   ([start max-range]
-   (let [start' (max 0 (- start max-range))]
-     (if (= 0 start')
+
+   (let [start-2 (max 0
+                      (- start
+                         max-range))]
+     (if (= 0
+            start-2)
        {:end max-range}
-       {:start start'
-        :end start}))))
+       {:end   start
+        :start start-2}))))
+
+
 
 (defn increase-range
-  "Range to query more recent items."
+
+  "Range for querying more recent items."
+
+
   ([end total]
-   (increase-range end total config/default-range))
+
+   (increase-range end
+                   total
+                   $.web.config/default-range))
+
+
   ([end total max-range]
-   (let [end' (min total (+ end max-range))]
-     (if (>= (- end' end) config/default-range)
-       {:start end
-        :end end'}
-       {:end end'}))))
+
+   (let [end-2 (min total
+                    (+ end
+                       max-range))]
+     (if (>= (- end-2
+                end)
+             $.web.config/default-range)
+       {:end   end-2
+        :start end}
+       {:end end-2}))))
+
+
 
 (defn page-count
+
   "Returns the number of pages based on the number of items per page
    configuration."
+
   [num-of-items]
-  (max 1 (quot (+ num-of-items (dec config/default-range)) config/default-range)))
+
+  (max 1
+       (quot (+ num-of-items
+                (dec $.web.config/default-range))
+             $.web.config/default-range)))
+
+
 
 (defn page-num-reverse
+
   "Returns the page number for `offset`."
+
   [offset num-of-items]
-  (inc (quot (- (dec num-of-items) offset) convex-web.config/default-range)))
+
+  (inc (quot (- (dec num-of-items)
+                offset)
+             $.web.config/default-range)))
+
+
 
 (defn page-num
-  "Returns the page number for `offset`.
 
-   `n` is the number of items per page.
+  "Returns the page number for `offset` given the `n`umber of items per page.
 
-   Example:
-
+   ```clojure
    (page-num 50 10)
-   ;; => 5"
+   ;; => 5
+   ```"
+
   [offset n]
-  (max 1 #?(:clj  (int (Math/ceil (/ offset n)))
-            :cljs (js/Math.ceil (/ offset n)))))
+
+  (max 1
+       #?(:clj  (int (Math/ceil (/ offset n)))
+          :cljs (js/Math.ceil (/ offset n)))))
