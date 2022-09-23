@@ -12,7 +12,7 @@
    [convex-web.site.gui.account :as guia]
    [convex-web.site.stack :as stack]
    [convex-web.site.format :as format]
-   [convex-web.pagination :as pagination]
+   [convex.web.pagination :as $.web.pagination]
    [convex-web.site.session :as session]
    [convex-web.glossary :as glossary]
    [convex-web.config :as config]))
@@ -899,8 +899,8 @@
 
      ;; -- Pagination
      [gui/RangeNavigation
-      (merge range {:page-count (pagination/page-count total)
-                    :page-num (pagination/page-num end config/default-range)
+      (merge range {:page-count ($.web.pagination/page-count total)
+                    :page-num ($.web.pagination/page-num end config/default-range)
 
                     :first-label "First"
                     :first-href (rfe/href :route-name/testnet.accounts)
@@ -1072,23 +1072,23 @@
    ;; -- Pagination
    (let [{:keys [start end total] :as range} meta
 
-         {start-previous-range :start end-previous-range :end :as previous-range} (pagination/increase-range end total)
+         {start-previous-range :start end-previous-range :end :as previous-range} ($.web.pagination/increase-range end total)
 
          previous-query (if (= start-previous-range end-previous-range)
                           {}
                           previous-range)
 
-         {start-next-range :start end-next-range :end :as next-range} (pagination/decrease-range start)
+         {start-next-range :start end-next-range :end :as next-range} ($.web.pagination/decrease-range start)
 
          next-query (if (= start-next-range end-next-range)
-                      pagination/min-range
+                      $.web.pagination/min-range
                       next-range)]
 
      [gui/RangeNavigation
-      (merge range {:page-count (pagination/page-count total)
-                    :page-num (pagination/page-num-reverse start total)
+      (merge range {:page-count ($.web.pagination/page-count total)
+                    :page-num ($.web.pagination/page-num-reverse start total)
                     :first-href (rfe/href :route-name/testnet.blocks)
-                    :last-href (rfe/href :route-name/testnet.blocks {} pagination/min-range)
+                    :last-href (rfe/href :route-name/testnet.blocks {} $.web.pagination/min-range)
                     :previous-href (rfe/href :route-name/testnet.blocks {} previous-query)
                     :next-href (rfe/href :route-name/testnet.blocks {} next-query)
                     :ajax/status status})])
@@ -1135,22 +1135,22 @@
    ;; -- Pagination
    (let [{:keys [start end total] :as range} meta
 
-         {start-previous-range :start end-previous-range :end :as previous-range} (pagination/increase-range end total)
+         {start-previous-range :start end-previous-range :end :as previous-range} ($.web.pagination/increase-range end total)
 
          previous-query (if (= start-previous-range end-previous-range)
                           {}
                           previous-range)
 
-         {start-next-range :start end-next-range :end :as next-range} (pagination/decrease-range start)
+         {start-next-range :start end-next-range :end :as next-range} ($.web.pagination/decrease-range start)
 
          next-query (if (= start-next-range end-next-range)
-                      pagination/min-range
+                      $.web.pagination/min-range
                       next-range)]
      [gui/RangeNavigation
-      (merge range {:page-count (pagination/page-count total)
-                    :page-num (pagination/page-num-reverse start total)
+      (merge range {:page-count ($.web.pagination/page-count total)
+                    :page-num ($.web.pagination/page-num-reverse start total)
                     :first-href (rfe/href :route-name/testnet.transactions)
-                    :last-href (rfe/href :route-name/testnet.transactions {} pagination/min-range)
+                    :last-href (rfe/href :route-name/testnet.transactions {} $.web.pagination/min-range)
                     :previous-href (rfe/href :route-name/testnet.transactions {} previous-query)
                     :next-href (rfe/href :route-name/testnet.transactions {} next-query)
                     :ajax/status status})])

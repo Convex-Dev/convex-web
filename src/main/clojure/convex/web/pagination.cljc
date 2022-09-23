@@ -1,4 +1,4 @@
-(ns convex-web.pagination
+(ns convex.web.pagination
   (:require [convex-web.config :as config]))
 
 (def min-range
