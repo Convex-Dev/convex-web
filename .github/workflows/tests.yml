@@ -26,4 +26,4 @@ jobs:
           key: ${{ runner.os }}-deps-${{ hashFiles('**/deps.edn') }}
           restore-keys: ${{ runner.os }}-deps
       - name: Run tests
-        run: bin/kaocha
+        run: bin/test

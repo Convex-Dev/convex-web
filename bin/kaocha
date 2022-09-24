@@ -1,3 +1,0 @@
-#!/bin/sh -x
-
-clojure -M:test:kaocha:logback-noop -m kaocha.runner "$@"
