@@ -32,7 +32,7 @@
                     (when-let [parent (.getParentFile etch-store-file)]
                       (when-not (.exists parent)
                         (.mkdirs parent)))
-                    ($.db/open etch-store-file)))]
+                    ($.db/open (str etch-store-file))))]
       ($.db/global-set store)
       (log/debug "Etch instance ready"
                  store)
