@@ -175,6 +175,7 @@
   (Context/createFake (server-state server) (server-peer-controller server)))
 
 (defn restore-key-pair
+  ;; TODO. Should be able to create a new key-pair if needed.
   ^AKeyPair [{:keys [^java.security.KeyStore key-store
                      ^String alias 
                      ^String passphrase]}]

@@ -1,6 +1,0 @@
-#kaocha/v1 {:tests [{:id :unit
-                     :test-paths ["src/test/clojure"]}]
-
-            :kaocha/fail-fast? false
-
-            :reporter [kaocha.report.progress/report]}

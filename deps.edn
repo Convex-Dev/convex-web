@@ -1,150 +1,458 @@
-{:paths ["src/main/clojure" "src/main/resources"]
+{;; MAESTRO MODES
+ ;;
+ :maestro/mode+ {:dev           {:maestro/alias+   [:task/dev]
+                                 :maestro/profile+ [dev
+                                                    test]}
+
+                 :test          {:maestro/alias+   [:task/test]
+                                 :maestro/profile+ [^:direct? test]}
+
+                 :test-upstream {:maestro/alias+   [:task/test]
+                                 :maestro/profile+ [test]}}
+
+
+ ;; OPTIONS FOR MAESTRO TOOLING
+ ;;
+ :maestro.plugin.kaocha/path       "private/maestro-kaocha.edn"
+ :maestro.plugin.quickdoc/option+  {:git/branch  "update/maestro"
+                                    :github/repo "https://github.com/convex-dev/convex.cljc"
+                                    :toc         true
+                                    :var-links   true
+                                    :var-pattern :wikilinks}
+
+
+ ;; MISC
+
  
  :mvn/repos
  {"ossrh" {:url "https://s01.oss.sonatype.org/content/repositories/snapshots"}}
- 
- :deps
- {org.clojure/clojure {:mvn/version "1.11.1"}
-  org.clojure/tools.logging {:mvn/version "1.1.0"}
-  org.clojure/data.json {:mvn/version "2.4.0"}
-  
-  com.cognitect/transit-clj {:mvn/version "1.0.324"}
-  com.cognitect/transit-cljs {:mvn/version "0.8.269"}
-  com.cognitect/anomalies {:mvn/version "0.1.12"}
-  
-  world.convex/net.clj {:mvn/version "0.0.0-alpha3"}
-  
-  ;; world.convex/convex-core {:local/root "convex-core-0.7.0-rc3-06ee2229b8fa9abaf28309b0b609c52fcd91ba7c.jar"}
-  ;; world.convex/convex-peer {:local/root "convex-peer-0.7.0-rc3-06ee2229b8fa9abaf28309b0b609c52fcd91ba7c.jar"}
-  
-  prestancedesign/get-port {:mvn/version "0.1.1"}
-  
-  com.stuartsierra/component {:mvn/version "1.0.0"}
-  
-  
-  ;; -- Logging
-  
-  ch.qos.logback/logback-classic {:mvn/version "1.2.6"}
-  
-  ;; Logback implements the SLF4J API
-  org.slf4j/slf4j-api {:mvn/version "1.7.32"}
-  
-  ;; Redirect Apache Commons Logging to Logback via the SLF4J API
-  org.slf4j/jcl-over-slf4j {:mvn/version "1.7.32"}
-  
-  ;; Redirect Log4j 1.x to Logback via the SLF4J API
-  org.slf4j/log4j-over-slf4j {:mvn/version "1.7.32"}
-  
-  ;; Redirect java.util.logging to Logback via the SLF4J API.
-  org.slf4j/jul-to-slf4j {:mvn/version "1.7.32"}
-  
-  ;; Redirect Log4j 2.x to Logback via the SLF4J API
-  org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.14.1"}
-  
-  ;; Google Cloud Logging appender
-  com.google.cloud/google-cloud-logging-logback {:mvn/version "0.119.0-alpha"}
-  
-  ;; IMPORTANT
-  ;; `com.google.cloud/google-cloud-logging-logback` has a transitive
-  ;; dependency with `com.google.guava/guava` version `30.0-android`.
-  ;; The issue is that version `30.0-android`
-  ;; doesn't have the class `com.google.common.collect.Streams`,
-  ;; which is required by the ClojureScript compiler,
-  ;; so Shadow CLJS release fails with this message:
-  ;; ```
-  ;; Execution error (ClassNotFoundException) at jdk.internal.loader.BuiltinClassLoader/loadClass (BuiltinClassLoader.java:606).
-  ;; com.google.common.collect.Streams
-  ;; ```
-  com.google.guava/guava {:mvn/version "30.0-jre"}
-  
-  com.brunobonacci/mulog {:mvn/version "0.8.0"}
-  
-  lambdaisland/glogi {:mvn/version "1.0.106"}
-  
-  ;; -- End-of-Logging
-  
-  
-  aero/aero {:mvn/version "1.1.6"}
-  ring/ring-core {:mvn/version "1.9.4"}
-  ring/ring-defaults {:mvn/version "0.3.3"}
-  ring/ring-mock {:mvn/version "0.4.0"}
-  ring-cors/ring-cors {:mvn/version "0.1.13"}
-  http-kit/http-kit {:mvn/version "2.5.3"}
-  compojure/compojure {:mvn/version "1.6.2"}
-  hiccup/hiccup {:mvn/version "1.0.5"}
-  reagent/reagent {:mvn/version "1.1.0"}
-  re-frame/re-frame {:mvn/version "1.2.0"}
-  metosin/reitit-frontend {:mvn/version "0.5.15"}
-  datalevin/datalevin {:mvn/version "0.4.40"}
-  cljfmt/cljfmt {:mvn/version "0.8.0"}
-  rewrite-clj/rewrite-clj {:mvn/version "1.0.682-alpha"}
-  expound/expound {:mvn/version "0.8.10"}
-  cljs-ajax/cljs-ajax {:mvn/version "0.8.4"}
-  borkdude/sci {:mvn/version "0.2.5"}}
- 
- :aliases
- {;; -- Server dev
-  :dev
-  {:extra-paths ["src/dev/clojure"]
-   
-   :extra-deps {com.stuartsierra/component.repl {:mvn/version "0.2.0"
-                                                 :exclusions [org.clojure/tools.namespace]}
-                
-                org.clojure/tools.namespace {:mvn/version "1.1.0"}}}
-  
-  
-  ;; -- Site dev
-  :site-dev
-  {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.879"}
-                thheller/shadow-cljs {:mvn/version "2.15.10"}
-                binaryage/devtools {:mvn/version "1.0.4"}
-                re-frisk/re-frisk {:mvn/version "1.5.2"}}}
-  
-  
-  ;; -- Test
-  :test
-  {:extra-paths ["src/test/clojure"]}
-  
-  
-  ;; -- Socket REPL
-  :repl
-  {:jvm-opts ["-Dclojure.server.repl={:port,5555,:accept,clojure.core.server/repl}"]}
-  
-  
-  ;; -- Kaocha test runner
-  :kaocha
-  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.60.945"}}}
-  
-  
-  
-  
-  ;; -- Run server
-  :main
-  {:main-opts ["-m" "convex-web.core"]}
-  
-  
-  ;; -- Logback configuration
-  :logback-noop
-  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-noop.xml"]}
-  
-  :logback-site
-  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-site.xml"]}
-  
-  :logback-dev
-  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-dev.xml"]}
-  
-  :logback-test
-  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-test.xml"]}
-  
-  :logback-prod
-  {:jvm-opts ["-Dlogback.configurationFile=logback/logback-prod.xml"]}
-  
-  
-  ;; -- Check outdated dependencies
-  ;; clj -M:outdated
-  :outdated
-  {:replace-deps
-   {com.github.liquidz/antq {:mvn/version "1.1.0"}
-    org.slf4j/slf4j-nop {:mvn/version "1.7.32"}}
 
-   :main-opts ["-m" "antq.core"]}}}
+ 
+;;;;;;;;;;
+
+
+ :aliases
+ {
+
+  ;; EXTERNAL DEPENDENCIES
+
+  
+  :ext/aero
+
+  {:extra-deps  {aero/aero {:mvn/version "1.1.6"}}
+   :maestro/doc ""}
+
+
+  :ext/anomalies
+
+  {:extra-deps  {com.cognitect/anomalies {:mvn/version "0.1.12"}}
+   :maestro/doc ""}
+
+
+  :ext/antq
+  {:maestro/doc  ""
+   :main-opts    ["-m" "antq.core"]
+   :replace-deps {com.github.liquidz/antq {:mvn/version "1.1.0"}
+                  org.slf4j/slf4j-nop {:mvn/version "1.7.32"}}}
+
+
+  :ext/babashka.cli
+
+  {:extra-deps  {org.babashka/cli {:mvn/version "0.4.36"}}
+   :maestro/doc ""}
+
+
+  :ext/binaryage.devtools
+
+  {:extra-deps  {binaryage/devtools {:mvn/version "1.0.4"}}
+   :maestro/doc ""}
+
+
+  :ext/cljfmt
+
+  {:extra-deps  {cljfmt/cljfmt {:mvn/version "0.8.0"}}
+   :maestro/doc ""}
+
+
+  :ext/cljs-ajax
+
+  {:extra-deps  {cljs-ajax/cljs-ajax {:mvn/version "0.8.4"}}
+   :maestro/doc ""}
+
+
+  :ext/clojure
+
+  {:extra-deps  {org.clojure/clojure {:mvn/version "1.11.1"}}
+   :maestro/doc ""}
+
+
+  :ext/clojure.data.json
+
+  {:extra-deps  {org.clojure/data.json {:mvn/version "2.4.0"}}
+   :maestro/doc ""}
+  
+  
+  :ext/clojure.tools.logging
+
+  {:extra-deps  {org.clojure/tools.logging {:mvn/version "1.1.0"}}
+   :maestro/doc ""}
+
+
+  :ext/clojure.tools.namespace
+
+  {:extra-deps  {org.clojure/tools.namespace {:mvn/version "1.1.0"}}
+   :maestro/doc ""}
+
+
+  :ext/clojurescript
+
+  {:extra-deps  {org.clojure/clojurescript {:mvn/version "1.10.879"}}
+   :maestro/doc ""}
+
+
+  :ext/compojure
+
+  {:extra-deps  {compojure/compojure {:mvn/version "1.6.2"}}
+   :maestro/doc ""}
+
+
+  :ext/component
+
+  {:extra-deps  {com.stuartsierra/component {:mvn/version "1.0.0"}}
+   :maestro/doc ""}
+
+
+  :ext/component.repl
+
+  {:extra-deps  {com.stuartsierra/component.repl {:mvn/version "0.2.0"}}
+   :maestro/doc ""}
+
+
+  :ext/convex.net
+
+  {:extra-deps  {world.convex/net.clj {:mvn/version "0.0.0-alpha3"}}
+   :maestro/doc ""}
+
+
+  :ext/datalevin
+
+  {:extra-deps  {datalevin/datalevin {:mvn/version "0.4.40"}}
+   :maestro/doc ""}
+
+
+  :ext/expound
+
+  {:extra-deps  {expound/expound {:mvn/version "0.8.10"}}
+   :maestro/doc ""}
+
+  
+  :ext/get-port
+
+  {:extra-deps  {prestancedesign/get-port {:mvn/version "0.1.1"}}
+   :maestro/doc ""}
+
+
+  :ext/glogi
+
+  {:extra-deps  {lambdaisland/glogi {:mvn/version "1.0.106"}}
+   :maestro/doc ""}
+
+  
+  :ext/google-cloud-logging-logback
+
+  {:extra-deps      {com.google.cloud/google-cloud-logging-logback {:mvn/version "0.119.0-alpha"}}
+   :maestro/doc     "Google Cloud logging appender
+                    
+                     Has a transitive dependency on Google Guava but that version is missing a class used
+                     by Shadow-CLJS. Hence, it requires a newer version of Guava."
+   :maestro/require [:ext/guava]}
+
+
+  :ext/guava
+
+  {:extra-deps  {com.google.guava/guava {:mvn/version "30.0-jre"}}
+   :maestro/doc ""}
+
+
+  :ext/hiccup
+
+  {:extra-deps  {hiccup/hiccup {:mvn/version "1.0.5"}}
+   :maestro/doc ""}
+
+
+  :ext/http-kit
+
+  {:extra-deps  {http-kit/http-kit {:mvn/version "2.5.3"}}
+   :maestro/doc ""}
+
+
+  :ext/jcl-over-slf4j
+
+  {:extra-deps  {org.slf4j/jcl-over-slf4j {:mvn/version "1.7.32"}}
+   :maestro/doc "Redirect Apache Commons Logging to Logback via the SLF4J API"}
+
+
+  :ext/jul-to-slf4j
+
+  {:extra-deps  {org.slf4j/jul-to-slf4j {:mvn/version "1.7.32"}}
+   :maestro/doc "Redirect java.util.logging to Logback via the SLF4J API."}
+
+
+  :ext/kaocha
+
+  {:extra-deps  {lambdaisland/kaocha {:mvn/version "1.60.945"}}
+   :maestro/doc ""}
+
+
+  :ext/log4j-over-slf4j-1
+
+  {:extra-deps  {org.slf4j/log4j-over-slf4j {:mvn/version "1.7.32"}}
+   :maestro/doc "Redirect Log4j 1.x to Logback via the SLF4J API"}
+
+
+  :ext/log4j-over-slf4j-2
+
+  {:extra-deps  {org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.14.1"}}
+   :maestro/doc "Redirect Log4j 2.x to Logback via the SLF4J API"}
+
+
+  :ext/logback-classic
+
+  {:extra-deps  {ch.qos.logback/logback-classic {:mvn/version "1.2.6"}}
+   :maestro/doc "Implements the SLF4 API"}
+
+
+  :ext/maestro.idiom
+
+  {:extra-deps      {protosens/maestro.idiom {:deps/root "module/maestro.idiom"
+                                              :git/sha   "2d41c8a"
+                                              :git/tag   "stable/2022-10-13"
+                                              :git/url   "https://github.com/protosens/monorepo.cljc"}}
+   :maestro/doc     ""
+   :maestro/require [:ext/quickdoc.jvm]}
+
+
+  :ext/mulog
+
+  {:extra-deps  {com.brunobonacci/mulog {:mvn/version "0.8.0"}}
+   :maestro/doc ""}
+
+
+  :ext/quickdoc.jvm
+
+  {:extra-deps      {io.github.borkdude/quickdoc {:deps/root "jvm"
+                                                  :git/sha   "c5320cbe311b651a60b47f4d00d7e8ab63291b6e"}}
+   :maestro/doc     ""
+   :maestro/require [:ext/babashka.cli]}
+
+
+  :ext/re-frame
+
+  {:extra-deps  {re-frame/re-frame {:mvn/version "1.2.0"}}
+   :maestro/doc ""}
+
+
+  :ext/re-frisk
+
+  {:extra-deps  {re-frisk/re-frisk {:mvn/version "1.5.2"}}
+   :maestro/doc ""}
+
+
+  :ext/reagent
+
+  {:extra-deps  {reagent/reagent {:mvn/version "1.1.0"}}
+   :maestro/doc ""}
+
+
+  :ext/reitit-frontend
+
+  {:extra-deps  {metosin/reitit-frontend {:mvn/version "0.5.15"}}
+   :maestro/doc ""}
+
+
+  :ext/rewrite-clj
+
+  {:extra-deps  {rewrite-clj/rewrite-clj {:mvn/version "1.0.682-alpha"}}
+   :maestro/doc ""}
+
+
+  :ext/ring.core
+
+  {:extra-deps  {ring/ring-core {:mvn/version "1.9.4"}}
+   :maestro/doc ""}
+
+
+  :ext/ring.cors
+
+  {:extra-deps  {ring-cors/ring-cors {:mvn/version "0.1.13"}}
+   :maestro/doc ""}
+
+
+  :ext/ring.defaults
+
+  {:extra-deps  {ring/ring-defaults {:mvn/version "0.3.3"}}
+   :maestro/doc ""}
+
+
+  :ext/ring.mock
+
+  {:extra-deps  {ring/ring-mock {:mvn/version "0.4.0"}}
+   :maestro/doc ""}
+
+
+  :ext/shadow-cljs
+
+  {:extra-deps  {thheller/shadow-cljs {:mvn/version "2.15.10"}}
+   :maestro/doc ""}
+
+
+  :ext/sci
+
+  {:extra-deps  {borkdude/sci {:mvn/version "0.2.5"}}
+   :maestro/doc ""}
+
+
+  :ext/slf4j-api
+
+  {:extra-deps  {org.slf4j/slf4j-api {:mvn/version "1.7.32"}}
+   :maestro/doc "Logging abstraction layer"}
+
+
+  :ext/transit-clj
+
+  {:extra-deps  {com.cognitect/transit-clj {:mvn/version "1.0.324"}}
+   :maestro/doc ""}
+
+
+  :ext/transit-cljs
+
+  {:extra-deps  {com.cognitect/transit-cljs {:mvn/version "0.8.269"}}
+   :maestro/doc ""}
+
+
+
+
+  ;; BUNDLES
+
+
+  :bundle/module
+
+  {:maestro/doc     "All relevant modules"
+   :maestro/require [:module/app
+                     :module/server]}
+
+
+  :bundle/test
+
+  {:maestro/doc        "Bundles necessities for testing"
+   :maestro/on-require [protosens.maestro.plugin.kaocha/prepare]
+   :maestro/require    [:ext/kaocha
+                        :ext/maestro.idiom]}
+
+
+
+  ;; TASKS
+
+
+  :task/dev
+
+  {:maestro/doc     "Provides what is commonly necessary during dev"
+   :maestro/require [:bundle/test]}
+
+
+  :task/test
+
+  {:main-opts       ["-m" "kaocha.runner"
+                     "--config-file" "kaocha.edn"]
+   :maestro/doc     "Starts the test runner"
+   :maestro/require [:bundle/test]}
+
+
+
+
+  ;; MODULES
+
+
+  :dev/app
+
+  {:jvm-opts        ["-Dlogback.configurationFile=logback/logback-site.xml"]
+   :maestro/require [:ext/binaryage.devtools
+                     :ext/clojurescript
+                     :ext/re-frisk
+                     :ext/shadow-cljs]}
+
+
+  :module/app
+  {:maestro/doc     ""
+   :maestro/require [:module/server
+                     {dev :dev/app}]}
+
+  ;---
+
+  :dev/server
+
+  {:extra-paths     ["src/dev/clojure"]
+   :jvm-opts        ["-Dlogback.configurationFile=logback/logback-dev.xml"]
+   :maestro/require [:ext/clojure.tools.namespace
+                     :ext/component.repl]}
+
+
+  :module/server
+
+  {:extra-paths     ["src/main/clojure"
+                     "src/main/resources"] 
+   :maestro/doc     ""
+   :maestro/require [:ext/aero
+                     :ext/anomalies
+                     :ext/cljfmt
+                     :ext/cljs-ajax
+                     :ext/clojure
+                     :ext/clojure.data.json
+                     :ext/clojure.tools.logging
+                     :ext/compojure
+                     :ext/component
+                     :ext/convex.net
+                     :ext/datalevin
+                     :ext/expound
+                     :ext/get-port
+                     :ext/glogi
+                     :ext/google-cloud-logging-logback
+                     :ext/guava
+                     :ext/hiccup
+                     :ext/http-kit
+                     :ext/jcl-over-slf4j
+                     :ext/jul-to-slf4j
+                     :ext/log4j-over-slf4j-1
+                     :ext/log4j-over-slf4j-2
+                     :ext/logback-classic
+                     :ext/mulog
+                     :ext/re-frame
+                     :ext/reagent
+                     :ext/reitit-frontend
+                     :ext/rewrite-clj
+                     :ext/ring.core
+                     :ext/ring.cors
+                     :ext/ring.defaults
+                     :ext/ring.mock
+                     :ext/sci
+                     :ext/slf4j-api
+                     :ext/transit-clj
+                     :ext/transit-cljs
+                     {dev :dev/server}
+                     {test :test/server}]}
+
+
+  :run/server
+
+  {:jvm-opts        ["-Dlogback.configurationFile=logback/logback-prod.xml"]
+   :maestro/require [:module/server]
+   :main-opts       ["-m" "convex-web.core"]}
+
+
+  :test/server
+
+  {:jvm-opts    ["-Dlogback.configurationFile=logback/logback-test.xml"]
+   :extra-paths ["src/test/clojure"]}
+
+  
+  }}

@@ -19,3 +19,4 @@ convex-web.sublime-workspace
 .clj-kondo
 *.pfx
 .lsp
+private

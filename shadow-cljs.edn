@@ -1,13 +1,11 @@
-{:deps {:aliases [:site-dev :logback-site]}
-
- :nrepl false
+{:deps true
 
  :jvm-opts ["-Xmx2G"]
 
  :dev-http {8000 "src/main/resources/public"}
 
  :builds
- {:main
+ {:module/app
   {:target :browser
    :modules {:main {:init-fn convex-web.site.app/init}}
    :output-dir "src/main/resources/public/js"

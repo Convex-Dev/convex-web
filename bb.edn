@@ -1,0 +1,196 @@
+{:deps
+ {protosens/maestro.idiom {:deps/root "module/maestro.idiom"
+                           :git/sha   "2d41c8a"
+                           :git/tag   "stable/2022-10-13"
+                           :git/url   "https://github.com/protosens/monorepo.cljc"}}
+
+
+ :tasks
+ {aliases
+  {:doc           "Print all required aliases"
+   :protosens/doc "Given an alias or a vector of aliases and profiles, prints all necessary
+                   aliases, following `:maestro/require` in `deps.edn`.
+
+                        bb aliases :module/web
+                        bb aliases '[dev :module/web]'
+
+                   Also accepts a mode, see available ones in `deps.edn`:
+                    
+                        bb aliases :dev :module/web"
+   :requires      ([protosens.maestro])
+   :task          (protosens.maestro/main)}
+
+
+  api
+  {:doc           "Generate documentation for modules"
+   :protosens/doc "Generate a markdown file for each module specifying a path via
+                   `:maestro.plugin.quickdoc.path/output`.
+                   
+                   It will contain a full description of all namespaces belonging to the module,
+                   with vars and usage."
+   :requires      ([protosens.maestro.plugin.quickdoc])
+   :task          (protosens.maestro.plugin.quickdoc/module+)}
+
+
+  changelog+
+  {:doc           "Template all changelogs with a stable tag"
+   :protosens/doc "Takes that tag as argument.
+   
+                   Changelogs use `{{ next-release }}` as a placeholder for the next
+                   stable tag."
+   :requires      ([protosens.task.changelog])
+   :task          (protosens.task.changelog/main)}
+
+
+  dev
+  {:doc           "Starts dev mode with the given module(s)"
+   :protosens/doc "Shortcut for launching dev mode given an alias or a vector of aliases and profiles.
+           
+                   For instance, this:
+                   
+                       bb dev :module/web
+                   
+                   Is equivalent to:
+                   
+                       clojure -M$( bb aliases :dev :module/web )"
+   :requires      ([protosens.maestro.process])
+   :task          (protosens.maestro.process/run {:maestro/mode            :dev
+                                                  :maestro.process/command ["clj" "-M__"]})}
+
+
+  expose
+  {:doc           "Expose modules meant to be consumed as Git libraries"
+   :protosens/doc "By generating a custom `deps.edn` file in the `:meastro/root` of aliases that
+                   have a `:maestro.git.lib/name`.
+                   
+                   Consumers can then require the repository as a Git dependency and point to a
+                   particular module using `:deps/root`."
+   :requires      ([protosens.maestro.module.expose])
+   :task          (protosens.maestro.module.expose/deploy)}
+
+
+  genesis
+  {:doc           "Run before using any of these tasks"
+   :protosens/doc "Syncs dependencies and paths between `bb.edn` and `deps.edn`.
+                   
+                   It is important running this after cloning the repository and
+                   after modifying dependencies or source paths needed by these
+                   Babashka tasks."
+   :requires      ([protosens.maestro.module.uber])
+   :task          (protosens.maestro.module.uber/generate :module/task)}
+
+
+  help
+  {:doc           "Print documentation for the given task"
+   :protosens/doc "If there is any."
+   :requires      ([protosens.bb.help])
+   :task          (-> (protosens.bb.help/task)
+                      (protosens.bb.help/print))}
+
+
+  help:missing
+  {:doc      "Print tasks that do no have extra documentation"
+   :requires ([protosens.bb.help])
+   :task     (-> (protosens.bb.help/undocumented-task+)
+                 (protosens.bb.help/print))}
+
+
+  module:listing
+  {:doc           "Generate `./module/README.md`"
+   :protosens/doc "Lists all exposed and private modules."
+   :requires      ([protosens.maestro.idiom.listing])
+   :task          (protosens.maestro.idiom.listing/main "module/README.md")}
+
+
+  module:readme
+  {:doc           "Generate READMEs for all modules"
+   :protosens/doc "For each module, writes a header composed of the root and relevant information (link to
+                   API, Git dependency info, etc).
+
+                   If `./doc/README.md` exists relative to the root, its content is appended."
+   :requires       ([protosens.maestro.idiom.readme])
+   :task           (protosens.maestro.idiom.readme/main)}
+
+
+  mtempl 
+  {:doc           "Execute a shell command with computed required aliases"
+   :protosens/doc "The `aliases` task prints required aliases and this is typically useful in
+                   combination with Clojure CLI. For instance:
+
+                     clojure -M$( bb aliases :test :module/web )
+
+                   However, some shells or some environments do not understand such substitutions
+                   with `$()` (or similar). This task replaces `__` with the printed required
+                   aliases.
+                  
+                   For instance:
+
+                     bb mtempl :test :module/web -- clojure -M__
+                  
+                   Before `--` is what would have been provided to the `aliases`, after is the command
+                   to template."
+   :requires      ([protosens.maestro.process])
+   :task          (protosens.maestro.process/run)}
+
+
+  lint
+  {:doc           "Lint Clojure code throughout the whole repository"
+   :protosens/doc "Using `clj-kondo` which must be accessible in the terminal.
+
+                   See the `lint:prepare` task which is necessary for initialization."
+   :requires      ([protosens.maestro.plugin.clj-kondo])
+   :task          (protosens.maestro.plugin.clj-kondo/lint)}
+
+
+  lint:prepare
+  {:doc           "Prepare for `lint`"
+   :protosens/doc "Must be called prior to using the `lint` task and ideally when dependencies are
+                   updated. This will lint and cache dependencies as well as copying configuration
+                   files."
+   :requires      ([protosens.maestro.plugin.clj-kondo])
+   :task          (protosens.maestro.plugin.clj-kondo/prepare)}
+
+
+  pprint-cp
+  {:doc           "Pretty-print the classpath received from STDIN"
+   :protosens/doc "Useful in combination with `-Spath`. For instance:
+                 
+                       clojure -Spath -A$( bb aliases :module/web ) | bb pprint-cp
+                   
+                   In reality, it will pretty print any string where items are separated by `:`.
+                   
+                       bb aliases :module/web | bb pprint-cp"
+   :requires      ([protosens.classpath])
+   :task          (protosens.classpath/pprint)}
+
+
+  stable:tag
+  {:doc      "Tag the last commit as a stable release"
+   :requires ([protosens.maestro.idiom.stable])
+   :task     (println (protosens.maestro.idiom.stable/tag-add))}
+
+
+  test
+  {:doc           "Tests the given module(s)"
+   :protosens/doc "Shortcut for launching tests given an alias or a vector of aliases and profiles.
+
+                   For instance, this:
+                   
+                       bb test :module/web
+                   
+                   Is equivalent to:
+                   
+                       clojure -M$( bb aliases :test :module/web )"
+   :requires      ([protosens.maestro.process])
+   :task          (protosens.maestro.process/run {:maestro/mode            :test
+                                                  :maestro.process/command ["clojure" "-M__"]})}
+
+
+  test-upstream
+  {:doc      "Like `test` but also test transitively required aliases"
+   :requires ([protosens.maestro.process])
+   :task     (protosens.maestro.process/run {:maestro/mode            :test-upstream
+                                             :maestro.process/command ["clojure" "-M__"]})}
+
+
+  }}

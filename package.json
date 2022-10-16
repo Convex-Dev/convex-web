@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "server": "npx shadow-cljs server",
-    "app:watch": "npx shadow-cljs watch :main",
-    "app:release": "npx shadow-cljs release main",
+    "app:watch": "bb mtempl :dev '[:module/app :ext/shadow-cljs]' -- shadow-cljs -A__ watch :module/app",
+    "app:release": "bb mtempl '[:module/app :ext/shadow-cljs]' -- shadow-cljs -A__ release :module/app",
     "styles:watch": "TAILWIND_MODE=watch npx postcss tailwind.css -o src/main/resources/public/css/styles.css --verbose -w",
     "styles:release": "NODE_ENV=production npx postcss tailwind.css -o src/main/resources/public/css/styles.css --verbose"
   },

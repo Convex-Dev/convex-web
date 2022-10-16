@@ -34,10 +34,11 @@ npm run app:watch
 
 ### Server
 
-Run REPL with the `dev` alias:
-```
-clj -A:dev
-```
+Run REPL with the `dev` task, providing any number of required aliases:
+
+    bb dev :module/server
+
+    bb dev '[:module/app :module/server]'
 
 Start server on port 8080:
 ```
