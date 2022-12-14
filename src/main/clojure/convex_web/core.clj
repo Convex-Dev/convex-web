@@ -4,7 +4,8 @@
             [clojure.tools.logging :as log])
   
   (:import 
-   (convex.core.util Shutdown)))
+   (convex.core.util Shutdown))
+  (:gen-class))
 
 (def system nil)
 
