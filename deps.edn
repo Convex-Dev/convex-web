@@ -62,7 +62,7 @@
   reagent/reagent {:mvn/version "1.1.0"}
   re-frame/re-frame {:mvn/version "1.2.0"}
   metosin/reitit-frontend {:mvn/version "0.5.15"}
-  datalevin/datalevin {:mvn/version "0.4.40"}
+  datalevin/datalevin {:mvn/version "0.7.7"}
   cljfmt/cljfmt {:mvn/version "0.8.0"}
   rewrite-clj/rewrite-clj {:mvn/version "1.0.682-alpha"}
   expound/expound {:mvn/version "0.8.10"}
@@ -79,7 +79,8 @@
                 
                 org.clojure/tools.namespace {:mvn/version "1.1.0"}}
 
-   :jvm-opts ["--add-opens=java.base/java.nio=ALL-UNNAMED"]}
+   :jvm-opts ["--add-opens=java.base/java.nio=ALL-UNNAMED"
+              "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED"]}
   
   
   ;; -- Site dev
