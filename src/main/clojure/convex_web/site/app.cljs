@@ -125,8 +125,8 @@
   (fn [{:keys [db]} [_ csrf-token]]
     {:db (merge db #:site {:pages pages
                            :runtime {:runtime/csrf-token csrf-token}})
-
-     :runtime.fx/do session/initialize}))
+     
+     :fx [[:runtime.fx/do session/initialize]]}))
 
 ;; ---
 
@@ -846,6 +846,10 @@
   (.registerLanguage hljs "clojure" hljs-clojure)
   (.registerLanguage hljs "javascript" hljs-javascript)
 
-  (re-frame/dispatch-sync [::!init (.-value (.getElementById js/document "__anti-forgery-token"))])
+  (re-frame/dispatch-sync [::!init (if-let [el (.getElementById js/document "__anti-forgery-token")]
+                                     (.-value el)
+                                     (do
+                                       (js/console.warn "Missing CSRF Token")
+                                       ""))])
 
   (start))

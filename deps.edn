@@ -4,7 +4,7 @@
  {"ossrh" {:url "https://s01.oss.sonatype.org/content/repositories/snapshots"}}
  
  :deps
- {org.clojure/clojure {:mvn/version "1.10.3"}
+ {org.clojure/clojure {:mvn/version "1.11.1"}
   org.clojure/tools.logging {:mvn/version "1.1.0"}
   org.clojure/data.json {:mvn/version "2.4.0"}
   
@@ -44,22 +44,9 @@
   ;; Google Cloud Logging appender
   com.google.cloud/google-cloud-logging-logback {:mvn/version "0.119.0-alpha"}
   
-  ;; IMPORTANT
-  ;; `com.google.cloud/google-cloud-logging-logback` has a transitive
-  ;; dependency with `com.google.guava/guava` version `30.0-android`.
-  ;; The issue is that version `30.0-android`
-  ;; doesn't have the class `com.google.common.collect.Streams`,
-  ;; which is required by the ClojureScript compiler,
-  ;; so Shadow CLJS release fails with this message:
-  ;; ```
-  ;; Execution error (ClassNotFoundException) at jdk.internal.loader.BuiltinClassLoader/loadClass (BuiltinClassLoader.java:606).
-  ;; com.google.common.collect.Streams
-  ;; ```
-  com.google.guava/guava {:mvn/version "30.0-jre"}
-  
   com.brunobonacci/mulog {:mvn/version "0.8.0"}
   
-  lambdaisland/glogi {:mvn/version "1.0.106"}
+  lambdaisland/glogi {:mvn/version "1.2.164"}
   
   ;; -- End-of-Logging
   
@@ -75,7 +62,7 @@
   reagent/reagent {:mvn/version "1.1.0"}
   re-frame/re-frame {:mvn/version "1.2.0"}
   metosin/reitit-frontend {:mvn/version "0.5.15"}
-  datalevin/datalevin {:mvn/version "0.4.40"}
+  datalevin/datalevin {:mvn/version "0.7.7"}
   cljfmt/cljfmt {:mvn/version "0.8.0"}
   rewrite-clj/rewrite-clj {:mvn/version "1.0.682-alpha"}
   expound/expound {:mvn/version "0.8.10"}
@@ -90,13 +77,17 @@
    :extra-deps {com.stuartsierra/component.repl {:mvn/version "0.2.0"
                                                  :exclusions [org.clojure/tools.namespace]}
                 
-                org.clojure/tools.namespace {:mvn/version "1.1.0"}}}
+                org.clojure/tools.namespace {:mvn/version "1.1.0"}}
+
+   ;; Java 16 and Java 17 encapsulate JDK internal APIs, which impacts Datalevin.
+   ;; https://blogs.oracle.com/javamagazine/post/its-time-to-move-your-applications-to-java-17-heres-why-and-heres-how
+   :jvm-opts ["--add-opens=java.base/java.nio=ALL-UNNAMED"
+              "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED"]}
   
   
   ;; -- Site dev
   :site-dev
-  {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.879"}
-                thheller/shadow-cljs {:mvn/version "2.15.10"}
+  {:extra-deps {thheller/shadow-cljs {:mvn/version "2.20.15"}
                 binaryage/devtools {:mvn/version "1.0.4"}
                 re-frisk/re-frisk {:mvn/version "1.5.2"}}}
   
