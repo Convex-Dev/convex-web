@@ -65,12 +65,10 @@
 
                ;; -- Michael Borrelli
                {:name "Michael Borrelli"
-                :title "Operations"
                 :image "/images/team/borelli.png"}
 
                ;; -- Rich Kopcho
                {:name "Rich Kopcho"
-                :title "Marketing"
                 :image "/images/team/rich.png"}]
 
               :advisors
