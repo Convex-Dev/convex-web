@@ -1,5 +1,10 @@
 (ns convex-web.site.team)
 
+(defn H2 [heading]
+  [:h2
+   {:class "text-xl md:text-2xl text-gray-900"}
+   heading])
+
 (defn TeamMember [{:keys [name title areas image github linkedin]}]
   [:div.p-4.rounded-lg.overflow-auto.flex-shrink-0
    [:div.flex.flex-col.flex-shrink-0.space-y-2
@@ -141,15 +146,35 @@
       "Convex is developed by a diverse international team using an open source model. Some of the people building Convex are highlighted below."]
 
      ;; -- Key Team Members
-     [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mb-40
+
+     [H2
+      "Key Team Members"]
+
+     [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mt-4
       
       (for [team-member (:key-team-members team)]
         ^{:key (:name team-member)}
         [TeamMember team-member])]
 
 
+     ;; -- Advisors
+
+     [H2
+      "Advisors"]
+
+     [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mt-4
+
+      (for [team-member (:advisors team)]
+        ^{:key (:name team-member)}
+        [TeamMember team-member])]
+
+
      ;; -- Community Contributors
-     [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mb-40
+
+     [H2
+      "Community Contributors"]
+
+     [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mt-4.mb-40
 
       (for [team-member (:community-contributors team)]
         ^{:key (:name team-member)}
