@@ -45,98 +45,109 @@
 
 (defn TeamPage [_ _ _]
   (let [team {:key-team-members
-              [;; -- Mike
-               {:name "Mike Anderson"
+              [{:name "Mike Anderson"
                 :title "Founder"
-                :areas "Consensus algorithm, CVM execution engine, Overall Convex architecture"
                 :image "/images/team/mike.jpg"
                 :linkedin "https://www.linkedin.com/in/mike-anderson-7a9412/"
                 :github "https://github.com/mikera"}
                
-               ;; -- Adam
                {:name "Adam Helins"
-                :title "Developer"
-                :areas "Developer tools, Language design, CVM testing"
+                :title "Technology"
                 :image "/images/team/adam.png"
                 :linkedin "https://www.linkedin.com/in/adam-helins-b81b23215/"
                 :github "https://github.com/helins"}
 
-               ;; -- Dr Leonard
                {:name "Dr Leonard Anderson"
-                :title "Advisor"
-                :areas "Investment and Marketing"
+                :title "Governance"
                 :image "/images/team/leonard.jpg"
                 :linkedin "https://www.linkedin.com/in/kemuri/"}
 
-               ;; -- Michael Borrelli
                {:name "Michael Borrelli"
-                :image "/images/team/borelli.png"}
+                :title "Operations"
+                :image "/images/team/borelli.png"
+                :linkedin "https://www.linkedin.com/in/michael-borrelli-mba-llm-ppg-dipp-6a557253"}
 
-               ;; -- Rich Kopcho
                {:name "Rich Kopcho"
-                :image "/images/team/rich.png"}]
+                :title "Marketing"
+                :image "/images/team/rich.png"
+                :linkedin "https://www.linkedin.com/in/kopcho/"}]
 
               :advisors
-              []
+              (sort-by :name
+                [{:name "Claire Cumming"
+                  :image "/images/team/claire _cummings.png"
+                  :linkedin "https://www.linkedin.com/in/claire-cummings-1573651/"}
+
+                 {:name "Spencer Dobson"
+                  :image "/images/team/spencer_debson.png"
+                  :linkedin "https://www.linkedin.com/in/spencerdebson/"}
+
+                 {:name "Tej Dosanjh"
+                  :image "/images/team/tej_dosanjh.png"
+                  :linkedin "https://www.linkedin.com/in/tej-dosanjh-12a482/"}
+
+                 {:name "Toby Lewis"
+                  :image "/images/team/toby_lewis.png"
+                  :linkedin "https://www.linkedin.com/in/toby-lewis-7aa5a533/"}
+
+                 {:name "Victor Munoz"
+                  :image "/images/team/victor_munoz.png"
+                  :linkedin "https://www.linkedin.com/in/victor-munoz-sci/"}
+
+                 {:name "Rupert Pearson"
+                  :image "/images/team/rupert_pearson.png"
+                  :linkedin "https://www.linkedin.com/in/rupert-pearson-b65b9aa/"}
+
+                 {:name "Rodney Prescott"
+                  :image "/images/team/rodney_prescott.png"
+                  :linkedin "https://www.linkedin.com/in/technologistkiwi/"}
+
+                 {:name "Kurt Sampson"
+                  :image "/images/team/kurt_sampson.png"
+                  :linkedin "https://www.linkedin.com/in/kurt-sampson/"}
+
+                 {:name "Robert Seller"
+                  :image "/images/team/robert_seller.png"
+                  :linkedin "https://www.linkedin.com/in/robert-sellar-05104a12/"}
+
+                 {:name "Ian Staley"
+                  :image "/images/team/ian_staley.png"
+                  :linkedin "https://www.linkedin.com/in/iantstaley/"}
+
+                 {:name "Tirath Virdee"
+                  :image "/images/team/tirath_virdee.png"
+                  :linkedin "https://www.linkedin.com/in/tirath-virdee-6a08255/"}
+
+                 {:name "Riley Wild"
+                  :image "/images/team/riley_wild.png"
+                  :linkedin "https://www.linkedin.com/in/rileyjameswild/"}
+
+                 {:name "Christina Yan Zhang"
+                  :image "/images/team/christina_yan_zhang.png"
+                  :linkedin "https://www.linkedin.com/in/christinayanzhang/"}])
 
               :community-contributors
               (sort-by :name
-                [;; -- Miguel
-                 {:name "Miguel Depaz"
-                  :title "Marketing and Partnerships"
-                  :areas "Marketing, Product, Business Partnership, Branding"
-                  :image "/images/team/miguel.jpg"
-                  :linkedin "https://www.linkedin.com/in/miguel-depaz/"}
+                [{:name "Miguel Depaz"
+                  :image "/images/team/miguel.jpg"}
 
-                 ;; -- Alex
                  {:name "Alexandra Au Yong"
-                  :title "Design and UX"
-                  :areas "UX/UI, Design"
-                  :image "/images/team/alex.png"
-                  :linkedin "https://www.linkedin.com/in/alexandraauyong/"}
+                  :image "/images/team/alex.png"}
 
-
-                 ;; -- Pedro
                  {:name "Pedro Girardi"
-                  :title "Developer"
-                  :areas "Client applications, Developer tools"
-                  :image "/images/team/pedro.jpg"
-                  :linkedin "https://www.linkedin.com/in/pedrorgirardi/"
-                  :github "https://github.com/pedrorgirardi"}
+                  :image "/images/team/pedro.jpg"}
 
-
-                 ;; -- Mark
                  {:name "Mark Engelberg"
-                  :title "Developer"
-                  :areas "Smart contracts, Digital assets"
-                  :image "/images/team/mark.jpg"
-                  :linkedin "https://www.linkedin.com/in/mark-engelberg-0a09a88a/"
-                  :github "https://github.com/Engelberg"}
+                  :image "/images/team/mark.jpg"}
 
-
-                 ;; -- Bill
                  {:name "Bill Barman"
-                  :title "Developer"
-                  :areas "Peer operations, CLI, Client libraries"
-                  :image "/images/team/bill.jpg"
-                  :linkedin "https://www.linkedin.com/in/billbarman/"
-                  :github "https://github.com/billbsing"}
+                  :image "/images/team/bill.jpg"}
 
-                 ;; -- Isaac
                  {:name "Isaac Johnston"
-                  :title "Developer"
-                  :areas "Commercial Use Case Design, Implementation and Integration"
-                  :image "/images/team/isaac.png"
-                  :linkedin "https://www.linkedin.com/in/superstructor/"
-                  :github "https://github.com/superstructor"}
+                  :image "/images/team/isaac.png"}
 
-                 ;; -- John
                  {:name "John Newman"
-                  :title "Developer"
-                  :areas "Smart contracts, Layer 2 solutions, dApps"
-                  :image "/images/team/john.jpg"
-                  :linkedin "https://www.linkedin.com/in/johnmichaelnewman/"
-                  :github "https://github.com/johnmn3"}])
+                  :image "/images/team/john.jpg"}])
 
               :partners-collaborators
               []}]
