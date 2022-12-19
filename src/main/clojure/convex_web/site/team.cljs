@@ -60,7 +60,7 @@
                {:name "Michael Borrelli"
                 :title "Operations"
                 :image "/images/team/michael_borelli.png"
-                :linkedin "https://www.linkedin.com/in/michael-borrelli-mba-llm-ppg-dipp-6a557253"}
+                :linkedin "https://www.linkedin.com/in/michael-charles-borrelli-6a557253"}
 
                {:name "Rich Kopcho"
                 :title "Marketing"
