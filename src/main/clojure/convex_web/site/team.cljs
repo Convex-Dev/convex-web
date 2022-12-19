@@ -65,7 +65,8 @@
                {:name "Rich Kopcho"
                 :title "Marketing"
                 :image "/images/team/rich_kopcho.png"
-                :linkedin "https://www.linkedin.com/in/kopcho/"}]
+                :linkedin "https://www.linkedin.com/in/kopcho/"
+                :github "https://github.com/kopcho"}]
 
               :advisors
               (sort-by :name
@@ -130,22 +131,28 @@
                   :image "/images/team/alexa_au_yong.png"}
 
                  {:name "Pedro Girardi"
-                  :image "/images/team/pedro_girardi.png"}
+                  :image "/images/team/pedro_girardi.png"
+                  :github "https://github.com/pedrorgirardi"}
 
                  {:name "Mark Engelberg"
-                  :image "/images/team/mark_engelberg.png"}
+                  :image "/images/team/mark_engelberg.png"
+                  :github "https://github.com/Engelberg"}
 
                  {:name "Bill Barman"
-                  :image "/images/team/bill_barman.png"}
+                  :image "/images/team/bill_barman.png"
+                  :github "https://github.com/billbsing"}
 
                  {:name "Isaac Johnston"
-                  :image "/images/team/isaac_johnston.png"}
+                  :image "/images/team/isaac_johnston.png"
+                  :github "https://github.com/superstructor"}
 
                  {:name "Ike Mawira"
-                  :image "/images/team/ike_mawira.png"}
+                  :image "/images/team/ike_mawira.png"
+                  :github "https://github.com/MawiraIke"}
 
                  {:name "John Newman"
-                  :image "/images/team/john_newman.png"}
+                  :image "/images/team/john_newman.png"
+                  :github "https://github.com/johnmn3"}
 
                  {:name "Jonathan Day"
                   :image "/images/team/jonathan_day.png"}
