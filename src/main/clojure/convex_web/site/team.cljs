@@ -47,35 +47,35 @@
   (let [team {:key-team-members
               [{:name "Mike Anderson"
                 :title "Founder"
-                :image "/images/team/mike.jpg"
+                :image "/images/team/mike_anderson.png"
                 :linkedin "https://www.linkedin.com/in/mike-anderson-7a9412/"
                 :github "https://github.com/mikera"}
                
                {:name "Adam Helins"
                 :title "Technology"
-                :image "/images/team/adam.png"
+                :image "/images/team/adam_helins.png"
                 :linkedin "https://www.linkedin.com/in/adam-helins-b81b23215/"
                 :github "https://github.com/helins"}
 
                {:name "Dr Leonard Anderson"
                 :title "Governance"
-                :image "/images/team/leonard.jpg"
+                :image "/images/team/leanord_anderson.png"
                 :linkedin "https://www.linkedin.com/in/kemuri/"}
 
                {:name "Michael Borrelli"
                 :title "Operations"
-                :image "/images/team/borelli.png"
+                :image "/images/team/michael_borelli.png"
                 :linkedin "https://www.linkedin.com/in/michael-borrelli-mba-llm-ppg-dipp-6a557253"}
 
                {:name "Rich Kopcho"
                 :title "Marketing"
-                :image "/images/team/rich.png"
+                :image "/images/team/rich_kopcho.png"
                 :linkedin "https://www.linkedin.com/in/kopcho/"}]
 
               :advisors
               (sort-by :name
                 [{:name "Claire Cumming"
-                  :image "/images/team/claire _cummings.png"
+                  :image "/images/team/claire_cummings.png"
                   :linkedin "https://www.linkedin.com/in/claire-cummings-1573651/"}
 
                  {:name "Spencer Dobson"
@@ -129,25 +129,34 @@
               :community-contributors
               (sort-by :name
                 [{:name "Miguel Depaz"
-                  :image "/images/team/miguel.jpg"}
+                  :image "/images/team/miguel_depaz.png"}
 
                  {:name "Alexandra Au Yong"
-                  :image "/images/team/alex.png"}
+                  :image "/images/team/alexa_au_yong.png"}
 
                  {:name "Pedro Girardi"
-                  :image "/images/team/pedro.jpg"}
+                  :image "/images/team/pedro_girardi.png"}
 
                  {:name "Mark Engelberg"
-                  :image "/images/team/mark.jpg"}
+                  :image "/images/team/mark_engelberg.png"}
 
                  {:name "Bill Barman"
-                  :image "/images/team/bill.jpg"}
+                  :image "/images/team/bill_barman.png"}
 
                  {:name "Isaac Johnston"
-                  :image "/images/team/isaac.png"}
+                  :image "/images/team/isaac_johnston.png"}
+
+                 {:name "Ike Mawira"
+                  :image "/images/team/ike_mawira.png"}
 
                  {:name "John Newman"
-                  :image "/images/team/john.jpg"}])
+                  :image "/images/team/john_newman.png"}
+
+                 {:name "Jonathan Day"
+                  :image "/images/team/jonathan_day.png"}
+
+                 {:name "Giezi Ordonez"
+                  :image "/images/team/giezi_ordonez.png"}])
 
               :partners-collaborators
               []}]
