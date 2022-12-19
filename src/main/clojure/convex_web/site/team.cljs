@@ -1,10 +1,5 @@
 (ns convex-web.site.team)
 
-(defn H2 [heading]
-  [:h2
-   {:class "text-xl md:text-2xl text-gray-900"}
-   heading])
-
 (defn TeamMember [{:keys [name title areas image github linkedin]}]
   [:div.p-4.rounded-lg.overflow-auto.flex-shrink-0
    [:div.flex.flex-col.flex-shrink-0.space-y-2
@@ -159,7 +154,9 @@
                   :image "/images/team/giezi_ordonez.png"}])
 
               :partners-collaborators
-              []}]
+              []}
+
+        h2-classes "text-xl md:text-2xl text-gray-900"]
     [:div
 
      [:p.mt-6.mb-10.text-gray-700.font-light
@@ -167,7 +164,8 @@
 
      ;; -- Key Team Members
 
-     [H2
+     [:h2
+      {:class h2-classes}
       "Key Team Members"]
 
      [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mt-4
@@ -179,7 +177,8 @@
 
      ;; -- Advisors
 
-     [H2
+     [:h2
+      {:class [h2-classes "mt-4"]}
       "Advisors"]
 
      [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mt-4
@@ -191,7 +190,8 @@
 
      ;; -- Community Contributors
 
-     [H2
+     [:h2
+      {:class [h2-classes "mt-4"]}
       "Community Contributors"]
 
      [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mt-4.mb-40
