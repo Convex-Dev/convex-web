@@ -77,7 +77,7 @@ Checking ownership:
 
 
 (asset/owns? my-customer
-             [nft my-masterpiece]
+             [nft my-masterpiece])
 
 ;; -> true
 ;;

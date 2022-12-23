@@ -7,7 +7,9 @@
    
    [cognitect.anomalies :as anomalies]
 
-   [convex-web.site.sandbox.hiccup :as hiccup])
+   [convex-web.site.sandbox.hiccup :as hiccup]
+   [convex.write :as $.write]
+   )
   (:import 
    (convex.peer Server)
    (convex.core.init Init)
@@ -17,7 +19,6 @@
    (convex.core Order Block Peer State Result)
    (convex.core.crypto AKeyPair PFXTools Ed25519KeyPair)
    (convex.core.transactions Transfer ATransaction Invoke Call)
-   (convex.core.util Utils)
    (convex.api Convex)
    (convex.core.data.prim CVMByte)
    (java.io IOException)
@@ -354,7 +355,7 @@
         ^AVector result-trace (.getTrace result)]
     (merge #:convex-web.result {:id (datafy result-id)
                                 :type (or (some-> result-value .getType .toString) "Nil")
-                                :value (or (some-> result-value Utils/print) "nil")}
+                                :value (or (some-> result-value $.write/string str) "nil")}
       
       ;; Interactive Syntax.
       (when (instance? Syntax result-value)

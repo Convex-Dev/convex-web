@@ -1,134 +1,211 @@
-(ns convex-web.site.team
-  (:require [convex-web.site.gui.marketing :as marketing]))
+(ns convex-web.site.team)
+
+(defn TeamMember [{:keys [name title areas image github linkedin]}]
+  [:div.p-4.rounded-lg.overflow-auto.flex-shrink-0
+   [:div.flex.flex-col.flex-shrink-0.space-y-2
+
+    ;; -- Avatar
+    [:img.self-center.shadow-md
+     {:class "object-cover rounded-lg w-60 h-60"
+      :src image}]
+
+    ;; -- Name & title
+    [:div.flex.flex-col.items-center
+
+     [:p name]
+
+     (when title
+       [:p.text-blue-600.text-sm.text-center.font-bold.font-mono
+        title])
+
+     (when areas
+       [:p.text-gray-600.text-xs.text-center.font-mono
+        areas])]
+
+    ;; -- Linkedin & GitHub
+    [:div.flex.justify-center.space-x-2
+     (when linkedin
+       [:a
+        {:href linkedin
+         :target "_blank"}
+        [:img.object-contain.h-8.w-8
+         {:src "/LI-In-Bug.png"}]])
+
+     (when github
+       [:a
+        {:href github
+         :target "_blank"}
+        [:img
+         {:src "/GitHub-Mark-32px.png"}]])]]])
 
 (defn TeamPage [_ _ _]
-  [:div
-   
-   [:p.mt-6.mb-10.text-gray-700.font-light
-    "Convex is developed by a diverse international team using an open source model. Some of the people building Convex are highlighted below."]
-   
-   (let [team [;; -- Mike
-               {:name "Mike Anderson"
+  (let [team {:key-team-members
+              [{:name "Mike Anderson"
                 :title "Founder"
-                :areas "Consensus algorithm, CVM execution engine, Overall Convex architecture"
-                :image "/images/team/mike.jpg"
+                :image "/images/team/mike_anderson.png"
                 :linkedin "https://www.linkedin.com/in/mike-anderson-7a9412/"
                 :github "https://github.com/mikera"}
                
-               
-               ;; -- Miguel
-               {:name "Miguel Depaz"
-                :title "Marketing and Partnerships"
-                :areas "Marketing, Product, Business Partnership, Branding"
-                :image "/images/team/miguel.jpg"
-                :linkedin "https://www.linkedin.com/in/miguel-depaz/"}
-               
-               
-               ;; -- Dr Leonard
-               {:name "Dr Leonard Anderson"
-                :title "Advisor"
-                :areas "Investment and Marketing"
-                :image "/images/team/leonard.jpg"
-                :linkedin "https://www.linkedin.com/in/kemuri/"}
-               
-               
-               ;; -- Alex
-               {:name "Alexandra Au Yong"
-                :title "Design and UX"
-                :areas "UX/UI, Design"
-                :image "/images/team/alex.png"
-                :linkedin "https://www.linkedin.com/in/alexandraauyong/"}
-               
-               
-               ;; -- Adam
                {:name "Adam Helins"
-                :title "Developer"
-                :areas "Developer tools, Language design, CVM testing"
-                :image "/images/team/adam.png"
+                :title "Technology"
+                :image "/images/team/adam_helins.png"
                 :linkedin "https://www.linkedin.com/in/adam-helins-b81b23215/"
                 :github "https://github.com/helins"}
-               
-               
-               ;; -- Pedro
-               {:name "Pedro Girardi"
-                :title "Developer"
-                :areas "Client applications, Developer tools"
-                :image "/images/team/pedro.jpg"
-                :linkedin "https://www.linkedin.com/in/pedrorgirardi/"
-                :github "https://github.com/pedrorgirardi"}
-               
-               
-               ;; -- Mark
-               {:name "Mark Engelberg"
-                :title "Developer"
-                :areas "Smart contracts, Digital assets"
-                :image "/images/team/mark.jpg"
-                :linkedin "https://www.linkedin.com/in/mark-engelberg-0a09a88a/"
-                :github "https://github.com/Engelberg"}
-               
-               
-               ;; -- Bill
-               {:name "Bill Barman"
-                :title "Developer"
-                :areas "Peer operations, CLI, Client libraries"
-                :image "/images/team/bill.jpg"
-                :linkedin "https://www.linkedin.com/in/billbarman/"
-                :github "https://github.com/billbsing"}
-               
-               ;; -- Isaac
-               {:name "Isaac Johnston"
-                :title "Developer"
-                :areas "Commercial Use Case Design, Implementation and Integration"
-                :image "/images/team/isaac.png"
-                :linkedin "https://www.linkedin.com/in/superstructor/"
-                :github "https://github.com/superstructor"}
-               
-               ;; -- John
-               {:name "John Newman"
-                :title "Developer"
-                :areas "Smart contracts, Layer 2 solutions, dApps"
-                :image "/images/team/john.jpg"
-                :linkedin "https://www.linkedin.com/in/johnmichaelnewman/"
-                :github "https://github.com/johnmn3"}]]
-     
-     [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mb-40
+
+               {:name "Dr Leonard Anderson"
+                :title "Governance"
+                :image "/images/team/leanord_anderson.png"
+                :linkedin "https://www.linkedin.com/in/kemuri/"}
+
+               {:name "Michael Borrelli"
+                :title "Operations"
+                :image "/images/team/michael_borelli.png"
+                :linkedin "https://www.linkedin.com/in/michael-charles-borrelli-6a557253"}
+
+               {:name "Rich Kopcho"
+                :title "Marketing"
+                :image "/images/team/rich_kopcho.png"
+                :linkedin "https://www.linkedin.com/in/kopcho/"
+                :github "https://github.com/kopcho"}]
+
+              :advisors
+              (sort-by :name
+                [{:name "Claire Cumming"
+                  :image "/images/team/claire_cummings.png"
+                  :linkedin "https://www.linkedin.com/in/claire-cummings-1573651/"}
+
+                 {:name "Spencer Dobson"
+                  :image "/images/team/spencer_debson.png"
+                  :linkedin "https://www.linkedin.com/in/spencerdebson/"}
+
+                 {:name "Tej Dosanjh"
+                  :image "/images/team/tej_dosanjh.png"
+                  :linkedin "https://www.linkedin.com/in/tej-dosanjh-12a482/"}
+
+                 {:name "Toby Lewis"
+                  :image "/images/team/toby_lewis.png"
+                  :linkedin "https://www.linkedin.com/in/toby-lewis-7aa5a533/"}
+
+                 {:name "Victor Munoz"
+                  :image "/images/team/victor_munoz.png"
+                  :linkedin "https://www.linkedin.com/in/victor-munoz-sci/"}
+
+                 {:name "Rupert Pearson"
+                  :image "/images/team/rupert_pearson.png"
+                  :linkedin "https://www.linkedin.com/in/rupert-pearson-b65b9aa/"}
+
+                 {:name "Rodney Prescott"
+                  :image "/images/team/rodney_prescott.png"
+                  :linkedin "https://www.linkedin.com/in/technologistkiwi/"}
+
+                 {:name "Kurt Sampson"
+                  :image "/images/team/kurt_sampson.png"
+                  :linkedin "https://www.linkedin.com/in/kurt-sampson/"}
+
+                 {:name "Robert Seller"
+                  :image "/images/team/robert_seller.png"
+                  :linkedin "https://www.linkedin.com/in/robert-sellar-05104a12/"}
+
+                 {:name "Ian Staley"
+                  :image "/images/team/ian_staley.png"
+                  :linkedin "https://www.linkedin.com/in/iantstaley/"}
+
+                 {:name "Tirath Virdee"
+                  :image "/images/team/tirath_virdee.png"
+                  :linkedin "https://www.linkedin.com/in/tirath-virdee-6a08255/"}
+
+                 {:name "Riley Wild"
+                  :image "/images/team/riley_wild.png"
+                  :linkedin "https://www.linkedin.com/in/rileyjameswild/"}
+
+                 {:name "Christina Yan Zhang"
+                  :image "/images/team/christina_yan_zhang.png"
+                  :linkedin "https://www.linkedin.com/in/christinayanzhang/"}])
+
+              :community-contributors
+              (sort-by :name
+                [{:name "Miguel Depaz"
+                  :image "/images/team/miguel_depaz.png"}
+
+                 {:name "Alexandra Au Yong"
+                  :image "/images/team/alexa_au_yong.png"}
+
+                 {:name "Pedro Girardi"
+                  :image "/images/team/pedro_girardi.png"
+                  :github "https://github.com/pedrorgirardi"}
+
+                 {:name "Mark Engelberg"
+                  :image "/images/team/mark_engelberg.png"
+                  :github "https://github.com/Engelberg"}
+
+                 {:name "Bill Barman"
+                  :image "/images/team/bill_barman.png"
+                  :github "https://github.com/billbsing"}
+
+                 {:name "Isaac Johnston"
+                  :image "/images/team/isaac_johnston.png"
+                  :github "https://github.com/superstructor"}
+
+                 {:name "Ike Mawira"
+                  :image "/images/team/ike_mawira.png"
+                  :github "https://github.com/MawiraIke"}
+
+                 {:name "John Newman"
+                  :image "/images/team/john_newman.png"
+                  :github "https://github.com/johnmn3"}
+
+                 {:name "Jonathan Day"
+                  :image "/images/team/jonathan_day.png"}
+
+                 {:name "Giezi Ordonez"
+                  :image "/images/team/giezi_ordonez.png"}])
+
+              :partners-collaborators
+              []}
+
+        h2-classes "text-xl md:text-2xl text-gray-900"]
+    [:div
+
+     [:p.mt-6.mb-10.text-gray-700.font-light
+      "Convex is developed by a diverse international team using an open source model. Some of the people building Convex are highlighted below."]
+
+     ;; -- Key Team Members
+
+     [:h2
+      {:class h2-classes}
+      "Key Team Members"]
+
+     [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mt-4
       
-      (for [{:keys [name title areas image github linkedin]} team]
-        ^{:key name}
-        [:div.p-4.rounded-lg.overflow-auto.flex-shrink-0
-         [:div.flex.flex-col.flex-shrink-0.space-y-2
-          
-          ;; -- Avatar
-          [:img.self-center.shadow-md
-           {:class "object-cover rounded-lg w-60 h-60"
-            :src image}]
-          
-          ;; -- Name & title
-          [:div.flex.flex-col.items-center
-           
-           [:p name]
-           
-           [:p.text-blue-600.text-sm.text-center.font-bold.font-mono
-            title]
-           
-           [:p.text-gray-600.text-xs.text-center.font-mono
-            areas]]
-          
-          ;; -- Linkedin & GitHub
-          [:div.flex.justify-center.space-x-2
-           (when linkedin
-             [:a
-              {:href linkedin
-               :target "_blank"}
-              [:img.object-contain.h-8.w-8
-               {:src "/LI-In-Bug.png"}]])
-           
-           (when github
-             [:a 
-              {:href github
-               :target "_blank"}
-              [:img
-               {:src "/GitHub-Mark-32px.png"}]])]]])])])
+      (for [team-member (:key-team-members team)]
+        ^{:key (:name team-member)}
+        [TeamMember team-member])]
+
+
+     ;; -- Advisors
+
+     [:h2
+      {:class [h2-classes "mt-4"]}
+      "Advisors"]
+
+     [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mt-4
+
+      (for [team-member (:advisors team)]
+        ^{:key (:name team-member)}
+        [TeamMember team-member])]
+
+
+     ;; -- Community Contributors
+
+     [:h2
+      {:class [h2-classes "mt-4"]}
+      "Community Contributors"]
+
+     [:div.grid.grid-cols-1.lg:grid-cols-3.xl:grid-cols-4.gap-6.mt-4.mb-40
+
+      (for [team-member (:community-contributors team)]
+        ^{:key (:name team-member)}
+        [TeamMember team-member])]]))
 
 (def team-page
   #:page {:id :page.id/team
