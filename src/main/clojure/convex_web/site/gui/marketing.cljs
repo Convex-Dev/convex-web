@@ -331,4 +331,4 @@
   [:div.flex.flex-col.items-center.space-y-4.bg-gray-900.p-2
    
    [:span.block.text-gray-500.text-sm
-    "© Copyright 2021 CONVEX FOUNDATION"]])
+    "© Copyright 2023 CONVEX FOUNDATION"]])

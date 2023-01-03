@@ -1,5 +1,9 @@
 # Major changes and resolved issues
 
+## 0.31.0 --
+Site:
+- Fix Copyright Notice
+
 ## 0.30.0 -- 2022-12-23
 - [Fix Callable Functions UI #207](https://github.com/Convex-Dev/convex-web/issues/207)
 - Update Convex to 0.7.9
