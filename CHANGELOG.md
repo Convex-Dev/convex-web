@@ -2,7 +2,7 @@
 
 ## 0.31.0 --
 Site:
-- Fix Copyright Notice
+- [Fix Copyright Notice](https://github.com/Convex-Dev/convex-web/issues/238)
 
 ## 0.30.0 -- 2022-12-23
 - [Fix Callable Functions UI #207](https://github.com/Convex-Dev/convex-web/issues/207)
