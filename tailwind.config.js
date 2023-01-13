@@ -27,7 +27,9 @@ module.exports = {
         mono: [
           'Space Mono',
           ...defaultTheme.fontFamily.mono,
-        ]
+        ],
+
+        prose: ['Source Sans Pro', 'sans-serif']
       }
     },
     typography: {
