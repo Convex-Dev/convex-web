@@ -116,8 +116,18 @@
        ;; -- End Google Analytics
 
 
+       [:link
+        {:rel "preconnect"
+         :href "https://fonts.googleapis.com"}]
+
+       [:link
+        {:rel "preconnect"
+         :crossorigin ""
+         :href "https://fonts.gstatic.com"}]
+
        (stylesheet "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap")
        (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap")
+       (stylesheet "https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap")
 
        (stylesheet (str asset-prefix-url "/css/styles.css"))
        (stylesheet (str asset-prefix-url "/css/highlight/idea.css"))
