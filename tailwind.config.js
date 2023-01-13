@@ -3,7 +3,6 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  mode: 'jit',
   corePlugins: {
     preflight: true
   },
@@ -13,7 +12,10 @@ module.exports = {
     defaultLineHeights: true,
     standardFontWeights: true
   },
-  purge: process.env.NODE_ENV == 'production' ? ["./src/main/resources/public/js/main.js"] : ["./src/main/resources/public/js/cljs-runtime/*.js"],
+  content: [
+    "./src/main/resources/**/*.html",
+    "./src/main/clojure/**/*.cljs"
+  ],
   theme: {
     extend: {
       fontFamily: {
@@ -26,9 +28,6 @@ module.exports = {
           'Space Mono',
           ...defaultTheme.fontFamily.mono,
         ]
-      },
-      colors: {
-        teal: colors.teal
       }
     },
     typography: {
@@ -47,7 +46,6 @@ module.exports = {
       }
     }
   },
-  variants: {},
   plugins: [
     require('@tailwindcss/typography')
   ]
