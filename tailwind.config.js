@@ -30,23 +30,23 @@ module.exports = {
         ],
 
         prose: ['Source Sans Pro', 'sans-serif']
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            pre: {
+              color: false,
+              backgroundColor: false
+            },
+            a: {
+              fontWeight: '500',
+              textDecoration: 'underline',
+              color: colors.blue['500']
+            },
+          },
+        }
       }
     },
-    typography: {
-      default: {
-        css: {
-          pre: {
-            color: false,
-            backgroundColor: false
-          },
-          a: {
-            fontWeight: '500',
-            textDecoration: 'underline',
-            color: colors.blue['500']
-          },
-        },
-      }
-    }
   },
   plugins: [
     require('@tailwindcss/typography')
