@@ -17,20 +17,12 @@ module.exports = {
     "./src/main/clojure/**/*.cljs"
   ],
   theme: {
-    extend: {
-      fontFamily: {
-        sans: [
-          'Inter',
-          ...defaultTheme.fontFamily.sans,
-        ],
-
-        mono: [
-          'Space Mono',
-          ...defaultTheme.fontFamily.mono,
-        ],
-
-        prose: ['Source Sans Pro', 'sans-serif']
+    fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        mono: ['Space Mono'],
+        "source-sans-pro": ['Source Sans Pro', 'sans-serif']
       },
+    extend: {
       typography: {
         DEFAULT: {
           css: {
