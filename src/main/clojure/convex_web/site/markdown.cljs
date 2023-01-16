@@ -48,8 +48,12 @@
            
            (for [{:keys [name content]} contents]
              ^{:key name}
-             [:article.prose.prose-sm.md:prose-lg.mb-10
-              {:id name}
+             [:article
+              {:id name
+               :class
+               ["prose prose-sm md:prose-lg prose-h2:font-sans"
+                "font-source-sans-pro"
+                "mb-10"]}
               [gui/Markdown content]])]
           
           ;; -- On this page
