@@ -2,6 +2,12 @@
 
 ## 0.31.0 --
 Site:
+- Update Tailwind CSS
+- Use Inter for headings and Source Sans Pro for body in Markdown pages:
+	- Technology
+	- Use Cases
+	- Ecosystem
+	- About
 - [Fix Copyright Notice](https://github.com/Convex-Dev/convex-web/issues/238)
 
 ## 0.30.0 -- 2022-12-23
