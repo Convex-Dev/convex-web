@@ -15,28 +15,28 @@
     :path "markdown/under_construction.md"}]}
 
  :technology
- {:toc? true
+ {:toc? false
   :smart-toc? true
   :contents
   [{:name "Technology"
     :path "markdown/technology.md"}]}
 
  :use-cases
- {:toc? true
+ {:toc? false
   :smart-toc? true
   :contents
   [{:name "Use Cases"
     :path "markdown/use-cases.md"}]}
 
  :ecosystem
- {:toc? true
+ {:toc? false
   :smart-toc? true
   :contents
   [{:name "Ecosystem"
     :path "markdown/ecosystem.md"}]}
 
  :about
- {:toc? true
+ {:toc? false
   :smart-toc? true
   :contents
   [{:name "About"
