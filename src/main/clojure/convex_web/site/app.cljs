@@ -749,9 +749,8 @@
         (when title
           [:h1
            {:class ["md:inline"
-                    "text-gray-900 text-3xl md:text-4xl"
+                    "text-gray-900 text-3xl md:text-4xl font-extrabold"
                     "leading-none"
-                    "border-b-2 border-blue-500"
                     "pb-2"]}
            title])
         
