@@ -51,7 +51,9 @@
              [:article
               {:id name
                :class
-               ["prose prose-sm md:prose-lg prose-h2:font-sans"
+               ["prose prose-sm md:prose-lg"
+                "prose-headings:font-sans prose-headings:font-bold"
+                "prose-h2:text-3xl"
                 "font-source-sans-pro"
                 "mb-10"]}
               [gui/Markdown content]])]
