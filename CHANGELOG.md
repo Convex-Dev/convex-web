@@ -1,6 +1,6 @@
 # Major changes and resolved issues
 
-## 0.31.0 --
+## 0.31.0 -- 2023-01-18
 Site:
 - Update Tailwind CSS
 - Use Inter for headings and Source Sans Pro for body in Markdown pages:
