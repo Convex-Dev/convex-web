@@ -1,5 +1,7 @@
 # Major changes and resolved issues
 
+## 0.32.0 -- 
+
 ## 0.31.0 -- 2023-01-18
 Site:
 - Update Tailwind CSS
