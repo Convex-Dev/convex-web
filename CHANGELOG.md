@@ -1,5 +1,15 @@
 # Major changes and resolved issues
 
+## 0.31.0 -- 2023-01-18
+Site:
+- Update Tailwind CSS
+- Use Inter for headings and Source Sans Pro for body in Markdown pages:
+	- Technology
+	- Use Cases
+	- Ecosystem
+	- About
+- [Fix Copyright Notice](https://github.com/Convex-Dev/convex-web/issues/238)
+
 ## 0.30.0 -- 2022-12-23
 - [Fix Callable Functions UI #207](https://github.com/Convex-Dev/convex-web/issues/207)
 - Update Convex to 0.7.9
