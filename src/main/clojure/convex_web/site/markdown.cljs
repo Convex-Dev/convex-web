@@ -54,7 +54,7 @@
                ["prose prose-sm md:prose-lg max-w-none"
                 "prose-headings:font-sans prose-headings:font-bold"
                 "md:prose-h2:text-[28px]"
-                "font-source-sans-pro"
+                "font-source-sans-pro text-black"
                 "mb-10"]}
               [gui/Markdown content]])]
           
