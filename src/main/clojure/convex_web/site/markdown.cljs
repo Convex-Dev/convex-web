@@ -24,7 +24,7 @@
          :ajax.status/success
          [:<>
           ;; -- Markdown
-          [:div
+          [:div.max-w-6xl
            {:ref
             (fn [el]
               (when el
@@ -51,7 +51,7 @@
              [:article
               {:id name
                :class
-               ["prose prose-sm md:prose-lg"
+               ["prose prose-sm md:prose-lg max-w-none"
                 "prose-headings:font-sans prose-headings:font-bold"
                 "prose-h2:text-3xl"
                 "font-source-sans-pro"
