@@ -53,7 +53,7 @@
                :class
                ["prose prose-sm md:prose-lg max-w-none"
                 "prose-headings:font-sans prose-headings:font-bold"
-                "prose-h2:text-3xl"
+                "md:prose-h2:text-[28px]"
                 "font-source-sans-pro"
                 "mb-10"]}
               [gui/Markdown content]])]
