@@ -1,5 +1,7 @@
 # Major changes and resolved issues
 
+## --
+
 ## 2023-01-19
 - Marketing page title tweaks
 - Markdown typrography
