@@ -1,5 +1,9 @@
 # Major changes and resolved issues
 
+## 2023-01-19
+- Marketing page title tweaks
+- Markdown typrography
+
 ## 0.31.0 -- 2023-01-18
 Site:
 - Update Tailwind CSS

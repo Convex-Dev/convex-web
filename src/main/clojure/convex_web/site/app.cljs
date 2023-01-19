@@ -743,15 +743,15 @@
      ;; Page
      ;; =========================
      (when active-page-frame
-       [:div.px-6.py-6.w-full.max-w-screen-xl.mx-auto.space-y-10.mb-20
-        {:style {:min-height "100vh"}}
+       [:div.px-6.w-full.max-w-screen-xl.mx-auto.space-y-10.mb-20
+        {:class "pt-[89px]"
+         :style {:min-height "100vh"}}
         
         (when title
           [:h1
            {:class ["md:inline"
-                    "text-gray-900 text-3xl md:text-4xl"
+                    "text-gray-900 text-3xl md:text-4xl font-extrabold"
                     "leading-none"
-                    "border-b-2 border-blue-500"
                     "pb-2"]}
            title])
         

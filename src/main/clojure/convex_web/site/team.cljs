@@ -166,7 +166,7 @@
         h2-classes "text-xl md:text-2xl text-gray-900"]
     [:div
 
-     [:p.mt-6.mb-10.text-gray-700.font-light
+     [:p.mt-6.mb-10.text-black.font-light
       "Convex is developed by a diverse international team using an open source model. Some of the people building Convex are highlighted below."]
 
      ;; -- Key Team Members
