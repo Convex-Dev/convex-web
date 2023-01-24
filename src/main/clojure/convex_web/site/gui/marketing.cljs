@@ -2,7 +2,8 @@
   (:require 
    [reitit.frontend.easy :as rfe]
    [reagent.core :as reagent]
-   
+
+   [convex-web.site.theme :as theme]
    [convex-web.site.gui :as gui]
    
    ["@heroicons/react/solid" :refer [MenuIcon]]))
@@ -243,13 +244,13 @@
 (defn Nav []
   (reagent/with-let [show?-ref (reagent/atom false)]
     (let [items (nav-items)]
-      [:nav.h-16.flex.items-center.justify-between.px-6
-       {:class "bg-[#01052A]"}
+      [:nav.flex.items-center.justify-between.px-6
+       {:class ["h-[160px]" theme/bg-convex-dark-blue]}
        
        [:div.flex.flex-row.justify-between.items-center.flex-1
         
         ;; -- Logo
-        [gui/ConvexWhite]
+        [gui/ConvexLogoWhiteLink]
         
         ;; -- Menu (mobile only)
         [:div.relative.inline-block.text-left.text-base.text-black.z-10

@@ -655,11 +655,13 @@
                   [NavItem active-route item]])])]])]])))
 
 (defn TopNav []
-  [:nav.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
-   [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
-    {:class theme/bg-blue-01052A}
+  [:nav.fixed.top-0.inset-x-0.border-b.border-gray-100.bg-white.z-10
+   {:class "h-[160px]"}
 
-    [gui/ConvexWhite]
+   [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
+    {:class theme/bg-convex-dark-blue}
+
+    [gui/ConvexLogoWhiteLink]
 
     ;; -- Items
     [:div.flex.items-center.justify-end.space-x-4
