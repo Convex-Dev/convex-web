@@ -303,6 +303,11 @@
     
     [:span.text-base.md:text-2xl.font-bold.leading-none.text-blue-800 "CONVEX"]]])
 
+(defn ConvexLogoWhiteLink []
+  [:a {:href (rfe/href :route-name/welcome)}
+   [:img
+    {:src "/images/convex_logo_white.svg"}]])
+
 (defn ConvexWhite
   "Convex logo and text."
   []
