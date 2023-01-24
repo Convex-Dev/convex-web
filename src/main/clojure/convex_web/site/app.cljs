@@ -764,7 +764,8 @@
      
      ;; Bottom nav
      ;; =========================
-     [:div.w-full.flex.justify-center.bg-gray-900
+     [:div.w-full.flex.justify-center
+      {:class theme/bg-convex-dark-blue}
       [marketing/Sitemap]]
      
      ;; Copyright

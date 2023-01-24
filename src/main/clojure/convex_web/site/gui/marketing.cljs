@@ -286,13 +286,13 @@
 (defn BottomNavMenu [{:keys [text items]}]
   [:div.flex.flex-col.space-y-3.mb-10
    
-   [:span.text-xl.text-blue-200.uppercase text]
+   [:span.text-xl.text-white.uppercase text]
    
    [:div.flex.flex-col.space-y-2
     (for [{:keys [text href]} items]
       ^{:key text}
       [:a {:href href}
-       [:span.text-lg.text-gray-400.hover:text-gray-200.active:text-gray-600 text]])]])
+       [:span.text-lg.text-white.hover:text-gray-200.active:text-gray-600 text]])]])
 
 (defn BottomNavMenuSocial []
   [:div.flex.flex-col.space-y-3.mb-10
@@ -320,7 +320,8 @@
         {:src src}]])]])
 
 (defn Sitemap []
-  [:div.lg:flex.lg:space-x-32.p-12.bg-gray-900
+  [:div.lg:flex.lg:space-x-32.p-12
+   {:class theme/bg-convex-dark-blue}
    [:<>
     (for [item (sitemap)]
       ^{:key (:text item)}
@@ -329,7 +330,8 @@
     [BottomNavMenuSocial]]])
 
 (defn Copyrigth []
-  [:div.flex.flex-col.items-center.space-y-4.bg-gray-900.p-2
+  [:div.flex.flex-col.items-center.space-y-4.p-2
+   {:class theme/bg-convex-dark-blue}
    
-   [:span.block.text-gray-500.text-sm
+   [:span.block.text-white.text-sm
     "© Copyright 2023 CONVEX FOUNDATION"]])
