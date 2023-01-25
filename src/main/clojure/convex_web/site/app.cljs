@@ -700,9 +700,11 @@
      ;; Main
      ;; ================
      [:div.w-full.max-w-screen-2xl.mx-auto
-      [:div.h-screen.flex.pt-24
+      [:div.h-screen.flex
        {:class 
-        [;; Mobile
+        ["mt-[200px]"
+
+         ;; Mobile
          "px-6"
          
          ;; Desktop
@@ -719,9 +721,8 @@
             [:div
              [:h1
               {:class ["md:inline"
-                       "text-gray-900 text-3xl md:text-4xl"
+                       "text-gray-900 text-3xl md:text-4xl font-extrabold"
                        "leading-none"
-                       "border-b-2 border-blue-500"
                        "pb-2"]}
               title]])
           
