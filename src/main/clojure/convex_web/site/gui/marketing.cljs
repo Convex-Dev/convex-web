@@ -3,7 +3,6 @@
    [reitit.frontend.easy :as rfe]
    [reagent.core :as reagent]
 
-   [convex-web.site.theme :as theme]
    [convex-web.site.gui :as gui]
    
    ["@heroicons/react/solid" :refer [MenuIcon]]))
@@ -245,7 +244,7 @@
   (reagent/with-let [show?-ref (reagent/atom false)]
     (let [items (nav-items)]
       [:nav.flex.items-center.justify-between.px-6
-       {:class ["h-[160px]" theme/bg-convex-dark-blue]}
+       {:class ["h-[160px]" "bg-convex-dark-blue"]}
        
        [:div.flex.flex-row.justify-between.items-center.flex-1
         
@@ -321,7 +320,7 @@
 
 (defn Sitemap []
   [:div.lg:flex.lg:space-x-32.p-12
-   {:class theme/bg-convex-dark-blue}
+   {:class "bg-convex-dark-blue"}
    [:<>
     (for [item (sitemap)]
       ^{:key (:text item)}
@@ -331,7 +330,7 @@
 
 (defn Copyrigth []
   [:div.flex.flex-col.items-center.space-y-4.p-2
-   {:class theme/bg-convex-dark-blue}
+   {:class "bg-convex-dark-blue"}
    
    [:span.block.text-white.text-sm
     "© Copyright 2023 CONVEX FOUNDATION"]])
