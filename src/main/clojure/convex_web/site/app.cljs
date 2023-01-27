@@ -17,7 +17,6 @@
             [convex-web.site.format :as format]
             [convex-web.site.markdown :as markdown]
             [convex-web.site.team :as team]
-            [convex-web.site.theme :as theme]
 
             [cljs.spec.test.alpha :as stest]
 
@@ -659,7 +658,7 @@
    {:class "h-[160px]"}
 
    [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
-    {:class theme/bg-convex-dark-blue}
+    {:class "bg-convex-dark-blue"}
 
     [gui/ConvexLogoWhiteLink]
 
@@ -766,7 +765,7 @@
      ;; Bottom nav
      ;; =========================
      [:div.w-full.flex.justify-center
-      {:class theme/bg-convex-dark-blue}
+      {:class "bg-convex-dark-blue"}
       [marketing/Sitemap]]
      
      ;; Copyright
