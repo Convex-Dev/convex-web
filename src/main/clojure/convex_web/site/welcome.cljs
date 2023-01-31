@@ -196,25 +196,18 @@
      
      [marketing/Nav]
      
-     [:div.flex.flex-col
-      {:class "bg-convex-dark-blue"}
-      
+     ;; -- Building the Internet of Value
 
-      ;; -- Building the Internet of Value
+     [:div.w-full.flex.justify-center.items-center
+      {:class "w-full bg-convex-dark-blue h-[492px]"}
 
-      [:div.w-full.flex.justify-center
+      [:div.flex.flex-col.max-w-5xl.gap-3
 
-       [:div.flex.flex-col.max-w-5xl.gap-3
+       [:h1.text-4xl.lg:text-5xl.font-extrabold.text-white.text-center
+        "Building the Internet of Value for the business and consumer world"]
 
-        [:h1.text-4xl.lg:text-5xl.font-extrabold.text-white.text-center
-         "Building the Internet of Value for the business and consumer world"]
-
-        [:p.font-source-sans-pro.text-white.text-lg.md:text-3xl.text-center
-         "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]]]
-
-
-
-      ]
+       [:p.font-source-sans-pro.text-white.text-lg.md:text-3xl.text-center
+        "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]]]
      
      
      ;; -- Key advantages
