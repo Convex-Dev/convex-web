@@ -200,37 +200,45 @@
      
      ;; -- Building the Internet of Value
 
-     [:div.w-full.flex.justify-center.items-center
-      {:class "w-full bg-convex-dark-blue h-[492px]"}
+     [:div.w-screen
+      {:class "h-[492px] bg-convex-dark-blue"}
 
-      [:div.flex.flex-col.max-w-5xl.gap-3
+      [:div.h-full.max-w-5xl.mx-auto.flex.items-center
 
-       [:h1.text-4xl.lg:text-5xl.font-extrabold.text-white.text-center
-        "Building the Internet of Value for the business and consumer world"]
+       [:div.flex.flex-col.gap-3
 
-       [:p.font-source-sans-pro.text-white.text-lg.md:text-3xl.text-center
-        "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]]]
+        [:h1.text-4xl.lg:text-5xl.font-extrabold.text-white.text-center
+         "Building the Internet of Value for the business and consumer world"]
+
+        [:p.font-source-sans-pro.text-white.text-lg.md:text-3xl.text-center
+         "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]]]]
 
 
      ;; -- What is Convex
 
-     [:div.w-full.flex.justify-center.items-center.text-convex-dark-blue
-      {:class "bg-white h-[492px]"}
+     [:div.w-screen
+      {:class "h-[492px] bg-white"}
 
-      [:div.flex.max-w-4xl
+      [:div.h-full.max-w-5xl.mx-auto.flex.items-center
 
-       [:div.flex.flex-col.gap-5
-        {:class "w-[733.5px]"}
+       [:div.flex.gap-12
 
-        [:h2
-         {:class subtitle-classes}
-         "What is Convex?"]
+        ;; -- What is Convex
 
-        [:p.font-source-sans-pro.text-lg.md:text-2xl
-         "Convex is the next generation of blockchain technology, with web-scale performance, flexibility and energy efficiency. We're an open source, non-profit foundation enabling new decentralised ecosystems in finance, gaming virtual worlds and the enterprise."]]
+        [:div.flex.flex-col.gap-5
 
-       [:img
-        {:src "images/convex_logo_blue.svg"}]]]
+         [:h2
+          {:class subtitle-classes}
+          "What is Convex?"]
+
+         [:p.font-source-sans-pro.text-lg.md:text-2xl.text-convex-dark-blue
+          "Convex is the next generation of blockchain technology, with web-scale performance, flexibility and energy efficiency. We're an open source, non-profit foundation enabling new decentralised ecosystems in finance, gaming virtual worlds and the enterprise."]]
+
+
+        ;; -- Logo
+
+        [:img
+         {:src "images/convex_logo_blue.svg"}]]]]
 
 
      ;; -- Convex is Flexible
@@ -238,9 +246,9 @@
      [:div.w-screen
       {:class "h-[584px] bg-convex-light-blue"}
 
-      [:div.max-w-5xl.mx-auto
+      [:div.h-full.max-w-5xl.mx-auto.flex.items-center
 
-       [:div.flex.flex-col.py-14
+       [:div.flex.flex-col
 
         [:h2
          {:class subtitle-classes}
