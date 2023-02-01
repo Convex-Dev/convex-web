@@ -192,7 +192,9 @@
                     [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-blue-500]
                     [:span s]])
 
-        subtitle-classes ["text-lg md:text-3xl font-extrabold text-convex-dark-blue"]]
+        subtitle-classes ["text-lg md:text-3xl font-extrabold text-convex-dark-blue"]
+
+        prose-classes ["text-convex-dark-blue font-source-sans-pro text-lg.md text-2xl"]]
     
     [:div
      
@@ -231,7 +233,8 @@
           {:class subtitle-classes}
           "What is Convex?"]
 
-         [:p.font-source-sans-pro.text-lg.md:text-2xl.text-convex-dark-blue
+         [:p
+          {:class prose-classes}
           "Convex is the next generation of blockchain technology, with web-scale performance, flexibility and energy efficiency. We're an open source, non-profit foundation enabling new decentralised ecosystems in finance, gaming virtual worlds and the enterprise."]]
 
 
@@ -248,11 +251,24 @@
 
       [:div.h-full.max-w-5xl.mx-auto.flex.items-center
 
-       [:div.flex.flex-col
+       [:div.flex.flex-col.gap-5
 
         [:h2
          {:class subtitle-classes}
-         "Convex is Flexible"]]]]
+         "Convex is Flexible"]
+
+        [:p
+         {:class prose-classes}
+
+         "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be 100% secure and publicly verifiable (both in terms of data and application behaviour), such as:"]
+
+        [:ul.list-disc.list-inside
+         {:class prose-classes}
+         [:li "Public registries and databases"]
+         [:li "Digital currencies"]
+         [:li "Prediction markets"]
+         [:li "Smart contracts for managing digital assets"]
+         [:li "Immutable provenance records"]]]]]
      
      
      ;; -- Key advantages
