@@ -192,9 +192,13 @@
                     [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-blue-500]
                     [:span s]])
 
-        subtitle-classes ["text-lg md:text-3xl font-extrabold text-convex-dark-blue"]
+        subtitle-classes ["text-lg md:text-3xl font-extrabold"]
+        subtitle-light-classes (conj subtitle-classes "text-white")
+        subtitle-dark-classes (conj subtitle-classes "text-convex-dark-blue")
 
-        prose-classes ["text-convex-dark-blue font-source-sans-pro text-lg.md text-2xl"]]
+        prose-classes ["font-source-sans-pro text-lg.md text-2xl"]
+        prose-light-classes (conj prose-classes "text-white")
+        prose-dark-classes (conj prose-classes "text-convex-dark-blue")]
     
     [:div
      
@@ -230,11 +234,11 @@
         [:div.flex.flex-col.gap-5
 
          [:h2
-          {:class subtitle-classes}
+          {:class subtitle-dark-classes}
           "What is Convex?"]
 
          [:p
-          {:class prose-classes}
+          {:class prose-dark-classes}
           "Convex is the next generation of blockchain technology, with web-scale performance, flexibility and energy efficiency. We're an open source, non-profit foundation enabling new decentralised ecosystems in finance, gaming virtual worlds and the enterprise."]]
 
 
@@ -254,21 +258,45 @@
        [:div.flex.flex-col.gap-5
 
         [:h2
-         {:class subtitle-classes}
+         {:class subtitle-dark-classes}
          "Convex is Flexible"]
 
         [:p
-         {:class prose-classes}
-
+         {:class prose-dark-classes}
          "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be 100% secure and publicly verifiable (both in terms of data and application behaviour), such as:"]
 
         [:ul.list-disc.list-inside
-         {:class prose-classes}
+         {:class prose-dark-classes}
          [:li "Public registries and databases"]
          [:li "Digital currencies"]
          [:li "Prediction markets"]
          [:li "Smart contracts for managing digital assets"]
          [:li "Immutable provenance records"]]]]]
+
+
+     ;; -- Convex is Fast
+
+     [:div.w-screen
+      {:class "h-[584px] bg-convex-dark-blue"}
+
+      [:div.h-full.max-w-5xl.mx-auto.flex.items-center
+
+       [:div.flex.flex-col.gap-5
+
+        [:h2
+         {:class subtitle-light-classes}
+         "Convex is Fast"]
+
+        [:p
+         {:class prose-light-classes}
+         "Using Convergent Proof of Stake, a completely new consensus algorithm, the Convex network is able to execute decentralised applications at internet scale. With normal consumer grade hardware and network bandwidth the Convex Virtual Machine can achieve:"]
+
+        [:ul.list-disc.list-inside
+         {:class prose-light-classes}
+         [:li "Tens of thousands of digitally signed transactions per second (far more than the 1,700 transactions per second typically handled by the VISA network)"]
+         [:li "Millions of smart contract operations per second"]
+         [:li "Low latency (less than a second for global consensus)"]
+         [:li "This already is enough to enable consumer applications for the Internet of Value. In the future, it will be possible to extend scalability even further."]]]]]
      
      
      ;; -- Key advantages
