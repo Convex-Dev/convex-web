@@ -190,7 +190,9 @@
         ItemBlue (fn [s]
                    [:div.flex.items-center.text-base.lg:text-lg.space-x-3
                     [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-blue-500]
-                    [:span s]])]
+                    [:span s]])
+
+        subtitle-classes ["text-lg md:text-3xl font-extrabold text-convex-dark-blue"]]
     
     [:div
      
@@ -213,14 +215,15 @@
      ;; -- What is Convex
 
      [:div.w-full.flex.justify-center.items-center.text-convex-dark-blue
-      {:class "w-full bg-white h-[492px]"}
+      {:class "bg-white h-[492px]"}
 
       [:div.flex.max-w-4xl
 
        [:div.flex.flex-col.gap-5
         {:class "w-[733.5px]"}
 
-        [:h2.text-lg.md:text-3xl.font-extrabold
+        [:h2
+         {:class subtitle-classes}
          "What is Convex?"]
 
         [:p.font-source-sans-pro.text-lg.md:text-2xl
@@ -228,6 +231,20 @@
 
        [:img
         {:src "images/convex_logo_blue.svg"}]]]
+
+
+     ;; -- Convex is Flexible
+
+     [:div.w-screen
+      {:class "h-[584px] bg-convex-light-blue"}
+
+      [:div.max-w-5xl.mx-auto
+
+       [:div.flex.flex-col.py-14
+
+        [:h2
+         {:class subtitle-classes}
+         "Convex is Flexible"]]]]
      
      
      ;; -- Key advantages
