@@ -215,7 +215,7 @@
      [:div.w-full.flex.justify-center.items-center.text-convex-dark-blue
       {:class "w-full bg-white h-[492px]"}
 
-      [:div.flex.max-w-5xl
+      [:div.flex.max-w-4xl
 
        [:div.flex.flex-col.gap-5
         {:class "w-[733.5px]"}
@@ -226,9 +226,8 @@
         [:p.font-source-sans-pro.text-lg.md:text-2xl
          "Convex is the next generation of blockchain technology, with web-scale performance, flexibility and energy efficiency. We're an open source, non-profit foundation enabling new decentralised ecosystems in finance, gaming virtual worlds and the enterprise."]]
 
-       [:div]
-
-       ]]
+       [:img
+        {:src "images/convex_logo_blue.svg"}]]]
      
      
      ;; -- Key advantages
