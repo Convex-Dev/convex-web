@@ -23,7 +23,9 @@ module.exports = {
     extend: {
       colors: {
         'convex-dark-blue': '#0F206C',
-        'convex-light-blue': '#EBF7FF',
+        'convex-medium-blue': '#416BA9',
+        'convex-light-blue': '#6AAAE4',
+        'convex-sky-blue': '#EBF7FF',
         'convex-white': '#F5F7FD'
       },
       typography: {

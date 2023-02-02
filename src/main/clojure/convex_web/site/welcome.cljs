@@ -8,23 +8,54 @@
    ["@heroicons/react/solid" :as icon]))
 
 (defn KeyAdvantages []
-  [:div.grid.grid-cols-1.md:grid-cols-3.gap-4
-   
-   (for [{:keys [title image link copy]} [{:title "Instant Transactions"}
-                                          
-                                          {:title "Global State"}
-                                          
-                                          {:title "Maxium Secutiry"}
-                                          
-                                          {:title "Front Running Resistance"}
-                                          
-                                          {:title "100% Green"}
-                                          
-                                          {:title "Lambda Calculus"}]]
-     ^{:key title}
-     [:div.flex.flex-col.items-center.space-y-2
-      [:span.font-medium.underline
-       title]])])
+  [:div
+   {:class "max-w-[978px]"}
+   [:div.grid.grid-cols-1.md:grid-cols-3
+    (for [{:keys [title image body background-color]} [{:background-color "bg-[#6AAAE4]"
+                                                        :title "Instant Transactions"
+                                                        :body
+                                                        [:p.text-white
+                                                         "Confirmations of " [:span.font-bold "transactions in milliseconds "] ", ideal for interactive apps and consumer usage."]}
+
+                                                       {:background-color "bg-convex-dark-blue"
+                                                        :title "Global Scale"
+                                                        :body
+                                                        [:p.text-white
+                                                         [:span.font-bold "100,000+ TPS "] "– enough for the whole world to use the Convex Network."]}
+
+                                                       {:background-color "bg-convex-medium-blue"
+                                                        :title "Maxium Secutiry"
+                                                        :body
+                                                        [:p.text-white
+                                                         "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
+
+                                                       {:background-color "bg-convex-dark-blue"
+                                                        :title "Front Running Resistance"
+                                                        :body
+                                                        [:p.text-white
+                                                         "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
+
+                                                       {:background-color "bg-convex-medium-blue"
+                                                        :title "100% Green"
+                                                        :body
+                                                        [:p.text-white
+                                                         "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
+
+                                                       {:background-color "bg-[#6AAAE4]"
+                                                        :title "Lambda Calculus"
+                                                        :body
+                                                        [:p.text-white
+                                                         "Advanced virtual machine (CVM), that supports execution of " [:span.font-bold "custom smart contracts and unlimited extensibility."]]}]]
+      ^{:key title}
+      [:div.flex.flex-col.items-center.space-y-2
+       {:class ["h-[430px] max-h-[430px] w-[325px] max-w-[325px] px-3" background-color]}
+
+       [:span.text-3xl.font-extrabold.text-white
+        title]
+
+       body
+
+       ])]])
 
 (defn Roadmap []
   (let [roadmap [{:id :genesis
@@ -230,7 +261,7 @@
      ;; -- Convex is Flexible
 
      [:div.w-screen
-      {:class "h-[584px] bg-convex-light-blue"}
+      {:class "h-[584px] bg-convex-sky-blue"}
 
       [:div.h-full.max-w-5xl.mx-auto.flex.items-center
 
@@ -298,6 +329,14 @@
         [:p
          {:class prose-dark-classes}
          "convex.world provides an interactive REPL allowing users to code directly on the Convex platform using Convex Lisp."]]]]
+
+
+     [:div.w-screen
+      {:class "bg-convex-white"}
+
+      [:div.h-full.max-w-5xl.mx-auto.flex.items-center.justify-center
+
+       [KeyAdvantages]]]
 
 
      ;; -- Roadmap
