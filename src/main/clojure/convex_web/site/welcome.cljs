@@ -321,7 +321,7 @@
      [:div.w-screen
       {:class "h-[492px] bg-white"}
 
-      [:div.h-full.max-w-5xl.mx-auto.flex.flex-col.gap-12.justify-center
+      [:div.h-full.max-w-5xl.mx-auto.flex.flex-col.gap-7.justify-center
 
        [:h2
          {:class subtitle-dark-classes}
