@@ -299,6 +299,27 @@
          [:li "This already is enough to enable consumer applications for the Internet of Value. In the future, it will be possible to extend scalability even further."]]]]]
 
 
+     ;; -- Convex is Fun
+     [:div.w-screen
+      {:class "h-[492px] bg-convex-white"}
+
+      [:div.h-full.max-w-5xl.mx-auto.flex.items-center
+
+       [:div.flex.flex-col.gap-5
+
+        [:h2
+         {:class subtitle-dark-classes}
+         "Convex is Fun"]
+
+        [:p
+         {:class prose-dark-classes}
+         "We provide a powerful, interactive environment for development in Convex that enables high productivity while maintaining secure coding principles."]
+
+        [:p
+         {:class prose-dark-classes}
+         "convex.world provides an interactive REPL allowing users to code directly on the Convex platform using Convex Lisp."]]]]
+
+
      ;; -- Site map
 
      [:div.w-screen.flex.justify-center
