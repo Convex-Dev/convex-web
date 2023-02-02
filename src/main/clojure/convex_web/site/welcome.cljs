@@ -128,40 +128,38 @@
              [:hr.flex-1.border.border-gray-400]]
 
             (for [{:keys [id title status]} roadmap]
-              [:button
-               {:on-click #(reset! selected-version-ref id)}
-               [:div.w-14.h-14.flex.justify-center.items-center.rounded-full.shadow-2xl
-                {:class
+              [:div.flex.flex-col.items-center.gap-3.py-3.rounded.hover:bg-gray-50.cursor-default
+
+               [:p.text-3xl.text-convex-dark-blue.font-extrabold
+                title]
+
+               [gui/Tooltip
+                {:html (r/as-element (:body (roadmap-indexed id)))}
+                [:div.w-14.h-14.flex.justify-center.items-center.rounded-full.shadow-2xl
+                 {:class
+                  (case status
+                    :in-progress
+                    "bg-blue-500 hover:bg-blue-400"
+
+                    :completed
+                    "bg-white border border-convex-dark-blue"
+
+                    :todo
+                    "bg-white bg-opacity-30 hover:bg-opacity-50 border border-convex-dark-blue")}
+
+                 ;; -- Status icon
+
                  (case status
                    :in-progress
-                   "bg-blue-500 hover:bg-blue-400"
+                   [:> icon/CogIcon
+                    {:className "w-6 h-6 text-white"}]
 
                    :completed
-                   "bg-white border border-convex-dark-blue"
+                   [:> icon/CheckIcon
+                    {:className "w-6 h-6 text-convex-dark-blue"}]
 
                    :todo
-                   "bg-white bg-opacity-30 hover:bg-opacity-50 border border-convex-dark-blue")}
-
-
-                ;; -- Version
-
-                [:p.absolute.top-0.text-3xl.text-convex-dark-blue.font-extrabold
-                 title]
-
-
-                ;; -- Status icon
-
-                (case status
-                  :in-progress
-                  [:> icon/CogIcon
-                   {:className "w-6 h-6 text-white"}]
-
-                  :completed
-                  [:> icon/CheckIcon
-                   {:className "w-6 h-6 text-convex-dark-blue"}]
-
-                  :todo
-                  nil)]])))]
+                   nil)]]])))]
 
        #_[:div.self-center.bg-black.bg-opacity-10.rounded.py-4.px-6
 
