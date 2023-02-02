@@ -30,7 +30,6 @@
 
 (defn Roadmap []
   (r/with-let [selected-version-ref (r/atom :beta)]
-
     (let [selected-version @selected-version-ref
 
           roadmap [{:id :genesis
@@ -42,7 +41,7 @@
                       "Convex was designed based on the revolutionary ideas of Convergent Proof of Stake invented in 2018, and the concept was proven with the development of the Convex Virtual Machine capable of executing arbitrary Turing complete smart contracts using functional programming and the lamdba calculus."]]}
 
                    {:id :testnet
-                    :title "Testnet"
+                    :title "TestNet"
                     :status :completed
                     :body
                     [:div
@@ -119,7 +118,7 @@
       [:div.flex.flex-col.space-y-10
 
        ;; -- Timeline
-       [:div.relative.flex.items-center.py-10.px-8.space-x-2.overflow-auto
+       [:div.relative.flex.items-center.py-10.space-x-2.overflow-auto
 
         (into [:<>]
 
@@ -138,17 +137,15 @@
                    "bg-blue-500 hover:bg-blue-400"
 
                    :completed
-                   "bg-teal-500 hover:bg-teal-400"
+                   "bg-white border border-convex-dark-blue"
 
                    :todo
-                   "bg-gray-400 bg-opacity-30 hover:bg-opacity-50")}
+                   "bg-white bg-opacity-30 hover:bg-opacity-50 border border-convex-dark-blue")}
 
 
                 ;; -- Version
 
-                [:p.absolute.top-0.text-2xl.text-white
-                 {:class (when (= id selected-version)
-                           "underline")}
+                [:p.absolute.top-0.text-3xl.text-convex-dark-blue.font-extrabold
                  title]
 
 
@@ -161,21 +158,21 @@
 
                   :completed
                   [:> icon/CheckIcon
-                   {:className "w-6 h-6 text-white"}]
+                   {:className "w-6 h-6 text-convex-dark-blue"}]
 
                   :todo
                   nil)]])))]
 
-       [:div.self-center.bg-black.bg-opacity-10.rounded.py-4.px-6
+       #_[:div.self-center.bg-black.bg-opacity-10.rounded.py-4.px-6
 
-        [:div.flex.flex-col.overflow-auto
-         {:class "h-[240px]"}
+          [:div.flex.flex-col.overflow-auto
+           {:class "h-[240px]"}
 
-         [:p.self-center.text-gray-200.text-3xl.font-bold
-          (get-in roadmap-indexed [selected-version :title])]
+           [:p.self-center.text-gray-200.text-3xl.font-bold
+            (get-in roadmap-indexed [selected-version :title])]
 
-         [:div.prose.prose-xl.text-gray-200
-          (get-in roadmap-indexed [selected-version :body])]]]])))
+           [:div.prose.prose-xl.text-gray-200
+            (get-in roadmap-indexed [selected-version :body])]]]])))
 
 (defn WelcomePage [_ _ _]
   (let [marketing-vertical ["md:w-1/2 flex flex-col justify-center space-y-8"]
@@ -300,6 +297,7 @@
 
 
      ;; -- Convex is Fun
+
      [:div.w-screen
       {:class "h-[492px] bg-convex-white"}
 
@@ -318,6 +316,20 @@
         [:p
          {:class prose-dark-classes}
          "convex.world provides an interactive REPL allowing users to code directly on the Convex platform using Convex Lisp."]]]]
+
+
+     ;; -- Roadmap
+
+     [:div.w-screen
+      {:class "h-[492px] bg-white"}
+
+      [:div.h-full.max-w-5xl.mx-auto.flex.flex-col.gap-12.justify-center
+
+       [:h2
+         {:class subtitle-dark-classes}
+         "Roadmap"]
+
+       [Roadmap]]]
 
 
      ;; -- Site map
