@@ -12,50 +12,59 @@
    {:class "max-w-[978px]"}
    [:div.grid.grid-cols-1.md:grid-cols-3
     (for [{:keys [title image body background-color]} [{:background-color "bg-[#6AAAE4]"
+                                                        :image "images/instant_transactions1.svg"
                                                         :title "Instant Transactions"
                                                         :body
-                                                        [:p.text-white
-                                                         "Confirmations of " [:span.font-bold "transactions in milliseconds "] ", ideal for interactive apps and consumer usage."]}
+                                                        [:div.place-self-start
+                                                         {:class "max-w-[180px]"}
+                                                         [:p.text-white
+                                                          "Confirmations of " [:span.font-bold "transactions in milliseconds "] ", ideal for interactive apps and consumer usage."]]}
 
                                                        {:background-color "bg-convex-dark-blue"
+                                                        :image "images/global_scale1.svg"
                                                         :title "Global Scale"
                                                         :body
                                                         [:p.text-white
                                                          [:span.font-bold "100,000+ TPS "] "– enough for the whole world to use the Convex Network."]}
 
                                                        {:background-color "bg-convex-medium-blue"
+                                                        :image "images/maximum_security1.svg"
                                                         :title "Maxium Secutiry"
                                                         :body
                                                         [:p.text-white
                                                          "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
 
                                                        {:background-color "bg-convex-dark-blue"
+                                                        :image "images/instant_transactions2.svg"
                                                         :title "Front Running Resistance"
                                                         :body
                                                         [:p.text-white
                                                          "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
 
                                                        {:background-color "bg-convex-medium-blue"
+                                                        :image "images/global_scale2.svg"
                                                         :title "100% Green"
                                                         :body
                                                         [:p.text-white
                                                          "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
 
                                                        {:background-color "bg-[#6AAAE4]"
+                                                        :image "images/maximum_security2.svg"
                                                         :title "Lambda Calculus"
                                                         :body
                                                         [:p.text-white
                                                          "Advanced virtual machine (CVM), that supports execution of " [:span.font-bold "custom smart contracts and unlimited extensibility."]]}]]
       ^{:key title}
-      [:div.flex.flex-col.items-center.space-y-2
-       {:class ["h-[430px] max-h-[430px] w-[325px] max-w-[325px] px-3" background-color]}
+      [:div.flex.flex-col.items-center.space-y-2.pt-10.px-6
+       {:class ["h-[430px] max-h-[430px] w-[325px] max-w-[325px]" background-color]}
+
+       [:img.mb-6
+        {:src (or image "images/instant_transactions.svg")}]
 
        [:span.text-3xl.font-extrabold.text-white
         title]
 
-       body
-
-       ])]])
+       body])]])
 
 (defn Roadmap []
   (let [roadmap [{:id :genesis
