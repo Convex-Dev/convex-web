@@ -205,6 +205,7 @@
         prose-light-classes (conj prose-classes "text-white")
         prose-dark-classes (conj prose-classes "text-convex-dark-blue")
 
+        button-size "h-[55.75px] w-[220px]"
         content-margin-left "ml-[280px]"]
     
     [:div
@@ -228,7 +229,7 @@
 
         [:div.flex.justify-center.mt-12
          [:a
-          {:class "h-[55.75px] w-[220px] inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 rounded"
+          {:class [button-size "inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 rounded"]
            :href "/sandbox"}
           [:span.text-base.text-convex-dark-blue
            "Try Convex Now"]]]]]]
@@ -299,7 +300,7 @@
 
         [:div.flex.justify-center.mt-12
          [:a
-          {:class "h-[55.75px] w-[220px] inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 border-2 border-convex-dark-blue rounded"
+          {:class [button-size "inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 border-2 border-convex-dark-blue rounded"]
            :href "/vision"}
           [:span.text-base.text-convex-dark-blue
            "Our Vision"]]]]]]
@@ -355,7 +356,7 @@
 
         [:div.flex.justify-center.mt-12
          [:a
-          {:class "h-[55.75px] w-[220px] inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 border-2 border-convex-dark-blue rounded"
+          {:class [button-size "inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 border-2 border-convex-dark-blue rounded"]
            :href "/sandbox"}
           [:span.text-base.text-convex-dark-blue
            "Try it Now"]]]]]]
