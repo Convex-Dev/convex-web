@@ -237,7 +237,7 @@
      [:div.w-screen
       {:class "h-[492px] bg-white"}
 
-      [:div.h-full.max-w-5xl.mx-auto.flex.items-center
+      [:div.h-full.max-w-5xl.mx-auto.flex.flex-col.justify-center.items-center
 
        [:div.flex.gap-12
 
@@ -257,7 +257,15 @@
         ;; -- Logo
 
         [:img
-         {:src "images/convex_logo_blue.svg"}]]]]
+         {:src "images/convex_logo_blue.svg"}]]
+
+
+       [:div.flex.justify-center.mt-12
+        [:a
+         {:class "h-[55.75px] w-[220px] inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 border-2 border-convex-dark-blue rounded"
+          :href "https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf"}
+         [:span.text-base.text-convex-dark-blue
+          "Get the Whitepaper"]]]]]
 
 
      ;; -- Convex is Flexible
