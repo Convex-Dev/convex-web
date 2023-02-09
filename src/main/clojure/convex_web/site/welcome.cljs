@@ -203,7 +203,9 @@
 
         prose-classes ["font-source-sans-pro text-lg.md text-2xl"]
         prose-light-classes (conj prose-classes "text-white")
-        prose-dark-classes (conj prose-classes "text-convex-dark-blue")]
+        prose-dark-classes (conj prose-classes "text-convex-dark-blue")
+
+        content-margin-left "ml-[280px]"]
     
     [:div
      
@@ -278,7 +280,7 @@
        [:div.flex.flex-col.gap-5
 
         [:div.flex.flex-col.gap-5
-         {:class "ml-[280px]"}
+         {:class content-margin-left}
          [:h2
           {:class subtitle-dark-classes}
           "Convex is Flexible"]
@@ -338,7 +340,7 @@
        [:div.flex.flex-col.gap-5
 
         [:div.flex.flex-col.gap-5
-         {:class "ml-[280px]"}
+         {:class content-margin-left}
          [:h2
           {:class subtitle-dark-classes}
           "Convex is Fun"]
