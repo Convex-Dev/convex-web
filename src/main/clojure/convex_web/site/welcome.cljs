@@ -277,21 +277,30 @@
 
        [:div.flex.flex-col.gap-5
 
-        [:h2
-         {:class subtitle-dark-classes}
-         "Convex is Flexible"]
+        [:div.flex.flex-col.gap-5
+         {:class "ml-[280px]"}
+         [:h2
+          {:class subtitle-dark-classes}
+          "Convex is Flexible"]
 
-        [:p
-         {:class prose-dark-classes}
-         "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be 100% secure and publicly verifiable (both in terms of data and application behaviour), such as:"]
+         [:p
+          {:class prose-dark-classes}
+          "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be 100% secure and publicly verifiable (both in terms of data and application behaviour), such as:"]
 
-        [:ul.list-disc.list-inside
-         {:class prose-dark-classes}
-         [:li "Public registries and databases"]
-         [:li "Digital currencies"]
-         [:li "Prediction markets"]
-         [:li "Smart contracts for managing digital assets"]
-         [:li "Immutable provenance records"]]]]]
+         [:ul.list-disc.list-inside
+          {:class prose-dark-classes}
+          [:li "Public registries and databases"]
+          [:li "Digital currencies"]
+          [:li "Prediction markets"]
+          [:li "Smart contracts for managing digital assets"]
+          [:li "Immutable provenance records"]]]
+
+        [:div.flex.justify-center.mt-12
+         [:a
+          {:class "h-[55.75px] w-[220px] inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 border-2 border-convex-dark-blue rounded"
+           :href "/vision"}
+          [:span.text-base.text-convex-dark-blue
+           "Our Vision"]]]]]]
 
 
      ;; -- Convex is Fast
