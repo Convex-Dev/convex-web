@@ -337,17 +337,26 @@
 
        [:div.flex.flex-col.gap-5
 
-        [:h2
-         {:class subtitle-dark-classes}
-         "Convex is Fun"]
+        [:div.flex.flex-col.gap-5
+         {:class "ml-[280px]"}
+         [:h2
+          {:class subtitle-dark-classes}
+          "Convex is Fun"]
 
-        [:p
-         {:class prose-dark-classes}
-         "We provide a powerful, interactive environment for development in Convex that enables high productivity while maintaining secure coding principles."]
+         [:p
+          {:class prose-dark-classes}
+          "We provide a powerful, interactive environment for development in Convex that enables high productivity while maintaining secure coding principles."]
 
-        [:p
-         {:class prose-dark-classes}
-         "convex.world provides an interactive REPL allowing users to code directly on the Convex platform using Convex Lisp."]]]]
+         [:p
+          {:class prose-dark-classes}
+          "convex.world provides an interactive REPL allowing users to code directly on the Convex platform using Convex Lisp."]]
+
+        [:div.flex.justify-center.mt-12
+         [:a
+          {:class "h-[55.75px] w-[220px] inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 border-2 border-convex-dark-blue rounded"
+           :href "/sandbox"}
+          [:span.text-base.text-convex-dark-blue
+           "Try it Now"]]]]]]
 
 
      [:div.w-screen
