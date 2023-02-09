@@ -197,21 +197,7 @@
                  nil)]]])))]]))
 
 (defn WelcomePage [_ _ _]
-  (let [marketing-vertical ["md:w-1/2 flex flex-col justify-center space-y-8"]
-        marketing-bullets ["flex flex-col space-y-3 text-white"]
-        marketing-copy ["text-base lg:text-xl text-white leading-8"]
-        
-        ItemTeal (fn [s]
-                   [:div.flex.items-center.flex-shrink-0.text-base.lg:text-lg.space-x-3
-                    [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-teal-500]
-                    [:span.text-gray-700 s]])
-        
-        ItemBlue (fn [s]
-                   [:div.flex.items-center.text-base.lg:text-lg.space-x-3
-                    [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-blue-500]
-                    [:span s]])
-
-        subtitle-classes ["text-lg md:text-3xl font-extrabold"]
+  (let [subtitle-classes ["text-lg md:text-3xl font-extrabold"]
         subtitle-light-classes (conj subtitle-classes "text-white")
         subtitle-dark-classes (conj subtitle-classes "text-convex-dark-blue")
 
@@ -236,7 +222,14 @@
          "Building the Internet of Value for the business and consumer world"]
 
         [:p.font-source-sans-pro.text-white.text-lg.md:text-3xl.text-center
-         "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]]]]
+         "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]
+
+        [:div.flex.justify-center.mt-12
+         [:a
+          {:class "h-[55.75px] w-[220px] inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 rounded"
+           :href "/sandbox"}
+          [:span.text-base.text-convex-dark-blue
+           "Try Convex Now"]]]]]]
 
 
      ;; -- What is Convex
