@@ -224,7 +224,7 @@
         [:h1.text-4xl.lg:text-5xl.font-extrabold.text-white.text-center
          "Building the Internet of Value for the business and consumer world"]
 
-        [:p.font-source-sans-pro.text-white.text-lg.md:text-3xl.text-center
+        [:p.font-source-sans-pro.text-white.text-3xl.text-center
          "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]
 
         [:div.flex.justify-center.mt-12
