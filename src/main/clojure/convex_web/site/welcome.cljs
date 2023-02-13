@@ -197,7 +197,7 @@
                  nil)]]])))]]))
 
 (defn WelcomePage [_ _ _]
-  (let [subtitle-classes ["text-lg md:text-3xl font-extrabold"]
+  (let [subtitle-classes ["text-3xl font-extrabold"]
         subtitle-light-classes (conj subtitle-classes "text-white")
         subtitle-dark-classes (conj subtitle-classes "text-convex-dark-blue")
 
@@ -206,7 +206,7 @@
         prose-dark-classes (conj prose-classes "text-convex-dark-blue")
 
         button-size "h-[55.75px] w-[220px]"
-        content-margin-left "ml-[280px]"]
+        content-margin-left "md:ml-[280px]"]
     
     [:div
      
@@ -215,7 +215,7 @@
      ;; -- Building the Internet of Value
 
      [:div.w-screen
-      {:class "h-[492px] bg-convex-dark-blue"}
+      {:class "md:h-[492px] md:p0 p-8 bg-convex-dark-blue"}
 
       [:div.h-full.max-w-5xl.mx-auto.flex.items-center
 
@@ -238,11 +238,11 @@
      ;; -- What is Convex
 
      [:div.w-screen
-      {:class "h-[492px] bg-white"}
+      {:class "md:h-[492px] md:p0 p-8 bg-white"}
 
       [:div.h-full.max-w-5xl.mx-auto.flex.flex-col.justify-center.items-center
 
-       [:div.flex.gap-12
+       [:div.flex.flex-col.items-center.md:flex-row.gap-12
 
         ;; -- What is Convex
 
@@ -260,7 +260,8 @@
         ;; -- Logo
 
         [:img
-         {:src "images/convex_logo_blue.svg"}]]
+         {:class "w-[213.52px] h-[140px]"
+          :src "images/convex_logo_blue.svg"}]]
 
 
        [:div.flex.justify-center.mt-12
@@ -274,7 +275,7 @@
      ;; -- Convex is Flexible
 
      [:div.w-screen
-      {:class "h-[584px] bg-convex-sky-blue"}
+      {:class "md:h-[584px] md:p0 p-8 bg-convex-sky-blue"}
 
       [:div.h-full.max-w-5xl.mx-auto.flex.items-center
 
@@ -309,7 +310,7 @@
      ;; -- Convex is Fast
 
      [:div.w-screen
-      {:class "h-[584px] bg-convex-dark-blue"}
+      {:class "md:h-[584px] md:p0 p-8 bg-convex-dark-blue"}
 
       [:div.h-full.max-w-5xl.mx-auto.flex.items-center
 
@@ -334,7 +335,7 @@
      ;; -- Convex is Fun
 
      [:div.w-screen
-      {:class "h-[492px] bg-convex-white"}
+      {:class "md:h-[492px] md:p0 p-8 bg-convex-white"}
 
       [:div.h-full.max-w-5xl.mx-auto.flex.items-center
 
@@ -373,7 +374,7 @@
      ;; -- Roadmap
 
      [:div.w-screen
-      {:class "h-[492px] bg-white"}
+      {:class "md:h-[492px] md:p0 p-8 bg-white"}
 
       [:div.h-full.max-w-5xl.mx-auto.flex.flex-col.gap-7.justify-center
 
