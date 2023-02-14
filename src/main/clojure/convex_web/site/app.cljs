@@ -1,37 +1,39 @@
 (ns convex-web.site.app
-  (:require [convex-web.site.router :as router]
-            [convex-web.site.devtools :as devtools]
-            [convex-web.site.db]
-            [convex-web.site.stack :as stack]
-            [convex-web.site.runtime :refer [disp sub]]
-            [convex-web.site.gui :as gui]
-            [convex-web.site.gui.marketing :as marketing]
-            [convex-web.site.wallet :as wallet]
-            [convex-web.site.explorer :as explorer]
-            [convex-web.site.documentation :as documentation]
-            [convex-web.site.welcome :as welcome]
-            [convex-web.site.repl :as repl]
-            [convex-web.site.session :as session]
-            [convex-web.site.account :as account]
-            [convex-web.site.store]
-            [convex-web.site.format :as format]
-            [convex-web.site.markdown :as markdown]
-            [convex-web.site.team :as team]
+  (:require
+   [convex-web.site.router :as router]
+   [convex-web.site.devtools :as devtools]
+   [convex-web.site.db]
+   [convex-web.site.stack :as stack]
+   [convex-web.site.runtime :refer [disp sub]]
+   [convex-web.site.gui :as gui]
+   [convex-web.site.gui.marketing :as marketing]
+   [convex-web.site.wallet :as wallet]
+   [convex-web.site.explorer :as explorer]
+   [convex-web.site.documentation :as documentation]
+   [convex-web.site.welcome :as welcome]
+   [convex-web.site.repl :as repl]
+   [convex-web.site.session :as session]
+   [convex-web.site.account :as account]
+   [convex-web.site.store]
+   [convex-web.site.format :as format]
+   [convex-web.site.markdown :as markdown]
+   [convex-web.site.team :as team]
 
-            [cljs.spec.test.alpha :as stest]
+   [cljs.spec.test.alpha :as stest]
 
-            [reagent.dom]
-            [reagent.core :as reagent]
-            [re-frame.core :as re-frame]
-            [lambdaisland.glogi :as log]
-            [lambdaisland.glogi.console :as glogi-console]
-            [reitit.frontend.easy :as rfe]
+   [reagent.dom]
+   [reagent.core :as reagent]
+   [re-frame.core :as re-frame]
+   [lambdaisland.glogi :as log]
+   [lambdaisland.glogi.console :as glogi-console]
+   [reitit.frontend.easy :as rfe]
 
-            ["@headlessui/react" :as headlessui]
-            ["@heroicons/react/solid" :as icon :refer [MenuIcon XIcon ChevronDownIcon ChevronRightIcon]]
-            ["highlight.js/lib/core" :as hljs]
-            ["highlight.js/lib/languages/clojure" :as hljs-clojure]
-            ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
+   ["@headlessui/react" :as headlessui]
+   ["@heroicons/react/solid" :as icon :refer [MenuIcon XIcon ChevronDownIcon ChevronRightIcon]]
+   ["highlight.js/lib/core" :as hljs]
+   ["highlight.js/lib/languages/clojure" :as hljs-clojure]
+   ["highlight.js/lib/languages/javascript" :as hljs-javascript]
+   ["@radix-ui/react-tooltip" :as tooltip]))
 
 
 (glogi-console/install!)
@@ -830,7 +832,7 @@
      [devtools/Inspect])])
 
 (defn mount []
-  (reagent.dom/render [Root] (.getElementById js/document "app")))
+  (reagent.dom/render [:> tooltip/Provider [Root]] (.getElementById js/document "app")))
 
 (defn start []
   (when goog.DEBUG

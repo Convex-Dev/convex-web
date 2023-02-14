@@ -5,7 +5,8 @@
    [convex-web.site.gui :as gui]
    [convex-web.site.gui.marketing :as marketing]
    
-   ["@heroicons/react/solid" :as icon]))
+   ["@heroicons/react/solid" :as icon]
+   ["@radix-ui/react-tooltip" :as tooltip]))
 
 (defn KeyAdvantages []
   [:div
@@ -162,39 +163,51 @@
            {:style {"minWidth" "40px"}}
            [:hr.flex-1.border.border-gray-400]]
 
-          (for [{:keys [id title status]} roadmap]
-            [:div.flex.flex-col.items-center.gap-3.py-3.rounded.hover:bg-gray-50.cursor-default
+          (for [{:keys [title status body]} roadmap]
+            [:> tooltip/Root {:delayDuration 0}
 
-             [:p.text-3xl.text-convex-dark-blue.font-extrabold
-              title]
+             [:> tooltip/Trigger {:asChild true}
+              [:div.flex.flex-col.items-center.gap-3.py-3.rounded.cursor-default
 
-             [gui/Tooltip
-              {:html (r/as-element (:body (roadmap-indexed id)))}
-              [:div.w-14.h-14.flex.justify-center.items-center.rounded-full.shadow-2xl
-               {:class
+               [:p.text-2xl.text-convex-dark-blue.font-extrabold
+                title]
+
+               [:div.flex.justify-center.items-center.rounded-full.shadow-2xl
+                {:class
+                 ["w-[80px] h-[80px]"
+                  (case status
+                    :in-progress
+                    "bg-transparent"
+
+                    :completed
+                    "bg-white border border-2 border-convex-medium-blue"
+
+                    :todo
+                    "bg-white bg-opacity-30 hover:bg-opacity-50 border border-2 border-convex-light-blue")]}
+
+                ;; -- Status icon
+
                 (case status
                   :in-progress
-                  "bg-blue-500 hover:bg-blue-400"
+                  [:> icon/CogIcon
+                   {:className "w-11 h-11 text-convex-light-blue"}]
 
                   :completed
-                  "bg-white border border-convex-dark-blue"
+                  [:> icon/CheckIcon
+                   {:className "w-11 h-11 text-convex-medium-blue"}]
 
                   :todo
-                  "bg-white bg-opacity-30 hover:bg-opacity-50 border border-convex-dark-blue")}
+                  nil)]]]
 
-               ;; -- Status icon
+             [:> tooltip/Content {:side "top"}
+              [:div.px-4.py-2.rounded.shadow-lg
+               {:class "bg-[#6D7380]"}
+               [:article.prose.prose-sm.prose-invert.text-white
 
-               (case status
-                 :in-progress
-                 [:> icon/CogIcon
-                  {:className "w-6 h-6 text-white"}]
+                [:h1.text-2xl
+                 title]
 
-                 :completed
-                 [:> icon/CheckIcon
-                  {:className "w-6 h-6 text-convex-dark-blue"}]
-
-                 :todo
-                 nil)]]])))]]))
+                body]]]])))]]))
 
 (defn WelcomePage [_ _ _]
   (let [subtitle-classes ["text-3xl font-extrabold"]
