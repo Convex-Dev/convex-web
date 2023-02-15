@@ -299,19 +299,19 @@
    [:span.text-xl.text-blue-200.uppercase "Community"]
    
    [:div.flex.space-x-2
-    (for [{:keys [href src]} [{:src "/social_discord.png"
+    (for [{:keys [href src]} [{:src "https://storage.googleapis.com/convex-world-site-2/Convex_files/social_discord.png"
                                :href "https://discord.gg/fsnCxEM"}
                               
-                              {:src "/social_github.png"
+                              {:src "https://storage.googleapis.com/convex-world-site-2/Convex_files/social_github.png"
                                :href "https://github.com/Convex-Dev"}
                               
-                              {:src "/social_twitter.png"
+                              {:src "https://storage.googleapis.com/convex-world-site-2/Convex_files/social_twitter.png"
                                :href "https://twitter.com/convex_world"}
                               
-                              {:src "/social_linkedin.png"
+                              {:src "https://storage.googleapis.com/convex-world-site-2/Convex_files/social_linkedin.png"
                                :href "https://www.linkedin.com/company/convex-foundation/"}
                               
-                              {:src "/social_youtube.png"
+                              {:src "https://storage.googleapis.com/convex-world-site-2/Convex_files/social_youtube.png"
                                :href "https://www.youtube.com/channel/UCrasexr20HzFZS-xgnYcoug/featured"}]]
       ^{:key href}
       [:a {:href href}

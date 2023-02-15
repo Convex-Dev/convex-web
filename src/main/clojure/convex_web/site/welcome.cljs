@@ -9,7 +9,7 @@
 (def key-advantages
   [;; -- Instant Transactions
    {:background-color "bg-[#6AAAE4]"
-    :image "images/instant_transactions1.svg"
+    :image "https://storage.googleapis.com/convex-world-site-2/Convex_files/instant_transactions1.svg"
     :title "Realtime Transactions"
     :body
     [:div.place-self-start
@@ -19,7 +19,7 @@
 
    ;; -- Global Scale
    {:background-color "bg-convex-dark-blue"
-    :image "images/global_scale1.svg"
+    :image "https://storage.googleapis.com/convex-world-site-2/Convex_files/global_scale1.svg"
     :title "Global Scale"
     :body
     [:p.text-white
@@ -27,7 +27,7 @@
 
    ;; -- Maxium Secutiry
    {:background-color "bg-convex-medium-blue"
-    :image "images/maximum_security1.svg"
+    :image "https://storage.googleapis.com/convex-world-site-2/Convex_files/maximum_security1.svg"
     :title "Maxium Secutiry"
     :body
     [:p.text-white
@@ -35,7 +35,7 @@
 
    ;; -- Front Running Resistance
    {:background-color "bg-convex-dark-blue"
-    :image "images/instant_transactions2.svg"
+    :image "https://storage.googleapis.com/convex-world-site-2/Convex_files/instant_transactions2.svg"
     :title "Front Running Resistance"
     :body
     [:p.text-white
@@ -43,7 +43,7 @@
 
    ;; -- 100% Green
    {:background-color "bg-convex-medium-blue"
-    :image "images/global_scale2.svg"
+    :image "https://storage.googleapis.com/convex-world-site-2/Convex_files/global_scale2.svg"
     :title "100% Green"
     :body
     [:p.text-white
@@ -51,7 +51,7 @@
 
    ;; -- Lambda Calculus
    {:background-color "bg-[#6AAAE4]"
-    :image "images/maximum_security2.svg"
+    :image "https://storage.googleapis.com/convex-world-site-2/Convex_files/maximum_security2.svg"
     :title "Lambda Calculus"
     :body
     [:p.text-white
@@ -249,8 +249,8 @@
      [:div.w-screen.relative
       {:class "md:h-[492px] md:p0 p-8 bg-convex-dark-blue"}
 
-      [:img.absolute.top-0.right-0.opacity-50
-       {:src "images/shape_6_white.png"}]
+      [:img.absolute.top-0.right-0
+       {:src "https://storage.googleapis.com/convex-world-site-2/Convex_files/shape_6_white.png"}]
 
       [:div.h-full.max-w-5xl.mx-auto.flex.items-center
 
@@ -300,7 +300,7 @@
 
         [:img
          {:class "w-[213.52px] h-[140px]"
-          :src "images/convex_logo_blue.svg"}]]
+          :src "https://storage.googleapis.com/convex-world-site-2/Convex_files/convex_logo_blue.svg"}]]
 
 
        [:div.flex.justify-center.mt-12

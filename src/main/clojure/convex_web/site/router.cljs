@@ -867,14 +867,16 @@
 
 (defn start []
   (let [on-navigate (fn [match history]
-                      (if match
-                        (disp :router/!navigate match history)
-                        ;; If Reitit can't match a route,
-                        ;; we push a Not Found page instead.
-                        ;; Note that pushing a page to the Stack
-                        ;; is exactly what the Controller of a Route does,
-                        ;; so there's nothing special about it.
-                        (stack/push :page.id/not-found {:reset? true})))]
+                      (stack/push :page.id/welcome {:reset? true})
+
+                      #_(if match
+                          (disp :router/!navigate match history)
+                          ;; If Reitit can't match a route,
+                          ;; we push a Not Found page instead.
+                          ;; Note that pushing a page to the Stack
+                          ;; is exactly what the Controller of a Route does,
+                          ;; so there's nothing special about it.
+                          (stack/push :page.id/not-found {:reset? true})))]
 
     (rfe/start! router on-navigate {:use-fragment false})))
 

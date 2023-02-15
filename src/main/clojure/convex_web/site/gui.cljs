@@ -306,7 +306,7 @@
 (defn ConvexLogoWhiteLink []
   [:a {:href (rfe/href :route-name/welcome)}
    [:img
-    {:src "/images/convex_logo_white.svg"}]])
+    {:src "https://storage.googleapis.com/convex-world-site-2/Convex_files/convex_logo_white.svg"}]])
 
 (defn ConvexWhite
   "Convex logo and text."
