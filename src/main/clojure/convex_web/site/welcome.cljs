@@ -3,6 +3,7 @@
    [convex-web.site.gui.marketing :as marketing]
    
    ["@heroicons/react/solid" :as icon]
+   ["@heroicons/react/outline" :as icon-outline]
    ["@radix-ui/react-tooltip" :as tooltip]))
 
 (defn KeyAdvantages []
@@ -68,12 +69,13 @@
   [:> tooltip/Root {:delayDuration 0}
 
    [:> tooltip/Trigger {:asChild true}
-    [:div.flex.flex-col.items-center.gap-3.py-3.rounded.cursor-default
+    [:div.flex.flex-col.items-center.gap-3.rounded.cursor-default
+     {:class "w-[90px]"}
 
      [:p.text-2xl.text-convex-dark-blue.font-extrabold
       title]
 
-     [:div.flex.justify-center.items-center.rounded-full.shadow-2xl
+     [:div.flex.justify-center.items-center.rounded-full
       {:class
        ["w-[80px] h-[80px]"
         (case status
@@ -84,14 +86,14 @@
           "bg-white border border-2 border-convex-medium-blue"
 
           :todo
-          "bg-white bg-opacity-30 hover:bg-opacity-50 border border-2 border-convex-light-blue")]}
+          "bg-white border border-2 border-convex-light-blue opacity-50")]}
 
       ;; -- Status icon
 
       (case status
         :in-progress
-        [:> icon/CogIcon
-         {:className "w-11 h-11 text-convex-light-blue"}]
+        [:> icon-outline/CogIcon
+         {:className "w-[80px] h-[80px] text-convex-light-blue"}]
 
         :completed
         [:> icon/CheckIcon
@@ -192,20 +194,29 @@
                    [:p
                     "However we are committed to retaining backwards compatibility and seamless upgrade for existing Convex applications. Most Convex applications will be able to run unchanged."]]}]]
 
-    [:div.flex.flex-col.space-y-10
+    (into [:div.w-full.flex.flex-col.items-center.md:flex-row.md:justify-between]
+      (map-indexed
+        (fn [i milestone]
+          (cond
+            (= i (dec (count roadmap)))
+            ^{:key (:title milestone)}
+            [Milestone milestone]
 
-     ;; -- Timeline
-     [:div.relative.flex.items-center.py-10.space-x-2.overflow-auto
+            :else
+            ^{:key (:title milestone)}
+            [:div.flex.flex-col.md:flex-row
+             [Milestone milestone]
 
-      (into [:<>]
+             [:div.flex.flex-col.gap-3
+              {:class "w-[60px]"}
 
-        (interpose
-          [:div.w-full
-           {:style {"minWidth" "40px"}}
-           [:hr.flex-1.border.border-gray-400]]
+              [:div
+               {:class "h-[32px]"}]
 
-          (for [milestone roadmap]
-            [Milestone milestone])))]]))
+              [:div.flex.flex-1.items-center
+               [:div
+                {:class "bg-[#6D7380] h-px w-full"}]]]])))
+      roadmap)))
 
 (defn WelcomePage [_ _ _]
   (let [subtitle-classes ["text-3xl font-extrabold"]
@@ -387,7 +398,7 @@
      [:div.w-screen
       {:class "md:h-[492px] md:p0 p-8 bg-white"}
 
-      [:div.h-full.max-w-5xl.mx-auto.flex.flex-col.gap-7.justify-center
+      [:div.h-full.max-w-5xl.mx-auto.flex.flex-col.gap-12.justify-center
 
        [:h2
          {:class subtitle-dark-classes}
