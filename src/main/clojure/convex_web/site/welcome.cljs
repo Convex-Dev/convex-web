@@ -64,6 +64,55 @@
 
        body])]])
 
+(defn Milestone [{:keys [title status body]}]
+  [:> tooltip/Root {:delayDuration 0}
+
+   [:> tooltip/Trigger {:asChild true}
+    [:div.flex.flex-col.items-center.gap-3.py-3.rounded.cursor-default
+
+     [:p.text-2xl.text-convex-dark-blue.font-extrabold
+      title]
+
+     [:div.flex.justify-center.items-center.rounded-full.shadow-2xl
+      {:class
+       ["w-[80px] h-[80px]"
+        (case status
+          :in-progress
+          "bg-transparent"
+
+          :completed
+          "bg-white border border-2 border-convex-medium-blue"
+
+          :todo
+          "bg-white bg-opacity-30 hover:bg-opacity-50 border border-2 border-convex-light-blue")]}
+
+      ;; -- Status icon
+
+      (case status
+        :in-progress
+        [:> icon/CogIcon
+         {:className "w-11 h-11 text-convex-light-blue"}]
+
+        :completed
+        [:> icon/CheckIcon
+         {:className "w-11 h-11 text-convex-medium-blue"}]
+
+        :todo
+        nil)]]]
+
+
+   ;; -- Milestone tooltip
+
+   [:> tooltip/Content {:side "top"}
+    [:div.px-4.py-2.rounded.shadow-lg
+     {:class "bg-[#6D7380]"}
+     [:article.prose.prose-sm.prose-invert.text-white
+
+      [:h1.text-2xl
+       title]
+
+      body]]]])
+
 (defn Roadmap []
   (let [roadmap [{:id :genesis
                   :title "Genesis"
@@ -155,51 +204,8 @@
            {:style {"minWidth" "40px"}}
            [:hr.flex-1.border.border-gray-400]]
 
-          (for [{:keys [title status body]} roadmap]
-            [:> tooltip/Root {:delayDuration 0}
-
-             [:> tooltip/Trigger {:asChild true}
-              [:div.flex.flex-col.items-center.gap-3.py-3.rounded.cursor-default
-
-               [:p.text-2xl.text-convex-dark-blue.font-extrabold
-                title]
-
-               [:div.flex.justify-center.items-center.rounded-full.shadow-2xl
-                {:class
-                 ["w-[80px] h-[80px]"
-                  (case status
-                    :in-progress
-                    "bg-transparent"
-
-                    :completed
-                    "bg-white border border-2 border-convex-medium-blue"
-
-                    :todo
-                    "bg-white bg-opacity-30 hover:bg-opacity-50 border border-2 border-convex-light-blue")]}
-
-                ;; -- Status icon
-
-                (case status
-                  :in-progress
-                  [:> icon/CogIcon
-                   {:className "w-11 h-11 text-convex-light-blue"}]
-
-                  :completed
-                  [:> icon/CheckIcon
-                   {:className "w-11 h-11 text-convex-medium-blue"}]
-
-                  :todo
-                  nil)]]]
-
-             [:> tooltip/Content {:side "top"}
-              [:div.px-4.py-2.rounded.shadow-lg
-               {:class "bg-[#6D7380]"}
-               [:article.prose.prose-sm.prose-invert.text-white
-
-                [:h1.text-2xl
-                 title]
-
-                body]]]])))]]))
+          (for [milestone roadmap]
+            [Milestone milestone])))]]))
 
 (defn WelcomePage [_ _ _]
   (let [subtitle-classes ["text-3xl font-extrabold"]
