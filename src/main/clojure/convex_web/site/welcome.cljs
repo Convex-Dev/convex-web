@@ -220,7 +220,7 @@
         [:div.flex.flex-col.justify-center.items-center.space-y-6.md:space-y-14.pt-14.md:pt-48.px-6
          
          [:h1.text-4xl.lg:text-6xl.font-extrabold.text-white.text-center
-          "Building the Internet of Value for the business and consumer world"]
+          "Lattice Technology for the Next Generation Internet"]
          
          [:div.flex.flex-col.md:flex-row.space-y-10.md:space-x-10.md:space-y-0
           [:p.text-white.text-lg.md:text-4xl
