@@ -207,7 +207,7 @@
             [:div.flex.flex-col.md:flex-row
              [Milestone milestone]
 
-             [:div.flex.flex-col.gap-3
+             [:div.hidden.md:flex.flex-col.gap-3
               {:class "w-[60px]"}
 
               [:div
