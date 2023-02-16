@@ -1,8 +1,5 @@
 (ns convex-web.site.welcome
   (:require 
-   [reagent.core :as r]
-
-   [convex-web.site.gui :as gui]
    [convex-web.site.gui.marketing :as marketing]
    
    ["@heroicons/react/solid" :as icon]
@@ -144,12 +141,7 @@
                      "Unlimited scalability with integrated subnets"]]
 
                    [:p
-                    "However we are committed to retaining backwards compatibility and seamless upgrade for existing Convex applications. Most Convex applications will be able to run unchanged."]]}]
-
-        ;; Roadmap indexed by ID; it's easy to read a particular version by ID.
-        roadmap-indexed (->> roadmap
-                          (map (juxt :id identity))
-                          (into {}))]
+                    "However we are committed to retaining backwards compatibility and seamless upgrade for existing Convex applications. Most Convex applications will be able to run unchanged."]]}]]
 
     [:div.flex.flex-col.space-y-10
 
