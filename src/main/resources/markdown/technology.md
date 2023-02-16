@@ -1,3 +1,12 @@
+## Lattice Technology
+
+Lattice technology combines mathematics and computer science to build robust decentralised systems that deliver the capabilities required for Web 3.0 while matching the performance of traditional centralised systems.
+
+Systems built using Convex technology can take advantage of two different lattices that are designed to work in harmony:
+
+- The *Global State Lattice* is a secure consensus layer that plays the role of a public, layer 1 network.
+- The *Data Lattice* is a scalable, decentralised, verifiable storage layer that can store arbitrary data efficiently using content addressable storage and a forest of efficiently encoded Merkle DAGs. Value IDs from the Data Lattice can be linked directly from the Global State Lattice to allow effectively unlimited off-chain storage for Convex dApps.
+
 ## Convergent Proof of Stake
 
 Convex utilises the revolutionary Convergent Proof of Stake consensus (CPoS) algorithm. By treating consensus as a the problem of merging "Belief" that are communicated and validated by Peers on the network, Convex creates a decentralised Conflict-free Replicated Data Type that provably converges to a stable ordering of transactions, effectively solving the double-spend problem. Some major advantages this approach include:
