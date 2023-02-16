@@ -224,7 +224,7 @@
          
          [:div.flex.flex-col.md:flex-row.space-y-10.md:space-x-10.md:space-y-0
           [:p.text-white.text-lg.md:text-4xl
-           "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]
+           "All the advantages of blockchain without the compromises: enabling realtime, decentralised, programmable economic systems at Internet scale."]
           
           ;; -- Buttons
           [:div.flex.flex-col.space-y-2
@@ -235,7 +235,7 @@
              {}
              [:div.w-40
               [:span.text-base.text-white.uppercase.font-bold
-               "Try It Now"]]]]
+               "Try the Sandbox"]]]]
            
            [:a
             {:href "https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf"
@@ -278,7 +278,7 @@
           
           [:span
            {:class caption-style}
-           "Instant Transactions"]
+           "Realtime Transactions"]
           
           [:p
            {:class copy-style}
@@ -300,7 +300,7 @@
           
           [:p
            {:class copy-style}
-           [:span.font-bold "100,000+ TPS"] " – enough for the whole world to use the  Convex Network."]]
+           [:span.font-bold "50,000+ decentralised exchange transactions per second"] " – enough for DeFi on a global scale."]]
          
          ;; -- Maximum SecurIty
          [:div
@@ -335,7 +335,7 @@
           [:p
            {:class copy-style}
            "Transaction costs less than $0.0001 – "
-           [:span.font-bold "more than 10,000 times cheaper than Ethereum."]]]
+           [:span.font-bold "for frictionless finance."]]]
          
          ;; -- 100% Green
          [:div
@@ -352,7 +352,7 @@
           [:p
            {:class copy-style}
            "No wastage of energy or computing resources."
-           [:span.font-bold " More than 1,000,000 times more efficient than Bitcoin."]]]
+           [:span.font-bold " More than 1,000,000 times more efficient than Proof of Work networks"]]]
          
          ;; -- Smart Contracts
          [:div
@@ -368,7 +368,7 @@
           
           [:p
            {:class copy-style}
-           "Advanced virtual machine (CVM), that supports  execution of "
+           "Advanced virtual machine (CVM), that supports execution of "
            [:span.font-bold
             "custom smart contracts and unlimited extensibility."]]]]])
      
@@ -387,8 +387,8 @@
       
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
        [:div.prose.lg:prose-2xl
-        [:p "Convex is the next generation of blockchain technology, with web-scale performance, flexibility and energy efficiency."]
-        [:p "We're an open source, non-profit foundation enabling new decentralised ecosystems in finance, gaming virtual worlds and the enterprise."]]]]
+        [:p "Convex defines a new category—Lattice technology. We solve DLT consensus with a proven technique from computer science. Convex is not a blockchain but a radical new approach to the consensus problem."]
+        [:p "We're an open source, non-profit foundation enabling new ecosystems at the intersction of web3 infrastructure, decentralised finance and GameFi."]]]]
      
      
      [:div.w-full
@@ -407,9 +407,7 @@
         [:h3.text-5xl.lg:text-7xl.font-extrabold "Convex is Flexible"]
         
         [:p.prose.lg:prose-2xl
-         "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be
-          100% secure and publicly verifiable (both in terms of data and
-          application behaviour), such as:"]
+         "Convex supports decentralised, programmable economic systems with a powerful virtual machine based on the lambda calculus. It supports applications such as:"]
         
         [:div.text-gray-600 {:class marketing-bullets}
          [ItemTeal "Public registries and databases"]
@@ -480,10 +478,20 @@
          [:p {:class marketing-copy}
           "We provide a powerful, interactive environment for
           development in Convex that enables high productivity while maintaining
-          secure coding principles."]
+          secure coding principles. Some highlights include"]
+         
+         [:div {:class marketing-bullets}
+          [ItemBlue
+           "'One Line DeFi' - most economic actions can be execute in one line of code, including powerful capabilites like launching a new digital asset."]
+          
+          [ItemBlue
+           "On-chain compiler enables smart contracts to construct and deploy other smart contracts without relying on external tools or oracles."]
+          
+          [ItemBlue
+           "Interactive live coding with each account having a secure programmatic environment."]]
          
          [:p {:class marketing-copy}
-          "convex.world provides an interactive REPL allowing users to code directly
+          "convex.world provides an interactive REPL-based Sandbox allowing users to code directly
           on the Convex platform using Convex Lisp."]
          
          [:a.invisible.md:visible
@@ -492,7 +500,7 @@
            {}
            [:div.w-40
             [:span.text-sm.text-white.uppercase
-             "Try It Now"]]]]]]]
+             "Try the Sandbox"]]]]]]]
       
 
       ;; Roadmap
