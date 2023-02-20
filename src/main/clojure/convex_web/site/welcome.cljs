@@ -246,8 +246,12 @@
      
      ;; -- Building the Internet of Value
 
-     [:div.w-screen
+     [:div.w-screen.relative
       {:class "md:h-[492px] md:p0 p-8 bg-convex-dark-blue"}
+
+      [:img.absolute.top-0
+       {:class "-right-10"
+        :src "images/shape_6_white.png"}]
 
       [:div.h-full.max-w-5xl.mx-auto.flex.items-center
 
