@@ -1,6 +1,6 @@
 # Major changes and resolved issues
 
-## Unreleased
+## 2023-02-23
 - Updated main page
 - Updated technology page
 
