@@ -1,6 +1,8 @@
 # Major changes and resolved issues
 
-## --
+## Unreleased
+- Updated main page
+- Updated technology page
 
 ## 2023-01-19
 - Marketing page title tweaks
