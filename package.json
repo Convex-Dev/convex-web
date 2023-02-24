@@ -10,8 +10,9 @@
     "styles:release": "npx tailwindcss --output src/main/resources/public/css/styles.css"
   },
   "dependencies": {
-    "@headlessui/react": "^1.4.1",
+    "@headlessui/react": "^1.7.10",
     "@heroicons/react": "^1.0.5",
+    "@radix-ui/react-tooltip": "^1.0.3",
     "@types/react": "^17.0.33",
     "codemirror": "^5.63.3",
     "highlight.js": "^11.2.0",

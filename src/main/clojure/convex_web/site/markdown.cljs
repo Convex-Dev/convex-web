@@ -52,9 +52,9 @@
               {:id name
                :class
                ["prose prose-sm md:prose-lg max-w-none"
-                "prose-headings:font-sans prose-headings:font-bold"
+                "prose-headings:font-sans prose-headings:font-bold prose-headings:text-convex-dark-blue"
                 "md:prose-h2:text-[28px]"
-                "font-source-sans-pro text-black"
+                "font-source-sans-pro text-convex-dark-blue"
                 "mb-10"]}
               [gui/Markdown content]])]
           

@@ -1,38 +1,39 @@
 (ns convex-web.site.app
-  (:require [convex-web.site.router :as router]
-            [convex-web.site.devtools :as devtools]
-            [convex-web.site.db]
-            [convex-web.site.stack :as stack]
-            [convex-web.site.runtime :refer [disp sub]]
-            [convex-web.site.gui :as gui]
-            [convex-web.site.gui.marketing :as marketing]
-            [convex-web.site.wallet :as wallet]
-            [convex-web.site.explorer :as explorer]
-            [convex-web.site.documentation :as documentation]
-            [convex-web.site.welcome :as welcome]
-            [convex-web.site.repl :as repl]
-            [convex-web.site.session :as session]
-            [convex-web.site.account :as account]
-            [convex-web.site.store]
-            [convex-web.site.format :as format]
-            [convex-web.site.markdown :as markdown]
-            [convex-web.site.team :as team]
-            [convex-web.site.theme :as theme]
+  (:require
+   [convex-web.site.router :as router]
+   [convex-web.site.devtools :as devtools]
+   [convex-web.site.db]
+   [convex-web.site.stack :as stack]
+   [convex-web.site.runtime :refer [disp sub]]
+   [convex-web.site.gui :as gui]
+   [convex-web.site.gui.marketing :as marketing]
+   [convex-web.site.wallet :as wallet]
+   [convex-web.site.explorer :as explorer]
+   [convex-web.site.documentation :as documentation]
+   [convex-web.site.welcome :as welcome]
+   [convex-web.site.repl :as repl]
+   [convex-web.site.session :as session]
+   [convex-web.site.account :as account]
+   [convex-web.site.store]
+   [convex-web.site.format :as format]
+   [convex-web.site.markdown :as markdown]
+   [convex-web.site.team :as team]
 
-            [cljs.spec.test.alpha :as stest]
+   [cljs.spec.test.alpha :as stest]
 
-            [reagent.dom]
-            [reagent.core :as reagent]
-            [re-frame.core :as re-frame]
-            [lambdaisland.glogi :as log]
-            [lambdaisland.glogi.console :as glogi-console]
-            [reitit.frontend.easy :as rfe]
+   [reagent.dom]
+   [reagent.core :as reagent]
+   [re-frame.core :as re-frame]
+   [lambdaisland.glogi :as log]
+   [lambdaisland.glogi.console :as glogi-console]
+   [reitit.frontend.easy :as rfe]
 
-            ["@headlessui/react" :as headlessui]
-            ["@heroicons/react/solid" :as icon :refer [MenuIcon XIcon ChevronDownIcon ChevronRightIcon]]
-            ["highlight.js/lib/core" :as hljs]
-            ["highlight.js/lib/languages/clojure" :as hljs-clojure]
-            ["highlight.js/lib/languages/javascript" :as hljs-javascript]))
+   ["@headlessui/react" :as headlessui]
+   ["@heroicons/react/solid" :as icon :refer [MenuIcon XIcon ChevronDownIcon ChevronRightIcon]]
+   ["highlight.js/lib/core" :as hljs]
+   ["highlight.js/lib/languages/clojure" :as hljs-clojure]
+   ["highlight.js/lib/languages/javascript" :as hljs-javascript]
+   ["@radix-ui/react-tooltip" :as tooltip]))
 
 
 (glogi-console/install!)
@@ -655,11 +656,13 @@
                   [NavItem active-route item]])])]])]])))
 
 (defn TopNav []
-  [:nav.fixed.top-0.inset-x-0.h-16.border-b.border-gray-100.bg-white.z-10
-   [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
-    {:class theme/bg-blue-01052A}
+  [:nav.fixed.top-0.inset-x-0.border-b.border-gray-100.bg-white.z-10
+   {:class "h-[160px]"}
 
-    [gui/ConvexWhite]
+   [:div.w-full.h-full.flex.items-center.justify-between.mx-auto.px-6
+    {:class "bg-convex-dark-blue"}
+
+    [gui/ConvexLogoWhiteLink]
 
     ;; -- Items
     [:div.flex.items-center.justify-end.space-x-4
@@ -698,9 +701,11 @@
      ;; Main
      ;; ================
      [:div.w-full.max-w-screen-2xl.mx-auto
-      [:div.h-screen.flex.pt-24
+      [:div.h-screen.flex
        {:class 
-        [;; Mobile
+        ["mt-[200px]"
+
+         ;; Mobile
          "px-6"
          
          ;; Desktop
@@ -717,9 +722,8 @@
             [:div
              [:h1
               {:class ["md:inline"
-                       "text-gray-900 text-3xl md:text-4xl"
+                       "text-convex-dark-blue text-3xl md:text-4xl font-extrabold"
                        "leading-none"
-                       "border-b-2 border-blue-500"
                        "pb-2"]}
               title]])
           
@@ -750,7 +754,7 @@
         (when title
           [:h1
            {:class ["md:inline"
-                    "text-gray-900 text-3xl md:text-4xl font-extrabold"
+                    "text-convex-dark-blue text-3xl md:text-4xl font-extrabold"
                     "leading-none"
                     "pb-2"]}
            title])
@@ -762,7 +766,8 @@
      
      ;; Bottom nav
      ;; =========================
-     [:div.w-full.flex.justify-center.bg-gray-900
+     [:div.w-full.flex.justify-center
+      {:class "bg-convex-dark-blue"}
       [marketing/Sitemap]]
      
      ;; Copyright
@@ -827,7 +832,7 @@
      [devtools/Inspect])])
 
 (defn mount []
-  (reagent.dom/render [Root] (.getElementById js/document "app")))
+  (reagent.dom/render [:> tooltip/Provider [Root]] (.getElementById js/document "app")))
 
 (defn start []
   (when goog.DEBUG
