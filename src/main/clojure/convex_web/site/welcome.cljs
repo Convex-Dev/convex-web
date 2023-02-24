@@ -1,527 +1,438 @@
 (ns convex-web.site.welcome
   (:require 
-   [reagent.core :as r]
-   [reitit.frontend.easy :as rfe]
-
-   [convex-web.site.theme :as theme]
-   [convex-web.site.gui :as gui]
    [convex-web.site.gui.marketing :as marketing]
    
-   ["@heroicons/react/solid" :as icon :refer [ChevronDownIcon]]))
+   ["@heroicons/react/solid" :as icon]
+   ["@heroicons/react/outline" :as icon-outline]
+   ["@radix-ui/react-tooltip" :as tooltip]))
+
+(def key-advantages
+  [;; -- Realtime Transactions
+   {:background-color "bg-[#6AAAE4]"
+    :image "images/instant_transactions1.svg"
+    :title "Realtime Transactions"
+    :body
+    [:div.place-self-start
+     {:class "max-w-[180px]"}
+     [:p.text-white
+      "Confirmations of " [:span.font-bold "transactions in milliseconds "] ", ideal for interactive apps and consumer usage."]]}
+
+   ;; -- Global Scale
+   {:background-color "bg-convex-dark-blue"
+    :image "images/global_scale1.svg"
+    :title "Global Scale"
+    :body
+    [:p.text-white
+     [:span.font-bold "50,000+ decentralised exchange transactions per second "] "– enough for DeFi on a global scale."]}
+
+   ;; -- Maxium Secutiry
+   {:background-color "bg-convex-medium-blue"
+    :image "images/maximum_security1.svg"
+    :title "Maxium Secutiry"
+    :body
+    [:p.text-white
+     "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
+
+   ;; -- LOW COST
+   {:background-color "bg-convex-dark-blue"
+    :image "images/instant_transactions2.svg"
+    :title "LOW COST"
+    :body
+    [:p.text-white
+     "Transaction costs less than $0.0001 – " [:span.font-bold "for frictionless finance"] "."]}
+
+   ;; -- 100% Green
+   {:background-color "bg-convex-medium-blue"
+    :image "images/global_scale2.svg"
+    :title "100% Green"
+    :body
+    [:p.text-white
+     "No wastage of energy or computing resources. " [:span.font-bold "More than 1,000,000 times more efficient than Proof of Work networks"] "."]}
+
+   ;; -- Lambda Calculus
+   {:background-color "bg-[#6AAAE4]"
+    :image "images/maximum_security2.svg"
+    :title "Lambda Calculus"
+    :body
+    [:p.text-white
+     "Advanced virtual machine (CVM), that supports execution of " [:span.font-bold "custom smart contracts and unlimited extensibility."]]}])
 
 (defn KeyAdvantages []
-  [:div.grid.grid-cols-1.md:grid-cols-3.gap-4
-   
-   (for [{:keys [title image link copy]} [{:title "Instant Transactions"}
-                                          
-                                          {:title "Global State"}
-                                          
-                                          {:title "Maxium Secutiry"}
-                                          
-                                          {:title "Front Running Resistance"}
-                                          
-                                          {:title "100% Green"}
-                                          
-                                          {:title "Lambda Calculus"}]]
-     ^{:key title}
-     [:div.flex.flex-col.items-center.space-y-2
-      [:span.font-medium.underline
-       title]])])
+  [:div
+   {:class "max-w-[978px]"}
+   [:div.grid.grid-cols-1.md:grid-cols-3
+    (for [{:keys [title image body background-color]} key-advantages]
+      ^{:key title}
+      [:div.flex.flex-col.items-center.space-y-2.pt-10.px-6
+       {:class ["h-[430px] max-h-[430px] w-[325px] max-w-[325px]" background-color]}
+
+       [:img.mb-6
+        {:src (or image "images/instant_transactions.svg")}]
+
+       [:span.text-3xl.font-extrabold.text-white
+        title]
+
+       body])]])
+
+(defn Milestone [{:keys [title status body]}]
+  [:> tooltip/Root {:delayDuration 0}
+
+   [:> tooltip/Trigger {:asChild true}
+    [:div.flex.flex-col.items-center.gap-3.rounded.cursor-default
+     {:class "w-[90px]"}
+
+     [:p.text-2xl.text-convex-dark-blue.font-extrabold
+      title]
+
+     [:div.flex.justify-center.items-center.rounded-full
+      {:class
+       ["w-[80px] h-[80px]"
+        (case status
+          :in-progress
+          "bg-transparent"
+
+          :completed
+          "bg-white border border-2 border-convex-medium-blue"
+
+          :todo
+          "bg-white border border-2 border-convex-light-blue opacity-50")]}
+
+      ;; -- Status icon
+
+      (case status
+        :in-progress
+        [:> icon-outline/CogIcon
+         {:className "w-[80px] h-[80px] text-convex-light-blue"}]
+
+        :completed
+        [:> icon/CheckIcon
+         {:className "w-11 h-11 text-convex-medium-blue"}]
+
+        :todo
+        nil)]]]
+
+
+   ;; -- Milestone tooltip
+
+   [:> tooltip/Content {:side "top"}
+    [:div.px-4.py-2.rounded.shadow-lg
+     {:class "bg-[#6D7380]"}
+     [:article.prose.prose-sm.prose-invert.text-white
+
+      [:h1.text-2xl
+       title]
+
+      body]]]])
+
+(def roadmap
+  [{:id :genesis
+    :title "Genesis"
+    :status :completed
+    :body
+    [:div
+     [:p
+      "Convex was designed based on the revolutionary ideas of Convergent Proof of Stake invented in 2018, and the concept was proven with the development of the Convex Virtual Machine capable of executing arbitrary Turing complete smart contracts using functional programming and the lamdba calculus."]]}
+
+   {:id :testnet
+    :title "TestNet"
+    :status :completed
+    :body
+    [:div
+     [:p
+      "The Test Network was launched in early 2020 and has been running ever since. "]
+
+     [:p
+      "The testnet serves as a powerful tool for developing Convex actors and applications, as well as providing a testing ground for new CVM features and capabilities."]
+
+     [:p
+      "It is periodically reset for the purposes of upgrades, but otherwise works as a fully functioning Convex network."]]}
+
+   {:id :alpha
+    :title "Alpha"
+    :status :completed
+    :body
+    [:div
+     [:p
+      "The Alpha release brought substantial new capabilities to the CVM, performance enhancements and tolling to make it possible for anyone to create a Convex Peer and participate in maintaining the consensus of the Network. "]
+
+     [:p
+      "The post-Alpha phase will include further functional development to complete the scope of capabilities expected for the main network. Some breaking changes may occur, however the Alpha is already broadly suitable for development of prototype applications and use cases."]]}
+
+   {:id :beta
+    :title "Beta"
+    :status :in-progress
+    :body
+    [:div
+     [:p
+      "The Beta release will be broadly feature complete, suitable for development of full-scale decentralised applications and use cases in advance of the main network launch. Developers can confidently build upon the Beta release and expect only minor changes and upgrades prior to main network launch."]]}
+
+   {:id :gamma
+    :title "Gamma"
+    :status :todo
+    :body
+    [:div
+     [:p
+      "The Gamma release will provide a feature complete platform for security audits, performance tuning and testing of main network release candidates. No substantial functional or protocol changes will be made during this period unless critical security issues make these necessary. "]]}
+
+   {:id :v1
+    :title "V1"
+    :status :todo
+    :body
+    [:div
+     [:p
+      "The V1 Mainnet release will be the first production launch of the Convex network, suitable for production applications managing real digital assets and applications. "]
+
+     [:p
+      "Holders of pre-sold Convex coins will be able to receive and utilise their coins via their own secure wallets. Decentralised applications and use will be able to launch with fully functional digital assets."]]}
+
+   {:id :v2
+    :title "V2"
+    :status :todo
+    :body
+    [:div
+     [:p
+      "The V2 Mainnet release will be the first major upgrade to Convex, and may involve changes to the peer protocol and CVM design.  Planned developments include:"]
+
+     [:ul
+      [:li
+       "First class CVM types"]
+
+      [:li
+       "Unlimited scalability with integrated subnets"]]
+
+     [:p
+      "However we are committed to retaining backwards compatibility and seamless upgrade for existing Convex applications. Most Convex applications will be able to run unchanged."]]}])
 
 (defn Roadmap []
-  (r/with-let [selected-version-ref (r/atom :beta)]
+  (into [:div.w-full.flex.flex-col.items-center.md:flex-row.md:justify-between]
+    (map-indexed
+      (fn [i milestone]
+        (cond
+          (= i (dec (count roadmap)))
+          ^{:key (:title milestone)}
+          [Milestone milestone]
 
-    (let [selected-version @selected-version-ref
+          :else
+          ^{:key (:title milestone)}
+          [:div.flex.flex-col.md:flex-row
+           [Milestone milestone]
 
-          roadmap [{:id :genesis
-                    :title "Genesis"
-                    :status :completed
-                    :body
-                    [:div
-                     [:p
-                      "Convex was designed based on the revolutionary ideas of Convergent Proof of Stake invented in 2018, and the concept was proven with the development of the Convex Virtual Machine capable of executing arbitrary Turing complete smart contracts using functional programming and the lamdba calculus."]]}
+           [:div.hidden.md:flex.flex-col.gap-3
+            {:class "w-[60px]"}
 
-                   {:id :testnet
-                    :title "Testnet"
-                    :status :completed
-                    :body
-                    [:div
-                     [:p
-                      "The Test Network was launched in early 2020 and has been running ever since. "]
+            [:div
+             {:class "h-[32px]"}]
 
-                     [:p
-                      "The testnet serves as a powerful tool for developing Convex actors and applications, as well as providing a testing ground for new CVM features and capabilities."]
-
-                     [:p
-                      "It is periodically reset for the purposes of upgrades, but otherwise works as a fully functioning Convex network."]]}
-
-                   {:id :alpha
-                    :title "Alpha"
-                    :status :completed
-                    :body
-                    [:div
-                     [:p
-                      "The Alpha release brought substantial new capabilities to the CVM, performance enhancements and tolling to make it possible for anyone to create a Convex Peer and participate in maintaining the consensus of the Network. "]
-
-                     [:p
-                      "The post-Alpha phase will include further functional development to complete the scope of capabilities expected for the main network. Some breaking changes may occur, however the Alpha is already broadly suitable for development of prototype applications and use cases."]]}
-
-                   {:id :beta
-                    :title "Beta"
-                    :status :in-progress
-                    :body
-                    [:div
-                     [:p
-                      "The Beta release will be broadly feature complete, suitable for development of full-scale decentralised applications and use cases in advance of the main network launch. Developers can confidently build upon the Beta release and expect only minor changes and upgrades prior to main network launch."]]}
-
-                   {:id :gamma
-                    :title "Gamma"
-                    :status :todo
-                    :body
-                    [:div
-                     [:p
-                      "The Gamma release will provide a feature complete platform for security audits, performance tuning and testing of main network release candidates. No substantial functional or protocol changes will be made during this period unless critical security issues make these necessary. "]]}
-
-                   {:id :v1
-                    :title "V1"
-                    :status :todo
-                    :body
-                    [:div
-                     [:p
-                      "The V1 Mainnet release will be the first production launch of the Convex network, suitable for production applications managing real digital assets and applications. "]
-
-                     [:p
-                      "Holders of pre-sold Convex coins will be able to receive and utilise their coins via their own secure wallets. Decentralised applications and use will be able to launch with fully functional digital assets."]]}
-
-                   {:id :v2
-                    :title "V2"
-                    :status :todo
-                    :body
-                    [:div
-                     [:p
-                      "The V2 Mainnet release will be the first major upgrade to Convex, and may involve changes to the peer protocol and CVM design.  Planned developments include:"]
-
-                     [:ul
-                      [:li
-                       "First class CVM types"]
-
-                      [:li
-                       "Unlimited scalability with integrated subnets"]]
-
-                     [:p
-                      "However we are committed to retaining backwards compatibility and seamless upgrade for existing Convex applications. Most Convex applications will be able to run unchanged."]]}]
-
-          ;; Roadmap indexed by ID; it's easy to read a particular version by ID.
-          roadmap-indexed (->> roadmap
-                            (map (juxt :id identity))
-                            (into {}))]
-
-      [:div.flex.flex-col.space-y-10
-
-       ;; -- Timeline
-       [:div.relative.flex.items-center.py-10.px-8.space-x-2.overflow-auto
-
-        (into [:<>]
-
-          (interpose
-            [:div.w-full
-             {:style {"minWidth" "40px"}}
-             [:hr.flex-1.border.border-gray-400]]
-
-            (for [{:keys [id title status]} roadmap]
-              [:button
-               {:on-click #(reset! selected-version-ref id)}
-               [:div.w-14.h-14.flex.justify-center.items-center.rounded-full.shadow-2xl
-                {:class
-                 (case status
-                   :in-progress
-                   "bg-blue-500 hover:bg-blue-400"
-
-                   :completed
-                   "bg-teal-500 hover:bg-teal-400"
-
-                   :todo
-                   "bg-gray-400 bg-opacity-30 hover:bg-opacity-50")}
-
-
-                ;; -- Version
-
-                [:p.absolute.top-0.text-2xl.text-white
-                 {:class (when (= id selected-version)
-                           "underline")}
-                 title]
-
-
-                ;; -- Status icon
-
-                (case status
-                  :in-progress
-                  [:> icon/CogIcon
-                   {:className "w-6 h-6 text-white"}]
-
-                  :completed
-                  [:> icon/CheckIcon
-                   {:className "w-6 h-6 text-white"}]
-
-                  :todo
-                  nil)]])))]
-
-       [:div.self-center.bg-black.bg-opacity-10.rounded.py-4.px-6
-
-        [:div.flex.flex-col.overflow-auto
-         {:class "h-[240px]"}
-
-         [:p.self-center.text-gray-200.text-3xl.font-bold
-          (get-in roadmap-indexed [selected-version :title])]
-
-         [:div.prose.prose-xl.text-gray-200
-          (get-in roadmap-indexed [selected-version :body])]]]])))
+            [:div.flex.flex-1.items-center
+             [:div
+              {:class "bg-[#6D7380] h-px w-full"}]]]])))
+    roadmap))
 
 (defn WelcomePage [_ _ _]
-  (let [marketing-vertical ["md:w-1/2 flex flex-col justify-center space-y-8"]
-        marketing-bullets ["flex flex-col space-y-3 text-white"]
-        marketing-copy ["text-base lg:text-xl text-white leading-8"]
-        
-        ItemTeal (fn [s]
-                   [:div.flex.items-center.flex-shrink-0.text-base.lg:text-lg.space-x-3
-                    [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-teal-500]
-                    [:span.text-gray-700 s]])
-        
-        ItemBlue (fn [s]
-                   [:div.flex.items-center.text-base.lg:text-lg.space-x-3
-                    [:div.flex-shrink-0.w-8.h-8.rounded-full.bg-blue-500]
-                    [:span s]])]
+  (let [subtitle-classes ["text-3xl font-extrabold"]
+        subtitle-light-classes (conj subtitle-classes "text-white")
+        subtitle-dark-classes (conj subtitle-classes "text-convex-dark-blue")
+
+        prose-classes ["font-source-sans-pro text-lg.md text-2xl"]
+        prose-light-classes (conj prose-classes "text-white")
+        prose-dark-classes (conj prose-classes "text-convex-dark-blue")
+
+        button-size "h-[55.75px] w-[220px]"
+        content-margin-left "md:ml-[280px]"]
     
     [:div
      
      [marketing/Nav]
      
      ;; -- Building the Internet of Value
-     [:div.flex.flex-col.justify-center.items-center.space-y-32
-      {:class ["bg-gradient-to-b from-[#01052A] to-[#000128]"]}
-      
-      [:div.relative.flex.flex-col.justify-center.md:justify-end
-       {:class "h-[calc(100vh-64px)]"}
-       
-       ;; Background image
-       [:div.relative.w-full
-        {:class "h-[calc(100vh-64px)]"}
-        [:img.w-full.mt-32
-         {:class "object-cover"
-          :src "/images/blockchain.png"}]
-        
-        [:div.absolute.inset-x-0.top-0.h-full.bg-opacity-30
-         {:class theme/bg-blue-01052A}]]
-       
-       
-       ;; Building the Internet of Value...
-       [:div.absolute.inset-x-0.top-0.w-full.max-w-screen-xl.mx-auto
-        
-        [:div.flex.flex-col.justify-center.items-center.space-y-6.md:space-y-14.pt-14.md:pt-48.px-6
-         
-         [:h1.text-4xl.lg:text-6xl.font-extrabold.text-white.text-center
-          "Lattice Technology for the Next Generation Internet"]
-         
-         [:div.flex.flex-col.md:flex-row.space-y-10.md:space-x-10.md:space-y-0
-          [:p.text-white.text-lg.md:text-4xl
-           "All the advantages of blockchain without the compromises: enabling realtime, decentralised, programmable economic systems at Internet scale."]
-          
-          ;; -- Buttons
-          [:div.flex.flex-col.space-y-2
-           
-           [:a
-            {:href (rfe/href :route-name/sandbox)}
-            [gui/BlueButton
-             {}
-             [:div.w-40
-              [:span.text-base.text-white.uppercase.font-bold
-               "Try the Sandbox"]]]]
-           
-           [:a
-            {:href "https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf"
-             :target "_blank"}
-            [gui/BlueOutlineButton
-             {}
-             [:div.w-40
-              [:span.text-base.text-white.uppercase.font-bold
-               "Whitepaper"]]]]]]]]
-       
-       [:div.hidden.md:block.absolute.inset-x-0.bottom-0
-        [:div.flex.justify-center.py-10
-         [:button.rounded.hover:bg-gray-900.transition.duration-500.ease-in-out
-          {:on-click #(gui/scroll-into-view "advantages" {:behavior "smooth"})}
-          [:> ChevronDownIcon {:className "text-white h-10 w-10 animate-bounce"}]]]]]]
-     
-     
-     ;; -- Key advantages
-     (let [container-style "flex flex-col items-center space-y-3"
-           
-           caption-style "text-white text-base md:text-2xl font-bold uppercase"
-           
-           image-style "object-cover rounded-lg w-36 md:w-48 h-26 md:h-48"
-           
-           copy-style "text-white text-base md:text-lg text-center md:text-left"]
-       
-       [:div.flex.flex-col.justify-center.items-center.py-16.md:py-40
-        {:id "advantages"
-         :class "bg-[#001D49]"}
-        
-        [:div.grid.grid-cols-1.md:grid-cols-3.gap-x-12.gap-y-20.px-6.max-w-screen-xl
-         
-         ;; -- Instant Transaction
-         [:div
-          {:class container-style}
-          
-          [:img
-           {:class image-style
-            :src "/images/instant.png"}]
-          
-          [:span
-           {:class caption-style}
-           "Realtime Transactions"]
-          
-          [:p
-           {:class copy-style}
-           "Confirmations of " 
-           [:span.font-bold "transactions in milliseconds"]
-           ", ideal for interactive apps and consumer usage."]]
-         
-         ;; -- Global Scale
-         [:div
-          {:class container-style}
-          
-          [:img
-           {:class image-style
-            :src "/images/global.png"}]
-          
-          [:span
-           {:class caption-style}
-           "Global Scale"]
-          
-          [:p
-           {:class copy-style}
-           [:span.font-bold "50,000+ decentralised exchange transactions per second"] " – enough for DeFi on a global scale."]]
-         
-         ;; -- Maximum SecurIty
-         [:div
-          {:class container-style}
-          
-          [:img
-           {:class image-style
-            :src "/images/security.png"}]
-          
-          [:span
-           {:class caption-style}
-           "Maximum SecurIty"]
-          
-          [:p
-           {:class copy-style}
-           " Best in class cryptography and secure "
-           [:span.font-bold "BFT consensus algorithm"]
-           ", fully pseudonymised."]]
-         
-         ;; -- Low Cost
-         [:div
-          {:class container-style}
-          
-          [:img
-           {:class image-style
-            :src "/images/cost.png"}]
-          
-          [:span
-           {:class caption-style}
-           "Low Cost"]
-          
-          [:p
-           {:class copy-style}
-           "Transaction costs less than $0.0001 – "
-           [:span.font-bold "for frictionless finance."]]]
-         
-         ;; -- 100% Green
-         [:div
-          {:class container-style}
-          
-          [:img
-           {:class image-style
-            :src "/images/green.png"}]
-          
-          [:span
-           {:class caption-style}
-           "100% Green"]
-          
-          [:p
-           {:class copy-style}
-           "No wastage of energy or computing resources."
-           [:span.font-bold " More than 1,000,000 times more efficient than Proof of Work networks"]]]
-         
-         ;; -- Smart Contracts
-         [:div
-          {:class container-style}
-          
-          [:img
-           {:class image-style
-            :src "/images/contracts.png"}]
-          
-          [:span
-           {:class caption-style}
-           "Smart Contracts"]
-          
-          [:p
-           {:class copy-style}
-           "Advanced virtual machine (CVM), that supports execution of "
-           [:span.font-bold
-            "custom smart contracts and unlimited extensibility."]]]]])
-     
-     
-     [:div.relative.w-full.max-w-screen-xl.mx-auto.flex.flex-col.flex-1.items-center.justify-center.rounded.space-y-12.px-6
-      {:style
-       {:height "640px"}}
-      
-      ;; Show only on large screens.
-      [:div.absolute.top-0.right-0.w-40.mr-32.mt-10.invisible.xl:visible
-       [:img.self-center
-        {:src "images/convex.png"}]]
-      
-      [:h1.text-5xl.lg:text-7xl.font-extrabold.text-blue-800
-       "What is Convex?"]
-      
-      [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
-       [:div.prose.lg:prose-2xl
-        [:p "Convex defines a new category—Lattice technology. We solve DLT consensus with a proven technique from computer science. Convex is not a blockchain but a radical new approach to the consensus problem."]
-        [:p "We're an open source, non-profit foundation enabling new ecosystems at the intersection of web3 infrastructure, decentralised finance and GameFi."]]]]
-     
-     
-     [:div.w-full
-      
-      ;; Convex is flexible
-      ;; =========================
-      [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.md:space-x-12.py-16.px-6
-       
-       ;; -- Image
-       [:div {:class "md:w-1/2"}
-        [:img {:src "images/convex_flexible_2.png"}]]
-       
-       ;; -- Copy
-       [:div {:class marketing-vertical}
-        
-        [:h3.text-5xl.lg:text-7xl.font-extrabold "Convex is Flexible"]
-        
-        [:p.prose.lg:prose-2xl
-         "Convex supports decentralised, programmable economic systems with a powerful virtual machine based on the lambda calculus. It supports applications such as:"]
-        
-        [:div.text-gray-600 {:class marketing-bullets}
-         [ItemTeal "Public registries and databases"]
-         [ItemTeal "Digital currencies"]
-         [ItemTeal "Prediction markets"]
-         [ItemTeal "Smart contracts for managing digital assets"]
-         [ItemTeal "Immutable provenance records"]]
-        
-        [:a.invisible.md:visible
-         {:href (rfe/href :route-name/vision)}
-         [gui/TealButton
-          {}
-          [:div.w-40
-           [:span.text-sm.text-white.uppercase
-            "Our Vision"]]]]]]
-      
-      
-      ;; Convex is fast
-      ;; =========================
-      [:div.py-28.text-white
-       {:style {:background-color "#2E3192"}}
-       [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-y-12.md:space-y-0.md:space-x-12.py-16.px-6
-        
-        ;; -- Copy
-        [:div {:class marketing-vertical}
-         
-         [:h3.text-5xl.lg:text-7xl.font-extrabold "Convex is Fast"]
-         
-         [:p {:class marketing-copy}
-          "Using Convergent Proof of Stake, a completely new consensus algorithm, the Convex network is able to execute
-          decentralised applications at internet scale. With normal consumer
-          grade hardware and network bandwidth the Convex Virtual Machine can achieve:"]
-         
-         [:div {:class marketing-bullets}
-          [ItemBlue
-           "Tens of thousands of digitally signed transactions per second (far more than the
-           1,700 transactions per second typically handled by the VISA network)"]
-          
-          [ItemBlue
-           "Millions of smart contract operations per second"]
-          
-          [ItemBlue
-           "Low latency (less than a second for global consensus)"]]
-         
-         [:p {:class marketing-copy}
-          "This already is enough to enable consumer applications for the Internet of Value. In the future, 
-          it will be possible to extend scalability even further."]]
-        
-        ;; -- Image
-        [:div {:class "md:w-1/2"}
-         [:img {:src "images/convex_fast_2.png"}]]]]
-      
-      ;; Convex is fun
-      ;; =========================
-      [:div.md:py-52.lg:px-0.text-white
-       {:style {:background-color "#1C2951"}}
-       [:div.max-w-screen-xl.mx-auto.lg:flex.items-center.space-y-12.md:space-y-0.md:space-x-12.py-16.px-6
-        
-        ;; -- Image
-        [:div {:class "md:w-1/2"}
-         [:img {:src "images/convex_fun_2.png"}]]
-        
-        ;; -- Copy
-        [:div {:class marketing-vertical}
-         
-         [:h3.text-5xl.lg:text-7xl.font-extrabold "Convex is Fun"]
-         
-         [:p {:class marketing-copy}
-          "We provide a powerful, interactive environment for
-          development in Convex that enables high productivity while maintaining
-          secure coding principles. Some highlights include"]
-         
-         [:div {:class marketing-bullets}
-          [ItemBlue
-           "'One Line DeFi' - most economic actions can be execute in one line of code, including powerful capabilites like launching a new digital asset."]
-          
-          [ItemBlue
-           "On-chain compiler enables smart contracts to construct and deploy other smart contracts without relying on external tools or oracles."]
-          
-          [ItemBlue
-           "Interactive live coding with each account having a secure programmatic environment."]]
-         
-         [:p {:class marketing-copy}
-          "convex.world provides an interactive REPL-based Sandbox allowing users to code directly
-          on the Convex platform using Convex Lisp."]
-         
-         [:a.invisible.md:visible
-          {:href (rfe/href :route-name/sandbox)}
-          [gui/TealButton
-           {}
-           [:div.w-40
-            [:span.text-sm.text-white.uppercase
-             "Try the Sandbox"]]]]]]]
-      
 
-      ;; Roadmap
-      ;; =========================
+     [:div.w-screen.relative
+      {:class "md:h-[492px] md:p0 p-8 bg-convex-dark-blue"}
 
-      [:div.flex.items-center.justify-center.bg-gray-800.h-screen
-       [:div.w-full.max-w-screen-xl.mx-auto.px-6.flex.flex-col.space-y-24
+      [:img.absolute.top-0.right-0.opacity-50
+       {:src "images/shape_6_white.png"}]
 
-        [:h3.text-5xl.lg:text-7xl.font-extrabold.text-white
+      [:div.h-full.max-w-5xl.mx-auto.flex.items-center
+
+       [:div.flex.flex-col.gap-3
+
+        [:h1.text-4xl.lg:text-5xl.font-extrabold.text-white.text-center
+         "Lattice Technology for the Next Generation Internet"]
+
+        [:p.font-source-sans-pro.text-white.text-3xl.text-center
+         "All the advantages of blockchain without the compromises: enabling realtime, decentralised, programmable economic systems at Internet scale."]
+
+        [:div.flex.justify-center.mt-12
+         [:a
+          {:class [button-size "inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 rounded"]
+           :href "/sandbox"}
+          [:span.text-base.text-convex-dark-blue
+           "Try the Sandbox"]]]]]]
+
+
+     ;; -- What is Convex
+
+     [:div.w-screen
+      {:class "md:h-[492px] md:p0 p-8 bg-white"}
+
+      [:div.h-full.max-w-5xl.mx-auto.flex.flex-col.justify-center.items-center
+
+       [:div.flex.flex-col.items-center.md:flex-row.gap-12
+
+        ;; -- What is Convex
+
+        [:div.flex.flex-col.gap-5
+
+         [:h2
+          {:class subtitle-dark-classes}
+          "What is Convex?"]
+
+         [:p
+          {:class prose-dark-classes}
+          "Convex defines a new category—Lattice technology. We solve DLT consensus with a proven technique from computer science. Convex is not a blockchain but a radical new approach to the consensus problem."]
+
+         [:p
+          {:class prose-dark-classes}
+          "We're an open source, non-profit foundation enabling new ecosystems at the intersection of web3 infrastructure, decentralised finance and GameFi."]]
+
+
+        ;; -- Logo
+
+        [:img
+         {:class "w-[213.52px] h-[140px]"
+          :src "images/convex_logo_blue.svg"}]]
+
+
+       [:div.flex.justify-center.mt-12
+        [:a
+         {:class "h-[55.75px] w-[220px] inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 border-2 border-convex-dark-blue rounded"
+          :href "https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf"}
+         [:span.text-base.text-convex-dark-blue
+          "Get the Whitepaper"]]]]]
+
+
+     ;; -- Convex is Flexible
+
+     [:div.w-screen
+      {:class "md:h-[584px] md:p0 p-8 bg-convex-sky-blue"}
+
+      [:div.h-full.max-w-5xl.mx-auto.flex.items-center
+
+       [:div.flex.flex-col.gap-5
+
+        [:div.flex.flex-col.gap-5
+         {:class content-margin-left}
+         [:h2
+          {:class subtitle-dark-classes}
+          "Convex is Flexible"]
+
+         [:p
+          {:class prose-dark-classes}
+          "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be 100% secure and publicly verifiable (both in terms of data and application behaviour), such as:"]
+
+         [:ul.list-disc.list-inside
+          {:class prose-dark-classes}
+          [:li "Public registries and databases"]
+          [:li "Digital currencies"]
+          [:li "Prediction markets"]
+          [:li "Smart contracts for managing digital assets"]
+          [:li "Immutable provenance records"]]]
+
+        [:div.flex.justify-center.mt-12
+         [:a
+          {:class [button-size "inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 border-2 border-convex-dark-blue rounded"]
+           :href "/vision"}
+          [:span.text-base.text-convex-dark-blue
+           "Our Vision"]]]]]]
+
+
+     ;; -- Convex is Fast
+
+     [:div.w-screen
+      {:class "md:h-[584px] md:p0 p-8 bg-convex-dark-blue"}
+
+      [:div.h-full.max-w-5xl.mx-auto.flex.items-center
+
+       [:div.flex.flex-col.gap-5
+
+        [:h2
+         {:class subtitle-light-classes}
+         "Convex is Fast"]
+
+        [:p
+         {:class prose-light-classes}
+         "Using Convergent Proof of Stake, a completely new consensus algorithm, the Convex network is able to execute decentralised applications at internet scale. With normal consumer grade hardware and network bandwidth the Convex Virtual Machine can achieve:"]
+
+        [:ul.list-disc.list-inside
+         {:class prose-light-classes}
+         [:li "Tens of thousands of digitally signed transactions per second (far more than the 1,700 transactions per second typically handled by the VISA network)"]
+         [:li "Millions of smart contract operations per second"]
+         [:li "Low latency (less than a second for global consensus)"]
+         [:li "This already is enough to enable consumer applications for the Internet of Value. In the future, it will be possible to extend scalability even further."]]]]]
+
+
+     ;; -- Convex is Fun
+
+     [:div.w-screen
+      {:class "md:h-[492px] md:p0 p-8 bg-convex-white"}
+
+      [:div.h-full.max-w-5xl.mx-auto.flex.items-center
+
+       [:div.flex.flex-col.gap-5
+
+        [:div.flex.flex-col.gap-5
+         {:class content-margin-left}
+         [:h2
+          {:class subtitle-dark-classes}
+          "Convex is Fun"]
+
+         [:p
+          {:class prose-dark-classes}
+          "We provide a powerful, interactive environment for development in Convex that enables high productivity while maintaining secure coding principles."]
+
+         [:p
+          {:class prose-dark-classes}
+          "convex.world provides an interactive REPL allowing users to code directly on the Convex platform using Convex Lisp."]]
+
+        [:div.flex.justify-center.mt-12
+         [:a
+          {:class [button-size "inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 border-2 border-convex-dark-blue rounded"]
+           :href "/sandbox"}
+          [:span.text-base.text-convex-dark-blue
+           "Try the Sandbox"]]]]]]
+
+
+     [:div.w-screen
+      {:class "bg-convex-white"}
+
+      [:div.h-full.max-w-5xl.mx-auto.flex.items-center.justify-center
+
+       [KeyAdvantages]]]
+
+
+     ;; -- Roadmap
+
+     [:div.w-screen
+      {:class "md:h-[492px] md:p0 p-8 bg-white"}
+
+      [:div.h-full.max-w-5xl.mx-auto.flex.flex-col.gap-12.justify-center
+
+       [:h2
+         {:class subtitle-dark-classes}
          "Roadmap"]
 
-        [Roadmap]]]
+       [Roadmap]]]
 
 
-      ;; Bottom nav
-      ;; =========================
-      [:div.w-full.flex.justify-center.bg-gray-900
-       [marketing/Sitemap (marketing/sitemap)]]]
-     
-     ;; Copyright
-     ;; =========================
+     ;; -- Site map
+
+     [:div.w-screen.flex.justify-center
+      {:class "bg-convex-dark-blue"}
+      [marketing/Sitemap (marketing/sitemap)]]
+
+
+     ;; -- Copyright
+
      [marketing/Copyrigth]]))
 
 (def welcome-page

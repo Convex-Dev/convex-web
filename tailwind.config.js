@@ -21,6 +21,13 @@ module.exports = {
       "source-sans-pro": ['Source Sans Pro', 'sans-serif']
     },
     extend: {
+      colors: {
+        'convex-dark-blue': '#0F206C',
+        'convex-medium-blue': '#416BA9',
+        'convex-light-blue': '#6AAAE4',
+        'convex-sky-blue': '#EBF7FF',
+        'convex-white': '#F5F7FD'
+      },
       typography: {
         DEFAULT: {
           css: {
