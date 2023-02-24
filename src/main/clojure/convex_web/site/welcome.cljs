@@ -39,7 +39,7 @@
     :title "LOW COST"
     :body
     [:p.text-white
-     "Transaction costs less than $0.0001 – " [:span.font-bold "for frictionless finance."] "."]}
+     "Transaction costs less than $0.0001 – " [:span.font-bold "for frictionless finance"] "."]}
 
    ;; -- 100% Green
    {:background-color "bg-convex-medium-blue"
