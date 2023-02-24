@@ -249,7 +249,7 @@
      [:div.w-screen.relative
       {:class "md:h-[492px] md:p0 p-8 bg-convex-dark-blue"}
 
-      [:img.absolute.top-0.right-0
+      [:img.absolute.top-0.right-0.opacity-50
        {:src "images/shape_6_white.png"}]
 
       [:div.h-full.max-w-5xl.mx-auto.flex.items-center
