@@ -399,7 +399,7 @@
           {:class [button-size "inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 border-2 border-convex-dark-blue rounded"]
            :href "/sandbox"}
           [:span.text-base.text-convex-dark-blue
-           "Try it Now"]]]]]]
+           "Try the Sandbox"]]]]]]
 
 
      [:div.w-screen
