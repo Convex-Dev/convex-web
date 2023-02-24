@@ -10,7 +10,7 @@
   [;; -- Instant Transactions
    {:background-color "bg-[#6AAAE4]"
     :image "images/instant_transactions1.svg"
-    :title "Instant Transactions"
+    :title "Realtime Transactions"
     :body
     [:div.place-self-start
      {:class "max-w-[180px]"}
@@ -23,7 +23,7 @@
     :title "Global Scale"
     :body
     [:p.text-white
-     [:span.font-bold "100,000+ TPS "] "– enough for the whole world to use the Convex Network."]}
+     [:span.font-bold "50,000+ decentralised exchange transactions per second "] "– enough for DeFi on a global scale."]}
 
    ;; -- Maxium Secutiry
    {:background-color "bg-convex-medium-blue"
@@ -257,17 +257,17 @@
        [:div.flex.flex-col.gap-3
 
         [:h1.text-4xl.lg:text-5xl.font-extrabold.text-white.text-center
-         "Building the Internet of Value for the business and consumer world"]
+         "Lattice Technology for the Next Generation Internet"]
 
         [:p.font-source-sans-pro.text-white.text-3xl.text-center
-         "Solving traditional blockchain scalability, sustainability, costs, security and business model problems."]
+         "All the advantages of blockchain without the compromises: enabling realtime, decentralised, programmable economic systems at Internet scale."]
 
         [:div.flex.justify-center.mt-12
          [:a
           {:class [button-size "inline-flex items-center justify-center bg-white hover:bg-gray-100 focus:bg-gray-300 rounded"]
            :href "/sandbox"}
           [:span.text-base.text-convex-dark-blue
-           "Try Convex Now"]]]]]]
+           "Try the Sandbox"]]]]]]
 
 
      ;; -- What is Convex
@@ -289,7 +289,11 @@
 
          [:p
           {:class prose-dark-classes}
-          "Convex is the next generation of blockchain technology, with web-scale performance, flexibility and energy efficiency. We're an open source, non-profit foundation enabling new decentralised ecosystems in finance, gaming virtual worlds and the enterprise."]]
+          "Convex defines a new category—Lattice technology. We solve DLT consensus with a proven technique from computer science. Convex is not a blockchain but a radical new approach to the consensus problem."]
+
+         [:p
+          {:class prose-dark-classes}
+          "We're an open source, non-profit foundation enabling new ecosystems at the intersection of web3 infrastructure, decentralised finance and GameFi."]]
 
 
         ;; -- Logo
