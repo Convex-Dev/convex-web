@@ -7,7 +7,7 @@
    ["@radix-ui/react-tooltip" :as tooltip]))
 
 (def key-advantages
-  [;; -- Instant Transactions
+  [;; -- Realtime Transactions
    {:background-color "bg-[#6AAAE4]"
     :image "images/instant_transactions1.svg"
     :title "Realtime Transactions"
@@ -33,13 +33,13 @@
     [:p.text-white
      "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
 
-   ;; -- Front Running Resistance
+   ;; -- LOW COST
    {:background-color "bg-convex-dark-blue"
     :image "images/instant_transactions2.svg"
-    :title "Front Running Resistance"
+    :title "LOW COST"
     :body
     [:p.text-white
-     "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
+     "Transaction costs less than $0.0001 – " [:span.font-bold "for frictionless finance."] "."]}
 
    ;; -- 100% Green
    {:background-color "bg-convex-medium-blue"
@@ -47,7 +47,7 @@
     :title "100% Green"
     :body
     [:p.text-white
-     "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
+     "No wastage of energy or computing resources. " [:span.font-bold "More than 1,000,000 times more efficient than Proof of Work networks"] "."]}
 
    ;; -- Lambda Calculus
    {:background-color "bg-[#6AAAE4]"
