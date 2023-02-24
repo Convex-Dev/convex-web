@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## 2023-02-23.1
+- [Typo correction #247](https://github.com/Convex-Dev/convex-web/issues/247)
+
 ## 2023-02-23
 - Updated main page
 - Updated technology page
