@@ -388,7 +388,7 @@
       [:div.flex.flex-col.items-center.text-xl.text-gray-800.leading-8.max-w-screen-md
        [:div.prose.lg:prose-2xl
         [:p "Convex defines a new category—Lattice technology. We solve DLT consensus with a proven technique from computer science. Convex is not a blockchain but a radical new approach to the consensus problem."]
-        [:p "We're an open source, non-profit foundation enabling new ecosystems at the intersction of web3 infrastructure, decentralised finance and GameFi."]]]]
+        [:p "We're an open source, non-profit foundation enabling new ecosystems at the intersection of web3 infrastructure, decentralised finance and GameFi."]]]]
      
      
      [:div.w-full
