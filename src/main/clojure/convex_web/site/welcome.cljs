@@ -28,7 +28,7 @@
    ;; -- Maxium Secutiry
    {:background-color "bg-convex-medium-blue"
     :image "images/maximum_security1.svg"
-    :title "Maxium Secutiry"
+    :title "Maximum Security"
     :body
     [:p.text-white
      "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
