@@ -2,7 +2,9 @@
 
 ## NEXT
 - Fixed typo - Maximum Security
-- Added Horizontal Blue Line
+- Nav - Added Horizontal Blue Line
+- Roadmap - Added vertical gap on mobile
+- Updated Ecosystem page
 
 ## 2023-02-24
 - [Site redesign](https://github.com/Convex-Dev/convex-web/issues/243)
