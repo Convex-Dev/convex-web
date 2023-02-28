@@ -1,7 +1,8 @@
 # Major changes and resolved issues
 
 ## NEXT
-- Fix typo - Maximum Security
+- Fixed typo - Maximum Security
+- Added Horizontal Blue Line
 
 ## 2023-02-24
 - [Site redesign](https://github.com/Convex-Dev/convex-web/issues/243)
