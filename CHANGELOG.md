@@ -1,6 +1,6 @@
 # Major changes and resolved issues
 
-## NEXT
+## 2023-02-28
 - Fixed typo - Maximum Security
 - Nav - Added Horizontal Blue Line
 - Roadmap - Added vertical gap on mobile
