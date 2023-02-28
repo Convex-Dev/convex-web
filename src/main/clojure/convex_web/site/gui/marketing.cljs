@@ -243,44 +243,55 @@
 (defn Nav []
   (reagent/with-let [show?-ref (reagent/atom false)]
     (let [items (nav-items)]
-      [:nav.flex.items-center.justify-between.px-6
-       {:class ["h-[160px]" "bg-convex-dark-blue"]}
-       
-       [:div.flex.flex-row.justify-between.items-center.flex-1
-        
-        ;; -- Logo
-        [gui/ConvexLogoWhiteLink]
-        
-        ;; -- Menu (mobile only)
-        [:div.relative.inline-block.text-left.text-base.text-black.z-10
-         [:button.md:hidden.rounded.p-2.shadow-md.transition.ease-in-out.duration-150
-          {:class
-           (if @show?-ref 
-             "bg-blue-200"
-             "bg-blue-50")}
-          [:> MenuIcon 
-           {:className "h-5 w-5 text-blue-800"
-            :on-click #(swap! show?-ref not)}]]
-         
-         [gui/Transition
-          (merge gui/dropdown-transition {:show? @show?-ref})
-          [gui/Dismissible {:on-dismiss #(reset! show?-ref false)}
-           [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg.z-10
-            [:div.rounded-md.bg-white.shadow-xs
-             [:div.py-1
-              {:role "menu"
-               :aria-orientation "vertical"
-               :aria-labelledby "options-menu"}
-              
-              (for [{:keys [text href]} items]
-                ^{:key text}
-                [:a.block.px-4.py-2.leading-5.hover:bg-blue-100.hover:bg-opacity-50.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
-                 {:href href
-                  :on-click #(reset! show?-ref false)}
-                 text])]]]]]]]
-       
-       ;; -- Nav (desktop only)
-       [NavDesktop items]])))
+      [:div.flex.flex-col.bg-convex-dark-blue
+
+       ;; -- Nav
+
+       [:nav.flex.items-center.justify-between.px-6
+        {:class ["h-[160px]" "bg-convex-dark-blue"]}
+
+        [:div.flex.flex-row.justify-between.items-center.flex-1
+
+         ;; -- Logo
+         [gui/ConvexLogoWhiteLink]
+
+         ;; -- Menu (mobile only)
+         [:div.relative.inline-block.text-left.text-base.text-black.z-10
+          [:button.md:hidden.rounded.p-2.shadow-md.transition.ease-in-out.duration-150
+           {:class
+            (if @show?-ref
+              "bg-blue-200"
+              "bg-blue-50")}
+           [:> MenuIcon
+            {:className "h-5 w-5 text-blue-800"
+             :on-click #(swap! show?-ref not)}]]
+
+          [gui/Transition
+           (merge gui/dropdown-transition {:show? @show?-ref})
+           [gui/Dismissible {:on-dismiss #(reset! show?-ref false)}
+            [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg.z-10
+             [:div.rounded-md.bg-white.shadow-xs
+              [:div.py-1
+               {:role "menu"
+                :aria-orientation "vertical"
+                :aria-labelledby "options-menu"}
+
+               (for [{:keys [text href]} items]
+                 ^{:key text}
+                 [:a.block.px-4.py-2.leading-5.hover:bg-blue-100.hover:bg-opacity-50.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
+                  {:href href
+                   :on-click #(reset! show?-ref false)}
+                  text])]]]]]]]
+
+
+        ;; -- Nav (desktop only)
+        [NavDesktop items]]
+
+
+       ;; -- Horizontal Line
+
+       [:div
+        {:class "h-[10px] w-[235px] bg-convex-light-blue"}]])))
 
 (defn BottomNavMenu [{:keys [text items]}]
   [:div.flex.flex-col.space-y-3.mb-10

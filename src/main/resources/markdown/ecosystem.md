@@ -15,6 +15,6 @@ If you are looking for the best platform to build your decentralised application
 
 We are a diverse, international, open community and welcome anyone who wants to participate in the Convex ecosystem. Discussions happen primarily on the [Convex Discord](https://discord.com/invite/fsnCxEM) and technology development is fully open source on [GitHub](https://github.com/Convex-Dev).
 
-## Investors
+## Coin Purchasers
 
-Prior to the main network launch, we will not be selling Convex Coins to retail investors. Institutional investors willing and able to make a substantial investment in Convex are welcome to contact us at [info@convex.world](mailto:info@convex.world).
+Prior to the main network launch, we will not be offering Convex Coins retail. Institutional coin purchasers willing and able to make a substantial purchase of Convex Coins are welcome to contact us at [info@convex.world](mailto:info@convex.world).

@@ -687,7 +687,14 @@
 
      ;; -- Mobile menu
      [:div.md:hidden
-      [Menu]]]]])
+      [Menu]]]]
+
+
+   ;; -- Horizontal Line
+
+   [:div.bg-convex-dark-blue
+    [:div
+     {:class "h-[10px] w-[235px] bg-convex-light-blue"}]]])
 
 (defn DeveloperPage [{:frame/keys [uuid page state] :as active-page-frame}]
   (let [{Component :page/component

@@ -1,5 +1,11 @@
 # Major changes and resolved issues
 
+## 2023-02-28
+- Fixed typo - Maximum Security
+- Nav - Added Horizontal Blue Line
+- Roadmap - Added vertical gap on mobile
+- Updated Ecosystem page
+
 ## 2023-02-24
 - [Site redesign](https://github.com/Convex-Dev/convex-web/issues/243)
 

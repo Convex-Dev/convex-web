@@ -28,7 +28,7 @@
    ;; -- Maxium Secutiry
    {:background-color "bg-convex-medium-blue"
     :image "images/maximum_security1.svg"
-    :title "Maxium Secutiry"
+    :title "Maximum Security"
     :body
     [:p.text-white
      "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
@@ -204,7 +204,12 @@
       "However we are committed to retaining backwards compatibility and seamless upgrade for existing Convex applications. Most Convex applications will be able to run unchanged."]]}])
 
 (defn Roadmap []
-  (into [:div.w-full.flex.flex-col.items-center.md:flex-row.md:justify-between]
+  (into
+    [:div
+     {:class
+      ["w-full"
+       "flex flex-col items-center gap-12"
+       "md:flex-row md:justify-between md:gap-0"]}]
     (map-indexed
       (fn [i milestone]
         (cond
