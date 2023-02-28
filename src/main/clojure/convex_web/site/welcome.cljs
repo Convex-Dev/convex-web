@@ -204,7 +204,12 @@
       "However we are committed to retaining backwards compatibility and seamless upgrade for existing Convex applications. Most Convex applications will be able to run unchanged."]]}])
 
 (defn Roadmap []
-  (into [:div.w-full.flex.flex-col.items-center.md:flex-row.md:justify-between]
+  (into
+    [:div
+     {:class
+      ["w-full"
+       "flex flex-col items-center gap-12"
+       "md:flex-row md:justify-between md:gap-0"]}]
     (map-indexed
       (fn [i milestone]
         (cond
