@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## NEXT
+- Fix typo - Maximum Security
+
 ## 2023-02-24
 - [Site redesign](https://github.com/Convex-Dev/convex-web/issues/243)
 
