@@ -707,14 +707,14 @@
      
      ;; Main
      ;; ================
-     [:div
-      {:class
-       ["w-full max-w-screen-2xl"
-        "h-[calc(100vh-240px)]"
-        "mx-auto mt-[240px]"]}
+     [:div.w-full.max-w-screen-2xl.mx-auto
       [:div
        {:class 
-        ["flex"
+        ["h-[calc(100vh-200px)]"
+
+         "flex"
+
+         "mt-[200px]"
 
          ;; Mobile
          "px-6"
