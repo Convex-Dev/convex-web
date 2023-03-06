@@ -708,9 +708,13 @@
      ;; Main
      ;; ================
      [:div.w-full.max-w-screen-2xl.mx-auto
-      [:div.h-screen.flex
+      [:div
        {:class 
-        ["mt-[200px]"
+        ["h-[calc(100vh-200px)]"
+
+         "flex"
+
+         "mt-[200px]"
 
          ;; Mobile
          "px-6"
