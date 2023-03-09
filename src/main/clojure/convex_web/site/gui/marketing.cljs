@@ -139,6 +139,14 @@
      (let [section "Investors"]
        {:text section
         :href (rfe/href :route-name/ecosystem {} {:section section})})]}
+
+   {:text "INFORMATION"
+    :items
+    [{:text "Privacy Policy"
+      :href (rfe/href :route-name/privacy-policy)}
+
+     {:text "Terms of Use"
+      :href (rfe/href :route-name/terms-of-use)}]}
    
    {:text "ABOUT"
     :items
