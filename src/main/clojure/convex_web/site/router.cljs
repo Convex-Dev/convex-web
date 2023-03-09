@@ -166,7 +166,7 @@
      :controllers
      [{:identity identity
        :start (fn [match]
-                (stack/push :page.id/markdown-marketing {:title "Privacy policy"
+                (stack/push :page.id/markdown-marketing {:title "Privacy Policy"
                                                          :state (merge {:id :privacy-policy}
                                                                   (when-let [section (scroll-to match)]
                                                                     {:scroll-to section}))
