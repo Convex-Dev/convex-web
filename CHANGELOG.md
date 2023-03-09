@@ -1,6 +1,6 @@
 # Major changes and resolved issues
 
-## NEXT
+## 2023-03-09
 - New pages:
 	- Privacy Policy
 	- Terms of Use
