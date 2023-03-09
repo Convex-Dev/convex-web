@@ -143,6 +143,35 @@
                                                                   (when-let [section (scroll-to match)]
                                                                     {:scroll-to section}))
                                                          :reset? true}))}]}]
+
+
+   ;; Terms of Use
+   ;; ==============
+   ["terms-of-use"
+    {:name :route-name/terms-of-use
+     :controllers
+     [{:identity identity
+       :start (fn [match]
+                (stack/push :page.id/markdown-marketing {:title "Terms of Use"
+                                                         :state (merge {:id :terms-of-use}
+                                                                  (when-let [section (scroll-to match)]
+                                                                    {:scroll-to section}))
+                                                         :reset? true}))}]}]
+
+
+   ;; Privacy policy
+   ;; ==============
+   ["privacy-policy"
+    {:name :route-name/privacy-policy
+     :controllers
+     [{:identity identity
+       :start (fn [match]
+                (stack/push :page.id/markdown-marketing {:title "Privacy Policy"
+                                                         :state (merge {:id :privacy-policy}
+                                                                  (when-let [section (scroll-to match)]
+                                                                    {:scroll-to section}))
+                                                         :reset? true}))}]}]
+
    
    ;; Developer
    ;; ==============
