@@ -1,5 +1,11 @@
 # Major changes and resolved issues
 
+## NEXT
+- New pages:
+	- Privacy Policy
+	- Terms of Use
+- Sitemap: Information
+
 ## 2023-02-28
 - Fixed typo - Maximum Security
 - Nav - Added Horizontal Blue Line
