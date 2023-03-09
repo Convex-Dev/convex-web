@@ -143,6 +143,21 @@
                                                                   (when-let [section (scroll-to match)]
                                                                     {:scroll-to section}))
                                                          :reset? true}))}]}]
+
+
+   ;; Terms of Use
+   ;; ==============
+   ["terms-of-use"
+    {:name :route-name/terms-of-use
+     :controllers
+     [{:identity identity
+       :start (fn [match]
+                (stack/push :page.id/markdown-marketing {:title "Terms of Use"
+                                                         :state (merge {:id :terms-of-use}
+                                                                  (when-let [section (scroll-to match)]
+                                                                    {:scroll-to section}))
+                                                         :reset? true}))}]}]
+
    
    ;; Developer
    ;; ==============

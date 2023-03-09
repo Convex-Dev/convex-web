@@ -42,6 +42,13 @@
   [{:name "About"
     :path "markdown/about.md"}]}
 
+ :terms-of-use
+ {:toc? false
+  :smart-toc? true
+  :contents
+  [{:name "Terms of Use"
+    :path "markdown/terms_of_use.md"}]}
+
  :developer
  {:toc? false
   :contents
