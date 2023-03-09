@@ -49,6 +49,13 @@
   [{:name "Terms of Use"
     :path "markdown/terms_of_use.md"}]}
 
+ :privacy-policy
+ {:toc? false
+  :smart-toc? true
+  :contents
+  [{:name "Privacy policy"
+    :path "markdown/privacy_policy.md"}]}
+
  :developer
  {:toc? false
   :contents

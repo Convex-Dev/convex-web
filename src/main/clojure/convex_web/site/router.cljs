@@ -158,6 +158,20 @@
                                                                     {:scroll-to section}))
                                                          :reset? true}))}]}]
 
+
+   ;; Privacy policy
+   ;; ==============
+   ["privacy-policy"
+    {:name :route-name/privacy-policy
+     :controllers
+     [{:identity identity
+       :start (fn [match]
+                (stack/push :page.id/markdown-marketing {:title "Privacy policy"
+                                                         :state (merge {:id :privacy-policy}
+                                                                  (when-let [section (scroll-to match)]
+                                                                    {:scroll-to section}))
+                                                         :reset? true}))}]}]
+
    
    ;; Developer
    ;; ==============
