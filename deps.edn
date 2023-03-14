@@ -12,7 +12,11 @@
   com.cognitect/transit-cljs {:mvn/version "0.8.269"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
   
-  world.convex/net.clj {:mvn/version "0.0.0-alpha3"}
+  world.convex/net.clj
+  {:deps/root "module/net"
+   :git/sha   "06c7137"
+   :git/tag   "stable/2023-01-18"
+   :git/url   "https://github.com/convex-dev/convex.cljc"}
   
   ;; world.convex/convex-core {:local/root "convex-core-0.7.0-rc3-06ee2229b8fa9abaf28309b0b609c52fcd91ba7c.jar"}
   ;; world.convex/convex-peer {:local/root "convex-peer-0.7.0-rc3-06ee2229b8fa9abaf28309b0b609c52fcd91ba7c.jar"}
