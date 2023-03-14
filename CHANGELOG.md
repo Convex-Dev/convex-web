@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## 2023-03-14
+- Update `world.convex/net.clj`
+
 ## 2023-03-09
 - New pages:
 	- Privacy Policy
