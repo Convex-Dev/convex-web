@@ -146,7 +146,10 @@
       :href (rfe/href :route-name/privacy-policy)}
 
      {:text "Terms of Use"
-      :href (rfe/href :route-name/terms-of-use)}]}
+      :href (rfe/href :route-name/terms-of-use)}
+
+     {:text "Trademark Policy"
+      :href (rfe/href :route-name/trademark-policy)}]}
    
    {:text "ABOUT"
     :items
