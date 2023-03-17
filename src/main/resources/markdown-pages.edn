@@ -56,6 +56,13 @@
   [{:name "Privacy policy"
     :path "markdown/privacy_policy.md"}]}
 
+ :trademark-policy
+ {:toc? false
+  :smart-toc? true
+  :contents
+  [{:name "Trademark Policy"
+    :path "markdown/trademark_policy.md"}]}
+
  :developer
  {:toc? false
   :contents

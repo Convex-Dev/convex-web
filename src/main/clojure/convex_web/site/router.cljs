@@ -172,6 +172,20 @@
                                                                     {:scroll-to section}))
                                                          :reset? true}))}]}]
 
+
+   ;; Trademark Policy
+   ;; ==============
+   ["trademark-policy"
+    {:name :route-name/trademark-policy
+     :controllers
+     [{:identity identity
+       :start (fn [match]
+                (stack/push :page.id/markdown-marketing {:title "Trademark Policy"
+                                                         :state (merge {:id :trademark-policy}
+                                                                  (when-let [section (scroll-to match)]
+                                                                    {:scroll-to section}))
+                                                         :reset? true}))}]}]
+
    
    ;; Developer
    ;; ==============
