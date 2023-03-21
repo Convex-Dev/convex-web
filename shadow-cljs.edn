@@ -20,5 +20,4 @@
    [(shadow.cljs.build-report/hook)]
    
    :compiler-options
-   {:warnings-as-errors 
-    {:ignore #{sci.*}}}}}}
+   {:warnings-as-errors false}}}}
