@@ -14,7 +14,8 @@
    :asset-path "/js"
    
    :devtools
-   {:preloads [re-frisk.preload]}
+   {:preloads [re-frisk.preload]
+    :ignore-warnings true}
    
    :build-hooks
    [(shadow.cljs.build-report/hook)]
