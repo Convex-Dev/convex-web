@@ -58,8 +58,25 @@
     {:name "Logo 2 Color Blue"
      :src "images/logo_2_color_blue.svg"}]
 
+   [Logo
+    {:name "Logo Dark Blue"
+     :src "images/logo_dark_blue.svg"}]
 
-   ])
+   [Logo
+    {:name "Logo Medium Blue"
+     :src "images/logo_medium_blue.svg"}]
+
+   [Logo
+    {:name "Logo Sky Blue"
+     :src "images/logo_sky_blue.svg"}]
+
+   [Logo
+    {:name "Logo Light Blue"
+     :src "images/logo_light_blue.svg"}]
+
+   [Logo
+    {:name "Logo Black"
+     :src "images/logo_black.svg"}]])
 
 (def brand-page
   #:page {:id :page.id/brand
