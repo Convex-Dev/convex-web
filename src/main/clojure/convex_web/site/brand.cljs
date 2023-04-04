@@ -2,10 +2,8 @@
 
 (defn Logo [{:keys [name src]}]
   [:div.flex.flex-col.gap-5
-   {:class "w-[405px]"}
-
    [:div
-    {:class "w-[405px] h-[200px] flex items-center justify-center border border-[#CED0D5] rounded"}
+    {:class "h-[200px] flex items-center justify-center border border-[#CED0D5] rounded"}
 
     [:img
      {:class "w-[340] h-[146.13px]"
@@ -54,29 +52,32 @@
      "Download Brand Manual"]]
 
 
-   [Logo
-    {:name "Logo 2 Color Blue"
-     :src "images/logo_2_color_blue.svg"}]
+   ;; -- Logos
 
-   [Logo
-    {:name "Logo Dark Blue"
-     :src "images/logo_dark_blue.svg"}]
+   [:div.grid.grid-cols-1.md:grid-cols-3.gap-8.mt-20
+    [Logo
+     {:name "Logo 2 Color Blue"
+      :src "images/logo_2_color_blue.svg"}]
 
-   [Logo
-    {:name "Logo Medium Blue"
-     :src "images/logo_medium_blue.svg"}]
+    [Logo
+     {:name "Logo Dark Blue"
+      :src "images/logo_dark_blue.svg"}]
 
-   [Logo
-    {:name "Logo Sky Blue"
-     :src "images/logo_sky_blue.svg"}]
+    [Logo
+     {:name "Logo Medium Blue"
+      :src "images/logo_medium_blue.svg"}]
 
-   [Logo
-    {:name "Logo Light Blue"
-     :src "images/logo_light_blue.svg"}]
+    [Logo
+     {:name "Logo Sky Blue"
+      :src "images/logo_sky_blue.svg"}]
 
-   [Logo
-    {:name "Logo Black"
-     :src "images/logo_black.svg"}]])
+    [Logo
+     {:name "Logo Light Blue"
+      :src "images/logo_light_blue.svg"}]
+
+    [Logo
+     {:name "Logo Black"
+      :src "images/logo_black.svg"}]]])
 
 (def brand-page
   #:page {:id :page.id/brand
