@@ -2,7 +2,7 @@
   (:require 
    [reitit.frontend.easy :as rfe]
    [reagent.core :as reagent]
-   
+
    [convex-web.site.gui :as gui]
    
    ["@heroicons/react/solid" :refer [MenuIcon]]))
@@ -139,6 +139,17 @@
      (let [section "Investors"]
        {:text section
         :href (rfe/href :route-name/ecosystem {} {:section section})})]}
+
+   {:text "INFORMATION"
+    :items
+    [{:text "Privacy Policy"
+      :href (rfe/href :route-name/privacy-policy)}
+
+     {:text "Terms of Use"
+      :href (rfe/href :route-name/terms-of-use)}
+
+     {:text "Trademark Policy"
+      :href (rfe/href :route-name/trademark-policy)}]}
    
    {:text "ABOUT"
     :items
@@ -243,55 +254,66 @@
 (defn Nav []
   (reagent/with-let [show?-ref (reagent/atom false)]
     (let [items (nav-items)]
-      [:nav.h-16.flex.items-center.justify-between.px-6
-       {:class "bg-[#01052A]"}
-       
-       [:div.flex.flex-row.justify-between.items-center.flex-1
-        
-        ;; -- Logo
-        [gui/ConvexWhite]
-        
-        ;; -- Menu (mobile only)
-        [:div.relative.inline-block.text-left.text-base.text-black.z-10
-         [:button.md:hidden.rounded.p-2.shadow-md.transition.ease-in-out.duration-150
-          {:class
-           (if @show?-ref 
-             "bg-blue-200"
-             "bg-blue-50")}
-          [:> MenuIcon 
-           {:className "h-5 w-5 text-blue-800"
-            :on-click #(swap! show?-ref not)}]]
-         
-         [gui/Transition
-          (merge gui/dropdown-transition {:show? @show?-ref})
-          [gui/Dismissible {:on-dismiss #(reset! show?-ref false)}
-           [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg.z-10
-            [:div.rounded-md.bg-white.shadow-xs
-             [:div.py-1
-              {:role "menu"
-               :aria-orientation "vertical"
-               :aria-labelledby "options-menu"}
-              
-              (for [{:keys [text href]} items]
-                ^{:key text}
-                [:a.block.px-4.py-2.leading-5.hover:bg-blue-100.hover:bg-opacity-50.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
-                 {:href href
-                  :on-click #(reset! show?-ref false)}
-                 text])]]]]]]]
-       
-       ;; -- Nav (desktop only)
-       [NavDesktop items]])))
+      [:div.flex.flex-col.bg-convex-dark-blue
+
+       ;; -- Nav
+
+       [:nav.flex.items-center.justify-between.px-6
+        {:class ["h-[160px]" "bg-convex-dark-blue"]}
+
+        [:div.flex.flex-row.justify-between.items-center.flex-1
+
+         ;; -- Logo
+         [gui/ConvexLogoWhiteLink]
+
+         ;; -- Menu (mobile only)
+         [:div.relative.inline-block.text-left.text-base.text-black.z-10
+          [:button.md:hidden.rounded.p-2.shadow-md.transition.ease-in-out.duration-150
+           {:class
+            (if @show?-ref
+              "bg-blue-200"
+              "bg-blue-50")}
+           [:> MenuIcon
+            {:className "h-5 w-5 text-blue-800"
+             :on-click #(swap! show?-ref not)}]]
+
+          [gui/Transition
+           (merge gui/dropdown-transition {:show? @show?-ref})
+           [gui/Dismissible {:on-dismiss #(reset! show?-ref false)}
+            [:div.origin-top-right.absolute.right-0.mt-2.w-56.rounded-md.shadow-lg.z-10
+             [:div.rounded-md.bg-white.shadow-xs
+              [:div.py-1
+               {:role "menu"
+                :aria-orientation "vertical"
+                :aria-labelledby "options-menu"}
+
+               (for [{:keys [text href]} items]
+                 ^{:key text}
+                 [:a.block.px-4.py-2.leading-5.hover:bg-blue-100.hover:bg-opacity-50.hover:text-gray-900.focus:outline-none.focus:bg-gray-100.focus:text-gray-900
+                  {:href href
+                   :on-click #(reset! show?-ref false)}
+                  text])]]]]]]]
+
+
+        ;; -- Nav (desktop only)
+        [NavDesktop items]]
+
+
+       ;; -- Horizontal Line
+
+       [:div
+        {:class "h-[10px] w-[235px] bg-convex-light-blue"}]])))
 
 (defn BottomNavMenu [{:keys [text items]}]
   [:div.flex.flex-col.space-y-3.mb-10
    
-   [:span.text-xl.text-blue-200.uppercase text]
+   [:span.text-xl.text-white.uppercase text]
    
    [:div.flex.flex-col.space-y-2
     (for [{:keys [text href]} items]
       ^{:key text}
       [:a {:href href}
-       [:span.text-lg.text-gray-400.hover:text-gray-200.active:text-gray-600 text]])]])
+       [:span.text-lg.text-white.hover:text-gray-200.active:text-gray-600 text]])]])
 
 (defn BottomNavMenuSocial []
   [:div.flex.flex-col.space-y-3.mb-10
@@ -319,7 +341,8 @@
         {:src src}]])]])
 
 (defn Sitemap []
-  [:div.lg:flex.lg:space-x-32.p-12.bg-gray-900
+  [:div.lg:flex.lg:space-x-32.p-12
+   {:class "bg-convex-dark-blue"}
    [:<>
     (for [item (sitemap)]
       ^{:key (:text item)}
@@ -328,7 +351,8 @@
     [BottomNavMenuSocial]]])
 
 (defn Copyrigth []
-  [:div.flex.flex-col.items-center.space-y-4.bg-gray-900.p-2
+  [:div.flex.flex-col.items-center.space-y-4.p-2
+   {:class "bg-convex-dark-blue"}
    
-   [:span.block.text-gray-500.text-sm
-    "© Copyright 2021 CONVEX FOUNDATION"]])
+   [:span.block.text-white.text-sm
+    "© Copyright 2023 CONVEX FOUNDATION"]])

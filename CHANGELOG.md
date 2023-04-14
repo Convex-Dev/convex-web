@@ -1,8 +1,54 @@
-# Changes
+# Major changes and resolved issues
 
-## 0.30.0 --
+## 2023-04-14
+- Install HubSpot
+
+## 2023-03-17
+- New page:
+	- Trademark Policy
+
+## 2023-03-14
+- Update `world.convex/net.clj`
+
+## 2023-03-09
+- New pages:
+	- Privacy Policy
+	- Terms of Use
+- Sitemap: Information
+
+## 2023-02-28
+- Fixed typo - Maximum Security
+- Nav - Added Horizontal Blue Line
+- Roadmap - Added vertical gap on mobile
+- Updated Ecosystem page
+
+## 2023-02-24
+- [Site redesign](https://github.com/Convex-Dev/convex-web/issues/243)
+
+## 2023-02-23.1
+- [Typo correction #247](https://github.com/Convex-Dev/convex-web/issues/247)
+
+## 2023-02-23
+- Updated main page
+- Updated technology page
+
+## 2023-01-19
+- Marketing page title tweaks
+- Markdown typrography
+
+## 0.31.0 -- 2023-01-18
+Site:
+- Update Tailwind CSS
+- Use Inter for headings and Source Sans Pro for body in Markdown pages:
+	- Technology
+	- Use Cases
+	- Ecosystem
+	- About
+- [Fix Copyright Notice](https://github.com/Convex-Dev/convex-web/issues/238)
+
+## 0.30.0 -- 2022-12-23
 - [Fix Callable Functions UI #207](https://github.com/Convex-Dev/convex-web/issues/207)
-- Update Convex to 0.7.3
+- Update Convex to 0.7.9
 
 ## 0.29.0 -- 2021-11-02
 - Update Convex to 0.7.2

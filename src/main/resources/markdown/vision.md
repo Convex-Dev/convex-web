@@ -16,7 +16,7 @@ Convex provides the foundation for efficient digital value exchange. It is a gro
 
 ## Our Values
 
-Our mission is to create the Internet of Value with the same spirit as the original Internet. We believe in:
+Our mission is to build the Internet of Value with the same spirit as the original Internet. We believe in:
 
 - Decentralised operations
 - Simple, stable, foundational protocols (consistent with the "end-to-end principle")
