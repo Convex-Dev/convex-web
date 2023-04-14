@@ -116,6 +116,17 @@
        ;; -- End Google Analytics
 
 
+       ;; -- HubSpot
+
+       [:script
+        {:id "hs-script-loader"
+         :async "true"
+         :defer "true"
+         :src "//js-na1.hs-scripts.com/24109496.js"}]
+
+       ;; -- End HubSpot
+
+
        [:link
         {:rel "preconnect"
          :href "https://fonts.googleapis.com"}]
