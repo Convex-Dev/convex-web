@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## 2023-04-14
+- Install HubSpot
+
 ## 2023-03-17
 - New page:
 	- Trademark Policy
