@@ -124,6 +124,16 @@
          :defer "true"
          :src "//js-na1.hs-scripts.com/24109496.js"}]
 
+       [:script
+        {:src "//js.hsforms.net/forms/embed/v2.js"}]
+
+       [:script
+        "hbspt.forms.create({
+            region: 'na1',
+            portalId: '24109496',
+            formId: 'bc3f0027-bc36-41d6-bfdb-c19700419d20'
+        });"]
+
        ;; -- End HubSpot
 
 
