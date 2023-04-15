@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## 2023-04-15
+- More HubSpot
+
 ## 2023-04-14
 - Install HubSpot
 
