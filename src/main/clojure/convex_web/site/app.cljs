@@ -18,6 +18,7 @@
    [convex-web.site.format :as format]
    [convex-web.site.markdown :as markdown]
    [convex-web.site.team :as team]
+   [convex-web.site.brand :as brand]
 
    [cljs.spec.test.alpha :as stest]
 
@@ -71,6 +72,8 @@
    not-found-page
    
    team/team-page
+
+   brand/brand-page
 
    ;; ---
 
