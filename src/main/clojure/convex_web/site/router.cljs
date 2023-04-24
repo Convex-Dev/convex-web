@@ -186,6 +186,14 @@
                                                                     {:scroll-to section}))
                                                          :reset? true}))}]}]
 
+
+   ["brand"
+    {:name :route-name/brand
+     :controllers
+     [{:identity identity
+       :start (fn [_match]
+                (stack/push :page.id/brand {:reset? true}))}]}]
+
    
    ;; Developer
    ;; ==============

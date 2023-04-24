@@ -7,7 +7,6 @@
    [reagent.core :as reagent]
    [reitit.frontend.easy :as rfe]
    [lambdaisland.glogi :as log]
-   [cljfmt.core :as cljfmt]
 
    [convex-web.site.gui :as gui]
    [convex-web.site.gui.sandbox :as guis]

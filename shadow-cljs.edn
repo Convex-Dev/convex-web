@@ -1,3 +1,6 @@
+;; Shadow CLJS User’s Guide
+;; https://shadow-cljs.github.io/docs/UsersGuide.html
+
 {:deps {:aliases [:site-dev :logback-site]}
 
  :nrepl false
@@ -14,11 +17,23 @@
    :asset-path "/js"
    
    :devtools
-   {:preloads [re-frisk.preload]}
+   {:preloads [re-frisk.preload]
+
+    ;; The :browser target now uses a HUD to display a loading indicator when a build is started.
+    ;; It will also display warnings and errors if there are any.
+    ;;
+    ;; https://shadow-cljs.github.io/docs/UsersGuide.html#hud
+    :hud #{:progress :errors}
+
+    ;; A boolean controlling whether code with warnings should be reloaded.
+    :ignore-warnings true}
    
    :build-hooks
    [(shadow.cljs.build-report/hook)]
    
    :compiler-options
-   {:warnings-as-errors 
-    {:ignore #{sci.*}}}}}}
+   {;; It is sometimes desireable to fail a build with warnings rather than continuing with the build (eg. in CI envs).
+    ;; You can use the :warnings-as-errors compiler options to customize how that is handled.
+    ;;
+    ;; https://shadow-cljs.github.io/docs/UsersGuide.html#warnigs-as-errors
+    :warnings-as-errors false}}}}
