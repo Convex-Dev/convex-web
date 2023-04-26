@@ -1,39 +1,74 @@
-(ns convex-web.site.form)
+(ns convex-web.site.form
+  (:require
+   [convex-web.site.gui :as gui]))
 
-(defn SignUp [_context _state _set-state]
-  [:div.flex.flex-col.gap-3.p-6.rounded-b-lg.bg-convex-dark-blue
-   {:class "w-[740px]"}
+(defn SignUp [_context state set-state]
 
-   [:div.flex.flex-col
-    [:label.text-white
-     "First Name"]
+  ;; https://api.hsforms.com/submissions/v3/integration/secure/submit/:portalId/:formGuid
+  ;; hapikey=0dac4ad2-3d18-4f5f-9e7e-6ec9a1f6f74e
 
-    [:input.border.rounded
-     {:class "h-[52px]"
-      :type "text"
-      :on-change
-      (fn [_e])}]]
+  (let [input-text-class "h-[52px] px-2"]
+    [:div.flex.flex-col.gap-3.p-6.rounded-b-lg.bg-convex-dark-blue
+     {:class "w-[740px]"}
+
+     ;; -- First name
+
+     [:div.flex.flex-col
+      [:label.text-white
+       "First name"]
+
+      [:input.border.rounded
+       {:class input-text-class
+        :type "text"
+        :value (:firstname state "")
+        :on-change
+        (fn [e]
+          (set-state assoc :firstname (gui/event-target-value e)))}]]
 
 
-   [:div.flex.flex-col
-    [:label.text-white
-     "Last Name"]
+     ;; -- Last name
 
-    [:input.border.rounded
-     {:type "text"
-      :on-change
-      (fn [_e])}]]
+     [:div.flex.flex-col
+      [:label.text-white
+       "Last name"]
 
-   [:div.flex.flex-col
-    [:label.text-white
-     "E-mail"]
+      [:input.border.rounded
+       {:class input-text-class
+        :type "text"
+        :value (:lastname state "")
+        :on-change
+        (fn [e]
+          (set-state assoc :lastname (gui/event-target-value e)))}]]
 
-    [:input.border.rounded
-     {:type "text"
-      :on-change
-      (fn [_e])}]]
 
-   ])
+     ;; -- E-mail
+
+     [:div.flex.flex-col
+      [:label.text-white
+       "E-mail"]
+
+      [:input.border.rounded
+       {:class input-text-class
+        :type "text"
+        :value (:email state "")
+        :on-change
+        (fn [e]
+          (set-state assoc :email (gui/event-target-value e)))}]]
+
+
+     ;; -- Company
+
+     [:div.flex.flex-col
+      [:label.text-white
+       "Company"]
+
+      [:input.border.rounded
+       {:class input-text-class
+        :type "text"
+        :value (:company state "")
+        :on-change
+        (fn [e]
+          (set-state assoc :company (gui/event-target-value e)))}]]]))
 
 (def sign-up-page
   #:page {:id :page.id/sign-up
