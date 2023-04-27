@@ -5,7 +5,6 @@
 (defn SignUp [_context state set-state]
 
   ;; https://api.hsforms.com/submissions/v3/integration/secure/submit/:portalId/:formGuid
-  ;; hapikey=0dac4ad2-3d18-4f5f-9e7e-6ec9a1f6f74e
 
   (let [input-text-class "h-[52px] px-2"]
     [:div.flex.flex-col.gap-3.p-6.rounded-b-lg.bg-convex-dark-blue

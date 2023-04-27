@@ -12,13 +12,14 @@
    
    [clojure.java.io :as io]
    [clojure.stacktrace :as stacktrace]
-   [clojure.tools.logging :as log]
    [clojure.string :as str]
+   [clojure.data.json :as json]
    
    [com.stuartsierra.component.repl :refer [set-init reset stop system]]
    [aero.core :as aero]
    [ring.mock.request :as mock]
-   [datalevin.core :as d])
+   [datalevin.core :as d]
+   [org.httpkit.client :as http])
   
   (:import 
    (etch EtchStore)
@@ -255,4 +256,44 @@
   (map #(str/split % #"^\w*\n*") md-split-and-clean)
   
   
+  )
+
+
+(comment
+
+  ;; HubSpot Form
+
+  (def response
+    (http/post "https://api.hsforms.com/submissions/v3/integration/submit/24109496/bc3f0027-bc36-41d6-bfdb-c19700419d20"
+      {:headers {"Content-Type" "application/json"}
+       :body
+       (json/write-str
+         {:fields
+          [{:objectTypeId "0-1"
+            :name "firstname"
+            :value "Test"}
+
+           {:objectTypeId "0-1"
+            :name "lastname"
+            :value "Test"}
+
+           {:objectTypeId "0-1"
+            :name "email"
+            :value "test@test.com"}
+
+           {:objectTypeId "0-1"
+            :name "company"
+            :value "Test"}]
+
+          :legalConsentOptions
+          {:consent
+           {:consentToProcess true
+            :text "Sending your data is consent to contact you. For further details on how your personal data will be processed and how your consent will be managed, refer to the Convex Privacy Policy."
+            :communications
+            [{:subscriptionTypeId 999
+              :value true
+              :text "I agree to receive other communications from Convex.world."}]}}})}))
+
+  (select-keys @response [:status :body])
+
   )
