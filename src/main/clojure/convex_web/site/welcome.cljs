@@ -246,7 +246,7 @@
         content-margin-left "md:ml-[280px]"]
     
     [:div
-     
+
      [marketing/Nav]
      
      ;; -- Building the Internet of Value
