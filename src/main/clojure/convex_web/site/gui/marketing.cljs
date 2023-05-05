@@ -254,7 +254,36 @@
 (defn Nav []
   (reagent/with-let [show?-ref (reagent/atom false)]
     (let [items (nav-items)]
-      [:div.flex.flex-col.bg-convex-dark-blue
+      [:<>
+
+       ;; -- News
+
+       [:div.flex.flex-col.justify-center
+        {:class "min-h-[156px] bg-[#93D500]"}
+
+        [:div.w-full.max-w-5xl.mx-auto
+
+         [:div.flex.items-center.justify-between
+
+          [:div.flex.flex-col
+           [:span.uppercase.text-convex-dark-blue.font-extrabold.text-3xl
+            "News:"]
+
+           [:span.text-convex-dark-blue.font-bold.text-2xl.mt-4
+            "Convex selected as a DLT for Next Gen Internet"]
+
+           [:span.text-convex-dark-blue.text-xl
+            "EU Next Generation Internet... "
+            [:a.underline
+             {:target "_black"
+              :href "https://ontochain.ngi.eu/content/convex-global-dlt-convex-hosting-infrastructure-and-decentralised-ledger-next-generation"}
+             "READ MORE"]]]
+
+          [:img
+           {:src "images/ngi_onto_chain.png"}]]]]
+
+
+       [:div.flex.flex-col.bg-convex-dark-blue
 
        ;; -- Nav
 
@@ -302,7 +331,7 @@
        ;; -- Horizontal Line
 
        [:div
-        {:class "h-[10px] w-[235px] bg-convex-light-blue"}]])))
+        {:class "h-[10px] w-[235px] bg-convex-light-blue"}]]])))
 
 (defn BottomNavMenu [{:keys [text items]}]
   [:div.flex.flex-col.space-y-3.mb-10
