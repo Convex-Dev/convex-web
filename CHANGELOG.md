@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## 2023-05-05
+- News: Convex selected as a DLT for Next Gen Internet
+
 ## 2023-04-24
 - Setup LinkedIn Insight Tag
 
