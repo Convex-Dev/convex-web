@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## 2023-05-08
+- Responsive News
+
 ## 2023-05-05
 - News: Convex selected as a DLT for Next Gen Internet
 

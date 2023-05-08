@@ -263,9 +263,9 @@
 
         [:div.w-full.max-w-5xl.mx-auto
 
-         [:div.flex.items-center.justify-between
+         [:div.flex.flex-col.md:flex-row.md:items-center.md:justify-between
 
-          [:div.flex.flex-col
+          [:div.flex.flex-col.p-8.md:p-0
            [:span.uppercase.text-convex-dark-blue.font-extrabold.text-3xl
             "News:"]
 
@@ -279,7 +279,7 @@
               :href "https://ontochain.ngi.eu/content/convex-global-dlt-convex-hosting-infrastructure-and-decentralised-ledger-next-generation"}
              "READ MORE"]]]
 
-          [:img
+          [:img.hidden.md:block
            {:src "images/ngi_onto_chain.png"}]]]]
 
 
