@@ -7,13 +7,13 @@
 
 (defn SignUp [_context state set-state]
   (let [input-text-class "h-[52px] px-2"]
-    [:div.flex.flex-col.gap-3.p-6.rounded-b-lg.bg-convex-dark-blue
+    [:div.flex.flex-col.gap-3.p-6
      {:class "w-[740px]"}
 
      ;; -- First name
 
      [:div.flex.flex-col
-      [:label.text-white
+      [:label
        "First name"]
 
       [:input.border.rounded
@@ -28,7 +28,7 @@
      ;; -- Last name
 
      [:div.flex.flex-col
-      [:label.text-white
+      [:label
        "Last name"]
 
       [:input.border.rounded
@@ -43,7 +43,7 @@
      ;; -- E-mail
 
      [:div.flex.flex-col
-      [:label.text-white
+      [:label
        "E-mail"]
 
       [:input.border.rounded
@@ -58,7 +58,7 @@
      ;; -- Company
 
      [:div.flex.flex-col
-      [:label.text-white
+      [:label
        "Company"]
 
       [:input.border.rounded
@@ -72,7 +72,7 @@
 
      ;; -- Privacy Policy
 
-     [:p.text-white.my-4
+     [:p.my-4
       "Sending your data is consent to contact you. For further details on how your personal data will be processed and how your consent will be managed, refer to the "
       [:a
        {:href "https://convex.world/privacy-policy"}
@@ -90,7 +90,7 @@
         (fn [^js e]
           (set-state assoc :consent (.-checked (.-target e))))}]
 
-      [:p.text-white
+      [:p
        "I agree to receive other communications from Convex.world."]]
 
 
