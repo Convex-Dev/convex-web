@@ -1,6 +1,7 @@
 (ns convex-web.site.form
   (:require
-   [convex-web.site.stack :as stack]
+   [clojure.string :as str]
+
    [convex-web.site.gui :as gui]
 
    [ajax.core :as ajax :refer [POST]]))
@@ -102,9 +103,19 @@
               "text-blue-900"
               "transition duration-150 ease-in-out"
               "px-4 py-2 rounded"]
-         (if (= (:ajax/status state) :ajax.status/pending)
+         (cond
+           (some str/blank? [(:firstname state)
+                             (:lastname state)
+                             (:email state)
+                             (:company state)])
            ["pointer-events-none"
             "bg-gray-400"]
+
+           (= (:ajax/status state) :ajax.status/pending)
+           ["pointer-events-none"
+            "bg-gray-400"]
+
+           :else
            ["bg-convex-sky-blue active:bg-convex-light-blue"]))
        :on-click
        (fn [_e]
@@ -139,15 +150,20 @@
                  :value true
                  :text "I agree to receive other communications from Convex.world."}]}}}
             :handler
-            (fn [_response]
-              (stack/pop))
+            (fn [response]
+              (js/console.log response)
+
+              (set-state assoc :ajax/status :ajax.status/success))
             :error-handler
             (fn [error]
               (js/console.error error))}))}
-      "Submit"]]))
+      "Submit"]
+
+     (when (= (:ajax/status state) :ajax.status/success)
+       [:p.mt-5
+        "Thanks for your interest, we'll be in contact soon."])]))
 
 (def sign-up-page
   #:page {:id :page.id/sign-up
           :template :marketing
-          :component #'SignUp
-          :scaffolding? false})
+          :component #'SignUp})
