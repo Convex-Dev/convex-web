@@ -148,5 +148,6 @@
 
 (def sign-up-page
   #:page {:id :page.id/sign-up
+          :template :marketing
           :component #'SignUp
           :scaffolding? false})
