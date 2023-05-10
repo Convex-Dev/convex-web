@@ -19,6 +19,7 @@
    [convex-web.site.markdown :as markdown]
    [convex-web.site.team :as team]
    [convex-web.site.brand :as brand]
+   [convex-web.site.form :as form]
 
    [cljs.spec.test.alpha :as stest]
 
@@ -74,6 +75,7 @@
    team/team-page
 
    brand/brand-page
+   form/sign-up-page
 
    ;; ---
 
@@ -509,7 +511,7 @@
 
      ;; Modal
      [:div.fixed.inset-0.flex.justify-center.items-center.z-50
-      [:div.flex.flex-col.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white.border
+      [:div.flex.flex-col.max-w-screen-md.xl:max-w-screen-xl.rounded-lg.shadow-2xl.bg-white
 
        ;; -- Header
        [:div.bg-blue-100.bg-opacity-25.border-b.rounded-t-lg

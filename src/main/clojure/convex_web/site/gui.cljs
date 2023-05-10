@@ -18,7 +18,7 @@
    ["@heroicons/react/solid" :as icon :refer [XIcon]]
    ["jdenticon" :as jdenticon]))
 
-(defn event-target-value [event]
+(defn event-target-value [^js event]
   (some-> event
           (.-target)
           (.-value)))

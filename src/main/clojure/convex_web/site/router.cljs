@@ -90,6 +90,16 @@
      [{:identity identity
        :start (fn [_]
                 (stack/push :page.id/welcome {:reset? true}))}]}]
+
+
+   ;; Sign up News
+   ;; ==============
+   ["sign-up-updates"
+    {:name :route-name/sign-up
+     :controllers
+     [{:identity identity
+       :start (fn [_]
+                (stack/push :page.id/sign-up {:reset? true}))}]}]
    
    
    ;; Technology

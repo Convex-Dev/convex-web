@@ -3,6 +3,7 @@
    [reitit.frontend.easy :as rfe]
    [reagent.core :as reagent]
 
+   [convex-web.site.stack :as stack]
    [convex-web.site.gui :as gui]
    
    ["@heroicons/react/solid" :refer [MenuIcon]]))
@@ -230,7 +231,19 @@
    
    (for [{:keys [text href]} nav]
      ^{:key text}
-     [NavButton text href])])
+     [NavButton text href])
+
+   #_[:button
+      {:class
+       ["text-blue-900"
+        "bg-gray-100 active:bg-gray-300"
+        "transition duration-150 ease-in-out"
+        "px-4 py-2 rounded"]
+       :on-click
+       (fn [_e]
+         (stack/push :page.id/sign-up {:title "Sign Up For Updates"
+                                       :modal? true}))}
+      "Sign Up For Updates"]])
 
 (defn nav-items []
   [{:text "Technology"
