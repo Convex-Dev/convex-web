@@ -27,6 +27,32 @@
        [B "SVG"]
        [B "PNG"]])]])
 
+(defn LogoBlack [{:keys [name src logo]}]
+  [:div.flex.flex-col.gap-5
+
+   [:div.bg-black
+    {:class "h-[200px] flex items-center justify-center border border-[#CED0D5] rounded"}
+
+    logo]
+
+   ;; -- Name, SVG, PNG
+   [:div.flex.justify-between.items-center
+
+    [:span
+     {:class "text-[#6D7380]"}
+     name]
+
+    (let [B (fn [text]
+              [:div
+               {:class "w-[40px] h-[24px] flex items-center justify-center bg-[#F5F7FD] rounded"}
+               [:span.text-xs
+                {:class "text-[#1A2B6B]"}
+                text]])]
+
+      [:div.flex.gap-3
+       [B "SVG"]
+       [B "PNG"]])]])
+
 (defn DownloadLink [{:keys [text href]}]
   [:a
    {:class
@@ -97,17 +123,26 @@
 
 
    [:div.grid.grid-cols-1.md:grid-cols-3.gap-8.mt-20
-    [Logo
-     {:name "Logo 2 Color Blue"
-      :src "images/logo_2_color_blue.svg"}]
+    [LogoBlack
+     {:name "Logo 2 Color White"
+      :logo
+      [:img
+       {:class "w-[340px] h-[60.71px]"
+        :src "images/logo_2_color_white.svg"}]}]
 
-    [Logo
-     {:name "Logo Dark Blue"
-      :src "images/logo_dark_blue.svg"}]
+    [LogoBlack
+     {:name "Logo White"
+      :logo
+      [:img
+       {:class "w-[340px] h-[144.97px]"
+        :src "images/logo_white.svg"}]}]
 
-    [Logo
-     {:name "Logo Medium Blue"
-      :src "images/logo_medium_blue.svg"}]]
+    [LogoBlack
+     {:name "Logo Light Blue"
+      :logo
+      [:img
+       {:class "w-[340px] h-[144.97px]"
+        :src "images/logo_light_blue.svg"}]}]]
 
    ;; -- Download logo assets
    [:div.mt-16.self-center
