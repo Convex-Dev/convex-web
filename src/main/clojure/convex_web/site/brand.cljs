@@ -295,6 +295,58 @@
       [:span.font-source-sans-pro "#6D7380"]]]]
 
 
+   ;; -- Fonts
+
+   [:p.font-source-sans-pro.inline-flex.self-center.mt-28.text-3xl
+    {:class "text-[#6D7380]"}
+    "Fonts"]
+
+
+   ;; -- Inter
+
+   [:div.w-full.flex.mt-12
+
+    [:div.flex.flex-col.gap-2.bg-convex-dark-blue.rounded-lg
+     {:class "min-w-[422px] text-[#B8D8EB]"}
+
+     [:div.flex.flex-col.items-end.p-6
+      {:class "w-[304.78px]"}
+
+      [:span.text-4xl.font-light
+       "Inter Light"]
+
+      [:span.text-4xl.font-normal
+       "Inter Regular"]
+
+      [:span.text-4xl.font-medium
+       "Inter Medium"]
+
+      [:span.text-4xl.font-bold
+       "Inter Bold"]
+
+      [:span.text-4xl.italic
+       "Inter Italic"]]]
+
+    [:div.flex.flex-col.justify-center.ml-16
+
+     [:span.text-lg
+      {:class "text-[#1A2B6B]"}
+      "Inter"]
+
+     [:p.mt-10.max-w-prose
+      {:class "text-[#6D7380]"}
+      "The main Convex corporate font is Inter. Inter is an Open Source font. This font should be used for all main headlines and should be title case. Avoid setting headlines in all caps. Inter is a free open-source font for commercial use available on Google Fonts."]]]
+
+
+   [:div.mt-16.self-center
+    [DownloadLink
+     {:text "Download Inter Font"
+      :href "https://fonts.google.com/specimen/Inter"}]]
+
+
+
+
+
    ])
 
 (def brand-page
