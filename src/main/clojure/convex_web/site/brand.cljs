@@ -344,10 +344,42 @@
       :href "https://fonts.google.com/specimen/Inter"}]]
 
 
+   ;; -- Source Sans Pro
 
+   [:div.w-full.flex.mt-28
 
+    [:div.flex.flex-col.justify-center
 
-   ])
+     [:span.text-lg
+      {:class "text-[#1A2B6B]"}
+      "Source Sans Pro"]
+
+     [:p.mt-10.max-w-prose
+      {:class "text-[#6D7380]"}
+      "The secondary font is Source Sans Variable. As a substitute, Source Sans Pro may be used if Source Sans Variable is not available. This font should be used for all body text including subheadings, footnotes, quotes, etc. Source Sans Var is a premium font, it can't be distributed freely. You can find out more about obtaining a license to this font through the type foundry. Source sans Pro is a free open-source font for commercial use available on Google Fonts."]]
+
+    [:div.flex.flex-col.flex-1.gap-2.bg-convex-dark-blue.rounded-lg
+     {:class "min-w-[550px] text-[#B8D8EB]"}
+
+     [:div.flex.flex-col.flex-1.pl-12.py-12
+      {:class "w-[397.22px]"}
+
+      [:span.font-source-sans-pro.text-4xl.font-light
+       "Source Sans Pro Light"]
+
+      [:span.font-source-sans-pro.text-4xl.font-normal
+       "Source Sans Pro Regular"]
+
+      [:span.font-source-sans-pro.text-4xl.font-semi-bold
+       "Source Sans Pro Medium"]
+
+      [:span.font-source-sans-pro.text-4xl.font-bold
+       "Source Sans Pro Bold"]
+
+      [:span.font-source-sans-pro.text-4xl.italic
+       "Source Sans Pro Italic"]]]]
+
+])
 
 (def brand-page
   #:page {:id :page.id/brand
