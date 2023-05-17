@@ -151,7 +151,7 @@
       :href "https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf"}]]
 
 
-   [:div.inline-flex.self-center.mt-20
+   [:div.flex.self-center.mt-20
     [Heading2
      {:text "Vertical Logo"}]]
 
@@ -174,7 +174,10 @@
      {:text "Download vertical assets"
       :href "https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf"}]]
 
-   [:div.inline-flex.self-center.mt-20
+
+   ;; -- Icon Symbol
+
+   [:div.flex.self-center.mt-20
     [Heading2
      {:text "Icon Symbol"}]]
 
@@ -193,6 +196,103 @@
       :href "https://raw.githubusercontent.com/Convex-Dev/design/main/papers/convex-whitepaper.pdf"}]]
 
 
+   ;; -- Colors
+
+   [:div.flex.self-center.mt-20
+    [Heading2
+     {:text "Colors"}]]
+
+   ;; -- Primary
+
+   [:p.font-source-sans-pro.inline-flex.self-center.mt-20.text-3xl
+    {:class "text-[#6D7380]"}
+    "Primary"]
+
+   [:div.flex.self-center.mt-12.bg-convex-dark-blue.w-full.h-16.rounded]
+
+   [:div.w-full.flex.flex-col.items-center.mt-4
+    {:class "text-[#6D7380]"}
+    [:span.font-source-sans-pro.font-bold "Dark Blue"]
+    [:span.font-source-sans-pro "Pantone 2756C"]
+    [:span.font-source-sans-pro "#0F206C"]]
+
+
+   ;; -- Secondary
+
+   [:p.font-source-sans-pro.inline-flex.self-center.mt-20.text-3xl
+    {:class "text-[#6D7380]"}
+    "Secondary"]
+
+   [:div.w-full.flex.justify-center.mt-12.gap-8
+
+    ;; -- Medium Blue
+    [:div.flex.flex-col
+
+     [:div.h-16.w-40.rounded
+      {:class "bg-[#416BA9]"}]
+
+     [:div.flex.flex-col.items-center.mt-4
+      {:class "text-[#6D7380]"}
+      [:span.font-source-sans-pro.font-bold "Medium Blue"]
+      [:span.font-source-sans-pro "Pantone 7683C"]
+      [:span.font-source-sans-pro "#416BA9"]]]
+
+    ;; -- Sky Blue
+    [:div.flex.flex-col
+
+     [:div.h-16.w-40.rounded
+      {:class "bg-[#6AAAE4]"}]
+
+     [:div.flex.flex-col.items-center.mt-4
+      {:class "text-[#6D7380]"}
+      [:span.font-source-sans-pro.font-bold "Sky Blue"]
+      [:span.font-source-sans-pro "Pantone 284C"]
+      [:span.font-source-sans-pro "#6AAAE4"]]]
+
+    ;; -- Light Blue
+    [:div.flex.flex-col
+
+     [:div.h-16.w-40.rounded
+      {:class "bg-[#B8D8EB]"}]
+
+     [:div.flex.flex-col.items-center.mt-4
+      {:class "text-[#6D7380]"}
+      [:span.font-source-sans-pro.font-bold "Light Blue"]
+      [:span.font-source-sans-pro "Pantone 290C"]
+      [:span.font-source-sans-pro "#B8D8EB"]]]]
+
+
+   ;; -- Tertiary
+
+   [:p.font-source-sans-pro.inline-flex.self-center.mt-20.text-3xl
+    {:class "text-[#6D7380]"}
+    "Tertiary"]
+
+   [:div.w-full.flex.justify-center.mt-12.gap-8
+
+    ;; -- Apple Green
+    [:div.flex.flex-col
+
+     [:div.h-16.w-40.rounded
+      {:class "bg-[#93D500]"}]
+
+     [:div.flex.flex-col.items-center.mt-4
+      {:class "text-[#6D7380]"}
+      [:span.font-source-sans-pro.font-bold "Apple Green"]
+      [:span.font-source-sans-pro "Pantone 375C"]
+      [:span.font-source-sans-pro "#93D500"]]]
+
+    ;; -- Rich Yellow
+    [:div.flex.flex-col
+
+     [:div.h-16.w-40.rounded
+      {:class "bg-[#E0CC00]"}]
+
+     [:div.flex.flex-col.items-center.mt-4
+      {:class "text-[#6D7380]"}
+      [:span.font-source-sans-pro.font-bold "Rich Yellow"]
+      [:span.font-source-sans-pro "Pantone 605C"]
+      [:span.font-source-sans-pro "#6D7380"]]]]
 
 
    ])
