@@ -293,7 +293,7 @@
              "READ MORE"]]]
 
           [:img.hidden.md:block
-           {:src "images/ngi_onto_chain.png"}]]]]
+           {:src "/images/ngi_onto_chain.png"}]]]]
 
 
        [:div.flex.flex-col.bg-convex-dark-blue
