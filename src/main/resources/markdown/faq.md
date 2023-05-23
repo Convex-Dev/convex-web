@@ -113,14 +113,14 @@ You can use Convex Actors to implement smart contracts. Not every Actor needs to
 
 ## When will the Main Network go live?
 
-We are targeting Main Network Launch (Convex One) in 2022.
+We are targeting Main Network Launch (Convex One) in 2023.
 
 An important caveat: getting it right is more important than rushing a release. We won't launch until we are 100% sure it is ready for production use and fully secure with real-world value at stake.
 
 People will depend on Convex to be a secure, reliable platform for decentralised applications and digital assets. It is not acceptable to expose them to security risks from flaws in the platform, nor is it acceptable to make breaking changes to the CVM that could cause significant problems with smart contracts.
 
 
-## Can I buy Convex as a cryptocurrency?
+## Can I buy Convex as a cryptoasset?
 
 Not yet, but soon!
 

@@ -148,7 +148,9 @@
 
        (stylesheet "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap")
        (stylesheet "https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap")
-       (stylesheet "https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap")
+       (stylesheet "https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap")
+
+
 
        (stylesheet (str asset-prefix-url "/css/highlight/idea.css"))
        (stylesheet (str asset-prefix-url "/css/codemirror.css"))
