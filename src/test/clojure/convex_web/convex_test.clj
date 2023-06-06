@@ -70,8 +70,8 @@
   (let [context (sys/convex-world-context system)]
     (testing "nil" (is (= nil (convex/datafy nil))))
     
-    (testing "Byte"
-      (is (= convex.core.data.prim.CVMByte (type (convex/execute-string context "(nth 0xFF 0)"))))
+    (testing "Long"
+      (is (= convex.core.data.prim.CVMLong (type (convex/execute-string context "(nth 0xFF 0)"))))
       (is (= 255 (convex/datafy (convex/execute-string context "(nth 0xFF 0)")))))
     
     (testing "Char" 

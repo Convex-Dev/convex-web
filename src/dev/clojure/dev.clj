@@ -25,9 +25,9 @@
    (etch EtchStore)
    (convex.peer Server API)
    (convex.core Peer)
-   (convex.core.init Init AInitConfig)
+   (convex.core.init Init)
    (convex.core.lang Core Reader Context)
-   (convex.core.crypto AKeyPair Ed25519KeyPair PFXTools)
+   (convex.core.crypto AKeyPair PFXTools)
    (convex.core.data Blob Hash AccountKey Symbol)))
 
 ;; -- Logging
@@ -80,7 +80,7 @@
   (convex/key-pair-data (convex/generate-key-pair))
   
   (convex/key-pair-data
-    (Ed25519KeyPair/create
+    (AKeyPair/create
       (Blob/fromHex "e7fc701f56bb8b602aeb6b96980038c3ad7419b578ee91ccac06ba6a21ec5259")))
 
 
