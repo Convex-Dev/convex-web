@@ -76,15 +76,15 @@
     
     nil))
 
-(defn ^AKeyPair generate-key-pair []
+(defn generate-key-pair ^AKeyPair []
   (AKeyPair/generate))
 
 (defn account-key ^AccountKey [^String checksum-hex]
   (AccountKey/fromChecksumHex checksum-hex))
 
-(defn ^AccountKey account-key-from-hex 
+(defn account-key-from-hex
   "Constructs an AccountKey object from a hex string."
-  [^String hex]
+  ^AccountKey  [^String hex]
   (AccountKey/fromHex hex))
 
 (defn key-pair-data 
@@ -94,9 +94,9 @@
    :convex-web.key-pair/private-key (.toHexString (.getEncodedPrivateKey key-pair))
    :convex-web.key-pair/seed (.toHexString (.getSeed key-pair))})
 
-(defn ^AKeyPair create-key-pair 
+(defn create-key-pair
   "Creates AKeyPair from a map."
-  [{:convex-web.key-pair/keys [account-key private-key]}]
+  ^AKeyPair [{:convex-web.key-pair/keys [account-key private-key]}]
   (AKeyPair/create 
     (AccountKey/fromChecksumHex account-key)
     (Blob/fromHex private-key)))
@@ -142,7 +142,8 @@
                {:exceptional (.getExceptional new-context)}))
       (.getResult new-context))))
 
-(defn ^Address genesis-address []
+(defn genesis-address
+  ^Address []
   (Init/getGenesisAddress))
 
 (defn server-peer-controller
@@ -275,7 +276,8 @@
       (log/error ex)
       nil)))
 
-(defn ^Address address [x]
+(defn address
+  ^Address [x]
   (cond
     (nil? x)
     (throw (ex-info (str "Can't coerce nil to " (.getName Address) ".") {}))
@@ -306,7 +308,8 @@
       (throw (ex-info message {::anomalies/message message
                                ::anomalies/category ::anomalies/incorrect})))))
 
-(defn ^Address address-safe [x]
+(defn address-safe
+  ^Address [x]
   (try
     (address x)
     (catch Exception _
@@ -324,10 +327,12 @@
               (throw (ex-info "'sym' must be either a convex.core.data.Symbol or String." {:sym sym})))]
     (get (core-metadata) sym)))
 
-(defn ^Order peer-order [^Peer peer]
+(defn peer-order
+  ^Order [^Peer peer]
   (.getPeerOrder peer))
 
-(defn ^State consensus-state [^Peer peer]
+(defn consensus-state
+  ^State [^Peer peer]
   (.getConsensusState peer))
 
 (defn consensus-point [^Order order]
@@ -513,21 +518,25 @@
     []
     (accounts-indexed peer {:start start :end end})))
 
-(defn ^AccountStatus account-status [^Peer peer ^Address address]
+(defn account-status
+  ^AccountStatus [^Peer peer ^Address address]
   (when address
     (get (accounts-indexed peer) (.longValue address))))
 
-(defn ^Transfer transfer-transaction [{:keys [address nonce target amount]}]
+(defn transfer-transaction
+  ^Transfer [{:keys [address nonce target amount]}]
   (Transfer/create
     (convex-web.convex/address address)
     ^Long nonce
     (convex-web.convex/address target)
     ^Long amount))
 
-(defn ^Invoke invoke-transaction [{:keys [nonce address command]}]
+(defn invoke-transaction
+  ^Invoke [{:keys [nonce address command]}]
   (Invoke/create ^Address address ^Long nonce ^ACell command))
 
-(defn ^SignedData sign [^AKeyPair signer ^ATransaction transaction]
+(defn sign
+  ^SignedData [^AKeyPair signer ^ATransaction transaction]
   (SignedData/create signer transaction))
 
 (defn execute-query [^Peer peer ^Object form & [{:keys [address]}]]
@@ -536,7 +545,8 @@
                            (.executeQuery peer form))]
     (.getValue context)))
 
-(defn ^Result query [^Convex client {:keys [source address] :as q}]
+(defn query
+  ^Result [^Convex client {:keys [source address] :as q}]
   (let [^ACell acell (read-source source)]
     (try
       (log/debug "Query sync" q)
@@ -557,13 +567,13 @@
                              ::anomalies/category category})
                    ex)))))))
 
-(defn ^Result transact-signed
+(defn transact-signed
   "Transact-sync a SignedData with a default timeout.
 
    Returns Result.
 
    Throws ExceptionInfo."
-  [^Convex client ^SignedData signed-data]
+  ^Result [^Convex client ^SignedData signed-data]
   (try
     (.transactSync client signed-data 10000)
     (catch Exception ex
@@ -575,13 +585,13 @@
                          ::anomalies/category category}
                         ex))))))
 
-(defn ^Result transact
+(defn transact
   "Transact-sync an ATransaction with a default timeout.
 
    Returns Result.
 
    Throws ExceptionInfo."
-  [^Convex client ^ATransaction atransaction]
+  ^Result [^Convex client ^ATransaction atransaction]
   (try
     (.transactSync client atransaction 10000)
     (catch Exception ex
@@ -593,13 +603,13 @@
                          ::anomalies/category category}
                         ex))))))
 
-(defn ^Address create-account
+(defn create-account
   "Creates a new Account on the network.
 
    Returns Address.
 
    Throws ExceptionInfo if the transaction fails."
-  [^Convex client ^Address genesis-address ^AccountKey account-key]
+  ^Address [^Convex client ^Address genesis-address ^AccountKey account-key]
   (let [^String account-public-key (.toChecksumHex account-key)
         
         command (read-source (str "(create-account 0x" account-public-key ")"))
@@ -620,9 +630,9 @@
                                  :result result})))
       (.getValue result))))
 
-(defn ^Result faucet
+(defn faucet
   "Transfers `amount` from Hero (see `Init/HERO`) to `target`."
-  [^Convex client {:keys [address target amount]}]
+  ^Result [^Convex client {:keys [address target amount]}]
   (->> (transfer-transaction
          {:address address
           :nonce 0
@@ -658,10 +668,11 @@
 
 (def ^:dynamic sequence-number-ref (atom {}))
 
-(defn ^Long sequence-number [^Peer peer ^Address address]
+(defn sequence-number
+  ^Long [^Peer peer ^Address address]
   (some-> (.getConsensusState peer)
-          (.getAccount address)
-          (.getSequence)))
+    (.getAccount address)
+    (.getSequence)))
 
 (defn get-sequence-number [address]
   (get @sequence-number-ref (convex-web.convex/address address)))
