@@ -14,8 +14,8 @@
   
   world.convex/net.clj
   {:deps/root "module/net"
-   :git/sha   "06c7137"
-   :git/tag   "stable/2023-01-18"
+   :git/sha   "167ce1b69da2f9567b34342101a40a7166514692"
+   :git/tag   "update/convex/0.7.11"
    :git/url   "https://github.com/convex-dev/convex.cljc"}
   
   ;; world.convex/convex-core {:local/root "convex-core-0.7.0-rc3-06ee2229b8fa9abaf28309b0b609c52fcd91ba7c.jar"}
