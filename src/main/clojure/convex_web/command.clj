@@ -186,7 +186,7 @@
                      (merge {} signer-key-pair))))
 
         (try
-          (let [^Result r (->> (convex/sign (convex/create-key-pair2 signer-key-pair) atransaction)
+          (let [^Result r (->> (convex/sign (convex/create-key-pair signer-key-pair) atransaction)
                             (convex/transact-signed (system/convex-client system)))
 
                 bad-sequence-number? (when-let [error-code (.getErrorCode r)]

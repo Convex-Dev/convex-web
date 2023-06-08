@@ -25,7 +25,7 @@
       (is (= (.getAccountKey generated)
             (.getAccountKey (-> generated
                               convex/key-pair-data
-                              convex/create-key-pair2)))))))
+                              convex/create-key-pair)))))))
 
 (deftest read-source-test
   (is (= [] (convex/read-source "()")))

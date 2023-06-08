@@ -98,13 +98,6 @@
    :convex-web.key-pair/seed (.toHexString (.getSeed key-pair))})
 
 (defn create-key-pair
-  "Creates AKeyPair from a map."
-  ^AKeyPair [{:convex-web.key-pair/keys [account-key private-key]}]
-  (AKeyPair/create 
-    (AccountKey/fromChecksumHex account-key)
-    (Blob/fromHex private-key)))
-
-(defn create-key-pair2
   "Creates AKeyPair from a key-pair-data map."
   ^AKeyPair [{:convex-web.key-pair/keys [seed]}]
   (AKeyPair/create (Blob/fromHex seed)))
