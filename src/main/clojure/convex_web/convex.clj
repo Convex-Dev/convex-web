@@ -91,7 +91,10 @@
   "Returns AKeyPair as a map."
   [^AKeyPair key-pair]
   {:convex-web.key-pair/account-key (.toChecksumHex (.getAccountKey key-pair))
-   :convex-web.key-pair/private-key (.toHexString (.getEncodedPrivateKey key-pair))
+
+   ;; FIXME: Find usages of this key.
+   :convex-web.key-pair/private-key nil
+
    :convex-web.key-pair/seed (.toHexString (.getSeed key-pair))})
 
 (defn create-key-pair
@@ -100,6 +103,11 @@
   (AKeyPair/create 
     (AccountKey/fromChecksumHex account-key)
     (Blob/fromHex private-key)))
+
+(defn create-key-pair2
+  "Creates AKeyPair from a key-pair-data map."
+  ^AKeyPair [{:convex-web.key-pair/keys [seed]}]
+  (AKeyPair/create (Blob/fromHex seed)))
 
 (s/fdef create-key-pair
   :args (s/cat :key-pair :convex-web/key-pair)

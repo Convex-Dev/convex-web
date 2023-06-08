@@ -25,7 +25,7 @@
       (is (= (.getAccountKey generated)
             (.getAccountKey (-> generated
                               convex/key-pair-data
-                              convex/create-key-pair)))))))
+                              convex/create-key-pair2)))))))
 
 (deftest read-source-test
   (is (= [] (convex/read-source "()")))
@@ -209,7 +209,7 @@
   
   (testing "Long"
     (is (= {:convex-web.result/id 1,
-            :convex-web.result/type "Long",
+            :convex-web.result/type "Integer",
             :convex-web.result/value "1"}
           (convex/result-data (Result/create (CVMLong/create 1)
                                 (CVMLong/create 1))))))

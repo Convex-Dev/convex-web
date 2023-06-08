@@ -144,7 +144,8 @@
 ;; -- Key Pair
 
 (s/def :convex-web.key-pair/account-key :convex-web/non-empty-string)
-(s/def :convex-web.key-pair/private-key :convex-web/non-empty-string)
+;; FIXME
+(s/def :convex-web.key-pair/private-key (s/nilable string?))
 
 (s/def :convex-web/key-pair (s/keys :req [:convex-web.key-pair/account-key
                                           :convex-web.key-pair/private-key]))

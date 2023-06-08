@@ -83,6 +83,9 @@
     (AKeyPair/create
       (Blob/fromHex "e7fc701f56bb8b602aeb6b96980038c3ad7419b578ee91ccac06ba6a21ec5259")))
 
+  ;; Recreate a KeyPair from a Seed:
+  (AKeyPair/create (Blob/fromHex (-> (convex/generate-key-pair) .getSeed .toHexString)))
+
 
   ;; -- Testing
   (let [handler (web-server/site system)]
