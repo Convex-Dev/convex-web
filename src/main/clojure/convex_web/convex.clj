@@ -718,7 +718,6 @@
                    "convex.play"
                    "convex.registry"
                    "convex.trust"
-                   "convex.trusted-oracle"
                    "convex.trusted-oracle.actor"]]
     (->> libraries
       (map
