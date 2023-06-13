@@ -123,7 +123,7 @@
             {:convex-web.command/keys [result] :as body}
             (encoding/transit-decode-string (get response :body))]
         
-        (is (= {:convex-web.result/type "Long", 
+        (is (= {:convex-web.result/type "Integer",
                 :convex-web.result/value "2"}
               
               (select-keys result [:convex-web.result/type :convex-web.result/value])))

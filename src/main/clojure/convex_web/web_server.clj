@@ -36,7 +36,7 @@
    (java.io InputStream)
 
    (convex.api Convex)
-   (convex.core.crypto ASignature AKeyPair Ed25519KeyPair)
+   (convex.core.crypto ASignature AKeyPair)
    (convex.core.data Ref SignedData AccountKey ACell Hash Address Blob)
    (convex.core.lang Context)
    (convex.core.lang.impl AExceptional)
@@ -1177,7 +1177,7 @@
         ;; It's possible to recreate the key pair from seed.
         key-pair-from-seed (when req-seed
                              (convex/key-pair-data
-                               (Ed25519KeyPair/create
+                               (AKeyPair/create
                                  (Blob/fromHex (str/replace req-seed #"^0x" "")))))
 
         key-pair-account-key (when req-account-key
