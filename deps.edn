@@ -111,7 +111,7 @@
   
   ;; -- Kaocha test runner
   :kaocha
-  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.60.945"}}}
+  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.85.1342"}}}
   
   
   ;; -- Cognitect test runner
