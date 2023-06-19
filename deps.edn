@@ -12,10 +12,10 @@
   com.cognitect/transit-cljs {:mvn/version "0.8.269"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
   
-  world.convex/net.clj
+  world.convex/net
   {:deps/root "module/net"
-   :git/sha   "06c7137"
-   :git/tag   "stable/2023-01-18"
+   :git/sha   "7cd357f"
+   :git/tag   "stable/2023-06-01"
    :git/url   "https://github.com/convex-dev/convex.cljc"}
   
   ;; world.convex/convex-core {:local/root "convex-core-0.7.0-rc3-06ee2229b8fa9abaf28309b0b609c52fcd91ba7c.jar"}
@@ -74,19 +74,20 @@
   borkdude/sci {:mvn/version "0.2.5"}}
  
  :aliases
- {;; -- Server dev
+ {;; Java 16 and Java 17 encapsulate JDK internal APIs, which impacts Datalevin.
+  ;; https://blogs.oracle.com/javamagazine/post/its-time-to-move-your-applications-to-java-17-heres-why-and-heres-how
+  :java-16
+  {:jvm-opts ["--add-opens=java.base/java.nio=ALL-UNNAMED"
+              "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED"]}
+
+  ;; -- Server dev
   :dev
   {:extra-paths ["src/dev/clojure"]
    
    :extra-deps {com.stuartsierra/component.repl {:mvn/version "0.2.0"
                                                  :exclusions [org.clojure/tools.namespace]}
                 
-                org.clojure/tools.namespace {:mvn/version "1.1.0"}}
-
-   ;; Java 16 and Java 17 encapsulate JDK internal APIs, which impacts Datalevin.
-   ;; https://blogs.oracle.com/javamagazine/post/its-time-to-move-your-applications-to-java-17-heres-why-and-heres-how
-   :jvm-opts ["--add-opens=java.base/java.nio=ALL-UNNAMED"
-              "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED"]}
+                org.clojure/tools.namespace {:mvn/version "1.1.0"}}}
   
   
   ;; -- Site dev
@@ -110,13 +111,13 @@
   
   ;; -- Kaocha test runner
   :kaocha
-  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.60.945"}}}
+  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.85.1342"}}}
   
   
   ;; -- Cognitect test runner
   :test-runner
   {:extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
-                                           :sha "dd6da11611eeb87f08780a30ac8ea6012d4c05ce"}}
+                                           :sha "7284cda41fb9edc0f3bc6b6185cfb7138fc8a023"}}
    
    :exec-fn cognitect.test-runner.api/test
    :exec-args {:dirs ["src/test"]}}

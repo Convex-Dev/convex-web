@@ -181,9 +181,11 @@
                                                          :target target
                                                          :amount amount}))]
 
-        (when-not (:convex-web.key-pair/private-key signer-key-pair)
-          (throw (ex-info (str "Wallet doesn't have a private key set up for account " signer-address ".")
-                   (merge {} signer-key-pair))))
+        ;; FIXME
+        ;; Key Pair is created from seed now, so this form no longer makes sense.
+        #_(when-not (:convex-web.key-pair/private-key signer-key-pair)
+            (throw (ex-info (str "Wallet doesn't have a private key set up for account " signer-address ".")
+                     (merge {} signer-key-pair))))
 
         (try
           (let [^Result r (->> (convex/sign (convex/create-key-pair signer-key-pair) atransaction)

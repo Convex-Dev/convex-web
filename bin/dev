@@ -1,3 +1,3 @@
 #!/bin/sh -x
 
-clj -A:repl:dev:site-dev:test:logback-dev
+clj -A:java-16:repl:dev:site-dev:test:logback-dev

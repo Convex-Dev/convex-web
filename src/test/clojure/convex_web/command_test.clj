@@ -80,7 +80,7 @@
                               :convex-web.query/language :convex-lisp}})]
       
       (is (= :convex-web.command.status/success status))
-      (is (= {:convex-web.result/type "Long", 
+      (is (= {:convex-web.result/type "Integer",
               :convex-web.result/value "1"}
             (select-keys result [:convex-web.result/type
                                  :convex-web.result/value]))))
@@ -173,14 +173,16 @@
       (is (= :convex-web.command.status/error status))
       
       (is (= {:code :CAST,
-              :message "Can't convert value of type Long to type Sequence",
-              :trace ["In function: map"]}
+              :message "Can't convert value of type Integer to type Sequence",
+              :trace ["In core function: map"
+                      "In expression: (map inc 1)"]}
             error))
       
       (is (= {:convex-web.result/error-code :CAST,
-              :convex-web.result/trace ["In function: map"],
+              :convex-web.result/trace ["In core function: map"
+                                        "In expression: (map inc 1)"],
               :convex-web.result/type "String",
-              :convex-web.result/value "\"Can\\'t convert value of type Long to type Sequence\""}
+              :convex-web.result/value "\"Can't convert value of type Integer to type Sequence\""}
             (select-keys result [:convex-web.result/type
                                  :convex-web.result/value
                                  :convex-web.result/error-code

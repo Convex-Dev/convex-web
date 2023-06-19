@@ -340,7 +340,7 @@
 
    [:div.mt-16.self-center
     [DownloadLink
-     {:text "Download Inter Font"
+     {:text "Download Inter"
       :href "https://fonts.google.com/specimen/Inter"}]]
 
 
@@ -358,7 +358,7 @@
       {:class "text-[#6D7380]"}
       "The secondary font is Source Sans Variable. As a substitute, Source Sans Pro may be used if Source Sans Variable is not available. This font should be used for all body text including subheadings, footnotes, quotes, etc. Source Sans Var is a premium font, it can't be distributed freely. You can find out more about obtaining a license to this font through the type foundry. Source sans Pro is a free open-source font for commercial use available on Google Fonts."]]
 
-    [:div.flex.flex-col.flex-1.gap-2.bg-convex-dark-blue.rounded-lg
+    [:div.flex.flex-col.flex-1.gap-2.bg-convex-dark-blue.rounded-lg.ml-16
      {:class "min-w-[550px] text-[#B8D8EB]"}
 
      [:div.flex.flex-col.flex-1.pl-12.py-12
@@ -378,6 +378,11 @@
 
       [:span.font-source-sans-pro.text-4xl.italic
        "Source Sans Pro Italic"]]]]
+
+   [:div.mt-16.self-center
+    [DownloadLink
+     {:text "Download Source Sans Pro"
+      :href "https://fonts.google.com/specimen/Source+Sans+Pro"}]]
 
 ])
 

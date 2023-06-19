@@ -266,7 +266,7 @@
       (is (= 200 (get response :status)))
       (is (= {:errorCode "CAST"
               :source "CVM"
-              :value "ErrorValue[:CAST] : Can't convert value of type Long to type Sequence\nIn function: map"}
+              :value "ErrorValue[:CAST] : Can't convert value of type Integer to type Sequence\nIn core function: map\nIn expression: (map inc 1)"}
             response-body)))))
 
 (deftest prepare-test
@@ -477,7 +477,7 @@
         ;; Submit response with error code.
         (is (= {:errorCode "CAST"
                 :source "CVM"
-                :value "Can't convert value of type Long to type Sequence"}
+                :value "Can't convert value of type Integer to type Sequence"}
               submit-response-body))))))
 
 (deftest faucet-test
