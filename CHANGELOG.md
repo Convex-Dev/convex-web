@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## 2023-06-19
+- Update Convex
+
 ## 2023-05-23
 - [Fixes #248](https://github.com/Convex-Dev/convex-web/issues/248)
 
