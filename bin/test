@@ -1,3 +1,3 @@
 #!/bin/sh -x
 
-clojure -A:java-16 -X:test:test-runner:logback-noop $@
+clojure -X:java-16:test:test-runner:logback-noop $@
