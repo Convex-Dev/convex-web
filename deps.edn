@@ -6,7 +6,7 @@
  :deps
  {org.clojure/clojure {:mvn/version "1.11.1"}
   org.clojure/data.json {:mvn/version "2.4.0"}
-  com.cognitect/transit-clj {:mvn/version "1.0.324"}
+  com.cognitect/transit-clj {:mvn/version "1.0.333"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
   world.convex/net
   {:deps/root "module/net"
