@@ -19,7 +19,7 @@
   
   prestancedesign/get-port {:mvn/version "0.1.1"}
   
-  com.stuartsierra/component {:mvn/version "1.0.0"}
+  com.stuartsierra/component {:mvn/version "1.1.0"}
   
   
   ;; -- Logging
@@ -77,7 +77,7 @@
    
    :extra-deps
    {com.stuartsierra/component.repl
-    {:mvn/version "0.2.0"
+    {:mvn/version "1.0.0"
      :exclusions [org.clojure/tools.namespace]}
 
     org.clojure/tools.namespace {:mvn/version "1.4.4"}}}
