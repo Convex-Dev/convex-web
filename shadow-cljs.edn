@@ -1,7 +1,7 @@
 ;; Shadow CLJS User’s Guide
 ;; https://shadow-cljs.github.io/docs/UsersGuide.html
 
-{:deps {:aliases [:site-dev :logback-site]}
+{:deps {:aliases [:site :site-dev :logback-site]}
 
  :nrepl false
 
