@@ -4,6 +4,7 @@ node_modules/
 .shadow-cljs/
 src/main/resources/public/js/
 src/main/resources/public/css/styles.css
+src/test/resources/public/js/
 .nrepl-port
 *.iml
 .DS_Store

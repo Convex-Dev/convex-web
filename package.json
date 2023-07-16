@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "server": "npx shadow-cljs server",
+    "dev": "npx shadow-cljs watch :main :test",
     "app:watch": "npx shadow-cljs watch :main",
     "app:release": "npx shadow-cljs release main",
     "styles:watch": "npx tailwindcss --output src/main/resources/public/css/styles.css --watch",
