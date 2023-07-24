@@ -1,5 +1,12 @@
 # Major changes and resolved issues
 
+## 2023-07-24
+Maintenance release:
+- [Split server and site dependencies #253](https://github.com/Convex-Dev/convex-web/issues/253)
+- [Update Clojure dependencies #254](https://github.com/Convex-Dev/convex-web/issues/254)
+- [Setup ClojureScript tests with shadow-cljs #180](https://github.com/Convex-Dev/convex-web/issues/180)
+- [Drop uLog - its logs aren't used #261](https://github.com/Convex-Dev/convex-web/issues/261)
+
 ## 2023-06-19
 - Update Convex
 
