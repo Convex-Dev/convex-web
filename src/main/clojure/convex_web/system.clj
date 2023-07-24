@@ -30,33 +30,33 @@
 
 ;; -- Convex
 
-(defn ^Server -convex-server [convex]
+(defn -convex-server ^Server [convex]
   (:server convex))
 
-(defn ^Convex -convex-client [convex]
+(defn -convex-client ^Convex [convex]
   (:client convex))
 
-(defn ^Server convex-server [system]
+(defn convex-server ^Server [system]
   (-convex-server (convex system)))
 
-(defn ^Server convex-peer [system]
+(defn convex-peer ^Server [system]
   (.getPeer (-convex-server (convex system))))
 
-(defn ^Convex convex-client [system]
+(defn convex-client ^Convex [system]
   (-convex-client (convex system)))
 
-(defn ^Address convex-world-address
+(defn convex-world-address
   "Genesis Address."
-  [system]
+  ^Address [_system]
   (convex/genesis-address))
 
-(defn ^State convex-world-context [system]
+(defn convex-world-context ^State [system]
   (convex/server-context (convex-server system)))
 
-(defn ^AKeyPair convex-world-key-pair [system]
+(defn convex-world-key-pair ^AKeyPair [system]
   (convex/server-key-pair (convex-server system)))
 
-(defn ^String convex-world-account-checksum-hex [system]
+(defn convex-world-account-checksum-hex ^String [system]
   (convex/server-account-checksum-hex (convex-server system)))
 
 

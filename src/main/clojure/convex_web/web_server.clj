@@ -597,23 +597,12 @@
 
             faucet (merge {:address (convex/datafy address) :amount amount} result-response)]
 
-        (u/log :logging.event/faucet
-          :severity :info
-          :target address
-          :amount amount)
-
         (successful-response faucet)))))
 
 (defn POST-v1-query [system {:keys [body]}]
   (let [{:keys [address source lang]} (json-decode body)
 
         lang (parse-lang lang)
-
-        _ (u/log :logging.event/query
-                 :severity :info
-                 :address address
-                 :source source
-                 :lang lang)
 
         _ (when-not (contains? #{:convex-lisp} lang)
             (throw (ex-info "Invalid lang."
@@ -668,12 +657,7 @@
 (defn -GET-commands [system _]
   (try
     (-successful-response (command/find-all (system/db system)))
-    (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
+    (catch Exception _
       -server-error-response)))
 
 (defn -GET-command-by-id [system id]
@@ -681,12 +665,7 @@
     (if-let [command (command/find-by-id (system/db system) id)]
       (-successful-response (command/prune command))
       (-not-found-response {:error {:message (str "Command " id " not found.")}}))
-    (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
+    (catch Exception _
       -server-error-response)))
 
 (defn -POST-command [system {:keys [body] :as request}]
@@ -829,11 +808,7 @@
 
       (cond
         (not (s/valid? :convex-web/faucet faucet))
-        (let [message "Invalid request."]
-          (u/log :logging.event/user-error
-            :severity :error
-            :message (str message " Expound: " (expound/expound-str :convex-web/faucet faucet)))
-          (-bad-request-response (error message)))
+        (-bad-request-response (error "Invalid request."))
 
         (< last-faucet-millis-ago config/faucet-wait-millis)
         (let [message (str "You need to wait "
@@ -841,16 +816,10 @@
                           (/ 1000)
                           (/ 60))
                         " minutes to submit a new request.")]
-          (u/log :logging.event/user-error
-            :severity :error
-            :message message)
           (-bad-request-response (error message)))
 
         (> amount config/max-faucet-amount)
         (let [message (str "You can't request more than " (pprint/cl-format nil "~:d" config/max-faucet-amount) ".")]
-          (u/log :logging.event/user-error
-            :severity :error
-            :message message)
           (-bad-request-response (error message)))
 
         :else
@@ -870,19 +839,9 @@
           (d/transact! (system/db-conn context) [{::account/address target
                                                   ::account/faucets faucet}])
 
-          (u/log :logging.event/faucet
-            :severity :info
-            :target target
-            :amount amount)
-
           (-successful-response faucet))))
 
-    (catch Exception ex
-      (u/log :logging.event/system-error
-        :severity :error
-        :message handler-exception-message
-        :exception ex)
-
+    (catch Exception _
       -server-error-response)))
 
 (defn -GET-session [system req]
@@ -890,12 +849,7 @@
     (let [id (ring-session req)
           session (merge {::session/id id} (session/find-session (system/db system) id))]
       (-successful-response session))
-    (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
+    (catch Exception _
       -server-error-response)))
 
 (defn -GET-STATE [system _]
@@ -908,12 +862,7 @@
                             :memory-size (.getMemorySize state)
                             :schedule-count (.count (.getSchedule state))
                             :globals (convex/datafy (.getGlobals state))}))
-    (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
+    (catch Exception _
       -server-error-response)))
 
 (defn -GET-accounts [context {:keys [query-params]}]
@@ -955,12 +904,7 @@
 
                                :convex-web/accounts
                                (convex/ranged-accounts peer {:start start :end end})})))
-    (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
+    (catch Exception _
       -server-error-response)))
 
 (defn -GET-account [system address]
@@ -971,11 +915,7 @@
 
           account-status (try
                            (convex/account-status peer address)
-                           (catch Throwable ex
-                             (u/log :logging.event/system-error
-                               :message (str "Failed to read Account Status " address ". Exception:" ex)
-                               :exception ex)
-
+                           (catch Throwable _
                              nil))
 
           account-status-data (convex/account-status-data account-status)
@@ -1110,11 +1050,6 @@
         (-successful-response (convex/block-data peer index (.getBlock order index)))
         (-not-found-response {:error {:message (str "Block " index " doesn't exist.")}})))
     (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
       (log/error ex (str "Failed to get Block " index))
 
       -server-error-response)))
@@ -1124,12 +1059,7 @@
     (let [^Context server-context (system/convex-world-context context)]
       (-successful-response
         (convex/library-reference server-context)))
-    (catch Exception ex
-      (u/log :logging.event/system-error
-        :severity :error
-        :message handler-exception-message
-        :exception ex)
-
+    (catch Exception _
       -server-error-response)))
 
 (defn -GET-markdown-page [_ request]
@@ -1142,12 +1072,7 @@
 
         :else
         (-successful-response markdown-page)))
-    (catch Exception ex
-      (u/log :logging.event/system-error
-             :severity :error
-             :message handler-exception-message
-             :exception ex)
-
+    (catch Exception _
       -server-error-response)))
 
 (defmulti invoke*
@@ -1341,7 +1266,6 @@
 (defn public-api-handler [system]
   (-> (public-api system)
       (wrap-error)
-      (wrap-logging)
       (wrap-defaults api-defaults)
       (wrap-cors :access-control-allow-origin #".*"
                  :access-control-allow-methods [:get :put :post :delete])))
@@ -1368,7 +1292,6 @@
                               :expires session-expires}}}
                       (system/site-config system))]
     (-> (site system)
-      (wrap-logging)
       (wrap-defaults (merge-with merge site-defaults site-config)))))
 
 (defn run-server

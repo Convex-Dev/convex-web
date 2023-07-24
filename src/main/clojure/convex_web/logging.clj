@@ -1,14 +1,17 @@
 (ns convex-web.logging
-  (:require [clojure.java.io :as io]
-            [clojure.stacktrace :as stacktrace]
+  (:require
+   [clojure.java.io :as io]
+   [clojure.stacktrace :as stacktrace]
 
-            [com.brunobonacci.mulog.buffer :as rb]
-            [com.brunobonacci.mulog :as u])
-  (:import (com.google.auth.oauth2 GoogleCredentials)
-           (com.google.cloud.logging LoggingOptions Severity LogEntry Payload$StringPayload Logging$WriteOption Logging HttpRequest$Builder HttpRequest$RequestMethod HttpRequest Payload$JsonPayload)
-           (com.google.cloud MonitoredResource)
-           (com.brunobonacci.mulog.publisher PPublisher)
-           (java.io Closeable)))
+   [com.brunobonacci.mulog.buffer :as rb]
+   [com.brunobonacci.mulog :as u])
+
+  (:import
+   (com.google.auth.oauth2 GoogleCredentials)
+   (com.google.cloud.logging LoggingOptions Severity LogEntry Logging$WriteOption Logging HttpRequest$RequestMethod HttpRequest Payload$JsonPayload)
+   (com.google.cloud MonitoredResource)
+   (com.brunobonacci.mulog.publisher PPublisher)
+   (java.io Closeable)))
 
 (def logging-severity
   {:default Severity/DEFAULT
@@ -51,7 +54,7 @@
 
     (.build log-entry-builder)))
 
-(defn ^Logging cloud-logging []
+(defn cloud-logging ^Logging []
   (with-open [stream (io/input-stream (io/resource "logging_service_account.json"))]
     (let [credentials (doto (GoogleCredentials/fromStream stream)
                         (.createScoped (into-array ["https://www.googleapis.com/auth/cloud-platform"])))
