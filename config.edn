@@ -89,21 +89,4 @@
  {:port
   #profile {:dev 8080
             :prod 8080
-            :test 0}}
- 
- 
- ;; -- LOGGING U/LOG
- ;; ==========================
- :logging
- {:publisher-config
-  #profile {:dev
-            {:type :custom
-             :fqn-function "convex-web.logging/dev-logging-publisher"}
-            
-            :test
-            {:type :custom
-             :fqn-function "convex-web.logging/dev-logging-publisher"}
-            
-            :prod
-            {:type :simple-file
-             :filename "log/events.edn"}}}}
+            :test 0}}}

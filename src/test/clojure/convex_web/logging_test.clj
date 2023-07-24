@@ -1,8 +1,9 @@
 (ns convex-web.logging-test
-  (:require [convex-web.logging :as logging]
+  (:require
+   [convex-web.logging :as logging]
 
-            [clojure.test :refer :all]
-            [clojure.stacktrace :as stacktrace]))
+   [clojure.test :refer [deftest testing is]]
+   [clojure.stacktrace :as stacktrace]))
 
 (deftest labels-test
   (testing "Default"

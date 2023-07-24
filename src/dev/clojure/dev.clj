@@ -9,7 +9,8 @@
    [convex-web.client :as client]
    [convex-web.store :as store]
    [convex-web.config :as config]
-   
+
+   [clojure.test :as test]
    [clojure.java.io :as io]
    [clojure.stacktrace :as stacktrace]
    [clojure.string :as str]
@@ -42,7 +43,7 @@
   #_(Context/createFake 
     (Init/createState (AInitConfig/create)) Init/RESERVED_ADDRESS))
 
-(defn ^Peer peer []
+(defn peer ^Peer []
   (system/convex-peer system))
 
 (defmacro execute [form]
@@ -62,6 +63,10 @@
   (reset)
   
   (stop) 
+
+
+  (test/run-all-tests #"convex-web.*")
+
   
   ;; -- Bootstrap Peer
   

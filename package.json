@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "server": "npx shadow-cljs server",
+    "dev": "npx shadow-cljs watch :main :test",
     "app:watch": "npx shadow-cljs watch :main",
     "app:release": "npx shadow-cljs release main",
     "styles:watch": "npx tailwindcss --output src/main/resources/public/css/styles.css --watch",
@@ -28,7 +29,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
-    "shadow-cljs": "^2.23.3",
+    "shadow-cljs": "^2.24.1",
     "tailwindcss": "^3.2.4"
   },
   "overrides": {

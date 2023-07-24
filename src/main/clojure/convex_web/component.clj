@@ -257,10 +257,6 @@
     :config
     (map->Config {:profile profile})
 
-    :mulog
-    (component/using
-      (map->MuLog {}) [:config])
-
     :datalevin
     (component/using
       (map->Datalevin {}) [:config])
