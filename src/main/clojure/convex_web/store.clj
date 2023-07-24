@@ -1,14 +1,18 @@
 (ns convex-web.store
-  (:require [clojure.java.io :as io]
-            [clojure.tools.logging :as log])
-  (:import (etch EtchStore)
-           (convex.core.store Stores)))
+  (:require
+   [clojure.java.io :as io]
+   [clojure.tools.logging :as log])
+
+  (:import
+   (etch EtchStore)
+   (convex.core.store Stores)))
 
 (def store nil)
 
-(defn ^EtchStore create! [{:keys [etch-store-temp?
-                                  etch-store-temp-prefix
-                                  etch-store] :as config}]
+(defn create!
+  ^EtchStore [{:keys [etch-store-temp?
+                      etch-store-temp-prefix
+                      etch-store] :as config}]
   (try
     (or store 
       (let [^EtchStore store (if etch-store-temp?

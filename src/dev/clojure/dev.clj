@@ -43,7 +43,7 @@
   #_(Context/createFake 
     (Init/createState (AInitConfig/create)) Init/RESERVED_ADDRESS))
 
-(defn ^Peer peer []
+(defn peer ^Peer []
   (system/convex-peer system))
 
 (defmacro execute [form]
