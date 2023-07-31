@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## 2023-07-31
+- Setup Google Cloud Logging
+
 ## 2023-07-24
 Maintenance release:
 - [Split server and site dependencies #253](https://github.com/Convex-Dev/convex-web/issues/253)
