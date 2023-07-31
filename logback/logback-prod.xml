@@ -1,5 +1,13 @@
 <configuration>
 
+    <!-- Google Cloud Logging  -->
+    <!-- https://cloud.google.com/logging/docs/setup/java -->
+    <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+          <level>DEBUG</level>
+        </filter>
+    </appender>
+
     <!-- The output file configuration for log/all.log -->
     <appender name="ALL_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
 
@@ -97,6 +105,7 @@
 
     <root level="ALL">
         <appender-ref ref="ALL_LOG_FILE"/>
+        <appender-ref ref="CLOUD"/>
     </root>
 
     <logger name="convex" level="ALL">
