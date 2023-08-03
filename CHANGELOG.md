@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## 2023-08-03
+- Remove NEWS: Convex selected as a DLT for Next Gen Internet
+
 ## 2023-07-31
 - Setup Google Cloud Logging
 
