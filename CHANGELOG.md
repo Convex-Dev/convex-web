@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## NEXT
+- [Stop logging into files #265](https://github.com/Convex-Dev/convex-web/issues/265)
+
 ## 2023-08-03
 - Remove NEWS: Convex selected as a DLT for Next Gen Internet
 
