@@ -13,7 +13,7 @@
    ["highlight.js/lib/languages/javascript"]
    ["react-highlight.js" :as react-hljs]
    ["react-tippy" :as tippy]
-   ["react-markdown" :as ReactMarkdown]
+   ["react-markdown$default" :as ReactMarkdown]
    ["@headlessui/react" :as headlessui]
    ["@heroicons/react/solid" :as icon :refer [XIcon]]
    ["jdenticon" :as jdenticon]))
@@ -944,9 +944,9 @@
 
 (defn Markdown [markdown]
   [:> ReactMarkdown
-   {:source markdown
-    :renderers
-    {:code (r/reactify-component MarkdownCodeBlock)}}])
+   {:components
+    {:code (r/reactify-component MarkdownCodeBlock)}}
+   markdown])
 
 (def disclosure-button-shared
   ["w-full px-4 py-2 rounded-lg"
