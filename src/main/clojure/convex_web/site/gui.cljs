@@ -942,7 +942,13 @@
     {:ref highlight-element}
     value]])
 
-(defn Markdown [markdown]
+(defn Markdown
+  "Reagent component to render Markdown using a custom code component.
+
+   `markdown` is a string.
+
+  https://github.com/remarkjs/react-markdown"
+  [markdown]
   [:> ReactMarkdown
    {:components
     {:code (r/reactify-component MarkdownCodeBlock)}}
