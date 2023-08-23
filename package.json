@@ -11,26 +11,26 @@
     "styles:release": "npx tailwindcss --output src/main/resources/public/css/styles.css"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.10",
+    "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^1.0.5",
-    "@radix-ui/react-tooltip": "^1.0.3",
+    "@radix-ui/react-tooltip": "^1.0.6",
     "@types/react": "^17.0.33",
-    "codemirror": "^5.63.3",
+    "codemirror": "^5.65.14",
     "highlight.js": "^11.2.0",
-    "jdenticon": "^3.1.1",
-    "qrcode.react": "^1.0.1",
+    "jdenticon": "^3.2.0",
+    "qrcode.react": "^3.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-highlight.js": "^1.0.7",
-    "react-markdown": "^5.0.3",
-    "react-resizable": "^3.0.4",
+    "react-markdown": "^8.0.7",
+    "react-resizable": "^3.0.5",
     "react-tippy": "^1.4.0",
     "timeago.js": "^4.0.2"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
-    "shadow-cljs": "^2.24.1",
-    "tailwindcss": "^3.2.4"
+    "shadow-cljs": "^2.25.3",
+    "tailwindcss": "^3.3.3"
   },
   "overrides": {
     "react-highlight.js": {
