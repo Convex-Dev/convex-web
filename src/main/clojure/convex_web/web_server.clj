@@ -939,9 +939,10 @@
                                                              :status account-status-data}
                                   (when registry
                                     {:convex-web.account/registry registry}))))
-        (let [message (str "The Account for this Address does not exist.")]
-          (log/error message address)
-          (-not-found-response {:error {:message message}}))))
+        (-not-found-response
+          {:error
+           {:message
+            (format "Account not found; Address: %s" address)}})))
     (catch Throwable ex
       (log/error ex (str "Get account error. Address: " address))
 
