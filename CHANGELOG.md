@@ -1,11 +1,12 @@
 # Major changes and resolved issues
 
-## NEXT
+## 2023-08-24
 - [Stop logging into files #265](https://github.com/Convex-Dev/convex-web/issues/265)
 - [Transfer coins between accounts #213](https://github.com/Convex-Dev/convex-web/issues/213)
 - [Update JavaScript dependencies #255](https://github.com/Convex-Dev/convex-web/issues/255)
 - [HTTP API - Don't log error if account not found #270](https://github.com/Convex-Dev/convex-web/issues/270)
 - [Sandbox - Convex Lisp error shouldn't be logged as an error #269](https://github.com/Convex-Dev/convex-web/issues/269)
+- NEWS: Convex selected as a DLT for Next Gen Internet
 
 ## 2023-08-03
 - Remove NEWS: Convex selected as a DLT for Next Gen Internet
