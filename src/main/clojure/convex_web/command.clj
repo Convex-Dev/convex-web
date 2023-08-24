@@ -237,7 +237,7 @@
         result-trace (some-> result .getTrace)
         
         _ (when result-error-code
-            (log/error "Command returned an error:" result-error-code result-value))
+            (log/debug "Command returned an error:" result-error-code result-value))
         
         ;; Command status.
         command' (if result
