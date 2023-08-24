@@ -4,6 +4,7 @@
 - [Stop logging into files #265](https://github.com/Convex-Dev/convex-web/issues/265)
 - [Transfer coins between accounts #213](https://github.com/Convex-Dev/convex-web/issues/213)
 - [Update JavaScript dependencies #255](https://github.com/Convex-Dev/convex-web/issues/255)
+- [HTTP API - Don't log error if account not found #270](https://github.com/Convex-Dev/convex-web/issues/270)
 
 ## 2023-08-03
 - Remove NEWS: Convex selected as a DLT for Next Gen Internet
