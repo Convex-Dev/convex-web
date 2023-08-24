@@ -10,7 +10,7 @@
    [convex-web.site.stack :as stack]
    [convex-web.site.format :as format]
 
-   ["qrcode.react" :as QRCode]))
+   ["qrcode.react" :as qrcode]))
 
 (defn account-type-text-color [account-status]
   (cond
@@ -361,7 +361,7 @@
          [:span.font-mono.text-base.mr-2 address-string]]]
 
        ;; -- QR Code
-       [:> QRCode
+       [:> qrcode/QRCodeSVG
         {:value (str address)
          :size 88}]]
 

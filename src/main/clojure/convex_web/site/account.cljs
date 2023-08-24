@@ -313,17 +313,20 @@
            [:input
             {:class [gui/input-style "w-full"]
              :type "text"
-             :value to
+             :value (str "#" to)
              :on-change
-             #(let [value (gui/event-target-value %)
-                    to (js/parseInt value)]
+             (fn [e]
+               (let [value (gui/event-target-value e)
+                     value (str/replace value #"^#" "")
 
-                (set-state
-                  (fn [state]
-                    (let [state' (dissoc state :convex-web/command)]
-                      (if (js/isNaN to)
-                        (update state' :convex-web/transfer dissoc :convex-web.transfer/to)
-                        (assoc-in state' [:convex-web/transfer :convex-web.transfer/to] to))))))}])])]
+                     to (js/parseInt value)]
+
+                 (set-state
+                   (fn [state]
+                     (let [state' (dissoc state :convex-web/command)]
+                       (if (js/isNaN to)
+                         (update state' :convex-web/transfer dissoc :convex-web.transfer/to)
+                         (assoc-in state' [:convex-web/transfer :convex-web.transfer/to] to)))))))}])])]
 
      ;; Amount
      ;; ===========

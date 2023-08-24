@@ -55,7 +55,7 @@
                {:name "Dr Leonard Anderson"
                 :title "Governance"
                 :image "/images/team/leanord_anderson.png"
-                :linkedin "https://www.linkedin.com/in/kemuri/"}
+                :linkedin "https://www.linkedin.com/in/dr-leonard-anderson/"}
 
                {:name "Michael Borrelli"
                 :title "Operations"
