@@ -335,9 +335,11 @@
                                                                                                     :convex-web.account-status/library? :isLibrary
                                                                                                     :convex-web.account-status/memory-size :memorySize
                                                                                                     :convex-web.account-status/account-key :accountKey})))
-      (let [message (str "The Account for this Address does not exist.")]
-        (throw (ex-info message
-                        (anomaly-not-found (error-body error-code-NOBODY message error-source-server))))))))
+      (let [message "The Account for this Address does not exist."]
+        (log/debug message)
+
+        (not-found-response
+          (error-body error-code-NOBODY message error-source-server))))))
 
 (defn POST-v1-transaction-prepare [system {:keys [body]}]
   (let [{:keys [address source lang sequence] :as prepare} (json-decode body)
@@ -939,10 +941,10 @@
                                                              :status account-status-data}
                                   (when registry
                                     {:convex-web.account/registry registry}))))
-        (-not-found-response
-          {:error
-           {:message
-            (format "Account not found; Address: %s" address)}})))
+        (let [message (format "Account not found; Address: %s" address)]
+          (log/debug message)
+
+          (-not-found-response {:error {:message message}}))))
     (catch Throwable ex
       (log/error ex (str "Get account error. Address: " address))
 

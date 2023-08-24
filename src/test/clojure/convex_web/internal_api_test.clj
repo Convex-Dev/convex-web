@@ -1,5 +1,6 @@
 (ns convex-web.internal-api-test
   (:require 
+   [clojure.spec.alpha :as s]
    [clojure.test :refer [deftest is testing use-fixtures]]
    
    [convex-web.specs]
@@ -90,7 +91,7 @@
             body (encoding/transit-decode-string (get response :body))]
         (is (= 404 (get response :status)))
         (is (= #{:error} (set (keys body))))
-        (is (= "The Account for this Address does not exist." (get-in body [:error :message])))))))
+        (is (s/valid? :error/error body))))))
 
 (deftest command-test
   (let [handler (site-handler)

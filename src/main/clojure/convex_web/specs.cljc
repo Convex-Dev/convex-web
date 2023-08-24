@@ -3,6 +3,10 @@
    [clojure.spec.alpha :as s]
    [clojure.string :as str]))
 
+(s/def :error/message string?)
+
+(s/def :error/error
+  (s/keys :opt-un [:error/message]))
 
 (s/def :convex-web/non-empty-string (s/and string? (complement str/blank?)))
 
