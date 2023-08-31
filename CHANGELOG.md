@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## NEXT
+- [Internal API - Get Accounts - Don't log/error #271](https://github.com/Convex-Dev/convex-web/issues/271)
+
 ## 2023-08-24
 - [Stop logging into files #265](https://github.com/Convex-Dev/convex-web/issues/265)
 - [Transfer coins between accounts #213](https://github.com/Convex-Dev/convex-web/issues/213)
