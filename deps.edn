@@ -21,7 +21,6 @@
   
   com.stuartsierra/component {:mvn/version "1.1.0"}
   
-  
   ;; -- Logging
   
   org.clojure/tools.logging {:mvn/version "1.2.4"}
