@@ -932,15 +932,18 @@
 
         "")]]))
 
-(defn MarkdownCodeBlock [{:keys [value]}]
-  [:pre.relative.max-w-xs.md:max-w-full.bg-blue-100.bg-opacity-25
-   [:div.absolute.right-0.top-0.m-2
-    [ClipboardCopy value {:color "text-black"
-                          :hover "hover:opacity-50"}]]
-   
-   [:code.hljs.language-clojure.text-sm.rounded
-    {:ref highlight-element}
-    value]])
+(defn MarkdownCodeBlock [{:keys [children]}]
+  (let [[code] children]
+    [:pre.relative.max-w-xs.md:max-w-full.bg-blue-100.bg-opacity-25
+     [:div.absolute.right-0.top-0.m-2
+      [ClipboardCopy
+       code
+       {:color "text-black"
+        :hover "hover:opacity-50"}]]
+
+     [:code.hljs.language-clojure.text-sm.rounded
+      {:ref highlight-element}
+      code]]))
 
 (defn Markdown
   "Reagent component to render Markdown using a custom code component.

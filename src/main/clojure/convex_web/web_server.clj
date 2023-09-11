@@ -885,17 +885,17 @@
       (cond
         (not start-valid?)
         (let [message (str "Invalid start: " start ".")]
-          (log/error (str "Failed to get Accounts; " message))
+          (log/warn (str "Failed to get Accounts; " message))
           (-bad-request-response (error message)))
 
         (not end-valid?)
         (let [message (str "Invalid end: " end ".")]
-          (log/error (str "Failed to get Accounts; " message))
+          (log/warn (str "Failed to get Accounts; " message))
           (-bad-request-response (error message)))
 
         (not range-valid?)
         (let [message (str "Invalid range: [" start ":" end "].")]
-          (log/error (str "Failed to get Accounts; " message))
+          (log/warn (str "Failed to get Accounts; " message))
           (-bad-request-response (error message)))
 
         :else
