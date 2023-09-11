@@ -1,6 +1,6 @@
 # Major changes and resolved issues
 
-## NEXT
+## 2023-09-11
 - [Internal API - Get Accounts - Don't log/error #271](https://github.com/Convex-Dev/convex-web/issues/271)
 - [Code block missing content in Markdown #272](https://github.com/Convex-Dev/convex-web/issues/272)
 
