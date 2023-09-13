@@ -784,7 +784,7 @@
      ;; =========================
      [:div.w-full.flex.justify-center
       {:class "bg-convex-dark-blue"}
-      [marketing/Sitemap]]
+      [marketing/Sitemap2]]
      
      ;; Copyright
      ;; =========================

@@ -433,7 +433,7 @@
 
      [:div.w-screen.flex.justify-center
       {:class "bg-convex-dark-blue"}
-      [marketing/Sitemap]]
+      [marketing/Sitemap2]]
 
 
      ;; -- Copyright
