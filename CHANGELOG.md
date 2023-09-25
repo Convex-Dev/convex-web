@@ -4,6 +4,7 @@
 - [App - Fix Spinner #273](https://github.com/Convex-Dev/convex-web/issues/273)
 - Change sitemap layout
 - [Update to Convex 0.7.12 when released #252](https://github.com/Convex-Dev/convex-web/issues/252)
+- Update ShadowCLJS
 
 ## 2023-09-11
 - [Internal API - Get Accounts - Don't log/error #271](https://github.com/Convex-Dev/convex-web/issues/271)
