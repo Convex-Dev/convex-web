@@ -148,20 +148,20 @@
                                  :convex-web.result/value])))))
 
   (testing "Metadata"
-    (let [command {::c/id (java.util.UUID/randomUUID)
-                   ::c/timestamp 1
-                   ::c/mode :convex-web.command.mode/query
-                   ::c/signer {:convex-web.account/address 9}
-                   ::c/query
-                   {:convex-web.query/source "inc"
-                    :convex-web.query/language :convex-lisp}}
+    (let [execute (fn [source]
+                    (c/execute system {::c/id (java.util.UUID/randomUUID)
+                                       ::c/timestamp 1
+                                       ::c/mode :convex-web.command.mode/query
+                                       ::c/signer {:convex-web.account/address 9}
+                                       ::c/query
+                                       {:convex-web.query/source source
+                                        :convex-web.query/language :convex-lisp}}))
 
-          source (fn [source]
-                   (assoc-in command [::c/query :convex-web.query/source] source))
+          result-metadata (fn [command]
+                            (get-in command [:convex-web.command/result :convex-web.result/metadata]))]
 
-          {::c/keys [result]} (c/execute system (source "inc"))]
-
-      (is (= true (contains? (:convex-web.result/metadata result) :doc)))))
+      (is (= true (contains? (result-metadata (execute "inc")) :doc)))
+      (is (= true (contains? (result-metadata (execute "loop")) :doc)))))
   
   (testing "Syntax error"
     (let [command (c/execute system {::c/id (java.util.UUID/randomUUID)
