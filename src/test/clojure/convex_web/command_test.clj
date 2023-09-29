@@ -146,6 +146,22 @@
               :convex-web.result/value "{:description \"Increments the given Long value by 1.\",:signature [{:return Long,:params [num]}],:errors {:CAST \"If the actor argument is not castable to Long.\"},:examples [{:code \"(inc 10)\"}]}"}
             (select-keys result [:convex-web.result/type
                                  :convex-web.result/value])))))
+
+  (testing "Metadata"
+    (let [command {::c/id (java.util.UUID/randomUUID)
+                   ::c/timestamp 1
+                   ::c/mode :convex-web.command.mode/query
+                   ::c/signer {:convex-web.account/address 9}
+                   ::c/query
+                   {:convex-web.query/source "inc"
+                    :convex-web.query/language :convex-lisp}}
+
+          source (fn [source]
+                   (assoc-in command [::c/query :convex-web.query/source] source))
+
+          {::c/keys [result]} (c/execute system (source "inc"))]
+
+      (is (= true (contains? (:convex-web.result/metadata result) :doc)))))
   
   (testing "Syntax error"
     (let [command (c/execute system {::c/id (java.util.UUID/randomUUID)
