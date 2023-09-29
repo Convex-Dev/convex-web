@@ -240,7 +240,8 @@
             (log/debug "Command returned an error:" result-error-code result-value))
         
         ;; Command status.
-        command' (if result
+        command' (cond
+                   result
                    (merge 
                      #:convex-web.command 
                      {:result (convex/result-data result)
@@ -256,6 +257,7 @@
                          :message (convex/datafy result-value)
                          :trace (convex/datafy result-trace)}}))
                    
+                   :else
                    ;; If there isn't a Result, `error` won't have a code,
                    ;; and the Exception's message will be used as its message.
                    #:convex-web.command 
