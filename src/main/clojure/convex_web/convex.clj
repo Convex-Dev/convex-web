@@ -380,6 +380,10 @@
 
       (when (instance? CoreFn result-value)
         {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})
+
+      (when (instance? convex.core.data.Symbol result-value)
+        (when-let [metadata (metadata result-value)]
+          {:convex-web.result/metadata (datafy metadata)}))
       
       (when result-error-code
         {:convex-web.result/error-code (datafy result-error-code)

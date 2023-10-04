@@ -404,6 +404,13 @@
              :show-examples? false}]]
           [gui/Highlight result-value]))
 
+      result-metadata
+      [:div.flex.flex-1.bg-white.rounded.shadow
+       [gui/SymbolMeta
+        {:symbol result-value
+         :metadata result-metadata
+         :show-examples? false}]]
+
       :else
       [:code.text-xs
        result-value])))

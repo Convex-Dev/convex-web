@@ -124,6 +124,10 @@
   
   (convex/execute-string ctx "(nth 0xFF 0)")
 
+  (type (convex/execute-string ctx "if"))
+  (type (convex/execute-string ctx "loop"))
+  (type (convex/execute-string ctx "when-not"))
+
   (= true (instance? convex.core.lang.AFn (convex/execute-string ctx "inc")))
   (= true (instance? convex.core.lang.impl.CoreFn (convex/execute-string ctx "inc")))
 

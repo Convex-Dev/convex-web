@@ -6,6 +6,7 @@
 - [Update to Convex 0.7.12 when released #252](https://github.com/Convex-Dev/convex-web/issues/252)
 - Update ShadowCLJS
 - Update Radix UI Tooltip
+- [Show docs for macros in Sandbox #221](https://github.com/Convex-Dev/convex-web/issues/221)
 
 ## 2023-09-11
 - [Internal API - Get Accounts - Don't log/error #271](https://github.com/Convex-Dev/convex-web/issues/271)

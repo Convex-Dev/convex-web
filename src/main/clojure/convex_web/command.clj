@@ -58,7 +58,7 @@
 
         (str result-value)))))
 
-;; TODO Merge with `value-kind`.
+;; TODO: Delete
 (defn result-metadata [result-value & [{:keys [source lang]}]]
   (let [source-form (try
                       (when (and source (= :convex-lisp lang))
