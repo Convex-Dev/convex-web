@@ -276,29 +276,29 @@
 
        ;; -- News
 
-       [:div.flex.flex-col.justify-center
-        {:class "min-h-[156px] bg-[#93D500]"}
+       #_[:div.flex.flex-col.justify-center
+          {:class "min-h-[156px] bg-[#93D500]"}
 
-        [:div.w-full.max-w-5xl.mx-auto
+          [:div.w-full.max-w-5xl.mx-auto
 
-         [:div.flex.flex-col.md:flex-row.md:items-center.md:justify-between
+           [:div.flex.flex-col.md:flex-row.md:items-center.md:justify-between
 
-          [:div.flex.flex-col.p-8.md:p-0
-           [:span.uppercase.text-convex-dark-blue.font-extrabold.text-3xl
-            "News:"]
+            [:div.flex.flex-col.p-8.md:p-0
+             [:span.uppercase.text-convex-dark-blue.font-extrabold.text-3xl
+              "News:"]
 
-           [:span.text-convex-dark-blue.font-bold.text-2xl.mt-4
-            "Convex selected as a DLT for Next Gen Internet"]
+             [:span.text-convex-dark-blue.font-bold.text-2xl.mt-4
+              "Convex selected as a DLT for Next Gen Internet"]
 
-           [:span.text-convex-dark-blue.text-xl
-            "EU Next Generation Internet... "
-            [:a.underline
-             {:target "_black"
-              :href "https://ontochain.ngi.eu/content/convex-global-dlt-convex-hosting-infrastructure-and-decentralised-ledger-next-generation"}
-             "READ MORE"]]]
+             [:span.text-convex-dark-blue.text-xl
+              "EU Next Generation Internet... "
+              [:a.underline
+               {:target "_black"
+                :href "https://ontochain.ngi.eu/content/convex-global-dlt-convex-hosting-infrastructure-and-decentralised-ledger-next-generation"}
+               "READ MORE"]]]
 
-          [:img.hidden.md:block
-           {:src "/images/ngi_onto_chain.png"}]]]]
+            [:img.hidden.md:block
+             {:src "/images/ngi_onto_chain.png"}]]]]
 
 
        [:div.flex.flex-col.bg-convex-dark-blue

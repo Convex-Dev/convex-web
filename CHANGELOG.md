@@ -7,6 +7,7 @@
 - Update ShadowCLJS
 - Update Radix UI Tooltip
 - [Show docs for macros in Sandbox #221](https://github.com/Convex-Dev/convex-web/issues/221)
+- Remove NEWS banner
 
 ## 2023-09-11
 - [Internal API - Get Accounts - Don't log/error #271](https://github.com/Convex-Dev/convex-web/issues/271)
