@@ -154,7 +154,7 @@
   ;; clj -M:outdated
   :outdated
   {:replace-deps
-   {com.github.liquidz/antq {:mvn/version "2.5.1095"}
+   {com.github.liquidz/antq {:mvn/version "2.7.1133"}
     org.slf4j/slf4j-nop {:mvn/version "1.7.32"}}
 
    :main-opts ["-m" "antq.core"]}}}
