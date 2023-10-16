@@ -173,6 +173,9 @@
     (Reader/read "(]")
     (catch Throwable e
       (println (.getMessage (stacktrace/root-cause e)))))
+
+  (type (Reader/read "when-not"))
+  ;; => convex.core.data.Symbol
   
   
   ;; --

@@ -244,7 +244,7 @@
                    result
                    (merge 
                      #:convex-web.command 
-                     {:result (convex/result-data result)
+                     {:result (convex/result-data (source command) result)
                       :status
                       (if result-error-code
                         :convex-web.command.status/error
