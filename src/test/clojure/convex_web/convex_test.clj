@@ -282,7 +282,7 @@
           :convex-web.result/type "Function",
           :convex-web.result/value "map"}
         
-        (convex/result-data (Result/create (CVMLong/create 1) Core/MAP))))))
+        (convex/result-data "map" (Result/create (CVMLong/create 1) Core/MAP))))))
 
 (deftest account-key-from-hex-test
   (testing "Invalid Address"
