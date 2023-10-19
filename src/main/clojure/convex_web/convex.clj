@@ -8,8 +8,8 @@
    [cognitect.anomalies :as anomalies]
 
    [convex-web.site.sandbox.hiccup :as hiccup]
-   [convex.write :as $.write]
-   )
+   [convex.write :as $.write])
+
   (:import 
    (convex.peer Server)
    (convex.core.init Init)
@@ -350,40 +350,54 @@
     :else
     x))
 
-(defn result-data [^Result result]
-  (let [^ACell result-id (.getID result)
-        ^ACell result-error-code (.getErrorCode result)
-        ^ACell result-value (.getValue result)
-        ^AVector result-trace (.getTrace result)]
-    (merge #:convex-web.result {:id (datafy result-id)
-                                :type (or (some-> result-value .getType .toString) "Nil")
-                                :value (or (some-> result-value $.write/string str) "nil")}
-      
-      ;; Interactive Syntax.
-      (when (instance? Syntax result-value)
-        (let [syntax-meta (datafy (.getMeta ^Syntax result-value))
+(defn result-data
+  ([^Result result]
+   (result-data nil result))
+  ([^String source ^Result result]
+   (let [^ACell result-id (.getID result)
+         ^ACell result-error-code (.getErrorCode result)
+         ^ACell result-value (.getValue result)
+         ^AVector result-trace (.getTrace result)
 
-              {:keys [interact?]} syntax-meta]
+         source (try
+                  (Reader/read source)
+                  (catch Exception _
+                    nil))
 
-          (merge {:convex-web.result/metadata syntax-meta}
-            (when interact?
-              (let [element (datafy result-value)
-                    element (coerce-element element)
-                    element (if-not (s/valid? ::hiccup/element element)
-                              [:v-box
-                               [:text "Sorry. This syntax is not valid in the Interactive Sandbox:"]
-                               [:code (str element)]]
+         result-metadata (when (instance? convex.core.data.Symbol source)
+                           (metadata source))]
 
-                              ;; Else; valid element.
-                              element)]
-                {:convex-web.result/interactive (s/conform ::hiccup/element element)})))))
+     (merge #:convex-web.result {:id (datafy result-id)
+                                 :type (or (some-> result-value .getType .toString) "Nil")
+                                 :value (or (some-> result-value $.write/string str) "nil")}
 
-      (when (instance? CoreFn result-value)
-        {:convex-web.result/metadata (datafy (metadata (.getSymbol ^CoreFn result-value)))})
-      
-      (when result-error-code
-        {:convex-web.result/error-code (datafy result-error-code)
-         :convex-web.result/trace (datafy result-trace)}))))
+       ;; -- Interactive Syntax
+       (when (instance? Syntax result-value)
+         (let [syntax-meta (datafy (.getMeta ^Syntax result-value))
+
+               {:keys [interact?]} syntax-meta]
+
+           (merge {:convex-web.result/metadata syntax-meta}
+             (when interact?
+               (let [element (datafy result-value)
+                     element (coerce-element element)
+                     element (if-not (s/valid? ::hiccup/element element)
+                               [:v-box
+                                [:text "Sorry. This syntax is not valid in the Interactive Sandbox:"]
+                                [:code (str element)]]
+
+                               ;; Else; valid element.
+                               element)]
+                 {:convex-web.result/interactive (s/conform ::hiccup/element element)})))))
+
+       ;; -- Metadata
+       (when result-metadata
+         {:convex-web.result/metadata (datafy result-metadata)})
+
+       ;; -- Error
+       (when result-error-code
+         {:convex-web.result/error-code (datafy result-error-code)
+          :convex-web.result/trace (datafy result-trace)})))))
 
 (defn transaction-result-data [^ATransaction atransaction ^Result result]
   (let [tx (cond

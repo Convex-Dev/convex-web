@@ -88,7 +88,8 @@
         :href (rfe/href :route-name/convex-foundation)}]}})
 
 (defn sitemap []
-  [{:text "TECHNOLOGY"
+  [{:name :technology
+    :text "TECHNOLOGY"
     :items
     [(let [section "Convergent Proof of Stake"]
        {:text section
@@ -105,7 +106,8 @@
      {:text "Convex Architecture Documents (CAD)"
       :href (rfe/href :route-name/technology {} {:section "CADs"})}]}
    
-   {:text "USE CASES"
+   {:name :use-cases
+    :text "USE CASES"
     :items
     [(let [section "NFTs"]
        {:text section
@@ -127,7 +129,8 @@
        {:text section
         :href (rfe/href :route-name/use-cases {} {:section section})})]}
    
-   {:text "ECOSYSTEM"
+   {:name :ecosystem
+    :text "ECOSYSTEM"
     :items
     [(let [section "Builders"]
        {:text section
@@ -141,7 +144,8 @@
        {:text section
         :href (rfe/href :route-name/ecosystem {} {:section section})})]}
 
-   {:text "INFORMATION"
+   {:name :information
+    :text "INFORMATION"
     :items
     [{:text "Privacy Policy"
       :href (rfe/href :route-name/privacy-policy)}
@@ -152,7 +156,8 @@
      {:text "Trademark Policy"
       :href (rfe/href :route-name/trademark-policy)}]}
    
-   {:text "ABOUT"
+   {:name :about
+    :text "ABOUT"
     :items
     [(let [section "Foundation"]
        {:text section
@@ -271,29 +276,29 @@
 
        ;; -- News
 
-       [:div.flex.flex-col.justify-center
-        {:class "min-h-[156px] bg-[#93D500]"}
+       #_[:div.flex.flex-col.justify-center
+          {:class "min-h-[156px] bg-[#93D500]"}
 
-        [:div.w-full.max-w-5xl.mx-auto
+          [:div.w-full.max-w-5xl.mx-auto
 
-         [:div.flex.flex-col.md:flex-row.md:items-center.md:justify-between
+           [:div.flex.flex-col.md:flex-row.md:items-center.md:justify-between
 
-          [:div.flex.flex-col.p-8.md:p-0
-           [:span.uppercase.text-convex-dark-blue.font-extrabold.text-3xl
-            "News:"]
+            [:div.flex.flex-col.p-8.md:p-0
+             [:span.uppercase.text-convex-dark-blue.font-extrabold.text-3xl
+              "News:"]
 
-           [:span.text-convex-dark-blue.font-bold.text-2xl.mt-4
-            "Convex selected as a DLT for Next Gen Internet"]
+             [:span.text-convex-dark-blue.font-bold.text-2xl.mt-4
+              "Convex selected as a DLT for Next Gen Internet"]
 
-           [:span.text-convex-dark-blue.text-xl
-            "EU Next Generation Internet... "
-            [:a.underline
-             {:target "_black"
-              :href "https://ontochain.ngi.eu/content/convex-global-dlt-convex-hosting-infrastructure-and-decentralised-ledger-next-generation"}
-             "READ MORE"]]]
+             [:span.text-convex-dark-blue.text-xl
+              "EU Next Generation Internet... "
+              [:a.underline
+               {:target "_black"
+                :href "https://ontochain.ngi.eu/content/convex-global-dlt-convex-hosting-infrastructure-and-decentralised-ledger-next-generation"}
+               "READ MORE"]]]
 
-          [:img.hidden.md:block
-           {:src "/images/ngi_onto_chain.png"}]]]]
+            [:img.hidden.md:block
+             {:src "/images/ngi_onto_chain.png"}]]]]
 
 
        [:div.flex.flex-col.bg-convex-dark-blue
@@ -391,6 +396,34 @@
       [BottomNavMenu item])
     
     [BottomNavMenuSocial]]])
+
+(defn Sitemap2 []
+  (let [sitemap-indexed (into {} (map (juxt :name identity)) (sitemap))]
+    [:div.lg:flex.lg:space-x-32.p-12
+     {:class "bg-convex-dark-blue"}
+
+     ;; -- Technology & Use Cases
+     [:div.flex.flex-col
+      [BottomNavMenu
+       (sitemap-indexed :technology)]
+
+      [BottomNavMenu
+       (sitemap-indexed :use-cases)]]
+
+     ;; -- Ecosystem & Information
+     [:div.flex.flex-col
+      [BottomNavMenu
+       (sitemap-indexed :ecosystem)]
+
+      [BottomNavMenu
+       (sitemap-indexed :information)]]
+
+     ;; -- About
+     [BottomNavMenu
+      (sitemap-indexed :about)]
+
+     ;; -- Social Media
+     [BottomNavMenuSocial]]))
 
 (defn Copyrigth []
   [:div.flex.flex-col.items-center.space-y-4.p-2

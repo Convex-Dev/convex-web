@@ -58,7 +58,7 @@
 
         (str result-value)))))
 
-;; TODO Merge with `value-kind`.
+;; TODO: Delete
 (defn result-metadata [result-value & [{:keys [source lang]}]]
   (let [source-form (try
                       (when (and source (= :convex-lisp lang))
@@ -240,10 +240,11 @@
             (log/debug "Command returned an error:" result-error-code result-value))
         
         ;; Command status.
-        command' (if result
+        command' (cond
+                   result
                    (merge 
                      #:convex-web.command 
-                     {:result (convex/result-data result)
+                     {:result (convex/result-data (source command) result)
                       :status
                       (if result-error-code
                         :convex-web.command.status/error
@@ -256,6 +257,7 @@
                          :message (convex/datafy result-value)
                          :trace (convex/datafy result-trace)}}))
                    
+                   :else
                    ;; If there isn't a Result, `error` won't have a code,
                    ;; and the Exception's message will be used as its message.
                    #:convex-web.command 

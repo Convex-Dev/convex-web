@@ -37,20 +37,11 @@
     (component/system :dev)))
 
 
-;; FIXME
-(def context 
-  nil
-  #_(Context/createFake 
-    (Init/createState (AInitConfig/create)) Init/RESERVED_ADDRESS))
+(defn convex-world-context []
+  (system/convex-world-context system))
 
 (defn peer ^Peer []
   (system/convex-peer system))
-
-(defmacro execute [form]
-  `(convex/execute context ~form))
-
-(defn execute-string [source]
-  (convex/execute-string context source))
 
 (defn db []
   @(system/db-conn system))
@@ -63,6 +54,9 @@
   (reset)
   
   (stop) 
+
+
+  (def ctx (convex-world-context))
 
 
   (test/run-all-tests #"convex-web.*")
@@ -128,18 +122,33 @@
   
   ;; -- Execute  
   
-  (execute-string "(nth 0xFF 0)")
-  
-  (instance? convex.core.lang.AFn (execute-string "inc"))
-  (instance? convex.core.lang.impl.Fn (execute-string "inc"))
-  (instance? convex.core.lang.impl.Fn (execute-string "(fn [x] x)")) 
+  (convex/execute-string ctx "(nth 0xFF 0)")
+
+  (type (convex/execute-string ctx "if"))
+  ;; => convex.core.lang.impl.Fn
+
+  (type (convex/execute-string ctx "loop"))
+  ;; => convex.core.data.Symbol
+
+  (type (convex/execute-string ctx "inc"))
+  ;; => convex.core.lang.Core$75
+
+  (= true (instance? convex.core.lang.AFn (convex/execute-string ctx "inc")))
+  (= true (instance? convex.core.lang.impl.CoreFn (convex/execute-string ctx "inc")))
+
+  (= true (instance? convex.core.lang.AFn (convex/execute-string ctx "defn")))
+  (= false (instance? convex.core.lang.impl.CoreFn (convex/execute-string ctx "defn")))
+
+  (= true (instance? convex.core.lang.AFn (convex/execute-string ctx "(fn [x] x)")))
+  (= false (instance? convex.core.lang.impl.CoreFn (convex/execute-string ctx "(fn [x] x)")))
+
   
   ;; Library metadata.
   (convex/library-metadata (system/convex-world-context system) "convex.trust")
   
   
   ;; `convex.core.lang.impl.Fn/getParams` returns AVector<Syntax>
-  (def params (.getParams (execute-string "(fn [x y] (+ x y))")))
+  (def params (.getParams (convex/execute-string ctx "(fn [x y] (+ x y))")))
   
   ;; Parameters data.
   (map
@@ -157,13 +166,16 @@
   ;; Lookup metadata.
   (convex/datafy 
     (or 
-      (.lookupMeta context Init/HERO (Symbol/create "map"))
-      (.lookupMeta context (Symbol/create "map"))))
+      (.lookupMeta ctx Init/HERO (Symbol/create "map"))
+      (.lookupMeta ctx (Symbol/create "map"))))
   
   (try
     (Reader/read "(]")
     (catch Throwable e
       (println (.getMessage (stacktrace/root-cause e)))))
+
+  (type (Reader/read "when-not"))
+  ;; => convex.core.data.Symbol
   
   
   ;; --

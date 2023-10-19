@@ -8,6 +8,8 @@
   org.clojure/data.json {:mvn/version "2.4.0"}
   com.cognitect/transit-clj {:mvn/version "1.0.333"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
+
+  world.convex/convex-peer {:mvn/version "0.7.12"}
   world.convex/net
   {:deps/root "module/net"
    :git/sha   "7cd357f"
@@ -95,7 +97,7 @@
   ;; -- Site dev
   :site-dev
   {:extra-deps
-   {thheller/shadow-cljs {:mvn/version "2.25.3"}
+   {thheller/shadow-cljs {:mvn/version "2.25.7"}
     org.slf4j/slf4j-nop {:mvn/version "2.0.6"}
     binaryage/devtools {:mvn/version "1.0.7"}
     re-frisk/re-frisk {:mvn/version "1.6.0"}}}
@@ -114,7 +116,7 @@
   
   ;; -- Kaocha test runner
   :kaocha
-  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.85.1342"}}}
+  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.87.1366"}}}
   
   
   ;; -- Cognitect test runner
@@ -152,7 +154,7 @@
   ;; clj -M:outdated
   :outdated
   {:replace-deps
-   {com.github.liquidz/antq {:mvn/version "2.5.1095"}
+   {com.github.liquidz/antq {:mvn/version "2.7.1133"}
     org.slf4j/slf4j-nop {:mvn/version "1.7.32"}}
 
    :main-opts ["-m" "antq.core"]}}}

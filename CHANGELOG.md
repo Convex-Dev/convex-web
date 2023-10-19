@@ -1,5 +1,14 @@
 # Major changes and resolved issues
 
+## 2023-10-18
+- [App - Fix Spinner #273](https://github.com/Convex-Dev/convex-web/issues/273)
+- Change sitemap layout
+- [Update to Convex 0.7.12 when released #252](https://github.com/Convex-Dev/convex-web/issues/252)
+- Update ShadowCLJS
+- Update Radix UI Tooltip
+- [Show docs for macros in Sandbox #221](https://github.com/Convex-Dev/convex-web/issues/221)
+- Remove NEWS banner
+
 ## 2023-09-11
 - [Internal API - Get Accounts - Don't log/error #271](https://github.com/Convex-Dev/convex-web/issues/271)
 - [Code block missing content in Markdown #272](https://github.com/Convex-Dev/convex-web/issues/272)

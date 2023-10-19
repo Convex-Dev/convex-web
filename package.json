@@ -13,7 +13,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^1.0.5",
-    "@radix-ui/react-tooltip": "^1.0.6",
+    "@radix-ui/react-tooltip": "^1.0.7",
     "@types/react": "^17.0.33",
     "codemirror": "^5.65.14",
     "highlight.js": "^11.2.0",
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
-    "shadow-cljs": "^2.25.3",
+    "shadow-cljs": "^2.25.7",
     "tailwindcss": "^3.3.3"
   },
   "overrides": {

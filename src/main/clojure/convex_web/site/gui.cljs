@@ -846,10 +846,10 @@
 ;; ----------------------------------------------------
 
 (defn SpinnerSmall []
-  [:div.spinner.ease-linear.rounded-full.border-2.border-t-2.border-gray-200.h-4.w-4])
+  [:div.spinner.ease-linear.rounded-full.border-2.border-t-2.h-4.w-4])
 
 (defn Spinner []
-  [:div.spinner.ease-linear.rounded-full.border-4.border-t-4.border-gray-200.h-10.w-10])
+  [:div.spinner.ease-linear.rounded-full.border-4.border-t-4.h-10.w-10])
 
 (defn ClipboardCopy [text & [{:keys [color background-color hover margin]}]]
   (let [id (str (random-uuid))]
