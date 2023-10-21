@@ -4,6 +4,13 @@
 - Updated ring-defaults
 - Updated google-cloud-logging-logback
 - Updated test.check
+- Updated logging libraries:
+	- logback-classic
+	- slf4j-api
+	- jcl-over-slf4j
+	- log4j-over-slf4j
+	- jul-to-slf4j
+	- log4j-to-slf4j
 
 ## 2023-10-18
 - [App - Fix Spinner #273](https://github.com/Convex-Dev/convex-web/issues/273)
