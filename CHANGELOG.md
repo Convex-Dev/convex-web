@@ -4,6 +4,7 @@
 - Updated ring-defaults
 - Updated google-cloud-logging-logback
 - Updated test.check
+- Updated shadow-cljs
 - Updated logging libraries:
 	- logback-classic
 	- slf4j-api
