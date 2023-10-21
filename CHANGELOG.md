@@ -3,6 +3,7 @@
 ## NEXT
 - Updated ring-defaults
 - Updated google-cloud-logging-logback
+- Updated test.check
 
 ## 2023-10-18
 - [App - Fix Spinner #273](https://github.com/Convex-Dev/convex-web/issues/273)
