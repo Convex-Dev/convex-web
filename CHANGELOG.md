@@ -1,5 +1,8 @@
 # Major changes and resolved issues
 
+## NEXT
+- Updated ring-defaults
+
 ## 2023-10-18
 - [App - Fix Spinner #273](https://github.com/Convex-Dev/convex-web/issues/273)
 - Change sitemap layout
