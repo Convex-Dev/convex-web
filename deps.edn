@@ -42,7 +42,7 @@
   org.slf4j/jul-to-slf4j {:mvn/version "2.0.9"}
   
   ;; Redirect Log4j 2.x to Logback via the SLF4J API
-  org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.21.0"}
+  org.apache.logging.log4j/log4j-to-slf4j {:mvn/version "2.21.1"}
   
   ;; Google Cloud Logging appender
   com.google.cloud/google-cloud-logging-logback {:mvn/version "0.130.25-alpha"}
