@@ -18,6 +18,7 @@
    [convex-web.site.format :as format]
    [convex-web.site.markdown :as markdown]
    [convex-web.site.team :as team]
+   [convex-web.site.videos :as videos]
    [convex-web.site.brand :as brand]
    [convex-web.site.form :as form]
 
@@ -73,6 +74,7 @@
    not-found-page
    
    team/team-page
+   videos/videos-page
 
    brand/brand-page
    form/sign-up-page
