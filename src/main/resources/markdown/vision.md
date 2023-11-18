@@ -1,6 +1,6 @@
 Convex: *Pioneering a Digital Renaissance for Open Economic Systems!* 
 
-At it's core, Convex is a new kind of foundational technology for building an internet of value designed to enable **open economic systems**.
+At it's core, Convex is a new kind of foundational technology for building an internet of value designed to enable open economic systems.
 
 Throughout history, people have thrived by exchanging goods and services to fulfill their needs. From bustling marketplaces to intricate legal systems, the evolution of value exchange has shaped our communities.
 
@@ -12,7 +12,7 @@ In today's dynamic world, our assets are digitized, but the tools for exchanging
 - Economic systems face significant risks, demanding meticulous due diligence and complicating value exchange.
 - Barriers and costs exclude many from the financial system.
 
-But here's the rallying call: We can do better.
+But here's the rallying call: *We can do better!*
 
 Convex doesn't just innovate; it transforms. It lays the groundwork for a seamless digital value exchange—a complete overhaul designed for today's needs. It's not just a tweak; it's a revolution, ushering in efficient, transparent, and fair open economic systems in the digital age.
 
@@ -23,7 +23,7 @@ Convex: *Pioneering a Digital Renaissance for Open Economic Systems!*
 
 ## Our Values
 
-Our mission is to enable Open Economic Systems by building the foundation for an internet of value in the same spirit as the original Internet. We believe in the following:
+Our mission is to enable open economic systems by building the foundation for an internet of value in the same spirit as the original Internet. We believe in the following:
 
 - Decentralised operations
 - Simple, stable, foundational protocols (consistent with the "end-to-end principle")
@@ -67,13 +67,13 @@ We're experiencing a wave of exciting projects harnessing Convex to prototype gr
 
 **Secure Ownership**: We have secure cryptographic techniques in place to make sure your assets are yours and yours alone. Your control is locked in, accessible only through transactions signed with a specific private key.
 
-**Trusted Execution**: Think of it as a smart, execution platform - the Convex Virtual Machine (CVM). It ensures deterministic, programmable, and verifiable smart contracts are reliable and can be trusted. It enforces the terms and conditions of value exchange precisely.
+**Trusted Execution**: Think of it as a smart, execution platform—the Convex Virtual Machine (CVM). It ensures deterministic, programmable, and verifiable smart contracts are reliable and can be trusted. It enforces the terms and conditions of value exchange precisely.
 
-**Autonomous Actors**: Meet the digital game-changers - self-operating, "unstoppable" economic agents. They play important roles in the digital economy, perhaps even operating like virtual companies in their own right.
+**Autonomous Actors**: Meet the digital game-changers—self-operating, "unstoppable" economic agents. They play important roles in the digital economy, perhaps even operating like virtual companies in their own right.
 
-**Core Libraries**: We're handing developers a toolkit - open-source libraries designed for building robust decentralised apps with Convex. It includes crucial *open economic system* features like fungible tokens, trust monitors, and reusable smart contract capabilities you’d expect for an internet of value exchange.
+**Core Libraries**: We're handing developers a toolkit—open-source libraries designed for building robust decentralised apps with Convex. It includes crucial *open economic system* features like fungible tokens, trust monitors, and reusable smart contract capabilities you’d expect for an internet of value exchange.
 
-**Public Utility Network** We're handing developers a toolkit - open-source libraries designed for building robust decentralized apps with Convex. It includes crucial “open economic system” features like fungible tokens, trust monitors, and reusable smart contract capabilities you’d expect for an internet of value exchange.
+**Public Utility Network** A decentralised, public, permissionless network that anyone can access to transact without censorship or centralised gatekeepers.
  
  **Already in Action:** This isn't just talk. We have all this working in our test networks. Next we launch a proto-net, and after some public fine-tuning, we're gearing up for the big launch of the main network. Exciting times ahead!
 
@@ -122,7 +122,7 @@ In the world of Convex, design isn't just lines of code; it's a positive force, 
 
 ## Join the Convex Adventure: Building Tomorrow, Together!
 
-**Community and Ecosystem:** The Convex Foundation is like the conductor in a grand symphony, orchestrating an open, decentralized ecosystem where visionaries, builders, and dreamers unite to shape an internet of value that supports **open economic systems**.
+**Community and Ecosystem:** The Convex Foundation is like the conductor in a grand symphony, orchestrating an open, decentralized ecosystem where visionaries, builders, and dreamers unite to shape an internet of value that supports open economic systems.
 
 **Our Commitment:** We're not just building tech; we're building a movement. Here's what we promise:
 
