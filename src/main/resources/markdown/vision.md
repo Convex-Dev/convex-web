@@ -63,7 +63,7 @@ We're experiencing a wave of exciting projects harnessing Convex to prototype gr
 
 **Consensus Algorithm**: Picture an algorithm that verifiably ensures everyone agrees on who owns what and uniquely and reliably executes contracts. This solves the notorious "double-spend" problem, making ownership and transactions rock-solid across the network.
 
-**Convex Coin**: Meet the Convex Coin - your ticket to using the network. Just like Bitcoin, it has a *limited supply* guaranteed by the protocol. It's the native currency; it's what you use to power up the network, covering transaction fees and peer staking.
+**Convex Coin**: Meet the Convex Coin—your ticket to using the network. Just like Bitcoin, it has a *limited supply* guaranteed by the protocol. It's the native currency; it's what you use to power up the network, covering transaction fees and peer staking.
 
 **Secure Ownership**: We have secure cryptographic techniques in place to make sure your assets are yours and yours alone. Your control is locked in, accessible only through transactions signed with a specific private key.
 
