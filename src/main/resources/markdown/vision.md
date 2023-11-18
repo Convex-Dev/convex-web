@@ -1,111 +1,141 @@
-Convex is a foundational technology for the **Internet of Value**.
+Convex: *Pioneering a Digital Renaissance for Open Economic Systems!* 
 
-Throughout history, people have improved their lives and societies by exchanging goods and services to fulfil their needs. Marketplaces, trade routes, legal systems, currencies and financial institutions developed to support value exchange over the centuries.
+At it's core, Convex is a new kind of foundational technology for building an internet of value designed to enable **open economic systems**.
 
-In the modern world, assets are increasingly managed with digital systems, and in many cases are entirely digital themselves. However, the facilities to enable value to be exchanged for such assets are still mostly dependent on traditional and inefficient mechanisms:
+Throughout history, people have thrived by exchanging goods and services to fulfill their needs. From bustling marketplaces to intricate legal systems, the evolution of value exchange has shaped our communities.
 
-- Contracts are costly to write and agree, and enforced via expensive lawyers and slow legal systems
-- Payments are managed via huge centralised financial institutions with high transaction costs
-- Fiat currencies are issued at the whim of national governments, and carry notable risks as a long-term store of value (inflation, safe custody)
-- Significant risks plague the economic system (operational risk, systematic financial risk etc.) which make value exchange dangerous and create a requirement for burdensome due diligence
-- Many individuals are excluded from participation in the financial system, because of significant barriers and costs
+In today's dynamic world, our assets are digitized, but the tools for exchanging value often lag behind:
 
-We can do better.
+- Traditional contracts are pricey and cumbersome, involving legions of lawyers and extensive legal hoops.
+- Payments navigate through centralized financial giants, bearing hefty processing costs.
+- Fiat currencies are issued at the discretion of national governments, posing risks like inflation and custody concerns.
+- Economic systems face significant risks, demanding meticulous due diligence and complicating value exchange.
+- Barriers and costs exclude many from the financial system.
 
-Convex provides the foundation for efficient digital value exchange. It is a ground-up re-imagining and robust implementation of what is needed to support efficient, transparent and fair economic systems in the digital age.
+But here's the rallying call: We can do better.
+
+Convex doesn't just innovate; it transforms. It lays the groundwork for a seamless digital value exchange—a complete overhaul designed for today's needs. It's not just a tweak; it's a revolution, ushering in efficient, transparent, and fair open economic systems in the digital age.
+
+Join us in shaping a future where value exchange is effortless, transparent, and accessible to all. 
+
+Convex: *Pioneering a Digital Renaissance for Open Economic Systems!*
+
 
 ## Our Values
 
-Our mission is to build the Internet of Value with the same spirit as the original Internet. We believe in:
+Our mission is to enable Open Economic Systems by building the foundation for an internet of value in the same spirit as the original Internet. We believe in the following:
 
 - Decentralised operations
 - Simple, stable, foundational protocols (consistent with the "end-to-end principle")
 - Network neutrality (freedom of expression, no censorship)
-- Good governance of the network as a public good
+- Good network governance as a public good
 - Open standards
 - Open-source development
 - Universal access - open to everyone
 - Protection of individual rights (especially ownership and privacy)
-- Unlimited opportunity to innovate and build
+- Unlimited opportunity to innovate and build.
 
-## What Convex makes possible
 
-There are no limitations on the types of digital value exchange applications or assets that you can build with Convex. Convex smart contracts are fully programmable and "Turing Complete", so you can build anything.
+## Unleashing Infinite Possibilities With Convex
 
-Convex is also open and free to use. So you don't need anyone's permission to build. Just do it.
+Experience boundless creativity with Convex! Break free from limitations as Convex empowers you to create a diverse array of digital assets and applications, supporting open economic systems. Discover the full programmability and 'Turing Completeness' of Convex smart contracts, enabling you to build anything your imagination desires.
+
+Utilizing Convex is also free and open to use. Thus, building with it does not require permission from anyone. Simply do it.
 
 Here are some examples:
 
 - **Digital currencies** (stablecoins, central bank currencies, commercial banknotes)
-- **Real asset ownership** (real estate, high-value goods)
+- **Ownership of tangible assets** (real estate, high-value goods)
 - **Digital equities** (shares in real-world companies)
 - **Derivatives** (futures and options on other digital assets)
-- **Digital Autonomous Organisations** (virtual companies)
-- **Games** involving digital asset ownership
-- **Digital licensing**
-- **Immutable provenance** for data or asset authenticity, e.g. for regulatory usage
+- **Decentralised Autonomous Organisations** (virtual companies)
+- **Games** utilising digital asset ownership
+- **Digital distribution licenses**
+- **Immutable provenance** provenance for the authenticity of data or assets, such as for regulatory purposes
 - **Public databases**
 - **Self-sovereign identity**
 
-We're already seeing some exciting projects prototyping new ideas with Convex, and look forward to seeing a lot more great innovation.
+We're experiencing a wave of exciting projects harnessing Convex to prototype groundbreaking concepts. With great anticipation, we look forward to witnessing a multitude of outstanding innovations yet to unfold.
 
-## What we are delivering
+## What We're Bringing to Life
 
-To realise our vision, the Convex Foundation and core team are building:
+**Global Database**: Imagine a consistent, replicated database that flawlessly keeps track of all circulating assets and public data crucial to facilitate atomic transactions. It's not just scalable; it's designed to handle internet-scale usage, like processing VISA-level transaction volumes.
 
-* **Global Database**: A consistent, replicated database capable of tracking all assets in circulation, and public information required to facilitate atomic transactions. This must be scalable enough to handle internet-scale usage (e.g. VISA-like transaction volumes)
-* **Consensus Algorithm**: An algorithm is required to ensure verifiable consensus across the network, so that ownership of assets / execution of contracts can be uniquely and reliably determined (avoiding the infamous "double-spend" problem)
-* **Convex Coin**: The Convex Coin is required to pay transaction costs to use the network. It serves as the native currency to pay for network utilities (transaction fees, Peer staking etc.). Like Bitcoin, it has a *limited supply* guaranteed by the protocol.
-* **Secure Ownership**: Secure cryptographic techniques are needed to ensure that on-chain assets are under the control of the owner, and nobody else. Control over assets can be exercised only via transactions signed with a specific private key.
-* **Trusted Execution**: Deterministic, programmable, verifiable smart contracts are required so that participants can rely upon them to precisely enforce terms and conditions of value exchange. The platform that enables trusted execution is the Convex Virtual Machine (CVM)
-* **Autonomous Actors**: Self-operating, "unstoppable" economic agents executing on the network can fulfil important roles in the digital economy, perhaps operating as virtual companies in their own right.
-* **Core Libraries**: A set of open-source libraries designed to help developers quickly and efficiently build powerful decentralised applications with Convex. This includes important "Internet of Value" functionality such as fungible tokens, trust monitors and re-usable smart contract capabilities.
-* **Public Utility Network** A decentralised, public, permissionless network that anyone can access to transact without censorship or centralised gatekeepers.
+**Consensus Algorithm**: Picture an algorithm that verifiably ensures everyone agrees on who owns what and uniquely and reliably executes contracts. This solves the notorious "double-spend" problem, making ownership and transactions rock-solid across the network.
 
-We already have all the above working in our test networks. After a period of public development and refinement, this will transition rapidly towards the launch of the main network.
+**Convex Coin**: Meet the Convex Coin - your ticket to using the network. Just like Bitcoin, it has a *limited supply* guaranteed by the protocol. It's the native currency; it's what you use to power up the network, covering transaction fees and peer staking.
 
-## Good Governance
+**Secure Ownership**: We have secure cryptographic techniques in place to make sure your assets are yours and yours alone. Your control is locked in, accessible only through transactions signed with a specific private key.
 
-It is not sufficient to simply deliver technology. The Internet of Value needs good governance.
+**Trusted Execution**: Think of it as a smart, execution platform - the Convex Virtual Machine (CVM). It ensures deterministic, programmable, and verifiable smart contracts are reliable and can be trusted. It enforces the terms and conditions of value exchange precisely.
 
-We require mechanisms that ensure the network is **governed effectively and efficiently** now and in the future, in the joint interests of all builders, users and coin holders. Convex is a shared public utility that everyone can use.
+**Autonomous Actors**: Meet the digital game-changers - self-operating, "unstoppable" economic agents. They play important roles in the digital economy, perhaps even operating like virtual companies in their own right.
 
-To achieve this, we are establishing the **Convex Foundation**, an organisation that will be responsible for building, delivering and managing the Convex public network.
+**Core Libraries**: We're handing developers a toolkit - open-source libraries designed for building robust decentralised apps with Convex. It includes crucial *open economic system* features like fungible tokens, trust monitors, and reusable smart contract capabilities you’d expect for an internet of value exchange.
 
-We do **not allow forks** in the Convex main network. This is for the following reasons:
+**Public Utility Network** We're handing developers a toolkit - open-source libraries designed for building robust decentralized apps with Convex. It includes crucial “open economic system” features like fungible tokens, trust monitors, and reusable smart contract capabilities you’d expect for an internet of value exchange.
+ 
+ **Already in Action:** This isn't just talk. We have all this working in our test networks. Next we launch a proto-net, and after some public fine-tuning, we're gearing up for the big launch of the main network. Exciting times ahead!
 
-- Forks are harmful to users in the ecosystem - they create uncertainty over asset holdings, and which fork to build upon. A fragmented Internet of Value is a future we wish to avoid.
-- From an economic perspective, forks destroy value by subdividing the market and making cross-fork transactions more difficult and complex.
-- Forks create unnecessary political problems, which are a distraction and risk to people involved in the ecosystem.
-- Technical improvements can and should be evaluated on their merits and rolled out responsibly.
 
-Initially, the Foundation will be managed by the founding team. Over time, key ecosystem stakeholders will be invited to take appropriate governance roles. Our long-term goal is to achieve decentralised governance, jointly owned by participants in the broader ecosystem. We don't want to set a fixed date for this, but it is our aspiration that we should move to fully decentralised governance after around **5 years** of successful operation of the main network.
+## Empowering Governance for All
 
-We will adopt "on-chain governance" mechanisms where practical, but it is important to note that such solutions are currently unproven and there will always be some situations that require off-chain governance.
+In the vast realm of the open economic systems, it's not just about delivering technology—it's about embracing good governance.
 
-## Design Principles
+**Shared Public Utility:** Convex isn't just for tech enthusiasts; it's a shared public utility open to everyone. We're not just building a network; we're building a community.  This requires mechanisms that ensure the network is **governed effectively and efficiently** now and in the future.
 
-Convex is built according to the following design principles:
+**The Convex Foundation:** Meet the driving force behind the scenes—the Convex Foundation. They're not just responsible for building and managing the Convex public network; they're the architects of a system that benefits everyone involved.
 
-* **Self-Sovereignty** - Individuals should have ownership and control of their own digital identity and assets
-* **Neutrality** - The Convex platform and governance shall be totally neutral to all users, and will never censor legitimate transactions.
-* **Decentralisation** - The network must be decentralised, both as a technical platform and as far as possible in network governance
-* **Sustainability** - Convex technology is efficient and environmentally sustainable, and in particular, it does not create an incentive to waste energy or computational resources (e.g. Proof of Work). Users pay the full and fair costs of any network resources they consume.
-* **Simplicity** - Convex is simple, in the sense that it is based on foundational concepts and building blocks that are robust and reusable. We support the "end-to-end principles".
-* **Unbreaking** - We aspire to zero breaking changes or forks in the production network. The only such changes that will be allowed are to fix systematic threats to network security or governance.
-* **Builders First** - Individuals and organisations that invest their time and money in building the Convex platform and ecosystem will own all newly issued coins, and shall have the greatest influence over the future direction
+**No Room for Forks:** In our world, forks are a no-go. Why? Because they cause chaos for users, muddy the waters on asset holdings, and fracture open economic systems. We're steering clear of a fragmented future.
 
-## Community and Ecosystem
+**Value Preservation:** Forget about forks destroying value. We're focused on unity, not division. By avoiding forks, we're keeping the market whole and transactions smooth.
 
-The Convex Foundation will work to create the conditions for an open, decentralised ecosystem of people and organisations building solutions for the Internet of Value.
+**Beyond Politics:** Our goal is to minimize unnecessary political drama. Convex is about progress, not distractions. We're building a future where technical improvements are evaluated on their merits and embraced responsibly.
 
-We are committed to:
+**Evolving Governance:** The Foundation kickstarts the governance journey, led by the founding team. As we grow, key ecosystem stakeholders will be invited to take appropriate governance roles. Our endgame? Decentralized governance, co-owned by everyone in the ecosystem. While we won't set a fixed date, our aspiriation is full decentralization around **5 years** into the main network's successful operation.
 
-- Encouraging participation in the development of Convex, through mechanisms such as open-source development and bounty programs
-- Investing, where appropriate, in creating additional infrastructure and standards that are important for the Internet of Value
-- Fostering an inclusive community based on ethical principles, and supporting those who wish to create a positive impact for the world with Convex
-- Helping builders and entrepreneurs to be successful with their own projects using Convex
+**On-Chain Empowerment:** We understand "on-chain governance" mechanisms are still unproven, but we're open to adopt on-chain governance mechanisms where practical.  Yet, we realise there might be times when off-chain governance is still a necessity.
 
-It is important to note, however, that the Convex Foundation does not "own" Convex. While the Foundation plays an important governance role and acts as a responsible steward of network integrity, ultimately Convex is an open technology that everyone is free to use, in the spirit of the original Internet.
+In the world of Convex, governance isn't just a buzzword—it's our compass, guiding us towards a future where everyone has a stake and a say. Get ready for a journey of innovation, unity, and shared success!
 
-To get involved with the community, the primary hub right now is the [Convex Discord Server](https://discord.gg/fsnCxEM) which hosts public discussion forums and live events.
+
+## Guiding Lights: Convex's Positive Design Principles
+
+At the heart of Convex, we're not just about coding; we're crafting a digital haven guided by principles that make tech work for everyone.
+
+**Self-Sovereignty:** Picture this – you, in total command of your digital realm. Convex believes in giving individuals full ownership and control over their digital identity and assets. It's your space, your rules!
+
+**Neutrality:** We're Switzerland in the digital world. Convex is a platform and governance that stays neutral, never playing favorites. Legitimate transactions always get the green light; no censorship here!
+
+**Decentralisation:** Imagine a network that's not just tech-savvy but socially savvy too. Convex is all about decentralization, both as a tech powerhouse and as far as possible in how it's governed.
+
+**Sustainability:** Convex is eco-conscious tech. No energy-wasting schemes here. Our tech is not just efficient; it's environmentally sustainable. Users cover the fair costs for the network resources they use.
+
+**Simplicity:** We're not about complexity; we're about solid foundations. Convex is straightforward, built on robust and reusable building blocks. It's tech that makes sense, following the "end-to-end principles."
+
+**Unbreaking:** Zero drama, zero production forks. Convex aspires being a network with no breaking changes unless it's fixing a systemic threat to network security or governance. We're about stability and security – your tech, your way, unbroken.
+
+**Builders First:** Who holds the keys to the future? The builders do! Individuals and organizations investing money, time, and energy in building Convex own the newly issued coins. They're the driving force, shaping the path ahead.
+
+In the world of Convex, design isn't just lines of code; it's a positive force, making technology an empowering and inclusive experience for all. Ready for a journey where your digital world is truly yours? 
+
+
+## Join the Convex Adventure: Building Tomorrow, Together!
+
+**Community and Ecosystem:** The Convex Foundation is like the conductor in a grand symphony, orchestrating an open, decentralized ecosystem where visionaries, builders, and dreamers unite to shape an internet of value that supports **open economic systems**.
+
+**Our Commitment:** We're not just building tech; we're building a movement. Here's what we promise:
+
+- **Participation Pioneers:** Dive into the development of Convex with us! Whether it's through open-source wizardry or bounty programs, we want you shaping the future alongside us.
+
+- **Investing in Tomorrow:** Where it makes sense, we're not just bystanders; we're investors. We're creating the essential infrastructure and standards that make the open economic systems a reality.
+
+- **Ethics at the Core**: Our community isn't just a group; it's a collective. We're all about inclusion and ethical principles. If you're here to make a positive impact, you're in the right place.
+
+- **Your Success, Our Mission:** Builders and entrepreneurs, this one's for you! We're not just about Convex; we're about your success. Let's make your projects with Convex the next big thing!
+
+- **Convex Ownership:** Here's the reality: Convex isn't anyone's property. While the Foundation ensures smooth governance, Convex is fundamentally an open invitation. It's your technology, a product of the digital landscape—a tool for you to shape and utilize as you see fit.
+
+- **Join the Adventure:** Ready to be part of something bigger? Dive into the heart of it all—the [Convex Discord Server](https://discord.gg/fsnCxEM). It's not just a server; it's the bustling agora where ideas collide, dreams take flight, and the Convex community comes alive.
+
+The journey towards a future of open economic systems isn't a solitary path; it's a collaborative odyssey. Join us, and let's collectively shape the digital tomorrow!
