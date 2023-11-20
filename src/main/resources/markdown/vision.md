@@ -140,4 +140,4 @@ In the world of Convex, design isn't just lines of code; it's a positive force, 
 
 - **Join the Adventure:** Ready to be part of something bigger? Dive into the heart of it all—the [Convex Discord Server](https://discord.gg/fsnCxEM). It's not just a server; it's the bustling agora where ideas collide, dreams take flight, and the Convex community comes alive.
 
-The journey towards a future of open economic systems isn't a solitary path; it's a collaborative odyssey. Join us, and let's collectively shape the digital tomorrow!
+The journey towards a future of open economic systems isn't a solitary path; it's a collaborative undertaking. Join us, and let's collectively shape the economic models of tomorrow!
