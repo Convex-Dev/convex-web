@@ -1,4 +1,5 @@
 Convex: *Pioneering a Descentralised Engine for Open Economic Systems!* 
+
 Empowering visionaries, builders, and dreamers with a platform that inspires new and innovative economic models to emerge.
 
 At it's core, Convex is a new kind of foundational technology for building an internet of value designed to enable open economic systems.
