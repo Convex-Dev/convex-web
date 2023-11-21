@@ -1,6 +1,6 @@
 Convex: *Pioneering a Descentralised Engine for Open Economic Systems!* 
 
-Empowering visionaries, builders, and dreamers with a platform that inspires new and innovative economic models to emerge.
+Empowering visionaries, builders, and dreamers with a platform that inspires new and innovative economic models to emerge
 
 At it's core, Convex is a new kind of foundational technology for building an internet of value designed to enable open economic systems.
 
@@ -94,41 +94,41 @@ In the vast realm of the open economic systems, it's not just about delivering t
 
 **Beyond Politics:** Our goal is to minimize unnecessary political drama. Convex is about progress, not distractions. We're building a future where technical improvements are evaluated on their merits and embraced responsibly.
 
-**Evolving Governance:** The Foundation kickstarts the governance journey, led by the founding team. As we grow, key ecosystem stakeholders will be invited to take appropriate governance roles. Our endgame? Decentralized governance, co-owned by everyone in the ecosystem. While we won't set a fixed date, our aspiriation is full decentralization around **5 years** into the main network's successful operation.
+**Evolving Governance:** The Foundation kickstarts the governance journey, led by the founding team. As we grow, key ecosystem stakeholders will be invited to take appropriate governance roles. Our endgame? Decentralized governance, co-owned by everyone in the ecosystem. While we won't set a fixed date, our aspiration is full decentralization around **5 years** into the main network's successful operation.
 
-**On-Lattice Empowerment:** We understand "on-lattice governance" mechanisms are still unproven, but we're open to adopt on-chain governance mechanisms where practical.  Yet, we realise there might be times when off-chain governance is still a necessity.
+**On-Lattice Empowerment:** We understand "on-lattice governance" mechanisms are still unproven, but we're open to adopt on-lattice governance mechanisms where practical.  Yet, we realise there might be times when off-lattice governance is still a necessity.
 
 In the world of Convex, governance isn't just a buzzword—it's our compass, guiding us towards a future where everyone has a stake and a say. Get ready for a journey of innovation, unity, and shared success!
 
 
 ## Guiding Lights: Convex's Positive Design Principles
 
-At the heart of Convex, we're not just about coding; we're crafting a digital haven guided by principles that make tech work for everyone.
+At the heart of Convex, we're not just about coding; we're crafting a digital haven, guided by principles, that make tech work for everyone.
 
-**Self-Sovereignty:** Picture this – you, in total command of your digital realm. Convex believes in giving individuals full ownership and control over their digital identity and assets. It's your space, your rules!
+**Self-Sovereignty:** Picture this: you, in total command of your digital realm. Convex believes in giving individuals full ownership and control over their digital identity and assets. It's your space, your rules!
 
 **Neutrality:** We're Switzerland in the digital world. Convex is a platform and governance that stays neutral, never playing favorites. Legitimate transactions always get the green light; no censorship here!
 
-**Decentralisation:** Imagine a network that's not just tech-savvy but socially savvy too. Convex is all about decentralization, both as a tech powerhouse and as far as possible in how it's governed.
+**Decentralisation:** Imagine a network that's not just tech-savvy but socially savvy too. Convex is all about decentralization, both as a tech powerhouse and, as far as possible, in how it's governed.
 
-**Sustainability:** Convex is eco-conscious tech. No energy-wasting schemes here. Our tech is not just efficient; it's environmentally sustainable. Users cover the fair costs for the network resources they use.
+**Sustainability:** Convex is eco-conscious tech. No energy-wasting schemes here. Our tech is not just efficient; it's environmentally sustainable. Users cover the fair costs of the network resources they use.
 
-**Simplicity:** We're not about complexity; we're about solid foundations. Convex is straightforward, built on robust and reusable building blocks. It's tech that makes sense, following the "end-to-end principles."
+**Simplicity:** We're not about complexity; we're about solid foundations. Convex is straightforward and built on robust and reusable building blocks. It's tech that makes sense, following the "end-to-end principles."
 
-**Unbreaking:** Zero drama, zero production forks. Convex aspires being a network with no breaking changes unless it's fixing a systemic threat to network security or governance. We're about stability and security – your tech, your way, unbroken.
+**Unbreaking:** Zero drama, zero production forks. Convex aspires to be a network with no breaking changes unless it's fixing a systemic threat to network security or governance. We're about stability and security—your tech, your way, unbroken.
 
 **Builders First:** Who holds the keys to the future? The builders do! Individuals and organizations investing money, time, and energy in building Convex own the newly issued coins. They're the driving force, shaping the path ahead.
 
 In the world of Convex, design isn't just lines of code; it's a positive force, making technology an empowering and inclusive experience for all. Ready for a journey where your digital world is truly yours? 
 
 
-## Join the Convex Adventure: Building Tomorrow, Together!
+## Join the Convex Adventure: Building Tomorrow Together!
 
 **Community and Ecosystem:** The Convex Foundation is like the conductor in a grand symphony, orchestrating an open, decentralized ecosystem where visionaries, builders, and dreamers unite to shape an internet of value that supports open economic systems.
 
 **Our Commitment:** We're not just building tech; we're building a movement. Here's what we promise:
 
-- **Participation Pioneers:** Dive into the development of Convex with us! Whether it's through open-source wizardry or bounty programs, we want you shaping the future alongside us.
+- **Participation Pioneers:** Dive into the development of Convex with us! Whether it's through open-source wizardry or bounty programs, we want you to shape the future alongside us.
 
 - **Investing in Tomorrow:** Where it makes sense, we're not just bystanders; we're investors. We're creating the essential infrastructure and standards that make the open economic systems a reality.
 
