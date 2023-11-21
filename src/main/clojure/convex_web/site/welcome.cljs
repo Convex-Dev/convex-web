@@ -262,10 +262,10 @@
        [:div.flex.flex-col.gap-3
 
         [:h1.text-4xl.lg:text-5xl.font-extrabold.text-white.text-center
-         "Lattice Technology for the Next Generation Internet"]
+         "Decentralised Engine for Open Economic Systems"]
 
         [:p.font-source-sans-pro.text-white.text-3xl.text-center
-         "All the advantages of blockchain without the compromises: enabling realtime, decentralised, programmable economic systems at Internet scale."]
+         "Empowering visionaries, builders, and dreamers with a platform that inspires new and innovative economic models to emerge."]
 
         [:div.flex.justify-center.mt-12
          [:a
