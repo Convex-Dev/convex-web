@@ -73,7 +73,7 @@ We're experiencing a wave of exciting projects harnessing Convex to prototype gr
 
 **Autonomous Actors**: Meet the digital game-changers—self-operating, "unstoppable" economic agents. They play important roles in the digital economy, perhaps even operating like virtual companies in their own right.
 
-**Core Libraries**: We're handing developers a toolkit—open-source libraries designed for building robust decentralised apps with Convex. It includes crucial *open economic system* features like fungible tokens, trust monitors, and reusable smart contract capabilities you’d expect for internet of value kinds of exchanges.
+**Core Libraries**: We're handing developers a toolkit—open-source libraries designed for building robust decentralised apps with Convex. It includes crucial *open economic system* features like fungible tokens, trust monitors, and reusable smart contract capabilities you’d expect for internet of value transactions.
 
 **Public Utility Network** A decentralised, public, permissionless network that anyone can access to transact without censorship or centralised gatekeepers.
  
