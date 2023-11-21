@@ -3,7 +3,7 @@
 An Account is a record of identification and ownership within Convex. Accounts may be either:
 
 * **User Accounts**: Accounts that are controlled by external users, where access is controlled by digital signatures on transactions.
-* **Actor Accounts**: Accounts that are managed by an autonomous Actor, where behavior is 100% deterministic according the associated CVM code.
+* **Actor Accounts**: Accounts that are managed by an autonomous Actor, where behavior is 100% deterministic according to the associated CVM code.
 
 ## Account Key
 
@@ -15,7 +15,7 @@ It is generally shown as a hexadecimal string, looking something like:
 0x8506cc53f9b7dD152C9BB5386d50C360ff85EFD043049aea55B44362D92C0E1C
 ```
 
-Technically, the Account Key of a User Account is an `Ed25519` Public Key. You must be in possession of the corresponding private key in order to digitally sign transactions for that Account. Actor Accounts have Addresses that are generated via SHA3-256 hash functions (and therefore do not have a corresponding private key, and no transactions can be submitted for them).
+Technically, the Account Key of a User Account is an `Ed25519` Public Key. You must be in possession of the corresponding private key in order to digitally sign transactions for that Account. Actor Accounts have Addresses that are generated via SHA3-256 hash functions and therefore do not have a corresponding private key, and no transactions can be submitted for them.
 
 ## Actor
 
@@ -34,7 +34,6 @@ An Address is conventionally displayed as a number with with a `#` prefix e.g.:
 ```
 
 Addresses are issued sequentially for new Accounts by the CVM.
-
 
 ## Belief
 
@@ -64,7 +63,7 @@ A Block must be digitally signed by the proposing Peer to be valid for inclusion
 
 A system that maintains an appendable sequence of Blocks where each block contains a cryptographic hash of the previous block (and hence its integrity can be validated recursively all the way back to the original block).
 
-Technically, Convex is not a blockchain because Blocks are not required to contain a hash of any previous Block. This gives Convex a technical advantage because Blocks can therefore be handled in parallel and re-ordered by the higher level Consensus Algorithm after creation.
+Technically, Convex is a Lattice and not a Blockchain because Blocks are not required to contain a hash of any previous Block. This gives Convex a technical advantage because Blocks can therefore be handled in parallel and re-ordered by the higher level Consensus Algorithm after creation.
 
 ## Consensus Algorithm
 
@@ -92,6 +91,10 @@ Convex Lisp prioritises features that are well suited to the development of dece
 * Use of immutable, persistent data structures
 * Actor-based model enabling trusted autonomous execution of code for Smart Contracts
 
+## CPoS 
+
+Acronym for Convergent Proof of Stake. Converges to a secure global transaction order with realtime settlement, is decentralised & permissionless, energy efficient (PoS variant), secure (offers front running resistance), Byzantine Fault Tolerance, offers zero block delay (leaderless), and the implementation and IP is unique to Convex.
+
 ## CRDT
 
 Acronym for Conflict-free Replicated Data Type, a data structure that can be replicated across many computers in a network and is guaranteed (mathematically) to reach eventual consistency.
@@ -116,8 +119,8 @@ A dApp is a decentralised application.
 
 We can distinguish between two forms of Dapp:
 
-- **Pure dApp** - the Dapp consists only of client code and on-chain implementation (i.e. the Dapp depends on the Convex network and nothing else). Such Dapps are simple to build and maintain, and minimise the risk of relying on centralised systems
-- **Hybrid dApp** - the Dapp uses client code, on-chain-implementation and one or more off-chain servers. This is more complex to build and maintain, but is necessary if additional servers are required (e.g. to store private information, or to integrate with external systems)
+- **Pure dApp** - the Dapp consists only of client code and on-lattice implementation (i.e. the Dapp depends on the Convex network and nothing else). Such Dapps are simple to build and maintain, and minimise the risk of relying on centralised systems
+- **Hybrid dApp** - the Dapp uses client code, on-lattice-implementation and one or more off-lattice servers. This is more complex to build and maintain, but is necessary if additional servers are required (e.g. to store private information, or to integrate with external systems)
 
 ## Digital Signature
 
@@ -135,7 +138,7 @@ Encodings are designed to be:
 - Efficient for serialisation and deserialisation
 - Canonical (i.e. any Data Object has one and only one valid Encoding)
 
-The maximum Encoding size is 8191 byes. Larger Data Objects are broken down into multiple Cells which each have their individual Encoding - however this is handled automatically by Convex and not usually a relevant concern for users or developers.
+The maximum Encoding size is 8191 bytes. Larger Data Objects are broken down into multiple Cells which each have their individual Encoding - however this is handled automatically by Convex and not usually a relevant concern for users or developers.
 
 ## Environment
 
@@ -155,7 +158,7 @@ Etch implements Converge Immutable Storage for Data Objects.
 
 A Fork in a consensus system is, in general, where two or more different groups diverge in agreement on the value of shared Global State.
 
-This creates significant problems with a system of value exchange because assets may have different ownership in different forks - which in some cases could cause major economic loss (e.g. the infamous "double spend problem")
+This creates significant problems with a system of value exchange because assets may have different ownership in different forks - which in some cases could cause major economic loss (e.g. the infamous "double spend problem").
 
 Convex is designed to prevent forks. In the unlikely event of a fork created by malicious actors or software / network failures, the Convex Network will follow the largest majority among known, trusted Peers (this is a governance decision outside the scope of the Protocol).
 
@@ -171,25 +174,29 @@ Functions can support multiple arities on the CVM (e.g. `+`, although many funct
 
 An Icon generated in a pre-defined way that can be used to visually confirm if a value is identical to another value. Identicons are used in Convex to provide additional security for similar Addresses that might be hard to distinguish by the hexadecimal strings alone.
 
+## Lattice
+
+A Lattice is a mathematical structure which guarantees the convergent properties of CPoS – any set of Peer Beliefs will converge to consensus after successive belief merges.
+
 ## Memory
 
-Memory in Convex is a second native cryptocurrency (in addition to Convex Coins) that can be used to purchase on-chain storage capacity.
+Memory in Convex is a second native cryptocurrency (in addition to Convex Coins) that can be used to purchase on-lattice storage capacity.
 
-Users need to buy Memory if they want to execute transactions that increase the size of the State. USers get a refund if they execute Transactions that reduce the size of the State - creating a good  incentive to use on-chain resources efficiently.
+Users need to buy Memory if they want to execute transactions that increase the size of the State. Users get a refund if they execute Transactions that reduce the size of the State - creating a good incentive to use on-lattice resources efficiently.
 
 ## Memory Accounting
 
 Memory Accounting is the process by which changes in Memory usage are attributed and charged to Users.
 
-This is a necessary feature of Convex to create the right incentives to utilise on-chain memory efficiently. Without a system of Memory Accounting, there would be a risk of careless usage of Memory leading to ever-increasing size of the Global State (sometimes termed the "state growth problem" in Blockchains).
+This is a necessary feature of Convex to create the right incentives to utilise on-lattice memory efficiently. Without a system of Memory Accounting, there would be a risk of careless usage of Memory leading to ever-increasing size of the Global State (sometimes termed the "state growth problem" in Blockchains).
 
-## On-chain
+## On-lattice
 
-Data or code is considered to be "on-chain" if is contained within or affects the current State of the CVM.
+Data or code is considered to be "on-lattice" if is contained within or affects the current State of the CVM.
 
-On-chain data is the *only* information that is visible to the CVM. It can be accessed and used by Actors, e.g. as part of the management of smart contracts and digital assets.
+On-lattice data is the *only* information that is visible to the CVM. It can be accessed and used by Actors, e.g. as part of the management of smart contracts and digital assets.
 
-As a general principle, on-chain data should be kept to the *absolute minimum necessary*. This is because:
+As a general principle, on-lattice data should be kept to the *absolute minimum necessary*. This is because:
 
 - It has a real cost (in terms of both coins and memory)
 - It is effectively public information so should exclude any confidential or private information
@@ -226,13 +233,13 @@ Scheduled code may be used to implement actors that take periodic actions, smart
 
 ## Smart Contract
 
-A Smart Contract is a self-executing economic contract with the terms of the agreement written into lines of code that are executed deterministically on the CVM. Buyer and sellers can predict exactly how the Smart Contract will behave, and can therefore trust it to enforce contract terms and conditions effectively.
+A Smart Contract is a self-executing economic contract with the terms of the agreement written into lines of code that are executed deterministically on the CVM. Buyers and sellers can predict exactly how the Smart Contract will behave, and can therefore trust it to enforce contract terms and conditions effectively.
 
 Typically a Smart Contract would be implemented using an Actor, but it is possible for a single Actor to manage many smart contracts, and likewise for a single Smart Contract to be executed across multiple Actors. It may be helpful to think of Smart Contracts as secure economic constructs, and Actors as a lower level implementation mechanism.
 
 ## Stake
 
-A Stake is an asset with economic value put at risk by some entity in order to prove commitment to its participation in some economic transaction and / or good future behavior.
+A Stake is an asset with economic value put at risk by some entity in order to prove commitment to its participation in some economic transaction and / or good future behaviour.
 
 Convex uses a mechanism called Delegated Proof of Stake to admit Peers for participation in the Consensus algorithm. Other forms of stakes may be used in Smart Contracts.
 
@@ -248,7 +255,6 @@ Benefits for a Peer having a higher effective voting stake are:
 While good Peers are expected to be content neutral, they may legitimately wish to offer better QoS to their partners or customers, and having a higher voting stake can help them to achieve this.
 
 The protocol does not allow Peers to reverse a confirmed consensus, or prevent (censor) a Block from being included in consensus. Their stake may be at risk if they attempt this.
-
 
 ## State
 
@@ -287,7 +293,7 @@ Value types include:
 * Executable CVM code ("Ops")
 * Some special values used by the CVM, e.g. Blocks
 
-Values may be processed by code within the CVM, and are the fundamental building blocks for on-chain systems such as smart contracts.
+Values may be processed by code within the CVM, and are the fundamental building blocks for on-lattice systems such as smart contracts.
 
 ## Wallet
 
