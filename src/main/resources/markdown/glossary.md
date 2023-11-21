@@ -93,7 +93,7 @@ Convex Lisp prioritises features that are well suited to the development of dece
 
 ## CPoS 
 
-Acronym for Convergent Proof of Stake. Converges to a secure global transaction order with realtime settlement, is decentralised & permissionless, energy efficient (PoS variant), secure (offers front running resistance), Byzantine Fault Tolerance, offers zero block delay (leaderless), and the implementation and IP is unique to Convex.
+Acronym for Convergent Proof of Stake. Converges to a secure global transaction order with realtime settlement, is decentralised and permissionless, energy efficient (PoS variant), secure (offers front running resistance), Byzantine Fault Tolerant, offers zero block delay (leaderless), and the implementation and IP is unique to Convex.
 
 ## CRDT
 
