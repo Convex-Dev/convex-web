@@ -53,7 +53,7 @@ Here are some examples:
 - **Decentralised Autonomous Organisations** (virtual companies)
 - **Games** utilising digital asset ownership
 - **Digital distribution licenses**
-- **Immutable provenance** provenance for the authenticity of data or assets, such as for regulatory purposes
+- **Immutable provenance** for the authenticity of data or assets, such as for regulatory purposes
 - **Public databases**
 - **Self-sovereign identity**
 
