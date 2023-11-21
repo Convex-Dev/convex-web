@@ -96,7 +96,7 @@ In the vast realm of the open economic systems, it's not just about delivering t
 
 **Evolving Governance:** The Foundation kickstarts the governance journey, led by the founding team. As we grow, key ecosystem stakeholders will be invited to take appropriate governance roles. Our endgame? Decentralized governance, co-owned by everyone in the ecosystem. While we won't set a fixed date, our aspiriation is full decentralization around **5 years** into the main network's successful operation.
 
-**On-Chain Empowerment:** We understand "on-chain governance" mechanisms are still unproven, but we're open to adopt on-chain governance mechanisms where practical.  Yet, we realise there might be times when off-chain governance is still a necessity.
+**On-Lattice Empowerment:** We understand "on-lattice governance" mechanisms are still unproven, but we're open to adopt on-chain governance mechanisms where practical.  Yet, we realise there might be times when off-chain governance is still a necessity.
 
 In the world of Convex, governance isn't just a buzzword—it's our compass, guiding us towards a future where everyone has a stake and a say. Get ready for a journey of innovation, unity, and shared success!
 
