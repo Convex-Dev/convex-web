@@ -204,6 +204,16 @@
        :start (fn [_match]
                 (stack/push :page.id/brand {:reset? true}))}]}]
 
+
+   ;; Videos
+   ;; ==============
+   ["videos"
+    {:name :route-name/videos
+     :controllers
+     [{:identity identity
+       :start (fn [_match]
+                (stack/push :page.id/videos {:reset? true}))}]}]
+
    
    ;; Developer
    ;; ==============
