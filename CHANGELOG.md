@@ -1,6 +1,6 @@
 # Major changes and resolved issues
 
-## NEXT
+## 2023-12-15
 - Updated ring-defaults
 - Updated google-cloud-logging-logback
 - Updated test.check
