@@ -113,7 +113,7 @@ You can use Convex Actors to implement smart contracts. Not every Actor needs to
 
 ## When will the Main Network go live?
 
-We are targeting Main Network Launch (Convex One) in 2023.
+We are targeting Main Network Launch (Convex One) in 2024.
 
 An important caveat: getting it right is more important than rushing a release. We won't launch until we are 100% sure it is ready for production use and fully secure with real-world value at stake.
 

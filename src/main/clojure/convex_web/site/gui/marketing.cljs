@@ -430,4 +430,4 @@
    {:class "bg-convex-dark-blue"}
    
    [:span.block.text-white.text-sm
-    "© Copyright 2023 CONVEX FOUNDATION"]])
+    "© Copyright 2024 CONVEX FOUNDATION"]])
