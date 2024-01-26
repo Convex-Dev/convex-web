@@ -31,8 +31,8 @@ Our metaverse innovation includes the world's [first fully on-chain 3D game worl
 
 ## Payments and Retail CBDCs
 
-Convex supports an [advanced model of digital currencies](https://www.youtube.com/live/XHxEnqBwgN8?feature=shared&t=95) with customisable governance, suitable for CBDCs and other currencies with trusted issuers. Our [open source mobile wallet](https://github.com/Convex-Dev/convexity) (Convexity) makes these easily accessible and convenient for users, and can be customised to create branded experiences with additional functionality. [Check out a demo](https://www.youtube.com/watch?v=2a40mRkcuag).
+Convex supports an [advanced model of digital currencies](https://www.youtube.com/live/XHxEnqBwgN8?feature=shared&t=95) with customisable governance, suitable for CBDCs and other currencies with trusted issuers. Our [open source mobile wallet](https://github.com/Convex-Dev/convexity) (Convexity) makes these easily accessible and convenient for users, and can be customised to create branded experiences with additional functionality. [Here's a demo](https://www.youtube.com/watch?v=2a40mRkcuag).
 
 With incredible performance, low costs and low latency, Convex digital currencies are ideal for consumer use cases such as digital payments, international transfers and retail purchases.
 
-If you are involved in a project to create a digital currency, we can help you succeed: get in touch at info@convex.world.
+If you are involved in a project to create a digital currency, we can help you succeed: get in touch at [info@convex.world](mailto:info@convex.world).
