@@ -8,10 +8,10 @@ Convex includes a powerful NFT engine based on set theory, capable of millions o
 
 ## DeFi
 
-Convex provides comprehensive support for decentralised finance applications. 
+Convex provides comprehensive support for decentralised finance applications.
 
 As part of the full-stack solution we offer:
-- A uniform, fungible token model suitable for utility tokens, stablecoins, governance tokens and more. 
+- A uniform, fungible token model suitable for utility tokens, stablecoins, governance tokens and more.
 - An advanced decentralised token exchange based on constant liquidity pools allowing for efficient trading of fungible tokens of all types.
 - Template smart contracts and libraries for creating and interacting with DeFi assets
 - Capabilities to delegate control of assets to intermediaries, custodians or decentralised smart contracts
@@ -27,11 +27,11 @@ Our first game is a 3D block game inspired by Minecraft, Boulderdash and the Rog
 
 Convex provides the ideal substrate for the convergence of real and virtual worlds into new shared realities. With a rich model of digital assets and on-chain smart contract capabilities, we can help you craft the next generation of experiences in virtual reality.
 
-Our metaverse innovation includes the world's first fully on-chain 3D game world.
+Our metaverse innovation includes the world's [first fully on-chain 3D game world](https://www.youtube.com/watch?v=op2NccyMEBE).
 
 ## Payments and Retail CBDCs
 
-Convex supports an advanced model of digital currencies with customisable governance, suitable for CBDCs and other currencies with trusted issuers. Our open source mobile wallet (Convexity) makes these easily accessible and convenient for users, and can be customised to create branded experiences with additional functionality.
+Convex supports an [advanced model of digital currencies](https://www.youtube.com/live/XHxEnqBwgN8?feature=shared&t=95) with customisable governance, suitable for CBDCs and other currencies with trusted issuers. Our [open source mobile wallet](https://github.com/Convex-Dev/convexity) (Convexity) makes these easily accessible and convenient for users, and can be customised to create branded experiences with additional functionality. [Check out a demo](https://www.youtube.com/watch?v=2a40mRkcuag).
 
 With incredible performance, low costs and low latency, Convex digital currencies are ideal for consumer use cases such as digital payments, international transfers and retail purchases.
 
