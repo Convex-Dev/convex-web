@@ -2,25 +2,36 @@
 
 FROM node:latest
 
+# FROM openjdk:23-bookworm
+
 ENV HOME=/home/convex-web
 
-ENV CLOJURE_VER=1.10.3.933
+RUN apt-get update
+RUN apt-cache search jdk
+RUN apt-get install -y curl openjdk-17-jdk
 
-RUN apt-get update \
-  && apt-get -q -y install openjdk-11-jdk curl \
-  && npm install -g shadow-cljs \
-  && curl -s https://download.clojure.org/install/linux-install-$CLOJURE_VER.sh | bash
+
+# install node 18.x
+# RUN curl -sL https://deb.nodesource.com/setup_18.x | bash
+# RUN apt-get install -y nodejs
+# RUN curl -L https://www.npmjs.com/install.sh | sh
+
+
+# install latest clojure
+RUN curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
+RUN chmod +x posix-install.sh
+RUN ./posix-install.sh
+
 
 WORKDIR $HOME
 
 ADD . $HOME
 
 RUN npm install
-
 RUN npm run app:release
-
 RUN npm run styles:release
 
+# setup key file storage and access details
 RUN rm -rf $HOME/.convex
 RUN mkdir -p $HOME/.convex
 RUN echo "{:key-store-passphrase \"password\" \
@@ -29,4 +40,10 @@ ADD config.edn $HOME/.convex/config.edn
 RUN rm $HOME/config.edn
 RUN ln -s $HOME/.convex/config.edn $HOME/config.edn
 
-CMD clojure -J-Duser.home=$HOME -M:main:repl:logback-prod -e "(go)"
+CMD clojure \
+  -J--add-opens=java.base/java.nio=ALL-UNNAMED \
+  -J--add-opens=java.base/jdk.internal.ref=ALL-UNNAMED \
+  -J--add-opens=java.base/sun.nio.ch=ALL-UNNAMED \
+  -J-Duser.home=$HOME \
+  -M:main:repl:logback-dev \
+  -e "(go)"
