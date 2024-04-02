@@ -1,17 +1,22 @@
 # Docker for convex web
 
+# base docker on latest node but install java 17
+# currently this is the only working solution for arm64 builds.
 FROM node:latest
 
+# we can base the docker image on java 23, but install node
 # FROM openjdk:23-bookworm
 
 ENV HOME=/home/convex-web
 
+
+# install the standard java 17
 RUN apt-get update
 RUN apt-cache search jdk
 RUN apt-get install -y curl openjdk-17-jdk
 
 
-# install node 18.x
+# install node 18.x if we are using the java base docker image
 # RUN curl -sL https://deb.nodesource.com/setup_18.x | bash
 # RUN apt-get install -y nodejs
 # RUN curl -L https://www.npmjs.com/install.sh | sh
@@ -32,6 +37,7 @@ RUN npm run app:release
 RUN npm run styles:release
 
 # setup key file storage and access details
+# for security this needs to be moved late to an external mount point
 RUN rm -rf $HOME/.convex
 RUN mkdir -p $HOME/.convex
 RUN echo "{:key-store-passphrase \"password\" \
@@ -40,6 +46,8 @@ ADD config.edn $HOME/.convex/config.edn
 RUN rm $HOME/config.edn
 RUN ln -s $HOME/.convex/config.edn $HOME/config.edn
 
+
+# startup the web and peer services
 CMD clojure \
   -J--add-opens=java.base/java.nio=ALL-UNNAMED \
   -J--add-opens=java.base/jdk.internal.ref=ALL-UNNAMED \
