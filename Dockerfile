@@ -2,25 +2,28 @@
 
 # base docker on latest node but install java 17
 # currently this is the only working solution for arm64 builds.
-FROM node:latest
+# FROM node:latest
 
 # we can base the docker image on java 23, but install node
-# FROM openjdk:23-bookworm
+FROM openjdk:23-bookworm
 
 ENV HOME=/home/convex-web
 
 
-# install the standard java 17
 RUN apt-get update
-RUN apt-cache search jdk
-RUN apt-get install -y curl openjdk-17-jdk
+
+# install the standard java 17 from the node:latest build
+# RUN apt-cache search jdk
+# RUN apt-get install -y curl openjdk-17-jdk
 
 
 # install node 18.x if we are using the java base docker image
-# RUN curl -sL https://deb.nodesource.com/setup_18.x | bash
-# RUN apt-get install -y nodejs
-# RUN curl -L https://www.npmjs.com/install.sh | sh
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
+RUN apt-get install -y nodejs
+RUN curl -L https://www.npmjs.com/install.sh | sh
 
+# for arm64 only
+RUN apt-get install -y liblmdb-dev
 
 # install latest clojure
 RUN curl -L -O https://github.com/clojure/brew-install/releases/latest/download/posix-install.sh
@@ -31,6 +34,9 @@ RUN ./posix-install.sh
 WORKDIR $HOME
 
 ADD . $HOME
+
+# remove old jar files
+RUN rm -f $HOME/*.jar
 
 RUN npm install
 RUN npm run app:release
