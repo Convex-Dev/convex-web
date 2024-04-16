@@ -102,7 +102,7 @@ but do not have to have the same type:
 
 ```clojure
 (= 2 2)     ;; -> true, 2 is perfectly equal to 2
-(= 2 2.0)   ;; -> talse, 2 is a long while 2.0 is a double
+(= 2 2.0)   ;; -> false, 2 is a long while 2.0 is a double
 (== 2 2.0)  ;; -> true, mathematically, 2 is equal to 2.0
 ```
 
