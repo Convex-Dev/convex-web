@@ -45,28 +45,22 @@
                 :image "/images/team/mike_anderson.png"
                 :linkedin "https://www.linkedin.com/in/mike-anderson-7a9412/"
                 :github "https://github.com/mikera"}
-               
-               {:name "Adam Helins"
-                :title "Technology"
-                :image "/images/team/adam_helins.png"
-                :linkedin "https://www.linkedin.com/in/adam-helins-b81b23215/"
-                :github "https://github.com/helins"}
 
                {:name "Dr Leonard Anderson"
                 :title "Governance"
                 :image "/images/team/leanord_anderson.png"
                 :linkedin "https://www.linkedin.com/in/dr-leonard-anderson/"}
 
-               {:name "Michael Borrelli"
-                :title "Operations"
-                :image "/images/team/michael_borelli.png"
-                :linkedin "https://www.linkedin.com/in/michael-charles-borrelli-6a557253"}
-
                {:name "Rich Kopcho"
                 :title "Marketing"
                 :image "/images/team/rich_kopcho.png"
                 :linkedin "https://www.linkedin.com/in/kopcho/"
-                :github "https://github.com/kopcho"}]
+                :github "https://github.com/kopcho"}
+
+               {:name "Riley Wild"
+                :title "Business Development"
+                :image "/images/team/riley_wild.png"
+                :linkedin "https://www.linkedin.com/in/rileyjameswild/"}]
 
               :advisors
               (sort-by :name
@@ -114,17 +108,20 @@
                   :image "/images/team/tirath_virdee.png"
                   :linkedin "https://www.linkedin.com/in/tirath-virdee-6a08255/"}
 
-                 {:name "Riley Wild"
-                  :image "/images/team/riley_wild.png"
-                  :linkedin "https://www.linkedin.com/in/rileyjameswild/"}
-
                  {:name "Christina Yan Zhang"
                   :image "/images/team/christina_yan_zhang.png"
                   :linkedin "https://www.linkedin.com/in/christinayanzhang/"}])
 
               :community-contributors
               (sort-by :name
-                [{:name "Miguel Depaz"
+                [{:name "Adam Helins"
+                  :image "/images/team/adam_helins.png"
+                  :github "https://github.com/helins"}
+
+                 {:name "Michael Borrelli"
+                  :image "/images/team/michael_borelli.png"}
+
+                 {:name "Miguel Depaz"
                   :image "/images/team/miguel_depaz.png"}
 
                  {:name "Alexandra Au Yong"
