@@ -30,7 +30,7 @@
   :asset-prefix-url
   #profile {:dev ""
             :test ""
-            :prod "https://storage.googleapis.com/convex-world-site"}
+            :prod "" #_"https://storage.googleapis.com/convex-world-site"}
   
   :security
   #profile {:dev {:anti-forgery true}
