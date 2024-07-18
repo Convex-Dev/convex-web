@@ -36,8 +36,10 @@ npm run app:watch
 
 Run REPL with the `dev` alias:
 ```
-clj -A:dev
+clj -A:dev:java-16
 ```
+
+The `java-16` profile enables VM options required for Java 16+
 
 Start server on port 8080:
 ```
