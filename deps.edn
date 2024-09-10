@@ -9,7 +9,7 @@
   com.cognitect/transit-clj {:mvn/version "1.0.333"}
   com.cognitect/anomalies {:mvn/version "0.1.12"}
 
-  world.convex/convex-peer {:mvn/version "0.7.12"}
+  world.convex/convex-peer {:mvn/version "0.7.13"}
   world.convex/net
   {:deps/root "module/net"
    :git/sha   "7cd357f"
