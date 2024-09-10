@@ -1205,7 +1205,7 @@
 
     (POST "/api/internal/invoke" req (invoke system req))
 
-    (route/resources "/")
+    (route/resources "/" {:mime-types {"css" "text/css"}})
 
     ;; Fallback to index and let the app router handle "not found".
     (fn index-handler [req]
