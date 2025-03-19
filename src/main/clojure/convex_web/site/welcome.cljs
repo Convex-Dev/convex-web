@@ -7,55 +7,55 @@
    ["@radix-ui/react-tooltip" :as tooltip]))
 
 (def key-advantages
-  [;; -- Realtime Transactions
+  [;; -- Lightning-Fast Finality
    {:background-color "bg-[#6AAAE4]"
     :image "images/instant_transactions1.svg"
-    :title "Realtime Transactions"
+    :title "Lightning-Fast Finality"
     :body
     [:div.place-self-start
      {:class "max-w-[180px]"}
      [:p.text-white
-      "Confirmations of " [:span.font-bold "transactions in milliseconds "] ", ideal for interactive apps and consumer usage."]]}
+      "Confirm " [:span.font-bold "transactions in milliseconds "] ", ideal for real-time apps and frictionless consumer experiences."]]}
 
-   ;; -- Global Scale
+   ;; -- Massive Scalability
    {:background-color "bg-convex-dark-blue"
     :image "images/global_scale1.svg"
-    :title "Global Scale"
+    :title "Massive Scalability"
     :body
     [:p.text-white
-     [:span.font-bold "50,000+ decentralised exchange transactions per second "] "– enough for DeFi on a global scale."]}
+    Process [:span.font-bold "50,000+ operations per second "] ", enabling global scale DeFi and large scale decentralised marketplaces."]}
 
-   ;; -- Maxium Secutiry
+   ;; -- Uncompromising Security
    {:background-color "bg-convex-medium-blue"
     :image "images/maximum_security1.svg"
-    :title "Maximum Security"
+    :title "Uncompromising Security"
     :body
     [:p.text-white
-     "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
+     "Harness best-in-class cryptography and a " [:span.font-bold "leaderless BFT consensus"] ", ensuring privacy and tamper-proof integrity."]}
 
-   ;; -- LOW COST
+   ;; --Ultra-Low Fees
    {:background-color "bg-convex-dark-blue"
     :image "images/instant_transactions2.svg"
-    :title "LOW COST"
+    :title "Ultra-Low Fees"
     :body
     [:p.text-white
-     "Transaction costs less than $0.0001 – " [:span.font-bold "for frictionless finance"] "."]}
+     "Pay less than $0.0001 per transaction– " [:span.font-bold "eliminating friction and unlocking new economic models"] "."]}
 
-   ;; -- 100% Green
+   ;; -- Green by Design
    {:background-color "bg-convex-medium-blue"
     :image "images/global_scale2.svg"
-    :title "100% Green"
+    :title "Green by Design"
     :body
     [:p.text-white
-     "No wastage of energy or computing resources. " [:span.font-bold "More than 1,000,000 times more efficient than Proof of Work networks"] "."]}
+     "Consume minimal energy, " [:span.font-bold "over 1,000,000 times more efficient than Proof-of-Work—sustainable at internet scale"] "."]}
 
-   ;; -- Lambda Calculus
+   ;; -- Advanced Virtual Machine
    {:background-color "bg-[#6AAAE4]"
     :image "images/maximum_security2.svg"
-    :title "Lambda Calculus"
+    :title "Advanced Virtual Machine"
     :body
     [:p.text-white
-     "Advanced virtual machine (CVM), that supports execution of " [:span.font-bold "custom smart contracts and unlimited extensibility."]]}])
+     "A Turing-complete environment based on the lambda calculus, offering " [:span.font-bold "limitless smart contract extensibility."]]}])
 
 (defn KeyAdvantages []
   [:div
