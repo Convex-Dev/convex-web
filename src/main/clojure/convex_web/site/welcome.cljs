@@ -23,7 +23,7 @@
     :title "Massive Scalability"
     :body
     [:p.text-white
-    Process [:span.font-bold "50,000+ operations per second "] ", enabling global scale DeFi and large scale decentralised marketplaces."]}
+    Process [:span.font-bold "50,000+ operations per second"] ", enabling global scale DeFi and large scale decentralised marketplaces."]}
 
    ;; -- Uncompromising Security
    {:background-color "bg-convex-medium-blue"
@@ -249,7 +249,7 @@
 
      [marketing/Nav]
      
-     ;; -- Building the Internet of Value
+     ;; -- Building Decentralised Open Economic Systems
 
      [:div.w-screen.relative
       {:class "md:h-[492px] md:p0 p-8 bg-convex-dark-blue"}
@@ -262,10 +262,10 @@
        [:div.flex.flex-col.gap-3
 
         [:h1.text-4xl.lg:text-5xl.font-extrabold.text-white.text-center
-         "Decentralised Engine for Open Economic Systems"]
+         "Powering Decentralised Open Economic Systems"]
 
         [:p.font-source-sans-pro.text-white.text-3xl.text-center
-         "Empowering visionaries, builders, and dreamers with a platform that inspires new and innovative economic models to emerge."]
+         "A platform for visionaries and builders to create the next generation of intelligent applications and economies."]
 
         [:div.flex.justify-center.mt-12
          [:a
@@ -275,7 +275,7 @@
            "Try the Sandbox"]]]]]]
 
 
-     ;; -- What is Convex
+     ;; -- Why Convex?
 
      [:div.w-screen
       {:class "md:h-[492px] md:p0 p-8 bg-white"}
@@ -284,22 +284,23 @@
 
        [:div.flex.flex-col.items-center.md:flex-row.gap-12
 
-        ;; -- What is Convex
+        ;; -- Why Convex?
 
         [:div.flex.flex-col.gap-5
 
          [:h2
           {:class subtitle-dark-classes}
-          "What is Convex?"]
+          "Why Convex?"]
 
          [:p
           {:class prose-dark-classes}
-          "Convex defines a new category—Lattice technology. We solve DLT consensus with a proven technique from computer science. Convex is not a blockchain but a radical new approach to the consensus problem."]
+          "Convex is a high-performance Lattice network for secure, scalable decentralized computation. Born from the demands of data-intensive applications like AI coordination, Convex overcomes the limitations of traditional solutions, delivering:"]]
 
-         [:p
-          {:class prose-dark-classes}
-          "We're an open source, non-profit foundation enabling new ecosystems at the intersection of web3 infrastructure, decentralised finance and GameFi."]]
-
+      [:ul.list-disc.list-inside
+         {:class prose-dark-classes}
+         [:li [:span.font-bold "Rapid, Convergent Proof of Stake (CPoS)"]: "Sub-second finality and massive throughput for high-frequency transactions and real-time applications."]
+         [:li [:span.font-bold "Turing-Complete Virtual Machine"]: "Complex automation for agentic and data-intensive applications, supporting sophisticated smart contracts and autonomous agent behavior."]
+         [:li [:span.font-bold "Flexible Lattice Architecture"]: "A next-generation framework handling real-time data flows and trustless interactions at scale, facilitating secure data marketplaces and complex decentralized workflows."]]]]
 
         ;; -- Logo
 
