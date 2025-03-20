@@ -317,8 +317,7 @@
           "Get the Whitepaper"]]]]]
 
 
-     ;; -- Convex is Flexible
-
+     ;; -- Limitless Potential
      [:div.w-screen
       {:class "md:h-[584px] md:p0 p-8 bg-convex-sky-blue"}
 
@@ -330,19 +329,23 @@
          {:class content-margin-left}
          [:h2
           {:class subtitle-dark-classes}
-          "Convex is Flexible"]
+          "Limitless Potential"]
 
          [:p
           {:class prose-dark-classes}
-          "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be 100% secure and publicly verifiable (both in terms of data and application behaviour), such as:"]
+          "Convex empowers a new wave of decentralized applications demanding trustless security, transparent operations, and verifiable results. From intelligent automation to complex digital assets, Convex provides the foundation for innovation. Convex enables:"]
 
          [:ul.list-disc.list-inside
           {:class prose-dark-classes}
-          [:li "Public registries and databases"]
-          [:li "Digital currencies"]
-          [:li "Prediction markets"]
-          [:li "Smart contracts for managing digital assets"]
-          [:li "Immutable provenance records"]]]
+          [:li [:span.font-bold "Intelligent Data Networks"]: Decentralized data hubs and marketplaces with verifiable ownership, secure exchange, and seamless AI integration."]
+          [:li [:span.font-bold "Tokenized Economies & Real-Time Markets"]: Digital assets, DeFi applications, and high-throughput marketplaces with instant finality and provable fairness."]
+          [:li [:span.font-bold "Autonomous Agents & Intelligent Contracts"]: Smart contracts and agent-based systems to automate processes, coordinate actions, and adapt to changing conditions."]
+          [:li [:span.font-bold "Verifiable Governance & Prediction"]: Transparent and tamper-proof systems for voting, decision-making, and forecasting."]
+          [:li [:span.font-bold "Secure Provenance & Auditable Histories"]: Track assets, data, and processes with security, immutability, and public verifiability."]]]]
+       
+         [:p
+          {:class prose-dark-classes}
+          "Convex's flexible architecture and Turing-complete virtual machine give developers the freedom to build cutting-edge applications with built-in security and transparency."]
 
         [:div.flex.justify-center.mt-12
          [:a
@@ -351,8 +354,7 @@
           [:span.text-base.text-convex-dark-blue
            "Our Vision"]]]]]]
 
-
-     ;; -- Convex is Fast
+     ;; -- Unleashing Lightening-Fast and Massively Scalable Performance
 
      [:div.w-screen
       {:class "md:h-[584px] md:p0 p-8 bg-convex-dark-blue"}
@@ -363,21 +365,14 @@
 
         [:h2
          {:class subtitle-light-classes}
-         "Convex is Fast"]
+         "Unleashing Lightning-Fast and Massively Scalable Performance"]
 
         [:p
-         {:class prose-light-classes}
-         "Using Convergent Proof of Stake, a completely new consensus algorithm, the Convex network is able to execute decentralised applications at internet scale. With normal consumer grade hardware and network bandwidth the Convex Virtual Machine can achieve:"]
-
-        [:ul.list-disc.list-inside
-         {:class prose-light-classes}
-         [:li "Tens of thousands of digitally signed transactions per second (far more than the 1,700 transactions per second typically handled by the VISA network)"]
-         [:li "Millions of smart contract operations per second"]
-         [:li "Low latency (less than a second for global consensus)"]
-         [:li "This already is enough to enable consumer applications for the Internet of Value. In the future, it will be possible to extend scalability even further."]]]]]
+         {:class prose-light-classes} 
+         "Built on [:span.font-bold "Convergent Proof of Stake"]—an entirely new approach to consensus—Convex executes decentralized applications at [:span.font-bold "internet scale"] using standard [:span.font-bold "consumer hardware"]. The [:span.font-bold "Convex Virtual Machine"] can handle [:span.font-bold "tens of thousands"] of transactions per second (far beyond most global payment networks) and [:span.font-bold "millions"] of smart contract operations per second, all with sub-second finality. This [:span.font-bold "robust performance"] is already sufficient for consumer-facing, [:span.font-bold "real-time dApps"], and it will continue to scale as the network grows."]
 
 
-     ;; -- Convex is Fun
+    ;; -- Developer Experience
 
      [:div.w-screen
       {:class "md:h-[492px] md:p0 p-8 bg-convex-white"}
@@ -390,15 +385,15 @@
          {:class content-margin-left}
          [:h2
           {:class subtitle-dark-classes}
-          "Convex is Fun"]
+          "Developer Experience"]
 
          [:p
           {:class prose-dark-classes}
-          "We provide a powerful, interactive environment for development in Convex that enables high productivity while maintaining secure coding principles."]
+          "Build on Convex with ease. Our powerful, interactive environment empowers developers with high productivity while maintaining secure coding principles."]
 
          [:p
           {:class prose-dark-classes}
-          "convex.world provides an interactive REPL allowing users to code directly on the Convex platform using Convex Lisp."]]
+          "Experiment and build directly on Convex using Convex Lisp via convex.world interactive REPL. Explore our comprehensive tools: SDKs, libraries, and documentation. Build reliable, trustworthy dApps and deploy confidently in a stable environment."]]
 
         [:div.flex.justify-center.mt-12
          [:a
