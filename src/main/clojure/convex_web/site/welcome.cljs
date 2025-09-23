@@ -7,55 +7,55 @@
    ["@radix-ui/react-tooltip" :as tooltip]))
 
 (def key-advantages
-  [;; -- Realtime Transactions
+  [;; -- Lightning-Fast Finality
    {:background-color "bg-[#6AAAE4]"
     :image "images/instant_transactions1.svg"
-    :title "Realtime Transactions"
+    :title "Lightning-Fast Finality"
     :body
     [:div.place-self-start
      {:class "max-w-[180px]"}
      [:p.text-white
-      "Confirmations of " [:span.font-bold "transactions in milliseconds "] ", ideal for interactive apps and consumer usage."]]}
+      "Confirm " [:span.font-bold "transactions in milliseconds "] ", ideal for real-time apps and frictionless consumer experiences."]]}
 
-   ;; -- Global Scale
+   ;; -- Massive Scalability
    {:background-color "bg-convex-dark-blue"
     :image "images/global_scale1.svg"
-    :title "Global Scale"
+    :title "Massive Scalability"
     :body
     [:p.text-white
-     [:span.font-bold "50,000+ decentralised exchange transactions per second "] "– enough for DeFi on a global scale."]}
+    Process [:span.font-bold "50,000+ operations per second"] ", enabling global scale DeFi and large scale decentralised marketplaces."]}
 
-   ;; -- Maxium Secutiry
+   ;; -- Uncompromising Security
    {:background-color "bg-convex-medium-blue"
     :image "images/maximum_security1.svg"
-    :title "Maximum Security"
+    :title "Uncompromising Security"
     :body
     [:p.text-white
-     "Best in class cryptography and secure " [:span.font-bold "BFT consensus algorithm"] ", fully pseudonymised."]}
+     "Harness best-in-class cryptography and a " [:span.font-bold "leaderless BFT consensus"] ", ensuring privacy and tamper-proof integrity."]}
 
-   ;; -- LOW COST
+   ;; --Ultra-Low Fees
    {:background-color "bg-convex-dark-blue"
     :image "images/instant_transactions2.svg"
-    :title "LOW COST"
+    :title "Ultra-Low Fees"
     :body
     [:p.text-white
-     "Transaction costs less than $0.0001 – " [:span.font-bold "for frictionless finance"] "."]}
+     "Pay less than $0.0001 per transaction– " [:span.font-bold "eliminating friction and unlocking new economic models"] "."]}
 
-   ;; -- 100% Green
+   ;; -- Green by Design
    {:background-color "bg-convex-medium-blue"
     :image "images/global_scale2.svg"
-    :title "100% Green"
+    :title "Green by Design"
     :body
     [:p.text-white
-     "No wastage of energy or computing resources. " [:span.font-bold "More than 1,000,000 times more efficient than Proof of Work networks"] "."]}
+     "Consume minimal energy, " [:span.font-bold "over 1,000,000 times more efficient than Proof-of-Work—sustainable at internet scale"] "."]}
 
-   ;; -- Lambda Calculus
+   ;; -- Advanced Virtual Machine
    {:background-color "bg-[#6AAAE4]"
     :image "images/maximum_security2.svg"
-    :title "Lambda Calculus"
+    :title "Advanced Virtual Machine"
     :body
     [:p.text-white
-     "Advanced virtual machine (CVM), that supports execution of " [:span.font-bold "custom smart contracts and unlimited extensibility."]]}])
+     "A Turing-complete environment based on the lambda calculus, offering " [:span.font-bold "limitless smart contract extensibility."]]}])
 
 (defn KeyAdvantages []
   [:div
@@ -249,7 +249,7 @@
 
      [marketing/Nav]
      
-     ;; -- Building the Internet of Value
+     ;; -- Building Decentralised Open Economic Systems
 
      [:div.w-screen.relative
       {:class "md:h-[492px] md:p0 p-8 bg-convex-dark-blue"}
@@ -262,10 +262,10 @@
        [:div.flex.flex-col.gap-3
 
         [:h1.text-4xl.lg:text-5xl.font-extrabold.text-white.text-center
-         "Decentralised Engine for Open Economic Systems"]
+         "Powering Decentralised Open Economic Systems"]
 
         [:p.font-source-sans-pro.text-white.text-3xl.text-center
-         "Empowering visionaries, builders, and dreamers with a platform that inspires new and innovative economic models to emerge."]
+         "A platform for visionaries and builders to create the next generation of intelligent applications and economies."]
 
         [:div.flex.justify-center.mt-12
          [:a
@@ -275,7 +275,7 @@
            "Try the Sandbox"]]]]]]
 
 
-     ;; -- What is Convex
+     ;; -- Why Convex?
 
      [:div.w-screen
       {:class "md:h-[492px] md:p0 p-8 bg-white"}
@@ -284,22 +284,23 @@
 
        [:div.flex.flex-col.items-center.md:flex-row.gap-12
 
-        ;; -- What is Convex
+        ;; -- Why Convex?
 
         [:div.flex.flex-col.gap-5
 
          [:h2
           {:class subtitle-dark-classes}
-          "What is Convex?"]
+          "Why Convex?"]
 
          [:p
           {:class prose-dark-classes}
-          "Convex defines a new category—Lattice technology. We solve DLT consensus with a proven technique from computer science. Convex is not a blockchain but a radical new approach to the consensus problem."]
+          "Convex is a high-performance Lattice network for secure, scalable decentralized computation. Born from the demands of data-intensive applications like AI coordination, Convex overcomes the limitations of traditional solutions, delivering:"]]
 
-         [:p
-          {:class prose-dark-classes}
-          "We're an open source, non-profit foundation enabling new ecosystems at the intersection of web3 infrastructure, decentralised finance and GameFi."]]
-
+      [:ul.list-disc.list-inside
+         {:class prose-dark-classes}
+         [:li [:span.font-bold "Rapid, Convergent Proof of Stake (CPoS)"]: "Sub-second finality and massive throughput for high-frequency transactions and real-time applications."]
+         [:li [:span.font-bold "Turing-Complete Virtual Machine"]: "Complex automation for agentic and data-intensive applications, supporting sophisticated smart contracts and autonomous agent behavior."]
+         [:li [:span.font-bold "Flexible Lattice Architecture"]: "A next-generation framework handling real-time data flows and trustless interactions at scale, facilitating secure data marketplaces and complex decentralized workflows."]]]]
 
         ;; -- Logo
 
@@ -316,8 +317,7 @@
           "Convex Docs"]]]]]
 
 
-     ;; -- Convex is Flexible
-
+     ;; -- Limitless Potential
      [:div.w-screen
       {:class "md:h-[584px] md:p0 p-8 bg-convex-sky-blue"}
 
@@ -329,19 +329,23 @@
          {:class content-margin-left}
          [:h2
           {:class subtitle-dark-classes}
-          "Convex is Flexible"]
+          "Limitless Potential"]
 
          [:p
           {:class prose-dark-classes}
-          "Convex supports decentralised applications that allow ownership and exchange of Digital Assets that need to be 100% secure and publicly verifiable (both in terms of data and application behaviour), such as:"]
+          "Convex empowers a new wave of decentralized applications demanding trustless security, transparent operations, and verifiable results. From intelligent automation to complex digital assets, Convex provides the foundation for innovation. Convex enables:"]
 
          [:ul.list-disc.list-inside
           {:class prose-dark-classes}
-          [:li "Public registries and databases"]
-          [:li "Digital currencies"]
-          [:li "Prediction markets"]
-          [:li "Smart contracts for managing digital assets"]
-          [:li "Immutable provenance records"]]]
+          [:li [:span.font-bold "Intelligent Data Networks"]: Decentralized data hubs and marketplaces with verifiable ownership, secure exchange, and seamless AI integration."]
+          [:li [:span.font-bold "Tokenized Economies & Real-Time Markets"]: Digital assets, DeFi applications, and high-throughput marketplaces with instant finality and provable fairness."]
+          [:li [:span.font-bold "Autonomous Agents & Intelligent Contracts"]: Smart contracts and agent-based systems to automate processes, coordinate actions, and adapt to changing conditions."]
+          [:li [:span.font-bold "Verifiable Governance & Prediction"]: Transparent and tamper-proof systems for voting, decision-making, and forecasting."]
+          [:li [:span.font-bold "Secure Provenance & Auditable Histories"]: Track assets, data, and processes with security, immutability, and public verifiability."]]]]
+       
+         [:p
+          {:class prose-dark-classes}
+          "Convex's flexible architecture and Turing-complete virtual machine give developers the freedom to build cutting-edge applications with built-in security and transparency."]
 
         [:div.flex.justify-center.mt-12
          [:a
@@ -350,8 +354,7 @@
           [:span.text-base.text-convex-dark-blue
            "Our Vision"]]]]]]
 
-
-     ;; -- Convex is Fast
+     ;; -- Unleashing Lightening-Fast and Massively Scalable Performance
 
      [:div.w-screen
       {:class "md:h-[584px] md:p0 p-8 bg-convex-dark-blue"}
@@ -362,21 +365,14 @@
 
         [:h2
          {:class subtitle-light-classes}
-         "Convex is Fast"]
+         "Unleashing Lightning-Fast and Massively Scalable Performance"]
 
         [:p
-         {:class prose-light-classes}
-         "Using Convergent Proof of Stake, a completely new consensus algorithm, the Convex network is able to execute decentralised applications at internet scale. With normal consumer grade hardware and network bandwidth the Convex Virtual Machine can achieve:"]
-
-        [:ul.list-disc.list-inside
-         {:class prose-light-classes}
-         [:li "Tens of thousands of digitally signed transactions per second (far more than the 1,700 transactions per second typically handled by the VISA network)"]
-         [:li "Millions of smart contract operations per second"]
-         [:li "Low latency (less than a second for global consensus)"]
-         [:li "This already is enough to enable consumer applications for the Internet of Value. In the future, it will be possible to extend scalability even further."]]]]]
+         {:class prose-light-classes} 
+         "Built on [:span.font-bold "Convergent Proof of Stake"]—an entirely new approach to consensus—Convex executes decentralized applications at [:span.font-bold "internet scale"] using standard [:span.font-bold "consumer hardware"]. The [:span.font-bold "Convex Virtual Machine"] can handle [:span.font-bold "tens of thousands"] of transactions per second (far beyond most global payment networks) and [:span.font-bold "millions"] of smart contract operations per second, all with sub-second finality. This [:span.font-bold "robust performance"] is already sufficient for consumer-facing, [:span.font-bold "real-time dApps"], and it will continue to scale as the network grows."]
 
 
-     ;; -- Convex is Fun
+    ;; -- Developer Experience
 
      [:div.w-screen
       {:class "md:h-[492px] md:p0 p-8 bg-convex-white"}
@@ -389,15 +385,15 @@
          {:class content-margin-left}
          [:h2
           {:class subtitle-dark-classes}
-          "Convex is Fun"]
+          "Developer Experience"]
 
          [:p
           {:class prose-dark-classes}
-          "We provide a powerful, interactive environment for development in Convex that enables high productivity while maintaining secure coding principles."]
+          "Build on Convex with ease. Our powerful, interactive environment empowers developers with high productivity while maintaining secure coding principles."]
 
          [:p
           {:class prose-dark-classes}
-          "convex.world provides an interactive REPL allowing users to code directly on the Convex platform using Convex Lisp."]]
+          "Experiment and build directly on Convex using Convex Lisp via convex.world interactive REPL. Explore our comprehensive tools: SDKs, libraries, and documentation. Build reliable, trustworthy dApps and deploy confidently in a stable environment."]]
 
         [:div.flex.justify-center.mt-12
          [:a
