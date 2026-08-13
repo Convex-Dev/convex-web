@@ -1,3 +1,13 @@
+# ⚠️ Retired
+
+**This repository is archived and no longer maintained.**
+
+This was the original Clojure/ClojureScript application serving [convex.world](https://convex.world).
+The website is now built from **[Convex-Dev/convex.world](https://github.com/Convex-Dev/convex.world)**,
+with design and documentation in [Convex-Dev/design](https://github.com/Convex-Dev/design).
+
+---
+
 ![Tests](https://github.com/Convex-Dev/convex-web/workflows/Tests/badge.svg)
 
 ## Configuration
